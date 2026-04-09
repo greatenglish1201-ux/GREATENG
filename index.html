@@ -656,8 +656,8 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     if(!scriptUrl){setError('관리자에게 서버 URL을 문의하세요.');return;}
     setLoading(true);setError('');
     try{
-      const r=await fetch(scriptUrl,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'login',name:name.trim(),password:pw})});
+      const payload=encodeURIComponent(JSON.stringify({action:'login',name:name.trim(),password:pw}));
+      const r=await fetch(`${scriptUrl}?data=${payload}`,{redirect:'follow'});
       const d=await r.json();
       if(d.status==='ok'){
         const sess={name:name.trim(),role:d.role,adminPw:d.role==='admin'?pw:''};
@@ -716,7 +716,8 @@ function AdminPanel({scriptUrl,adminPw,goBack}){
   const [filterStudent,setFilterStudent]=useState('');
 
   const api=async(body)=>{
-    const r=await fetch(scriptUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,adminPw})});
+    const payload=encodeURIComponent(JSON.stringify({...body,adminPw}));
+    const r=await fetch(`${scriptUrl}?data=${payload}`,{redirect:'follow'});
     return r.json();
   };
 
@@ -1401,7 +1402,8 @@ function Results({questions,userAns,score,studentName,scriptUrl,goHome,doPrint})
       pct: pct,
       details: details
     };
-    fetch(scriptUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      const payloadEnc=encodeURIComponent(JSON.stringify(payload));
+      fetch(`${scriptUrl}?data=${payloadEnc}`,{redirect:'follow'})
       .then(r=>r.ok?setSaveStatus('done'):setSaveStatus('error'))
       .catch(()=>setSaveStatus('error'));
   },[]);
