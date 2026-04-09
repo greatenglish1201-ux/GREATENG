@@ -89,6 +89,28 @@ function detectBooks(passages){
 }
 
 const LOGO='data:image/jpeg;base64,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';
+
+// JSONP 방식으로 CORS 우회
+function jsonpFetch(url, data) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'greateng_cb_' + Date.now();
+    const payload = encodeURIComponent(JSON.stringify(data));
+    const script = document.createElement('script');
+    script.src = `${url}?callback=${cbName}&data=${payload}`;
+    window[cbName] = (result) => {
+      delete window[cbName];
+      document.body.removeChild(script);
+      resolve(result);
+    };
+    script.onerror = () => {
+      delete window[cbName];
+      document.body.removeChild(script);
+      reject(new Error('JSONP 요청 실패'));
+    };
+    document.body.appendChild(script);
+  });
+}
+
 const APP_NAME='대단한영어';
 const APP_SUB='내신시험 출제예상문제';
 
@@ -731,35 +753,62 @@ function AdminPanel({scriptUrl,adminPw,goBack}){
   // 결과 필터
   const [filterStudent,setFilterStudent]=useState('');
 
-  // 로컬 학생 관리
-  const loadStudents=()=>{
-    setStudents(getStudentsLocal());
+  const api=async(body)=>{
+    return jsonpFetch(scriptUrl, {...body, adminPw});
   };
 
-  const loadResults=()=>{
-    // 결과는 Google Sheets에서 직접 확인 (로컬 미저장)
-    setResults([]);
-    setMsg('결과는 Google Sheets에서 직접 확인하세요.');
+  // 학생 목록: 서버 우선, 실패 시 로컬
+  const loadStudents=async()=>{
+    setLoading(true);
+    if(scriptUrl){
+      try{
+        const d=await api({action:'getStudents'});
+        if(d.status==='ok'){setStudents(d.students||[]);saveStudentsLocal(d.students||[]);}
+        else setStudents(getStudentsLocal());
+      }catch(e){setStudents(getStudentsLocal());}
+    } else {
+      setStudents(getStudentsLocal());
+    }
+    setLoading(false);
+  };
+
+  const loadResults=async()=>{
+    if(!scriptUrl){setMsg('결과 저장 URL을 설정 탭에서 입력하세요.');return;}
+    setLoading(true);
+    try{
+      const d=await api({action:'getResults',student:filterStudent||undefined});
+      if(d.status==='ok')setResults(d.results||[]);
+      else setMsg(d.message||'오류');
+    }catch(e){setMsg('결과 불러오기 실패');}
+    setLoading(false);
   };
 
   React.useEffect(()=>{loadStudents();},[]);
 
-  const saveStudent=()=>{
+  const saveStudent=async()=>{
     if(!form.name||!form.password){setMsg('이름과 비밀번호를 입력하세요.');return;}
+    setLoading(true);
+    // 로컬 저장
     const arr=getStudentsLocal();
     const idx=arr.findIndex(s=>s.name===form.name);
     const obj={name:form.name,password:form.password,expiry:form.expiry||'',active:form.active!==false};
     if(idx>=0)arr[idx]=obj;else arr.push(obj);
     saveStudentsLocal(arr);
+    // 서버 저장
+    if(scriptUrl){
+      try{await api({action:'saveStudent',...form});}catch(e){}
+    }
     setMsg('저장 완료!');
     setForm({name:'',password:'',expiry:'',active:true});
     setEditName(null);
     loadStudents();
+    setLoading(false);
   };
 
-  const deleteStudent=(name)=>{
+  const deleteStudent=async(name)=>{
     if(!confirm(`'${name}' 학생을 삭제할까요?`))return;
     saveStudentsLocal(getStudentsLocal().filter(s=>s.name!==name));
+    if(scriptUrl){try{await api({action:'deleteStudent',name});}catch(e){}}
     loadStudents();
   };
 
@@ -1448,9 +1497,7 @@ function Results({questions,userAns,score,studentName,scriptUrl,goHome,doPrint})
       details: details
     };
       if(scriptUrl){
-        // no-cors: 응답 확인 불가지만 데이터는 시트에 저장됨
-        const payloadEnc=encodeURIComponent(JSON.stringify(payload));
-        fetch(`${scriptUrl}?data=${payloadEnc}`,{mode:'no-cors'})
+        jsonpFetch(scriptUrl, payload)
           .then(()=>setSaveStatus('done'))
           .catch(()=>setSaveStatus('error'));
       } else {
