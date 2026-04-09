@@ -1440,6 +1440,7 @@ function Results({questions,userAns,score,studentName,scriptUrl,goHome,doPrint})
       return `${q.passage.id}|${TYPES.find(t=>t.id===q.type)?.name||q.type}|${ans?.correct?'O':'X'}`;
     }).join('||');
     const payload={
+      action: 'saveResult',
       student: studentName,
       date: dateStr,
       score: `${score.correct}/${score.total}`,
