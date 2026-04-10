@@ -696,28 +696,45 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
   const [adminPwInput,setAdminPwInput]=useState('');
   const [adminErr,setAdminErr]=useState('');
 
-  const doAdminLogin=()=>{
-    if(adminPwInput===getAdminPw()){
-      onLogin({name:'관리자',role:'admin'});
-    } else {
-      setAdminErr('비밀번호가 틀렸습니다.');
+  const serverAuth=async(name,pw)=>{
+    try{
+      const data=await jsonpFetch(scriptUrl,{action:'login',name,password:pw});
+      return data;
+    }catch(e){
+      // 서버 실패 시 로컬 fallback
+      return verifyLogin(name,pw);
     }
   };
 
-  const doLogin=()=>{
+  const doLogin=async()=>{
     if(!name.trim()||!pw.trim()){setError('이름과 비밀번호를 입력해주세요.');return;}
     if(!scriptUrl){setError('관리자에게 서버 URL을 문의하세요.');return;}
     setLoading(true);setError('');
-    setTimeout(()=>{
-    const result=verifyLogin(name.trim(),pw);
-    if(result.ok){
-      const sess={name:name.trim(),role:result.role};
+    const result=await serverAuth(name.trim(),pw);
+    if(result.ok||result.status==='ok'){
+      const sess={name:result.name||name.trim(),role:result.role};
       onLogin(sess);
     } else {
       setError(result.message||'로그인 실패');
     }
     setLoading(false);
-    },100);
+  };
+
+  const doAdminLogin=async()=>{
+    setLoading(true);setAdminErr('');
+    try{
+      const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
+      if(result.status==='ok'&&result.role==='admin'){
+        onLogin({name:'관리자',role:'admin'});
+      } else {
+        setAdminErr('비밀번호가 틀렸습니다.');
+      }
+    }catch(e){
+      // 서버 실패 시 로컬 fallback
+      if(adminPwInput===getAdminPw()) onLogin({name:'관리자',role:'admin'});
+      else setAdminErr('비밀번호가 틀렸습니다.');
+    }
+    setLoading(false);
   };
 
   const [tapCount,setTapCount]=useState(0);
@@ -853,9 +870,20 @@ function AdminPanel({scriptUrl,goBack,goToSetup}){
   const [newAdminPw,setNewAdminPw]=useState('');
   const SHEETS_URL_KEY='greateng_sheets_url';
   const [sheetsUrl,setSheetsUrl]=useState(()=>localStorage.getItem('greateng_sheets_url')||'');
-  const changeAdminPw=()=>{
-    if(!newAdminPw){setMsg('새 비밀번호를 입력하세요.');return;}
-    setAdminPw(newAdminPw);setNewAdminPw('');setMsg('관리자 비밀번호 변경 완료!');
+  const [curAdminPw,setCurAdminPw]=useState('');
+  const changeAdminPw=async()=>{
+    if(!curAdminPw||!newAdminPw){setMsg('현재/새 비밀번호를 모두 입력하세요.');return;}
+    setLoading(true);
+    try{
+      const d=await api({action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw});
+      if(d.status==='ok'){
+        setAdminPw(newAdminPw); // 로컬도 동기화
+        setCurAdminPw('');setNewAdminPw('');setMsg('비밀번호 변경 완료!');
+      } else {
+        setMsg(d.message||'변경 실패');
+      }
+    }catch(e){setMsg('서버 오류');}
+    setLoading(false);
   };
 
   const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',active:s.active});};
@@ -968,10 +996,14 @@ function AdminPanel({scriptUrl,goBack,goToSetup}){
           </div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
             <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>🔑 관리자 비밀번호 변경</h3>
-            <div style={{display:'flex',gap:8}}>
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              <input value={curAdminPw} onChange={e=>setCurAdminPw(e.target.value)} placeholder="현재 비밀번호" type="password"
+                style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
+              <div style={{display:'flex',gap:8}}>
               <input value={newAdminPw} onChange={e=>setNewAdminPw(e.target.value)} placeholder="새 비밀번호" type="password"
                 style={{flex:1,padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
               <button onClick={changeAdminPw} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'#4f7df7',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>변경</button>
+              </div>
             </div>
             {msg&&<p style={{fontSize:12,marginTop:8,color:msg.includes('완료')?'#16a34a':'#dc2626'}}>{msg}</p>}
           </div>
@@ -993,9 +1025,15 @@ function Setup({selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,act
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
   const [adminPwErr,setAdminPwErr]=useState('');
-  const tryGoAdmin=()=>{
-    if(adminPwInput===getAdminPw()){setShowAdminModal(false);setAdminPwInput('');setAdminPwErr('');goToAdmin();}
-    else{setAdminPwErr('비밀번호가 틀렸습니다.');}
+  const tryGoAdmin=async()=>{
+    try{
+      const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
+      if(result.status==='ok'&&result.role==='admin'){setShowAdminModal(false);setAdminPwInput('');setAdminPwErr('');goToAdmin();}
+      else{setAdminPwErr('비밀번호가 틀렸습니다.');}
+    }catch(e){
+      if(adminPwInput===getAdminPw()){setShowAdminModal(false);setAdminPwInput('');setAdminPwErr('');goToAdmin();}
+      else{setAdminPwErr('비밀번호가 틀렸습니다.');}
+    }
   };
   return(
     <div style={S.page}>
