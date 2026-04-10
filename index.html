@@ -92,24 +92,11 @@ const LOGO='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGB
 
 // JSONP 방식으로 CORS 우회
 function jsonpFetch(url, data) {
-  return new Promise((resolve, reject) => {
-    const cbName = 'greateng_cb_' + Date.now();
-    const payload = encodeURIComponent(JSON.stringify(data));
-    const script = document.createElement('script');
-    script.src = `${url}?callback=${cbName}&data=${payload}`;
-    window[cbName] = (result) => {
-      delete window[cbName];
-      document.body.removeChild(script);
-      resolve(result);
-    };
-    script.onerror = () => {
-      delete window[cbName];
-      document.body.removeChild(script);
-      reject(new Error('JSONP 요청 실패'));
-    };
-    document.body.appendChild(script);
-  });
+  const payload = encodeURIComponent(JSON.stringify(data));
+  return fetch(`${url}?data=${payload}`)
+    .then(r => r.json());
 }
+
 
 const APP_NAME='대단한영어';
 const APP_SUB='내신시험 출제예상문제';
@@ -871,18 +858,21 @@ function AdminPanel({scriptUrl,goBack,goToSetup}){
   const SHEETS_URL_KEY='greateng_sheets_url';
   const [sheetsUrl,setSheetsUrl]=useState(()=>localStorage.getItem('greateng_sheets_url')||'');
   const [curAdminPw,setCurAdminPw]=useState('');
+  const [confirmNewPw,setConfirmNewPw]=useState('');
   const changeAdminPw=async()=>{
-    if(!curAdminPw||!newAdminPw){setMsg('현재/새 비밀번호를 모두 입력하세요.');return;}
+    if(!curAdminPw||!newAdminPw||!confirmNewPw){setMsg('모든 항목을 입력하세요.');return;}
+    if(newAdminPw!==confirmNewPw){setMsg('새 비밀번호가 일치하지 않습니다.');return;}
+    if(newAdminPw.length<4){setMsg('새 비밀번호는 4자 이상이어야 합니다.');return;}
     setLoading(true);
     try{
-      const d=await api({action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw});
+      const d=await jsonpFetch(scriptUrl,{action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw});
       if(d.status==='ok'){
-        setAdminPw(newAdminPw); // 로컬도 동기화
-        setCurAdminPw('');setNewAdminPw('');setMsg('비밀번호 변경 완료!');
+        setAdminPw(newAdminPw);
+        setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');setMsg('✅ 비밀번호 변경 완료!');
       } else {
-        setMsg(d.message||'변경 실패');
+        setMsg('❌ '+(d.message||'변경 실패'));
       }
-    }catch(e){setMsg('서버 오류');}
+    }catch(e){setMsg('❌ 서버 오류: '+e.message);}
     setLoading(false);
   };
 
@@ -999,11 +989,15 @@ function AdminPanel({scriptUrl,goBack,goToSetup}){
             <div style={{display:'flex',flexDirection:'column',gap:8}}>
               <input value={curAdminPw} onChange={e=>setCurAdminPw(e.target.value)} placeholder="현재 비밀번호" type="password"
                 style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
-              <div style={{display:'flex',gap:8}}>
               <input value={newAdminPw} onChange={e=>setNewAdminPw(e.target.value)} placeholder="새 비밀번호" type="password"
-                style={{flex:1,padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
-              <button onClick={changeAdminPw} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'#4f7df7',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>변경</button>
+                style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
+              <div style={{display:'flex',gap:8}}>
+                <input value={confirmNewPw} onChange={e=>setConfirmNewPw(e.target.value)} placeholder="새 비밀번호 확인" type="password"
+                  onKeyDown={e=>e.key==='Enter'&&changeAdminPw()}
+                  style={{flex:1,padding:'9px 12px',borderRadius:9,border:`1.5px solid ${confirmNewPw&&newAdminPw?(confirmNewPw===newAdminPw?'#16a34a':'#dc2626'):'#e2e8f0'}`,fontSize:13.5,outline:'none'}}/>
+                <button onClick={changeAdminPw} disabled={loading} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'#4f7df7',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>{loading?'변경 중...':'변경'}</button>
               </div>
+              {confirmNewPw&&newAdminPw&&confirmNewPw!==newAdminPw&&<p style={{fontSize:11.5,color:'#dc2626',margin:0}}>비밀번호가 일치하지 않습니다.</p>}
             </div>
             {msg&&<p style={{fontSize:12,marginTop:8,color:msg.includes('완료')?'#16a34a':'#dc2626'}}>{msg}</p>}
           </div>
