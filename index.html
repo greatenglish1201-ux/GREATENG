@@ -472,6 +472,7 @@ function useTimer(seconds, onExpire){
 
 /* ── App ── */
 const SCRIPT_URL_KEY='greateng_script_url';
+const HARDCODED_URL='https://script.google.com/macros/s/AKfycby5WwProlV0n_hnKDNjnd3OlVxvBZMiLVlQdtnBr_yDCYtlI_vwJfhbtjQUIoiO1Egp/exec';
 const SESSION_KEY='greateng_session';
 const STUDENTS_KEY='greateng_students';
 const ADMIN_PW_KEY2='greateng_admin_pw';
@@ -504,7 +505,7 @@ function App(){
   const [studentName,setStudentName]=useState(()=>{
     try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')?.name||'';}catch(e){return '';}
   });
-  const [scriptUrl,setScriptUrl]=useState(()=>localStorage.getItem(SCRIPT_URL_KEY)||'');
+  const [scriptUrl,setScriptUrl]=useState(()=>localStorage.getItem(SCRIPT_URL_KEY)||HARDCODED_URL);
   const [selectedTypes,setSelectedTypes]=useState(new Set(TYPES.map(t=>t.id)));
   const [activeBook,setActiveBook]=useState('27ST');
   const [selPassages,setSelPassages]=useState(new Set());
@@ -518,6 +519,7 @@ function App(){
   const [showAns,setShowAns]=useState(false);
   const [timerKey,setTimerKey]=useState(0);
   const [extraPassages,setExtraPassages]=useState([]);
+  const [expandedLessons,setExpandedLessons]=useState(new Set());
 
   const allPassages=useMemo(()=>{
     const merged=[...PASSAGES];
@@ -654,8 +656,8 @@ function App(){
   };
 
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
-  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin:()=>setScreen('admin'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -707,15 +709,22 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     },100);
   };
 
+  const [tapCount,setTapCount]=useState(0);
+  const handleLogoTap=()=>{
+    const next=tapCount+1;
+    setTapCount(next);
+    if(next>=5){setShowUrlInput(true);setTapCount(0);}
+  };
+
   return(
     <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#f5f7fa,#e8ecf1)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Pretendard',sans-serif"}}>
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
       <div style={{width:'100%',maxWidth:380,padding:'0 16px'}}>
         <div style={{background:'#fff',borderRadius:20,padding:'36px 28px',boxShadow:'0 4px 24px rgba(0,0,0,0.08)'}}>
           <div style={{textAlign:'center',marginBottom:28}}>
-            <div style={{fontSize:36,marginBottom:8}}>📘</div>
+            <div style={{fontSize:36,marginBottom:8,cursor:'pointer',userSelect:'none'}} onClick={handleLogoTap}>📘</div>
             <h1 style={{fontSize:22,fontWeight:800,color:'#1a2332',margin:0}}>대단한영어</h1>
-            <p style={{fontSize:13,color:'#7a8ba6',marginTop:6}}>로그인하여 시작하세요</p>
+            <p style={{fontSize:13,color:'#7a8ba6',marginTop:6}}>이름과 비밀번호를 입력하세요</p>
           </div>
           <input value={name} onChange={e=>setName(e.target.value)} placeholder="이름"
             style={{width:'100%',padding:'12px 14px',borderRadius:11,border:'1.5px solid #e2e8f0',fontSize:15,outline:'none',boxSizing:'border-box',marginBottom:10}}/>
@@ -724,16 +733,15 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
             style={{width:'100%',padding:'12px 14px',borderRadius:11,border:'1.5px solid #e2e8f0',fontSize:15,outline:'none',boxSizing:'border-box',marginBottom:14}}/>
           {error&&<p style={{fontSize:12.5,color:'#dc2626',textAlign:'center',marginBottom:10}}>{error}</p>}
           <button onClick={doLogin} disabled={loading} style={{width:'100%',padding:14,borderRadius:12,border:'none',background:'linear-gradient(135deg,#4f7df7,#3b5fe0)',color:'#fff',fontSize:15.5,fontWeight:700,cursor:'pointer',boxShadow:'0 4px 14px rgba(79,125,247,0.3)'}}>
-            {loading?'확인 중...':'로그인'}
+            {loading?'확인 중...':'시작하기'}
           </button>
-          <div style={{marginTop:18,borderTop:'1px solid #f1f5f9',paddingTop:14}}>
-            <button onClick={()=>setShowUrlInput(!showUrlInput)} style={{fontSize:11,color:'#94a3b8',background:'none',border:'none',cursor:'pointer',width:'100%',textAlign:'center'}}>
-              ⚙️ 서버 URL 설정
-            </button>
-            {showUrlInput&&<input value={scriptUrl} onChange={e=>{setScriptUrl(e.target.value);localStorage.setItem('greateng_script_url',e.target.value);}}
+          {/* 숨겨진 관리자 URL 설정 - 로고 5번 탭으로 노출 */}
+          {showUrlInput&&<div style={{marginTop:14,borderTop:'1px solid #f1f5f9',paddingTop:12}}>
+            <p style={{fontSize:11,color:'#94a3b8',marginBottom:6,textAlign:'center'}}>⚙️ 서버 URL 설정</p>
+            <input value={scriptUrl} onChange={e=>{setScriptUrl(e.target.value);localStorage.setItem('greateng_script_url',e.target.value);}}
               placeholder="Apps Script 배포 URL"
-              style={{width:'100%',padding:'8px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:11.5,outline:'none',boxSizing:'border-box',marginTop:8,color:'#64748b'}}/>}
-          </div>
+              style={{width:'100%',padding:'8px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:11.5,outline:'none',boxSizing:'border-box',color:'#64748b'}}/>
+          </div>}
         </div>
       </div>
     </div>
@@ -741,7 +749,8 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 }
 
 /* ── 관리자 패널 ── */
-function AdminPanel({scriptUrl,adminPw,goBack}){
+function AdminPanel({scriptUrl,goBack,goToSetup}){
+  const adminPw=getAdminPw();
   const [tab,setTab]=useState('students'); // students | results
   const [students,setStudents]=useState([]);
   const [results,setResults]=useState([]);
@@ -759,17 +768,17 @@ function AdminPanel({scriptUrl,adminPw,goBack}){
 
   // 학생 목록: 서버 우선, 실패 시 로컬
   const loadStudents=async()=>{
-    setLoading(true);
+    // 로컬 먼저 표시 (빠른 렌더링)
+    setStudents(getStudentsLocal());
     if(scriptUrl){
       try{
         const d=await api({action:'getStudents'});
-        if(d.status==='ok'){setStudents(d.students||[]);saveStudentsLocal(d.students||[]);}
-        else setStudents(getStudentsLocal());
-      }catch(e){setStudents(getStudentsLocal());}
-    } else {
-      setStudents(getStudentsLocal());
+        if(d.status==='ok'){
+          setStudents(d.students||[]);
+          saveStudentsLocal(d.students||[]);
+        }
+      }catch(e){}
     }
-    setLoading(false);
   };
 
   const loadResults=async()=>{
@@ -801,7 +810,7 @@ function AdminPanel({scriptUrl,adminPw,goBack}){
     setMsg('저장 완료!');
     setForm({name:'',password:'',expiry:'',active:true});
     setEditName(null);
-    loadStudents();
+    await loadStudents();
     setLoading(false);
   };
 
@@ -835,6 +844,7 @@ function AdminPanel({scriptUrl,adminPw,goBack}){
             <p style={{fontSize:12,color:'#94a3b8',margin:'3px 0 0'}}>대단한영어</p>
           </div>
           <button onClick={goBack} style={{padding:'8px 16px',borderRadius:10,border:'1px solid #e2e8f0',background:'#fff',fontSize:13,cursor:'pointer',color:'#64748b'}}>로그아웃</button>
+          <button onClick={goToSetup} style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#4f7df7,#3b5fe0)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기</button>
         </div>
 
         {/* 탭 */}
@@ -942,8 +952,15 @@ function AdminPanel({scriptUrl,adminPw,goBack}){
   );
 }
 
-function Setup({selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,onLogout}){
+function Setup({selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
+  const [showAdminModal,setShowAdminModal]=useState(false);
+  const [adminPwInput,setAdminPwInput]=useState('');
+  const [adminPwErr,setAdminPwErr]=useState('');
+  const tryGoAdmin=()=>{
+    if(adminPwInput===getAdminPw()){setShowAdminModal(false);setAdminPwInput('');setAdminPwErr('');goToAdmin();}
+    else{setAdminPwErr('비밀번호가 틀렸습니다.');}
+  };
   return(
     <div style={S.page}>
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
@@ -958,9 +975,29 @@ function Setup({selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,act
             <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
               <span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>
               {session?.role==='admin'&&<span style={{fontSize:10,background:'#fef3c7',color:'#92400e',padding:'2px 7px',borderRadius:8,fontWeight:600}}>관리자</span>}
+              {session?.role==='admin'&&<button onClick={()=>{setAdminPwInput('');setAdminPwErr('');setShowAdminModal(true);}} style={{fontSize:10,background:'#f1f5f9',color:'#475569',border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:600}}>⚙️ 관리자 패널</button>}
               <button onClick={onLogout} style={{fontSize:10.5,color:'#94a3b8',background:'none',border:'none',cursor:'pointer',padding:0}}>로그아웃</button>
             </div>
           </div>
+
+        {/* 관리자 비밀번호 확인 모달 */}
+        {showAdminModal&&(
+          <div style={{position:'fixed',top:0,left:0,width:'100%',height:'100%',background:'rgba(0,0,0,0.4)',zIndex:999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowAdminModal(false)}>
+            <div style={{background:'#fff',borderRadius:18,padding:'28px 24px',width:300,boxShadow:'0 8px 32px rgba(0,0,0,0.18)'}} onClick={e=>e.stopPropagation()}>
+              <h3 style={{fontSize:16,fontWeight:800,color:'#1e293b',margin:'0 0 6px'}}>관리자 패널</h3>
+              <p style={{fontSize:12,color:'#94a3b8',margin:'0 0 16px'}}>관리자 비밀번호를 입력하세요</p>
+              <input type="password" value={adminPwInput} onChange={e=>setAdminPwInput(e.target.value)}
+                onKeyDown={e=>e.key==='Enter'&&tryGoAdmin()}
+                placeholder="관리자 비밀번호" autoFocus
+                style={{width:'100%',padding:'11px 14px',borderRadius:10,border:'1.5px solid #e2e8f0',fontSize:14,outline:'none',boxSizing:'border-box',marginBottom:8}}/>
+              {adminPwErr&&<p style={{fontSize:12,color:'#dc2626',margin:'0 0 8px'}}>{adminPwErr}</p>}
+              <div style={{display:'flex',gap:8}}>
+                <button onClick={()=>setShowAdminModal(false)} style={{flex:1,padding:'10px',borderRadius:10,border:'1px solid #e2e8f0',background:'#fff',fontSize:13,cursor:'pointer',color:'#64748b'}}>취소</button>
+                <button onClick={tryGoAdmin} style={{flex:1,padding:'10px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#4f7df7,#3b5fe0)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>확인</button>
+              </div>
+            </div>
+          </div>
+        )}
         </div>
 
         <div style={S.card}>
@@ -991,17 +1028,8 @@ function Setup({selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,act
             })}
           </div>
 
-          {/* 난이도 필터 + 검색 */}
-          <div style={{display:'flex',gap:5,alignItems:'center',marginBottom:8,flexWrap:'wrap'}}>
-            {['all','높음','보통'].map(v=><button key={v} onClick={()=>setDiffFilter(v)} style={S.chip(diffFilter===v)}>{v==='all'?'전체':v}</button>)}
-            <div style={{flex:1}}/>
-            <button onClick={()=>{
-              const gateIds=allPassages.filter(p=>p.id.includes('_GATE')).map(p=>p.id);
-              const anyGate=gateIds.some(id=>selPassages.has(id));
-              gateIds.forEach(id=>{if(anyGate&&selPassages.has(id))toggleP(id);else if(!anyGate&&!selPassages.has(id))toggleP(id);});
-            }} style={{padding:'5px 11px',borderRadius:14,border:'none',fontSize:11,fontWeight:600,cursor:'pointer',background:'#fef3c7',color:'#92400e'}}>
-              GATE 제외/포함
-            </button>
+          {/* 전체 선택/해제 */}
+          <div style={{display:'flex',justifyContent:'flex-end',marginBottom:10,gap:6}}>
             <button onClick={()=>allSelInBook?deselectAllInBook(activeBook):selectAllInBook(activeBook)} style={{
               padding:'5px 14px',borderRadius:14,border:'none',fontSize:11,fontWeight:600,cursor:'pointer',
               background:allSelInBook?'#fee2e2':'#dbeafe',
@@ -1011,20 +1039,90 @@ function Setup({selectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,act
             </button>
           </div>
 
-          <input placeholder="검색 (제목 또는 ID)" value={searchText} onChange={e=>setSearchText(e.target.value)}
-            style={{width:'100%',padding:'8px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:12.5,outline:'none',boxSizing:'border-box',marginBottom:6}}/>
+          {/* 강 단위 그룹 선택 */}
+          {(()=>{
+            const book=books.find(b=>b.id===activeBook);
+            if(!book)return null;
+            const bookPassages=allPassages.filter(p=>book.match(p.id));
+            // 강 번호별 그룹핑
+            const lessonMap={};
+            bookPassages.forEach(p=>{
+              const parts=p.id.split('_');
+              const lessonKey=parts.length>=3?parts[2]:'??';
+              if(!lessonMap[lessonKey])lessonMap[lessonKey]=[];
+              lessonMap[lessonKey].push(p);
+            });
+            const lessonKeys=Object.keys(lessonMap).sort();
+            return(
+              <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                {lessonKeys.map(lk=>{
+                  const passages=lessonMap[lk];
+                  const selCount=passages.filter(p=>selPassages.has(p.id)).length;
+                  const allSel=selCount===passages.length;
+                  const someSel=selCount>0&&!allSel;
+                  const expanded=expandedLessons.has(activeBook+'_'+lk);
+                  const toggleLesson=()=>{
+                    const ids=passages.map(p=>p.id);
+                    if(allSel){ids.forEach(id=>toggleP(id));}
+                    else{ids.forEach(id=>{if(!selPassages.has(id))toggleP(id);});}
+                  };
+                  const toggleExpand=()=>{
+                    setExpandedLessons(prev=>{
+                      const n=new Set(prev);
+                      const key=activeBook+'_'+lk;
+                      n.has(key)?n.delete(key):n.add(key);
+                      return n;
+                    });
+                  };
+                  const lessonLabel=isNaN(parseInt(lk))?lk:`${parseInt(lk)}강`;
+                  return(
+                    <div key={lk}>
+                      <div style={{display:'flex',alignItems:'center',gap:6}}>
+                        {/* 강 전체 선택 버튼 */}
+                        <button onClick={toggleLesson} style={{
+                          flex:1,padding:'9px 14px',borderRadius:10,border:'none',cursor:'pointer',
+                          textAlign:'left',fontSize:13,fontWeight:600,
+                          background:allSel?'#dbeafe':someSel?'#f0f7ff':'#f1f5f9',
+                          color:allSel?'#1d4ed8':someSel?'#3b6fe0':'#475569',
+                          borderLeft:allSel?'3px solid #4f7df7':someSel?'3px solid #93c5fd':'3px solid transparent',
+                          transition:'all .15s'
+                        }}>
+                          {lessonLabel}
+                          <span style={{fontSize:11,fontWeight:400,marginLeft:6,color:allSel?'#3b6fe0':someSel?'#60a5fa':'#94a3b8'}}>
+                            {selCount}/{passages.length}
+                          </span>
+                          {allSel&&<span style={{fontSize:10,marginLeft:4,color:'#4f7df7'}}>✓</span>}
+                        </button>
+                        {/* 세부 펼치기 버튼 */}
+                        <button onClick={toggleExpand} style={{
+                          width:32,height:32,borderRadius:8,border:'1px solid #e2e8f0',
+                          background:'#fff',cursor:'pointer',fontSize:11,color:'#94a3b8',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          transform:expanded?'rotate(180deg)':'rotate(0deg)',
+                          transition:'transform .2s',flexShrink:0
+                        }}>▼</button>
+                      </div>
+                      {/* 세부 지문 목록 */}
+                      {expanded&&(
+                        <div style={{marginTop:4,marginLeft:8,border:'1px solid #e2e8f0',borderRadius:8,background:'#fafbfc',overflow:'hidden'}}>
+                          {passages.map(p=>(
+                            <label key={p.id} style={{display:'flex',alignItems:'center',gap:7,padding:'8px 12px',borderBottom:'1px solid #f1f5f9',cursor:'pointer',fontSize:11.5,background:selPassages.has(p.id)?'#f0f7ff':'transparent'}}>
+                              <input type="checkbox" checked={selPassages.has(p.id)} onChange={()=>toggleP(p.id)} style={{accentColor:'#4f7df7',flexShrink:0}}/>
+                              <span style={{color:p.difficulty==='높음'?'#e53935':'#b0bec5',fontWeight:600,fontSize:10,flexShrink:0}}>{p.difficulty==='높음'?'★':'☆'}</span>
+                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{p.title}</span>
+                              <span style={{color:'#b0bec5',fontSize:9,flexShrink:0}}>{p.id.split('_').slice(-1)[0]}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
 
-          {/* 지문 목록 */}
-          <div style={{maxHeight:280,overflowY:'auto',border:'1px solid #e2e8f0',borderRadius:10,background:'#fafbfc'}}>
-            {filtP.length===0 && <p style={{padding:16,textAlign:'center',fontSize:12,color:'#94a3b8'}}>해당 조건의 지문이 없습니다.</p>}
-            {filtP.map(p=><label key={p.id} style={{display:'flex',alignItems:'center',gap:7,padding:'9px 12px',borderBottom:'1px solid #f1f5f9',cursor:'pointer',fontSize:12,transition:'background .1s',background:selPassages.has(p.id)?'#f8faff':'transparent'}}>
-              <input type="checkbox" checked={selPassages.has(p.id)} onChange={()=>toggleP(p.id)} style={{accentColor:'#4f7df7',flexShrink:0}}/>
-              <span style={{color:p.difficulty==='높음'?'#e53935':'#b0bec5',fontWeight:600,fontSize:10,flexShrink:0}}>{p.difficulty==='높음'?'★':'☆'}</span>
-              <span style={{color:'#334155',flex:1,lineHeight:1.3}}>{p.title}</span>
-              <span style={{color:'#b0bec5',fontSize:9.5,flexShrink:0}}>{p.id}</span>
-            </label>)}
-          </div>
-          <p style={{fontSize:10.5,color:'#64748b',marginTop:4}}>
+          <p style={{fontSize:10.5,color:'#64748b',marginTop:8}}>
             선택된 지문: <strong style={{color:'#4f7df7'}}>{selPassages.size}</strong> / {allPassages.length}
           </p>
         </div>
@@ -1497,9 +1595,9 @@ function Results({questions,userAns,score,studentName,scriptUrl,goHome,doPrint})
       details: details
     };
       if(scriptUrl){
-        jsonpFetch(scriptUrl, payload)
-          .then(()=>setSaveStatus('done'))
-          .catch(()=>setSaveStatus('error'));
+        // 저장 요청 후 성공으로 처리 (JSONP는 응답 확인 불필요)
+        jsonpFetch(scriptUrl, payload).catch(()=>{});
+        setSaveStatus('done');
       } else {
         setSaveStatus('done');
       }
