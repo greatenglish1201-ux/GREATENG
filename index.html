@@ -759,8 +759,20 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
       try{
         const d=await api({action:'getStudents'});
         if(d.status==='ok'){
-          setStudents(d.students||[]);
-          saveStudentsLocal(d.students||[]);
+          // 만료일을 YYYY-MM-DD 형식으로 정규화
+          const normalized=(d.students||[]).map(s=>{
+            if(!s.expiry) return s;
+            const dt=new Date(s.expiry);
+            if(!isNaN(dt)){
+              const y=dt.getFullYear();
+              const m=String(dt.getMonth()+1).padStart(2,'0');
+              const day=String(dt.getDate()).padStart(2,'0');
+              return {...s, expiry:`${y}-${m}-${day}`};
+            }
+            return s;
+          });
+          setStudents(normalized);
+          saveStudentsLocal(normalized);
         }
       }catch(e){}
     }
@@ -817,15 +829,17 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     if(newAdminPw!==confirmNewPw){setMsg('새 비밀번호가 일치하지 않습니다.');return;}
     if(newAdminPw.length<4){setMsg('새 비밀번호는 4자 이상이어야 합니다.');return;}
     setLoading(true);
-    // 현재 비밀번호 확인 (로컬 저장값 OR session에서 넘어온 adminPw 모두 허용)
-    const validCur = curAdminPw===getAdminPw() || curAdminPw===session?.adminPw;
-    if(!validCur){setMsg('❌ 현재 비밀번호가 틀렸습니다.');setLoading(false);return;}
-    // 로컬에 즉시 저장 (서버와 무관하게 항상 적용)
-    setAdminPw(newAdminPw);
-    setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');
-    setMsg('✅ 비밀번호 변경 완료!');
-    // 서버에도 시도 (실패해도 무시)
-    try{jsonpFetch(scriptUrl,{action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw}).catch(()=>{});}catch(e){}
+    try{
+      const d=await jsonpFetch(scriptUrl,{action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw});
+      if(d.status==='ok'){
+        setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');
+        setMsg('✅ 비밀번호 변경 완료! 다음 로그인부터 새 비밀번호를 사용하세요.');
+      } else {
+        setMsg('❌ '+(d.message||'변경 실패. 현재 비밀번호를 확인하세요.'));
+      }
+    }catch(e){
+      setMsg('❌ 서버 연결 실패. 인터넷 연결을 확인하세요.');
+    }
     setLoading(false);
   };
 
