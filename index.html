@@ -648,6 +648,12 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 
   const doAdminLogin=async()=>{
     setLoading(true);setAdminErr('');
+    // 로컬 비번 먼저 확인 (관리자 패널에서 변경한 비번 우선 적용)
+    if(adminPwInput===getAdminPw()){
+      onLogin({name:'관리자',role:'admin',adminPw:adminPwInput});
+      setLoading(false);return;
+    }
+    // 로컬 실패 시 서버로 시도
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
       if(result.status==='ok'&&result.role==='admin'){
@@ -656,9 +662,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
         setAdminErr('비밀번호가 틀렸습니다.');
       }
     }catch(e){
-      // 서버 실패 시 로컬 fallback
-      if(adminPwInput===getAdminPw()) onLogin({name:'관리자',role:'admin',adminPw:adminPwInput});
-      else setAdminErr('비밀번호가 틀렸습니다.');
+      setAdminErr('비밀번호가 틀렸습니다.');
     }
     setLoading(false);
   };
@@ -1004,13 +1008,17 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
   const [adminPwInput,setAdminPwInput]=useState('');
   const [adminPwErr,setAdminPwErr]=useState('');
   const tryGoAdmin=async()=>{
+    // 로컬 비번 먼저 확인
+    if(adminPwInput===getAdminPw()){
+      setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');return;
+    }
+    // 로컬 실패 시 서버 시도
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
       if(result.status==='ok'&&result.role==='admin'){setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');}
       else{setAdminPwErr('비밀번호가 틀렸습니다.');}
     }catch(e){
-      if(adminPwInput===getAdminPw()){setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');}
-      else{setAdminPwErr('비밀번호가 틀렸습니다.');}
+      setAdminPwErr('비밀번호가 틀렸습니다.');
     }
   };
   return(
