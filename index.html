@@ -176,33 +176,35 @@ function gen(passage, type, allP){
     if(s.length < 4) return null;
     const givenIdx = passage.order_given_index || 0;
     const given = s[givenIdx];
-    // 항상 A/B/C 3개만 사용
     const blockLabels = ['A','B','C'];
     const numBlocks = Math.min(passage.order_blocks.length, 3);
     const usedLabels = blockLabels.slice(0, numBlocks);
+    // 원래 순서대로 블록 구성 (origLabel = 원래 순서 A/B/C)
     const originalBlocks = passage.order_blocks.slice(0, numBlocks).map((b, bi) => ({
       origLabel: usedLabels[bi],
       text: b.sentence_indices.map(i => s[i]).join(' ')
     }));
+    // 블록을 셔플 → 화면에 보여줄 순서 (새 레이블 부여)
     const shuffledBlocks = shuffle([...originalBlocks]);
     const blocks = shuffledBlocks.map((b, bi) => ({
-      label: usedLabels[bi],
-      origLabel: b.origLabel,
+      label: usedLabels[bi],   // 화면에 표시될 새 레이블
+      origLabel: b.origLabel,  // 원래 순서 레이블
       text: b.text
     }));
+    // 원래 레이블 → 새 레이블 맵 (정답 계산용)
     const newLabelMap = {};
     blocks.forEach(b => { newLabelMap[b.origLabel] = b.label; });
-    // 선택지 A/B/C 조합으로 동적 재생성
+    // 정답: 원래 순서(A→B→C)를 새 레이블로 변환
+    const correctText = '(' + usedLabels.map(l => newLabelMap[l]).join(')-(') + ')';
+    // 모든 순열 생성
     const allPerms = [];
     const permute = (arr, cur=[]) => {
       if(cur.length===arr.length){allPerms.push([...cur]);return;}
       arr.forEach(x=>{if(!cur.includes(x))permute(arr,cur.concat(x));});
     };
     permute(usedLabels);
-    const correctOrder = usedLabels.map(l => newLabelMap[l] || l);
-    const correctText = '(' + usedLabels.join(')-(') + ')';
     const wrongPerms = allPerms
-      .filter(p => p.join('') !== usedLabels.join(''))
+      .filter(p => '(' + p.join(')-(') + ')' !== correctText)
       .slice(0, 4)
       .map(p => '(' + p.join(')-(') + ')');
     const allOpts = shuffle([correctText, ...wrongPerms].slice(0,5))
