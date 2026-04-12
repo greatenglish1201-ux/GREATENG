@@ -635,6 +635,13 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     try{
       const result=await serverAuth(name.trim(),pw);
       if(result.ok||result.status==='ok'){
+        // 서버 인증 성공해도 만료일/비활성화 로컬 체크
+        const students=getStudentsLocal();
+        const s=students.find(st=>st.name===name.trim());
+        if(s){
+          if(!s.active){setError('비활성화된 계정입니다.');setLoading(false);return;}
+          if(s.expiry){const exp=new Date(s.expiry);if(!isNaN(exp)&&exp<new Date()){setError('만료된 계정입니다.');setLoading(false);return;}}
+        }
         const sess={name:result.name||name.trim(),role:result.role};
         onLogin(sess);
       } else {
@@ -810,23 +817,15 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     if(newAdminPw!==confirmNewPw){setMsg('새 비밀번호가 일치하지 않습니다.');return;}
     if(newAdminPw.length<4){setMsg('새 비밀번호는 4자 이상이어야 합니다.');return;}
     setLoading(true);
-    // 현재 비밀번호 확인
-    if(curAdminPw!==getAdminPw()){setMsg('❌ 현재 비밀번호가 틀렸습니다.');setLoading(false);return;}
-    try{
-      const d=await jsonpFetch(scriptUrl,{action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw});
-      if(d.status==='ok'){
-        setAdminPw(newAdminPw);
-        setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');setMsg('✅ 비밀번호 변경 완료!');
-      } else {
-        // 서버 실패해도 로컬엔 저장
-        setAdminPw(newAdminPw);
-        setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');setMsg('✅ 비밀번호 변경 완료! (로컬 저장)');
-      }
-    }catch(e){
-      // 서버 오류 시에도 로컬 저장
-      setAdminPw(newAdminPw);
-      setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');setMsg('✅ 비밀번호 변경 완료! (로컬 저장)');
-    }
+    // 현재 비밀번호 확인 (로컬 저장값 OR session에서 넘어온 adminPw 모두 허용)
+    const validCur = curAdminPw===getAdminPw() || curAdminPw===session?.adminPw;
+    if(!validCur){setMsg('❌ 현재 비밀번호가 틀렸습니다.');setLoading(false);return;}
+    // 로컬에 즉시 저장 (서버와 무관하게 항상 적용)
+    setAdminPw(newAdminPw);
+    setCurAdminPw('');setNewAdminPw('');setConfirmNewPw('');
+    setMsg('✅ 비밀번호 변경 완료!');
+    // 서버에도 시도 (실패해도 무시)
+    try{jsonpFetch(scriptUrl,{action:'changeAdminPw',oldPw:curAdminPw,newPw:newAdminPw}).catch(()=>{});}catch(e){}
     setLoading(false);
   };
 
