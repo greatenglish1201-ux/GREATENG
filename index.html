@@ -605,9 +605,18 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
   const serverAuth=async(name,pw)=>{
     try{
       const data=await jsonpFetch(scriptUrl,{action:'login',name,password:pw});
-      return data;
-    }catch(e){
+      // 서버 인증 성공해도 로컬 비번 변경이 있으면 로컬 우선 적용
+      if(data.ok||data.status==='ok'){
+        // 로컬에 저장된 비번이 있고 서버 비번과 다를 경우 로컬로 재검증
+        const localPw=localStorage.getItem('greateng_admin_pw');
+        if(localPw && localPw!=='admin1234'){
+          return verifyLogin(name,pw);
+        }
+        return data;
+      }
       // 서버 실패 시 로컬 fallback
+      return verifyLogin(name,pw);
+    }catch(e){
       return verifyLogin(name,pw);
     }
   };
@@ -616,12 +625,23 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     if(!name.trim()||!pw.trim()){setError('이름과 비밀번호를 입력해주세요.');return;}
     if(!scriptUrl){setError('관리자에게 서버 URL을 문의하세요.');return;}
     setLoading(true);setError('');
-    const result=await serverAuth(name.trim(),pw);
-    if(result.ok||result.status==='ok'){
-      const sess={name:result.name||name.trim(),role:result.role};
-      onLogin(sess);
-    } else {
-      setError(result.message||'로그인 실패');
+    // 로컬 비번 먼저 체크 (관리자 비번 변경 반영)
+    const localResult=verifyLogin(name.trim(),pw);
+    if(localResult.ok){
+      onLogin({name:name.trim(),role:localResult.role});
+      setLoading(false);return;
+    }
+    // 로컬 실패 시 서버로 시도
+    try{
+      const result=await serverAuth(name.trim(),pw);
+      if(result.ok||result.status==='ok'){
+        const sess={name:result.name||name.trim(),role:result.role};
+        onLogin(sess);
+      } else {
+        setError(result.message||'로그인 실패');
+      }
+    }catch(e){
+      setError('로그인 실패');
     }
     setLoading(false);
   };
