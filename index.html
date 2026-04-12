@@ -1274,6 +1274,13 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
       <div style={{...S.box,paddingBottom:90}}>
 
+        {/* 상단 브랜드 */}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',marginBottom:10}}>
+          <span style={{fontSize:17,fontWeight:900,color:'#7a1020',letterSpacing:2}}>대단한영어</span>
+          <span style={{margin:'0 9px',color:'#C9A84C',fontSize:15}}>·</span>
+          <span style={{fontSize:16,fontWeight:700,color:'#7a1020',letterSpacing:1.5,fontStyle:'italic'}}>탁월함이 습관이 될 때</span>
+        </div>
+
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
           <button onClick={goHome} style={{background:'none',border:'none',color:'#9a7040',fontSize:13,cursor:'pointer',fontWeight:600}}>← 홈</button>
           <div style={{display:'flex',gap:6,alignItems:'center'}}>
