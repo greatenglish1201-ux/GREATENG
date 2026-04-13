@@ -96,8 +96,12 @@ const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAIAAAAP3aGbAA
 // JSONP 방식으로 CORS 우회
 function jsonpFetch(url, data) {
   const payload = encodeURIComponent(JSON.stringify(data));
-  return fetch(`${url}?data=${payload}`)
-    .then(r => r.json());
+  // redirect:follow + credentials:omit 으로 CORS/redirect 문제 해결
+  return fetch(`${url}?data=${payload}`, {
+    method: 'GET',
+    redirect: 'follow',
+    credentials: 'omit',
+  }).then(r => r.json());
 }
 
 
