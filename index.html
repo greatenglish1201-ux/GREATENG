@@ -604,20 +604,9 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 
   const serverAuth=async(name,pw)=>{
     try{
-      const data=await jsonpFetch(scriptUrl,{action:'login',name,password:pw});
-      // 서버 인증 성공해도 로컬 비번 변경이 있으면 로컬 우선 적용
-      if(data.ok||data.status==='ok'){
-        // 로컬에 저장된 비번이 있고 서버 비번과 다를 경우 로컬로 재검증
-        const localPw=localStorage.getItem('greateng_admin_pw');
-        if(localPw && localPw!=='admin1234'){
-          return verifyLogin(name,pw);
-        }
-        return data;
-      }
-      // 서버 실패 시 로컬 fallback
-      return verifyLogin(name,pw);
+      return await jsonpFetch(scriptUrl,{action:'login',name,password:pw});
     }catch(e){
-      return verifyLogin(name,pw);
+      return {status:'error',message:'서버 연결 실패'};
     }
   };
 
@@ -625,42 +614,22 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     if(!name.trim()||!pw.trim()){setError('이름과 비밀번호를 입력해주세요.');return;}
     if(!scriptUrl){setError('관리자에게 서버 URL을 문의하세요.');return;}
     setLoading(true);setError('');
-    // 로컬 비번 먼저 체크 (관리자 비번 변경 반영)
-    const localResult=verifyLogin(name.trim(),pw);
-    if(localResult.ok){
-      onLogin({name:name.trim(),role:localResult.role});
-      setLoading(false);return;
-    }
-    // 로컬 실패 시 서버로 시도
+    // 서버 인증 (서버가 만료일/활성화 모두 체크)
     try{
-      const result=await serverAuth(name.trim(),pw);
-      if(result.ok||result.status==='ok'){
-        // 서버 인증 성공해도 만료일/비활성화 로컬 체크
-        const students=getStudentsLocal();
-        const s=students.find(st=>st.name===name.trim());
-        if(s){
-          if(!s.active){setError('비활성화된 계정입니다.');setLoading(false);return;}
-          if(s.expiry){const exp=new Date(s.expiry);if(!isNaN(exp)&&exp<new Date()){setError('만료된 계정입니다.');setLoading(false);return;}}
-        }
-        const sess={name:result.name||name.trim(),role:result.role};
-        onLogin(sess);
+      const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
+      if(result.status==='ok'){
+        onLogin({name:result.name||name.trim(),role:result.role});
       } else {
         setError(result.message||'로그인 실패');
       }
     }catch(e){
-      setError('로그인 실패');
+      setError('서버 연결 실패. 인터넷을 확인하세요.');
     }
     setLoading(false);
   };
 
   const doAdminLogin=async()=>{
     setLoading(true);setAdminErr('');
-    // 로컬 비번 먼저 확인 (관리자 패널에서 변경한 비번 우선 적용)
-    if(adminPwInput===getAdminPw()){
-      onLogin({name:'관리자',role:'admin',adminPw:adminPwInput});
-      setLoading(false);return;
-    }
-    // 로컬 실패 시 서버로 시도
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
       if(result.status==='ok'&&result.role==='admin'){
@@ -669,7 +638,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
         setAdminErr('비밀번호가 틀렸습니다.');
       }
     }catch(e){
-      setAdminErr('비밀번호가 틀렸습니다.');
+      setAdminErr('서버 연결 실패');
     }
     setLoading(false);
   };
@@ -1021,17 +990,15 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
   const [adminPwInput,setAdminPwInput]=useState('');
   const [adminPwErr,setAdminPwErr]=useState('');
   const tryGoAdmin=async()=>{
-    // 로컬 비번 먼저 확인
-    if(adminPwInput===getAdminPw()){
-      setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');return;
-    }
-    // 로컬 실패 시 서버 시도
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
-      if(result.status==='ok'&&result.role==='admin'){setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');}
-      else{setAdminPwErr('비밀번호가 틀렸습니다.');}
+      if(result.status==='ok'&&result.role==='admin'){
+        setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');
+      } else {
+        setAdminPwErr('비밀번호가 틀렸습니다.');
+      }
     }catch(e){
-      setAdminPwErr('비밀번호가 틀렸습니다.');
+      setAdminPwErr('서버 연결 실패');
     }
   };
   return(
