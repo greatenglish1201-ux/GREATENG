@@ -622,7 +622,8 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
       if(result.status==='ok'){
-        onLogin({name:result.name||name.trim(),role:result.role});
+        // 일반 로그인 탭에서는 학생으로만 접속 가능 (관리자는 별도 탭 사용)
+        onLogin({name:result.name||name.trim(),role:'student'});
       } else {
         setError(result.message||'로그인 실패');
       }
@@ -1566,7 +1567,7 @@ function PrintView({questions,mode,goBack}){
           q.remaining.forEach((s,j)=>{if(j>=q.markerStart){const mi=j-q.markerStart;if(mi<q.maxMarkers)h+=`<b>${M[mi]}</b> `;}h+=esc(s)+' ';});
           h+='</div>';
         }else if(q.type==='blank'){
-          h+='<div class="p">';q.passage.sentences.forEach((s,j)=>h+=(j===q.blankIdx?esc(q.blanked).replace('_____','<span style="border-bottom:1.5px solid #000;padding:0 18px;">　　　　</span>'):esc(s))+' ');
+          h+='<div class="p">';q.passage.sentences.forEach((s,j)=>h+=(j===q.blankIdx?esc(q.blanked).replace('_____','<span style="display:inline-block;width:80px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>'):esc(s))+' ');
           h+='</div><div class="op">';q.options.forEach((o,j)=>h+=`<div>${M[j]} ${esc(o.text)}</div>`);h+='</div>';
         }else if(q.type==='irrelevant'){
           h+='<div class="p">';const nm1={};q.numberedIdxs.forEach((fi,ci)=>{nm1[fi]=ci+1;});q.full.forEach((s,i)=>{if(nm1[i]&&i>0)h+=`<b>${M[nm1[i]-1]}</b> ${esc(s)} `;else h+=esc(s)+' ';});h+='</div>';
