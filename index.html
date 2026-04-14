@@ -1564,16 +1564,18 @@ function PrintView({questions,mode,goBack}){
           h+='<div class="op">';q.options.forEach((o,j)=>h+=`<div>${M[j]} ${esc(o.text)}</div>`);h+='</div>';
         }else if(q.type==='insert'){
           h+=`<div class="gv"><b>주어진 문장:</b> ${esc(q.removed)}</div><div class="p">`;
-          q.remaining.forEach((s,j)=>{if(j>=q.markerStart){const mi=j-q.markerStart;if(mi<q.maxMarkers)h+=`<b>${M[mi]}</b> `;}h+=esc(s)+' ';});
+          q.remaining.forEach((s,j)=>{if(j>=q.markerStart){const mi=j-q.markerStart;if(mi<q.maxMarkers)h+=`<b> ( ${M[mi]} ) </b>`;}h+=esc(s)+' ';});
           h+='</div>';
         }else if(q.type==='blank'){
           h+='<div class="p">';q.passage.sentences.forEach((s,j)=>h+=(j===q.blankIdx?esc(q.blanked).replace('_____','<span style="display:inline-block;width:80px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>'):esc(s))+' ');
           h+='</div><div class="op">';q.options.forEach((o,j)=>h+=`<div>${M[j]} ${esc(o.text)}</div>`);h+='</div>';
         }else if(q.type==='irrelevant'){
-          h+='<div class="p">';const nm1={};q.numberedIdxs.forEach((fi,ci)=>{nm1[fi]=ci+1;});q.full.forEach((s,i)=>{if(nm1[i]&&i>0)h+=`<b>${M[nm1[i]-1]}</b> ${esc(s)} `;else h+=esc(s)+' ';});h+='</div>';
+          h+='<div class="p">';const nm1={};q.numberedIdxs.forEach((fi,ci)=>{nm1[fi]=ci+1;});q.full.forEach((s,i)=>{if(nm1[i]&&i>0)h+=`<b> ( ${M[nm1[i]-1]} ) </b>${esc(s)} `;else h+=esc(s)+' ';});h+='</div>';
         }else if(q.type==='summary'){
           h+='<div class="p">';q.passage.sentences.forEach(s=>h+=esc(s)+' ');h+='</div>';
-          h+=`<div class="gv"><b>요약문:</b> ${esc(q.abstract)}</div>`;
+          const sumTpl=q.passage.summary_template||q.abstract;
+          const sumDisp=sumTpl.replace('________(A)________','<span style="display:inline-block;width:70px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>').replace('________(B)________','<span style="display:inline-block;width:70px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>');
+          h+=`<div class="gv"><b>요약문:</b> ${sumDisp}</div>`;
           h+='<table><tr><th></th><th>(A)</th><th>(B)</th></tr>';
           q.aOpts.forEach((a,j)=>{const b=q.bOpts[j];if(b)h+=`<tr><td style="text-align:center">${M[j]}</td><td>${esc(a.text)}</td><td>${esc(b.text)}</td></tr>`;});h+='</table>';
         }else if(q.type==='implication'){
