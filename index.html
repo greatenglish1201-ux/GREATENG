@@ -27,6 +27,8 @@ const TYPES = [
   { id:'summary', name:'요약문', icon:'📋' },
   { id:'implication', name:'함축적 의미', icon:'💡' },
   { id:'irrelevant', name:'무관한 문장', icon:'✂️' },
+  { id:'grammar', name:'어법', icon:'📐' },
+  { id:'vocab', name:'어휘', icon:'📖' },
 ];
 
 const BOOKS = [
@@ -334,6 +336,28 @@ function gen(passage, type, allP){
     return {type, passage, full, numberedIdxs, correctNum, foreignSource: rOther.title, instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
   }
 
+  /* ⑧ 어법 */
+  case 'grammar':{
+    if(!passage.grammar_options || passage.grammar_options.length < 5) return null;
+    const si = passage.grammar_sentence_index || 0;
+    if(si >= s.length) return null;
+    const target = passage.grammar_target || '';
+    const sent = s[si];
+    const opts = [...passage.grammar_options];
+    return {type, passage, grammarSent: sent, grammarTarget: target, options: shuffle(opts), instruction: '다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?'};
+  }
+
+  /* ⑨ 어휘 */
+  case 'vocab':{
+    if(!passage.vocab_options || passage.vocab_options.length < 5) return null;
+    const si = passage.vocab_sentence_index || 0;
+    if(si >= s.length) return null;
+    const target = passage.vocab_target || '';
+    const sent = s[si];
+    const opts = [...passage.vocab_options];
+    return {type, passage, vocabSent: sent, vocabTarget: target, options: shuffle(opts), instruction: '다음 글의 밑줄 친 단어 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?'};
+  }
+
   default: return null;
   }
 }
@@ -476,6 +500,27 @@ function App(){
     return allPassages.filter(p=>book.match(p.id)).length;
   };
 
+  // 어법/어휘 데이터 지문에 적용
+  React.useEffect(()=>{
+    window.applyGrammarVocab=(gvData)=>{
+      // PASSAGES 전역 배열에 직접 적용
+      PASSAGES.forEach(p=>{
+        const gv=gvData[p.id];
+        if(gv){
+          p.grammar_sentence_index=gv.grammar_sentence_index;
+          p.grammar_target=gv.grammar_target;
+          p.grammar_options=gv.grammar_options;
+          p.vocab_sentence_index=gv.vocab_sentence_index;
+          p.vocab_target=gv.vocab_target;
+          p.vocab_options=gv.vocab_options;
+        }
+      });
+      // extraPassages 갱신으로 리렌더링 트리거
+      setExtraPassages(prev=>[...prev]);
+    };
+    return()=>{delete window.applyGrammarVocab;};
+  },[]);
+
   const start=()=>{
     const types=[...selectedTypes];if(!types.length)return;
     if(selPassages.size===0)return;
@@ -566,7 +611,7 @@ function App(){
   };
 
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
-  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
+  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} allPassages={allPassages} />;
   if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
@@ -709,7 +754,108 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 }
 
 /* ── 관리자 패널 ── */
-function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
+function GrammarVocabGenerator({allPassages}){
+  const [status,setStatus]=React.useState('idle');
+  const [progress,setProgress]=React.useState(0);
+  const [total,setTotal]=React.useState(0);
+  const [log,setLog]=React.useState([]);
+  const [results,setResults]=React.useState({});
+  const stopRef=React.useRef(false);
+
+  React.useEffect(()=>{
+    try{const saved=localStorage.getItem('greateng_gv');if(saved)setResults(JSON.parse(saved));}catch(e){}
+  },[]);
+
+  const needGenerate=allPassages.filter(p=>!results[p.id]);
+
+  const SYSTEM_PROMPT='You are an expert English teacher. Given sentences array, return ONLY valid JSON with keys: grammar_sentence_index, grammar_target, grammar_options(5 items 1 correct), vocab_sentence_index, vocab_target, vocab_options(5 items 1 correct). Grammar tests grammatical form, vocab tests contextual meaning.';
+
+  const generate=async()=>{
+    stopRef.current=false;
+    const queue=[...needGenerate];
+    setTotal(queue.length);
+    setProgress(0);
+    setStatus('running');
+    setLog([]);
+    const cur={...results};
+
+    for(let i=0;i<queue.length;i++){
+      if(stopRef.current){setStatus('idle');return;}
+      const p=queue[i];
+      setLog(l=>['['+(i+1)+'/'+queue.length+'] '+p.id+' 처리 중...',...l.slice(0,19)]);
+      try{
+        const resp=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            model:'claude-sonnet-4-6',
+            max_tokens:800,
+            system:SYSTEM_PROMPT,
+            messages:[{role:'user',content:'Sentences: '+JSON.stringify(p.sentences)}]
+          })
+        });
+        const data=await resp.json();
+        const raw=data.content[0].text.replace(/```json/g,'').replace(/```/g,'').trim();
+        const gv=JSON.parse(raw);
+        if(gv.grammar_options&&gv.grammar_options.length===5&&gv.vocab_options&&gv.vocab_options.length===5){
+          cur[p.id]=gv;
+          setResults({...cur});
+          localStorage.setItem('greateng_gv',JSON.stringify(cur));
+          setLog(l=>['['+(i+1)+'/'+queue.length+'] ✅ '+p.id,...l.slice(0,19)]);
+        }
+      }catch(e){
+        setLog(l=>['['+(i+1)+'/'+queue.length+'] ❌ '+p.id+': '+e.message,...l.slice(0,19)]);
+      }
+      setProgress(i+1);
+      await new Promise(r=>setTimeout(r,400));
+    }
+    setStatus('done');
+  };
+
+  const applyToPassages=()=>{
+    // PASSAGES 전역 배열에 적용
+    if(window.applyGrammarVocab){
+      window.applyGrammarVocab(results);
+      setLog(l=>['✅ 지문 데이터에 적용 완료!',...l]);
+    }
+  };
+
+  const pct=total>0?Math.round(progress/total*100):0;
+  const done=Object.keys(results).length;
+
+  return(<div style={{color:'#3d0010'}}>
+    <h3 style={{fontSize:15,fontWeight:700,marginBottom:12,color:'#7a1020'}}>🔤 어법/어휘 문제 자동 생성</h3>
+    <div style={{background:'rgba(201,168,76,0.1)',borderRadius:10,padding:'10px 14px',marginBottom:12,fontSize:13}}>
+      <b>전체:</b> {allPassages.length}개 지문 &nbsp;|&nbsp; <b>완료:</b> {done}개 &nbsp;|&nbsp; <b>미완료:</b> {needGenerate.length}개
+    </div>
+    {status==='running'&&<div style={{marginBottom:10}}>
+      <div style={{background:'#f0e4cc',borderRadius:6,height:8,marginBottom:6}}>
+        <div style={{background:'linear-gradient(90deg,#7a1020,#C9A84C)',height:'100%',borderRadius:6,width:pct+'%',transition:'width 0.3s'}}/>
+      </div>
+      <span style={{fontSize:12,color:'#9a7040'}}>{progress}/{total} ({pct}%)</span>
+    </div>}
+    <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap'}}>
+      {status!=='running'&&needGenerate.length>0&&<button onClick={generate} style={{padding:'9px 18px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#7a1020,#b01830)',color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer'}}>
+        ▶ 생성 시작 ({needGenerate.length}개)
+      </button>}
+      {status==='running'&&<button onClick={()=>{stopRef.current=true;}} style={{padding:'9px 18px',borderRadius:10,border:'none',background:'#888',color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer'}}>
+        ■ 중지
+      </button>}
+      {done>0&&<button onClick={applyToPassages} style={{padding:'9px 18px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#C9A84C,#a8873d)',color:'#3d0010',fontSize:13,fontWeight:700,cursor:'pointer'}}>
+        ✅ 지문에 적용
+      </button>}
+      {done>0&&<button onClick={()=>{localStorage.removeItem('greateng_gv');setResults({});setLog([]);}} style={{padding:'9px 18px',borderRadius:10,border:'1px solid #ddd',background:'#fff',color:'#888',fontSize:13,cursor:'pointer'}}>
+        🗑 초기화
+      </button>}
+    </div>
+    {log.length>0&&<div style={{background:'#f9f0e0',borderRadius:8,padding:'8px 12px',maxHeight:200,overflowY:'auto',fontSize:11.5,fontFamily:'monospace',lineHeight:1.8}}>
+      {log.map((l,i)=><div key={i}>{l}</div>)}
+    </div>}
+    {status==='done'&&<p style={{marginTop:10,fontSize:13,color:'#7a1020',fontWeight:700}}>✅ 생성 완료! "지문에 적용" 버튼을 눌러주세요.</p>}
+  </div>);
+}
+
+function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,allPassages}){
   const [tab,setTab]=useState('students'); // students | results
   const [students,setStudents]=useState([]);
   const [results,setResults]=useState([]);
@@ -840,6 +986,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         <div style={{display:'flex',gap:8,marginBottom:16}}>
           {btn(tab==='students','👥 학생 관리',()=>{setTab('students');loadStudents();})}
           {btn(tab==='results','📊 시험 결과',()=>{setTab('results');loadResults();})}
+          {btn(tab==='grammar','🔤 어법/어휘 생성',()=>setTab('grammar'))}
           {btn(tab==='settings','⚙️ 설정',()=>setTab('settings'))}
         </div>
 
@@ -917,6 +1064,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         </div>}
 
         {/* 설정 탭 */}
+        {tab==='grammar'&&<GrammarVocabGenerator allPassages={allPassages} />}
+
         {tab==='settings'&&<div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
             <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#1e293b'}}>📊 Google Sheets URL</h3>
@@ -1277,6 +1426,7 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
     if(q.type==='summary'){c=q.aOpts[sA]?.correct&&q.bOpts[sB]?.correct;onSubmit({correct:c,selectedA:sA,selectedB:sB});}
     else if(q.type==='insert'){c=insertSel===q.correctPos;onSubmit({correct:c,selected:insertSel});}
     else if(q.type==='irrelevant'){c=irrelSel===q.correctNum;onSubmit({correct:c,selected:irrelSel});}
+    else if(q.type==='grammar'||q.type==='vocab'){c=q.options?.[selected]?.correct||false;onSubmit({correct:c,selected});}
     else{c=q.options?.[selected]?.correct||false;onSubmit({correct:c,selected});}
   };
 
@@ -1494,6 +1644,38 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
     </div>);
   }
 
+  // grammar: 해당 문장 밑줄 표시
+  if(q.type==='grammar'){
+    return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
+      {q.passage.sentences.map((s,i)=>{
+        if(i===q.grammarSent||s===q.grammarSent){
+          const parts=s.split(q.grammarTarget);
+          if(parts.length<2) return <span key={i}><u style={{textDecorationColor:'#7a1020',fontWeight:600}}>{s}</u>{' '}</span>;
+          return <span key={i}>
+            {parts[0]}<u style={{textDecorationColor:'#7a1020',fontWeight:600,color:'#7a1020'}}>{q.grammarTarget}</u>{parts.slice(1).join(q.grammarTarget)}{' '}
+          </span>;
+        }
+        return <span key={i}>{s}{' '}</span>;
+      })}
+    </div>);
+  }
+
+  // vocab: 해당 단어 밑줄 표시
+  if(q.type==='vocab'){
+    return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
+      {q.passage.sentences.map((s,i)=>{
+        if(i===q.vocabSent||s===q.vocabSent){
+          const parts=s.split(q.vocabTarget);
+          if(parts.length<2) return <span key={i}><u style={{textDecorationColor:'#7a1020',fontWeight:600}}>{s}</u>{' '}</span>;
+          return <span key={i}>
+            {parts[0]}<u style={{textDecorationColor:'#7a1020',fontWeight:600,color:'#7a1020'}}>{q.vocabTarget}</u>{parts.slice(1).join(q.vocabTarget)}{' '}
+          </span>;
+        }
+        return <span key={i}>{s}{' '}</span>;
+      })}
+    </div>);
+  }
+
   return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
     {q.passage.sentences.map((s,i)=><span key={i}>{s} </span>)}
   </div>);
@@ -1566,6 +1748,19 @@ function PrintView({questions,mode,goBack}){
           h+=`<div class="gv"><b>주어진 문장:</b> ${esc(q.removed)}</div><div class="p">`;
           const mIdxs1=q.markerIdxs||[];
           q.remaining.forEach((s,j)=>{const mNum=mIdxs1.indexOf(j);if(mNum>=0)h+=`<b> ( ${M[mNum]} ) </b>`;h+=esc(s)+' ';});
+          h+='</div>';
+        }else if(q.type==='grammar'||q.type==='vocab'){
+          const target=q.type==='grammar'?q.grammarTarget:q.vocabTarget;
+          h+='<div class="p">';
+          q.passage.sentences.forEach(s=>{
+            if(target&&s.includes(target)){
+              h+=esc(s).replace(esc(target),`<u><b>${esc(target)}</b></u>`)+' ';
+            } else {
+              h+=esc(s)+' ';
+            }
+          });
+          h+='</div><div class="op">';
+          q.options.forEach((o,j)=>h+=`<div>${M[j]} ${esc(o.text)}</div>`);
           h+='</div>';
         }else if(q.type==='blank'){
           h+='<div class="p">';q.passage.sentences.forEach((s,j)=>h+=(j===q.blankIdx?esc(q.blanked).replace('_____','<span style="display:inline-block;width:80px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>'):esc(s))+' ');
@@ -1753,6 +1948,19 @@ function printHTML(questions,userAns,mode){
           const mNum=mIdxs2.indexOf(j);if(mNum>=0)h+=`<b> ( ${M[mNum]} ) </b>`;
           h+=s+' ';
         });
+        h+='</div>';
+      } else if(q.type==='grammar'||q.type==='vocab'){
+        const target2=q.type==='grammar'?q.grammarTarget:q.vocabTarget;
+        h+='<div class="p">';
+        q.passage.sentences.forEach(s=>{
+          if(target2&&s.includes(target2)){
+            h+=s.replace(target2,`<u><b>${target2}</b></u>`)+' ';
+          } else {
+            h+=s+' ';
+          }
+        });
+        h+='</div><div class="op">';
+        q.options.forEach((o,j)=>h+=`<div>${M[j]} ${o.text}</div>`);
         h+='</div>';
       } else if(q.type==='blank'){
         h+='<div class="p">';
