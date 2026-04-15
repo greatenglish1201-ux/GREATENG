@@ -531,20 +531,28 @@ function App(){
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    const cnt=Math.min(qCount,pool.length);
-    const chosen=pool.slice(0,cnt);
-    const qs=[];
+    const target=Math.min(qCount,pool.length);
     const summaryPool2=pool.filter(p=>p.summary_template&&p.summary_A_options&&p.summary_B_options);
-    const usedIds2=new Set(chosen.map(p=>p.id));
-    for(let i=0;i<chosen.length;i++){
-      const t=types[i%types.length];
-      let q=gen(chosen[i],t,allPassages);
-      if(!q){
-        if(t==='summary'){
-          const alt=summaryPool2.find(p=>!usedIds2.has(p.id));
-          if(alt){usedIds2.add(alt.id);q=gen(alt,t,allPassages);}
+    const usedIds2=new Set();
+    const typePool2=shuffle([...Array(target)].map((_,i)=>types[i%types.length]));
+    const qs=[];
+    let poolIdx=0;
+    for(let i=0;i<target;i++){
+      const t=typePool2[i];
+      let q=null;
+      let attempts=0;
+      while(!q&&poolIdx+attempts<pool.length){
+        const p=pool[(poolIdx+attempts)%pool.length];
+        if(!usedIds2.has(p.id)){
+          q=gen(p,t,allPassages);
+          if(!q){const fallbackOrder=[...types.filter(x=>x!==t)];for(const ft of fallbackOrder){q=gen(p,ft,allPassages);if(q)break;}}
+          if(q){usedIds2.add(p.id);poolIdx+=attempts+1;break;}
         }
-        if(!q){const fallbackOrder=[...types.filter(x=>x!==t)];for(const ft of fallbackOrder){q=gen(chosen[i],ft,allPassages);if(q)break;}}
+        attempts++;
+      }
+      if(!q){
+        const spare=pool.find(p=>!usedIds2.has(p.id));
+        if(spare){const fallbackOrder=[...types];for(const ft of fallbackOrder){q=gen(spare,ft,allPassages);if(q){usedIds2.add(spare.id);break;}}}
       }
       if(q)qs.push(q);
     }
