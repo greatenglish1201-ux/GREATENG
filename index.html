@@ -501,7 +501,7 @@ function App(){
           q=gen(p,t,allPassages);
           if(!q){
             // 다른 타입으로 fallback
-            const fallbackOrder=[...types.filter(x=>x!==t),'topic'];
+            const fallbackOrder=[...types.filter(x=>x!==t)];
             for(const ft of fallbackOrder){q=gen(p,ft,allPassages);if(q)break;}
           }
           if(q){usedIds.add(p.id);poolIdx+=attempts+1;break;}
@@ -512,7 +512,7 @@ function App(){
       if(!q){
         const spare=pool.find(p=>!usedIds.has(p.id));
         if(spare){
-          const fallbackOrder=['topic','blank','order','insert','summary'];
+          const fallbackOrder=[...types];
           for(const ft of fallbackOrder){q=gen(spare,ft,allPassages);if(q){usedIds.add(spare.id);break;}}
         }
       }
@@ -544,7 +544,7 @@ function App(){
           const alt=summaryPool2.find(p=>!usedIds2.has(p.id));
           if(alt){usedIds2.add(alt.id);q=gen(alt,t,allPassages);}
         }
-        if(!q){const fallbackOrder=[...types.filter(x=>x!==t),'topic'];for(const ft of fallbackOrder){q=gen(chosen[i],ft,allPassages);if(q)break;}}
+        if(!q){const fallbackOrder=[...types.filter(x=>x!==t)];for(const ft of fallbackOrder){q=gen(chosen[i],ft,allPassages);if(q)break;}}
       }
       if(q)qs.push(q);
     }
@@ -1748,7 +1748,7 @@ function printHTML(questions,userAns,mode){
       } else if(q.type==='insert'){
         h+=`<div class="gv"><b>주어진 문장:</b> ${q.removed}</div><div class="p">`;
         q.remaining.forEach((s,j)=>{
-          if(j>=q.markerStart){const mIdx=j-q.markerStart;if(mIdx<q.maxMarkers)h+=`<b>${M[mIdx]}</b> `;}
+          if(j>=q.markerStart){const mIdx=j-q.markerStart;if(mIdx<q.maxMarkers)h+=`<b> ( ${M[mIdx]} ) </b>`;}
           h+=s+' ';
         });
         h+='</div>';
@@ -1757,10 +1757,12 @@ function printHTML(questions,userAns,mode){
         q.passage.sentences.forEach((s,j)=>h+=(j===q.blankIdx?`<u>${q.blanked}</u>`:s)+' ');
         h+='</div><div class="op">';q.options.forEach((o,j)=>h+=`<div>${M[j]} ${o.text}</div>`);h+='</div>';
       } else if(q.type==='irrelevant'){
-        h+='<div class="p">';const nm2={};q.numberedIdxs.forEach((fi,ci)=>{nm2[fi]=ci+1;});q.full.forEach((s,i)=>{if(nm2[i]&&i>0)h+=`<b>${M[nm2[i]-1]}</b> ${s} `;else h+=s+' ';});h+='</div>';
+        h+='<div class="p">';const nm2={};q.numberedIdxs.forEach((fi,ci)=>{nm2[fi]=ci+1;});q.full.forEach((s,i)=>{if(nm2[i]&&i>0)h+=`<b> ( ${M[nm2[i]-1]} ) </b>${s} `;else h+=s+' ';});h+='</div>';
       } else if(q.type==='summary'){
         h+='<div class="p">';q.passage.sentences.forEach(s=>h+=s+' ');h+='</div>';
-        h+=`<div class="gv"><b>요약문:</b> ${q.abstract}</div>`;
+        const sumTpl2=q.passage.summary_template||q.abstract;
+        const sumDisp2=sumTpl2.replace('________(A)________','<span style="display:inline-block;width:70px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>').replace('________(B)________','<span style="display:inline-block;width:70px;border-bottom:1.5px solid #000;vertical-align:bottom;"></span>');
+        h+=`<div class="gv"><b>요약문:</b> ${sumDisp2}</div>`;
         h+='<table><tr><th></th><th>(A)</th><th>(B)</th></tr>';
         q.aOpts.forEach((a,j)=>{const b=q.bOpts[j];if(b)h+=`<tr><td style="text-align:center">${M[j]}</td><td>${a.text}</td><td>${b.text}</td></tr>`;});
         h+='</table>';
