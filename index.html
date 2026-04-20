@@ -929,6 +929,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               {[...new Set(results.map(r=>r.student))].sort().map(s=><option key={s} value={s}>{s}</option>)}
             </select>
             <button onClick={loadResults} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
+            <button onClick={()=>window.print()} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e2e8f0',background:'#fff',fontWeight:600,fontSize:13,cursor:'pointer',color:'#475569'}}>🖨️ 인쇄</button>
           </div>
           {loading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
           {!loading&&results.length>0&&(()=>{
@@ -967,7 +968,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             });
             const top10=Object.entries(byPassage)
               .map(([id,v])=>({id,rate:v.wrong/v.total*100,wrong:v.wrong,total:v.total,type:v.type}))
-              .filter(p=>p.wrong>0).sort((a,b)=>b.wrong-a.wrong||b.rate-a.rate).slice(0,10);
+              .filter(p=>p.wrong>0).sort((a,b)=>b.total-a.total||b.rate-a.rate).slice(0,10);
 
             const card={background:'#fff',borderRadius:14,padding:'16px 18px',marginBottom:12,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'};
             const pct=(c,t)=>t>0?Math.round(c/t*100):0;
