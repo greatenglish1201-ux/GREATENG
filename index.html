@@ -789,8 +789,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     if(!scriptUrl){setMsg('결과 저장 URL을 설정 탭에서 입력하세요.');return;}
     setLoading(true);
     try{
-      const d=await api({action:'getResults',student:filterStudent||undefined});
-      if(d.status==='ok')setResults(d.results||[]);
+      const d=await api({action:'getStats',adminPw});
+      if(d.status==='ok')setResults(d.rows||[]);
       else setMsg(d.message||'오류');
     }catch(e){setMsg('결과 불러오기 실패');}
     setLoading(false);
@@ -922,34 +922,111 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
 
         {/* 결과 탭 */}
         {tab==='results'&&<div>
+          {/* 조회 버튼 */}
           <div style={{display:'flex',gap:8,marginBottom:12}}>
-            <input value={filterStudent} onChange={e=>setFilterStudent(e.target.value)} placeholder="학생 이름으로 필터"
-              style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:13,outline:'none'}}/>
-            <button onClick={loadResults} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
+            <button onClick={loadResults} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>📊 통계 불러오기</button>
           </div>
-          {sheetsUrl&&<div style={{background:'#eef3ff',borderRadius:10,padding:'12px 16px',marginBottom:12,fontSize:12.5,color:'#3b5fe0'}}>
-            📊 결과는 Google Sheets에서 직접 확인하세요.&nbsp;
-            <a href={sheetsUrl} target="_blank" style={{color:'#4f7df7',fontWeight:600}}>Sheets 열기 →</a>
-          </div>}
-          <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',overflow:'hidden'}}>
-            {loading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
-            {!loading&&results.length===0&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>결과 없음</p>}
-            {results.slice().reverse().map((r,i)=>(
-              <div key={i} style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9'}}>
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>{r.student}</span>
-                  <span style={{fontSize:13,fontWeight:800,color:'#4f7df7'}}>{r.score} ({r.pct}%)</span>
-                </div>
-                <div style={{display:'flex',justifyContent:'space-between',marginTop:2}}>
-                  <span style={{fontSize:11,color:'#94a3b8'}}>{r.date}</span>
-                </div>
-                {r.details&&<p style={{fontSize:10.5,color:'#64748b',margin:'4px 0 0',lineHeight:1.6,wordBreak:'break-all'}}>{r.details.split('||').map((d,j)=>{const[id,type,ox]=d.split('|');return <span key={j} style={{marginRight:6,color:ox==='O'?'#16a34a':'#dc2626'}}>{ox==='O'?'✓':'✗'} {type}</span>;})}</p>}
+
+          {loading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
+          {!loading&&results.length>0&&(()=>{
+            // 필터링
+            const filtered = filterStudent ? results.filter(r=>r.student===filterStudent) : results;
+
+            // 학생별 통계
+            const byStudent = {};
+            filtered.forEach(r=>{
+              if(!byStudent[r.student]) byStudent[r.student]={total:0,correct:0};
+              byStudent[r.student].total++;
+              if(r.correct) byStudent[r.student].correct++;
+            });
+
+            // 유형별 통계
+            const byType = {};
+            filtered.forEach(r=>{
+              if(!byType[r.type]) byType[r.type]={total:0,correct:0};
+              byType[r.type].total++;
+              if(r.correct) byType[r.type].correct++;
+            });
+
+            // 지문별 오답률 (틀린 것만, 상위 10개)
+            const byPassage = {};
+            filtered.forEach(r=>{
+              if(!byPassage[r.passageId]) byPassage[r.passageId]={total:0,wrong:0,type:r.type};
+              byPassage[r.passageId].total++;
+              if(!r.correct) byPassage[r.passageId].wrong++;
+            });
+            const passageList = Object.entries(byPassage)
+              .map(([id,v])=>({id,wrongRate:v.wrong/v.total*100,wrong:v.wrong,total:v.total,type:v.type}))
+              .filter(p=>p.wrong>0)
+              .sort((a,b)=>b.wrongRate-a.wrongRate)
+              .slice(0,10);
+
+            const cardStyle = {background:'#fff',borderRadius:14,padding:'16px 18px',marginBottom:12,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'};
+            const pct = (c,t) => t>0 ? Math.round(c/t*100) : 0;
+            const barColor = p => p>=70?'#16a34a':p>=50?'#f59e0b':'#dc2626';
+
+            return <div>
+              {/* 학생 필터 */}
+              <div style={{display:'flex',gap:8,marginBottom:12}}>
+                <select value={filterStudent} onChange={e=>setFilterStudent(e.target.value)}
+                  style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:13,outline:'none'}}>
+                  <option value=''>전체 학생</option>
+                  {Object.keys(byStudent).sort().map(s=><option key={s} value={s}>{s}</option>)}
+                </select>
               </div>
-            ))}
-          </div>
+
+              {/* 학생별 정답률 */}
+              <div style={cardStyle}>
+                <h3 style={{fontSize:13,fontWeight:700,color:'#7a1020',margin:'0 0 12px'}}>👤 학생별 정답률</h3>
+                {Object.entries(byStudent).sort((a,b)=>b[1].correct/b[1].total-a[1].correct/a[1].total).map(([name,v])=>{
+                  const p = pct(v.correct,v.total);
+                  return <div key={name} style={{marginBottom:8}}>
+                    <div style={{display:'flex',justifyContent:'space-between',fontSize:12.5,marginBottom:3}}>
+                      <span style={{fontWeight:600}}>{name}</span>
+                      <span style={{color:barColor(p)}}>{v.correct}/{v.total} ({p}%)</span>
+                    </div>
+                    <div style={{background:'#f1f5f9',borderRadius:6,height:8,overflow:'hidden'}}>
+                      <div style={{width:`${p}%`,height:'100%',background:barColor(p),borderRadius:6,transition:'width 0.4s'}}/>
+                    </div>
+                  </div>;
+                })}
+              </div>
+
+              {/* 유형별 정답률 */}
+              <div style={cardStyle}>
+                <h3 style={{fontSize:13,fontWeight:700,color:'#7a1020',margin:'0 0 12px'}}>📝 유형별 정답률</h3>
+                {Object.entries(byType).sort((a,b)=>a[1].correct/a[1].total-b[1].correct/b[1].total).map(([type,v])=>{
+                  const p = pct(v.correct,v.total);
+                  return <div key={type} style={{marginBottom:8}}>
+                    <div style={{display:'flex',justifyContent:'space-between',fontSize:12.5,marginBottom:3}}>
+                      <span style={{fontWeight:600}}>{type}</span>
+                      <span style={{color:barColor(p)}}>{v.correct}/{v.total} ({p}%)</span>
+                    </div>
+                    <div style={{background:'#f1f5f9',borderRadius:6,height:8,overflow:'hidden'}}>
+                      <div style={{width:`${p}%`,height:'100%',background:barColor(p),borderRadius:6,transition:'width 0.4s'}}/>
+                    </div>
+                  </div>;
+                })}
+              </div>
+
+              {/* 지문별 오답률 Top 10 */}
+              {passageList.length>0&&<div style={cardStyle}>
+                <h3 style={{fontSize:13,fontWeight:700,color:'#7a1020',margin:'0 0 12px'}}>📖 오답 많은 지문 Top {passageList.length}</h3>
+                {passageList.map((p,i)=>(
+                  <div key={p.id} style={{display:'flex',alignItems:'center',gap:8,marginBottom:7,fontSize:12.5}}>
+                    <span style={{width:18,height:18,borderRadius:'50%',background:'#7a1020',color:'#C9A84C',fontSize:10,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>{i+1}</span>
+                    <span style={{flex:1,fontWeight:600,wordBreak:'break-all'}}>{p.id}</span>
+                    <span style={{color:'#64748b',fontSize:11}}>{p.type}</span>
+                    <span style={{color:'#dc2626',fontWeight:700}}>{p.wrong}/{p.total} ({Math.round(p.wrongRate)}%)</span>
+                  </div>
+                ))}
+              </div>}
+            </div>;
+          })()}
+          {!loading&&results.length===0&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>데이터가 없습니다. 통계 불러오기를 눌러주세요.</p>}
         </div>}
 
-        {/* 설정 탭 */}
+                {/* 설정 탭 */}
 
         {tab==='settings'&&<div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
@@ -1223,26 +1300,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           <div style={{...S.card,flex:1}}>
             <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>문제 수</h3>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <div style={{display:'flex',flexDirection:'column',gap:6}}>
-                <div style={{display:'flex',alignItems:'center',gap:6}}>
-                  {[-10,-5,-1].map(d=>(
-                    <button key={d} onClick={()=>setQCount(q=>Math.max(1,q+d))}
-                      style={{padding:'5px 8px',borderRadius:8,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,fontWeight:700,cursor:'pointer',color:'#475569'}}>
-                      {d}
-                    </button>
-                  ))}
-                  <input type="number" min={1} max={99} value={qCount}
-                    onChange={e=>{const v=parseInt(e.target.value);if(!isNaN(v))setQCount(Math.max(1,Math.min(99,v)));}}
-                    onFocus={e=>e.target.select()}
-                    style={{width:52,padding:'8px 4px',borderRadius:10,border:'2px solid #C9A84C',fontSize:15,fontWeight:700,textAlign:'center',outline:'none'}}/>
-                  {[1,5,10].map(d=>(
-                    <button key={d} onClick={()=>setQCount(q=>Math.min(99,q+d))}
-                      style={{padding:'5px 8px',borderRadius:8,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,fontWeight:700,cursor:'pointer',color:'#475569'}}>
-                      +{d}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <input type="number" min={1} max={99} value={qCount} onChange={e=>setQCount(Math.max(1,Math.min(99,parseInt(e.target.value)||1)))}
+                style={{width:60,padding:'8px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:15,fontWeight:600,textAlign:'center',outline:'none'}}/>
               <span style={{fontSize:12.5,color:'#64748b'}}>문제</span>
             </div>
           </div>
@@ -1708,17 +1767,22 @@ function Results({questions,userAns,score,studentName,scriptUrl,goHome,doPrint})
     setSaveStatus('saving');
     const now=new Date();
     const dateStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    const details=questions.map((q,i)=>{
-      const ans=userAns[i];
-      return `${q.passage.id}|${TYPES.find(t=>t.id===q.type)?.name||q.type}|${ans?.correct?'O':'X'}`;
-    }).join('||');
+    const sessionId = dateStr + '_' + Math.random().toString(36).slice(2,7);
+    const items = questions.map((q,i)=>{
+      const ans = userAns[i];
+      return {
+        passageId: q.passage.id,
+        book: q.passage.book || '',
+        type: TYPES.find(t=>t.id===q.type)?.name || q.type,
+        correct: ans?.correct ? true : false
+      };
+    });
     const payload={
       action: 'saveResult',
       student: studentName,
       date: dateStr,
-      score: `${score.correct}/${score.total}`,
-      pct: pct,
-      details: details
+      sessionId: sessionId,
+      items: items
     };
       if(scriptUrl){
         // 저장 요청 후 성공으로 처리 (JSONP는 응답 확인 불필요)
