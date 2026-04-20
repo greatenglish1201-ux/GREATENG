@@ -968,7 +968,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             });
             const top10=Object.entries(byPassage)
               .map(([id,v])=>({id,rate:v.wrong/v.total*100,wrong:v.wrong,total:v.total,type:v.type}))
-              .filter(p=>p.wrong>0).sort((a,b)=>b.total-a.total||b.rate-a.rate).slice(0,10);
+              .filter(p=>p.wrong>0).sort((a,b)=>b.total-a.total||b.rate-a.rate||a.id.localeCompare(b.id)).slice(0,10);
 
             const card={background:'#fff',borderRadius:14,padding:'16px 18px',marginBottom:12,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'};
             const pct=(c,t)=>t>0?Math.round(c/t*100):0;
