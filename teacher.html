@@ -706,7 +706,7 @@ function App(){
             onMeta={handleMeta}
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onQToggle={()=>upSlot(slot.id,{qOpen:!slot.qOpen})}
-            onViewToggle={()=>upSlot(slot.id,{viewMode:slot.viewMode==='teacher'?'student':'teacher'})}
+            onViewSet={(m)=>upSlot(slot.id,{viewMode:m})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onGenQ={()=>genQ(slot)}
             onSave={()=>saveSheet(slot)}
@@ -720,7 +720,7 @@ function App(){
 }
 
 /* ── 슬롯 카드 ─────────────────────────────────── */
-function SlotCard({slot,iB,sB,onText,onMeta,onToggle,onQToggle,onViewToggle,onConfirm,onGenQ,onSave,onAnalysis,onQType}){
+function SlotCard({slot,iB,sB,onText,onMeta,onToggle,onQToggle,onViewSet,onConfirm,onGenQ,onSave,onAnalysis,onQType}){
   const IS=slot.viewMode==='student';
   const st=ST[slot.status]||ST.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -778,7 +778,7 @@ function SlotCard({slot,iB,sB,onText,onMeta,onToggle,onQToggle,onViewToggle,onCo
             {/* 교사/학생 토글 */}
             <div style={{display:'flex',gap:1,background:'#f0f0f0',borderRadius:5,padding:2}}>
               {['teacher','student'].map(m=>(
-                <button key={m} onClick={onViewToggle}
+                <button key={m} onClick={()=>onViewSet(m)}
                   style={{padding:'3px 9px',fontSize:10,fontWeight:500,
                     background:slot.viewMode===m?'#fff':'transparent',
                     color:slot.viewMode===m?'#185FA5':'#aaa',
