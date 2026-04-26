@@ -78,23 +78,22 @@ color: blue/coral/teal/purple/green/amber/gray
 블록 2~4개, difficultSentences 2~3개`;
 
 const QGEN_SYS = (a, types) => `수능 영어 문제 출제 전문가. 순수 JSON만 반환. 코드블록 없이.
-분석: ${JSON.stringify(a)}
-아래 유형을 모두 출제하세요: ${types.join(', ')}
-각 유형별 수능 스타일 문제를 반드시 생성하세요.
-{
-  "availableTypes":${JSON.stringify(types)},
-  "unavailableTypes":[],
-  "questions":{
-    "주제":{"type":"주제","question":"다음 글의 주제로 가장 적절한 것은?","options":["① ...","② ...","③ ...","④ ...","⑤ ..."],"answer":1,"explanation":"해설"},
-    "빈칸":{"type":"빈칸","sentenceNum":2,"blankPhrase":"빈칸표현","question":"다음 빈칸에 들어갈 말로 가장 적절한 것은?","options":["① ...","② ...","③ ...","④ ...","⑤ ..."],"answer":1,"explanation":"해설"},
-    "어휘":{"type":"어휘","question":"밑줄 친 부분 중 문맥상 낱말의 쓰임이 적절하지 않은 것은?","options":["① ...","② ...","③ ...","④ ...","⑤ ..."],"answer":3,"explanation":"해설"},
-    "어법":{"type":"어법","question":"(A),(B),(C)의 각 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?","choices":[{"label":"(A)","opt1":"which","opt2":"what"},{"label":"(B)","opt1":"to use","opt2":"using"},{"label":"(C)","opt1":"is","opt2":"are"}],"options":["① which - to use - is","② which - using - are","③ what - to use - is","④ what - using - are","⑤ what - to use - are"],"answer":1,"explanation":"해설"},
-    "삽입":{"type":"삽입","insertSentence":"삽입할 문장","question":"글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?","answer":3,"explanation":"해설"},
-    "순서":{"type":"순서","givenSentence":"주어진 첫 문장","blocks":{"B":"B단락","C":"C단락","D":"D단락"},"question":"주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?","options":["① (B)-(D)-(C)","② (C)-(B)-(D)","③ (C)-(D)-(B)","④ (D)-(B)-(C)","⑤ (D)-(C)-(B)"],"answer":2,"explanation":"해설"},
-    "무관":{"type":"무관","fabricatedSentence":"흐름과 무관한 문장","insertPosition":3,"question":"다음 글에서 전체 흐름과 관계없는 문장은?","answer":3,"explanation":"해설"}
-  }
-}
-반환 시 questions에는 요청한 유형(${types.join(', ')})만 포함하고 실제 지문 내용으로 채우세요.`;
+지문 분석: ${JSON.stringify(a)}
+출제 유형: ${types.join(', ')}
+
+아래 JSON 구조로 모든 유형을 빠짐없이 출제하세요.
+유형별 규칙:
+- 주제: 글의 주제로 가장 적절한 것은? (5지선다)
+- 빈칸: 핵심 주장 문장에서 핵심어 제거, 빈칸 추론 (5지선다)
+- 어휘: 문맥상 어울리지 않는 어휘 1개 포함, 나머지 4개는 적절 (5지선다)
+- 어법: (A)(B)(C) 네모 안 어법 선택 (5지선다)
+- 삽입: 논리 흐름 상 빠진 문장 위치 찾기 (1~5번 위치)
+- 순서: 단락 재배열 (5지선다)
+- 무관: 전체 흐름과 무관한 문장 번호 (1~5번)
+
+반환 형식:
+{"availableTypes":${JSON.stringify(types)},"unavailableTypes":[],"questions":{"주제":{"type":"주제","question":"문제","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"빈칸":{"type":"빈칸","sentenceNum":0,"blankPhrase":"","question":"문제","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"어휘":{"type":"어휘","question":"문제","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"어법":{"type":"어법","question":"문제","choices":[{"label":"(A)","opt1":"","opt2":""},{"label":"(B)","opt1":"","opt2":""},{"label":"(C)","opt1":"","opt2":""}],"options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"삽입":{"type":"삽입","insertSentence":"","question":"문제","answer":3,"explanation":"해설"},"순서":{"type":"순서","givenSentence":"","blocks":{"B":"","C":"","D":""},"question":"문제","options":["① (B)-(D)-(C)","② (C)-(B)-(D)","③ (C)-(D)-(B)","④ (D)-(B)-(C)","⑤ (D)-(C)-(B)"],"answer":1,"explanation":"해설"},"무관":{"type":"무관","fabricatedSentence":"","question":"문제","answer":3,"explanation":"해설"}}}
+questions에는 요청한 유형(${types.join(', ')})만 포함. 실제 지문 내용으로 채울 것.`;
 
 /* ── API / Sheets ───────────────────────────────── */
 function callClaude(key, sys, user, maxTok=4096){
@@ -163,7 +162,8 @@ function dlBatch(slots, mode){
       const koLine=chunks.map(c=>c.ko||'').join(' / ');
       const chunkHTML=(!IS&&chunks.length)?`<div style="padding:4px 9px 5px;background:#fff;border-top:0.5px solid #eee"><div style="font-size:10px;font-style:italic;color:#1a1a1a;line-height:1.6;word-break:normal;overflow-wrap:break-word">${enLine}</div><div style="font-size:10px;color:#555;line-height:1.6;word-break:keep-all;overflow-wrap:break-word;border-top:0.5px dashed #e0e0e0;margin-top:2px;padding-top:2px">${koLine}</div></div>`:'';
       const diffHTML=ds?`<div style="padding:4px 9px;background:#fafafa;border-top:0.5px solid #eee"><div style="font-size:8px;font-weight:600;color:#aaa;margin-bottom:2px">구문 분석</div>${[{l:'구조',v:ds.structure},{l:'해석',v:ds.translation},{l:'포인트',v:ds.point}].map(r=>`<div style="display:flex;gap:5px;padding:1px 0;border-bottom:0.5px dashed #eee"><span style="font-size:8px;font-weight:600;color:#888;flex-shrink:0;width:28px">${r.l}</span><span style="font-size:10px;color:#333;word-break:normal;overflow-wrap:break-word;flex:1">${r.v||''}</span></div>`).join('')}</div>`:'';
-      if(!chunkHTML&&!diffHTML)return'';
+      if(IS&&!diffHTML)return'';
+      if(!IS&&!chunkHTML&&!diffHTML)return'';
       return`<div style="margin-bottom:4px;border:0.5px solid ${sc.bd||'#e5e5e5'};border-radius:6px;overflow:hidden"><div style="padding:4px 9px;background:${sc.bg};display:flex;align-items:center;gap:5px"><span style="font-size:13px;font-weight:700;color:${sc.tx};flex-shrink:0">${nStr(s.num)}</span><span style="font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.5);color:${sc.tx};border:1px solid ${sc.bd};flex-shrink:0">(${s.symbol})</span><span style="font-size:10px;color:${sc.tx};opacity:.75;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 60px)">${s.role}</span></div>${chunkHTML}${diffHTML}</div>`;
     }).filter(Boolean).join('');
     return`<div style="page-break-after:always;padding:12mm 12mm 10mm">
@@ -621,7 +621,7 @@ function App(){
     upSlot(slot.id,{status:'genQ',error:''});
     try{
       const {sentences,flow,grammar}=slot.analysis;
-      const d=await callClaude(apiKey,QGEN_SYS({sentences,...flow,...grammar},slot.enabledQTypes),'문제를 출제해주세요.',5000);
+      const d=await callClaude(apiKey,QGEN_SYS({sentences,...flow,...grammar},slot.enabledQTypes),'문제를 출제해주세요.',8000);
       if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
       upSlot(slot.id,{status:'done',questions:parseJSON(d.content[0].text),qOpen:true});
     }catch(e){upSlot(slot.id,{status:'confirmed',error:'문제 오류: '+e.message});}
@@ -936,6 +936,8 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                 const chunks=s.chunks||[];
                 const enText=chunks.map(c=>c.en).join(' / ');
                 const koText=chunks.map(c=>c.ko).join(' / ');
+                // 학생용: 구문분석 없는 문장 건너뜀
+                if(IS&&!ds) return null;
                 return(
                   <div key={s.num} style={{marginBottom:5,border:`0.5px solid ${sc.bd||'#e5e5e5'}`,borderRadius:7,overflow:'hidden'}}>
                     <div style={{padding:'4px 9px',background:sc.bg,display:'flex',alignItems:'center',gap:5}}>
