@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GREATENG — 교사 분석 툴</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:#f4f5f7;color:#1a1a1a;font-size:14px;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:none!important}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+.card{background:#fff;border-radius:12px;border:0.5px solid #e5e5e5}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useCallback,useRef,useEffect} = React;
+
+/* ── 상수 ──────────────────────────────────────── */
+const SOURCES = ['ABSO','27STYD','MOGO'];
+const DIFFS   = ['상','중','하'];
+const SYMS    = ['G','↔','=','S','→','+'];
+const STRUCTS = ['통념→반박→결론','문제→해결책','질문→답변','실험/일화→교훈','인과 관계','비교 대조'];
+const QTYPES  = ['주제','빈칸','어휘','어법','삽입','순서','무관'];
+const NSTR    = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+const nStr    = n => NSTR[n-1]||`(${n})`;
+
+const SM = {
+  'G' :{bg:'#E6F1FB',bd:'#185FA5',tx:'#0C447C',lbl:'주제·통념'},
+  '↔' :{bg:'#FAECE7',bd:'#D85A30',tx:'#712B13',lbl:'역접'},
+  '=' :{bg:'#EEEDFE',bd:'#534AB7',tx:'#3C3489',lbl:'재진술'},
+  'S' :{bg:'#EAF3DE',bd:'#639922',tx:'#173404',lbl:'예시'},
+  '→' :{bg:'#E1F5EE',bd:'#1D9E75',tx:'#085041',lbl:'인과·결론'},
+  '+' :{bg:'#FAEEDA',bd:'#BA7517',tx:'#633806',lbl:'추가'},
+};
+const BC = {
+  blue  :{bd:'#185FA5',tx:'#0C447C',hd:'#B5D4F4'},
+  coral :{bd:'#D85A30',tx:'#712B13',hd:'#F5C4B3'},
+  teal  :{bd:'#1D9E75',tx:'#085041',hd:'#9FE1CB'},
+  purple:{bd:'#534AB7',tx:'#3C3489',hd:'#CECBF6'},
+  green :{bd:'#639922',tx:'#173404',hd:'#C0DD97'},
+  amber :{bd:'#BA7517',tx:'#633806',hd:'#FAC775'},
+  gray  :{bd:'#5F5E5A',tx:'#2C2C2A',hd:'#D3D1C7'},
+};
+const ST = {
+  idle     :{label:'대기',      color:'#999',   bg:'#f5f5f5'},
+  analyzing:{label:'분석중',   color:'#185FA5',bg:'#E6F1FB'},
+  analyzed :{label:'분석완료', color:'#2d8a60',bg:'#E1F5EE'},
+  confirmed:{label:'흐름확정', color:'#6d3ab5',bg:'#EEEDFE'},
+  genQ     :{label:'문제생성중',color:'#185FA5',bg:'#E6F1FB'},
+  done     :{label:'문제완료', color:'#BA7517',bg:'#FAEEDA'},
+  saved    :{label:'저장완료', color:'#fff',   bg:'#185FA5'},
+};
+const LS = {KEY:'te_claude_key', URL:'te_apps_url', SLOTS:'te_slots'};
+
+/* ── 프롬프트 ───────────────────────────────────── */
+const FLOW_SYS = `수능 영어 독해 분석 전문가. 순수 JSON만 반환. 코드블록 없이.
+기호: G=주제/통념 S=구체예시 ==재진술/부연 ↔=역접/전환 +=추가근거 →=인과/결론
+{
+  "sentences":[{"num":1,"text":"원문","symbol":"G","role":"통념 제시",
+    "keyWords":["핵심단어1","핵심단어2"],
+    "chunks":[{"en":"끊어읽기단위","ko":"해석"}]}],
+  "blocks":[{"id":1,"name":"통념 제시","nameEn":"General Claim","color":"blue","sentenceNums":[1]}],
+  "interBlockConnectors":["↔"],
+  "keyword":"핵심소재","topicSummary":"주제요약(한국어)",
+  "structureType":"통념→반박→결론","difficulty":"중",
+  "difficultSentences":[{"num":2,"text":"원문","structure":"구조설명","translation":"한국어해석","point":"핵심포인트"}]
+}
+keyWords: 해당 문장 논리 흐름상 핵심 단어/구 1~3개 (원형 그대로, 한국어 포함)
+difficulty: 상/중/하
+color: blue/coral/teal/purple/green/amber/gray
+블록 2~4개, difficultSentences 2~3개`;
+
+const QGEN_SYS = (a) => `수능 영어 문제 출제 전문가. 순수 JSON만 반환. 코드블록 없이.
+분석: ${JSON.stringify(a)}
+적합한 유형만 생성, 부적합은 이유 명시.
+{"availableTypes":["주제"],"unavailableTypes":[{"type":"순서","reason":"단락 2개"}],
+"questions":{"주제":{"type":"주제","question":"다음 글의 주제로 가장 적절한 것은?",
+"options":["① ...","② ...","③ ...","④ ...","⑤ ..."],"answer":1,"explanation":"해설"}}}`;
+
+/* ── API / Sheets ───────────────────────────────── */
+function callClaude(key, sys, user, maxTok=4096){
+  if(!key) throw new Error('API 키 없음. 설정에서 입력해주세요.');
+  return fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,
+      'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTok,system:sys,messages:[{role:'user',content:user}]})
+  }).then(r=>r.json());
+}
+function parseJSON(text){
+  let s=text.replace(/```(?:json)?|```/g,'').trim();
+  if(!s.endsWith('}')){const i=s.lastIndexOf('}');if(i>0)s=s.slice(0,i+1);}
+  return JSON.parse(s);
+}
+function sheetsPost(url,action,data){
+  // POST 대신 JSONP GET으로 저장 (CORS 문제 없음)
+  return new Promise((res,rej)=>{
+    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const encoded=encodeURIComponent(JSON.stringify(data.passage||data));
+    const sc=document.createElement('script');
+    sc.src=`${url}?action=${action}&data=${encoded}&callback=${cb}`;
+    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
+    sc.onerror=()=>rej(new Error('저장 실패'));
+    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},15000);
+    document.body.appendChild(sc);
+  });
+}
+function sheetsGet(url,params){
+  return new Promise((res,rej)=>{
+    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const qs=Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
+    const sc=document.createElement('script');
+    sc.src=`${url}?${qs}&callback=${cb}`;
+    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
+    sc.onerror=()=>rej(new Error('연결 실패'));
+    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},10000);
+    document.body.appendChild(sc);
+  });
+}
+
+/* ── 키워드 강조 ────────────────────────────────── */
+function highlight(text, words){
+  if(!words||!words.length) return [text];
+  const sorted=[...words].sort((a,b)=>b.length-a.length);
+  const esc=w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+  const pat=new RegExp('('+sorted.map(esc).join('|')+')','gi');
+  return text.split(pat).map((p,i)=>
+    sorted.some(w=>w.toLowerCase()===p.toLowerCase())
+      ?<mark key={i} style={{background:'#FFD700',color:'#1a1a1a',borderRadius:2,padding:'0 2px',fontWeight:700}}>{p}</mark>
+      :p
+  );
+}
+
+/* ── 슬롯 ───────────────────────────────────────── */
+const makeSlot=i=>({
+  id:i,text:'',viewMode:'teacher',
+  meta:{source:'ABSO',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
+  status:'idle',analysis:null,questions:null,
+  enabledQTypes:[...QTYPES],error:'',open:true,qOpen:false,
+});
+function saveSlots(slots){
+  try{localStorage.setItem(LS.SLOTS,JSON.stringify(slots.map(s=>({
+    id:s.id,text:s.text,viewMode:s.viewMode,meta:s.meta,status:s.status,
+    analysis:s.analysis,questions:s.questions,enabledQTypes:s.enabledQTypes,
+    open:s.open,qOpen:s.qOpen,
+  }))));}catch(e){}
+}
+function loadSlots(){
+  try{
+    const raw=localStorage.getItem(LS.SLOTS);
+    if(!raw)return null;
+    const saved=JSON.parse(raw);
+    return Array.from({length:5},(_,i)=>{
+      const s=saved.find(x=>x.id===i);
+      return s?{...makeSlot(i),...s,error:''}:makeSlot(i);
+    });
+  }catch(e){return null;}
+}
+
+/* ── HTML 출력 생성 ─────────────────────────────── */
+function buildHTML(slot,mode){
+  const IS=mode==='student';
+  const {analysis,meta}=slot;
+  if(!analysis)return'';
+  const {sentences=[],flow={},grammar={}}=analysis;
+  const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
+  const {difficultSentences=[]}=grammar;
+  const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
+  const conn=i=>interBlockConnectors[i]||'→';
+  const id=`${meta.source}_${String(meta.chapter).padStart(2,'0')}_${String(meta.number).padStart(3,'0')}`;
+
+  const esc=w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+  const hlHTML=(text,words)=>{
+    if(!words||!words.length)return text;
+    const sorted=[...words].sort((a,b)=>b.length-a.length);
+    const pat=new RegExp('('+sorted.map(esc).join('|')+')','gi');
+    return text.replace(pat,m=>`<mark style="background:#FFD700;color:#1a1a1a;border-radius:2px;padding:0 2px;font-weight:700">${m}</mark>`);
+  };
+
+  const passHTML=sentences.map(s=>{
+    const sc=SM[s.symbol]||{};
+    const hl=hlHTML(s.text,s.keyWords||[]);
+    return`<span><span style="display:inline-block;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:${sc.bg};color:${sc.tx};vertical-align:super;margin:0 2px">${nStr(s.num)} (${s.symbol})</span>${hl} </span>`;
+  }).join('');
+
+  const legendHTML=SYMS.map(s=>{const sc=SM[s]||{};
+    return`<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#555;padding:2px 8px;border:0.5px solid #ddd;border-radius:4px;margin:2px"><span style="width:7px;height:7px;border-radius:2px;background:${sc.bd};display:inline-block"></span>(${s}) ${sc.lbl}</span>`;
+  }).join('');
+
+  const blockCards=blocks.map((blk,bi)=>{
+    const c=BC[blk.color]||BC.blue;
+    const ss=(blk.sentenceNums||[]).map(n=>sm[n]).filter(Boolean);
+    const hd=IS
+      ?`<div style="border-bottom:1.5px solid ${c.bd};height:18px;width:85%;margin-bottom:4px"></div><div style="border-bottom:1px dashed ${c.bd};height:13px;width:60%;opacity:.5"></div>`
+      :`<div style="font-size:12px;font-weight:500;color:${c.tx};margin-bottom:1px;word-break:keep-all;line-height:1.4">${blk.name}</div><div style="font-size:9.5px;color:${c.tx};font-style:italic;font-weight:600;opacity:.8;word-break:break-all">${blk.nameEn}</div>`;
+    const sRows=ss.map((sent,si)=>{const sc=SM[sent.symbol]||{};
+      const arr=si>0?`<div style="font-size:9px;color:#ccc;padding-left:22px;margin:1px 0">↓</div>`:'';
+      return`${arr}<div style="display:flex;align-items:flex-start;gap:5px;padding:4px 6px;border-radius:5px;background:${sc.bg};margin-bottom:2px"><div style="font-size:14px;font-weight:500;color:${sc.tx};flex-shrink:0;width:17px;margin-top:1px">${nStr(sent.num)}</div><div style="flex:1;min-width:0"><span style="font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:${sc.bg};color:${sc.tx};border:1px solid ${sc.bd};display:inline-block;margin-bottom:2px">(${sent.symbol})</span><div style="font-size:9px;color:#555;word-break:keep-all;overflow-wrap:break-word;line-height:1.4">${sent.role}</div></div></div>`;
+    }).join('');
+    const connDiv=bi<blocks.length-1
+      ?`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex-shrink:0;padding-top:48px;min-width:30px"><div style="font-size:15px;font-weight:500;color:#777">${conn(bi)}</div><div style="font-size:9px;color:#bbb;text-align:center">${SM[conn(bi)]?.lbl||''}</div></div>`
+      :'';
+    return`<div style="flex:1;min-width:130px;border-radius:10px;border:2px solid ${c.bd};overflow:hidden"><div style="padding:7px 10px;background:${c.hd};border-bottom:1.5px solid ${c.bd}">${hd}</div><div style="padding:6px;background:#fff">${sRows}</div></div>${connDiv}`;
+  }).join('');
+
+  const metaRow=`<div style="display:flex;gap:8px;margin-bottom:1rem">
+  <div style="flex:1;background:#f8f8f8;border:0.5px solid #e0e0e0;border-radius:7px;padding:9px 11px"><div style="font-size:9px;font-weight:600;color:#999;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">핵심 소재</div>${IS?`<div style="border-bottom:1.5px solid #aaa;height:20px"></div>`:`<div style="font-size:12.5px;word-break:keep-all">${keyword}</div>`}</div>
+  <div style="flex:2;background:#f8f8f8;border:0.5px solid #e0e0e0;border-radius:7px;padding:9px 11px"><div style="font-size:9px;font-weight:600;color:#999;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">주제 한 줄 요약</div>${IS?`<div style="border-bottom:1.5px solid #aaa;height:20px"></div>`:`<div style="font-size:12.5px;word-break:keep-all;overflow-wrap:break-word">${topicSummary}</div>`}</div>
+  <div style="flex:1.5;background:#f8f8f8;border:0.5px solid #e0e0e0;border-radius:7px;padding:9px 11px"><div style="font-size:9px;font-weight:600;color:#999;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">구조 유형</div>${IS?STRUCTS.map(s=>`<span style="font-size:9px;padding:2px 6px;border:0.5px solid #ddd;border-radius:3px;color:#bbb;display:inline-block;margin:2px">□ ${s}</span>`).join(''):`<div style="font-size:12.5px">${structureType}</div>`}</div>
+  </div>`;
+
+  // 통합 분석 섹션 (교사용만)
+  const integratedHTML = IS ? '' : sentences.map(s=>{
+    const sc=SM[s.symbol]||{};
+    const ds=difficultSentences.find(d=>d.num===s.num);
+    const chunks=s.chunks||[];
+    const enLine=chunks.map(c=>c.en||'').join(' / ');
+    const koLine=chunks.map(c=>c.ko||'').join(' / ');
+    const chunkHTML=chunks.length?`
+      <div style="padding:5px 10px;background:#fff;border-top:0.5px solid #eee">
+        <div style="font-size:10px;font-style:italic;color:#1a1a1a;line-height:1.7;word-break:break-all;overflow-wrap:break-word">${enLine}</div>
+        <div style="font-size:10px;color:#555;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;border-top:0.5px dashed #e0e0e0;margin-top:2px;padding-top:2px">${koLine}</div>
+      </div>`:'';
+    const diffHTML=ds?`
+      <div style="padding:5px 10px;background:#fafafa;border-top:0.5px solid #eee">
+        <div style="font-size:8px;font-weight:600;color:#aaa;margin-bottom:3px">구문 분석</div>
+        ${[{l:'구조',v:ds.structure},{l:'해석',v:ds.translation},{l:'포인트',v:ds.point}].map(r=>
+          `<div style="display:flex;gap:6px;padding:2px 0;border-bottom:0.5px dashed #eee"><span style="font-size:8px;font-weight:600;color:#888;flex-shrink:0;width:30px">${r.l}</span><span style="font-size:10px;color:#333;word-break:break-all;flex:1">${r.v||''}</span></div>`
+        ).join('')}
+      </div>`:'';
+    return`<div style="margin-bottom:5px;border:0.5px solid ${sc.bd||'#e5e5e5'};border-radius:7px;overflow:hidden">
+      <div style="padding:5px 10px;background:${sc.bg};display:flex;align-items:flex-start;gap:6px">
+        <span style="font-size:13px;font-weight:700;color:${sc.tx};flex-shrink:0">${nStr(s.num)}</span>
+        <span style="font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.5);color:${sc.tx};border:1px solid ${sc.bd};flex-shrink:0;margin-top:2px">(${s.symbol})</span>
+        <span style="font-size:11px;color:${sc.tx};font-style:italic;line-height:1.5;word-break:break-all">${s.text}</span>
+      </div>
+      ${chunkHTML}${diffHTML}
+    </div>`;
+  }).join('');
+
+  return`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<title>${id} — ${IS?'학생용':'교사용'}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:12mm 12mm 10mm;color:#1a1a1a;font-size:13px;line-height:1.5;background:#fff}@page{size:A4;margin:10mm 11mm}@media print{.np{display:none!important}body{padding:0}}</style>
+</head><body>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;border-bottom:2px solid #1a1a1a;padding-bottom:5px">
+  <div style="font-size:15px;font-weight:600">수능 영어 독해 — 글의 흐름 분석 <span style="font-size:10px;color:#999;font-weight:400">${id} ${IS?'학생용':'교사용'}</span></div>
+  <div style="font-size:11px;color:#666;display:flex;gap:14px"><span>이름: <span style="display:inline-block;width:68px;border-bottom:1px solid #999">&nbsp;</span></span><span>날짜: <span style="display:inline-block;width:68px;border-bottom:1px solid #999">&nbsp;</span></span></div>
+</div>
+<div style="border-left:3px solid #185FA5;background:#fafafa;border-radius:0 7px 7px 0;padding:10px 14px;font-size:12.5px;line-height:2.1;margin-bottom:.85rem;word-break:break-all;overflow-wrap:break-word">${passHTML}</div>
+<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:.85rem">${legendHTML}</div>
+<div style="font-size:10px;font-weight:600;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">글의 구조 — Block Diagram</div>
+<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:.85rem;flex-wrap:wrap">${blockCards}</div>
+${metaRow}
+${integratedHTML?`<div style="padding-top:.7rem;border-top:1.5px solid #e0e0e0"><div style="font-size:10px;font-weight:600;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">문장별 분석 — 끊어읽기 &amp; 구문</div>${integratedHTML}</div>`:''}
+<div class="np" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid #eee">
+  <button onclick="window.print()" style="padding:9px 28px;font-size:13px;font-weight:500;background:#185FA5;color:#fff;border:none;border-radius:7px;cursor:pointer">🖨 인쇄 / PDF 저장</button>
+</div>
+</body></html>`;
+}
+
+function dlHTML(slot,mode){
+  const html=buildHTML(slot,mode);
+  const {meta}=slot;
+  const id=`${meta.source}_${String(meta.chapter).padStart(2,'0')}_${String(meta.number).padStart(3,'0')}`;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`${id}_${mode==='teacher'?'교사용':'학생용'}.html`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+/* ── DOCX 생성 ─────────────────────────────────── */
+function dlDOCX(slot,mode){
+  const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
+    AlignmentType,BorderStyle,WidthType,ShadingType,VerticalAlign}=docx;
+  const IS=mode==='student';
+  const {analysis,meta}=slot;
+  if(!analysis)return;
+  const {sentences=[],flow={},grammar={}}=analysis;
+  const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
+  const {difficultSentences=[]}=grammar;
+  const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
+  const conn=i=>interBlockConnectors[i]||'→';
+  const id=`${meta.source}_${String(meta.chapter).padStart(2,'0')}_${String(meta.number).padStart(3,'0')}`;
+  const F='Malgun Gothic',P9=18,P8=16,P10=20;
+  const nb={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
+  const bd=(c='CCCCCC',sz=3)=>({style:BorderStyle.SINGLE,size:sz,color:c});
+  const nobs={top:nb,bottom:nb,left:nb,right:nb};
+  const allb=(c='CCCCCC')=>({top:bd(c),bottom:bd(c),left:bd(c),right:bd(c)});
+  const CM={top:60,bottom:60,left:100,right:100};
+  const cell=(children,opts={})=>new TableCell({
+    borders:opts.borders||allb(opts.bc||'CCCCCC'),
+    shading:opts.bg?{fill:opts.bg,type:ShadingType.CLEAR}:undefined,
+    width:opts.w?{size:opts.w,type:WidthType.DXA}:undefined,
+    verticalAlign:VerticalAlign.CENTER,margins:opts.m||CM,children,
+  });
+  const para=(text,opts={})=>new Paragraph({
+    alignment:opts.a||AlignmentType.LEFT,
+    spacing:{before:opts.sb||0,after:opts.sa||40},
+    border:opts.border,indent:opts.indent,
+    children:Array.isArray(text)?text:[new TextRun({
+      text:String(text||''),bold:opts.bold||false,size:opts.size||P9,
+      color:opts.color||'1a1a1a',font:F,italics:opts.italic||false,
+    })],
+  });
+  const run=(text,opts={})=>new TextRun({
+    text:String(text||''),bold:opts.bold||false,size:opts.size||P9,
+    color:opts.color||'1a1a1a',font:F,italics:opts.italic||false,
+  });
+  const blank=()=>new Paragraph({
+    spacing:{after:0,before:0},
+    border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'AAAAAA',space:1}},
+    children:[run(' ',{size:P9})],
+  });
+  const SC={G:'185FA5','↔':'D85A30','=':'534AB7',S:'639922','→':'1D9E75','+':'BA7517'};
+  const SBG={G:'E6F1FB','↔':'FAECE7','=':'EEEDFE',S:'EAF3DE','→':'E1F5EE','+':'FAEEDA'};
+  const BCC={blue:'185FA5',coral:'D85A30',teal:'1D9E75',purple:'534AB7',green:'639922',amber:'BA7517',gray:'5F5E5A'};
+  const BHD={blue:'B5D4F4',coral:'F5C4B3',teal:'9FE1CB',purple:'CECBF6',green:'C0DD97',amber:'FAC775',gray:'D3D1C7'};
+
+  const ch=[];
+  // 헤더
+  ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[6000,3200],
+    rows:[new TableRow({children:[
+      cell([para([run('수능 영어 독해 — 글의 흐름 분석',{bold:true,size:P10}),run(`  (${IS?'학생용':'교사용'})  ${id}`,{size:P8,color:'999999'})],{sa:0})],{borders:nobs,w:6000,m:{top:0,bottom:0,left:0,right:0}}),
+      cell([para([run('이름: ',{size:P8,color:'666666'}),run('________________',{size:P8}),run('  날짜: ',{size:P8,color:'666666'}),run('__________',{size:P8})],{a:AlignmentType.RIGHT,sa:0})],{borders:nobs,w:3200,m:{top:0,bottom:0,left:0,right:0}}),
+    ]})]
+  }));
+  ch.push(new Paragraph({spacing:{before:0,after:100},border:{bottom:{style:BorderStyle.SINGLE,size:8,color:'1a1a1a',space:1}},children:[run('')]}));
+
+  // 지문
+  ch.push(para('지문',{bold:true,size:P8,color:'888888',sa:60}));
+  const pRuns=[];
+  sentences.forEach(s=>{
+    const col=SC[s.symbol]||'185FA5';
+    pRuns.push(run(`${nStr(s.num)} (${s.symbol}) `,{bold:true,size:P9,color:col}));
+    pRuns.push(run(s.text+' ',{size:P9}));
+  });
+  ch.push(new Paragraph({spacing:{before:0,after:120},border:{left:{style:BorderStyle.SINGLE,size:10,color:'185FA5',space:6}},indent:{left:160},children:pRuns}));
+
+  // 범례
+  const lRuns=[];
+  SYMS.forEach((s,i)=>{if(i>0)lRuns.push(run('  ',{size:P8}));lRuns.push(run(`(${s}) ${SM[s]?.lbl}`,{size:P8,color:SC[s]||'185FA5',bold:true}));});
+  ch.push(new Paragraph({spacing:{before:0,after:120},children:lRuns}));
+
+  // Block Diagram
+  ch.push(para('글의 구조 — Block Diagram',{bold:true,size:P8,color:'888888',sb:80,sa:60}));
+  const cw=[];
+  blocks.forEach((_,bi)=>{cw.push(Math.floor((9200-blocks.length*440)/ (blocks.length>1?blocks.length:1)+(bi<blocks.length-1?0:0)));if(bi<blocks.length-1)cw.push(440);});
+  // recalc properly
+  const nc=blocks.length-1;
+  const bw=Math.floor((9200-nc*440)/blocks.length);
+  const colW=[];blocks.forEach((_,bi)=>{colW.push(bw);if(bi<blocks.length-1)colW.push(440);});
+
+  const hCells=blocks.map((blk,bi)=>{
+    const c=BC[blk.color]||BC.blue;
+    const hd=BHD[blk.color]||'B5D4F4',col=BCC[blk.color]||'185FA5';
+    const hdContent=IS?[blank()]:[para(blk.name,{bold:true,size:P9,color:col,sa:20}),para(blk.nameEn,{size:P8,color:col,italic:true,sa:0})];
+    const card=cell(hdContent,{bg:hd,bc:col,w:bw});
+    if(bi<blocks.length-1)return[card,cell([para(conn(bi),{bold:true,size:P10,color:'666666',a:AlignmentType.CENTER,sa:0})],{borders:nobs,w:440})];
+    return[card];
+  }).flat();
+
+  const maxS=Math.max(...blocks.map(b=>(b.sentenceNums||[]).length));
+  const bRows=Array.from({length:maxS},(_,ri)=>{
+    const rCells=blocks.map((blk,bi)=>{
+      const sn=(blk.sentenceNums||[])[ri];
+      const sent=sn?sm[sn]:null;
+      const sc=sent?(SC[sent.symbol]||'185FA5'):null;
+      const sbg=sent?(SBG[sent.symbol]||'E6F1FB'):'FFFFFF';
+      const col=BCC[blk.color]||'185FA5';
+      const card=cell(sent?[para([run(`${nStr(sent.num)} `,{bold:true,size:P9,color:sc}),run(`(${sent.symbol})  `,{bold:true,size:P8,color:sc}),run(sent.role,{size:P8,color:'444444'})],{sa:0})]:[para('',{sa:0})],{bg:sent?sbg:'FFFFFF',bc:col,w:bw});
+      if(bi<blocks.length-1)return[card,cell([para('',{sa:0})],{borders:nobs,w:440})];
+      return[card];
+    }).flat();
+    return new TableRow({children:rCells});
+  });
+  ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:colW,rows:[new TableRow({children:hCells}),...bRows]}));
+  ch.push(para('',{sa:100}));
+
+  // 메타
+  ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[1800,4200,3200],
+    rows:[
+      new TableRow({children:[cell([para('핵심 소재',{size:P8,bold:true,color:'888888',sa:0})],{bg:'F0F0F0',w:1800}),cell([para('주제 한 줄 요약',{size:P8,bold:true,color:'888888',sa:0})],{bg:'F0F0F0',w:4200}),cell([para('글의 구조 유형',{size:P8,bold:true,color:'888888',sa:0})],{bg:'F0F0F0',w:3200})]}),
+      new TableRow({children:[cell([IS?blank():para(keyword,{size:P9,sa:0})],{w:1800}),cell([IS?blank():para(topicSummary,{size:P9,sa:0})],{w:4200}),cell([IS?blank():para(structureType,{size:P9,sa:0})],{w:3200})]}),
+    ]
+  }));
+  ch.push(para('',{sa:100}));
+
+  // 통합 분석 (교사용)
+  if(!IS){
+    ch.push(para('문장별 분석 — 끊어읽기 & 구문',{bold:true,size:P8,color:'888888',sb:80,sa:60}));
+    sentences.forEach(s=>{
+      const col=SC[s.symbol]||'185FA5';
+      const bg=SBG[s.symbol]||'E6F1FB';
+      const chunks=s.chunks||[];
+      const ds=difficultSentences.find(d=>d.num===s.num);
+      // 문장 헤더
+      ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[9200],
+        rows:[new TableRow({children:[cell([para([run(`${nStr(s.num)} `,{bold:true,size:P9,color:col}),run(`(${s.symbol})  `,{bold:true,size:P8,color:col}),run(s.text,{size:P9,italic:true,color:col})],{sa:0})],{bg,bc:col,w:9200})]})]
+      }));
+      // 끊어읽기: 영문 한줄 + 한글 한줄
+      if(chunks.length){
+        const enText=chunks.map(c=>c.en||'').join(' / ');
+        const koText=chunks.map(c=>c.ko||'').join(' / ');
+        ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[700,8500],
+          rows:[
+            new TableRow({children:[
+              cell([para('끊어읽기',{size:P8,bold:true,color:col,sa:0})],{bg,bc:col,w:700,borders:{top:bd(col),bottom:nb,left:bd(col),right:bd(col)}}),
+              cell([para(enText,{size:P9,italic:true,sa:0})],{w:8500,borders:{top:bd('CCCCCC'),bottom:nb,left:bd('CCCCCC'),right:bd('CCCCCC')}}),
+            ]}),
+            new TableRow({children:[
+              cell([para('',{sa:0})],{bg,bc:col,w:700,borders:{top:nb,bottom:bd(col),left:bd(col),right:bd(col)}}),
+              cell([para(koText,{size:P9,color:'444444',sa:0})],{w:8500,borders:{top:nb,bottom:bd('CCCCCC'),left:bd('CCCCCC'),right:bd('CCCCCC')}}),
+            ]}),
+          ]
+        }));
+      }
+      // 구문 분석 (어려운 문장만)
+      if(ds){
+        ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[1100,8100],
+          rows:[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>
+            new TableRow({children:[
+              cell([para(r.l,{size:P8,bold:true,color:'888888',sa:0})],{bg:'F8F8F8',w:1100}),
+              cell([para(ds[r.f]||'',{size:P9,sa:0})],{w:8100}),
+            ]})
+          )
+        }));
+      }
+      ch.push(para('',{sa:40}));
+    });
+  }
+
+  const doc=new Document({
+    styles:{default:{document:{run:{font:F,size:P9}}}},
+    sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},children:ch}]
+  });
+  Packer.toBlob(doc).then(blob=>saveAs(blob,`${id}_${IS?'학생용':'교사용'}.docx`));
+}
+
+/* ── 메인 앱 ────────────────────────────────────── */
+function App(){
+  const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:5},(_,i)=>makeSlot(i)));
+  const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
+  const [appsURL,setAppsURL]=useState(()=>localStorage.getItem(LS.URL)||'');
+  const [keyInput,setKeyInput]=useState('');
+  const [urlInput,setUrlInput]=useState('');
+  const [showSet,setShowSet]=useState(false);
+  const [msg,setMsg]=useState('');
+  const running=useRef(false);
+
+  useEffect(()=>{saveSlots(slots);},[slots]);
+
+  const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
+  const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
+
+  const upAnalysis=useCallback((id,path,val)=>setSlots(p=>p.map(s=>{
+    if(s.id!==id)return s;
+    const a=JSON.parse(JSON.stringify(s.analysis));
+    const parts=path.split('.');let cur=a;
+    for(let i=0;i<parts.length-1;i++){if(cur[parts[i]]===undefined)cur[parts[i]]={};cur=cur[parts[i]];}
+    cur[parts[parts.length-1]]=val;
+    return{...s,analysis:a};
+  })),[]);
+
+  const handleMeta=useCallback((id,f,v)=>setSlots(prev=>{
+    const next=prev.map(s=>s.id===id?{...s,meta:{...s.meta,[f]:v}}:s);
+    if(id===0&&(f==='chapter'||f==='number')){
+      const bCh=parseInt(f==='chapter'?v:next[0].meta.chapter)||1;
+      const bN=parseInt(f==='number'?v:next[0].meta.number)||1;
+      return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,
+        chapter:String(bCh).padStart(2,'0'),
+        number:String(bN+s.id).padStart(3,'0'),
+      }});
+    }
+    return next;
+  }),[]);
+
+  const runAll=useCallback(async()=>{
+    if(running.current)return;
+    if(!apiKey){alert('API Key를 먼저 설정해주세요.');setShowSet(true);return;}
+    running.current=true;
+    const pending=slots.filter(s=>s.text.trim()&&s.status==='idle');
+    for(const slot of pending){
+      upSlot(slot.id,{status:'analyzing',error:''});
+      try{
+        const d=await callClaude(apiKey,FLOW_SYS,slot.text);
+        if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+        const p=parseJSON(d.content[0].text);
+        upSlot(slot.id,{status:'analyzed',meta:{...slot.meta,difficulty:p.difficulty||'중'},
+          analysis:{sentences:p.sentences||[],
+            flow:{blocks:p.blocks||[],interBlockConnectors:p.interBlockConnectors||[],keyword:p.keyword||'',topicSummary:p.topicSummary||'',structureType:p.structureType||''},
+            grammar:{difficultSentences:p.difficultSentences||[]}},open:true});
+      }catch(e){upSlot(slot.id,{status:'idle',error:'오류: '+e.message});}
+    }
+    running.current=false;
+  },[slots,upSlot,apiKey]);
+
+  const genQ=useCallback(async(slot)=>{
+    if(!apiKey)return;
+    upSlot(slot.id,{status:'genQ',error:''});
+    try{
+      const {sentences,flow,grammar}=slot.analysis;
+      const d=await callClaude(apiKey,QGEN_SYS({sentences,...flow,...grammar}),'문제를 출제해주세요.');
+      if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+      upSlot(slot.id,{status:'done',questions:parseJSON(d.content[0].text),qOpen:true});
+    }catch(e){upSlot(slot.id,{status:'confirmed',error:'문제 오류: '+e.message});}
+  },[upSlot,apiKey]);
+
+  const saveSheet=useCallback(async(slot)=>{
+    if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
+    try{
+      const {meta,analysis,questions}=slot;
+      const id=`${meta.source}_${String(meta.chapter).padStart(2,'0')}_${String(meta.number).padStart(3,'0')}`;
+      const passage={id,...meta,confirmed:true,
+        sentences:analysis?.sentences||[],flow:analysis?.flow||{},
+        grammar:analysis?.grammar||{},questions:questions?.questions||{}};
+      const result=await sheetsPost(appsURL,'save',{passage});
+      if(result?.error)throw new Error(result.error);
+      upSlot(slot.id,{status:'saved'});
+      flash(`✓ ${id} 저장 완료`);
+    }catch(e){alert('저장 오류: '+e.message);}
+  },[appsURL,upSlot]);
+
+  const loadSheet=useCallback(async()=>{
+    if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
+    flash('Sheets 불러오는 중...');
+    try{
+      const data=await sheetsGet(appsURL,{action:'getAll'});
+      const passages=(data.passages||[]).slice(0,5);
+      if(!passages.length){flash('저장된 지문 없음');return;}
+      setSlots(Array.from({length:5},(_,i)=>{
+        const p=passages[i];
+        if(!p)return makeSlot(i);
+        return{...makeSlot(i),text:(p.sentences||[]).map(s=>s.text).join(' '),
+          meta:{source:p.source||'ABSO',chapter:p.chapter||'01',number:p.number||'001',difficulty:p.difficulty||'중'},
+          status:p.confirmed?'saved':'analyzed',
+          analysis:{sentences:p.sentences||[],flow:p.flow||{},grammar:p.grammar||{}},
+          questions:p.questions?{questions:p.questions}:null,open:true};
+      }));
+      flash(`✓ ${passages.length}개 불러오기 완료`);
+    }catch(e){flash('불러오기 실패: '+e.message,4000);}
+  },[appsURL]);
+
+  const keyOk=apiKey.startsWith('sk-ant');
+  const pending=slots.filter(s=>s.text.trim()&&s.status==='idle').length;
+
+  const iB={border:'none',borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',padding:'2px 0',fontFamily:'inherit',color:'inherit',width:'100%'};
+  const sB={border:'none',background:'transparent',outline:'none',cursor:'pointer',fontFamily:'inherit'};
+
+  return(
+    <div style={{minHeight:'100vh',background:'#f4f5f7'}}>
+      {/* 헤더 */}
+      <div style={{background:'#185FA5',padding:'0 20px',display:'flex',alignItems:'center',justifyContent:'space-between',height:50,position:'sticky',top:0,zIndex:100}}>
+        <div style={{color:'#fff',fontWeight:600,fontSize:14}}>📘 GREATENG — 교사 분석 툴</div>
+        <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          {msg&&<span style={{color:'#a5d6f5',fontSize:11}}>{msg}</span>}
+          <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'API 미설정'}</span>
+          <button onClick={loadSheet} disabled={!appsURL} style={{background:appsURL?'rgba(255,255,255,.15)':'rgba(255,255,255,.05)',color:appsURL?'#a5d6f5':'rgba(255,255,255,.3)',border:'none',borderRadius:6,padding:'4px 10px',fontSize:11,cursor:appsURL?'pointer':'default'}}>☁ 불러오기</button>
+          <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:5},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}} style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🗑</button>
+          <button onClick={()=>setShowSet(v=>!v)} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',borderRadius:6,padding:'4px 10px',fontSize:11,cursor:'pointer'}}>⚙ 설정</button>
+        </div>
+      </div>
+
+      {/* 설정 */}
+      {showSet&&(
+        <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
+          <div style={{display:'flex',gap:10,alignItems:'center'}}>
+              <span style={{color:'#a5d6f5',fontSize:12,width:130,flexShrink:0}}>Claude API Key</span>
+              <input type="password" value={keyInput||(apiKey?'••••••••':'')} onChange={e=>setKeyInput(e.target.value)} placeholder="sk-ant-api03-..."
+                style={{flex:1,padding:'6px 10px',borderRadius:6,border:'none',fontSize:12,fontFamily:'monospace'}}/>
+            </div>
+            <div style={{display:'flex',gap:10,alignItems:'center'}}>
+              <span style={{color:'#a5d6f5',fontSize:12,width:130,flexShrink:0}}>Apps Script URL</span>
+              <input type="text" value={urlInput||appsURL} onChange={e=>setUrlInput(e.target.value)} placeholder="https://script.google.com/..."
+                style={{flex:1,padding:'6px 10px',borderRadius:6,border:'none',fontSize:12,fontFamily:'monospace'}}/>
+            </div>
+          <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+            <span style={{fontSize:11,color:'#88aacc',alignSelf:'center'}}>API 키는 이 브라우저에만 저장됩니다</span>
+            <button onClick={()=>{const k=keyInput||apiKey,u=urlInput||appsURL;if(k){localStorage.setItem(LS.KEY,k);setApiKey(k);}if(u){localStorage.setItem(LS.URL,u);setAppsURL(u);}setShowSet(false);flash('설정 저장 ✓');}} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:6,padding:'6px 18px',fontSize:12,cursor:'pointer',fontWeight:500}}>저장</button>
+            <button onClick={()=>setShowSet(false)} style={{background:'rgba(255,255,255,.1)',color:'#ccc',border:'none',borderRadius:6,padding:'6px 12px',fontSize:12,cursor:'pointer'}}>닫기</button>
+          </div>
+        </div>
+      )}
+
+      <div style={{maxWidth:980,margin:'0 auto',padding:'20px 14px'}}>
+        {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,padding:'9px 14px',marginBottom:14,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+          <span style={{fontSize:12,color:'#856404'}}>⚠ Claude API Key가 없습니다.</span>
+          <button onClick={()=>setShowSet(true)} style={{padding:'4px 12px',fontSize:11,background:'#856404',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>설정</button>
+        </div>}
+
+        {/* 전체 교재 + 분석 시작 */}
+        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14,background:'#fff',borderRadius:10,border:'0.5px solid #e5e5e5',padding:'11px 16px'}}>
+          <span style={{fontSize:12.5,fontWeight:500,color:'#555',whiteSpace:'nowrap'}}>전체 교재</span>
+          <div style={{display:'flex',gap:5}}>
+            {SOURCES.map(src=><button key={src} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src}})))}
+              style={{padding:'5px 13px',fontSize:12,fontWeight:500,background:slots.every(s=>s.meta.source===src)?'#185FA5':'#f0f0f0',color:slots.every(s=>s.meta.source===src)?'#fff':'#555',border:'none',borderRadius:6,cursor:'pointer'}}>{src}</button>)}
+          </div>
+          <div style={{flex:1}}/>
+          <span style={{fontSize:12,color:'#999'}}>{pending>0?`대기 ${pending}개`:'대기 없음'}</span>
+          <button onClick={runAll} disabled={pending===0||!keyOk}
+            style={{padding:'7px 20px',fontSize:13,fontWeight:500,background:pending>0&&keyOk?'#185FA5':'#ccc',color:'#fff',border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default'}}>
+            🔍 전체 분석 ({pending}개)
+          </button>
+        </div>
+
+        {/* 슬롯들 */}
+        {slots.map(slot=>(
+          <SlotCard key={slot.id} slot={slot}
+            iB={iB} sB={sB}
+            onText={v=>upSlot(slot.id,{text:v})}
+            onMeta={handleMeta}
+            onToggle={()=>upSlot(slot.id,{open:!slot.open})}
+            onQToggle={()=>upSlot(slot.id,{qOpen:!slot.qOpen})}
+            onViewToggle={()=>upSlot(slot.id,{viewMode:slot.viewMode==='teacher'?'student':'teacher'})}
+            onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
+            onGenQ={()=>genQ(slot)}
+            onSave={()=>saveSheet(slot)}
+            onAnalysis={upAnalysis}
+            onQType={t=>upSlot(slot.id,{enabledQTypes:slot.enabledQTypes.includes(t)?slot.enabledQTypes.filter(x=>x!==t):[...slot.enabledQTypes,t]})}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── 슬롯 카드 ─────────────────────────────────── */
+function SlotCard({slot,iB,sB,onText,onMeta,onToggle,onQToggle,onViewToggle,onConfirm,onGenQ,onSave,onAnalysis,onQType}){
+  const IS=slot.viewMode==='student';
+  const st=ST[slot.status]||ST.idle;
+  const {sentences=[],flow={},grammar={}}=slot.analysis||{};
+  const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
+  const {difficultSentences=[]}=grammar;
+  const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
+  const conn=i=>interBlockConnectors[i]||'→';
+  const editable=slot.status!=='saved';
+
+  return(
+    <div className="card" style={{marginBottom:10,overflow:'hidden'}}>
+      {/* 헤더 */}
+      <div style={{padding:'10px 14px',display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',
+        borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #eee':'none',
+        background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
+        <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
+        <span style={{fontSize:9,fontWeight:700,padding:'2px 7px',borderRadius:4,background:st.bg,color:st.color,letterSpacing:'.04em'}}>{st.label}</span>
+
+        {/* 교재 */}
+        <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
+          style={{...sB,fontSize:11.5,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 7px'}}>
+          {SOURCES.map(s=><option key={s} value={s}>{s}</option>)}
+        </select>
+
+        {/* 강 스피너 */}
+        <div style={{display:'flex',alignItems:'center',background:'#f5f5f5',borderRadius:6,border:'0.5px solid #ddd',overflow:'hidden'}}>
+          <button onClick={()=>onMeta(slot.id,'chapter',String(Math.max(1,parseInt(slot.meta.chapter||1)-1)).padStart(2,'0'))} style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderRight:'0.5px solid #ddd'}}>▼</button>
+          <span style={{fontSize:12,fontWeight:500,color:'#333',minWidth:24,textAlign:'center',padding:'0 2px'}}>{parseInt(slot.meta.chapter||1)}강</span>
+          <button onClick={()=>onMeta(slot.id,'chapter',String(Math.min(30,parseInt(slot.meta.chapter||1)+1)).padStart(2,'0'))} style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderLeft:'0.5px solid #ddd'}}>▲</button>
+        </div>
+
+        {/* 번 스피너 */}
+        <div style={{display:'flex',alignItems:'center',background:'#f5f5f5',borderRadius:6,border:'0.5px solid #ddd',overflow:'hidden'}}>
+          <button onClick={()=>onMeta(slot.id,'number',String(Math.max(1,parseInt(slot.meta.number||1)-1)).padStart(3,'0'))} style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderRight:'0.5px solid #ddd'}}>▼</button>
+          <span style={{fontSize:12,fontWeight:500,color:'#333',minWidth:26,textAlign:'center',padding:'0 2px'}}>{parseInt(slot.meta.number||1)}번</span>
+          <button onClick={()=>onMeta(slot.id,'number',String(Math.min(99,parseInt(slot.meta.number||1)+1)).padStart(3,'0'))} style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderLeft:'0.5px solid #ddd'}}>▲</button>
+        </div>
+
+        {/* 난이도 */}
+        <select value={slot.meta.difficulty} onChange={e=>onMeta(slot.id,'difficulty',e.target.value)}
+          style={{...sB,fontSize:12,fontWeight:600,
+            color:slot.meta.difficulty==='상'?'#c0392b':slot.meta.difficulty==='하'?'#2d8a60':'#BA7517',
+            border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px',
+            background:slot.meta.difficulty==='상'?'#FDECEA':slot.meta.difficulty==='하'?'#E1F5EE':'#FFF3E0'}}>
+          {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
+        </select>
+        {slot.status==='analyzed'&&<span style={{fontSize:9.5,color:'#aaa'}}>AI추정</span>}
+        {slot.id===0&&slot.status==='idle'&&<span style={{fontSize:9.5,color:'#bbb'}}>↑ 이후 슬롯 자동 연번</span>}
+
+        <div style={{flex:1}}/>
+        {slot.error&&<span style={{fontSize:10.5,color:'#c0392b',maxWidth:180,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
+
+        {slot.analysis&&(
+          <div style={{display:'flex',gap:4,alignItems:'center',flexWrap:'wrap'}}>
+            {/* 교사/학생 토글 */}
+            <div style={{display:'flex',gap:1,background:'#f0f0f0',borderRadius:5,padding:2}}>
+              {['teacher','student'].map(m=>(
+                <button key={m} onClick={onViewToggle}
+                  style={{padding:'3px 9px',fontSize:10,fontWeight:500,
+                    background:slot.viewMode===m?'#fff':'transparent',
+                    color:slot.viewMode===m?'#185FA5':'#aaa',
+                    border:slot.viewMode===m?'0.5px solid #ddd':'none',
+                    borderRadius:4,cursor:'pointer'}}>
+                  {m==='teacher'?'교사':'학생'}
+                </button>
+              ))}
+            </div>
+            <div style={{width:1,height:16,background:'#e0e0e0'}}/>
+            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:10.5,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓교사</button>
+            <button onClick={()=>dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:10.5,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
+            <button onClick={()=>dlDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:10.5,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
+            <button onClick={()=>dlDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:10.5,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
+          </div>
+        )}
+        <button onClick={onToggle} style={{...sB,fontSize:12,color:'#ccc',padding:'2px 5px'}}>{slot.open?'▲':'▼'}</button>
+      </div>
+
+      {/* 입력 */}
+      {slot.open&&slot.status==='idle'&&(
+        <div style={{padding:14}}>
+          <textarea value={slot.text} onChange={e=>onText(e.target.value)}
+            placeholder={`지문 ${slot.id+1} 붙여넣기...`}
+            style={{width:'100%',minHeight:90,padding:'9px 12px',fontSize:13,lineHeight:1.9,border:'0.5px solid #e0e0e0',borderRadius:8,resize:'vertical',fontFamily:'inherit',color:'#1a1a1a',background:'#fafafa',boxSizing:'border-box'}}/>
+        </div>
+      )}
+
+      {/* 분석 결과 */}
+      {slot.open&&slot.analysis&&(
+        <div style={{padding:14}}>
+          {/* 지문 */}
+          <div style={{borderLeft:'3px solid #185FA5',background:'#fafafa',borderRadius:'0 7px 7px 0',padding:'9px 13px',fontSize:12.5,lineHeight:2.1,marginBottom:10,wordBreak:'break-all',overflowWrap:'break-word'}}>
+            {sentences.map(s=>{
+              const sc=SM[s.symbol]||{};
+              return<span key={s.num}>
+                <span style={{display:'inline-block',fontSize:9,fontWeight:700,padding:'1px 5px',borderRadius:3,background:sc.bg,color:sc.tx,verticalAlign:'super',margin:'0 2px'}}>{nStr(s.num)} ({s.symbol})</span>
+                {highlight(s.text,s.keyWords||[])}
+                {' '}
+              </span>;
+            })}
+          </div>
+
+          {/* 범례 */}
+          <div style={{display:'flex',flexWrap:'wrap',gap:3,marginBottom:10}}>
+            {SYMS.map(sym=>{const sc=SM[sym]||{};return<span key={sym} style={{display:'flex',alignItems:'center',gap:3,fontSize:10,color:'#666',padding:'2px 7px',border:'0.5px solid #e5e5e5',borderRadius:4}}>
+              <span style={{width:6,height:6,borderRadius:2,background:sc.bd,display:'inline-block'}}/>({sym}) {sc.lbl}
+            </span>;})}
+          </div>
+
+          {/* 블록 다이어그램 */}
+          <div style={{fontSize:9.5,fontWeight:600,color:'#888',letterSpacing:'.08em',textTransform:'uppercase',marginBottom:7}}>Block Diagram</div>
+          <div style={{display:'flex',alignItems:'flex-start',gap:4,marginBottom:10,flexWrap:'wrap'}}>
+            {blocks.map((blk,bi)=>{
+              const c=BC[blk.color]||BC.blue;
+              const bsents=(blk.sentenceNums||[]).map(n=>sm[n]).filter(Boolean);
+              return(
+                <React.Fragment key={blk.id}>
+                  <div style={{flex:'1 1 130px',minWidth:0,borderRadius:9,border:`2px solid ${c.bd}`}}>
+                    <div style={{padding:'7px 9px',background:c.hd,borderBottom:`1.5px solid ${c.bd}`,borderRadius:'7px 7px 0 0'}}>
+                      {IS
+                        ?<><div style={{borderBottom:`1.5px solid ${c.bd}`,height:17,width:'85%',marginBottom:4}}/><div style={{borderBottom:`1px dashed ${c.bd}`,height:12,width:'60%',opacity:.5}}/></>
+                        :editable
+                        ?<><input value={blk.name} onChange={e=>onAnalysis(slot.id,`flow.blocks.${bi}.name`,e.target.value)} style={{...iB,fontSize:12,fontWeight:500,color:c.tx,borderBottomColor:c.bd,marginBottom:2}}/><input value={blk.nameEn} onChange={e=>onAnalysis(slot.id,`flow.blocks.${bi}.nameEn`,e.target.value)} style={{...iB,fontSize:9.5,fontStyle:'italic',fontWeight:600,color:c.tx,borderBottomColor:c.bd,opacity:.8}}/></>
+                        :<><div style={{fontSize:12,fontWeight:500,color:c.tx,marginBottom:1,wordBreak:'keep-all',lineHeight:1.4}}>{blk.name}</div><div style={{fontSize:9.5,color:c.tx,fontStyle:'italic',fontWeight:600,opacity:.8,wordBreak:'break-all'}}>{blk.nameEn}</div></>
+                      }
+                    </div>
+                    <div style={{padding:'6px',background:'#fff'}}>
+                      {bsents.map((sent,si)=>{
+                        const sc=SM[sent.symbol]||{};
+                        const si2=sentences.indexOf(sent);
+                        return<div key={sent.num}>
+                          {si>0&&<div style={{fontSize:8,color:'#ccc',paddingLeft:20,marginBottom:1}}>↓</div>}
+                          <div style={{display:'flex',alignItems:'flex-start',gap:5,padding:'4px 5px',borderRadius:5,background:sc.bg,marginBottom:2}}>
+                            <div style={{fontSize:13,fontWeight:500,color:sc.tx,flexShrink:0,width:16,marginTop:1}}>{nStr(sent.num)}</div>
+                            <div style={{flex:1,minWidth:0}}>
+                              {editable&&!IS
+                                ?<><select value={sent.symbol} onChange={e=>onAnalysis(slot.id,`sentences.${si2}.symbol`,e.target.value)} style={{...sB,fontSize:9,fontWeight:700,padding:'1px 3px',borderRadius:3,background:sc.bg,color:sc.tx,border:`1px solid ${sc.bd}`,marginBottom:2,display:'block'}}>{SYMS.map(s=><option key={s} value={s}>{s}</option>)}</select><textarea value={sent.role} onChange={e=>onAnalysis(slot.id,`sentences.${si2}.role`,e.target.value)} rows={2} style={{...iB,fontSize:9,color:'#555',borderBottomColor:'#ddd',resize:'none',lineHeight:1.4,overflow:'hidden'}}/></>
+                                :<><span style={{fontSize:9,fontWeight:700,padding:'1px 3px',borderRadius:3,background:sc.bg,color:sc.tx,border:`1px solid ${sc.bd}`,display:'inline-block',marginBottom:2}}>({sent.symbol})</span><div style={{fontSize:9,color:'#555',wordBreak:'keep-all',overflowWrap:'break-word',lineHeight:1.4}}>{sent.role}</div></>
+                              }
+                            </div>
+                          </div>
+                        </div>;
+                      })}
+                    </div>
+                  </div>
+                  {bi<blocks.length-1&&(
+                    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2,flexShrink:0,paddingTop:48,minWidth:30}}>
+                      {editable&&!IS
+                        ?<select value={conn(bi)} onChange={e=>{const cc=[...interBlockConnectors];cc[bi]=e.target.value;onAnalysis(slot.id,'flow.interBlockConnectors',cc);}} style={{...sB,fontSize:14,fontWeight:500,color:'#666',textAlign:'center',width:'100%'}}>{SYMS.map(s=><option key={s} value={s}>{s}</option>)}</select>
+                        :<div style={{fontSize:14,fontWeight:500,color:'#666'}}>{conn(bi)}</div>
+                      }
+                      <div style={{fontSize:8,color:'#bbb',textAlign:'center',lineHeight:1.3}}>{SM[conn(bi)]?.lbl||''}</div>
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          {/* 메타 */}
+          <div style={{display:'flex',gap:7,marginBottom:10,flexWrap:'wrap'}}>
+            {[{lbl:'핵심 소재',f:'keyword',val:keyword,flex:1},{lbl:'주제 요약',f:'topicSummary',val:topicSummary,flex:2}].map(({lbl,f,val,flex})=>(
+              <div key={f} style={{flex,minWidth:120,background:'#f8f8f8',border:'0.5px solid #e5e5e5',borderRadius:7,padding:'7px 10px'}}>
+                <div style={{fontSize:8.5,fontWeight:600,color:'#999',letterSpacing:'.08em',textTransform:'uppercase',marginBottom:4}}>{lbl}</div>
+                {IS?<div style={{borderBottom:'1.5px solid #bbb',height:20}}/>
+                  :<textarea value={val} onChange={e=>onAnalysis(slot.id,`flow.${f}`,e.target.value)} rows={2} style={{...iB,fontSize:11.5,color:'#1a1a1a',resize:'none',lineHeight:1.4,overflow:'hidden',wordBreak:'keep-all'}}/>}
+              </div>
+            ))}
+            <div style={{flex:1.3,minWidth:100,background:'#f8f8f8',border:'0.5px solid #e5e5e5',borderRadius:7,padding:'7px 10px'}}>
+              <div style={{fontSize:8.5,fontWeight:600,color:'#999',letterSpacing:'.08em',textTransform:'uppercase',marginBottom:4}}>구조 유형</div>
+              {IS?<div style={{display:'flex',flexWrap:'wrap',gap:3}}>{STRUCTS.map(s=><span key={s} style={{fontSize:8.5,padding:'2px 6px',border:'0.5px solid #ddd',borderRadius:3,color:'#bbb'}}>□ {s}</span>)}</div>
+                :<select value={structureType} onChange={e=>onAnalysis(slot.id,'flow.structureType',e.target.value)} style={{...sB,width:'100%',fontSize:11.5,color:'#1a1a1a'}}>{STRUCTS.map(s=><option key={s} value={s}>{s}</option>)}</select>}
+            </div>
+          </div>
+
+          {/* 문장별 통합 분석 — 교사용만 */}
+          {!IS&&sentences.length>0&&(
+            <div style={{marginBottom:10}}>
+              <div style={{fontSize:9.5,fontWeight:600,color:'#888',letterSpacing:'.08em',textTransform:'uppercase',marginBottom:7}}>문장별 분석 — 끊어읽기 &amp; 구문</div>
+              {sentences.map(s=>{
+                const sc=SM[s.symbol]||{};
+                const ds=difficultSentences.find(d=>d.num===s.num);
+                const di=difficultSentences.findIndex(d=>d.num===s.num);
+                const chunks=s.chunks||[];
+                const enText=chunks.map(c=>c.en).join(' / ');
+                const koText=chunks.map(c=>c.ko).join(' / ');
+                return(
+                  <div key={s.num} style={{marginBottom:5,border:`0.5px solid ${sc.bd||'#e5e5e5'}`,borderRadius:7,overflow:'hidden'}}>
+                    <div style={{padding:'5px 9px',background:sc.bg,display:'flex',alignItems:'flex-start',gap:5}}>
+                      <span style={{fontSize:13,fontWeight:700,color:sc.tx,flexShrink:0,marginTop:1}}>{nStr(s.num)}</span>
+                      <span style={{fontSize:9,fontWeight:700,padding:'1px 4px',borderRadius:3,background:'rgba(255,255,255,.5)',color:sc.tx,border:`1px solid ${sc.bd}`,flexShrink:0,marginTop:2}}>({s.symbol})</span>
+                      <span style={{fontSize:11.5,color:sc.tx,fontStyle:'italic',lineHeight:1.5,wordBreak:'break-all',overflowWrap:'break-word'}}>{s.text}</span>
+                    </div>
+                    {chunks.length>0&&(
+                      <div style={{padding:'5px 10px 6px',background:'#fff',borderTop:'0.5px solid #eee'}}>
+                        <div style={{fontSize:11.5,fontStyle:'italic',color:'#1a1a1a',lineHeight:1.7,wordBreak:'break-all',overflowWrap:'break-word'}}>{enText}</div>
+                        <div style={{fontSize:11.5,color:'#555',lineHeight:1.7,wordBreak:'keep-all',overflowWrap:'break-word',borderTop:'0.5px dashed #e0e0e0',marginTop:2,paddingTop:2}}>{koText}</div>
+                      </div>
+                    )}
+                    {ds&&(
+                      <div style={{padding:'5px 9px',background:'#fafafa',borderTop:'0.5px solid #eee'}}>
+                        <div style={{fontSize:9,fontWeight:600,color:'#aaa',marginBottom:3}}>구문 분석</div>
+                        {[{lbl:'구조',f:'structure'},{lbl:'해석',f:'translation'},{lbl:'포인트',f:'point'}].map(row=>(
+                          <div key={row.f} style={{display:'flex',gap:6,padding:'2px 0',borderBottom:'0.5px dashed #eee',alignItems:'flex-start'}}>
+                            <span style={{fontSize:9,fontWeight:600,color:'#888',flexShrink:0,width:30,marginTop:2}}>{row.lbl}</span>
+                            <textarea value={ds[row.f]||''} onChange={e=>{const nd=[...difficultSentences];nd[di]={...nd[di],[row.f]:e.target.value};onAnalysis(slot.id,'grammar.difficultSentences',nd);}} rows={1} style={{...iB,fontSize:11,color:'#333',resize:'none',lineHeight:1.4,flex:1,overflow:'hidden',wordBreak:'break-all'}}/>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* 액션 */}
+          <div style={{display:'flex',gap:7,flexWrap:'wrap',marginTop:4}}>
+            {slot.status==='analyzed'&&<button onClick={onConfirm} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>✓ 흐름 확정</button>}
+            {slot.status==='confirmed'&&<button onClick={onGenQ} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#BA7517',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>📝 문제 생성</button>}
+            {slot.status==='done'&&<button onClick={onSave} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>💾 Sheets 저장</button>}
+            {(slot.status==='done'||slot.status==='saved')&&<button onClick={onQToggle} style={{padding:'6px 12px',fontSize:11.5,background:'transparent',color:'#888',border:'0.5px solid #ddd',borderRadius:6,cursor:'pointer'}}>문제 {slot.qOpen?'접기 ▲':'보기 ▼'}</button>}
+          </div>
+
+          {/* 문제 패널 */}
+          {slot.qOpen&&slot.questions&&(
+            <div style={{marginTop:12,borderTop:'1.5px solid #e5e5e5',paddingTop:12}}>
+              <div style={{fontSize:9.5,fontWeight:600,color:'#888',letterSpacing:'.08em',textTransform:'uppercase',marginBottom:9}}>실전 문제</div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:5,marginBottom:10}}>
+                {(slot.questions.availableTypes||[]).map(t=><button key={t} onClick={()=>onQType(t)} style={{padding:'3px 11px',fontSize:11,fontWeight:500,background:slot.enabledQTypes.includes(t)?'#185FA5':'#f0f0f0',color:slot.enabledQTypes.includes(t)?'#fff':'#888',border:'none',borderRadius:18,cursor:'pointer'}}>{t} ✓</button>)}
+                {(slot.questions.unavailableTypes||[]).map(u=><span key={u.type} title={u.reason} style={{padding:'3px 11px',fontSize:11,color:'#ccc',background:'#f5f5f5',borderRadius:18,textDecoration:'line-through',cursor:'help'}}>{u.type}</span>)}
+              </div>
+              {slot.enabledQTypes.filter(t=>slot.questions.questions?.[t]).map(t=>{
+                const q=slot.questions.questions[t];
+                return<div key={t} style={{marginBottom:9,border:'0.5px solid #e5e5e5',borderRadius:7,overflow:'hidden'}}>
+                  <div style={{padding:'6px 11px',background:'#f0f0f0',borderBottom:'0.5px solid #e5e5e5',display:'flex',alignItems:'center',gap:7}}>
+                    <span style={{fontSize:9,fontWeight:700,padding:'2px 7px',borderRadius:4,background:'#185FA5',color:'#fff'}}>{t}</span>
+                    <span style={{fontSize:11.5,color:'#333',wordBreak:'keep-all'}}>{q.question}</span>
+                  </div>
+                  <div style={{padding:'9px 11px',background:'#fff'}}>
+                    {(q.options||[]).map((opt,oi)=><div key={oi} style={{padding:'3px 0',fontSize:12.5,color:q.answer===oi+1?'#185FA5':'#333',fontWeight:q.answer===oi+1?600:400}}>{opt}{q.answer===oi+1&&<span style={{fontSize:10,color:'#185FA5',marginLeft:5}}>← 정답</span>}</div>)}
+                    {q.explanation&&<div style={{marginTop:7,padding:'7px 9px',background:'#f8f8f8',borderRadius:5,fontSize:11.5,color:'#555',borderLeft:'3px solid #185FA5'}}>💡 {q.explanation}</div>}
+                  </div>
+                </div>;
+              })}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
