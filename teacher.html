@@ -196,6 +196,15 @@ ${pages}
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 
+function dlBatchDOCX(slots, mode){
+  const done = slots.filter(s=>s.analysis&&s.status!=='idle');
+  if(!done.length){ alert('분석 완료된 지문이 없습니다.'); return; }
+  // 각 슬롯을 순서대로 DOCX 다운로드
+  done.forEach((slot, i) => {
+    setTimeout(() => dlDOCX(slot, mode), i * 800);
+  });
+}
+
 function sheetsGet(url,params){
   return new Promise((res,rej)=>{
     const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
@@ -660,8 +669,10 @@ function App(){
           </div>
           {/* 일괄 인쇄 */}
           <div style={{display:'flex',gap:3}}>
-            <button onClick={()=>dlBatch(slots,'teacher')} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🖨 교사 일괄</button>
-            <button onClick={()=>dlBatch(slots,'student')} style={{background:'rgba(255,255,255,.15)',color:'#a5d6f5',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🖨 학생 일괄</button>
+            <button onClick={()=>dlBatch(slots,'teacher')} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🖨 HTML↓교사</button>
+            <button onClick={()=>dlBatch(slots,'student')} style={{background:'rgba(255,255,255,.15)',color:'#a5d6f5',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🖨 HTML↓학생</button>
+            <button onClick={()=>dlBatchDOCX(slots,'teacher')} style={{background:'rgba(255,255,255,.15)',color:'#c8d8ff',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>📄 DOCX↓교사</button>
+            <button onClick={()=>dlBatchDOCX(slots,'student')} style={{background:'rgba(255,255,255,.15)',color:'#b5f0d0',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>📄 DOCX↓학생</button>
           </div>
           <button onClick={loadSheet} disabled={!appsURL} style={{background:appsURL?'rgba(255,255,255,.15)':'rgba(255,255,255,.05)',color:appsURL?'#a5d6f5':'rgba(255,255,255,.3)',border:'none',borderRadius:6,padding:'4px 10px',fontSize:11,cursor:appsURL?'pointer':'default'}}>☁ 불러오기</button>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:5},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}} style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🗑</button>
@@ -788,12 +799,10 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
 
         {slot.analysis&&(
           <div style={{display:'flex',gap:4,alignItems:'center',flexWrap:'wrap'}}>
-            <button onClick={()=>dlHTML(slot,viewMode)} style={{padding:'3px 8px',fontSize:10.5,background:viewMode==='teacher'?'#185FA5':'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>
-              HTML↓{viewMode==='teacher'?'교사':'학생'}
-            </button>
-            <button onClick={()=>dlDOCX(slot,viewMode)} style={{padding:'3px 8px',fontSize:10.5,background:viewMode==='teacher'?'#1F3864':'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>
-              DOCX↓{viewMode==='teacher'?'교사':'학생'}
-            </button>
+            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:10.5,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓교사</button>
+            <button onClick={()=>dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:10.5,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
+            <button onClick={()=>dlDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:10.5,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
+            <button onClick={()=>dlDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:10.5,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
           </div>
         )}
         <button onClick={onToggle} style={{...sB,fontSize:12,color:'#ccc',padding:'2px 5px'}}>{slot.open?'▲':'▼'}</button>
