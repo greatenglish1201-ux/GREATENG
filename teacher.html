@@ -531,6 +531,7 @@ function dlDOCX(slot,mode){
 /* ── 메인 앱 ────────────────────────────────────── */
 function App(){
   const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:5},(_,i)=>makeSlot(i)));
+  const [viewMode,setViewMode]=useState('teacher');
   const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
   const [appsURL,setAppsURL]=useState(()=>localStorage.getItem(LS.URL)||'');
   const [keyInput,setKeyInput]=useState('');
@@ -645,6 +646,18 @@ function App(){
         <div style={{display:'flex',gap:8,alignItems:'center'}}>
           {msg&&<span style={{color:'#a5d6f5',fontSize:11}}>{msg}</span>}
           <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'API 미설정'}</span>
+          {/* 글로벌 교사/학생 토글 */}
+          <div style={{display:'flex',gap:2,background:'rgba(0,0,0,.2)',borderRadius:7,padding:3}}>
+            {['teacher','student'].map(m=>(
+              <button key={m} onClick={()=>setViewMode(m)}
+                style={{padding:'4px 12px',fontSize:11.5,fontWeight:600,
+                  background:viewMode===m?'#fff':'transparent',
+                  color:viewMode===m?'#185FA5':'rgba(255,255,255,.7)',
+                  border:'none',borderRadius:5,cursor:'pointer',transition:'all .15s'}}>
+                {m==='teacher'?'교사용':'학생용'}
+              </button>
+            ))}
+          </div>
           {/* 일괄 인쇄 */}
           <div style={{display:'flex',gap:3}}>
             <button onClick={()=>dlBatch(slots,'teacher')} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',borderRadius:6,padding:'4px 9px',fontSize:11,cursor:'pointer'}}>🖨 교사 일괄</button>
@@ -701,12 +714,12 @@ function App(){
         {/* 슬롯들 */}
         {slots.map(slot=>(
           <SlotCard key={slot.id} slot={slot}
+            viewMode={viewMode}
             iB={iB} sB={sB}
             onText={v=>upSlot(slot.id,{text:v})}
             onMeta={handleMeta}
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onQToggle={()=>upSlot(slot.id,{qOpen:!slot.qOpen})}
-            onViewSet={(m)=>upSlot(slot.id,{viewMode:m})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onGenQ={()=>genQ(slot)}
             onSave={()=>saveSheet(slot)}
@@ -720,8 +733,8 @@ function App(){
 }
 
 /* ── 슬롯 카드 ─────────────────────────────────── */
-function SlotCard({slot,iB,sB,onText,onMeta,onToggle,onQToggle,onViewSet,onConfirm,onGenQ,onSave,onAnalysis,onQType}){
-  const IS=slot.viewMode==='student';
+function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfirm,onGenQ,onSave,onAnalysis,onQType}){
+  const IS=viewMode==='student';
   const st=ST[slot.status]||ST.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
   const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
@@ -775,24 +788,12 @@ function SlotCard({slot,iB,sB,onText,onMeta,onToggle,onQToggle,onViewSet,onConfi
 
         {slot.analysis&&(
           <div style={{display:'flex',gap:4,alignItems:'center',flexWrap:'wrap'}}>
-            {/* 교사/학생 토글 */}
-            <div style={{display:'flex',gap:1,background:'#f0f0f0',borderRadius:5,padding:2}}>
-              {['teacher','student'].map(m=>(
-                <button key={m} onClick={()=>onViewSet(m)}
-                  style={{padding:'3px 9px',fontSize:10,fontWeight:500,
-                    background:slot.viewMode===m?'#fff':'transparent',
-                    color:slot.viewMode===m?'#185FA5':'#aaa',
-                    border:slot.viewMode===m?'0.5px solid #ddd':'none',
-                    borderRadius:4,cursor:'pointer'}}>
-                  {m==='teacher'?'교사':'학생'}
-                </button>
-              ))}
-            </div>
-            <div style={{width:1,height:16,background:'#e0e0e0'}}/>
-            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:10.5,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓교사</button>
-            <button onClick={()=>dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:10.5,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
-            <button onClick={()=>dlDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:10.5,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
-            <button onClick={()=>dlDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:10.5,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
+            <button onClick={()=>dlHTML(slot,viewMode)} style={{padding:'3px 8px',fontSize:10.5,background:viewMode==='teacher'?'#185FA5':'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>
+              HTML↓{viewMode==='teacher'?'교사':'학생'}
+            </button>
+            <button onClick={()=>dlDOCX(slot,viewMode)} style={{padding:'3px 8px',fontSize:10.5,background:viewMode==='teacher'?'#1F3864':'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>
+              DOCX↓{viewMode==='teacher'?'교사':'학생'}
+            </button>
           </div>
         )}
         <button onClick={onToggle} style={{...sB,fontSize:12,color:'#ccc',padding:'2px 5px'}}>{slot.open?'▲':'▼'}</button>
