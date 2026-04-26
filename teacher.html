@@ -100,9 +100,17 @@ function parseJSON(text){
   return JSON.parse(s);
 }
 function sheetsPost(url,action,data){
-  return fetch(url,{method:'POST',redirect:'follow',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action,...data})}).then(r=>r.json());
+  // POST 대신 JSONP GET으로 저장 (CORS 문제 없음)
+  return new Promise((res,rej)=>{
+    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const encoded=encodeURIComponent(JSON.stringify(data.passage||data));
+    const sc=document.createElement('script');
+    sc.src=`${url}?action=${action}&data=${encoded}&callback=${cb}`;
+    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
+    sc.onerror=()=>rej(new Error('저장 실패'));
+    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},15000);
+    document.body.appendChild(sc);
+  });
 }
 function sheetsGet(url,params){
   return new Promise((res,rej)=>{
@@ -510,9 +518,11 @@ function App(){
     try{
       const {meta,analysis,questions}=slot;
       const id=`${meta.source}_${String(meta.chapter).padStart(2,'0')}_${String(meta.number).padStart(3,'0')}`;
-      await sheetsPost(appsURL,'save',{passage:{id,...meta,confirmed:true,
+      const passage={id,...meta,confirmed:true,
         sentences:analysis?.sentences||[],flow:analysis?.flow||{},
-        grammar:analysis?.grammar||{},questions:questions?.questions||{}}});
+        grammar:analysis?.grammar||{},questions:questions?.questions||{}};
+      const result=await sheetsPost(appsURL,'save',{passage});
+      if(result?.error)throw new Error(result.error);
       upSlot(slot.id,{status:'saved'});
       flash(`✓ ${id} 저장 완료`);
     }catch(e){alert('저장 오류: '+e.message);}
