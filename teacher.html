@@ -487,47 +487,67 @@ function dlDOCX(slot,mode){
   ch.push(para('',{sa:100}));
 
   // 통합 분석 (교사용)
-  if(!IS){
-    ch.push(para('문장별 분석 — 끊어읽기 & 구문',{bold:true,size:P8,color:'888888',sb:80,sa:60}));
-    sentences.forEach(s=>{
-      const col=SC[s.symbol]||'185FA5';
-      const bg=SBG[s.symbol]||'E6F1FB';
-      const chunks=s.chunks||[];
+  // 교사용: 끊어읽기 + 구문분석 / 학생용: 구문분석만 (ds 있는 문장만)
+  {
+    const label = IS ? '구문 분석' : '문장별 분석 — 끊어읽기 & 구문';
+    const hasSomething = sentences.some(s=>{
       const ds=difficultSentences.find(d=>d.num===s.num);
-      // 문장 헤더
-      ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[9200],
-        rows:[new TableRow({children:[cell([para([run(`${nStr(s.num)} `,{bold:true,size:P9,color:col}),run(`(${s.symbol})  `,{bold:true,size:P8,color:col}),run(s.text,{size:P9,italic:true,color:col})],{sa:0})],{bg,bc:col,w:9200})]})]
-      }));
-      // 끊어읽기: 영문 한줄 + 한글 한줄
-      if(chunks.length){
-        const enText=chunks.map(c=>c.en||'').join(' / ');
-        const koText=chunks.map(c=>c.ko||'').join(' / ');
-        ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[700,8500],
-          rows:[
-            new TableRow({children:[
-              cell([para('끊어읽기',{size:P8,bold:true,color:col,sa:0})],{bg,bc:col,w:700,borders:{top:bd(col),bottom:nb,left:bd(col),right:bd(col)}}),
-              cell([para(enText,{size:P9,italic:true,sa:0})],{w:8500,borders:{top:bd('CCCCCC'),bottom:nb,left:bd('CCCCCC'),right:bd('CCCCCC')}}),
-            ]}),
-            new TableRow({children:[
-              cell([para('',{sa:0})],{bg,bc:col,w:700,borders:{top:nb,bottom:bd(col),left:bd(col),right:bd(col)}}),
-              cell([para(koText,{size:P9,color:'444444',sa:0})],{w:8500,borders:{top:nb,bottom:bd('CCCCCC'),left:bd('CCCCCC'),right:bd('CCCCCC')}}),
-            ]}),
-          ]
-        }));
-      }
-      // 구문 분석 (어려운 문장만)
-      if(ds){
-        ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[1100,8100],
-          rows:[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>
-            new TableRow({children:[
-              cell([para(r.l,{size:P8,bold:true,color:'888888',sa:0})],{bg:'F8F8F8',w:1100}),
-              cell([para(ds[r.f]||'',{size:P9,sa:0})],{w:8100}),
-            ]})
-          )
-        }));
-      }
-      ch.push(para('',{sa:40}));
+      const chunks=s.chunks||[];
+      return IS ? !!ds : (chunks.length||!!ds);
     });
+    if(hasSomething){
+      ch.push(para(label,{bold:true,size:P8,color:'888888',sb:80,sa:60}));
+      sentences.forEach(s=>{
+        const col=SC[s.symbol]||'185FA5';
+        const bg=SBG[s.symbol]||'E6F1FB';
+        const chunks=s.chunks||[];
+        const ds=difficultSentences.find(d=>d.num===s.num);
+        // 학생용: ds 없는 문장 건너뜀
+        if(IS && !ds) return;
+        // 교사용: 끊어읽기도 없고 구문분석도 없으면 건너뜀
+        if(!IS && !chunks.length && !ds) return;
+
+        // 문장 헤더 (번호 + 기호 + 역할)
+        ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[9200],
+          rows:[new TableRow({children:[cell([para([
+            run(`${nStr(s.num)} `,{bold:true,size:P9,color:col}),
+            run(`(${s.symbol})  `,{bold:true,size:P8,color:col}),
+            run(s.role||'',{size:P8,italic:true,color:col}),
+          ],{sa:0})],{bg,bc:col,w:9200})]})]
+        }));
+
+        // 끊어읽기 (교사용만)
+        if(!IS && chunks.length){
+          const enText=chunks.map(c=>c.en||'').join(' / ');
+          const koText=chunks.map(c=>c.ko||'').join(' / ');
+          ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[700,8500],
+            rows:[
+              new TableRow({children:[
+                cell([para('끊어읽기',{size:P8,bold:true,color:col,sa:0})],{bg,bc:col,w:700,borders:{top:bd(col),bottom:nb,left:bd(col),right:bd(col)}}),
+                cell([para(enText,{size:P9,italic:true,sa:0})],{w:8500,borders:{top:bd('CCCCCC'),bottom:nb,left:bd('CCCCCC'),right:bd('CCCCCC')}}),
+              ]}),
+              new TableRow({children:[
+                cell([para('',{sa:0})],{bg,bc:col,w:700,borders:{top:nb,bottom:bd(col),left:bd(col),right:bd(col)}}),
+                cell([para(koText,{size:P9,color:'444444',sa:0})],{w:8500,borders:{top:nb,bottom:bd('CCCCCC'),left:bd('CCCCCC'),right:bd('CCCCCC')}}),
+              ]}),
+            ]
+          }));
+        }
+
+        // 구문 분석 (교사/학생 모두, ds 있는 문장만)
+        if(ds){
+          ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[1100,8100],
+            rows:[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>
+              new TableRow({children:[
+                cell([para(r.l,{size:P8,bold:true,color:'888888',sa:0})],{bg:'F8F8F8',w:1100}),
+                cell([para(ds[r.f]||'',{size:P9,sa:0})],{w:8100}),
+              ]})
+            )
+          }));
+        }
+        ch.push(para('',{sa:40}));
+      });
+    }
   }
 
   const doc=new Document({
