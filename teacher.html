@@ -304,13 +304,17 @@ function buildQuestionsHTML(slot, sentences, SM, nStr){
     ).join('');
     const explHTML=q.explanation
       ?`<div style="margin-top:8px;padding:7px 10px;background:#f8f8f8;border-radius:5px;font-size:12px;color:#555;border-left:3px solid ${col}">💡 ${q.explanation}</div>`:'';
-    const extraHTML=
-      type==='삽입'&&q.insertSentence?`<div style="margin-bottom:8px;padding:8px 10px;background:#f8f8f8;border-radius:5px;font-size:13px;font-style:italic;border-left:3px solid ${col}">${q.insertSentence}</div>`
-      :type==='무관'&&q.fabricatedSentence?`<div style="margin-bottom:8px;padding:8px 10px;background:#fff5f0;border-radius:5px;font-size:13px;font-style:italic">${q.fabricatedSentence}</div>`
-      :type==='순서'?`<div style="margin-bottom:8px;padding:8px 10px;background:#e8f4f8;border-radius:5px;font-size:13px">📌 주어진 글: ${q.givenPart||q.givenSentence||''}</div>
-        ${['A','B','C'].filter(k=>(q.blocks||{})[k]).map(k=>`<div style="margin-bottom:5px;padding:7px 10px;background:#f5f8ff;border-radius:5px;font-size:13px"><b>(${k})</b> ${q.blocks[k]}</div>`).join('')}`
-      :type==='요약문'&&q.summaryTemplate?`<div style="margin-bottom:8px;padding:8px 10px;background:#f5fff5;border-radius:5px;font-size:13px">${q.summaryTemplate}</div>`
-      :'';
+    let extraHTML='';
+    if(type==='삽입'&&q.insertSentence)
+      extraHTML='<div style="margin-bottom:8px;padding:8px 10px;background:#f8f8f8;border-radius:5px;font-size:13px;font-style:italic;border-left:3px solid '+col+'">'+q.insertSentence+'</div>';
+    else if(type==='무관'&&q.fabricatedSentence)
+      extraHTML='<div style="margin-bottom:8px;padding:8px 10px;background:#fff5f0;border-radius:5px;font-size:13px;font-style:italic">'+q.fabricatedSentence+'</div>';
+    else if(type==='순서'){
+      const givenDiv='<div style="margin-bottom:8px;padding:8px 10px;background:#e8f4f8;border-radius:5px;font-size:13px">📌 주어진 글: '+(q.givenPart||q.givenSentence||'')+'</div>';
+      const blockDivs=['A','B','C'].filter(k=>(q.blocks||{})[k]).map(k=>'<div style="margin-bottom:5px;padding:7px 10px;background:#f5f8ff;border-radius:5px;font-size:13px"><b>('+k+')</b> '+q.blocks[k]+'</div>').join('');
+      extraHTML=givenDiv+blockDivs;
+    } else if(type==='요약문'&&q.summaryTemplate)
+      extraHTML='<div style="margin-bottom:8px;padding:8px 10px;background:#f5fff5;border-radius:5px;font-size:13px">'+q.summaryTemplate+'</div>';
 
     return `<div style="margin-bottom:18px;border:1.5px solid ${col};border-radius:8px;overflow:hidden;page-break-inside:avoid">
       <div style="padding:6px 12px;background:${col}18;border-bottom:1px solid ${col}30;display:flex;align-items:center;gap:8px">
