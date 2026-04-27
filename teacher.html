@@ -86,7 +86,7 @@ const QGEN_SYS = (a, types) => `수능 영어 문제 출제 전문가. 순수 JS
 - 주제: 글의 주제로 가장 적절한 것은? (5지선다)
 - 빈칸: 핵심 주장 문장 핵심어 제거, 빈칸 추론 (5지선다)
 - 어휘: 5개 문장 선택, 각 문장에서 단어 1개만 밑줄(underlineWords). wrongIndex 위치만 부적절한 단어로 교체. question 필수 작성
-- 어법: 5개 문장(①②③④⑤) 각각에서 어법 판단 대상 단어 정확히 1개(word)만 지정. wrongIndex 위치의 word만 틀린 어형으로 제시하고 나머지 4개는 올바른 형태. word는 반드시 해당 문장 sentenceNum의 실제 문장 안에 있는 단어 그대로. question="밑줄 친 부분 중 어법상 틀린 것은?" 고정
+- 어법: 5문장 선택. 각 문장에서 어법 포인트 단어 1개만 밑줄(underlineWords). wrongIndex 위치만 실제로 틀린 형태(예: which→who, using→used, is→are 등 실제 오류형)로 제시. 나머지 4개는 문법적으로 완전히 올바른 형태. 반드시 실제 어법 오류가 존재하는 곳을 선택할 것. question="밑줄 친 부분 중 어법상 틀린 것은?" 고정. 평가원 출제 기준: 관계사(which/who/whose/that), 준동사(to부정사/분사/동명사), 수일치, 태(능동/수동), 병렬구조 중심
 - 삽입: 빠진 문장 위치 찾기. question 필수
 - 순서: givenPart=첫 1~2문장. A/B/C 3단락. 5지선다. question="주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?" 고정
 - 무관: 무관 문장 번호. question 필수
@@ -307,8 +307,18 @@ function buildQuestionsHTML(slot, sentences, SM, nStr){
     let extraHTML='';
     if(type==='삽입'&&q.insertSentence)
       extraHTML='<div style="margin-bottom:8px;padding:8px 10px;background:#f8f8f8;border-radius:5px;font-size:13px;font-style:italic;border-left:3px solid '+col+'">'+q.insertSentence+'</div>';
-    else if(type==='무관'&&q.fabricatedSentence)
-      extraHTML='<div style="margin-bottom:8px;padding:8px 10px;background:#fff5f0;border-radius:5px;font-size:13px;font-style:italic">'+q.fabricatedSentence+'</div>';
+    else if(type==='무관'){
+      // fabricatedSentence를 insertPosition에 삽입한 합성 지문 만들기
+      const fab=q.fabricatedSentence||'';
+      const pos=(q.answer||3)-1; // 0-based
+      const origSents=sentences.map(s=>s.text);
+      const mixed=[...origSents];
+      mixed.splice(pos,0,fab);
+      const NUM3=['①','②','③','④','⑤','⑥'];
+      extraHTML='<div style="padding:10px 14px;background:#fafafa;border-left:3px solid #9a3412;font-size:13px;line-height:2.1;word-break:keep-all;margin-bottom:8px">'
+        +mixed.map((t2,i)=>`<span style="margin-right:2px"><span style="display:inline-block;font-size:11px;font-weight:700;color:${i===pos?'#e53e3e':'#9a3412'};vertical-align:super;margin:0 2px">${NUM3[i]}</span>${t2} </span>`).join('')
+        +'</div>';
+    }
     else if(type==='순서'){
       const givenDiv='<div style="margin-bottom:8px;padding:8px 10px;background:#e8f4f8;border-radius:5px;font-size:13px">📌 주어진 글: '+(q.givenPart||q.givenSentence||'')+'</div>';
       const blockDivs=['A','B','C'].filter(k=>(q.blocks||{})[k]).map(k=>'<div style="margin-bottom:5px;padding:7px 10px;background:#f5f8ff;border-radius:5px;font-size:13px"><b>('+k+')</b> '+q.blocks[k]+'</div>').join('');
@@ -321,7 +331,7 @@ function buildQuestionsHTML(slot, sentences, SM, nStr){
         <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:${col};color:#fff">${type}</span>
         <span style="font-size:13.5px;color:#1a1a1a;font-weight:500">${q.question||''}</span>
       </div>
-      <div style="padding:10px 14px;background:#fafafa;border-bottom:1px solid ${col}15;border-left:3px solid ${col};font-size:13px;line-height:2.1;word-break:keep-all;overflow-wrap:break-word">${passHTML}</div>
+      ${type==='무관'?'':('<div style="padding:10px 14px;background:#fafafa;border-bottom:1px solid '+col+'15;border-left:3px solid '+col+';font-size:13px;line-height:2.1;word-break:keep-all;overflow-wrap:break-word">'+passHTML+'</div>')}
       <div style="padding:10px 12px;background:#fff">${extraHTML}${optHTML}${explHTML}</div>
     </div>`;
   }).join('');
@@ -956,6 +966,41 @@ function UnderlinePanel({type,q,sentences,SM,nStr,NUM,onUpQ}){
   );
 }
 
+
+function MuGwanPanel({q, sentences, onUpQ, TA}){
+  const fab = q.fabricatedSentence||'';
+  const pos = (q.answer||3)-1;
+  const origSents = sentences.map(s=>s.text);
+  const mixed = [...origSents];
+  if(fab) mixed.splice(pos,0,fab);
+  const NUM6 = ['①','②','③','④','⑤','⑥'];
+  return(
+    <div style={{marginBottom:10}}>
+      <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:6,
+        border:'1px solid #9a341230',borderLeft:'3px solid #9a3412',
+        fontSize:13.5,lineHeight:2.1,marginBottom:8,
+        wordBreak:'keep-all',overflowWrap:'break-word'}}>
+        {mixed.map((txt,i)=>(
+          <span key={i}>
+            <span style={{display:'inline-block',fontSize:11,fontWeight:700,
+              color:i===pos?'#e53e3e':'#9a3412',
+              verticalAlign:'super',margin:'0 2px'}}>
+              {NUM6[i]}
+            </span>
+            {txt}{' '}
+          </span>
+        ))}
+      </div>
+      <div style={{padding:'8px 10px',background:'#fff5f0',borderRadius:6,border:'0.5px solid #e0b0a0'}}>
+        <div style={{fontSize:9.5,fontWeight:600,color:'#9a3412',marginBottom:5}}>
+          ⚡ 흐름과 무관한 문장 (정답: {NUM6[pos]}번)
+        </div>
+        {TA(fab,v=>onUpQ('무관','fabricatedSentence',v),'무관한 문장 입력...')}
+      </div>
+    </div>
+  );
+}
+
 function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfirm,onGenQ,onReanalyze,onRegenQ,onSave,onAnalysis,onQType,onUpQ,onUpQOption}){
   const IS=viewMode==='student';
   const st=ST[slot.status]||ST.idle;
@@ -1261,8 +1306,8 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                       }
                     </div>
 
-                    {/* 지문 — 어법/어휘는 자체 렌더에서 처리 */}
-                    {t!=='어법'&&t!=='어휘'&&(
+                    {/* 지문 — 어법/어휘/무관은 자체 렌더에서 처리 */}
+                    {t!=='어법'&&t!=='어휘'&&t!=='무관'&&(
                       <div style={{padding:'10px 14px',background:'#fafafa',
                         borderBottom:`1px solid ${QBD[t]}15`,
                         borderLeft:`3px solid ${QBD[t]}`,
@@ -1285,17 +1330,16 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                     <div style={{padding:'10px 12px',background:'#fff'}}>
 
                       {/* ── 삽입문장 / 주어진문장 / 무관문장 ── */}
-                      {(t==='삽입'||t==='순서'||t==='무관')&&(
+                      {/* 삽입 — 삽입문장 */}
+                      {t==='삽입'&&(
                         <div style={{marginBottom:10,padding:'8px 10px',background:'#f8f8f8',borderRadius:6,border:'0.5px solid #e5e5e5'}}>
-                          <div style={{fontSize:9.5,fontWeight:600,color:'#666',marginBottom:5}}>
-                            {t==='삽입'?'📌 삽입할 문장':t==='순서'?'📌 주어진 첫 문장':'⚡ 흐름과 무관한 문장'}
-                          </div>
-                          {TA(
-                            t==='삽입'?q.insertSentence:t==='순서'?q.givenSentence:q.fabricatedSentence,
-                            v=>onUpQ(t,t==='삽입'?'insertSentence':t==='순서'?'givenSentence':'fabricatedSentence',v),
-                            '문장을 입력하세요...',52
-                          )}
+                          <div style={{fontSize:9.5,fontWeight:600,color:'#666',marginBottom:5}}>📌 삽입할 문장</div>
+                          {TA(q.insertSentence,v=>onUpQ(t,'insertSentence',v),'삽입할 문장 입력...')}
                         </div>
+                      )}
+                      {/* 무관 — 합성 지문 + 편집 */}
+                      {t==='무관'&&(
+                        <MuGwanPanel q={q} sentences={sentences} onUpQ={onUpQ} TA={TA}/>
                       )}
 
                       {/* ── 순서 — 주어진 부분 + ABC 단락 + 5선지 ── */}
