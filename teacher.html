@@ -99,9 +99,9 @@ const QGEN_SYS = (a, types) => `수능 영어 문제 출제 전문가. 순수 JS
 "어휘":{"type":"어휘","question":"밑줄 친 부분 중 문맥상 낱말의 쓰임이 적절하지 않은 것은?","underlineWords":[{"sentenceNum":1,"word":"단어1"},{"sentenceNum":2,"word":"단어2"},{"sentenceNum":3,"word":"단어3"},{"sentenceNum":4,"word":"단어4"},{"sentenceNum":5,"word":"단어5"}],"wrongIndex":2,"answer":3,"explanation":"해설"},
 "어법":{"type":"어법","question":"밑줄 친 부분 중 어법상 틀린 것을 고르시오.","underlineWords":[{"sentenceNum":1,"word":"단어1"},{"sentenceNum":2,"word":"단어2"},{"sentenceNum":3,"word":"단어3"},{"sentenceNum":4,"word":"단어4"},{"sentenceNum":5,"word":"단어5"}],"wrongIndex":2,"answer":3,"explanation":"어법 오류 설명"},
 "삽입":{"type":"삽입","insertSentence":"","question":"글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?","answer":3,"explanation":"해설"},
-"순서":{"type":"순서","givenSentence":"첫 단락 원문 그대로","blocks":{"B":"두번째 단락 원문","C":"세번째 단락 원문"},"question":"주어진 글 (A)에 이어질 내용의 순서로 가장 적절한 것은?","options":["① (B)-(C)","② (C)-(B)"],"answer":1,"explanation":"해설"},
+"순서":{"type":"순서","givenPart":"지문 맨 앞 1~2문장 (도입부)","blocks":{"A":"(A) 단락 내용","B":"(B) 단락 내용","C":"(C) 단락 내용"},"question":"주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?","options":["① (A)-(B)-(C)","② (A)-(C)-(B)","③ (B)-(A)-(C)","④ (B)-(C)-(A)","⑤ (C)-(A)-(B)"],"answer":3,"explanation":"해설"},
 "무관":{"type":"무관","fabricatedSentence":"","question":"다음 글에서 전체 흐름과 관계없는 문장은?","answer":3,"explanation":"해설"},
-"요약문":{"type":"요약문","question":"다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A),(B)에 들어갈 말로 가장 적절한 것은?","summaryTemplate":"글의 핵심 내용을 담은 요약문. (A) 빈칸은 _____, (B) 빈칸은 _____.","blankA":"핵심단어A","blankB":"핵심단어B","options":["① A1 - B1","② A1 - B2","③ A2 - B1","④ A2 - B2","⑤ A3 - B1"],"answer":1,"explanation":"해설"}}}
+"요약문":{"type":"요약문","question":"다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?","summaryTemplate":"실제 요약문 전체 문장. (A) 위치에 ___(A)___, (B) 위치에 ___(B)___ 삽입.","blankA":"정답A단어","blankB":"정답B단어","options":["① 정답A - 정답B","② 오답A1 - 오답B1","③ 오답A2 - 정답B","④ 정답A - 오답B2","⑤ 오답A3 - 오답B3"],"answer":1,"explanation":"(A)는 ~이므로 정답, (B)는 ~이므로 정답"}}}
 questions에는 요청한 유형(${types.join(', ')})만 포함. 실제 지문 내용으로 채울 것.`;
 
 /* ── API / Sheets ───────────────────────────────── */
@@ -1139,30 +1139,39 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                         </div>
                       )}
 
-                      {/* ── 순서 정답 (B)-(C) 선택 ── */}
-                      {t==='순서'&&(
-                        <div style={{marginBottom:8,display:'flex',alignItems:'center',gap:8,padding:'7px 10px',background:'#f0f8ff',borderRadius:6}}>
-                          <span style={{fontSize:10.5,color:'#0e7490',fontWeight:500,flexShrink:0}}>정답 순서:</span>
-                          {['① (B)-(C)','② (C)-(B)'].map((opt,oi)=>(
-                            <button key={oi} onClick={()=>{onUpQ(t,'answer',oi+1);onUpQ(t,'options',['① (B)-(C)','② (C)-(B)']);}}
-                              style={{padding:'5px 14px',fontSize:12,fontWeight:500,cursor:'pointer',borderRadius:6,
-                                background:q.answer===oi+1?'#0e7490':'#fff',
-                                color:q.answer===oi+1?'#fff':'#555',
-                                border:`1.5px solid ${q.answer===oi+1?'#0e7490':'#ddd'}`}}>
-                              {opt}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      {/* ── 순서 단락 ── */}
+                      {/* ── 순서 — 주어진 부분 + ABC 단락 + 5선지 ── */}
                       {t==='순서'&&(
                         <div style={{marginBottom:10}}>
-                          {['B','C'].map(k=>(
+                          {/* 주어진 도입부 */}
+                          <div style={{marginBottom:8,padding:'7px 10px',background:'#e8f4f8',borderRadius:6,border:'0.5px solid #b0d8e8'}}>
+                            <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>📌 주어진 글 (도입부)</div>
+                            {TA(q.givenPart||'',v=>onUpQ(t,'givenPart',v),'주어진 도입부 문장...')}
+                          </div>
+                          {/* ABC 3단락 */}
+                          {['A','B','C'].map(k=>(
                             <div key={k} style={{marginBottom:6,padding:'7px 10px',background:'#f5f8ff',borderRadius:6,border:'0.5px solid #dde8ff'}}>
                               <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>({k}) 단락</div>
                               {TA(q.blocks?.[k]||'',v=>{const nb={...(q.blocks||{}),[k]:v};onUpQ(t,'blocks',nb);},'단락 내용 입력...')}
                             </div>
                           ))}
+                          {/* 5선지 정답 선택 */}
+                          <div style={{padding:'7px 10px',background:'#f0f8ff',borderRadius:6}}>
+                            <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:6}}>정답 선택</div>
+                            <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+                              {['(A)-(B)-(C)','(A)-(C)-(B)','(B)-(A)-(C)','(B)-(C)-(A)','(C)-(A)-(B)'].map((opt,oi)=>(
+                                <button key={oi} onClick={()=>{
+                                  const opts=['① (A)-(B)-(C)','② (A)-(C)-(B)','③ (B)-(A)-(C)','④ (B)-(C)-(A)','⑤ (C)-(A)-(B)'];
+                                  onUpQ(t,'answer',oi+1);onUpQ(t,'options',opts);
+                                }}
+                                  style={{padding:'5px 12px',fontSize:11.5,fontWeight:500,cursor:'pointer',borderRadius:6,
+                                    background:q.answer===oi+1?'#0e7490':'#fff',
+                                    color:q.answer===oi+1?'#fff':'#555',
+                                    border:`1.5px solid ${q.answer===oi+1?'#0e7490':'#ddd'}`}}>
+                                  {['①','②','③','④','⑤'][oi]} {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       )}
 
