@@ -85,14 +85,21 @@ const QGEN_SYS = (a, types) => `수능 영어 문제 출제 전문가. 순수 JS
 유형별 규칙:
 - 주제: 글의 주제로 가장 적절한 것은? (5지선다)
 - 빈칸: 핵심 주장 문장에서 핵심어 제거, 빈칸 추론 (5지선다)
-- 어휘: 문맥상 어울리지 않는 어휘 1개 포함, 나머지 4개는 적절 (5지선다)
-- 어법: (A)(B)(C) 네모 안 어법 선택 (5지선다)
+- 어휘: 문맥상 낱말 쓰임이 적절하지 않은 것은? 지문 5개 문장에서 각 1개 단어 선정, 그 중 1개만 부적절. underlineWords 배열에 문장번호와 밑줄단어 지정
+- 어법: 밑줄 친 부분 중 어법상 틀린 것은? 지문 5개 문장에서 각 1개 어법 표현 선정, 그 중 1개만 오류. underlineWords 배열에 문장번호와 밑줄표현 지정
 - 삽입: 논리 흐름 상 빠진 문장 위치 찾기 (1~5번 위치)
-- 순서: 단락 재배열 (5지선다)
+- 순서: 지문을 주어진 문장(A) + (B) + (C) 3부분으로 나눠 순서 배열 (5지선다)
 - 무관: 전체 흐름과 무관한 문장 번호 (1~5번)
 
 반환 형식:
-{"availableTypes":${JSON.stringify(types)},"unavailableTypes":[],"questions":{"주제":{"type":"주제","question":"문제","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"빈칸":{"type":"빈칸","sentenceNum":0,"blankPhrase":"","question":"문제","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"어휘":{"type":"어휘","question":"문제","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"어법":{"type":"어법","question":"문제","choices":[{"label":"(A)","opt1":"","opt2":""},{"label":"(B)","opt1":"","opt2":""},{"label":"(C)","opt1":"","opt2":""}],"options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},"삽입":{"type":"삽입","insertSentence":"","question":"문제","answer":3,"explanation":"해설"},"순서":{"type":"순서","givenSentence":"","blocks":{"B":"","C":"","D":""},"question":"문제","options":["① (B)-(D)-(C)","② (C)-(B)-(D)","③ (C)-(D)-(B)","④ (D)-(B)-(C)","⑤ (D)-(C)-(B)"],"answer":1,"explanation":"해설"},"무관":{"type":"무관","fabricatedSentence":"","question":"문제","answer":3,"explanation":"해설"}}}
+{"availableTypes":${JSON.stringify(types)},"unavailableTypes":[],"questions":{
+"주제":{"type":"주제","question":"다음 글의 주제로 가장 적절한 것은?","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},
+"빈칸":{"type":"빈칸","sentenceNum":0,"blankPhrase":"","question":"다음 빈칸에 들어갈 말로 가장 적절한 것은?","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"해설"},
+"어휘":{"type":"어휘","question":"밑줄 친 부분 중 문맥상 낱말의 쓰임이 적절하지 않은 것은?","underlineWords":[{"sentenceNum":1,"word":"단어1"},{"sentenceNum":2,"word":"단어2"},{"sentenceNum":3,"word":"단어3"},{"sentenceNum":4,"word":"단어4"},{"sentenceNum":5,"word":"단어5"}],"wrongIndex":2,"answer":3,"explanation":"해설"},
+"어법":{"type":"어법","question":"밑줄 친 부분 중 어법상 틀린 것은?","underlineWords":[{"sentenceNum":1,"word":"표현1"},{"sentenceNum":2,"word":"표현2"},{"sentenceNum":3,"word":"표현3"},{"sentenceNum":4,"word":"표현4"},{"sentenceNum":5,"word":"표현5"}],"wrongIndex":2,"answer":3,"explanation":"해설"},
+"삽입":{"type":"삽입","insertSentence":"","question":"글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?","answer":3,"explanation":"해설"},
+"순서":{"type":"순서","givenSentence":"(A) 첫 단락 내용","blocks":{"B":"(B) 단락 내용","C":"(C) 단락 내용"},"question":"주어진 글 (A)에 이어질 내용의 순서로 가장 적절한 것은?","options":["① (B)-(C)","② (C)-(B)","③ (A)-(B)-(C)","④ (A)-(C)-(B)","⑤ (C)-(A)-(B)"],"answer":1,"explanation":"해설"},
+"무관":{"type":"무관","fabricatedSentence":"","question":"다음 글에서 전체 흐름과 관계없는 문장은?","answer":3,"explanation":"해설"}}}
 questions에는 요청한 유형(${types.join(', ')})만 포함. 실제 지문 내용으로 채울 것.`;
 
 /* ── API / Sheets ───────────────────────────────── */
@@ -182,7 +189,7 @@ function dlBatch(slots, mode){
 
   const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>수능 영어 독해 분석 — ${IS?'학생용':'교사용'} 일괄 (${done.length}개)</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1a1a1a;background:#fff}@page{size:A4;margin:0}@media print{.np{display:none!important}}</style>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1a1a1a;background:#fff;font-size:11pt}@page{size:A4;margin:0}@media print{.np{display:none!important}}</style>
 </head><body>
 ${pages}
 <div class="np" style="text-align:center;padding:2rem;border-top:1px solid #eee">
@@ -340,7 +347,7 @@ function buildHTML(slot,mode){
 
   return`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>${id} — ${IS?'학생용':'교사용'}</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:12mm 12mm 10mm;color:#1a1a1a;font-size:13px;line-height:1.5;background:#fff}@page{size:A4;margin:10mm 11mm}@media print{.np{display:none!important}body{padding:0}}</style>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:12mm 12mm 10mm;color:#1a1a1a;font-size:11pt;line-height:1.5;background:#fff}@page{size:A4;margin:10mm 11mm}@media print{.np{display:none!important}body{padding:0}}</style>
 </head><body>
 <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;border-bottom:2px solid #1a1a1a;padding-bottom:5px">
   <div style="font-size:15px;font-weight:600">수능 영어 독해 — 글의 흐름 분석 <span style="font-size:10px;color:#999;font-weight:400">${id} ${IS?'학생용':'교사용'}</span></div>
@@ -1133,7 +1140,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                       {/* ── 순서 단락 ── */}
                       {t==='순서'&&(
                         <div style={{marginBottom:10}}>
-                          {['B','C','D'].map(k=>(
+                          {['B','C'].map(k=>(
                             <div key={k} style={{marginBottom:6,padding:'7px 10px',background:'#f5f8ff',borderRadius:6,border:'0.5px solid #dde8ff'}}>
                               <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>({k}) 단락</div>
                               {TA(q.blocks?.[k]||'',v=>{const nb={...(q.blocks||{}),[k]:v};onUpQ(t,'blocks',nb);},'단락 내용 입력...')}
@@ -1142,27 +1149,36 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                         </div>
                       )}
 
-                      {/* ── 어법 choices ── */}
-                      {t==='어법'&&(q.choices||[]).length>0&&(
-                        <div style={{marginBottom:10,padding:'8px 10px',background:'#f8f6ff',borderRadius:6,border:'0.5px solid #e0d8ff'}}>
-                          <div style={{fontSize:9.5,fontWeight:600,color:'#534AB7',marginBottom:6}}>네모 안 선택지</div>
-                          {(q.choices||[]).map((ch,ci)=>(
-                            <div key={ci} style={{display:'flex',alignItems:'center',gap:8,marginBottom:5,padding:'5px 8px',background:'#fff',borderRadius:5,border:'0.5px solid #e0d8ff'}}>
-                              <span style={{fontSize:11,fontWeight:700,color:'#534AB7',flexShrink:0,width:28}}>{ch.label}</span>
-                              <input value={ch.opt1||''} onChange={e=>{const nc=[...(q.choices||[])];nc[ci]={...nc[ci],opt1:e.target.value};onUpQ(t,'choices',nc);}}
-                                placeholder="선택지 1"
-                                style={{flex:1,fontSize:12.5,border:'none',borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit',padding:'2px 0'}}/>
-                              <span style={{color:'#bbb',fontSize:13}}>/</span>
-                              <input value={ch.opt2||''} onChange={e=>{const nc=[...(q.choices||[])];nc[ci]={...nc[ci],opt2:e.target.value};onUpQ(t,'choices',nc);}}
-                                placeholder="선택지 2"
-                                style={{flex:1,fontSize:12.5,border:'none',borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit',padding:'2px 0'}}/>
+                      {/* ── 어법/어휘 밑줄 단어 ── */}
+                      {(t==='어법'||t==='어휘')&&(q.underlineWords||[]).length>0&&(
+                        <div style={{marginBottom:10,padding:'8px 10px',background:t==='어법'?'#f8f6ff':'#f0fff4',borderRadius:6,border:`0.5px solid ${t==='어법'?'#e0d8ff':'#c6f6d5'}`}}>
+                          <div style={{fontSize:9.5,fontWeight:600,color:t==='어법'?'#534AB7':'#2d8a60',marginBottom:6}}>
+                            밑줄 단어/표현 (번호 클릭 → 오답 설정)
+                          </div>
+                          {(q.underlineWords||[]).map((uw,ui)=>(
+                            <div key={ui} style={{display:'flex',alignItems:'center',gap:7,marginBottom:4,padding:'5px 8px',
+                              background:q.wrongIndex===ui?t==='어법'?'#f0ebff':'#e6fff0':'#fff',
+                              borderRadius:5,border:`0.5px solid ${q.wrongIndex===ui?t==='어법'?'#534AB7':'#2d8a60':'#eee'}`}}>
+                              <button onClick={()=>onUpQ(t,'wrongIndex',ui)}
+                                style={{width:22,height:22,borderRadius:'50%',fontSize:10,fontWeight:700,
+                                  background:q.wrongIndex===ui?t==='어법'?'#534AB7':'#2d8a60':'#f0f0f0',
+                                  color:q.wrongIndex===ui?'#fff':'#999',border:'none',cursor:'pointer',flexShrink:0}}>
+                                {ui+1}
+                              </button>
+                              <span style={{fontSize:11,color:'#888',flexShrink:0}}>문장 {uw.sentenceNum}</span>
+                              <input value={uw.word||''} onChange={e=>{const nw=[...(q.underlineWords||[])];nw[ui]={...nw[ui],word:e.target.value};onUpQ(t,'underlineWords',nw);}}
+                                style={{flex:1,fontSize:12.5,fontWeight:q.wrongIndex===ui?600:400,
+                                  textDecoration:'underline',color:q.wrongIndex===ui?t==='어법'?'#534AB7':'#2d8a60':'#333',
+                                  border:'none',borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit'}}/>
+                              {q.wrongIndex===ui&&<span style={{fontSize:9.5,color:t==='어법'?'#534AB7':'#2d8a60',flexShrink:0,fontWeight:600}}>✗ 오류</span>}
                             </div>
                           ))}
+                          <div style={{fontSize:9.5,color:'#aaa',marginTop:5}}>정답: {(q.wrongIndex||0)+1}번 밑줄</div>
                         </div>
                       )}
 
-                      {/* ── 5지선다 ── */}
-                      {(q.options||[]).length>0&&(
+                      {/* ── 5지선다 (어법/어휘 제외) ── */}
+                      {(t!=='어법'&&t!=='어휘')&&(q.options||[]).length>0&&(
                         <div style={{marginBottom:10}}>
                           <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:6}}>선택지 (번호 클릭 → 정답 설정)</div>
                           {(q.options||[]).map((opt,oi)=>(
