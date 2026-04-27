@@ -84,13 +84,14 @@ const QGEN_SYS = (a, types) => `수능 영어 문제 출제 전문가. 순수 JS
 아래 JSON 구조로 모든 유형을 빠짐없이 출제하세요.
 유형별 규칙:
 - 주제: 글의 주제로 가장 적절한 것은? (5지선다)
-- 빈칸: 핵심 주장 문장에서 핵심어 제거, 빈칸 추론 (5지선다)
-- 어휘: 문맥상 낱말 쓰임이 적절하지 않은 것은? 지문 5개 문장에서 각 1개 단어 선정, 그 중 1개만 부적절. underlineWords 배열에 문장번호와 밑줄단어 지정
-- 어법: 밑줄 친 부분 중 어법상 틀린 것은? 지문 5개 문장에서 각 1개 어법 표현 선정, 그 중 1개만 오류. underlineWords 배열에 문장번호와 밑줄표현 지정
-- 삽입: 논리 흐름 상 빠진 문장 위치 찾기 (1~5번 위치)
-- 순서: 지문을 (A)+(B)+(C) 3부분으로 나눠 배열. options는 정확히 ["① (B)-(C)","② (C)-(B)"] 2개만
-- 무관: 전체 흐름과 무관한 문장 번호 (1~5번)
-- 요약문: 글 전체를 한 문장으로 요약, (A)(B) 두 빈칸 포함, 각 빈칸 선택지 5쌍
+- 빈칸: 핵심 주장 문장 핵심어 제거, 빈칸 추론 (5지선다)
+- 어휘: 5개 문장 선택, 각 문장에서 단어 1개만 밑줄(underlineWords). wrongIndex 위치만 부적절한 단어로 교체. question 필수 작성
+- 어법: 5개 문장 선택(①②③④⑤), 각 문장에서 어법 포인트 단어 딱 1개만 underlineWords에 지정. wrongIndex 위치의 word만 틀린 형태로 제시. question 필수 작성
+- 삽입: 빠진 문장 위치 찾기. question 필수
+- 순서: givenPart=첫 1~2문장. A/B/C 3단락. 5지선다. question="주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?" 고정
+- 무관: 무관 문장 번호. question 필수
+- 요약문: 반드시 생성. (A)(B) 두 빈칸 포함한 요약문. 5지선다. question 필수
+★ 모든 유형 question 필드 절대 생략 금지. 실제 수능 스타일 지시문 완성
 
 반환 형식:
 {"availableTypes":${JSON.stringify(types)},"unavailableTypes":[],"questions":{
@@ -1142,10 +1143,10 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                       {/* ── 순서 — 주어진 부분 + ABC 단락 + 5선지 ── */}
                       {t==='순서'&&(
                         <div style={{marginBottom:10}}>
-                          {/* 주어진 도입부 */}
+                          {/* 주어진 글 */}
                           <div style={{marginBottom:8,padding:'7px 10px',background:'#e8f4f8',borderRadius:6,border:'0.5px solid #b0d8e8'}}>
-                            <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>📌 주어진 글 (도입부)</div>
-                            {TA(q.givenPart||'',v=>onUpQ(t,'givenPart',v),'주어진 도입부 문장...')}
+                            <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>📌 주어진 글</div>
+                            {TA(q.givenPart||'',v=>onUpQ(t,'givenPart',v),'주어진 첫 1~2문장...')}
                           </div>
                           {/* ABC 3단락 */}
                           {['A','B','C'].map(k=>(
