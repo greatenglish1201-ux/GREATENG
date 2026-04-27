@@ -887,6 +887,75 @@ function App(){
 }
 
 /* ── 슬롯 카드 ─────────────────────────────────── */
+function UnderlinePanel({type,q,sentences,SM,nStr,NUM,onUpQ}){
+  const color=type==='어법'?'#534AB7':'#2d8a60';
+  const esc=w=>w.replace(/[-.*+?^${}()|[\\]\\]/g,'\\$&');
+  const fullText=sentences.map(s=>s.text).join(' ');
+
+  const renderWithNumbers=()=>{
+    const words=q.underlineWords||[];
+    const result=[];
+    let remaining=fullText;
+    words.forEach((uw,wi)=>{
+      if(!uw.word||!remaining) return;
+      try{
+        const pat=new RegExp(esc(uw.word),'i');
+        const match=pat.exec(remaining);
+        if(match){
+          if(match.index>0) result.push(<span key={'t'+wi}>{remaining.slice(0,match.index)}</span>);
+          const isWrong=q.wrongIndex===wi;
+          result.push(
+            <span key={'w'+wi} style={{display:'inline'}}>
+              <span style={{textDecoration:'underline',textDecorationColor:isWrong?'#e53e3e':color,
+                textDecorationThickness:2,fontWeight:600,color:isWrong?'#e53e3e':color,cursor:'pointer'}}
+                onClick={()=>onUpQ(type,'wrongIndex',wi)}>
+                {match[0]}
+              </span>
+              <sup style={{fontSize:9,fontWeight:700,color:isWrong?'#e53e3e':color,marginLeft:1}}>{NUM[wi]}</sup>
+            </span>
+          );
+          remaining=remaining.slice(match.index+match[0].length);
+        }
+      }catch(e){}
+    });
+    if(remaining) result.push(<span key="last">{remaining}</span>);
+    return result;
+  };
+
+  return(
+    <div style={{marginBottom:10}}>
+      <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:6,
+        border:'1.5px solid '+color+'30',fontSize:13.5,lineHeight:2.1,
+        marginBottom:8,wordBreak:'keep-all',overflowWrap:'break-word'}}>
+        {renderWithNumbers()}
+      </div>
+      <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:6}}>
+        {(q.underlineWords||[]).map((uw,ui)=>{
+          const isWrong=q.wrongIndex===ui;
+          return(
+            <div key={ui} style={{display:'flex',alignItems:'center',gap:4,
+              padding:'4px 8px',borderRadius:5,
+              background:isWrong?'#fff5f5':'#f8f8f8',
+              border:'1px solid '+(isWrong?'#e53e3e':color+'40')}}>
+              <span style={{fontSize:11,fontWeight:700,color:isWrong?'#e53e3e':color}}>{NUM[ui]}</span>
+              <input value={uw.word||''} onChange={e=>{const nw=[...(q.underlineWords||[])];nw[ui]={...nw[ui],word:e.target.value};onUpQ(type,'underlineWords',nw);}}
+                style={{width:80,fontSize:12,fontWeight:600,textDecoration:'underline',
+                  color:isWrong?'#e53e3e':color,border:'none',background:'transparent',
+                  outline:'none',fontFamily:'inherit'}}/>
+              <button onClick={()=>onUpQ(type,'wrongIndex',ui)}
+                style={{fontSize:9,padding:'2px 5px',borderRadius:3,cursor:'pointer',
+                  background:isWrong?'#e53e3e':'#eee',color:isWrong?'#fff':'#888',border:'none'}}>
+                {isWrong?'✗ 오류':'오류?'}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#888'}}>정답: {NUM[q.wrongIndex||0]} — {(q.underlineWords||[])[q.wrongIndex||0]?.word}</div>
+    </div>
+  );
+}
+
 function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfirm,onGenQ,onReanalyze,onRegenQ,onSave,onAnalysis,onQType,onUpQ,onUpQOption}){
   const IS=viewMode==='student';
   const st=ST[slot.status]||ST.idle;
@@ -1265,82 +1334,12 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                         </div>
                       )}
 
-                      {/* ── 어법/어휘: 지문 전체에 ①②③④⑤ 밑줄 삽입 ── */}
-                      {(t==='어법'||t==='어휘')&&(q.underlineWords||[]).length>0&&(()=>{
-                        const color=t==='어법'?'#534AB7':'#2d8a60';
-                        const NUM=['①','②','③','④','⑤'];
-                        const esc=w=>w.replace(/[-.*+?^${}()|[\]\]/g,'\$&');
-                        // 지문 전체 텍스트 조합
-                        const fullText=sentences.map(s=>s.text).join(' ');
-                        // underlineWords를 순서대로 지문에 삽입
-                        const renderPassageWithUnderlines=()=>{
-                          let result=[]; let remaining=fullText;
-                          const words=(q.underlineWords||[]).map((uw,i)=>({...uw,idx:i}));
-                          // 지문에서 순서대로 단어 찾아 밑줄 삽입
-                          words.forEach((uw,wi)=>{
-                            if(!uw.word||!remaining) return;
-                            const pat=new RegExp(esc(uw.word),'i');
-                            const match=pat.exec(remaining);
-                            if(match){
-                              if(match.index>0) result.push(<span key={`t${wi}`}>{remaining.slice(0,match.index)}</span>);
-                              const isWrong=q.wrongIndex===wi;
-                              result.push(
-                                <span key={`w${wi}`} style={{position:'relative',display:'inline'}}>
-                                  <span style={{
-                                    textDecoration:'underline',textDecorationColor:isWrong?'#e53e3e':color,
-                                    textDecorationThickness:2,fontWeight:600,
-                                    color:isWrong?'#e53e3e':color,cursor:'pointer'}}
-                                    onClick={()=>onUpQ(t,'wrongIndex',wi)}
-                                    title={`${NUM[wi]} — 클릭하여 오류 지정`}>
-                                    {match[0]}
-                                  </span>
-                                  <sup style={{fontSize:9,fontWeight:700,color:isWrong?'#e53e3e':color,marginLeft:1}}>{NUM[wi]}</sup>
-                                </span>
-                              );
-                              remaining=remaining.slice(match.index+match[0].length);
-                            }
-                          });
-                          if(remaining) result.push(<span key="last">{remaining}</span>);
-                          return result;
-                        };
-                        return(
-                          <div style={{marginBottom:10}}>
-                            {/* 지문 + 밑줄 표시 */}
-                            <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:6,
-                              border:`1.5px solid ${color}30`,fontSize:13.5,lineHeight:2.1,
-                              marginBottom:8,wordBreak:'keep-all',overflowWrap:'break-word'}}>
-                              {renderPassageWithUnderlines()}
-                            </div>
-                            {/* 단어 편집 + 오류 지정 */}
-                            <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:6}}>
-                              {(q.underlineWords||[]).map((uw,ui)=>{
-                                const isWrong=q.wrongIndex===ui;
-                                return(
-                                  <div key={ui} style={{display:'flex',alignItems:'center',gap:4,
-                                    padding:'4px 8px',borderRadius:5,
-                                    background:isWrong?'#fff5f5':'#f8f8f8',
-                                    border:`1px solid ${isWrong?'#e53e3e':color+'40'}`}}>
-                                    <span style={{fontSize:11,fontWeight:700,color:isWrong?'#e53e3e':color}}>{NUM[ui]}</span>
-                                    <input value={uw.word||''} onChange={e=>{const nw=[...(q.underlineWords||[])];nw[ui]={...nw[ui],word:e.target.value};onUpQ(t,'underlineWords',nw);}}
-                                      style={{width:80,fontSize:12,fontWeight:600,
-                                        textDecoration:'underline',color:isWrong?'#e53e3e':color,
-                                        border:'none',background:'transparent',outline:'none',fontFamily:'inherit'}}/>
-                                    <button onClick={()=>onUpQ(t,'wrongIndex',ui)}
-                                      style={{fontSize:9,padding:'2px 5px',borderRadius:3,cursor:'pointer',
-                                        background:isWrong?'#e53e3e':'#eee',
-                                        color:isWrong?'#fff':'#888',border:'none'}}>
-                                      {isWrong?'✗ 오류':'오류?'}
-                                    </button>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div style={{fontSize:10,color:'#888'}}>정답: {NUM[q.wrongIndex||0]} — {(q.underlineWords||[])[q.wrongIndex||0]?.word}</div>
-                          </div>
-                        );
-                      })()}
+                      {/* ── 어법/어휘: 지문 전체 + 밑줄 표시 ── */}
+                      {(t==='어법'||t==='어휘')&&(q.underlineWords||[]).length>0&&
+                        <UnderlinePanel type={t} q={q} sentences={sentences} SM={SM} nStr={nStr} NUM={NUM} onUpQ={onUpQ}/>
+                      }
 
-                      {/* ── 5지선다 (어법/어휘/순서 제외) ── */}
+                                            {/* ── 5지선다 (어법/어휘/순서 제외) ── */}
                       {(t!=='어법'&&t!=='어휘'&&t!=='순서'&&t!=='요약문')&&(q.options||[]).length>0&&(
                         <div style={{marginBottom:10}}>
                           <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:6}}>선택지 (번호 클릭 → 정답 설정)</div>
