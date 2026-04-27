@@ -268,6 +268,66 @@ function loadSlots(){
 }
 
 /* ── HTML 출력 생성 ─────────────────────────────── */
+
+function buildQuestionsHTML(slot, sentences, SM, nStr){
+  const qs = slot.questions?.questions||{};
+  if(!Object.keys(qs).length) return '';
+  const NUM=['①','②','③','④','⑤'];
+  const QBD={주제:'#185FA5',빈칸:'#BA7517',어휘:'#2d8a60',어법:'#534AB7',삽입:'#c0395b',순서:'#0e7490',무관:'#9a3412',요약문:'#0f766e'};
+
+  const makePassHTML=(type,q)=>{
+    const esc=w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+    return sentences.map(s=>{
+      const sc=SM[s.symbol]||{};
+      const badge=`<span style="display:inline-block;font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:${sc.bg};color:${sc.tx};vertical-align:super;margin:0 2px">${nStr(s.num)}</span>`;
+      if((type==='어법'||type==='어휘')&&(q.underlineWords||[]).length){
+        const uwIdx=(q.underlineWords||[]).findIndex(u=>u.sentenceNum===s.num);
+        if(uwIdx>=0){
+          const uw=q.underlineWords[uwIdx];
+          const isWrong=q.wrongIndex===uwIdx;
+          const col=QBD[type]||'#185FA5';
+          const errCol=isWrong?'#e53e3e':col;
+          const marked=s.text.replace(new RegExp(esc(uw.word),'i'),
+            m=>`<u style="font-weight:700;color:${errCol};text-decoration-color:${errCol};text-decoration-thickness:2px">${m}</u><sup style="font-size:9px;font-weight:700;color:${errCol}">${NUM[uwIdx]}</sup>`);
+          return `<span>${badge}${marked} </span>`;
+        }
+      }
+      return `<span>${badge}${s.text} </span>`;
+    }).join('');
+  };
+
+  const items = Object.entries(qs).map(([type,q])=>{
+    const col=QBD[type]||'#185FA5';
+    const passHTML=makePassHTML(type,q);
+    const optHTML=(q.options||[]).map((o,oi)=>
+      `<div style="padding:3px 2px;font-size:13px;color:${q.answer===oi+1?col:'#1a1a1a'};font-weight:${q.answer===oi+1?600:400}">${o}</div>`
+    ).join('');
+    const explHTML=q.explanation
+      ?`<div style="margin-top:8px;padding:7px 10px;background:#f8f8f8;border-radius:5px;font-size:12px;color:#555;border-left:3px solid ${col}">💡 ${q.explanation}</div>`:'';
+    const extraHTML=
+      type==='삽입'&&q.insertSentence?`<div style="margin-bottom:8px;padding:8px 10px;background:#f8f8f8;border-radius:5px;font-size:13px;font-style:italic;border-left:3px solid ${col}">${q.insertSentence}</div>`
+      :type==='무관'&&q.fabricatedSentence?`<div style="margin-bottom:8px;padding:8px 10px;background:#fff5f0;border-radius:5px;font-size:13px;font-style:italic">${q.fabricatedSentence}</div>`
+      :type==='순서'?`<div style="margin-bottom:8px;padding:8px 10px;background:#e8f4f8;border-radius:5px;font-size:13px">📌 주어진 글: ${q.givenPart||q.givenSentence||''}</div>
+        ${['A','B','C'].filter(k=>(q.blocks||{})[k]).map(k=>`<div style="margin-bottom:5px;padding:7px 10px;background:#f5f8ff;border-radius:5px;font-size:13px"><b>(${k})</b> ${q.blocks[k]}</div>`).join('')}`
+      :type==='요약문'&&q.summaryTemplate?`<div style="margin-bottom:8px;padding:8px 10px;background:#f5fff5;border-radius:5px;font-size:13px">${q.summaryTemplate}</div>`
+      :'';
+
+    return `<div style="margin-bottom:18px;border:1.5px solid ${col};border-radius:8px;overflow:hidden;page-break-inside:avoid">
+      <div style="padding:6px 12px;background:${col}18;border-bottom:1px solid ${col}30;display:flex;align-items:center;gap:8px">
+        <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:${col};color:#fff">${type}</span>
+        <span style="font-size:13.5px;color:#1a1a1a;font-weight:500">${q.question||''}</span>
+      </div>
+      <div style="padding:10px 14px;background:#fafafa;border-bottom:1px solid ${col}15;border-left:3px solid ${col};font-size:13px;line-height:2.1;word-break:keep-all;overflow-wrap:break-word">${passHTML}</div>
+      <div style="padding:10px 12px;background:#fff">${extraHTML}${optHTML}${explHTML}</div>
+    </div>`;
+  }).join('');
+
+  return `<div style="padding-top:.7rem;border-top:1.5px solid #e0e0e0;margin-top:.5rem">
+    <div style="font-size:10px;font-weight:600;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">실전 문제</div>
+    ${items}
+  </div>`;
+}
+
 function buildHTML(slot,mode){
   const IS=mode==='student';
   const {analysis,meta}=slot;
@@ -362,6 +422,7 @@ function buildHTML(slot,mode){
 <div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:.85rem;flex-wrap:wrap">${blockCards}</div>
 ${metaRow}
 ${integratedHTML?`<div style="padding-top:.7rem;border-top:1.5px solid #e0e0e0"><div style="font-size:10px;font-weight:600;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">문장별 분석 — 끊어읽기 &amp; 구문</div>${integratedHTML}</div>`:''}
+${slot.questions&&Object.keys(slot.questions.questions||{}).length?buildQuestionsHTML(slot,sentences,SM,nStr):''}
 <div class="np" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid #eee">
   <button onclick="window.print()" style="padding:9px 28px;font-size:13px;font-weight:500;background:#185FA5;color:#fff;border:none;border-radius:7px;cursor:pointer">🖨 인쇄 / PDF 저장</button>
 </div>
@@ -1123,7 +1184,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                       </div>
                       {t==='순서'
                         ?<div style={{fontSize:13.5,color:'#1a1a1a',lineHeight:1.6,fontWeight:500,padding:'2px 0'}}>주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?</div>
-                        :{TA(q.question,v=>onUpQ(t,'question',v),'지시문 입력...')}
+                        :TA(q.question,v=>onUpQ(t,'question',v),'지시문 입력...')
                       }
                     </div>
 
