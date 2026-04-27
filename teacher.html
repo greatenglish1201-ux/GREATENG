@@ -189,7 +189,7 @@ function dlBatch(slots, mode){
 
   const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>수능 영어 독해 분석 — ${IS?'학생용':'교사용'} 일괄 (${done.length}개)</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1a1a1a;background:#fff;font-size:11pt}@page{size:A4;margin:0}@media print{.np{display:none!important}}</style>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1a1a1a;background:#fff;font-size:16px;line-height:1.8}@page{size:A4;margin:0}@media print{.np{display:none!important}}</style>
 </head><body>
 ${pages}
 <div class="np" style="text-align:center;padding:2rem;border-top:1px solid #eee">
@@ -347,7 +347,7 @@ function buildHTML(slot,mode){
 
   return`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>${id} — ${IS?'학생용':'교사용'}</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:12mm 12mm 10mm;color:#1a1a1a;font-size:11pt;line-height:1.5;background:#fff}@page{size:A4;margin:10mm 11mm}@media print{.np{display:none!important}body{padding:0}}</style>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:12mm 12mm 10mm;color:#1a1a1a;font-size:16px;line-height:1.8;line-height:1.5;background:#fff}@page{size:A4;margin:10mm 11mm}@media print{.np{display:none!important}body{padding:0}}</style>
 </head><body>
 <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;border-bottom:2px solid #1a1a1a;padding-bottom:5px">
   <div style="font-size:15px;font-weight:600">수능 영어 독해 — 글의 흐름 분석 <span style="font-size:10px;color:#999;font-weight:400">${id} ${IS?'학생용':'교사용'}</span></div>
