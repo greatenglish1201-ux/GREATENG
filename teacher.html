@@ -1078,23 +1078,27 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                 const NUM=['①','②','③','④','⑤'];
                 const QBG={주제:'#EDF4FF',빈칸:'#FFF8ED',어휘:'#F0FFF4',어법:'#F5F0FF',삽입:'#FFF0F5',순서:'#F0F8FF',무관:'#FFF5F0'};
                 const QBD={주제:'#185FA5',빈칸:'#BA7517',어휘:'#2d8a60',어법:'#534AB7',삽입:'#c0395b',순서:'#0e7490',무관:'#9a3412'};
+                // 렌더 후 자동 높이 적용
+                const setAutoH=el=>{if(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}};
                 const autoResize=e=>{e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px';};
-                const TA=(val,onChange,ph,minH=60)=>(
+                // 지시문용 — 렌더 시 자동 높이
+                const TA=(val,onChange,ph)=>(
                   <textarea value={val||''} onChange={e=>{onChange(e.target.value);autoResize(e);}}
-                    onFocus={autoResize} onClick={autoResize}
-                    placeholder={ph} rows={3}
-                    style={{width:'100%',minHeight:minH,padding:'6px 8px',fontSize:12.5,lineHeight:1.7,
-                      border:'0.5px solid #e0e0e0',borderRadius:5,resize:'vertical',
+                    ref={setAutoH}
+                    placeholder={ph}
+                    style={{width:'100%',height:'auto',padding:'6px 8px',fontSize:12.5,lineHeight:1.7,
+                      border:'0.5px solid #e0e0e0',borderRadius:5,resize:'vertical',overflow:'hidden',
                       fontFamily:'inherit',color:'#1a1a1a',background:'#fafafa',
                       boxSizing:'border-box',outline:'none',wordBreak:'keep-all'}}/>
                 );
+                // 선지용 — 한 줄 기본, 내용 있으면 약간 더
                 const SmTA=(val,onChange,ph)=>(
-                  <textarea value={val||''} onChange={e=>{onChange(e.target.value);autoResize(e);}}
-                    onFocus={autoResize} onClick={autoResize}
-                    placeholder={ph} rows={2}
-                    style={{width:'100%',minHeight:44,padding:'5px 7px',fontSize:12,lineHeight:1.6,
-                      border:'none',borderBottom:'1px dashed #ccc',background:'transparent',
-                      resize:'none',fontFamily:'inherit',color:'#1a1a1a',outline:'none'}}/>
+                  <input value={val||''} onChange={e=>onChange(e.target.value)}
+                    placeholder={ph}
+                    style={{width:'100%',fontSize:12.5,border:'none',
+                      borderBottom:'1px dashed #ccc',background:'transparent',
+                      outline:'none',fontFamily:'inherit',color:'#1a1a1a',
+                      padding:'3px 0',lineHeight:1.5}}/>
                 );
 
                 return(
@@ -1107,7 +1111,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                           background:QBD[t],color:'#fff',flexShrink:0,letterSpacing:'.04em'}}>{t}</span>
                         <span style={{fontSize:10.5,color:'#888'}}>지시문</span>
                       </div>
-                      {TA(q.question,v=>onUpQ(t,'question',v),'지시문 입력...',44)}
+                      {TA(q.question,v=>onUpQ(t,'question',v),'지시문 입력...')}
                     </div>
 
                     <div style={{padding:'10px 12px',background:'#fff'}}>
@@ -1132,7 +1136,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                           {['B','C','D'].map(k=>(
                             <div key={k} style={{marginBottom:6,padding:'7px 10px',background:'#f5f8ff',borderRadius:6,border:'0.5px solid #dde8ff'}}>
                               <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>({k}) 단락</div>
-                              {TA(q.blocks?.[k]||'',v=>{const nb={...(q.blocks||{}),[k]:v};onUpQ(t,'blocks',nb);},'단락 내용 입력...',52)}
+                              {TA(q.blocks?.[k]||'',v=>{const nb={...(q.blocks||{}),[k]:v};onUpQ(t,'blocks',nb);},'단락 내용 입력...')}
                             </div>
                           ))}
                         </div>
@@ -1219,7 +1223,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
                       {/* ── 해설 ── */}
                       <div style={{padding:'8px 10px',background:'#f8f9ff',borderRadius:6,border:'0.5px solid #e5e8ff'}}>
                         <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:5}}>💡 해설</div>
-                        {TA(q.explanation,v=>onUpQ(t,'explanation',v),'해설을 입력하세요...',52)}
+                        {TA(q.explanation,v=>onUpQ(t,'explanation',v),'해설을 입력하세요...')}
                       </div>
 
                     </div>
