@@ -574,6 +574,24 @@ function App(){
   const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
   const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
 
+  const upQ=useCallback((id,type,field,val)=>setSlots(p=>p.map(s=>{
+    if(s.id!==id)return s;
+    const q=JSON.parse(JSON.stringify(s.questions));
+    if(field==='option'){
+      q.questions[type].options[val.idx]=val.text;
+    } else {
+      q.questions[type][field]=val;
+    }
+    return{...s,questions:q};
+  })),[]);
+
+  const upQOption=useCallback((id,type,idx,val)=>setSlots(p=>p.map(s=>{
+    if(s.id!==id)return s;
+    const q=JSON.parse(JSON.stringify(s.questions));
+    q.questions[type].options[idx]=val;
+    return{...s,questions:q};
+  })),[]);
+
   const upAnalysis=useCallback((id,path,val)=>setSlots(p=>p.map(s=>{
     if(s.id!==id)return s;
     const a=JSON.parse(JSON.stringify(s.analysis));
@@ -626,6 +644,32 @@ function App(){
       upSlot(slot.id,{status:'done',questions:parseJSON(d.content[0].text),qOpen:true});
     }catch(e){upSlot(slot.id,{status:'confirmed',error:'문제 오류: '+e.message});}
   },[upSlot,apiKey]);
+
+  /* 흐름 재분석 — 분석 결과 초기화 후 다시 분석 */
+  const reanalyze=useCallback(async(slot)=>{
+    if(!confirm('흐름 분석을 다시 할까요? 기존 분석·문제가 초기화됩니다.')) return;
+    upSlot(slot.id,{status:'idle',analysis:null,questions:null,error:''});
+    // 약간 딜레이 후 자동 분석 시작
+    setTimeout(async()=>{
+      upSlot(slot.id,{status:'analyzing',error:''});
+      try{
+        const d=await callClaude(apiKey,FLOW_SYS,slot.text);
+        if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+        const p=parseJSON(d.content[0].text);
+        upSlot(slot.id,{status:'analyzed',meta:{...slot.meta,difficulty:p.difficulty||'중'},
+          analysis:{sentences:p.sentences||[],
+            flow:{blocks:p.blocks||[],interBlockConnectors:p.interBlockConnectors||[],keyword:p.keyword||'',topicSummary:p.topicSummary||'',structureType:p.structureType||''},
+            grammar:{difficultSentences:p.difficultSentences||[]}},open:true});
+      }catch(e){upSlot(slot.id,{status:'idle',error:'오류: '+e.message});}
+    },100);
+  },[upSlot,apiKey]);
+
+  /* 문제 재생성 — 기존 문제만 초기화 후 다시 생성 */
+  const regenQ=useCallback(async(slot)=>{
+    if(!confirm('문제를 다시 생성할까요? 기존 문제가 초기화됩니다.')) return;
+    upSlot(slot.id,{status:'confirmed',questions:null,qOpen:false});
+    setTimeout(()=>genQ({...slot,status:'confirmed',questions:null}),100);
+  },[upSlot,genQ]);
 
   const saveSheet=useCallback(async(slot)=>{
     if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
@@ -752,10 +796,14 @@ function App(){
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onQToggle={()=>upSlot(slot.id,{qOpen:!slot.qOpen})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
+            onReanalyze={()=>reanalyze(slot)}
             onGenQ={()=>genQ(slot)}
+            onRegenQ={()=>regenQ(slot)}
             onSave={()=>saveSheet(slot)}
             onAnalysis={upAnalysis}
             onQType={t=>upSlot(slot.id,{enabledQTypes:slot.enabledQTypes.includes(t)?slot.enabledQTypes.filter(x=>x!==t):[...slot.enabledQTypes,t]})}
+            onUpQ={(type,field,val)=>upQ(slot.id,type,field,val)}
+            onUpQOption={(type,idx,val)=>upQOption(slot.id,type,idx,val)}
           />
         ))}
       </div>
@@ -764,7 +812,7 @@ function App(){
 }
 
 /* ── 슬롯 카드 ─────────────────────────────────── */
-function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfirm,onGenQ,onSave,onAnalysis,onQType}){
+function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfirm,onGenQ,onReanalyze,onRegenQ,onSave,onAnalysis,onQType,onUpQ,onUpQOption}){
   const IS=viewMode==='student';
   const st=ST[slot.status]||ST.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -970,32 +1018,159 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onQToggle,onConfir
 
           {/* 액션 */}
           <div style={{display:'flex',gap:7,flexWrap:'wrap',marginTop:4}}>
-            {slot.status==='analyzed'&&<button onClick={onConfirm} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>✓ 흐름 확정</button>}
-            {slot.status==='confirmed'&&<button onClick={onGenQ} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#BA7517',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>📝 문제 생성</button>}
-            {slot.status==='done'&&<button onClick={onSave} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>💾 Sheets 저장</button>}
-            {(slot.status==='done'||slot.status==='saved')&&<button onClick={onQToggle} style={{padding:'6px 12px',fontSize:11.5,background:'transparent',color:'#888',border:'0.5px solid #ddd',borderRadius:6,cursor:'pointer'}}>문제 {slot.qOpen?'접기 ▲':'보기 ▼'}</button>}
+            {/* 흐름 확정 */}
+            {slot.status==='analyzed'&&(
+              <button onClick={onConfirm} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>✓ 흐름 확정</button>
+            )}
+            {/* 재분석 — analyzed/confirmed/done/saved 모두 가능 */}
+            {['analyzed','confirmed','done','saved'].includes(slot.status)&&(
+              <button onClick={onReanalyze} style={{padding:'6px 13px',fontSize:11.5,fontWeight:400,background:'transparent',color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 흐름 재분석</button>
+            )}
+            {/* 문제 생성 */}
+            {slot.status==='confirmed'&&(
+              <button onClick={onGenQ} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#BA7517',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>📝 문제 생성</button>
+            )}
+            {/* 문제 재생성 — done/saved */}
+            {['done','saved'].includes(slot.status)&&(
+              <button onClick={onRegenQ} style={{padding:'6px 13px',fontSize:11.5,fontWeight:400,background:'transparent',color:'#BA7517',border:'0.5px solid #BA7517',borderRadius:6,cursor:'pointer'}}>↺ 문제 재생성</button>
+            )}
+            {/* 저장 */}
+            {slot.status==='done'&&(
+              <button onClick={onSave} style={{padding:'6px 16px',fontSize:12,fontWeight:500,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>💾 Sheets 저장</button>
+            )}
+            {/* 저장 완료 후 재저장 */}
+            {slot.status==='saved'&&(
+              <button onClick={onSave} style={{padding:'6px 13px',fontSize:11.5,fontWeight:400,background:'transparent',color:'#2d8a60',border:'0.5px solid #2d8a60',borderRadius:6,cursor:'pointer'}}>💾 재저장</button>
+            )}
+            {/* 문제 보기/접기 */}
+            {(slot.status==='done'||slot.status==='saved')&&(
+              <button onClick={onQToggle} style={{padding:'6px 12px',fontSize:11.5,background:'transparent',color:'#888',border:'0.5px solid #ddd',borderRadius:6,cursor:'pointer'}}>문제 {slot.qOpen?'접기 ▲':'보기 ▼'}</button>
+            )}
           </div>
 
-          {/* 문제 패널 */}
+          {/* 문제 패널 — 편집 가능 */}
           {slot.qOpen&&slot.questions&&(
             <div style={{marginTop:12,borderTop:'1.5px solid #e5e5e5',paddingTop:12}}>
-              <div style={{fontSize:9.5,fontWeight:600,color:'#888',letterSpacing:'.08em',textTransform:'uppercase',marginBottom:9}}>실전 문제</div>
-              <div style={{display:'flex',flexWrap:'wrap',gap:5,marginBottom:10}}>
-                {(slot.questions.availableTypes||[]).map(t=><button key={t} onClick={()=>onQType(t)} style={{padding:'3px 11px',fontSize:11,fontWeight:500,background:slot.enabledQTypes.includes(t)?'#185FA5':'#f0f0f0',color:slot.enabledQTypes.includes(t)?'#fff':'#888',border:'none',borderRadius:18,cursor:'pointer'}}>{t} ✓</button>)}
-                {(slot.questions.unavailableTypes||[]).map(u=><span key={u.type} title={u.reason} style={{padding:'3px 11px',fontSize:11,color:'#ccc',background:'#f5f5f5',borderRadius:18,textDecoration:'line-through',cursor:'help'}}>{u.type}</span>)}
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:9}}>
+                <div style={{fontSize:9.5,fontWeight:600,color:'#888',letterSpacing:'.08em',textTransform:'uppercase'}}>실전 문제 — 편집 가능</div>
+                <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                  {(slot.questions.availableTypes||[]).map(t=>(
+                    <button key={t} onClick={()=>onQType(t)} style={{padding:'2px 9px',fontSize:10.5,fontWeight:500,
+                      background:slot.enabledQTypes.includes(t)?'#185FA5':'#f0f0f0',
+                      color:slot.enabledQTypes.includes(t)?'#fff':'#888',
+                      border:'none',borderRadius:14,cursor:'pointer'}}>{t}</button>
+                  ))}
+                  {(slot.questions.unavailableTypes||[]).map(u=>(
+                    <span key={u.type} title={u.reason} style={{padding:'2px 9px',fontSize:10.5,color:'#ccc',background:'#f5f5f5',borderRadius:14,textDecoration:'line-through',cursor:'help'}}>{u.type}</span>
+                  ))}
+                </div>
               </div>
               {slot.enabledQTypes.filter(t=>slot.questions.questions?.[t]).map(t=>{
                 const q=slot.questions.questions[t];
-                return<div key={t} style={{marginBottom:9,border:'0.5px solid #e5e5e5',borderRadius:7,overflow:'hidden'}}>
-                  <div style={{padding:'6px 11px',background:'#f0f0f0',borderBottom:'0.5px solid #e5e5e5',display:'flex',alignItems:'center',gap:7}}>
-                    <span style={{fontSize:9,fontWeight:700,padding:'2px 7px',borderRadius:4,background:'#185FA5',color:'#fff'}}>{t}</span>
-                    <span style={{fontSize:11.5,color:'#333',wordBreak:'keep-all'}}>{q.question}</span>
+                const NUM=['①','②','③','④','⑤'];
+                return(
+                  <div key={t} style={{marginBottom:12,border:'0.5px solid #e0e0e0',borderRadius:8,overflow:'hidden'}}>
+                    {/* 유형 헤더 */}
+                    <div style={{padding:'6px 12px',background:'#EDF4FF',borderBottom:'0.5px solid #ddd',display:'flex',alignItems:'center',gap:7}}>
+                      <span style={{fontSize:9,fontWeight:700,padding:'2px 8px',borderRadius:4,background:'#185FA5',color:'#fff',flexShrink:0}}>{t}</span>
+                      <textarea value={q.question||''} onChange={e=>onUpQ(t,'question',e.target.value)}
+                        rows={2} style={{flex:1,fontSize:12,color:'#1a1a1a',border:'none',background:'transparent',resize:'none',fontFamily:'inherit',outline:'none',lineHeight:1.5,wordBreak:'keep-all'}}/>
+                    </div>
+                    <div style={{padding:'10px 12px',background:'#fff'}}>
+
+                      {/* 삽입 문장 / 순서 주어진 문장 / 무관 삽입 문장 */}
+                      {(t==='삽입'||t==='순서'||t==='무관')&&(
+                        <div style={{marginBottom:8,padding:'7px 10px',background:'#f8f8f8',borderRadius:6,border:'0.5px solid #e0e0e0'}}>
+                          <div style={{fontSize:9,fontWeight:600,color:'#888',marginBottom:4}}>
+                            {t==='삽입'?'삽입할 문장':t==='순서'?'주어진 첫 문장':'흐름과 무관한 문장'}
+                          </div>
+                          <textarea
+                            value={t==='삽입'?(q.insertSentence||''):t==='순서'?(q.givenSentence||''):(q.fabricatedSentence||'')}
+                            onChange={e=>onUpQ(t,t==='삽입'?'insertSentence':t==='순서'?'givenSentence':'fabricatedSentence',e.target.value)}
+                            rows={2} style={{width:'100%',fontSize:12,color:'#1a1a1a',border:'none',background:'transparent',resize:'none',fontFamily:'inherit',outline:'none',lineHeight:1.6}}/>
+                        </div>
+                      )}
+
+                      {/* 순서 배열 단락 */}
+                      {t==='순서'&&q.blocks&&(
+                        <div style={{marginBottom:8}}>
+                          {['B','C','D'].filter(k=>q.blocks[k]).map(k=>(
+                            <div key={k} style={{marginBottom:5,padding:'6px 10px',background:'#fafafa',borderRadius:5,border:'0.5px solid #eee'}}>
+                              <div style={{fontSize:9,fontWeight:600,color:'#888',marginBottom:3}}>({k}) 단락</div>
+                              <textarea value={q.blocks[k]||''} onChange={e=>{
+                                const nb={...q.blocks,[k]:e.target.value};
+                                onUpQ(t,'blocks',nb);
+                              }} rows={2} style={{width:'100%',fontSize:12,color:'#333',border:'none',background:'transparent',resize:'none',fontFamily:'inherit',outline:'none',lineHeight:1.6}}/>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* 어법 choices */}
+                      {t==='어법'&&q.choices&&(
+                        <div style={{marginBottom:8}}>
+                          {q.choices.map((ch,ci)=>(
+                            <div key={ci} style={{display:'flex',alignItems:'center',gap:6,marginBottom:4,padding:'5px 8px',background:'#fafafa',borderRadius:5}}>
+                              <span style={{fontSize:10.5,fontWeight:600,color:'#534AB7',flexShrink:0,width:28}}>{ch.label}</span>
+                              <input value={ch.opt1||''} onChange={e=>{const nc=[...q.choices];nc[ci]={...nc[ci],opt1:e.target.value};onUpQ(t,'choices',nc);}}
+                                style={{flex:1,fontSize:12,border:'none',borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit'}} placeholder="선택지 1"/>
+                              <span style={{fontSize:11,color:'#bbb'}}>/</span>
+                              <input value={ch.opt2||''} onChange={e=>{const nc=[...q.choices];nc[ci]={...nc[ci],opt2:e.target.value};onUpQ(t,'choices',nc);}}
+                                style={{flex:1,fontSize:12,border:'none',borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit'}} placeholder="선택지 2"/>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* 5지선다 선택지 */}
+                      {(q.options||[]).map((opt,oi)=>(
+                        <div key={oi} style={{display:'flex',alignItems:'center',gap:6,marginBottom:3,padding:'4px 6px',borderRadius:5,
+                          background:q.answer===oi+1?'#EDF4FF':'transparent',
+                          border:q.answer===oi+1?'0.5px solid #185FA5':'0.5px solid transparent'}}>
+                          {/* 정답 선택 버튼 */}
+                          <button onClick={()=>onUpQ(t,'answer',oi+1)}
+                            style={{width:22,height:22,borderRadius:'50%',flexShrink:0,cursor:'pointer',
+                              background:q.answer===oi+1?'#185FA5':'#f0f0f0',
+                              color:q.answer===oi+1?'#fff':'#999',
+                              border:'none',fontSize:11,fontWeight:700}}>
+                            {oi+1}
+                          </button>
+                          <span style={{fontSize:11,color:'#bbb',flexShrink:0}}>{NUM[oi]}</span>
+                          <input value={opt||''} onChange={e=>onUpQOption(t,oi,e.target.value)}
+                            style={{flex:1,fontSize:12.5,border:'none',borderBottom:'1px dashed #ddd',
+                              background:'transparent',outline:'none',fontFamily:'inherit',
+                              color:q.answer===oi+1?'#185FA5':'#1a1a1a',
+                              fontWeight:q.answer===oi+1?600:400}}/>
+                          {q.answer===oi+1&&<span style={{fontSize:10,color:'#185FA5',flexShrink:0,fontWeight:600}}>← 정답</span>}
+                        </div>
+                      ))}
+
+                      {/* 삽입/무관 정답 위치 */}
+                      {(t==='삽입'||t==='무관')&&(
+                        <div style={{marginTop:8,display:'flex',alignItems:'center',gap:6}}>
+                          <span style={{fontSize:10.5,color:'#888',flexShrink:0}}>정답 위치:</span>
+                          {[1,2,3,4,5].map(n=>(
+                            <button key={n} onClick={()=>onUpQ(t,'answer',n)}
+                              style={{width:26,height:26,borderRadius:'50%',fontSize:11,fontWeight:600,cursor:'pointer',
+                                background:q.answer===n?'#185FA5':'#f0f0f0',
+                                color:q.answer===n?'#fff':'#888',border:'none'}}>
+                              {n}
+                            </button>
+                          ))}
+                          {t==='무관'&&<span style={{fontSize:10,color:'#999',marginLeft:4}}>번 문장</span>}
+                        </div>
+                      )}
+
+                      {/* 해설 */}
+                      <div style={{marginTop:8,display:'flex',gap:6,alignItems:'flex-start',padding:'7px 9px',background:'#f8f8f8',borderRadius:5,borderLeft:'3px solid #185FA5'}}>
+                        <span style={{fontSize:11,flexShrink:0,marginTop:1}}>💡</span>
+                        <textarea value={q.explanation||''} onChange={e=>onUpQ(t,'explanation',e.target.value)}
+                          rows={2} style={{flex:1,fontSize:11.5,color:'#555',border:'none',background:'transparent',resize:'none',fontFamily:'inherit',outline:'none',lineHeight:1.5}}
+                          placeholder="해설 입력..."/>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{padding:'9px 11px',background:'#fff'}}>
-                    {(q.options||[]).map((opt,oi)=><div key={oi} style={{padding:'3px 0',fontSize:12.5,color:q.answer===oi+1?'#185FA5':'#333',fontWeight:q.answer===oi+1?600:400}}>{opt}{q.answer===oi+1&&<span style={{fontSize:10,color:'#185FA5',marginLeft:5}}>← 정답</span>}</div>)}
-                    {q.explanation&&<div style={{marginTop:7,padding:'7px 9px',background:'#f8f8f8',borderRadius:5,fontSize:11.5,color:'#555',borderLeft:'3px solid #185FA5'}}>💡 {q.explanation}</div>}
-                  </div>
-                </div>;
+                );
               })}
             </div>
           )}
