@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GREATENG — 실전문제 출제</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  background:#f4f5f7;color:#1a1a1a;font-size:14px;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+.card{background:#fff;border-radius:12px;border:0.5px solid #e5e5e5;overflow:hidden}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useRef} = React;
+
+/* ── 상수 ─────────────────────────────────────── */
+const QTYPES = ['주제','빈칸','어휘','어법','삽입','순서','무관','요약문'];
+const NUM6   = ['①','②','③','④','⑤','⑥'];
+const nStr   = n => NUM6[n-1]||`(${n})`;
+const LS     = {KEY:'te_claude_key', URL:'te_apps_url'};
+
+const QBD = {
+  주제:'#185FA5',빈칸:'#BA7517',어휘:'#2d8a60',어법:'#534AB7',
+  삽입:'#c0395b',순서:'#0e7490',무관:'#9a3412',요약문:'#0f766e'
+};
+const QBG = {
+  주제:'#EDF4FF',빈칸:'#FFF8ED',어휘:'#F0FFF4',어법:'#F5F0FF',
+  삽입:'#FFF0F5',순서:'#F0F8FF',무관:'#FFF5F0',요약문:'#F0FFFD'
+};
+
+const SM = {
+  'G':{bg:'#E6F1FB',bd:'#185FA5',tx:'#0C447C'},
+  '↔':{bg:'#FAECE7',bd:'#D85A30',tx:'#712B13'},
+  '=':{bg:'#EEEDFE',bd:'#534AB7',tx:'#3C3489'},
+  'S':{bg:'#EAF3DE',bd:'#639922',tx:'#173404'},
+  '→':{bg:'#E1F5EE',bd:'#1D9E75',tx:'#085041'},
+  '+':{bg:'#FAEEDA',bd:'#BA7517',tx:'#633806'},
+};
+
+/* ── API ─────────────────────────────────────── */
+function callClaude(key, sys, user, maxTok=8000){
+  return fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:maxTok,
+      system:sys,
+      messages:[{role:'user',content:user}]
+    })
+  }).then(r=>r.json());
+}
+
+function parseJSON(text){
+  let s=text.replace(/```(?:json)?|```/g,'').trim();
+  if(!s.endsWith('}')){const i=s.lastIndexOf('}');if(i>0)s=s.slice(0,i+1);}
+  return JSON.parse(s);
+}
+
+function sheetsGet(url,params){
+  return new Promise((res,rej)=>{
+    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const qs=Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+    const sc=document.createElement('script');
+    sc.src=url+'?'+qs+'&callback='+cb;
+    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
+    sc.onerror=()=>rej(new Error('연결 실패'));
+    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},12000);
+    document.body.appendChild(sc);
+  });
+}
+
+function sheetsSave(url, passage){
+  return new Promise((res,rej)=>{
+    const cb='cb_save_'+Date.now();
+    const encoded=encodeURIComponent(JSON.stringify(passage));
+    const sc=document.createElement('script');
+    sc.src=url+'?action=save&data='+encoded+'&callback='+cb;
+    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
+    sc.onerror=()=>rej(new Error('저장 실패'));
+    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},12000);
+    document.body.appendChild(sc);
+  });
+}
+
+/* ── 문제 생성 프롬프트 ──────────────────────── */
+const QGEN_PROMPT = (analysis, types) =>
+`수능 영어 문제 출제 전문가. 순수 JSON만 반환. 코드블록 없이.
+지문 분석: ${JSON.stringify(analysis)}
+출제 유형: ${types.join(', ')}
+
+규칙:
+- 주제: question="다음 글의 주제로 가장 적절한 것은?" 5지선다
+- 빈칸: 핵심 문장 blankPhrase 제거. question="다음 빈칸에 들어갈 말로 가장 적절한 것은?" 5지선다. sentenceNum 필수
+- 어휘: 5문장 선택, 각 1단어 밑줄(underlineWords), wrongIndex만 부적절 단어로 교체. question="밑줄 친 부분 중 문맥상 낱말의 쓰임이 적절하지 않은 것은?" answer=wrongIndex+1
+- 어법: 5문장 선택(①②③④⑤), 각 어법 판단 단어 1개만 밑줄(underlineWords). wrongIndex만 실제 틀린 어형(which→who, using→used 등). question="밑줄 친 부분 중 어법상 틀린 것은?" answer=wrongIndex+1. 평가원 기준: 관계사/준동사/수일치/태/병렬구조
+- 삽입: insertSentence 필수. question="글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?" answer=1~5
+- 순서: givenPart=첫 1~2문장. A/B/C 3단락. question="주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?" options=["① (A)-(B)-(C)","② (A)-(C)-(B)","③ (B)-(A)-(C)","④ (B)-(C)-(A)","⑤ (C)-(A)-(B)"] answer=1~5
+- 무관: fabricatedSentence=흐름과 무관한 문장(새로 작성). question="다음 글에서 전체 흐름과 관계없는 문장은?" answer=1~5(삽입 위치)
+- 요약문: summaryTemplate=완성된 요약문((A)(B) 포함). blankA/blankB=정답단어. options 5개=(A)-(B) 쌍. question="다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A),(B)에 들어갈 말로 가장 적절한 것은?" answer=1~5
+★ question 절대 생략 금지. 모든 유형 반드시 생성.
+
+반환:
+{"availableTypes":${JSON.stringify(types)},"unavailableTypes":[],"questions":{
+"주제":{"type":"주제","question":"...","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"..."},
+"빈칸":{"type":"빈칸","sentenceNum":0,"blankPhrase":"","question":"...","options":["① ","② ","③ ","④ ","⑤ "],"answer":1,"explanation":"..."},
+"어휘":{"type":"어휘","question":"...","underlineWords":[{"sentenceNum":1,"word":"단어"}],"wrongIndex":0,"answer":1,"explanation":"..."},
+"어법":{"type":"어법","question":"...","underlineWords":[{"sentenceNum":1,"word":"단어"}],"wrongIndex":0,"answer":1,"explanation":"..."},
+"삽입":{"type":"삽입","insertSentence":"...","question":"...","answer":3,"explanation":"..."},
+"순서":{"type":"순서","givenPart":"...","blocks":{"A":"...","B":"...","C":"..."},"question":"...","options":["① (A)-(B)-(C)","② (A)-(C)-(B)","③ (B)-(A)-(C)","④ (B)-(C)-(A)","⑤ (C)-(A)-(B)"],"answer":3,"explanation":"..."},
+"무관":{"type":"무관","fabricatedSentence":"...","question":"...","answer":3,"explanation":"..."},
+"요약문":{"type":"요약문","summaryTemplate":"...","blankA":"...","blankB":"...","options":["① A1 - B1","② A1 - B2","③ A2 - B1","④ A2 - B2","⑤ A3 - B3"],"answer":1,"explanation":"..."}
+}}`
+
+/* ── 지문 렌더 헬퍼 ─────────────────────────── */
+function PassageView({sentences, type, q, onSentClick}){
+  if(!sentences||!sentences.length) return null;
+  const col = QBD[type]||'#185FA5';
+
+  const renderSent = (s,i) => {
+    const sc = SM[s.symbol]||{};
+    const numSpan = <span key="n" style={{fontSize:12,fontWeight:700,color:sc.tx,marginRight:4}}>{nStr(s.num)}</span>;
+
+    // 빈칸: blankPhrase → ________
+    if(type==='빈칸' && q?.blankPhrase && s.num===q.sentenceNum){
+      const esc = w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+      const parts = s.text.split(new RegExp('('+esc(q.blankPhrase)+')','i'));
+      return <span key={s.num}>
+        {numSpan}
+        {parts.map((p,pi)=>
+          new RegExp(esc(q.blankPhrase),'i').test(p)
+          ? <span key={pi} style={{borderBottom:'2px solid '+col,display:'inline-block',
+              minWidth:100,fontWeight:600,color:col,textAlign:'center',margin:'0 3px'}}>________</span>
+          : p
+        )}{' '}
+      </span>;
+    }
+
+    // 어법/어휘: 해당 단어 밑줄+번호
+    if((type==='어법'||type==='어휘') && (q?.underlineWords||[]).length){
+      const uwIdx = (q.underlineWords||[]).findIndex(u=>u.sentenceNum===s.num);
+      if(uwIdx>=0){
+        const uw = q.underlineWords[uwIdx];
+        const isWrong = q.wrongIndex===uwIdx;
+        const errCol = isWrong?'#e53e3e':col;
+        const esc = w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+        const parts = s.text.split(new RegExp('('+esc(uw.word)+')','i'));
+        return <span key={s.num}>
+          {numSpan}
+          {parts.map((p,pi)=>
+            new RegExp(esc(uw.word),'i').test(p)
+            ? <span key={pi}>
+                <span style={{textDecoration:'underline',textDecorationColor:errCol,
+                  textDecorationThickness:2,fontWeight:700,color:errCol}}>{p}</span>
+                <sup style={{fontSize:10,fontWeight:700,color:errCol,marginLeft:1}}>{NUM6[uwIdx]}</sup>
+              </span>
+            : p
+          )}{' '}
+        </span>;
+      }
+    }
+
+    // 삽입: 정답 위치에 ▼ 표시
+    if(type==='삽입'){
+      return <span key={s.num}>
+        {q?.answer===i+1 && <span style={{display:'inline-block',padding:'1px 7px',margin:'0 4px',
+          border:'1.5px solid '+col,borderRadius:4,fontSize:11,color:col,fontWeight:600}}>▼</span>}
+        {numSpan}{s.text}{' '}
+      </span>;
+    }
+
+    return <span key={s.num}>{numSpan}{s.text}{' '}</span>;
+  };
+
+  return (
+    <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:6,
+      borderLeft:'3px solid '+col,border:'1px solid '+col+'25',
+      fontSize:14,lineHeight:2.1,wordBreak:'keep-all',overflowWrap:'break-word',marginBottom:8}}>
+      {sentences.map((s,i)=>renderSent(s,i))}
+    </div>
+  );
+}
+
+/* ── 무관 패널 ───────────────────────────────── */
+function MuGwanPanel({q, sentences, onUpdate}){
+  const fab = q.fabricatedSentence||'';
+  const pos = (q.answer||3)-1;
+  const mixed = [...sentences.map(s=>s.text)];
+  if(fab) mixed.splice(pos,0,fab);
+  const col = QBD['무관'];
+
+  return(
+    <div style={{marginBottom:8}}>
+      {/* 합성 지문 */}
+      <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:6,
+        borderLeft:'3px solid '+col,border:'1px solid '+col+'25',
+        fontSize:14,lineHeight:2.1,wordBreak:'keep-all',overflowWrap:'break-word',marginBottom:8}}>
+        {mixed.map((txt,i)=>(
+          <span key={i}>
+            <span style={{fontSize:12,fontWeight:700,
+              color:i===pos?'#e53e3e':col,marginRight:4}}>
+              {NUM6[i]}
+            </span>
+            <span style={{color:i===pos?'#e53e3e':'inherit'}}>{txt}</span>{' '}
+          </span>
+        ))}
+      </div>
+      {/* 무관 문장 편집 */}
+      <div style={{padding:'8px 10px',background:'#fff5f0',borderRadius:6,border:'0.5px solid #e0b0a0',marginBottom:6}}>
+        <div style={{fontSize:9.5,fontWeight:600,color:col,marginBottom:4}}>⚡ 흐름과 무관한 문장 (정답: {NUM6[pos]}번)</div>
+        <AutoTextarea value={fab} onChange={v=>onUpdate('fabricatedSentence',v)} placeholder="무관한 문장 입력..." col={col}/>
+      </div>
+      {/* 삽입 위치 */}
+      <div style={{display:'flex',alignItems:'center',gap:6,padding:'6px 10px',background:'#f8f8f8',borderRadius:6}}>
+        <span style={{fontSize:10.5,color:'#666',fontWeight:500,flexShrink:0}}>무관 문장 위치:</span>
+        {[1,2,3,4,5].map(n=>(
+          <button key={n} onClick={()=>onUpdate('answer',n)}
+            style={{width:30,height:30,borderRadius:'50%',fontSize:12,fontWeight:600,cursor:'pointer',
+              background:q.answer===n?col:'#fff',color:q.answer===n?'#fff':'#888',
+              border:'1.5px solid '+(q.answer===n?col:'#ddd')}}>
+            {n}
+          </button>
+        ))}
+        <span style={{fontSize:10.5,color:'#999'}}>번 위치</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── 어법/어휘 패널 ──────────────────────────── */
+function UnderlinePanel({type, q, sentences, onUpdate}){
+  const col = QBD[type];
+  const esc = w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+
+  const renderPassage = () => {
+    const words = q.underlineWords||[];
+    const result = [];
+    let remaining = sentences.map(s=>s.text).join(' ');
+    words.forEach((uw,wi)=>{
+      if(!uw.word||!remaining) return;
+      try{
+        const pat = new RegExp(esc(uw.word),'i');
+        const match = pat.exec(remaining);
+        if(match){
+          if(match.index>0) result.push(<span key={'t'+wi}>{remaining.slice(0,match.index)}</span>);
+          const isWrong = q.wrongIndex===wi;
+          const errCol = isWrong?'#e53e3e':col;
+          result.push(
+            <span key={'w'+wi} style={{display:'inline'}}>
+              <span style={{textDecoration:'underline',textDecorationColor:errCol,
+                textDecorationThickness:2,fontWeight:700,color:errCol,cursor:'pointer'}}
+                onClick={()=>onUpdate('wrongIndex',wi)}
+                title={NUM6[wi]+' — 클릭하여 오류 지정'}>
+                {match[0]}
+              </span>
+              <sup style={{fontSize:10,fontWeight:700,color:errCol,marginLeft:1}}>{NUM6[wi]}</sup>
+            </span>
+          );
+          remaining = remaining.slice(match.index+match[0].length);
+        }
+      }catch(e){}
+    });
+    if(remaining) result.push(<span key="last">{remaining}</span>);
+    return result;
+  };
+
+  return(
+    <div style={{marginBottom:8}}>
+      {/* 지문 + 밑줄 */}
+      <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:6,
+        border:'1.5px solid '+col+'30',fontSize:14,lineHeight:2.1,
+        marginBottom:8,wordBreak:'keep-all',overflowWrap:'break-word'}}>
+        {renderPassage()}
+      </div>
+      {/* 밑줄 단어 편집 */}
+      <div style={{display:'flex',flexWrap:'wrap',gap:5,marginBottom:4}}>
+        {(q.underlineWords||[]).map((uw,ui)=>{
+          const isWrong = q.wrongIndex===ui;
+          const errCol = isWrong?'#e53e3e':col;
+          return(
+            <div key={ui} style={{display:'flex',alignItems:'center',gap:4,
+              padding:'4px 8px',borderRadius:5,
+              background:isWrong?'#fff5f5':'#f8f8f8',
+              border:'1px solid '+(isWrong?'#e53e3e':col+'40')}}>
+              <span style={{fontSize:11,fontWeight:700,color:errCol}}>{NUM6[ui]}</span>
+              <input value={uw.word||''} onChange={e=>{
+                const nw=[...(q.underlineWords||[])];nw[ui]={...nw[ui],word:e.target.value};
+                onUpdate('underlineWords',nw);
+              }} style={{width:90,fontSize:12.5,fontWeight:600,textDecoration:'underline',
+                color:errCol,border:'none',borderBottom:'1px dashed #ccc',
+                background:'transparent',outline:'none',fontFamily:'inherit'}}/>
+              <button onClick={()=>onUpdate('wrongIndex',ui)}
+                style={{fontSize:9,padding:'2px 5px',borderRadius:3,cursor:'pointer',
+                  background:isWrong?'#e53e3e':'#eee',color:isWrong?'#fff':'#888',border:'none'}}>
+                {isWrong?'✗오류':'오류?'}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#888'}}>
+        정답: {NUM6[q.wrongIndex||0]} — {(q.underlineWords||[])[q.wrongIndex||0]?.word}
+      </div>
+    </div>
+  );
+}
+
+/* ── AutoTextarea ────────────────────────────── */
+function AutoTextarea({value, onChange, placeholder, col}){
+  const ref = useCallback(el=>{
+    if(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+  },[value]);
+  return(
+    <textarea ref={ref} value={value||''} onChange={e=>{
+      onChange(e.target.value);
+      e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px';
+    }} placeholder={placeholder} rows={2}
+    style={{width:'100%',padding:'6px 8px',fontSize:13.5,lineHeight:1.7,
+      border:'0.5px solid '+(col||'#ddd'),borderRadius:5,resize:'vertical',overflow:'hidden',
+      fontFamily:'inherit',color:'#1a1a1a',background:'#fafafa',outline:'none',wordBreak:'keep-all'}}/>
+  );
+}
+
+/* ── 선택지 편집 ─────────────────────────────── */
+function OptionsEditor({q, type, onUpdate, onUpdateOption}){
+  const col = QBD[type];
+  const NUM = ['①','②','③','④','⑤'];
+  return(
+    <div style={{marginBottom:8}}>
+      <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:6}}>
+        선택지 — 번호 클릭으로 정답 설정
+      </div>
+      {(q.options||[]).map((opt,oi)=>(
+        <div key={oi} style={{display:'flex',alignItems:'flex-start',gap:7,marginBottom:5,
+          padding:'6px 8px',borderRadius:6,
+          background:q.answer===oi+1?col+'12':'',
+          border:'1px solid '+(q.answer===oi+1?col+'50':'transparent')}}>
+          <button onClick={()=>onUpdate('answer',oi+1)}
+            style={{width:24,height:24,borderRadius:'50%',flexShrink:0,cursor:'pointer',marginTop:2,
+              background:q.answer===oi+1?col:'#f0f0f0',
+              color:q.answer===oi+1?'#fff':'#999',
+              border:'none',fontSize:11,fontWeight:700,lineHeight:1}}>
+            {oi+1}
+          </button>
+          <span style={{fontSize:12.5,color:q.answer===oi+1?col:'#bbb',flexShrink:0,marginTop:3,fontWeight:500}}>{NUM[oi]}</span>
+          <div style={{flex:1,minWidth:0}}>
+            <input value={opt||''} onChange={e=>onUpdateOption(oi,e.target.value)}
+              style={{width:'100%',fontSize:13.5,border:'none',
+                borderBottom:'1px dashed #ddd',background:'transparent',
+                outline:'none',fontFamily:'inherit',padding:'2px 0',
+                color:q.answer===oi+1?col:'#1a1a1a',
+                fontWeight:q.answer===oi+1?600:400}}/>
+          </div>
+          {q.answer===oi+1&&<span style={{fontSize:10.5,color:col,flexShrink:0,fontWeight:600,marginTop:3}}>✓ 정답</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── 단일 문제 카드 ──────────────────────────── */
+function QuestionCard({type, q, sentences, onUpdate, onUpdateOption}){
+  const col = QBD[type];
+  const bg  = QBG[type];
+
+  const upQ = (field, val) => onUpdate(type, field, val);
+  const upOpt = (idx, val) => onUpdateOption(type, idx, val);
+
+  return(
+    <div style={{marginBottom:14,border:'1.5px solid '+col,borderRadius:9}} className="card">
+      {/* 유형 + 지시문 */}
+      <div style={{padding:'8px 12px',background:bg,borderBottom:'1px solid '+col+'20'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:5}}>
+          <span style={{fontSize:9,fontWeight:700,padding:'2px 8px',borderRadius:4,
+            background:col,color:'#fff',letterSpacing:'.04em'}}>{type}</span>
+          <span style={{fontSize:10,color:'#888'}}>지시문</span>
+        </div>
+        <AutoTextarea value={q.question} onChange={v=>upQ('question',v)} placeholder="지시문..." col={col}/>
+      </div>
+
+      <div style={{padding:'10px 12px'}}>
+
+        {/* ── 삽입 문장 ── */}
+        {type==='삽입'&&(
+          <div style={{marginBottom:8,padding:'8px 10px',background:'#f8f8f8',
+            borderRadius:6,border:'0.5px solid #e5e5e5',borderLeft:'3px solid '+col}}>
+            <div style={{fontSize:9.5,fontWeight:600,color:col,marginBottom:4}}>📌 삽입할 문장</div>
+            <AutoTextarea value={q.insertSentence} onChange={v=>upQ('insertSentence',v)} placeholder="삽입할 문장..." col={col}/>
+          </div>
+        )}
+
+        {/* ── 지문 (주제/빈칸/삽입) ── */}
+        {(type==='주제'||type==='빈칸'||type==='삽입')&&(
+          <PassageView sentences={sentences} type={type} q={q}/>
+        )}
+
+        {/* ── 어법/어휘: 지문+밑줄 ── */}
+        {(type==='어법'||type==='어휘')&&(
+          <UnderlinePanel type={type} q={q} sentences={sentences}
+            onUpdate={(f,v)=>upQ(f,v)}/>
+        )}
+
+        {/* ── 무관: 합성지문 ── */}
+        {type==='무관'&&(
+          <MuGwanPanel q={q} sentences={sentences} onUpdate={upQ}/>
+        )}
+
+        {/* ── 순서: 주어진글 + ABC ── */}
+        {type==='순서'&&(
+          <div style={{marginBottom:8}}>
+            <div style={{marginBottom:6,padding:'7px 10px',background:'#e8f4f8',
+              borderRadius:6,border:'0.5px solid #b0d8e8'}}>
+              <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>📌 주어진 글</div>
+              <AutoTextarea value={q.givenPart||q.givenSentence||''} onChange={v=>upQ('givenPart',v)} placeholder="주어진 첫 1~2문장..." col="#0e7490"/>
+            </div>
+            {['A','B','C'].map(k=>(
+              <div key={k} style={{marginBottom:5,padding:'7px 10px',background:'#f5f8ff',
+                borderRadius:6,border:'0.5px solid #dde8ff'}}>
+                <div style={{fontSize:9.5,fontWeight:600,color:'#0e7490',marginBottom:4}}>({k}) 단락</div>
+                <AutoTextarea value={(q.blocks||{})[k]||''} onChange={v=>{
+                  const nb={...(q.blocks||{}),[k]:v};upQ('blocks',nb);
+                }} placeholder={'('+k+') 단락 내용...'} col="#0e7490"/>
+              </div>
+            ))}
+            {/* 순서 정답 버튼 */}
+            <div style={{padding:'7px 10px',background:'#f0f8ff',borderRadius:6}}>
+              <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:6}}>정답 선택</div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+                {['(A)-(B)-(C)','(A)-(C)-(B)','(B)-(A)-(C)','(B)-(C)-(A)','(C)-(A)-(B)'].map((opt,oi)=>(
+                  <button key={oi} onClick={()=>{
+                    upQ('answer',oi+1);
+                    upQ('options',['① (A)-(B)-(C)','② (A)-(C)-(B)','③ (B)-(A)-(C)','④ (B)-(C)-(A)','⑤ (C)-(A)-(B)']);
+                  }}
+                  style={{padding:'5px 12px',fontSize:11.5,fontWeight:500,cursor:'pointer',borderRadius:6,
+                    background:q.answer===oi+1?'#0e7490':'#fff',
+                    color:q.answer===oi+1?'#fff':'#555',
+                    border:'1.5px solid '+(q.answer===oi+1?'#0e7490':'#ddd')}}>
+                    {['①','②','③','④','⑤'][oi]} {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── 요약문 ── */}
+        {type==='요약문'&&(
+          <div style={{marginBottom:8}}>
+            <div style={{marginBottom:6,padding:'8px 10px',background:'#f8f8f8',borderRadius:6,border:'0.5px solid #e5e5e5'}}>
+              <div style={{fontSize:9.5,fontWeight:600,color:'#666',marginBottom:4}}>요약문 ((A),(B) 빈칸 포함)</div>
+              <AutoTextarea value={q.summaryTemplate} onChange={v=>upQ('summaryTemplate',v)} placeholder="요약문 입력... 예) The study shows that (A)_____ leads to (B)_____." col={col}/>
+            </div>
+            <div style={{display:'flex',gap:8,marginBottom:8}}>
+              <div style={{flex:1,padding:'7px 10px',background:'#FFF8ED',borderRadius:6,border:'0.5px solid #FDE8BB'}}>
+                <div style={{fontSize:9.5,fontWeight:600,color:'#BA7517',marginBottom:3}}>(A) 정답</div>
+                <input value={q.blankA||''} onChange={e=>upQ('blankA',e.target.value)}
+                  style={{width:'100%',fontSize:13,fontWeight:600,color:'#BA7517',border:'none',
+                    borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit'}}/>
+              </div>
+              <div style={{flex:1,padding:'7px 10px',background:'#F0FFF4',borderRadius:6,border:'0.5px solid #C6F6D5'}}>
+                <div style={{fontSize:9.5,fontWeight:600,color:'#2d8a60',marginBottom:3}}>(B) 정답</div>
+                <input value={q.blankB||''} onChange={e=>upQ('blankB',e.target.value)}
+                  style={{width:'100%',fontSize:13,fontWeight:600,color:'#2d8a60',border:'none',
+                    borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit'}}/>
+              </div>
+            </div>
+            <OptionsEditor q={q} type={type} onUpdate={upQ} onUpdateOption={upOpt}/>
+          </div>
+        )}
+
+        {/* ── 빈칸 정보 ── */}
+        {type==='빈칸'&&q.blankPhrase&&(
+          <div style={{marginBottom:8,display:'flex',alignItems:'center',gap:7,
+            padding:'6px 10px',background:'#FFF8ED',borderRadius:6,border:'0.5px solid #FDE8BB'}}>
+            <span style={{fontSize:10,color:'#888',flexShrink:0}}>빈칸 표현:</span>
+            <input value={q.blankPhrase||''} onChange={e=>upQ('blankPhrase',e.target.value)}
+              style={{flex:1,fontSize:13,fontWeight:600,color:col,border:'none',
+                borderBottom:'1px dashed #ccc',background:'transparent',outline:'none',fontFamily:'inherit'}}/>
+            <span style={{fontSize:10,color:'#888',flexShrink:0}}>문장번호:</span>
+            <input type="number" value={q.sentenceNum||''} onChange={e=>upQ('sentenceNum',parseInt(e.target.value)||0)}
+              style={{width:40,fontSize:12,border:'none',borderBottom:'1px dashed #ccc',
+                background:'transparent',outline:'none',fontFamily:'inherit',textAlign:'center'}}/>
+          </div>
+        )}
+
+        {/* ── 5지선다 (주제/빈칸/요약문) ── */}
+        {(type==='주제'||type==='빈칸')&&(
+          <OptionsEditor q={q} type={type} onUpdate={upQ} onUpdateOption={upOpt}/>
+        )}
+
+        {/* ── 삽입/무관 정답 위치 ── */}
+        {type==='삽입'&&(
+          <div style={{marginBottom:8,display:'flex',alignItems:'center',gap:6,
+            padding:'7px 10px',background:'#f8f8f8',borderRadius:6}}>
+            <span style={{fontSize:10.5,color:'#666',fontWeight:500,flexShrink:0}}>삽입 위치:</span>
+            {[1,2,3,4,5].map(n=>(
+              <button key={n} onClick={()=>upQ('answer',n)}
+                style={{width:30,height:30,borderRadius:'50%',fontSize:12,fontWeight:600,cursor:'pointer',
+                  background:q.answer===n?col:'#fff',color:q.answer===n?'#fff':'#888',
+                  border:'1.5px solid '+(q.answer===n?col:'#ddd')}}>
+                {n}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ── 해설 ── */}
+        <div style={{padding:'8px 10px',background:'#f8f9ff',borderRadius:6,border:'0.5px solid #e5e8ff'}}>
+          <div style={{fontSize:9.5,fontWeight:600,color:'#888',marginBottom:4}}>💡 해설</div>
+          <AutoTextarea value={q.explanation} onChange={v=>upQ('explanation',v)} placeholder="해설 입력..." col={col}/>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+/* ── 메인 앱 ─────────────────────────────────── */
+function App(){
+  const [apiKey,  setApiKey]  = useState(()=>localStorage.getItem(LS.KEY)||'');
+  const [appsURL, setAppsURL] = useState(()=>localStorage.getItem(LS.URL)||'');
+  const [keyInput,setKeyInput]= useState('');
+  const [urlInput,setUrlInput]= useState('');
+  const [showSet, setShowSet] = useState(false);
+  const [msg,     setMsg]     = useState('');
+
+  const [passages, setPassages] = useState([]);
+  const [loading,  setLoading]  = useState(false);
+  const [selected, setSelected] = useState(null); // 선택된 지문
+  const [enabledTypes, setEnabledTypes] = useState([...QTYPES]);
+  const [questions, setQuestions] = useState(null); // {availableTypes, questions}
+  const [genning,   setGenning]   = useState(false);
+  const [saving,    setSaving]    = useState(false);
+
+  const flash = (m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
+  const keyOk = apiKey.startsWith('sk-ant');
+
+  // Sheets에서 지문 목록 불러오기
+  const loadPassages = useCallback(async()=>{
+    if(!appsURL){alert('설정에서 Apps Script URL을 입력해주세요.');setShowSet(true);return;}
+    setLoading(true);
+    try{
+      const data = await sheetsGet(appsURL,{action:'getAll'});
+      const ps = (data.passages||[]).filter(p=>p.sentences&&p.sentences.length);
+      setPassages(ps);
+      flash('✓ '+ps.length+'개 지문 불러오기 완료');
+    }catch(e){flash('불러오기 실패: '+e.message,5000);}
+    setLoading(false);
+  },[appsURL]);
+
+  // 문제 생성
+  const generate = useCallback(async()=>{
+    if(!apiKey){alert('API Key를 설정해주세요.');setShowSet(true);return;}
+    if(!selected){alert('지문을 선택해주세요.');return;}
+    if(!enabledTypes.length){alert('문제 유형을 선택해주세요.');return;}
+    setGenning(true);
+    setQuestions(null);
+    try{
+      const {sentences,flow,grammar} = selected;
+      const analysis = {sentences,...(flow||{}),...(grammar||{})};
+      const d = await callClaude(apiKey, QGEN_PROMPT(analysis, enabledTypes), '위 지문으로 문제를 출제해주세요.');
+      if(d.error) throw new Error(d.error.message||JSON.stringify(d.error));
+      const parsed = parseJSON(d.content[0].text);
+      setQuestions(parsed);
+      flash('✓ 문제 생성 완료');
+    }catch(e){flash('생성 실패: '+e.message,5000);}
+    setGenning(false);
+  },[apiKey,selected,enabledTypes]);
+
+  // 문제 저장
+  const save = useCallback(async()=>{
+    if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
+    if(!selected||!questions){alert('저장할 데이터가 없습니다.');return;}
+    setSaving(true);
+    try{
+      const passage = {
+        ...selected,
+        questions: questions.questions||{},
+        confirmed: true,
+      };
+      await sheetsSave(appsURL, passage);
+      flash('✓ 저장 완료');
+    }catch(e){flash('저장 실패: '+e.message,5000);}
+    setSaving(false);
+  },[appsURL,selected,questions]);
+
+  // 문제 업데이트
+  const updateQ = useCallback((type,field,val)=>{
+    setQuestions(prev=>{
+      const next = JSON.parse(JSON.stringify(prev));
+      next.questions[type][field] = val;
+      return next;
+    });
+  },[]);
+
+  const updateQOption = useCallback((type,idx,val)=>{
+    setQuestions(prev=>{
+      const next = JSON.parse(JSON.stringify(prev));
+      next.questions[type].options[idx] = val;
+      return next;
+    });
+  },[]);
+
+  const sentences = selected?.sentences||[];
+
+  return(
+    <div style={{minHeight:'100vh',background:'#f4f5f7'}}>
+      {/* 헤더 */}
+      <div style={{background:'#185FA5',padding:'0 20px',display:'flex',alignItems:'center',
+        justifyContent:'space-between',height:50,position:'sticky',top:0,zIndex:100}}>
+        <div style={{color:'#fff',fontWeight:600,fontSize:14}}>📝 GREATENG — 실전문제 출제</div>
+        <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          {msg&&<span style={{color:'#a5d6f5',fontSize:11}}>{msg}</span>}
+          <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,
+            background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',
+            color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'API 미설정'}</span>
+          <button onClick={loadPassages} disabled={loading}
+            style={{background:'rgba(255,255,255,.15)',color:'#a5d6f5',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11,cursor:'pointer'}}>
+            {loading?'불러오는중...':'☁ 지문 불러오기'}
+          </button>
+          <a href="teacher.html" style={{color:'rgba(255,255,255,.6)',fontSize:11,textDecoration:'none'}}>← 분석툴</a>
+          <button onClick={()=>setShowSet(v=>!v)}
+            style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11,cursor:'pointer'}}>⚙ 설정</button>
+        </div>
+      </div>
+
+      {/* 설정 패널 */}
+      {showSet&&(
+        <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
+          <div style={{display:'flex',gap:10,alignItems:'center'}}>
+            <span style={{color:'#a5d6f5',fontSize:12,width:130,flexShrink:0}}>Claude API Key</span>
+            <input type="password" value={keyInput||(apiKey?'••••••••':'')}
+              onChange={e=>setKeyInput(e.target.value)} placeholder="sk-ant-api03-..."
+              style={{flex:1,padding:'6px 10px',borderRadius:6,border:'none',fontSize:12,fontFamily:'monospace'}}/>
+          </div>
+          <div style={{display:'flex',gap:10,alignItems:'center'}}>
+            <span style={{color:'#a5d6f5',fontSize:12,width:130,flexShrink:0}}>Apps Script URL</span>
+            <input value={urlInput||appsURL} onChange={e=>setUrlInput(e.target.value)}
+              placeholder="https://script.google.com/..."
+              style={{flex:1,padding:'6px 10px',borderRadius:6,border:'none',fontSize:12}}/>
+          </div>
+          <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+            <button onClick={()=>{
+              const k=keyInput||apiKey, u=urlInput||appsURL;
+              if(k){localStorage.setItem(LS.KEY,k);setApiKey(k);}
+              if(u){localStorage.setItem(LS.URL,u);setAppsURL(u);}
+              setShowSet(false);flash('설정 저장 ✓');
+            }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:6,
+              padding:'6px 18px',fontSize:12,cursor:'pointer',fontWeight:500}}>저장</button>
+            <button onClick={()=>setShowSet(false)}
+              style={{background:'rgba(255,255,255,.1)',color:'#ccc',border:'none',
+                borderRadius:6,padding:'6px 12px',fontSize:12,cursor:'pointer'}}>닫기</button>
+          </div>
+        </div>
+      )}
+
+      <div style={{maxWidth:960,margin:'0 auto',padding:'20px 14px',display:'grid',
+        gridTemplateColumns:'280px 1fr',gap:16,alignItems:'start'}}>
+
+        {/* 왼쪽: 지문 목록 */}
+        <div>
+          <div className="card" style={{padding:'12px 14px',marginBottom:12}}>
+            <div style={{fontSize:12,fontWeight:600,color:'#555',marginBottom:10}}>지문 선택</div>
+            {passages.length===0?(
+              <div style={{fontSize:12,color:'#aaa',textAlign:'center',padding:'20px 0'}}>
+                ☁ 지문 불러오기를 눌러주세요
+              </div>
+            ):passages.map(p=>(
+              <div key={p.id} onClick={()=>{setSelected(p);setQuestions(null);}}
+                style={{padding:'8px 10px',borderRadius:7,cursor:'pointer',marginBottom:5,
+                  background:selected?.id===p.id?'#EDF4FF':'#f8f8f8',
+                  border:'0.5px solid '+(selected?.id===p.id?'#185FA5':'#e5e5e5')}}>
+                <div style={{fontSize:11.5,fontWeight:600,color:selected?.id===p.id?'#185FA5':'#333'}}>{p.id}</div>
+                <div style={{fontSize:10.5,color:'#888',marginTop:2}}>
+                  난이도 {p.difficulty||'-'} · {(p.sentences||[]).length}문장
+                </div>
+                <div style={{fontSize:10.5,color:'#aaa',marginTop:2,
+                  overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                  {(p.sentences||[])[0]?.text?.slice(0,40)||''}...
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 유형 선택 */}
+          {selected&&(
+            <div className="card" style={{padding:'12px 14px',marginBottom:12}}>
+              <div style={{fontSize:12,fontWeight:600,color:'#555',marginBottom:10}}>문제 유형</div>
+              {QTYPES.map(t=>(
+                <div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,cursor:'pointer'}}
+                  onClick={()=>setEnabledTypes(prev=>prev.includes(t)?prev.filter(x=>x!==t):[...prev,t])}>
+                  <div style={{width:16,height:16,borderRadius:3,border:'1.5px solid '+(enabledTypes.includes(t)?QBD[t]:'#ccc'),
+                    background:enabledTypes.includes(t)?QBD[t]:'#fff',flexShrink:0,
+                    display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    {enabledTypes.includes(t)&&<span style={{color:'#fff',fontSize:10,fontWeight:700}}>✓</span>}
+                  </div>
+                  <span style={{fontSize:12.5,color:enabledTypes.includes(t)?QBD[t]:'#888',fontWeight:enabledTypes.includes(t)?500:400}}>{t}</span>
+                </div>
+              ))}
+              <button onClick={generate} disabled={genning||!keyOk||!enabledTypes.length}
+                style={{width:'100%',marginTop:10,padding:'9px 0',fontSize:13,fontWeight:600,
+                  background:(!genning&&keyOk&&enabledTypes.length)?'#185FA5':'#ccc',
+                  color:'#fff',border:'none',borderRadius:7,cursor:(!genning&&keyOk)?'pointer':'default'}}>
+                {genning?'생성 중...':'📝 문제 생성'}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 오른쪽: 선택된 지문 + 문제 */}
+        <div>
+          {/* 선택된 지문 미리보기 */}
+          {selected&&(
+            <div className="card" style={{padding:'14px 16px',marginBottom:14}}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:10}}>
+                <div>
+                  <span style={{fontSize:13.5,fontWeight:600,color:'#185FA5'}}>{selected.id}</span>
+                  <span style={{fontSize:11,color:'#888',marginLeft:8}}>난이도 {selected.difficulty}</span>
+                </div>
+                {questions&&(
+                  <div style={{display:'flex',gap:6}}>
+                    <button onClick={save} disabled={saving}
+                      style={{padding:'5px 14px',fontSize:11.5,fontWeight:500,
+                        background:'#2d8a60',color:'#fff',border:'none',borderRadius:6,cursor:'pointer'}}>
+                      {saving?'저장중...':'💾 Sheets 저장'}
+                    </button>
+                    <button onClick={()=>{/* HTML 출력 */printHTML();}}
+                      style={{padding:'5px 14px',fontSize:11.5,fontWeight:500,
+                        background:'#185FA5',color:'#fff',border:'none',borderRadius:6,cursor:'pointer'}}>
+                      🖨 HTML 출력
+                    </button>
+                  </div>
+                )}
+              </div>
+              {/* 지문 전체 */}
+              <div style={{padding:'10px 14px',background:'#fafafa',borderRadius:7,
+                borderLeft:'3px solid #185FA5',fontSize:14,lineHeight:2.1,
+                wordBreak:'keep-all',overflowWrap:'break-word'}}>
+                {(selected.sentences||[]).map(s=>{
+                  const sc=SM[s.symbol]||{};
+                  return <span key={s.num}>
+                    <span style={{fontSize:12,fontWeight:700,color:sc.tx,marginRight:4}}>{nStr(s.num)}</span>
+                    {s.text}{' '}
+                  </span>;
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 생성된 문제들 */}
+          {questions&&(
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'#555',marginBottom:10}}>
+                실전 문제 편집 — {enabledTypes.filter(t=>questions.questions?.[t]).length}개
+              </div>
+              {enabledTypes.filter(t=>questions.questions?.[t]).map(t=>(
+                <QuestionCard key={t} type={t} q={questions.questions[t]}
+                  sentences={sentences}
+                  onUpdate={updateQ}
+                  onUpdateOption={updateQOption}/>
+              ))}
+            </div>
+          )}
+
+          {!selected&&(
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',
+              height:300,color:'#ccc',fontSize:14}}>
+              ← 왼쪽에서 지문을 선택하세요
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  function printHTML(){
+    if(!selected||!questions) return;
+    const {sentences,flow} = selected;
+    const qs = questions.questions||{};
+    const col = '#185FA5';
+
+    const makePassBadge = (s) => {
+      const sc = SM[s.symbol]||{};
+      return '<span style="font-size:12px;font-weight:700;color:'+sc.tx+';margin-right:4px">'+nStr(s.num)+'</span>';
+    };
+
+    const makePassHTML = (type, q) => {
+      const esc = w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+      const sents = sentences.map(s=>{
+        const badge = makePassBadge(s);
+        if(type==='빈칸'&&q.blankPhrase&&s.num===q.sentenceNum){
+          const blanked = s.text.replace(new RegExp(esc(q.blankPhrase),'i'),
+            '<span style="border-bottom:2px solid '+QBD[type]+';display:inline-block;min-width:100px;font-weight:600;color:'+QBD[type]+';text-align:center;margin:0 3px">________</span>');
+          return '<span>'+badge+blanked+' </span>';
+        }
+        if((type==='어법'||type==='어휘')&&(q.underlineWords||[]).length){
+          const uwIdx=(q.underlineWords||[]).findIndex(u=>u.sentenceNum===s.num);
+          if(uwIdx>=0){
+            const uw=q.underlineWords[uwIdx];
+            const isWrong=q.wrongIndex===uwIdx;
+            const errCol=isWrong?'#e53e3e':QBD[type];
+            const marked=s.text.replace(new RegExp(esc(uw.word),'i'),
+              m=>'<u style="font-weight:700;color:'+errCol+';text-decoration-color:'+errCol+';text-decoration-thickness:2px">'+m+'</u><sup style="font-size:10px;font-weight:700;color:'+errCol+'">'+NUM6[uwIdx]+'</sup>');
+            return '<span>'+badge+marked+' </span>';
+          }
+        }
+        if(type==='삽입'){
+          const pos=q.answer-1;
+          const si=sentences.indexOf(s);
+          const arrow=si===pos?'<span style="display:inline-block;padding:1px 7px;margin:0 4px;border:1.5px solid '+QBD[type]+';border-radius:4px;font-size:11px;color:'+QBD[type]+';font-weight:600">▼</span>':'';
+          return '<span>'+arrow+badge+s.text+' </span>';
+        }
+        return '<span>'+badge+s.text+' </span>';
+      }).join('');
+      return '<div style="padding:10px 14px;background:#fafafa;border-left:3px solid '+QBD[type]+';font-size:13px;line-height:2;word-break:keep-all;margin-bottom:8px">'+sents+'</div>';
+    };
+
+    const items = enabledTypes.filter(t=>qs[t]).map(t=>{
+      const q=qs[t];
+      const tcol=QBD[t];
+      let passDiv='', extraDiv='', optDiv='';
+
+      if(t==='무관'){
+        const fab=q.fabricatedSentence||'';
+        const pos=(q.answer||3)-1;
+        const mixed=[...sentences.map(s=>s.text)];
+        if(fab) mixed.splice(pos,0,fab);
+        passDiv='<div style="padding:10px 14px;background:#fafafa;border-left:3px solid '+tcol+';font-size:13px;line-height:2;word-break:keep-all;margin-bottom:8px">'
+          +mixed.map((txt,i)=>'<span><span style="font-size:12px;font-weight:700;color:'+(i===pos?'#e53e3e':tcol)+';margin-right:4px">'+NUM6[i]+'</span><span style="color:'+(i===pos?'#e53e3e':'inherit')+'">'+txt+'</span> </span>').join('')
+          +'</div>';
+      } else if(t==='순서'){
+        const gp=q.givenPart||q.givenSentence||'';
+        passDiv='<div style="padding:8px 10px;background:#e8f4f8;border-radius:5px;font-size:13px;margin-bottom:6px">📌 주어진 글: '+gp+'</div>'
+          +['A','B','C'].filter(k=>(q.blocks||{})[k]).map(k=>'<div style="padding:7px 10px;background:#f5f8ff;border-radius:5px;font-size:13px;margin-bottom:5px"><b>('+k+')</b> '+q.blocks[k]+'</div>').join('');
+      } else {
+        passDiv=makePassHTML(t,q);
+      }
+
+      if(t==='삽입'&&q.insertSentence)
+        extraDiv='<div style="padding:8px 10px;background:#f8f8f8;border-radius:5px;font-size:13px;font-style:italic;border-left:3px solid '+tcol+';margin-bottom:8px">'+q.insertSentence+'</div>';
+      if(t==='요약문'&&q.summaryTemplate)
+        extraDiv='<div style="padding:8px 10px;background:#f5fff5;border-radius:5px;font-size:13px;margin-bottom:8px">'+q.summaryTemplate+'</div>';
+
+      if(t!=='어법'&&t!=='어휘'&&t!=='순서'){
+        optDiv=(q.options||[]).map((o,oi)=>'<div style="padding:3px 2px;font-size:13px;color:'+(q.answer===oi+1?tcol:'#1a1a1a')+';font-weight:'+(q.answer===oi+1?600:400)+'">'+o+'</div>').join('');
+      }
+
+      const explDiv=q.explanation?'<div style="margin-top:8px;padding:7px 10px;background:#f8f8f8;border-radius:5px;font-size:12px;color:#555;border-left:3px solid '+tcol+'">💡 '+q.explanation+'</div>':'';
+
+      return '<div style="margin-bottom:18px;border:1.5px solid '+tcol+';border-radius:8px;overflow:hidden;page-break-inside:avoid">'
+        +'<div style="padding:6px 12px;background:'+tcol+'18;border-bottom:1px solid '+tcol+'30;display:flex;align-items:center;gap:8px">'
+        +'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:'+tcol+';color:#fff">'+t+'</span>'
+        +'<span style="font-size:13.5px;color:#1a1a1a;font-weight:500">'+(q.question||'')+'</span></div>'
+        +'<div style="padding:10px 12px;background:#fff">'+passDiv+extraDiv+optDiv+explDiv+'</div>'
+        +'</div>';
+    }).join('');
+
+    const html='<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>'+selected.id+' — 실전문제</title>'
+      +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Apple SD Gothic Neo\',\'Malgun Gothic\',sans-serif;padding:14mm;color:#1a1a1a;font-size:13px;line-height:1.6;background:#fff}'
+      +'@page{size:A4;margin:10mm}@media print{.np{display:none!important}}</style></head><body>'
+      +'<div style="font-size:15px;font-weight:700;margin-bottom:12px;border-bottom:2px solid #1a1a1a;padding-bottom:6px">'+selected.id+' — 실전 문제</div>'
+      +items
+      +'<div class="np" style="text-align:center;padding:2rem"><button onclick="window.print()" style="padding:10px 28px;font-size:13px;background:#185FA5;color:#fff;border:none;border-radius:7px;cursor:pointer">🖨 인쇄 / PDF 저장</button></div>'
+      +'</body></html>';
+
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=selected.id+'_문제.html';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    flash('HTML 다운로드 완료');
+  }
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
