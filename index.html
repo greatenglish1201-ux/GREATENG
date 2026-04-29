@@ -508,40 +508,42 @@ function App(){
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    const target=Math.min(qCount,pool.length);
-    const summaryPool=pool.filter(p=>p.summary_template&&p.summary_A_options&&p.summary_B_options);
-    const usedIds=new Set();
-    // 유형 랜덤 배분
-    const typePool=shuffle([...Array(target)].map((_,i)=>types[i%types.length]));
+    const target=qCount;
+    const usedCombos=new Set(); // "passageId::type" 조합 추적
     const qs=[];
-    let poolIdx=0;
+    let roundIdx=0;
     for(let i=0;i<target;i++){
-      const t=typePool[i];
       let q=null;
-      // pool에서 문제 생성 가능한 지문 찾기 (이미 사용한 지문 제외)
-      let attempts=0;
-      while(!q && poolIdx+attempts < pool.length){
-        const p=pool[(poolIdx+attempts)%pool.length];
-        if(!usedIds.has(p.id)){
+      // round-robin으로 지문 순환하며 미사용 조합 탐색
+      let found=false;
+      for(let attempt=0;attempt<pool.length;attempt++){
+        const p=pool[(roundIdx+attempt)%pool.length];
+        // 이 지문에서 아직 안 쓴 유형 찾기
+        const availTypes=types.filter(t=>!usedCombos.has(p.id+'::'+t));
+        if(availTypes.length===0) continue;
+        // 선호 유형 순서: 아직 안 쓴 것 중 shuffle
+        const tryTypes=shuffle(availTypes);
+        for(const t of tryTypes){
           q=gen(p,t,allPassages);
-          if(!q){
-            // 다른 타입으로 fallback
-            const fallbackOrder=[...types.filter(x=>x!==t)];
-            for(const ft of fallbackOrder){q=gen(p,ft,allPassages);if(q)break;}
-          }
-          if(q){usedIds.add(p.id);poolIdx+=attempts+1;break;}
+          if(q){usedCombos.add(p.id+'::'+t);roundIdx=(roundIdx+attempt+1)%pool.length;found=true;break;}
         }
-        attempts++;
+        if(found) break;
       }
-      // 그래도 없으면 전체 pool에서 미사용 지문으로 재시도
-      if(!q){
-        const spare=pool.find(p=>!usedIds.has(p.id));
-        if(spare){
-          const fallbackOrder=[...types];
-          for(const ft of fallbackOrder){q=gen(spare,ft,allPassages);if(q){usedIds.add(spare.id);break;}}
+      // 모든 조합 소진 시: usedCombos 리셋 후 재시도 (전체 반복 허용)
+      if(!found){
+        usedCombos.clear();
+        for(let attempt=0;attempt<pool.length;attempt++){
+          const p=pool[(roundIdx+attempt)%pool.length];
+          const tryTypes=shuffle([...types]);
+          for(const t of tryTypes){
+            q=gen(p,t,allPassages);
+            if(q){usedCombos.add(p.id+'::'+t);roundIdx=(roundIdx+attempt+1)%pool.length;found=true;break;}
+          }
+          if(found) break;
         }
       }
       if(q)qs.push(q);
+      else break; // 더 이상 생성 불가
     }
     setQuestions(qs);setCurIdx(0);setUserAns({});setShowAns(false);setTimerKey(Date.now());setScreen('quiz');
   };
@@ -556,30 +558,38 @@ function App(){
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    const target=Math.min(qCount,pool.length);
-    const summaryPool2=pool.filter(p=>p.summary_template&&p.summary_A_options&&p.summary_B_options);
-    const usedIds2=new Set();
-    const typePool2=shuffle([...Array(target)].map((_,i)=>types[i%types.length]));
+    const target=qCount;
+    const usedCombos2=new Set();
     const qs=[];
-    let poolIdx=0;
+    let roundIdx2=0;
     for(let i=0;i<target;i++){
-      const t=typePool2[i];
       let q=null;
-      let attempts=0;
-      while(!q&&poolIdx+attempts<pool.length){
-        const p=pool[(poolIdx+attempts)%pool.length];
-        if(!usedIds2.has(p.id)){
+      let found=false;
+      for(let attempt=0;attempt<pool.length;attempt++){
+        const p=pool[(roundIdx2+attempt)%pool.length];
+        const availTypes=types.filter(t=>!usedCombos2.has(p.id+'::'+t));
+        if(availTypes.length===0) continue;
+        const tryTypes=shuffle(availTypes);
+        for(const t of tryTypes){
           q=gen(p,t,allPassages);
-          if(!q){const fallbackOrder=[...types.filter(x=>x!==t)];for(const ft of fallbackOrder){q=gen(p,ft,allPassages);if(q)break;}}
-          if(q){usedIds2.add(p.id);poolIdx+=attempts+1;break;}
+          if(q){usedCombos2.add(p.id+'::'+t);roundIdx2=(roundIdx2+attempt+1)%pool.length;found=true;break;}
         }
-        attempts++;
+        if(found) break;
       }
-      if(!q){
-        const spare=pool.find(p=>!usedIds2.has(p.id));
-        if(spare){const fallbackOrder=[...types];for(const ft of fallbackOrder){q=gen(spare,ft,allPassages);if(q){usedIds2.add(spare.id);break;}}}
+      if(!found){
+        usedCombos2.clear();
+        for(let attempt=0;attempt<pool.length;attempt++){
+          const p=pool[(roundIdx2+attempt)%pool.length];
+          const tryTypes=shuffle([...types]);
+          for(const t of tryTypes){
+            q=gen(p,t,allPassages);
+            if(q){usedCombos2.add(p.id+'::'+t);roundIdx2=(roundIdx2+attempt+1)%pool.length;found=true;break;}
+          }
+          if(found) break;
+        }
       }
       if(q)qs.push(q);
+      else break;
     }
     return qs;
   };
@@ -1286,28 +1296,56 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         <div style={{display:'flex',gap:12}}>
           <div style={{...S.card,flex:1}}>
             <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>문제 수</h3>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <div style={{display:'flex',flexDirection:'column',gap:6}}>
-                <div style={{display:'flex',alignItems:'center',gap:6}}>
-                  {[-10,-5,-1].map(d=>(
-                    <button key={d} onClick={()=>setQCount(q=>Math.max(1,q+d))}
-                      style={{padding:'5px 8px',borderRadius:8,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,fontWeight:700,cursor:'pointer',color:'#475569'}}>
-                      {d}
-                    </button>
-                  ))}
-                  <input type="number" min={1} max={99} value={qCount}
-                    onChange={e=>{const v=parseInt(e.target.value);if(!isNaN(v))setQCount(Math.max(1,Math.min(99,v)));}}
-                    onFocus={e=>e.target.select()}
-                    style={{width:52,padding:'8px 4px',borderRadius:10,border:'2px solid #C9A84C',fontSize:15,fontWeight:700,textAlign:'center',outline:'none'}}/>
-                  {[1,5,10].map(d=>(
-                    <button key={d} onClick={()=>setQCount(q=>Math.min(99,q+d))}
-                      style={{padding:'5px 8px',borderRadius:8,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,fontWeight:700,cursor:'pointer',color:'#475569'}}>
-                      +{d}
-                    </button>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
+              <button onClick={()=>setQCount(q=>Math.min(99,q+1))}
+                style={{background:'none',border:'none',cursor:'pointer',fontSize:20,color:'#C9A84C',lineHeight:1,padding:'1px 12px'}}>▲</button>
+              <div style={{display:'flex',alignItems:'center',gap:8,width:'100%'}}>
+                <div
+                  style={{flex:1,height:18,background:'#e2e8f0',borderRadius:9,cursor:'pointer',position:'relative',overflow:'hidden'}}
+                  onClick={e=>{
+                    const rect=e.currentTarget.getBoundingClientRect();
+                    const ratio=(e.clientX-rect.left)/rect.width;
+                    const raw=Math.round(ratio*98)+1;
+                    const snapped=Math.round(raw/10)*10||10;
+                    setQCount(Math.max(1,Math.min(99,snapped)));
+                  }}
+                  onMouseDown={e=>{
+                    const bar=e.currentTarget;
+                    const move=ev=>{
+                      const rect=bar.getBoundingClientRect();
+                      const ratio=Math.max(0,Math.min(1,(ev.clientX-rect.left)/rect.width));
+                      const raw=Math.round(ratio*98)+1;
+                      const snapped=Math.round(raw/10)*10||10;
+                      setQCount(Math.max(1,Math.min(99,snapped)));
+                    };
+                    const up=()=>{window.removeEventListener('mousemove',move);window.removeEventListener('mouseup',up);};
+                    window.addEventListener('mousemove',move);
+                    window.addEventListener('mouseup',up);
+                  }}
+                  onTouchStart={e=>{
+                    const bar=e.currentTarget;
+                    const move=ev=>{
+                      const touch=ev.touches[0];
+                      const rect=bar.getBoundingClientRect();
+                      const ratio=Math.max(0,Math.min(1,(touch.clientX-rect.left)/rect.width));
+                      const raw=Math.round(ratio*98)+1;
+                      const snapped=Math.round(raw/10)*10||10;
+                      setQCount(Math.max(1,Math.min(99,snapped)));
+                    };
+                    const up=()=>{bar.removeEventListener('touchmove',move);bar.removeEventListener('touchend',up);};
+                    bar.addEventListener('touchmove',move,{passive:true});
+                    bar.addEventListener('touchend',up);
+                  }}
+                >
+                  <div style={{height:'100%',width:`${(qCount/99)*100}%`,background:'linear-gradient(90deg,#C9A84C,#e6c96a)',borderRadius:9,transition:'width 0.12s'}}/>
+                  {[10,20,30,40,50,60,70,80,90].map(v=>(
+                    <div key={v} style={{position:'absolute',top:0,bottom:0,left:`${(v/99)*100}%`,width:1,background:'rgba(255,255,255,0.6)'}}/>
                   ))}
                 </div>
+                <span style={{fontSize:18,fontWeight:800,color:'#C9A84C',minWidth:26,textAlign:'right'}}>{qCount}</span>
               </div>
-              <span style={{fontSize:12.5,color:'#64748b'}}>문제</span>
+              <button onClick={()=>setQCount(q=>Math.max(1,q-1))}
+                style={{background:'none',border:'none',cursor:'pointer',fontSize:20,color:'#C9A84C',lineHeight:1,padding:'1px 12px'}}>▼</button>
             </div>
           </div>
           <div style={{...S.card,flex:1}}>
