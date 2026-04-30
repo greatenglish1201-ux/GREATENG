@@ -77,7 +77,7 @@ const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. �
   "structureType":"통념→반박→결론","difficulty":"중",
   "difficultSentences":[{"num":2,"text":"원문","structure":"구조","translation":"해석","point":"포인트"}]
 }
-keyWords: 전체에서 핵심 2~3문장에만 단어 1개. 나머지는 [].
+keyWords: 글 전체에서 가장 핵심이 되는 문장 딱 1개에만 단어 1개 설정. 나머지 모든 문장은 반드시 빈 배열 []. 과도한 강조 절대 금지.
 difficulty: 상/중/하. color: blue/coral/teal/purple/green/amber/gray.
 블록 2~4개. difficultSentences 2~3개.`;
 
@@ -732,11 +732,13 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanal
                                     onChange={e=>onAnalysis(slot.id,'sentences.'+si2+'.role',e.target.value)}
                                     rows={2} style={{...iB,fontSize:10.5,color:'#444',borderBottomColor:'#ddd',
                                       resize:'none',lineHeight:1.4,overflow:'hidden'}}/></>
-                                :<><span style={{fontSize:10,fontWeight:700,padding:'1px 4px',borderRadius:3,
-                                    background:sc.bg,color:sc.tx,border:'1px solid '+sc.bd,
-                                    display:'inline-block',marginBottom:3}}>({sent.symbol})</span>
-                                  <div style={{fontSize:10.5,color:'#444',wordBreak:'keep-all',
-                                    overflowWrap:'break-word',lineHeight:1.4}}>{sent.role}</div></>
+                                :<>
+                                  <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
+                                    <div style={{width:36,height:16,borderRadius:3,borderBottom:'1.5px solid '+sc.bd,opacity:.5}}/>
+                                  </div>
+                                  <div style={{width:'100%',height:14,borderBottom:'1px dashed '+sc.bd,opacity:.4,marginBottom:2}}/>
+                                  <div style={{width:'80%',height:14,borderBottom:'1px dashed '+sc.bd,opacity:.3}}/>
+                                </>
                               }
                             </div>
                           </div>
