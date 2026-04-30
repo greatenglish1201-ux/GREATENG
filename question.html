@@ -48,7 +48,7 @@ const SM = {
 };
 
 /* ── API ─────────────────────────────────────── */
-function callClaude(key, sys, user, maxTok=8000){
+function callClaude(key, sys, user, maxTok=8192){
   return fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{
@@ -68,7 +68,11 @@ function callClaude(key, sys, user, maxTok=8000){
 
 function parseJSON(text){
   let s=text.replace(/```(?:json)?|```/g,'').trim();
-  if(!s.endsWith('}')){const i=s.lastIndexOf('}');if(i>0)s=s.slice(0,i+1);}
+  // 잘린 JSON 복구: 마지막 완전한 유형까지만
+  if(!s.endsWith('}}')){
+    const i=s.lastIndexOf('}}');
+    if(i>0)s=s.slice(0,i+2);
+  }
   return JSON.parse(s);
 }
 
@@ -563,7 +567,7 @@ function App(){
     setLoading(false);
   },[appsURL]);
 
-  // 문제 생성
+  // 문제 생성 — 3개씩 나눠서 생성 후 합치기
   const generate = useCallback(async()=>{
     if(!apiKey){alert('API Key를 설정해주세요.');setShowSet(true);return;}
     if(!selected){alert('지문을 선택해주세요.');return;}
@@ -573,11 +577,19 @@ function App(){
     try{
       const {sentences,flow,grammar} = selected;
       const analysis = {sentences,...(flow||{}),...(grammar||{})};
-      const d = await callClaude(apiKey, QGEN_PROMPT(analysis, enabledTypes), '위 지문으로 문제를 출제해주세요.');
-      if(d.error) throw new Error(d.error.message||JSON.stringify(d.error));
-      const parsed = parseJSON(d.content[0].text);
-      setQuestions(parsed);
-      flash('✓ 문제 생성 완료');
+      const batches = [];
+      for(let i=0;i<enabledTypes.length;i+=3) batches.push(enabledTypes.slice(i,i+3));
+      let allQ={}, allAvail=[];
+      for(let bi=0;bi<batches.length;bi++){
+        flash('생성 중... ('+(bi+1)+'/'+batches.length+')');
+        const d=await callClaude(apiKey,QGEN_PROMPT(analysis,batches[bi]),'문제를 출제해주세요.');
+        if(d.error) throw new Error(d.error.message||JSON.stringify(d.error));
+        const parsed=parseJSON(d.content[0].text);
+        Object.assign(allQ,parsed.questions||{});
+        allAvail=[...allAvail,...(parsed.availableTypes||[])];
+      }
+      setQuestions({availableTypes:allAvail,unavailableTypes:[],questions:allQ});
+      flash('✓ 문제 생성 완료 ('+Object.keys(allQ).length+'개)');
     }catch(e){flash('생성 실패: '+e.message,5000);}
     setGenning(false);
   },[apiKey,selected,enabledTypes]);
@@ -687,8 +699,10 @@ function App(){
                 setSelected(p);
                 // 저장된 문제가 있으면 자동 로드
                 if(p.questions&&Object.keys(p.questions).length){
-                  const types=Object.keys(p.questions);
-                  setQuestions({availableTypes:types,unavailableTypes:[],questions:p.questions});
+                  // QTYPES 순서대로 정렬
+                  const qs=p.questions;
+                  const types=QTYPES.filter(t=>qs[t]&&qs[t].question);
+                  setQuestions({availableTypes:types,unavailableTypes:[],questions:qs});
                   setEnabledTypes(types);
                 } else {
                   setQuestions(null);
