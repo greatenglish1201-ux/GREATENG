@@ -683,13 +683,27 @@ function App(){
                 ☁ 지문 불러오기를 눌러주세요
               </div>
             ):passages.map(p=>(
-              <div key={p.id} onClick={()=>{setSelected(p);setQuestions(null);}}
+              <div key={p.id} onClick={()=>{
+                setSelected(p);
+                // 저장된 문제가 있으면 자동 로드
+                if(p.questions&&Object.keys(p.questions).length){
+                  const types=Object.keys(p.questions);
+                  setQuestions({availableTypes:types,unavailableTypes:[],questions:p.questions});
+                  setEnabledTypes(types);
+                } else {
+                  setQuestions(null);
+                }
+              }}
                 style={{padding:'8px 10px',borderRadius:7,cursor:'pointer',marginBottom:5,
                   background:selected?.id===p.id?'#EDF4FF':'#f8f8f8',
                   border:'0.5px solid '+(selected?.id===p.id?'#185FA5':'#e5e5e5')}}>
                 <div style={{fontSize:11.5,fontWeight:600,color:selected?.id===p.id?'#185FA5':'#333'}}>{p.id}</div>
                 <div style={{fontSize:10.5,color:'#888',marginTop:2}}>
                   난이도 {p.difficulty||'-'} · {(p.sentences||[]).length}문장
+                  {p.questions&&Object.keys(p.questions).length>0&&
+                    <span style={{marginLeft:6,fontSize:10,color:'#2d8a60',fontWeight:600}}>
+                      ✓ 문제 {Object.keys(p.questions).length}개
+                    </span>}
                 </div>
                 <div style={{fontSize:10.5,color:'#aaa',marginTop:2,
                   overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
