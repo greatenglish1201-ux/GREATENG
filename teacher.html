@@ -382,6 +382,410 @@ function dlHTML(slot,mode){
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 
+// ========== AUTHORING TOOL ==========
+const AUTHOR_TABS=[
+  {lb:'주제',c:'#185FA5'},{lb:'빈칸',c:'#993C1D'},{lb:'순서',c:'#3B6D11'},
+  {lb:'요약',c:'#854F0B'},{lb:'함의',c:'#993556'},{lb:'무관',c:'#0F6E56'},
+  {lb:'삽입',c:'#534AB7'},{lb:'어법',c:'#1d1d1f'},{lb:'어휘',c:'#1d1d1f'}
+];
+const BLK_C={A:'#888',B:'#185FA5',C:'#3B6D11',D:'#854F0B'};
+
+const AUTH_PROMPT=t=>`You are a Korean CSAT English exam expert. Extract ONLY the English passage from the text below (ignore Korean). Return ONLY valid JSON (no markdown):
+{"title":"Korean 2-6 chars","difficulty":"보통 or 높음","abstract":"one English sentence",
+"sentences":["s0","s1"],
+"topic":{"candidates":["CORRECT","w2","w3","w4","w5"]},
+"blank":{"candidates":[{"sentence_index":2,"keyword":"exact phrase","distractors":["w1","w2","w3","w4"]},{"sentence_index":0,"keyword":"phrase2","distractors":["w1","w2","w3","w4"]},{"sentence_index":4,"keyword":"phrase3","distractors":["w1","w2","w3","w4"]}]},
+"order":{"possible":true,"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4]},{"label":"D","sentence_indices":[5,6]}]},
+"summary":{"candidates":[{"template":"...________(A)________...________(B)________...","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl2","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl3","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]}]},
+"implication":{"possible":true,"sentence_index":2,"keyword":"figurative phrase","candidates":["CORRECT meaning","w2","w3","w4","w5"]},
+"irrelevant":{"candidates":["unrelated sentence1","unrelated sentence2","unrelated sentence3"],"recommended_pos":2},
+"insert":{"candidates":[{"sentence":"insert sentence","pos":3},{"sentence":"s2","pos":5},{"sentence":"s3","pos":2}]},
+"grammar":{"sets":[{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":1,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":false,"note":"→ correction"},{"sent":4,"word":"w","correct":true,"note":"이유"},{"sent":6,"word":"w","correct":true,"note":"이유"}],"answer":3},{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":true,"note":"이유"},{"sent":3,"word":"w","correct":false,"note":"→ correction"},{"sent":5,"word":"w","correct":true,"note":"이유"},{"sent":7,"word":"w","correct":true,"note":"이유"}],"answer":3}]},
+"vocab":{"sets":[{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":1,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":false},{"sent":4,"word":"orig","alt":"wrong","correct":true},{"sent":6,"word":"orig","alt":"wrong","correct":true}],"answer":3},{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":true},{"sent":3,"word":"orig","alt":"wrong","correct":false},{"sent":5,"word":"orig","alt":"wrong","correct":true},{"sent":7,"word":"orig","alt":"wrong","correct":true}],"answer":3}]}}
+Rules: topic.candidates[0]=correct. blank.keyword=exact substring. order.possible=false if <7 sentences. grammar/vocab word=exact word from that sentence. answer=1-based index of wrong item.
+TEXT:\n`+t;
+
+function splitTexts(text){
+  if(text.indexOf('\n---')>=0)return text.split(/\n---+\n?/).map(t=>t.trim()).filter(Boolean);
+  const parts=text.split(/(?=\n\d{2,3}\s+(?:다음|밑줄|주어진))/).map(t=>t.trim()).filter(Boolean);
+  return parts.length>1?parts.filter(p=>/[A-Za-z]{20,}/.test(p)):[text.trim()].filter(Boolean);
+}
+
+function buildPassageData(a,pfx,num){
+  const ns=String(num).padStart(2,'0');
+  const sc=a.summary.candidates[0];
+  return{
+    id:`${pfx}_${ns}`,difficulty:a.difficulty||'보통',title:a.title||'제목',
+    sentences:a.sentences||[],abstract:a.abstract||'',
+    topic_options:a.topic.candidates,topic_answer:1,
+    blank_sel:0,blank_sentence_index:a.blank.candidates[0].sentence_index,
+    blank_target:a.blank.candidates[0].keyword,
+    blank_candidates:a.blank.candidates,
+    blank_options:[a.blank.candidates[0].keyword,...a.blank.candidates[0].distractors],blank_answer:1,
+    order_given_index:0,order_blocks:a.order.possible!==false&&a.order.blocks?a.order.blocks:[],
+    order_options:['(A)-(B)-(C)','(B)-(C)-(A)','(C)-(A)-(B)','(B)-(A)-(C)','(A)-(C)-(B)'],order_answer:1,
+    summary_sel:0,summary_candidates:a.summary.candidates,summary_template:sc.template,
+    summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
+    summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1,
+    implication_sentence_index:a.implication.possible!==false?a.implication.sentence_index:0,
+    implication_keyword:a.implication.possible!==false?a.implication.keyword:'',
+    implication_options:a.implication.possible!==false?a.implication.candidates:['','','','',''],implication_answer:1,
+    irrel_sel:0,irrel_candidates:a.irrelevant.candidates,irrel_insert_pos:a.irrelevant.recommended_pos||1,irrel_confirmed:false,
+    irrelevant_sentence_index:a.irrelevant.recommended_pos||1,
+    insert_sel:0,insert_candidates:a.insert.candidates,
+    insert_sentence:a.insert.candidates[0].sentence,insert_answer:a.insert.candidates[0].pos,
+    grammar_sets:a.grammar.sets,grammar_sel:0,grammar_answer:a.grammar.sets[0].answer,
+    vocab_sets:a.vocab.sets,vocab_sel:0,vocab_answer:a.vocab.sets[0].answer,
+    aGroup:[sc.A_correct,...sc.A_distractors].slice(0,3),bGroup:[sc.B_correct,...sc.B_distractors].slice(0,3)
+  };
+}
+
+function AuthoringTool({apiKey}){
+  const [step,setStep]=useState('setup'); // setup|proc|edit|out
+  const [rawText,setRawText]=useState('');
+  const [pfx,setPfx]=useState('ABSO_TYPE_08');
+  const [startNum,setStartNum]=useState(20);
+  const [passages,setPassages]=useState([]); // [{rawText,data,error,loading}]
+  const [pi,setPi]=useState(0);
+  const [at,setAt]=useState(0);
+  const [outText,setOutText]=useState('');
+  const [copied,setCopied]=useState(false);
+  const [err,setErr]=useState('');
+
+  const P=()=>passages[pi]?.data;
+
+  const upP=(patch)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:{...p.data,...patch}}:p));
+  const upPDeep=(fn)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:fn({...p.data})}:p));
+
+  const analyze=async()=>{
+    if(!apiKey){setErr('설정 메뉴에서 API Key를 먼저 입력해주세요.');return;}
+    if(!rawText.trim()){setErr('지문 텍스트를 입력해주세요.');return;}
+    setErr('');
+    const parts=splitTexts(rawText);
+    const init=parts.map((t,i)=>({id:i,rawText:t,data:null,error:null,loading:false}));
+    setPassages(init);setStep('proc');
+    const upd=[...init];
+    for(let i=0;i<parts.length;i++){
+      upd[i]={...upd[i],loading:true};setPassages([...upd]);
+      try{
+        const d=await callClaude(apiKey,'Return ONLY valid JSON, no markdown.',AUTH_PROMPT(parts[i]));
+        if(d.error)throw new Error(d.error.message||'API error');
+        const a=parseJSON(d.content[0].text);
+        upd[i]={...upd[i],data:buildPassageData(a,pfx,startNum+i),loading:false};
+      }catch(e){upd[i]={...upd[i],error:e.message,loading:false};}
+      setPassages([...upd]);
+    }
+    const first=upd.findIndex(p=>p.data);
+    if(first>=0){setPi(first);setAt(0);setStep('edit');}
+  };
+
+  const getBlockLabel=(p,i)=>{
+    if(i===p.order_given_index)return'A';
+    let l='';(p.order_blocks||[]).forEach(b=>{if(b.sentence_indices.includes(i))l=b.label;});return l;
+  };
+
+  const bdg=(txt,c)=><span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:20,marginRight:5,background:c+'22',color:c}}>{txt}</span>;
+
+  const renderSent=(p,s,i)=>{
+    const bc=p.blank_candidates?.[p.blank_sel];
+    if(at===1&&bc?.sentence_index===i&&bc.keyword){
+      const idx=s.indexOf(bc.keyword);
+      if(idx>=0)return<span style={{fontSize:12,lineHeight:1.6}}>{s.slice(0,idx)}<span style={{background:'#993C1D22',borderBottom:'2px solid #993C1D',fontWeight:700,padding:'0 2px',color:'#993C1D'}}>{bc.keyword}</span>{s.slice(idx+bc.keyword.length)}</span>;
+    }
+    if(at===4&&i===p.implication_sentence_index&&p.implication_keyword){
+      const idx=s.indexOf(p.implication_keyword);
+      if(idx>=0)return<span style={{fontSize:12,lineHeight:1.6}}>{s.slice(0,idx)}<u style={{textDecorationColor:'#993556',fontWeight:600}}>{p.implication_keyword}</u>{s.slice(idx+p.implication_keyword.length)}</span>;
+    }
+    if((at===7||at===8)){
+      const sets=at===7?p.grammar_sets:p.vocab_sets;
+      const sel=at===7?p.grammar_sel:p.vocab_sel;
+      const item=sets?.[sel]?.items?.find(it=>it.sent===i);
+      if(item){
+        const idx=s.indexOf(item.word);const c=item.correct?'#185FA5':'#E24B4A';
+        const num=sets[sel].items.indexOf(item)+1;
+        if(idx>=0)return<span style={{fontSize:12,lineHeight:1.6,color:'#666'}}>{s.slice(0,idx)}<span style={{background:c+'22',borderBottom:'2px solid '+c,fontWeight:700,padding:'0 3px',color:c}}>{num}. {item.word}</span>{s.slice(idx+item.word.length)}</span>;
+      }
+    }
+    return<span style={{fontSize:12,lineHeight:1.6,color:'#555'}}>{s}</span>;
+  };
+
+  const LeftPanel=({p})=>{
+    const irrelPos=at===5?p.irrel_insert_pos:-1;
+    const insPos=at===6?p.insert_answer:-1;
+    const rows=[];
+    for(let i=0;i<=p.sentences.length;i++){
+      if(at===5){
+        const isP=irrelPos===i;
+        rows.push(<div key={'ip'+i} onClick={()=>upP({irrel_insert_pos:i})} style={{cursor:'pointer',display:'flex',alignItems:'center',gap:4,margin:'2px 0',padding:'2px 6px',borderRadius:4,background:isP?'#0F6E5614':'transparent',border:'1px dashed '+(isP?'#0F6E56':'transparent')}}>
+          <span style={{fontSize:10,color:isP?'#0F6E56':'#ccc',fontWeight:700}}>▶ {isP?'여기에 삽입':'클릭'}</span></div>);
+        if(isP)rows.push(<div key={'iprev'+i} style={{margin:'2px 0 4px 24px',padding:'6px 9px',borderLeft:'3px solid #0F6E56',borderRadius:4,background:'#0F6E5610',fontSize:12,color:'#0F6E56',fontStyle:'italic'}}>{p.irrel_candidates?.[p.irrel_sel]}</div>);
+      }
+      if(at===6){
+        const isP=insPos===i;
+        rows.push(<div key={'inp'+i} onClick={()=>upP({insert_answer:i})} style={{cursor:'pointer',display:'flex',alignItems:'center',gap:4,margin:'2px 0',padding:'2px 6px',borderRadius:4,background:isP?'#534AB714':'transparent',border:'1px dashed '+(isP?'#534AB7':'transparent')}}>
+          <span style={{fontSize:10,color:isP?'#534AB7':'#ccc',fontWeight:700}}>▶ {isP?'여기에 삽입':'클릭'}</span></div>);
+        if(isP)rows.push(<div key={'inprev'+i} style={{margin:'2px 0 4px 24px',padding:'6px 9px',borderLeft:'3px solid #534AB7',borderRadius:4,background:'#534AB710',fontSize:12,color:'#534AB7',fontStyle:'italic'}}>{p.insert_sentence}</div>);
+      }
+      if(i===p.sentences.length)break;
+      const s=p.sentences[i];
+      let bg='transparent',bl='3px solid transparent';
+      const bc_=p.blank_candidates?.[p.blank_sel];
+      if(at===1&&bc_?.sentence_index===i){bg='#993C1D08';bl='3px solid #993C1D';}
+      else if(at===1){p.blank_candidates?.forEach((c,ci)=>{if(ci!==p.blank_sel&&c.sentence_index===i){bg='#854F0B06';bl='3px solid #854F0B33';}});}
+      else if(at===2){const bl2=getBlockLabel(p,i);if(bl2){const bc2=BLK_C[bl2];bg=bc2+'12';bl='3px solid '+bc2;}}
+      else if(at===4&&i===p.implication_sentence_index){bg='#99355610';bl='3px solid #993556';}
+      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?p.grammar_sel:p.vocab_sel;const item=sets?.[sel]?.items?.find(it=>it.sent===i);if(item){const c=item.correct?'#185FA5':'#E24B4A';bg=c+'08';bl='3px solid '+c;}}
+      rows.push(<div key={i} style={{display:'flex',gap:6,marginBottom:5,padding:'5px 8px',borderRadius:6,background:bg,borderLeft:bl}}>
+        <span style={{color:'#bbb',fontFamily:'monospace',fontSize:11,flexShrink:0,marginTop:2,minWidth:20}}>[{i}]</span>
+        {at===2&&getBlockLabel(p,i)&&<span style={{fontSize:11,fontWeight:700,color:BLK_C[getBlockLabel(p,i)],marginRight:2,flexShrink:0,marginTop:2}}>({getBlockLabel(p,i)})</span>}
+        {renderSent(p,s,i)}
+      </div>);
+    }
+    return<div style={{overflowY:'auto',maxHeight:500}}><div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>{at===5||at===6?'▶ 클릭으로 삽입 위치 선택':'전체 지문'}</div>{rows}</div>;
+  };
+
+  const RightPanel=({p})=>{
+    const T=AUTHOR_TABS[at];
+    const optBtn=(sel,isRec,n,txt,onclick)=><button onClick={onclick} style={{display:'block',width:'100%',textAlign:'left',marginBottom:5,padding:'9px 11px',borderRadius:8,background:sel?T.c+'18':'transparent',border:`0.5px solid ${sel?T.c:'#e5e5e5'}`,color:sel?T.c:'#1d1d1f',cursor:'pointer',fontSize:13,lineHeight:1.45}}>
+      {sel&&bdg('✓ 정답',T.c)}{isRec&&!sel&&bdg('AI 추천','#854F0B')}
+      <span style={{fontSize:11,color:'#bbb',marginRight:4}}>({n})</span>{txt}</button>;
+
+    if(at===0)return<div>{p.topic_options.map((o,i)=>optBtn(p.topic_answer===i+1,i===0,i+1,o,()=>upP({topic_answer:i+1})))}</div>;
+
+    if(at===1)return<div>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 빈칸 후보 선택</div>
+      {p.blank_candidates?.map((c,ci)=><button key={ci} onClick={()=>upPDeep(p=>{const upd={...p,blank_sel:ci,blank_sentence_index:c.sentence_index,blank_target:c.keyword,blank_options:[c.keyword,...c.distractors]};return upd;})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.blank_sel===ci?'#993C1D10':'transparent',border:`1px solid ${p.blank_sel===ci?'#993C1D':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+        {p.blank_sel===ci&&bdg('✓','#993C1D')}{ci===0&&bdg('AI 추천','#854F0B')}
+        <div style={{fontSize:11,color:'#bbb',marginBottom:2}}>문장 [{c.sentence_index}]</div>
+        <div style={{fontSize:13,fontWeight:p.blank_sel===ci?600:400,color:p.blank_sel===ci?'#993C1D':'#1d1d1f'}}>"{c.keyword}"</div>
+      </button>)}
+      <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>② 오답 선택지</div>
+      <div style={{padding:'7px 9px',background:'#993C1D10',borderRadius:6,fontSize:12,color:'#993C1D',marginBottom:8}}><b>정답:</b> {p.blank_target}</div>
+      {[0,1,2,3].map(i=><div key={i} style={{display:'flex',alignItems:'center',gap:5,marginBottom:5}}>
+        <span style={{fontSize:11,color:'#bbb',minWidth:32}}>오답{i+1}</span>
+        <input defaultValue={p.blank_options[i+1]||''} onBlur={e=>{const opts=[...p.blank_options];opts[i+1]=e.target.value;upP({blank_options:opts});}} style={{flex:1,fontSize:12,padding:'5px 8px',border:'0.5px solid #e5e5e5',borderRadius:6}}/>
+      </div>)}
+    </div>;
+
+    if(at===2){
+      if(!p.order_blocks?.length)return<p style={{color:'#E24B4A',fontSize:13}}>⚠ 순서배열 불가 (문장 수 부족)</p>;
+      return<div>
+        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>블록 구성 확인</div>
+        {[{label:'A',sentence_indices:[p.order_given_index]},...p.order_blocks].map(b=>{
+          const c=BLK_C[b.label]||'#888';
+          return<div key={b.label} style={{marginBottom:8,border:`1px solid ${c}44`,borderRadius:9,overflow:'hidden'}}>
+            <div style={{background:c+'22',padding:'5px 11px',fontSize:11,fontWeight:700,color:c}}>({b.label}) 문장[{b.sentence_indices.join(', ')}]</div>
+            <div style={{padding:'8px 11px',fontSize:12,color:'#555',lineHeight:1.5}}>
+              {b.sentence_indices.map((idx,n)=><div key={idx}>{n>0&&<div style={{borderTop:'0.5px solid #f0f0f0',margin:'3px 0'}}/>}<span style={{color:'#bbb',fontSize:10,marginRight:4}}>[{idx}]</span>{p.sentences[idx]}</div>)}
+            </div>
+          </div>;
+        })}
+        <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
+        {p.order_options.map((o,i)=>optBtn(p.order_answer===i+1,i===0,i+1,o,()=>upP({order_answer:i+1})))}
+      </div>;
+    }
+
+    if(at===3)return<div>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 요약문 템플릿 선택</div>
+      {p.summary_candidates?.map((c,ci)=>{
+        const tpl=c.template.replace('________(A)________',`<span style="background:#854F0B22;color:#854F0B;fontWeight:700;padding:0 3px">(A):${c.A_correct}</span>`).replace('________(B)________',`<span style="background:#185FA522;color:#185FA5;fontWeight:700;padding:0 3px">(B):${c.B_correct}</span>`);
+        const sel=p.summary_sel===ci;
+        return<button key={ci} onClick={()=>upPDeep(p=>({...p,summary_sel:ci,summary_template:c.template,summary_A_options:[c.A_correct,...c.A_distractors],summary_B_options:[c.B_correct,...c.B_distractors],summary_A_answer:1,summary_B_answer:1}))} style={{display:'block',width:'100%',textAlign:'left',marginBottom:8,background:sel?'#f5f5f7':'transparent',border:`1px solid ${sel?'#185FA5':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+          {sel&&bdg('✓','#185FA5')}{ci===0&&bdg('AI 추천','#854F0B')}
+          <div style={{fontSize:12,lineHeight:1.7,marginTop:4}} dangerouslySetInnerHTML={{__html:tpl}}/>
+        </button>;
+      })}
+      <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
+      {[{key:'A',c:'#854F0B',opts:'summary_A_options',ans:'summary_A_answer'},{key:'B',c:'#185FA5',opts:'summary_B_options',ans:'summary_B_answer'}].map(({key,c,opts,ans})=>
+        <div key={key} style={{padding:10,background:c+'08',border:`0.5px solid ${c}44`,borderRadius:8,marginBottom:8}}>
+          <div style={{fontSize:11,fontWeight:700,color:c,marginBottom:5}}>빈칸 ({key})</div>
+          <input defaultValue={p[opts]?.[0]||''} onBlur={e=>{const o=[...p[opts]];o[0]=e.target.value;upP({[opts]:o});}} style={{width:'100%',fontSize:13,fontWeight:600,padding:'5px 8px',border:'0.5px solid #e5e5e5',borderRadius:6,marginBottom:5}}/>
+          {[0,1,2,3].map(i=><input key={i} defaultValue={p[opts]?.[i+1]||''} onBlur={e=>{const o=[...p[opts]];o[i+1]=e.target.value;upP({[opts]:o});}} placeholder={`오답${i+1}`} style={{width:'100%',fontSize:12,padding:'4px 8px',border:'0.5px solid #e5e5e5',borderRadius:6,marginBottom:4}}/>)}
+        </div>
+      )}
+      <textarea defaultValue={p.summary_template} onBlur={e=>upP({summary_template:e.target.value})} rows={3} style={{width:'100%',fontSize:12,padding:'7px 9px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
+    </div>;
+
+    if(at===4)return<div>
+      <div style={{padding:'8px 10px',background:'#99355610',borderRadius:7,marginBottom:10,fontSize:12}}>
+        <b style={{color:'#993556'}}>밑줄 표현:</b> {p.implication_keyword}<div style={{color:'#888',fontSize:11,marginTop:2}}>문장 [{p.implication_sentence_index}]</div>
+      </div>
+      {p.implication_options?.map((o,i)=>optBtn(p.implication_answer===i+1,i===0,i+1,o,()=>upP({implication_answer:i+1})))}
+    </div>;
+
+    if(at===5)return<div>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 무관 문장 선택</div>
+      {p.irrel_candidates?.map((s,ci)=><button key={ci} onClick={()=>upP({irrel_sel:ci})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.irrel_sel===ci?'#0F6E5610':'transparent',border:`1px solid ${p.irrel_sel===ci?'#0F6E56':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+        {p.irrel_sel===ci&&bdg('✓','#0F6E56')}{ci===0&&bdg('AI 추천','#854F0B')}
+        <div style={{fontSize:12,lineHeight:1.6,marginTop:4}}>{s}</div>
+      </button>)}
+      <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
+      <textarea defaultValue={p.irrel_candidates?.[p.irrel_sel]||''} onBlur={e=>{const c=[...(p.irrel_candidates||[])];c[p.irrel_sel]=e.target.value;upP({irrel_candidates:c});}} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
+      {!p.irrel_confirmed?
+        <button onClick={()=>upPDeep(p=>{
+          const pos=p.irrel_insert_pos||0,sent=p.irrel_candidates?.[p.irrel_sel]||'';
+          const ns=[...p.sentences];ns.splice(pos,0,sent);
+          const shift=x=>x>=pos?x+1:x;
+          return{...p,sentences:ns,irrelevant_sentence_index:pos,irrel_confirmed:true,
+            blank_sentence_index:shift(p.blank_sentence_index),insert_answer:shift(p.insert_answer),
+            implication_sentence_index:shift(p.implication_sentence_index),
+            order_given_index:shift(p.order_given_index),
+            order_blocks:(p.order_blocks||[]).map(b=>({...b,sentence_indices:b.sentence_indices.map(shift)})),
+            grammar_sets:(p.grammar_sets||[]).map(s=>({...s,items:s.items.map(it=>({...it,sent:shift(it.sent)}))})),
+            vocab_sets:(p.vocab_sets||[]).map(s=>({...s,items:s.items.map(it=>({...it,sent:shift(it.sent)}))}))};
+        })} style={{width:'100%',padding:'9px',borderRadius:8,background:'#0F6E5618',border:'1px solid #0F6E56',color:'#0F6E56',fontWeight:600,cursor:'pointer',fontSize:13}}>✓ 확정 — sentences에 삽입</button>
+        :<div style={{padding:'8px 10px',background:'#0F6E5610',borderRadius:7,fontSize:12,color:'#0F6E56'}}>✓ 확정됨 — 문장[{p.irrelevant_sentence_index}]이 무관문장</div>}
+    </div>;
+
+    if(at===6)return<div>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 삽입 문장 선택</div>
+      {p.insert_candidates?.map((c,ci)=><button key={ci} onClick={()=>upP({insert_sel:ci,insert_sentence:c.sentence,insert_answer:c.pos})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.insert_sel===ci?'#534AB710':'transparent',border:`1px solid ${p.insert_sel===ci?'#534AB7':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+        {p.insert_sel===ci&&bdg('✓','#534AB7')}{ci===0&&bdg('AI 추천','#854F0B')}
+        <div style={{fontSize:12,lineHeight:1.6,marginTop:4}}>{c.sentence}</div>
+      </button>)}
+      <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
+      <textarea defaultValue={p.insert_sentence||''} onBlur={e=>upP({insert_sentence:e.target.value})} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical'}}/>
+    </div>;
+
+    if(at===7||at===8){
+      const isG=at===7;
+      const sets=isG?p.grammar_sets:p.vocab_sets;
+      const sel=isG?p.grammar_sel:p.vocab_sel;
+      const ans=isG?p.grammar_answer:p.vocab_answer;
+      const selKey=isG?'grammar_sel':'vocab_sel';
+      const ansKey=isG?'grammar_answer':'vocab_answer';
+      const c='#E24B4A';
+      return<div>
+        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 세트 선택</div>
+        {sets?.map((set,si)=><button key={si} onClick={()=>upP({[selKey]:si,[ansKey]:set.answer})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:8,background:sel===si?'#f5f5f7':'transparent',border:`1px solid ${sel===si?'#185FA5':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+          {sel===si&&bdg('✓','#185FA5')}{si===0&&bdg('AI 추천','#854F0B')}
+          <div style={{marginTop:6,display:'flex',flexWrap:'wrap',gap:4}}>
+            {set.items.map((item,ii)=>{const ic=item.correct?'#185FA5':'#E24B4A';return<span key={ii} style={{fontSize:11,padding:'2px 7px',borderRadius:5,background:ic+'18',color:ic,border:`0.5px solid ${ic}44`}}>{ii+1}. {isG?item.word:`${item.word}/${item.alt}`}</span>;})}
+          </div>
+        </button>)}
+        <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
+        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>② {isG?'틀린 것':'어색한 것'} 선택 (정답)</div>
+        {sets?.[sel]?.items?.map((item,ii)=><button key={ii} onClick={()=>upP({[ansKey]:ii+1})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:6,background:ans===ii+1?'#E24B4A18':'transparent',border:`0.5px solid ${ans===ii+1?'#E24B4A':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',cursor:'pointer'}}>
+          {ans===ii+1&&bdg('✓ 정답',c)}{!item.correct&&ans!==ii+1&&bdg('AI 추천 오류','#854F0B')}
+          <span style={{fontSize:11,color:'#bbb',marginRight:5}}>{ii+1}.</span>
+          <b style={{fontSize:13,color:ans===ii+1?c:'#1d1d1f'}}>{item.word}</b>
+          {isG?<span style={{fontSize:11,color:'#888',marginLeft:8}}>{item.note}</span>:<><span style={{fontSize:12,color:'#888'}}> → </span><span style={{fontSize:12,color:'#854F0B',fontWeight:600}}>{item.alt}</span><span style={{fontSize:11,color:'#bbb',marginLeft:6}}>[{item.sent}]번</span></>}
+        </button>)}
+      </div>;
+    }
+    return null;
+  };
+
+  const buildOutput=()=>{
+    const entries=passages.filter(p=>p.data).map(({data:p})=>{
+      const gs=(p.grammar_sets||[])[p.grammar_sel]||{items:[],answer:1};
+      const vs=(p.vocab_sets||[])[p.vocab_sel]||{items:[],answer:1};
+      return{id:p.id,difficulty:p.difficulty,title:p.title,sentences:p.sentences,abstract:p.abstract,
+        topic_options:p.topic_options,topic_answer:p.topic_answer,
+        blank_sentence_index:p.blank_sentence_index,blank_target:p.blank_target,
+        blank_options:p.blank_options,blank_answer:p.blank_answer,
+        order_given_index:p.order_given_index,order_blocks:p.order_blocks,
+        order_options:p.order_options,order_answer:p.order_answer,
+        insert_sentence:p.insert_sentence,insert_answer:p.insert_answer,
+        summary_template:p.summary_template,
+        summary_A_options:p.summary_A_options,summary_A_answer:p.summary_A_answer,
+        summary_B_options:p.summary_B_options,summary_B_answer:p.summary_B_answer,
+        implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
+        implication_options:p.implication_options,implication_answer:p.implication_answer,
+        irrelevant_sentence_index:p.irrelevant_sentence_index,
+        aGroup:p.summary_A_options.slice(0,3),bGroup:p.summary_B_options.slice(0,3),
+        grammar_items:gs.items,grammar_answer:p.grammar_answer,
+        vocab_items:vs.items,vocab_answer:p.vocab_answer};
+    });
+    return`// GREATENG passageData 추가분 (${entries.length}개)\n// order_answer는 merge 스크립트 재처리 필요\n\n`+entries.map(e=>JSON.stringify(e,null,2)).join(',\n\n');
+  };
+
+  const card={background:'#fff',borderRadius:10,border:'0.5px solid #e5e5e5',padding:'14px 16px',marginBottom:12};
+
+  if(step==='setup')return(
+    <div style={{maxWidth:600,margin:'0 auto',padding:'24px 14px'}}>
+      <div style={card}>
+        <div style={{fontWeight:600,fontSize:15,marginBottom:4}}>출제 저작 도구</div>
+        <div style={{color:'#888',fontSize:13,marginBottom:20}}>지문 붙여넣기 → AI 분석 → 9가지 유형 문제 후보 자동 생성</div>
+        <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:10,marginBottom:14}}>
+          <div><label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>교재 코드</label><input value={pfx} onChange={e=>setPfx(e.target.value)} style={{width:'100%',padding:'7px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,fontSize:13}}/></div>
+          <div><label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>시작 번호</label><input type="number" value={startNum} onChange={e=>setStartNum(+e.target.value)} style={{width:'100%',padding:'7px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,fontSize:13}}/></div>
+        </div>
+        <div style={{marginBottom:16}}>
+          <label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>지문 텍스트 <span style={{fontWeight:400,color:'#bbb'}}>— 시험지 전체 붙여넣기 가능</span></label>
+          <textarea value={rawText} onChange={e=>setRawText(e.target.value)} rows={11} style={{width:'100%',fontFamily:'monospace',fontSize:12,padding:'8px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical'}} placeholder="지문 붙여넣기...&#10;여러 지문: --- 구분선 또는 '20 다음...', '21 밑줄...' 패턴 자동 인식"/>
+        </div>
+        {err&&<div style={{color:'#E24B4A',fontSize:12,marginBottom:8}}>{err}</div>}
+        {!apiKey&&<div style={{color:'#856404',background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:7,padding:'8px 12px',fontSize:12,marginBottom:10}}>⚠ 상단 ⚙ 설정에서 API Key를 먼저 입력해주세요.</div>}
+        <button onClick={analyze} disabled={!rawText.trim()} style={{width:'100%',padding:'11px',background:'#185FA5',color:'#fff',border:'none',borderRadius:8,fontSize:14,fontWeight:600,cursor:'pointer'}}>분석 시작 ↗</button>
+      </div>
+    </div>
+  );
+
+  if(step==='proc')return(
+    <div style={{maxWidth:520,margin:'0 auto',padding:'40px 14px',textAlign:'center'}}>
+      <div style={{fontWeight:500,fontSize:15,marginBottom:16}}>{passages.filter(p=>!p.loading&&(p.data||p.error)).length}/{passages.length} 완료</div>
+      <div style={{background:'#e5e5ea',borderRadius:100,height:5,marginBottom:20}}>
+        <div style={{background:'#185FA5',borderRadius:100,height:5,width:`${passages.length?(passages.filter(p=>!p.loading).length/passages.length*100):0}%`,transition:'width .4s'}}/>
+      </div>
+      <div style={{textAlign:'left'}}>
+        {passages.map((p,i)=><div key={i} style={{...card,display:'flex',alignItems:'center',gap:10,padding:'10px 14px',marginBottom:8}}>
+          <span style={{color:p.data?'#2d8a60':p.error?'#E24B4A':'#888'}}>{p.loading?'○':p.error?'✕':p.data?'●':'·'}</span>
+          <span style={{fontSize:13,color:'#666'}}>지문 {i+1}</span>
+          {p.data&&<span style={{marginLeft:'auto',fontWeight:500}}>{p.data.title}</span>}
+          {p.error&&<span style={{marginLeft:'auto',fontSize:11,color:'#E24B4A'}}>{p.error.slice(0,60)}</span>}
+        </div>)}
+      </div>
+    </div>
+  );
+
+  if(step==='edit'){
+    const p=P();
+    return(
+      <div style={{padding:'14px'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+          <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+            {passages.filter(pg=>pg.data).map((pg,_,arr)=><button key={pg.id} onClick={()=>{setPi(pg.id);setAt(0);}} style={{background:pi===pg.id?'#1d1d1f':'transparent',color:pi===pg.id?'#fff':'#555',border:'0.5px solid #e5e5e5',borderRadius:7,padding:'4px 12px',fontSize:13,cursor:'pointer',fontWeight:pi===pg.id?500:400}}>{pg.data.title}</button>)}
+          </div>
+          <div style={{display:'flex',gap:6}}>
+            <button onClick={()=>setStep('setup')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 처음</button>
+            <button onClick={()=>{setOutText(buildOutput());setStep('out');}} style={{padding:'5px 14px',fontSize:12,background:'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>출력 ↗</button>
+          </div>
+        </div>
+        <div style={{display:'flex',gap:5,flexWrap:'wrap',marginBottom:12}}>
+          {AUTHOR_TABS.map((t,i)=><button key={i} onClick={()=>setAt(i)} style={{fontSize:12,padding:'4px 10px',borderRadius:6,border:`0.5px solid ${at===i?t.c:'#e5e5e5'}`,background:at===i?t.c+'18':'transparent',color:at===i?t.c:'#666',fontWeight:at===i?600:400,cursor:'pointer'}}>{t.lb}</button>)}
+        </div>
+        {p&&<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+          <div style={{...card,padding:'12px'}}><LeftPanel p={p}/></div>
+          <div style={{...card,padding:'12px',overflowY:'auto',maxHeight:540}}><RightPanel p={p}/></div>
+        </div>}
+      </div>
+    );
+  }
+
+  if(step==='out')return(
+    <div style={{padding:'14px'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <span style={{fontWeight:500,fontSize:15}}>출력 결과</span>
+        <div style={{display:'flex',gap:6}}>
+          <button onClick={()=>setStep('edit')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 편집</button>
+          <button onClick={()=>{navigator.clipboard.writeText(outText);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사 ↗'}</button>
+        </div>
+      </div>
+      <div style={card}>
+        <p style={{fontSize:12,color:'#888',marginBottom:10}}>GREATENG passageData 배열에 붙여넣으세요. (order_answer는 merge 스크립트 재처리 권장)</p>
+        <pre style={{background:'#f5f5f7',border:'0.5px solid #e5e5e5',borderRadius:8,padding:14,fontSize:11,overflow:'auto',maxHeight:560,fontFamily:'monospace',lineHeight:1.5,whiteSpace:'pre-wrap',wordBreak:'break-word'}}>{outText}</pre>
+      </div>
+    </div>
+  );
+  return null;
+}
+
+// ========== END AUTHORING TOOL ==========
+
 function App(){
   const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:5},(_,i)=>makeSlot(i)));
   const [viewMode,setViewMode]=useState('teacher');
@@ -492,13 +896,13 @@ function App(){
         <div style={{display:'flex',gap:7,alignItems:'center'}}>
           {msg&&<span style={{color:'#a5d6f5',fontSize:11.5}}>{msg}</span>}
           <div style={{display:'flex',gap:2,background:'rgba(0,0,0,.2)',borderRadius:7,padding:3}}>
-            {['teacher','student'].map(m=>(
+            {['teacher','student','authoring'].map(m=>(
               <button key={m} onClick={()=>setViewMode(m)}
                 style={{padding:'4px 12px',fontSize:12,fontWeight:600,
                   background:viewMode===m?'#fff':'transparent',
                   color:viewMode===m?'#185FA5':'rgba(255,255,255,.75)',
                   border:'none',borderRadius:5,cursor:'pointer'}}>
-                {m==='teacher'?'교사용':'학생용'}
+                {m==='teacher'?'교사용':m==='student'?'학생용':'✏ 출제 저작'}
               </button>
             ))}
           </div>
@@ -545,6 +949,7 @@ function App(){
         </div>
       )}
 
+      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -586,7 +991,7 @@ function App(){
             onAnalysis={upAnalysis}
           />
         ))}
-      </div>
+      </div>}
     </div>
   );
 }
