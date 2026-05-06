@@ -440,7 +440,7 @@ function buildPassageData(a,pfx,num){
   };
 }
 
-function AuthoringTool({apiKey}){
+function AuthoringTool({apiKey, ghToken, ghRepo}){
   const [step,setStep]=useState('setup'); // setup|proc|edit|out
   const [rawText,setRawText]=useState('');
   const [pfx,setPfx]=useState('ABSO_TYPE_08');
@@ -451,6 +451,38 @@ function AuthoringTool({apiKey}){
   const [outText,setOutText]=useState('');
   const [copied,setCopied]=useState(false);
   const [err,setErr]=useState('');
+  const [ghSaving,setGhSaving]=useState(false);
+
+  const saveToGitHub=async(jsonText)=>{
+    if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 먼저 입력해주세요.');return;}
+    setGhSaving(true);
+    try{
+      const path='passages.js';
+      const apiBase=`https://api.github.com/repos/${ghRepo}/contents/${path}`;
+      // 1. 현재 파일 읽기
+      const getRes=await fetch(apiBase,{headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json'}});
+      if(!getRes.ok)throw new Error('passages.js 읽기 실패: '+getRes.status);
+      const fileData=await getRes.json();
+      const currentContent=atob(fileData.content.replace(/\n/g,''));
+      // 2. 새 내용 append
+      const newEntries=jsonText.replace(/^\/\/.*\n/gm,'').trim();
+      let newContent;
+      // PASSAGES 배열 마지막 ] 앞에 삽입
+      const lastBracket=currentContent.lastIndexOf(']');
+      if(lastBracket<0)throw new Error('passages.js 형식 오류');
+      newContent=currentContent.slice(0,lastBracket)+',\n'+newEntries+'\n'+currentContent.slice(lastBracket);
+      // 3. 커밋
+      const encoded=btoa(unescape(encodeURIComponent(newContent)));
+      const putRes=await fetch(apiBase,{
+        method:'PUT',
+        headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+        body:JSON.stringify({message:`Add ${passages.filter(p=>p.data).map(p=>p.data.id).join(', ')}`,content:encoded,sha:fileData.sha})
+      });
+      if(!putRes.ok)throw new Error('커밋 실패: '+putRes.status);
+      alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
+    }catch(e){alert('저장 실패: '+e.message);}
+    setGhSaving(false);
+  };
 
   const P=()=>passages[pi]?.data;
 
@@ -772,7 +804,8 @@ function AuthoringTool({apiKey}){
         <span style={{fontWeight:500,fontSize:15}}>출력 결과</span>
         <div style={{display:'flex',gap:6}}>
           <button onClick={()=>setStep('edit')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 편집</button>
-          <button onClick={()=>{navigator.clipboard.writeText(outText);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사 ↗'}</button>
+          <button onClick={()=>{navigator.clipboard.writeText(outText);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사'}</button>
+          <button onClick={()=>saveToGitHub(outText)} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
         </div>
       </div>
       <div style={card}>
@@ -793,6 +826,10 @@ function App(){
   const [appsURL,setAppsURL]=useState(()=>localStorage.getItem(LS.URL)||'');
   const [keyInput,setKeyInput]=useState('');
   const [urlInput,setUrlInput]=useState('');
+  const [ghToken,setGhToken]=useState(()=>localStorage.getItem('gh_token')||'');
+  const [ghRepo,setGhRepo]=useState(()=>localStorage.getItem('gh_repo')||'greatenglish1201-ux/GREATENG');
+  const [ghTokenInput,setGhTokenInput]=useState('');
+  const [ghRepoInput,setGhRepoInput]=useState('');
   const [showSet,setShowSet]=useState(false);
   const [msg,setMsg]=useState('');
   const running=useRef(false);
@@ -926,7 +963,9 @@ function App(){
       {showSet&&(
         <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
           {[{lbl:'Claude API Key',val:keyInput||(apiKey?'••••••••':''),set:setKeyInput,ph:'sk-ant-api03-...',type:'password'},
-            {lbl:'Apps Script URL',val:urlInput||appsURL,set:setUrlInput,ph:'https://script.google.com/...',type:'text'}].map((r,i)=>(
+            {lbl:'Apps Script URL',val:urlInput||appsURL,set:setUrlInput,ph:'https://script.google.com/...',type:'text'},
+            {lbl:'GitHub Token',val:ghTokenInput||(ghToken?'••••••••':''),set:setGhTokenInput,ph:'ghp_...',type:'password'},
+            {lbl:'GitHub 저장소',val:ghRepoInput||ghRepo,set:setGhRepoInput,ph:'greatenglish1201-ux/GREATENG',type:'text'}].map((r,i)=>(
             <div key={i} style={{display:'flex',gap:10,alignItems:'center'}}>
               <span style={{color:'#a5d6f5',fontSize:12.5,width:140,flexShrink:0}}>{r.lbl}</span>
               <input type={r.type} value={r.val} onChange={e=>r.set(e.target.value)}
@@ -940,6 +979,10 @@ function App(){
               const k=keyInput||apiKey,u=urlInput||appsURL;
               if(k){localStorage.setItem(LS.KEY,k);setApiKey(k);}
               if(u){localStorage.setItem(LS.URL,u);setAppsURL(u);}
+              const t=ghTokenInput||ghToken,r2=ghRepoInput||ghRepo;
+              if(ghTokenInput){localStorage.setItem('gh_token',ghTokenInput);setGhToken(ghTokenInput);}
+              if(ghRepoInput){localStorage.setItem('gh_repo',ghRepoInput);setGhRepo(ghRepoInput);}
+              setGhTokenInput('');setGhRepoInput('');
               setShowSet(false);flash('설정 저장 ✓');
             }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:6,
               padding:'7px 20px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>저장</button>
@@ -949,7 +992,7 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey}/>:
+      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
