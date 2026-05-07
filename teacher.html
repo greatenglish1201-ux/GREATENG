@@ -418,11 +418,12 @@ function splitTexts(text){
   return[text.trim()].filter(Boolean);
 }
 
-function buildPassageData(a,pfx,num){
-  const ns=String(num).padStart(2,'0');
+function buildPassageData(a,pfx,ch,num){
+  const cs=String(ch).padStart(2,'0');
+  const ns=String(num).padStart(3,'0');
   const sc=a.summary.candidates[0];
   return{
-    id:`${pfx}_${ns}`,difficulty:a.difficulty||'보통',title:a.title||'제목',
+    id:`${pfx}_${cs}_${ns}`,difficulty:a.difficulty||'보통',title:a.title||'제목',
     sentences:a.sentences||[],abstract:a.abstract||'',
     topic_options:a.topic.candidates,topic_answer:1,
     blank_sel:0,blank_sentence_index:a.blank.candidates[0].sentence_index,
@@ -451,7 +452,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo}){
   const [step,setStep]=useState('setup'); // setup|proc|edit|out
   const [rawText,setRawText]=useState('');
   const [pfx,setPfx]=useState('27STYD');
-  const [startNum,setStartNum]=useState(20);
+  const [chapter,setChapter]=useState(1);
+  const [startNum,setStartNum]=useState(1);
   const [passages,setPassages]=useState([]); // [{rawText,data,error,loading}]
   const [pi,setPi]=useState(0);
   const [at,setAt]=useState(0);
@@ -510,7 +512,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo}){
         const d=await callClaude(apiKey,'Return ONLY valid JSON, no markdown.',AUTH_PROMPT(parts[i]));
         if(d.error)throw new Error(d.error.message||'API error');
         const a=parseJSON(d.content[0].text);
-        upd[i]={...upd[i],data:buildPassageData(a,pfx,startNum+i),loading:false};
+        upd[i]={...upd[i],data:buildPassageData(a,pfx,chapter,startNum+i),loading:false};
       }catch(e){upd[i]={...upd[i],error:e.message,loading:false};}
       setPassages([...upd]);
     }
@@ -758,6 +760,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo}){
               <option value="MOGO_GO3">MOGO_GO3 (모의고사)</option>
             </select>
           </div>
+          <div><label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>강 (Chapter)</label><input type="number" value={chapter} onChange={e=>setChapter(+e.target.value)} min={1} max={50} style={{width:'100%',padding:'7px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,fontSize:13}}/></div>
           <div><label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>시작 번호</label><input type="number" value={startNum} onChange={e=>setStartNum(+e.target.value)} style={{width:'100%',padding:'7px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,fontSize:13}}/></div>
         </div>
         <div style={{marginBottom:16}}>
@@ -1204,10 +1207,10 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanal
                                       resize:'none',lineHeight:1.4,overflow:'hidden'}}/></>
                                 :<>
                                   <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
-                                    <div style={{width:36,height:16,borderRadius:3,borderBottom:'1.5px solid '+sc.bd,opacity:.5}}/>
+                                    <span style={{fontSize:10,fontWeight:700,padding:'1px 5px',borderRadius:3,
+                                      background:sc.bg,color:sc.tx,border:'1px solid '+sc.bd,letterSpacing:'.03em'}}>{sent.symbol}</span>
                                   </div>
-                                  <div style={{width:'100%',height:14,borderBottom:'1px dashed '+sc.bd,opacity:.4,marginBottom:2}}/>
-                                  <div style={{width:'80%',height:14,borderBottom:'1px dashed '+sc.bd,opacity:.3}}/>
+                                  <div style={{fontSize:10.5,color:'#333',lineHeight:1.45,wordBreak:'keep-all'}}>{sent.role}</div>
                                 </>
                               }
                             </div>
