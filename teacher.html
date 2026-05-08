@@ -829,8 +829,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo}){
         <span style={{fontWeight:500,fontSize:15}}>출력 결과</span>
         <div style={{display:'flex',gap:6}}>
           <button onClick={()=>setStep('edit')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 편집</button>
-          <button onClick={()=>{navigator.clipboard.writeText(outText);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사'}</button>
-          <button onClick={()=>saveToGitHub(outText)} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
+          <button onClick={()=>{const t=buildOutput();setOutText(t);navigator.clipboard.writeText(t);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사'}</button>
+          <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
         </div>
       </div>
       <div style={card}>
