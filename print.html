@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GREATENG 인쇄</title>
-<script src="passages.js" charset="UTF-8"></script>
+
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f4f6f9;color:#1d1d1f;}
@@ -392,7 +392,19 @@ function doPrint(){
   window.print();
 }
 
-window.addEventListener('load',init);
+window.addEventListener('load',()=>{
+  fetch('passages.js')
+    .then(r=>r.text())
+    .then(text=>{
+      // eval로 PASSAGES 전역 변수 설정
+      // eslint-disable-next-line no-eval
+      eval(text);
+      init();
+    })
+    .catch(e=>{
+      document.getElementById('preview-empty').textContent='passages.js 로드 실패: '+e.message;
+    });
+});
 </script>
 </body>
 </html>
