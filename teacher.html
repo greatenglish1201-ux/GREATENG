@@ -446,9 +446,10 @@ function buildPassageData(a,pfx,ch,num){
   };
 }
 
-function AuthoringTool({apiKey, ghToken, ghRepo}){
+function AuthoringTool({apiKey, ghToken, ghRepo, initialText}){
   const [step,setStep]=useState('setup'); // setup|proc|edit|out
   const [rawText,setRawText]=useState('');
+  React.useEffect(()=>{if(initialText){setRawText(initialText);setStep('setup');}},[initialText]);
   const [pfx,setPfx]=useState('27STYD');
   const [chapter,setChapter]=useState(1);
   const [startNum,setStartNum]=useState(1);
@@ -844,6 +845,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo}){
 
 function App(){
   const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:5},(_,i)=>makeSlot(i)));
+  const [authorInitText,setAuthorInitText]=useState('');
   const [viewMode,setViewMode]=useState('teacher');
   const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
   const [appsURL,setAppsURL]=useState(()=>localStorage.getItem(LS.URL)||'');
@@ -969,15 +971,11 @@ function App(){
           <span style={{fontSize:10.5,padding:'2px 8px',borderRadius:10,
             background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',
             color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'미설정'}</span>
-          <button onClick={loadSheet} style={{background:'rgba(255,255,255,.15)',color:'#a5d6f5',
-            border:'none',borderRadius:6,padding:'4px 10px',fontSize:11.5,cursor:'pointer'}}>☁ 불러오기</button>
+
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:5},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',
               borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>🗑</button>
-          <a href="question.html" style={{background:'rgba(255,255,255,.15)',color:'#fff',
-            border:'none',borderRadius:6,padding:'4px 10px',fontSize:11.5,cursor:'pointer',textDecoration:'none'}}>
-            📝 문제 출제
-          </a>
+
           <button onClick={()=>setShowSet(v=>!v)} style={{background:'rgba(255,255,255,.15)',
             color:'#fff',border:'none',borderRadius:6,padding:'4px 10px',fontSize:11.5,cursor:'pointer'}}>⚙</button>
         </div>
@@ -1015,7 +1013,7 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo}/>:
+      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} initialText={authorInitText}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -1048,6 +1046,7 @@ function App(){
 
         {slots.map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
+            onAuthor={()=>{setAuthorInitText(slot.text);setViewMode('authoring');}}
             onText={v=>upSlot(slot.id,{text:v})}
             onMeta={handleMeta}
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
@@ -1062,7 +1061,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanalyze,onSave,onAnalysis}){
+function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanalyze,onSave,onAnalysis,onAuthor}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -1118,6 +1117,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanal
             <button onClick={()=>dlHTML(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
             <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
             <button onClick={()=>buildDOCX(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
+            <button onClick={onAuthor} style={{padding:'4px 9px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>✏ 출제 저작</button>
           </div>
         )}
         <button onClick={onToggle} style={{...sB,fontSize:13,color:'#ccc',padding:'3px 6px'}}>{slot.open?'▲':'▼'}</button>
