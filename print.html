@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GREATENG 인쇄</title>
+<script src="passages.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f4f6f9;color:#1d1d1f;}
+
+  /* ── 필터 UI ── */
+  #app{display:flex;height:100vh;}
+  #sidebar{width:300px;flex-shrink:0;background:#1a2a4a;color:#fff;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
+  #sidebar h1{font-size:16px;font-weight:700;color:#a5d6f5;letter-spacing:.05em;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.1);}
+  .sec-title{font-size:10.5px;font-weight:700;color:#7aaecf;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+  .ctrl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:8px 10px;font-size:13px;color:#fff;width:100%;outline:none;}
+  .ctrl:focus{border-color:#a5d6f5;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .small-label{font-size:10px;color:#7aaecf;margin-bottom:3px;}
+  .mode-toggle{display:flex;background:rgba(0,0,0,.3);border-radius:7px;padding:3px;gap:2px;}
+  .mode-btn{flex:1;padding:6px;font-size:12px;font-weight:600;border:none;border-radius:5px;cursor:pointer;transition:all .2s;}
+  .mode-btn.active{background:#fff;color:#1a2a4a;}
+  .mode-btn:not(.active){background:transparent;color:rgba(255,255,255,.6);}
+  .passage-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+  .passage-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+  .passage-item:hover{background:rgba(255,255,255,.06);}
+  .passage-item.checked{background:rgba(165,214,245,.12);border-color:rgba(165,214,245,.3);}
+  .passage-item input{width:14px;height:14px;accent-color:#a5d6f5;flex-shrink:0;cursor:pointer;}
+  .passage-id{font-size:10px;color:#7aaecf;font-family:monospace;flex-shrink:0;}
+  .passage-title{font-size:11.5px;color:#e0e8f0;line-height:1.3;flex:1;}
+  .diff-badge{font-size:9px;padding:1px 5px;border-radius:10px;flex-shrink:0;}
+  .btn-print{width:100%;padding:11px;background:#185FA5;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.03em;}
+  .btn-print:hover{background:#1470c0;}
+  .btn-print:disabled{background:#444;cursor:not-allowed;}
+  .sel-count{font-size:11px;color:#a5d6f5;text-align:center;}
+  .select-all-row{display:flex;gap:6px;}
+  .tiny-btn{flex:1;padding:5px;font-size:11px;background:rgba(255,255,255,.08);color:#a5d6f5;border:1px solid rgba(165,214,245,.2);border-radius:5px;cursor:pointer;}
+  .tiny-btn:hover{background:rgba(255,255,255,.14);}
+
+  /* ── 미리보기 ── */
+  #preview{flex:1;overflow-y:auto;background:#e8ebf0;padding:24px;}
+  .preview-empty{display:flex;align-items:center;justify-content:center;height:100%;color:#aaa;font-size:14px;}
+
+  /* ── 인쇄 공통 ── */
+  .print-page{width:210mm;min-height:297mm;background:#fff;margin:0 auto 20px;padding:16mm 16mm 14mm;page-break-after:always;box-shadow:0 2px 12px rgba(0,0,0,.12);position:relative;}
+  .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #1a2a4a;}
+  .page-id{font-size:9px;color:#888;font-family:monospace;}
+  .page-diff{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;}
+  .page-title{font-size:13px;font-weight:700;color:#1a2a4a;margin-top:3px;}
+
+  /* 블록 다이어그램 */
+  .block-section{margin-bottom:10px;}
+  .block-section-label{font-size:8.5px;font-weight:700;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;}
+  .blocks-row{display:flex;gap:4px;align-items:stretch;}
+  .block-card{flex:1;border-radius:6px;overflow:hidden;border-width:1px;border-style:solid;}
+  .block-header{padding:4px 8px;display:flex;align-items:center;gap:5px;}
+  .block-name{font-size:9px;font-weight:700;}
+  .block-body{padding:5px 8px;display:flex;flex-direction:column;gap:3px;}
+  .sent-row{display:flex;align-items:flex-start;gap:5px;padding:3px 5px;border-radius:4px;}
+  .sent-num{font-size:9.5px;font-weight:700;flex-shrink:0;width:16px;}
+  .sent-sym{font-size:7.5px;font-weight:700;padding:1px 3px;border-radius:2px;background:rgba(255,255,255,.5);flex-shrink:0;margin-top:1px;}
+  /* teacher mode */
+  .sent-role{font-size:9px;color:#444;line-height:1.35;word-break:keep-all;}
+  /* student mode - blank */
+  .sent-blank-line{flex:1;height:11px;border-bottom:1px solid #bbb;margin-top:3px;}
+  .connector-arrow{display:flex;align-items:center;font-size:14px;color:#888;flex-shrink:0;padding:0 2px;}
+
+  /* 지문 원문 */
+  .passage-section{margin-top:10px;}
+  .passage-section-label{font-size:8.5px;font-weight:700;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+  .passage-text{font-size:11px;line-height:2;color:#1a1a1a;word-break:keep-all;}
+
+  /* 교사용 추가: 문장별 분석 */
+  .analysis-section{margin-top:10px;}
+  .analysis-label{font-size:8.5px;font-weight:700;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;}
+  .analysis-item{margin-bottom:4px;border-radius:5px;overflow:hidden;border-width:1px;border-style:solid;}
+  .analysis-head{padding:4px 8px;display:flex;align-items:center;gap:5px;}
+  .analysis-num{font-size:10px;font-weight:700;}
+  .analysis-sym{font-size:7.5px;font-weight:700;padding:1px 4px;border-radius:2px;background:rgba(255,255,255,.5);}
+  .analysis-text{font-size:9.5px;font-style:italic;line-height:1.4;word-break:keep-all;}
+  .analysis-body{padding:5px 8px;background:#fff;}
+  .chunks-en{font-size:9.5px;font-style:italic;color:#222;line-height:1.7;word-break:keep-all;}
+  .chunks-ko{font-size:9.5px;color:#555;line-height:1.7;word-break:keep-all;border-top:1px dashed #eee;margin-top:2px;padding-top:2px;}
+  .diff-sent-box{margin-top:4px;border:1px solid #e5e5e5;border-radius:4px;padding:5px 8px;}
+  .diff-row{display:flex;gap:6px;padding:2px 0;border-bottom:1px dashed #f0f0f0;font-size:9px;}
+  .diff-lbl{font-weight:700;color:#999;width:28px;flex-shrink:0;}
+  .diff-val{color:#333;line-height:1.4;}
+
+  /* 인쇄 시 */
+  @media print {
+    body{background:#fff;}
+    #app{display:block;height:auto;}
+    #sidebar{display:none;}
+    #preview{padding:0;background:#fff;overflow:visible;}
+    .print-page{box-shadow:none;margin:0;padding:14mm 16mm 12mm;page-break-after:always;}
+    .preview-empty{display:none;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+    <h1>📘 GREATENG 인쇄</h1>
+
+    <!-- 모드 -->
+    <div>
+      <div class="sec-title">출력 모드</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="btn-teacher" onclick="setMode('teacher')">교사용</button>
+        <button class="mode-btn" id="btn-student" onclick="setMode('student')">학생용</button>
+      </div>
+    </div>
+
+    <!-- 교재 필터 -->
+    <div>
+      <div class="sec-title">교재</div>
+      <select class="ctrl" id="sel-source" onchange="applyFilter()">
+        <option value="">전체</option>
+      </select>
+    </div>
+
+    <!-- 강 범위 -->
+    <div>
+      <div class="sec-title">강 범위</div>
+      <div class="row2">
+        <div><div class="small-label">시작 강</div><input class="ctrl" type="number" id="ch-from" min="1" value="1" onchange="applyFilter()"></div>
+        <div><div class="small-label">끝 강</div><input class="ctrl" type="number" id="ch-to" min="1" value="99" onchange="applyFilter()"></div>
+      </div>
+    </div>
+
+    <!-- 번호 범위 -->
+    <div>
+      <div class="sec-title">번호 범위</div>
+      <div class="row2">
+        <div><div class="small-label">시작</div><input class="ctrl" type="number" id="num-from" min="1" value="1" onchange="applyFilter()"></div>
+        <div><div class="small-label">끝</div><input class="ctrl" type="number" id="num-to" min="1" value="999" onchange="applyFilter()"></div>
+      </div>
+    </div>
+
+    <!-- 전체선택/해제 -->
+    <div class="select-all-row">
+      <button class="tiny-btn" onclick="selectAll(true)">전체 선택</button>
+      <button class="tiny-btn" onclick="selectAll(false)">전체 해제</button>
+    </div>
+
+    <!-- 지문 목록 -->
+    <div class="sec-title">지문 목록</div>
+    <div class="passage-list" id="passage-list"></div>
+
+    <!-- 하단 -->
+    <div class="sel-count" id="sel-count">0개 선택</div>
+    <button class="btn-print" id="btn-print" onclick="doPrint()" disabled>🖨 인쇄</button>
+  </div>
+
+  <div id="preview">
+    <div class="preview-empty" id="preview-empty">지문을 선택하면 미리보기가 표시됩니다</div>
+    <div id="print-area"></div>
+  </div>
+</div>
+
+<script>
+const SM={
+  'G':{bg:'#E6F1FB',bd:'#185FA5',tx:'#0C447C',lbl:'주제·통념'},
+  '↔':{bg:'#FAECE7',bd:'#D85A30',tx:'#712B13',lbl:'역접'},
+  '=':{bg:'#EEEDFE',bd:'#534AB7',tx:'#3C3489',lbl:'재진술'},
+  'S':{bg:'#EAF3DE',bd:'#639922',tx:'#173404',lbl:'예시'},
+  '→':{bg:'#E1F5EE',bd:'#1D9E75',tx:'#085041',lbl:'인과·결론'},
+  '+':{bg:'#FAEEDA',bd:'#BA7517',tx:'#633806',lbl:'추가'},
+};
+const BC={
+  blue:{bd:'#185FA5',tx:'#0C447C',hd:'#B5D4F4'},
+  coral:{bd:'#D85A30',tx:'#712B13',hd:'#F5C4B3'},
+  teal:{bd:'#1D9E75',tx:'#085041',hd:'#9FE1CB'},
+  purple:{bd:'#534AB7',tx:'#3C3489',hd:'#CECBF6'},
+  green:{bd:'#639922',tx:'#173404',hd:'#C0DD97'},
+  amber:{bd:'#BA7517',tx:'#633806',hd:'#FAC775'},
+  gray:{bd:'#5F5E5A',tx:'#2C2C2A',hd:'#D3D1C7'},
+};
+const DIFF_C={'상':'#c0392b','중':'#BA7517','하':'#2d8a60'};
+const DIFF_BG={'상':'#FDECEA','중':'#FFF3E0','하':'#E1F5EE'};
+
+let allPassages=[];
+let filtered=[];
+let selected=new Set();
+let mode='teacher';
+
+function init(){
+  if(typeof PASSAGES==='undefined'){
+    document.getElementById('preview-empty').textContent='passages.js 로드 실패. 같은 폴더에 있는지 확인하세요.';
+    return;
+  }
+  allPassages=PASSAGES.filter(p=>p&&p.id&&p.sentences);
+
+  // 교재 목록 추출
+  const sources=[...new Set(allPassages.map(p=>p.id.split('_')[0]))].sort();
+  const sel=document.getElementById('sel-source');
+  sources.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+
+  applyFilter();
+}
+
+function parseId(id){
+  // 형식: SOURCE_CH_NUM 또는 SOURCE_NUM
+  const parts=id.split('_');
+  if(parts.length>=3) return{source:parts[0],ch:parseInt(parts[1])||0,num:parseInt(parts[2])||0};
+  if(parts.length===2) return{source:parts[0],ch:0,num:parseInt(parts[1])||0};
+  return{source:id,ch:0,num:0};
+}
+
+function applyFilter(){
+  const src=document.getElementById('sel-source').value;
+  const chFrom=parseInt(document.getElementById('ch-from').value)||1;
+  const chTo=parseInt(document.getElementById('ch-to').value)||99;
+  const numFrom=parseInt(document.getElementById('num-from').value)||1;
+  const numTo=parseInt(document.getElementById('num-to').value)||999;
+
+  filtered=allPassages.filter(p=>{
+    const {source,ch,num}=parseId(p.id);
+    if(src&&source!==src) return false;
+    if(ch>0&&(ch<chFrom||ch>chTo)) return false;
+    if(num>0&&(num<numFrom||num>numTo)) return false;
+    return true;
+  });
+
+  renderList();
+  renderPreview();
+}
+
+function renderList(){
+  const list=document.getElementById('passage-list');
+  list.innerHTML='';
+  filtered.forEach(p=>{
+    const {ch,num}=parseId(p.id);
+    const div=document.createElement('div');
+    div.className='passage-item'+(selected.has(p.id)?' checked':'');
+    div.innerHTML=`
+      <input type="checkbox" ${selected.has(p.id)?'checked':''} onchange="toggleSel('${p.id}',this.checked)">
+      <div style="flex:1;min-width:0">
+        <div class="passage-id">${p.id}</div>
+        <div class="passage-title">${p.title||'제목없음'}</div>
+      </div>
+      <span class="diff-badge" style="background:${DIFF_BG[p.difficulty]||'#eee'};color:${DIFF_C[p.difficulty]||'#666'}">${p.difficulty||'?'}</span>
+    `;
+    list.appendChild(div);
+  });
+  updateCount();
+}
+
+function toggleSel(id,checked){
+  if(checked) selected.add(id); else selected.delete(id);
+  renderList();
+  renderPreview();
+}
+
+function selectAll(val){
+  filtered.forEach(p=>val?selected.add(p.id):selected.delete(p.id));
+  renderList();
+  renderPreview();
+}
+
+function updateCount(){
+  const n=selected.size;
+  document.getElementById('sel-count').textContent=n+'개 선택';
+  document.getElementById('btn-print').disabled=n===0;
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('btn-teacher').className='mode-btn'+(m==='teacher'?' active':'');
+  document.getElementById('btn-student').className='mode-btn'+(m==='student'?' active':'');
+  renderPreview();
+}
+
+function renderPreview(){
+  const toShow=filtered.filter(p=>selected.has(p.id));
+  const empty=document.getElementById('preview-empty');
+  const area=document.getElementById('print-area');
+  if(toShow.length===0){empty.style.display='flex';area.innerHTML='';return;}
+  empty.style.display='none';
+  area.innerHTML=toShow.map(p=>buildPage(p,mode)).join('');
+}
+
+function buildPage(p,m){
+  const flow=p.flow||{};
+  const blocks=flow.blocks||[];
+  const connectors=flow.interBlockConnectors||[];
+  const sentences=p.sentences||[];
+  const difficultSentences=flow.difficultSentences||[];
+
+  const diffColor=DIFF_C[p.difficulty]||'#888';
+  const diffBg=DIFF_BG[p.difficulty]||'#eee';
+
+  // 블록 다이어그램
+  let blocksHTML='';
+  if(blocks.length>0){
+    const cols=blocks.map((blk,bi)=>{
+      const bc=BC[blk.color]||BC.gray;
+      const sents=blk.sentenceNums||[];
+      const sentRows=sents.map(sn=>{
+        const sent=sentences.find(s=>s.num===sn)||{};
+        const sc=SM[sent.symbol]||{bg:'#f5f5f5',bd:'#ccc',tx:'#666'};
+        if(m==='teacher'){
+          return `<div class="sent-row" style="background:${sc.bg}">
+            <span class="sent-num" style="color:${sc.tx}">${sn}</span>
+            <span class="sent-sym" style="color:${sc.tx};border:1px solid ${sc.bd}">${sent.symbol||'?'}</span>
+            <span class="sent-role">${sent.role||''}</span>
+          </div>`;
+        } else {
+          return `<div class="sent-row" style="background:${sc.bg}">
+            <span class="sent-num" style="color:${sc.tx}">${sn}</span>
+            <span class="sent-sym" style="color:${sc.tx};border:1px solid ${sc.bd}">${sent.symbol||'?'}</span>
+            <span class="sent-blank-line"></span>
+          </div>`;
+        }
+      }).join('');
+      return `<div class="block-card" style="border-color:${bc.bd}">
+        <div class="block-header" style="background:${bc.hd}">
+          <span class="block-name" style="color:${bc.tx}">${blk.name||''}</span>
+          ${m==='teacher'?`<span style="font-size:8px;color:${bc.tx};opacity:.7">${blk.nameEn||''}</span>`:''}
+        </div>
+        <div class="block-body">${sentRows}</div>
+      </div>`;
+    });
+
+    // 블록 사이 연결자
+    let combined='';
+    cols.forEach((col,i)=>{
+      combined+=col;
+      if(i<cols.length-1) combined+=`<div class="connector-arrow">${connectors[i]||'→'}</div>`;
+    });
+    blocksHTML=`<div class="block-section">
+      <div class="block-section-label">논리 구조</div>
+      <div class="blocks-row">${combined}</div>
+      ${m==='teacher'&&flow.topicSummary?`<div style="margin-top:5px;font-size:9px;color:#555;padding:4px 8px;background:#f8f8f8;border-radius:4px;border-left:2px solid #185FA5">
+        <b style="color:#185FA5">주제:</b> ${flow.topicSummary}</div>`:''}
+    </div>`;
+  }
+
+  // 지문 원문
+  const passageText=sentences.map(s=>s.text||'').join(' ');
+  const passageHTML=`<div class="passage-section">
+    <div class="passage-section-label">지문</div>
+    <div class="passage-text">${passageText}</div>
+  </div>`;
+
+  // 교사용: 문장별 분석
+  let analysisHTML='';
+  if(m==='teacher'){
+    const items=sentences.map(s=>{
+      const sc=SM[s.symbol]||{bg:'#f5f5f5',bd:'#ccc',tx:'#666'};
+      const chunks=s.chunks||[];
+      const ds=difficultSentences.find(d=>d.num===s.num);
+      if(!chunks.length&&!ds) return '';
+      const chunksDiv=chunks.length?`<div class="analysis-body">
+        ${chunks.length?`<div class="chunks-en">${chunks.map(c=>c.en||'').join(' / ')}</div>
+        <div class="chunks-ko">${chunks.map(c=>c.ko||'').join(' / ')}</div>`:''}
+        ${ds?`<div class="diff-sent-box">
+          ${['structure','translation','point'].map(f=>ds[f]?`<div class="diff-row"><span class="diff-lbl">${f==='structure'?'구조':f==='translation'?'해석':'포인트'}</span><span class="diff-val">${ds[f]}</span></div>`:'').join('')}
+        </div>`:''}
+      </div>`:'';
+      return `<div class="analysis-item" style="border-color:${sc.bd}">
+        <div class="analysis-head" style="background:${sc.bg}">
+          <span class="analysis-num" style="color:${sc.tx}">${s.num}</span>
+          <span class="analysis-sym" style="color:${sc.tx};border:1px solid ${sc.bd}">${s.symbol||'?'}</span>
+          <span class="analysis-text" style="color:${sc.tx}">${chunks.length?chunks.map(c=>c.en||'').join(' / '):s.text}</span>
+        </div>
+        ${chunksDiv}
+      </div>`;
+    }).filter(Boolean).join('');
+    if(items) analysisHTML=`<div class="analysis-section">
+      <div class="analysis-label">문장별 분석 — 끊어읽기 & 구문</div>
+      ${items}
+    </div>`;
+  }
+
+  return `<div class="print-page">
+    <div class="page-header">
+      <div>
+        <div class="page-id">${p.id}</div>
+        <div class="page-title">${p.title||''}</div>
+      </div>
+      <span class="page-diff" style="background:${diffBg};color:${diffColor}">${p.difficulty||''}</span>
+    </div>
+    ${blocksHTML}
+    ${passageHTML}
+    ${analysisHTML}
+  </div>`;
+}
+
+function doPrint(){
+  window.print();
+}
+
+window.addEventListener('load',init);
+</script>
+</body>
+</html>
