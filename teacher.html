@@ -69,7 +69,6 @@ const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. �
 기호: G=주제/통념 S=구체예시 ==재진술 ↔=역접 +=추가 →=인과/결론
 {
   "sentences":[{"num":1,"text":"원문","symbol":"G","role":"역할설명",
-    "keyWords":["핵심단어1"],
     "chunks":[{"en":"끊어읽기","ko":"해석"}]}],
   "blocks":[{"id":1,"name":"통념 제시","nameEn":"General Claim","color":"blue","sentenceNums":[1,2]}],
   "interBlockConnectors":["↔"],
@@ -77,7 +76,6 @@ const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. �
   "structureType":"통념→반박→결론","difficulty":"중",
   "difficultSentences":[{"num":2,"text":"원문","structure":"구조","translation":"해석","point":"포인트"}]
 }
-keyWords: 주제문과 글 흐름상 핵심 키워드를 엄선해 전체 합산 10개 이내로 분배. 중요도 낮은 단어 제외. 한 문장에 최대 3개.
 difficulty: 상/중/하. color: blue/coral/teal/purple/green/amber/gray.
 블록 2~4개. difficultSentences 2~3개.`;
 
@@ -317,7 +315,7 @@ function buildHTML(slot,mode){
   };
   const passHTML=sentences.map(s=>{
     const sc=SM[s.symbol]||{};
-    return'<span><span style="font-size:12px;font-weight:700;color:'+sc.tx+';margin-right:4px">'+nStr(s.num)+'</span>'+hlHTML(s.text,s.keyWords||[])+' </span>';
+    return'<span><span style="font-size:12px;font-weight:700;color:'+sc.tx+';margin-right:4px">'+nStr(s.num)+'</span>'+s.text+' </span>';
   }).join('');
   const blockCards=blocks.map((blk,bi)=>{
     const c=BC[blk.color]||BC.blue;
@@ -1145,7 +1143,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanal
               const sc=SM[s.symbol]||{};
               return<span key={s.num}>
                 <span style={{fontSize:12,fontWeight:700,color:sc.tx,marginRight:4}}>{nStr(s.num)}</span>
-                <Highlighted text={s.text} words={s.keyWords||[]}/>
+                {s.text}
                 {' '}
               </span>;
             })}
