@@ -447,7 +447,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText}){
       const getRes=await fetch(apiBase,{headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json'}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패: '+getRes.status);
       const fileData=await getRes.json();
-      const currentContent=atob(fileData.content.replace(/\n/g,''));
+      const currentContent=decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
       // 2. 새 내용 append
       const newEntries=jsonText.replace(/^\/\/.*\n/gm,'').trim();
       let newContent;
@@ -915,7 +915,7 @@ function App(){
       const getRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{headers:{'Authorization':'token '+ghToken}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패');
       const getJson=await getRes.json();
-      const decoded=atob(getJson.content.replace(/\n/g,''));
+      const decoded=decodeURIComponent(escape(atob(getJson.content.replace(/\n/g,''))));
       const lastBracket=decoded.lastIndexOf(']');
       if(lastBracket<0)throw new Error('passages.js 형식 오류');
       const newContent=decoded.slice(0,lastBracket)+',\n\n'+jsonText+'\n'+decoded.slice(lastBracket);
