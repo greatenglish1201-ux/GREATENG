@@ -15677,7 +15677,36 @@ const PASSAGES = [
           "point": "'state'는 단순한 생리적·내적 감정 상태, 'experience'는 맥락과 상호작용을 통해 의미화된 경험을 뜻함. 앞선 논의 전체를 Lewis의 개념으로 압축하는 결론 문장."
         }
       ]
-    }
+    },
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "Research suggests that {facial expressions} reveal a {finite} repertoire of {emotions} whose meanings are roughly synonymous among all members of the species.",
+        "keywords": [
+          "facial expressions",
+          "finite",
+          "emotions"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "Emotions are not {separable} from their particular {circumstances}, as universal {expressive behaviors} like laughter and crying are always carried out in specific contexts.",
+        "keywords": [
+          "separable",
+          "circumstances",
+          "expressive behaviors"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "As elements in {communicative function}, emotional {behaviors} create the necessity of response from the environment while also being shaped by it, transforming state into {experience}.",
+        "keywords": [
+          "communicative function",
+          "behaviors",
+          "experience"
+        ]
+      }
+    ]
   },
   {
     "id": "27STYD_01_001",
@@ -16348,7 +16377,41 @@ const PASSAGES = [
           "point": "'where expected'는 'where they are expected to appear'의 축약형으로, 생략된 주어와 be동사를 복원하여 해석해야 함"
         }
       ]
-    }
+    },
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "Changes can {disrupt} the user's ability to {re-find} information.",
+        "keywords": [
+          "disrupt",
+          "re-find"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "{Dynamic menus} actually {slow} their users down because commonly sought items no longer appear where expected.",
+        "keywords": [
+          "Dynamic menus",
+          "slow"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "People did not {perform} as well when the {sentence list} was dynamically reranked as when it was static.",
+        "keywords": [
+          "perform",
+          "sentence list"
+        ]
+      },
+      {
+        "blockId": 4,
+        "summary": "When people repeat {queries}, they are significantly less likely to click on a result if the result's {rank} has changed.",
+        "keywords": [
+          "queries",
+          "rank"
+        ]
+      }
+    ]
   },
   {
     "id": "27STYD_01_003",
@@ -16708,7 +16771,44 @@ const PASSAGES = [
           "point": "'the emotional and aesthetic response'가 'the feel of the experience'와 동격 관계이며, 'with and via the machine'처럼 전치사 두 개가 공유 구조로 묶인 점을 파악해야 한다."
         }
       ]
-    }
+    },
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "Unlike verbal {metaphors} that only affect language, {interface} metaphors play a more fundamental role in how we {interact} with the technological world.",
+        "keywords": [
+          "metaphors",
+          "interface",
+          "interact"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "Interface metaphors both {constrain} what we can do with information and influence the {emotional} response we have to our interactions with the machine.",
+        "keywords": [
+          "constrain",
+          "emotional"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "The {desktop} metaphor was developed for office work and is {appropriate} for that setting, but less so when the computer is used as an entertainment center or the locus of our {social} life.",
+        "keywords": [
+          "desktop",
+          "appropriate",
+          "social"
+        ]
+      },
+      {
+        "blockId": 4,
+        "summary": "Interface {metaphors} need to fit both the {feel} and {function} of the application.",
+        "keywords": [
+          "metaphors",
+          "feel",
+          "function"
+        ]
+      }
+    ]
   },
   {
     "id": "27STYD_01_004",
@@ -16972,7 +17072,33 @@ const PASSAGES = [
           "point": "주어(subjects)와 동사(were) 사이에 과거분사구(exposed to the innocence frame)가 삽입되어 문장이 길어짐. 비교 구문(more likely ~ than)의 비교 대상을 정확히 파악해야 함."
         }
       ]
-    }
+    },
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "Many {news media} studies use {experimental designs} to see whether citizens' opinions are influenced by different news content.",
+        "keywords": [
+          "news media",
+          "experimental designs"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "Researchers created {newspaper stories} to {frame} the death penalty in different ways, and subjects read different frames before completing a questionnaire.",
+        "keywords": [
+          "newspaper stories",
+          "frame"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "Subjects exposed to the {innocence frame} were more likely to mention innocence-related considerations, showing that {news frames} shaped their death penalty attitudes.",
+        "keywords": [
+          "innocence frame",
+          "news frames"
+        ]
+      }
+    ]
   },
   {
     "id": "27STYD_01_005",
@@ -17275,6 +17401,33 @@ const PASSAGES = [
           "point": "'was that ... not that ...' 대조 구문과 세미콜론 뒤 'such was the case'의 도치 표현(= that was the case) 해석이 관건"
         }
       ]
-    }
+    },
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "The {knowledge} problem is most evident in our ability to {predict} that which has not yet been observed, though most people say they know the Sun will rise tomorrow.",
+        "keywords": [
+          "knowledge",
+          "predict"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "We cannot call this a {certainty}, as the Sun may run out of {fuel}, the Earth may explode or be destroyed by a massive {comet} we had not anticipated.",
+        "keywords": [
+          "certainty",
+          "fuel",
+          "comet"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "The 230,000 people who died in the {tsunami} in Sumatra in 2004 show that the most reasonable {prediction} can fail when a massive wave destroys many thousands of lives.",
+        "keywords": [
+          "tsunami",
+          "prediction"
+        ]
+      }
+    ]
   }
 ];
