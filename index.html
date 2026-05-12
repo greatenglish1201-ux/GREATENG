@@ -1202,7 +1202,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
                             <label key={p.id} style={{display:'flex',alignItems:'center',gap:7,padding:'8px 12px',borderBottom:'1px solid #f1f5f9',cursor:'pointer',fontSize:11.5,background:selPassages.has(p.id)?'#f0f7ff':'transparent'}}>
                               <input type="checkbox" checked={selPassages.has(p.id)} onChange={()=>toggleP(p.id)} style={{accentColor:'#4f7df7',flexShrink:0}}/>
                               <span style={{color:p.difficulty==='높음'?'#e53935':'#b0bec5',fontWeight:600,fontSize:10,flexShrink:0}}>{p.difficulty==='높음'?'★':'☆'}</span>
-                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{p.title}</span>
+                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{p.title||p.id}</span>
                               <span style={{color:'#b0bec5',fontSize:9,flexShrink:0}}>{p.id.split('_').slice(-1)[0]}</span>
                             </label>
                           ))}
@@ -1223,28 +1223,18 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         <div style={{display:'flex',gap:12}}>
           <div style={{...S.card,flex:1}}>
             <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>문제 수</h3>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <div style={{display:'flex',flexDirection:'column',gap:6}}>
-                <div style={{display:'flex',alignItems:'center',gap:6}}>
-                  {[-10,-5,-1].map(d=>(
-                    <button key={d} onClick={()=>setQCount(q=>Math.max(1,q+d))}
-                      style={{padding:'5px 8px',borderRadius:8,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,fontWeight:700,cursor:'pointer',color:'#475569'}}>
-                      {d}
-                    </button>
-                  ))}
-                  <input type="number" min={1} max={99} value={qCount}
-                    onChange={e=>{const v=parseInt(e.target.value);if(!isNaN(v))setQCount(Math.max(1,Math.min(99,v)));}}
-                    onFocus={e=>e.target.select()}
-                    style={{width:52,padding:'8px 4px',borderRadius:10,border:'2px solid #C9A84C',fontSize:15,fontWeight:700,textAlign:'center',outline:'none'}}/>
-                  {[1,5,10].map(d=>(
-                    <button key={d} onClick={()=>setQCount(q=>Math.min(99,q+d))}
-                      style={{padding:'5px 8px',borderRadius:8,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,fontWeight:700,cursor:'pointer',color:'#475569'}}>
-                      +{d}
-                    </button>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <span style={{fontSize:22,fontWeight:800,color:'#C9A84C',minWidth:32}}>{qCount}</span>
+              <div style={{flex:1,display:'flex',flexDirection:'column',gap:4}}>
+                <input type="range" min={1} max={5} step={1} value={qCount/10}
+                  onChange={e=>setQCount(parseInt(e.target.value)*10)}
+                  style={{width:'100%',accentColor:'#C9A84C',cursor:'pointer',height:6}}/>
+                <div style={{display:'flex',justifyContent:'space-between',paddingTop:2}}>
+                  {[10,20,30,40,50].map(v=>(
+                    <span key={v} style={{fontSize:10,color:qCount===v?'#C9A84C':'#94a3b8',fontWeight:qCount===v?700:400,cursor:'pointer'}} onClick={()=>setQCount(v)}>{v===50?'MAX50':v}</span>
                   ))}
                 </div>
               </div>
-              <span style={{fontSize:12.5,color:'#64748b'}}>문제</span>
             </div>
           </div>
           <div style={{...S.card,flex:1}}>
