@@ -34,7 +34,7 @@ const BOOKS = [
   { id:'ABSO', label:'절대유형', match: id => id.startsWith('ABSO') },
   { id:'OLLE', label:'올림포스 독해1', match: id => id.startsWith('OLLE') },
 ];
-const BOOK_LABELS={'27ST':'27수특영어','ABSO':'절대유형','OLLE':'올림포스 독해1','MOGO':'모의고사 GO3'};
+const BOOK_LABELS={'27ST_E':'27수특영어','27STYD':'27영독','ABSO_TYPE':'절대유형','OLLE':'올림포스 독해1','MOGO_GO3':'모의고사 GO3','MOGO':'모의고사 GO3','ABSO':'절대유형'};
 
 function parseCSV(text){
   const rows=[];
@@ -81,7 +81,7 @@ function parseCSV(text){
 function detectBooks(passages){
   const map={};
   passages.forEach(p=>{
-    const prefix=p.id.split('_').slice(0,-1).join('_').split('_')[0]||p.id.substring(0,4);
+    const parts=p.id.split('_');let prefix='';for(let i=0;i<parts.length;i++){if(/^\d+$/.test(parts[i])||/^\d/.test(parts[i])&&parts[i].length<=3)break;prefix=prefix?(prefix+'_'+parts[i]):parts[i];}prefix=prefix||parts[0];
     if(!map[prefix])map[prefix]=true;
   });
   return Object.keys(map).map(pre=>({
@@ -1124,7 +1124,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             const lessonMap={};
             bookPassages.forEach(p=>{
               const parts=p.id.split('_');
-              const lessonKey=parts.length>=3?parts[2]:'??';
+              const bookPre=books.find(b=>b.id===activeBook);let lessonKey='??';if(bookPre){const rem=p.id.slice(bookPre.id.length+1);const remParts=rem.split('_');lessonKey=remParts[0]||'??';}else{lessonKey=parts.length>=3?parts[2]:'??';}
               if(!lessonMap[lessonKey])lessonMap[lessonKey]=[];
               lessonMap[lessonKey].push(p);
             });

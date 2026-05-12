@@ -109,6 +109,14 @@ function upsertPassages(currentContent,newEntries){
   let existing;
   try{existing=JSON.parse(currentContent.slice(start,end+1));}
   catch{throw new Error('passages.js JSON 파싱 실패');}
+  // 기존 배열 중복 제거 (필드 수 많은 것 우선)
+  const deduped=[];const seenIds=new Set();
+  existing.forEach(e=>{
+    if(!seenIds.has(e.id)){seenIds.add(e.id);deduped.push(e);}
+    else{const i=deduped.findIndex(x=>x.id===e.id);if(i>=0&&Object.keys(e).length>Object.keys(deduped[i]).length)deduped[i]=e;}
+  });
+  existing=deduped;
+  // 새 항목 upsert
   newEntries.forEach(ne=>{
     const idx=existing.findIndex(e=>e.id===ne.id);
     if(idx>=0)existing[idx]=ne;else existing.push(ne);
@@ -745,7 +753,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText}){
         implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
         implication_options:p.implication_options,implication_answer:p.implication_answer,
         irrelevant_sentence_index:p.irrelevant_sentence_index,
-        aGroup:p.summary_A_options.slice(0,3),bGroup:p.summary_B_options.slice(0,3),
+        aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
         grammar_items:gs.items,grammar_answer:p.grammar_answer,
         vocab_items:vs.items,vocab_answer:p.vocab_answer};
     });
@@ -1029,9 +1037,25 @@ function App(){
   },[slots,upSlot]);
 
   const loadSelected=useCallback((selected)=>{
-    selected.forEach(p=>loadIntoSlot(p));
+    const firstEmpty=slots.findIndex(s=>!s.text.trim()&&s.status==='idle');
+    const startIdx=firstEmpty>=0?firstEmpty:0;
+    selected.forEach((p,i)=>{
+      const slotIdx=(startIdx+i)%slots.length;
+      const normed=normalizeSentences(p.sentences);
+      const text=normed.map(s=>s.text||'').join(' ');
+      upSlot(slots[slotIdx].id,{
+        text,
+        meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
+          number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
+        status:'saved',
+        analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
+        blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
+        open:i===0
+      });
+    });
+    flash('✓ '+selected.length+'개 지문 불러오기 완료');
     setShowLoad(false);
-  },[loadIntoSlot]);
+  },[slots,upSlot,normalizeSentences]);
 
 
 
