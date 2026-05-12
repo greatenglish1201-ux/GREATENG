@@ -885,7 +885,11 @@ function App(){
       const prompt=BLOCK_SUM_PROMPT(blocks,sentences);
       const d=await callClaude(apiKey,BLOCK_SUM_SYS,prompt);
       if(d.error)throw new Error(d.error.message||'API 오류');
-      const parsed=parseJSON(d.content[0].text);
+      const raw=d.content[0].text.replace(/```(?:json)?|```/g,'').trim();
+      const arrStart=raw.indexOf('[');
+      const arrEnd=raw.lastIndexOf(']');
+      if(arrStart<0||arrEnd<0)throw new Error('응답 형식 오류');
+      const parsed=JSON.parse(raw.slice(arrStart,arrEnd+1));
       upSlot(slot.id,{blockSummaries:parsed});
       flash('✓ 블록 요약 생성 완료');
     }catch(e){
