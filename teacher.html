@@ -944,21 +944,32 @@ function App(){
     setLoadFetching(false);
   },[loadedPassages]);
 
+  const normalizeSentences=(sents)=>{
+    if(!sents||!sents.length) return [];
+    if(typeof sents[0]==='string') return sents.map((t,i)=>({num:i+1,text:t,symbol:'',role:'',chunks:[]}));
+    return sents;
+  };
+
   const loadIntoSlot=useCallback((p)=>{
+    const normed=normalizeSentences(p.sentences);
+    const text=normed.map(s=>s.text||'').join(' ');
     const emptyIdx=slots.findIndex(s=>!s.text.trim()&&s.status==='idle');
     const idx=emptyIdx>=0?emptyIdx:0;
-    const text=(p.sentences||[]).map(s=>s.text).join(' ');
     upSlot(slots[idx].id,{
       text,
       meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
         number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
       status:'saved',
-      analysis:{sentences:p.sentences||[],flow:p.flow||{},grammar:p.grammar||{}},
+      analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
       open:true
     });
-    setShowLoad(false);
     flash('✓ '+p.id+' 불러오기 완료');
   },[slots,upSlot]);
+
+  const loadSelected=useCallback((selected)=>{
+    selected.forEach(p=>loadIntoSlot(p));
+    setShowLoad(false);
+  },[loadIntoSlot]);
 
 
 
@@ -1028,30 +1039,48 @@ function App(){
                 ))}
               </select>
             </div>
-            <div style={{overflow:'auto',flex:1}}>
-              {loadedPassages
-                .filter(p=>{
-                  if(loadSrc&&!p.id.startsWith(loadSrc)) return false;
-                  if(loadSearch&&!p.id.toLowerCase().includes(loadSearch.toLowerCase())&&
-                    !(p.title||'').toLowerCase().includes(loadSearch.toLowerCase())) return false;
-                  return true;
-                })
-                .map(p=>(
-                  <div key={p.id} onClick={()=>loadIntoSlot(p)}
-                    style={{padding:'10px 16px',borderBottom:'1px solid #f0f0f0',cursor:'pointer',
-                      display:'flex',alignItems:'center',gap:10,transition:'background .1s'}}
-                    onMouseEnter={e=>e.currentTarget.style.background='#f0f6ff'}
-                    onMouseLeave={e=>e.currentTarget.style.background='#fff'}>
-                    <span style={{fontSize:10.5,fontFamily:'monospace',color:'#185FA5',flexShrink:0,minWidth:120}}>{p.id}</span>
-                    <span style={{fontSize:12.5,color:'#333',flex:1,lineHeight:1.35}}>{p.title||'제목없음'}</span>
-                    <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,
-                      background:p.difficulty==='상'?'#FDECEA':p.difficulty==='하'?'#E1F5EE':'#FFF3E0',
-                      color:p.difficulty==='상'?'#c0392b':p.difficulty==='하'?'#2d8a60':'#BA7517'}}>
-                      {p.difficulty||'?'}
-                    </span>
-                  </div>
-                ))}
-            </div>
+            {(()=>{
+              const filtered=loadedPassages.filter(p=>{
+                if(loadSrc&&!p.id.startsWith(loadSrc)) return false;
+                if(loadSearch&&!p.id.toLowerCase().includes(loadSearch.toLowerCase())&&
+                  !(p.title||'').toLowerCase().includes(loadSearch.toLowerCase())) return false;
+                return true;
+              });
+              const [loadSel,setLoadSel]=React.useState({});
+              const selCount=Object.keys(loadSel).filter(k=>loadSel[k]).length;
+              return(<>
+                <div style={{overflow:'auto',flex:1}}>
+                  {filtered.map(p=>(
+                    <div key={p.id}
+                      onClick={()=>setLoadSel(prev=>({...prev,[p.id]:!prev[p.id]}))}
+                      style={{padding:'10px 16px',borderBottom:'1px solid #f0f0f0',cursor:'pointer',
+                        display:'flex',alignItems:'center',gap:10,
+                        background:loadSel[p.id]?'#EBF3FF':'#fff'}}
+                      onMouseEnter={e=>{if(!loadSel[p.id])e.currentTarget.style.background='#f8faff'}}
+                      onMouseLeave={e=>{if(!loadSel[p.id])e.currentTarget.style.background='#fff'}}>
+                      <input type="checkbox" checked={!!loadSel[p.id]} onChange={()=>{}} style={{width:14,height:14,accentColor:'#185FA5',flexShrink:0}}/>
+                      <span style={{fontSize:10.5,fontFamily:'monospace',color:'#185FA5',flexShrink:0,minWidth:120}}>{p.id}</span>
+                      <span style={{fontSize:12.5,color:'#333',flex:1,lineHeight:1.35}}>{p.title||'제목없음'}</span>
+                      <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,
+                        background:p.difficulty==='상'?'#FDECEA':p.difficulty==='하'?'#E1F5EE':'#FFF3E0',
+                        color:p.difficulty==='상'?'#c0392b':p.difficulty==='하'?'#2d8a60':'#BA7517'}}>
+                        {p.difficulty||'?'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{padding:'10px 16px',borderTop:'1px solid #eee',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+                  <span style={{fontSize:12,color:'#888'}}>{selCount}개 선택됨</span>
+                  <button
+                    disabled={selCount===0}
+                    onClick={()=>loadSelected(filtered.filter(p=>loadSel[p.id]))}
+                    style={{padding:'7px 18px',fontSize:13,fontWeight:600,background:selCount>0?'#185FA5':'#ccc',
+                      color:'#fff',border:'none',borderRadius:7,cursor:selCount>0?'pointer':'not-allowed'}}>
+                    슬롯에 불러오기 ({selCount})
+                  </button>
+                </div>
+              </>);
+            })()}
           </div>
         </div>
       )}
