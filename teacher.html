@@ -847,6 +847,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText}){
 function App(){
   const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:5},(_,i)=>makeSlot(i)));
   const [authorInitText,setAuthorInitText]=useState('');
+  const [mainGhSaving,setMainGhSaving]=useState(false);
   const [viewMode,setViewMode]=useState('teacher');
   const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
   const [appsURL,setAppsURL]=useState(()=>localStorage.getItem(LS.URL)||'');
@@ -915,6 +916,46 @@ function App(){
     setTimeout(()=>doAnalyze({...slot,status:'idle'}),100);
   },[upSlot,doAnalyze]);
 
+  const saveMainToGitHub=useCallback(async()=>{
+    if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
+    setMainGhSaving(true);
+    try{
+      const entries=slots.filter(s=>s.analysis&&s.text.trim()).map(s=>{
+        const d=s.data||{};
+        return{
+          id:d.id||s.meta.source+'_'+String(s.meta.chapter).padStart(2,'0')+'_'+String(s.meta.number).padStart(3,'0'),
+          title:d.title||'',difficulty:s.meta.difficulty||'보통',
+          sentences:s.analysis.sentences||[],
+          flow:s.analysis.flow||{},
+          grammar:s.analysis.grammar||{}
+        };
+      });
+      if(!entries.length){alert('저장할 분석 데이터가 없습니다.');setMainGhSaving(false);return;}
+      const jsonText=entries.map(e=>JSON.stringify(e,null,2)).join(',
+
+');
+      const path='passages.js';
+      const getRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{headers:{'Authorization':'token '+ghToken}});
+      if(!getRes.ok)throw new Error('passages.js 읽기 실패');
+      const getJson=await getRes.json();
+      const decoded=atob(getJson.content.replace(/
+/g,''));
+      const lastBracket=decoded.lastIndexOf(']');
+      if(lastBracket<0)throw new Error('passages.js 형식 오류');
+      const newContent=decoded.slice(0,lastBracket)+',
+
+'+jsonText+'
+'+decoded.slice(lastBracket);
+      const putRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{
+        method:'PUT',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
+        body:JSON.stringify({message:'Add passages via teacher.html',content:btoa(unescape(encodeURIComponent(newContent))),sha:getJson.sha})
+      });
+      if(!putRes.ok)throw new Error('GitHub 저장 실패: '+(await putRes.text()));
+      alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
+    }catch(e){alert('오류: '+e.message);}
+    setMainGhSaving(false);
+  },[slots,ghToken,ghRepo]);
+
   const saveSheet=useCallback(async(slot)=>{
     if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
     try{
@@ -973,6 +1014,11 @@ function App(){
             background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',
             color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'미설정'}</span>
 
+          {viewMode!=='authoring'&&<button onClick={saveMainToGitHub} disabled={mainGhSaving}
+            style={{background:mainGhSaving?'rgba(0,0,0,.3)':'rgba(45,138,96,.5)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            {mainGhSaving?'저장중...':'GitHub 저장 ↗'}
+          </button>}
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:5},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',
               borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>🗑</button>
