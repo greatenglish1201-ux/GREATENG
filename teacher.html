@@ -65,6 +65,26 @@ const DIFF_STYLE={
   하:{color:'#2d8a60',bg:'#E1F5EE'},
 };
 
+const BLOCK_SUM_SYS=`수능 영어 독해 전문가. 순수 JSON만 반환. 코드블록 없이.`;
+const BLOCK_SUM_PROMPT=(blocks,sentences)=>`
+다음 블록 구조와 문장 데이터를 보고, 각 블록마다 1문장 영어 요약과 핵심 키워드 2~3개를 추출하라.
+
+블록:
+${JSON.stringify(blocks,null,2)}
+
+문장:
+${sentences.map(s=>s.num+'. '+s.text).join('\n')}
+
+반환 형식:
+[
+  {
+    "blockId": 1,
+    "summary": "The {universal} repertoire of expressions is shaped by {context}.",
+    "keywords": ["universal","context"]
+  }
+]
+summary 안에서 키워드는 반드시 {중괄호}로 감싸라. 키워드는 summary에 실제로 등장하는 단어만.`;
+
 const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. 코드블록 없이.
 기호: G=주제/통념 S=구체예시 ==재진술 ↔=역접 +=추가 →=인과/결론
 {
@@ -129,7 +149,7 @@ function Highlighted({text,words}){
 const makeSlot=i=>({
   id:i,text:'',viewMode:'teacher',
   meta:{source:'ABSO',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
-  status:'idle',analysis:null,error:'',open:true,
+  status:'idle',analysis:null,error:'',open:true,blockSummaries:null,
 });
 
 function saveSlots(slots){
@@ -855,6 +875,25 @@ function App(){
   const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
   const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
 
+  const generateBlockSummaries=useCallback(async(slot)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    const blocks=slot.analysis?.flow?.blocks||[];
+    const sentences=slot.analysis?.sentences||[];
+    if(!blocks.length){alert('블록 분석 데이터가 없습니다.');return;}
+    upSlot(slot.id,{blockSummaries:'loading'});
+    try{
+      const prompt=BLOCK_SUM_PROMPT(blocks,sentences);
+      const d=await callClaude(apiKey,BLOCK_SUM_SYS,prompt);
+      if(d.error)throw new Error(d.error.message||'API 오류');
+      const parsed=parseJSON(d.content[0].text);
+      upSlot(slot.id,{blockSummaries:parsed});
+      flash('✓ 블록 요약 생성 완료');
+    }catch(e){
+      upSlot(slot.id,{blockSummaries:null});
+      alert('요약 생성 실패: '+e.message);
+    }
+  },[apiKey,upSlot]);
+
   const upAnalysis=useCallback((id,path,val)=>setSlots(p=>p.map(s=>{
     if(s.id!==id)return s;
     const a=JSON.parse(JSON.stringify(s.analysis));
@@ -917,7 +956,8 @@ function App(){
           title:d.title||'',difficulty:s.meta.difficulty||'보통',
           sentences:s.analysis.sentences||[],
           flow:s.analysis.flow||{},
-          grammar:s.analysis.grammar||{}
+          grammar:s.analysis.grammar||{},
+          blockSummaries:Array.isArray(s.blockSummaries)?s.blockSummaries:undefined
         };
       });
       if(!entries.length){alert('저장할 분석 데이터가 없습니다.');setMainGhSaving(false);return;}
@@ -970,6 +1010,7 @@ function App(){
         number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
       status:'saved',
       analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
+      blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
       open:true
     });
     flash('✓ '+p.id+' 불러오기 완료');
@@ -1165,6 +1206,7 @@ function App(){
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onReanalyze={()=>reanalyze(slot)}
             onAnalysis={upAnalysis}
+            onGenSum={()=>generateBlockSummaries(slot)}
           />
         ))}
       </div>}
@@ -1172,7 +1214,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanalyze,onAnalysis,onAuthor}){
+function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanalyze,onAnalysis,onAuthor,onGenSum}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -1381,6 +1423,69 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanal
                 </select>}
             </div>
           </div>
+
+          {/* 블록 요약 빈칸 섹션 */}
+          {(()=>{
+            const bs=slot.blockSummaries;
+            const hasAnalysis=blocks.length>0;
+            if(!hasAnalysis)return null;
+            const BC2={blue:{bd:'#185FA5',bg:'#E6F1FB',tx:'#0C447C'},coral:{bd:'#D85A30',bg:'#FAECE7',tx:'#712B13'},
+              teal:{bd:'#1D9E75',bg:'#E1F5EE',tx:'#085041'},purple:{bd:'#534AB7',bg:'#EEEDFE',tx:'#3C3489'},
+              green:{bd:'#639922',bg:'#EAF3DE',tx:'#173404'},amber:{bd:'#BA7517',bg:'#FAEEDA',tx:'#633806'},gray:{bd:'#5F5E5A',bg:'#F1EFE8',tx:'#2C2C2A'}};
+
+            const renderSummary=(sumText,keywords,bc)=>{
+              if(!sumText)return null;
+              const parts=sumText.split(/\{([^}]+)\}/g);
+              return parts.map((part,i)=>{
+                if(i%2===1){
+                  if(IS){
+                    return<span key={i} style={{display:'inline-block',borderBottom:'1.5px solid '+bc.bd,
+                      minWidth:60,marginRight:2}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+                  }
+                  return<span key={i} style={{display:'inline-block',background:bc.bg,color:bc.tx,
+                    border:'1px solid '+bc.bd,borderRadius:4,padding:'0 5px',fontSize:11.5,fontWeight:500}}>{part}</span>;
+                }
+                return<span key={i}>{part}</span>;
+              });
+            };
+
+            return(
+              <div style={{marginBottom:12}}>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+                  <div style={{fontSize:11,fontWeight:700,color:'#888',letterSpacing:'.08em',textTransform:'uppercase'}}>
+                    블록 요약 빈칸
+                  </div>
+                  {!IS&&<button onClick={onGenSum} disabled={bs==='loading'}
+                    style={{padding:'3px 10px',fontSize:11,background:bs==='loading'?'#ccc':'#185FA5',
+                      color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>
+                    {bs==='loading'?'생성중...':bs?'재생성 ↻':'요약 생성 ↗'}
+                  </button>}
+                </div>
+                {bs&&bs!=='loading'&&Array.isArray(bs)?
+                  bs.map((item,bi)=>{
+                    const blk=blocks.find(b=>b.id===item.blockId)||blocks[bi]||{};
+                    const bc=BC2[blk.color]||BC2.gray;
+                    return(
+                      <div key={bi} style={{border:'0.5px solid '+bc.bd,borderRadius:8,
+                        overflow:'hidden',marginBottom:8}}>
+                        <div style={{background:bc.bg,padding:'5px 10px',display:'flex',gap:8,alignItems:'center'}}>
+                          <span style={{fontSize:11,fontWeight:600,color:bc.tx}}>{blk.name||item.blockId}</span>
+                          <span style={{fontSize:10,color:bc.tx,opacity:.7}}>{blk.nameEn||''}</span>
+                        </div>
+                        <div style={{padding:'8px 12px',fontSize:12.5,fontStyle:'italic',
+                          color:'#333',lineHeight:1.8,wordBreak:'keep-all'}}>
+                          {renderSummary(item.summary,item.keywords,bc)}
+                        </div>
+                      </div>
+                    );
+                  })
+                  :<div style={{fontSize:12,color:'#bbb',padding:'10px 0',textAlign:'center'}}>
+                    {IS?'(요약 미생성)':bs==='loading'?'생성 중...':'요약 생성 버튼을 눌러주세요'}
+                  </div>
+                }
+              </div>
+            );
+          })()}
 
           {/* 문장별 분석 */}
           {(()=>{
