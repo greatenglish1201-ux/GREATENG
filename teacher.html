@@ -97,31 +97,7 @@ function parseJSON(text){
   return JSON.parse(s);
 }
 
-function sheetsGet(url,params){
-  return new Promise((res,rej)=>{
-    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-    const qs=Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
-    const sc=document.createElement('script');
-    sc.src=url+'?'+qs+'&callback='+cb;
-    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
-    sc.onerror=()=>rej(new Error('연결 실패'));
-    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},12000);
-    document.body.appendChild(sc);
-  });
-}
 
-function sheetsSave(url,passage){
-  return new Promise((res,rej)=>{
-    const cb='cb_save_'+Date.now();
-    const encoded=encodeURIComponent(JSON.stringify(passage));
-    const sc=document.createElement('script');
-    sc.src=url+'?action=save&data='+encoded+'&callback='+cb;
-    window[cb]=(d)=>{delete window[cb];sc.remove();res(d);};
-    sc.onerror=()=>rej(new Error('저장 실패'));
-    setTimeout(()=>{if(window[cb]){delete window[cb];rej(new Error('시간 초과'));}},12000);
-    document.body.appendChild(sc);
-  });
-}
 
 function Highlighted({text,words}){
   if(!words||!words.length) return React.createElement(React.Fragment,null,text);
@@ -856,6 +832,11 @@ function App(){
   const [ghTokenInput,setGhTokenInput]=useState('');
   const [ghRepoInput,setGhRepoInput]=useState('');
   const [showSet,setShowSet]=useState(false);
+  const [showLoad,setShowLoad]=useState(false);
+  const [loadedPassages,setLoadedPassages]=useState([]);
+  const [loadSrc,setLoadSrc]=useState('');
+  const [loadSearch,setLoadSearch]=useState('');
+  const [loadFetching,setLoadFetching]=useState(false);
   const [msg,setMsg]=useState('');
   const running=useRef(false);
 
@@ -948,34 +929,38 @@ function App(){
     setMainGhSaving(false);
   },[slots,ghToken,ghRepo]);
 
-  const saveSheet=useCallback(async(slot)=>{
-    if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
+  const fetchPassages=useCallback(async()=>{
+    if(loadedPassages.length>0){setShowLoad(true);return;}
+    setLoadFetching(true);
     try{
-      const {meta,analysis}=slot;
-      const id=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
-      await sheetsSave(appsURL,{id,...meta,confirmed:true,
-        sentences:analysis?.sentences||[],flow:analysis?.flow||{},grammar:analysis?.grammar||{}});
-      upSlot(slot.id,{status:'saved'});flash('✓ '+id+' 저장 완료');
-    }catch(e){alert('저장 오류: '+e.message);}
-  },[appsURL,upSlot]);
+      const r=await fetch('passages.js?t='+Date.now());
+      const text=await r.text();
+      const modified=text.replace(/^\s*(const|let|var)\s+PASSAGES\s*=/,'window.__LOAD_PASSAGES =');
+      new Function(modified)();
+      const ps=window.__LOAD_PASSAGES||[];
+      setLoadedPassages(ps);
+      setShowLoad(true);
+    }catch(e){alert('passages.js 로드 실패: '+e.message);}
+    setLoadFetching(false);
+  },[loadedPassages]);
 
-  const loadSheet=useCallback(async()=>{
-    if(!appsURL){alert('Apps Script URL을 설정해주세요.');return;}
-    flash('불러오는 중...');
-    try{
-      const data=await sheetsGet(appsURL,{action:'getAll'});
-      const ps=(data.passages||[]).filter(p=>p.sentences&&p.sentences.length).slice(0,5);
-      if(!ps.length){flash('저장된 분석 없음');return;}
-      setSlots(Array.from({length:5},(_,i)=>{
-        const p=ps[i];if(!p)return makeSlot(i);
-        return{...makeSlot(i),text:(p.sentences||[]).map(s=>s.text).join(' '),
-          meta:{source:p.source||'ABSO',chapter:p.chapter||'01',number:p.number||'001',difficulty:p.difficulty||'중'},
-          status:p.confirmed?'saved':'analyzed',
-          analysis:{sentences:p.sentences||[],flow:p.flow||{},grammar:p.grammar||{}},open:true};
-      }));
-      flash('✓ '+ps.length+'개 불러오기 완료');
-    }catch(e){flash('불러오기 실패: '+e.message,4000);}
-  },[appsURL]);
+  const loadIntoSlot=useCallback((p)=>{
+    const emptyIdx=slots.findIndex(s=>!s.text.trim()&&s.status==='idle');
+    const idx=emptyIdx>=0?emptyIdx:0;
+    const text=(p.sentences||[]).map(s=>s.text).join(' ');
+    upSlot(slots[idx].id,{
+      text,
+      meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
+        number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
+      status:'saved',
+      analysis:{sentences:p.sentences||[],flow:p.flow||{},grammar:p.grammar||{}},
+      open:true
+    });
+    setShowLoad(false);
+    flash('✓ '+p.id+' 불러오기 완료');
+  },[slots,upSlot]);
+
+
 
   const keyOk=apiKey.startsWith('sk-ant');
   const pending=slots.filter(s=>s.text.trim()&&s.status==='idle').length;
@@ -1006,6 +991,11 @@ function App(){
             background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',
             color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'미설정'}</span>
 
+          {viewMode!=='authoring'&&<button onClick={fetchPassages} disabled={loadFetching}
+            style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            {loadFetching?'로딩...':'📂 불러오기'}
+          </button>}
           {viewMode!=='authoring'&&<button onClick={saveMainToGitHub} disabled={mainGhSaving}
             style={{background:mainGhSaving?'rgba(0,0,0,.3)':'rgba(45,138,96,.5)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
@@ -1019,6 +1009,52 @@ function App(){
             color:'#fff',border:'none',borderRadius:6,padding:'4px 10px',fontSize:11.5,cursor:'pointer'}}>⚙</button>
         </div>
       </div>
+
+      {showLoad&&(
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.55)',zIndex:200,display:'flex',alignItems:'flex-start',justifyContent:'center',paddingTop:60,overflow:'auto'}}>
+          <div style={{background:'#fff',borderRadius:12,width:'min(540px,95vw)',maxHeight:'80vh',display:'flex',flexDirection:'column',overflow:'hidden',boxShadow:'0 8px 32px rgba(0,0,0,.25)'}}>
+            <div style={{background:'#1a2a4a',padding:'14px 18px',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+              <span style={{color:'#fff',fontWeight:700,fontSize:15}}>📂 지문 불러오기</span>
+              <button onClick={()=>setShowLoad(false)} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',borderRadius:6,padding:'4px 10px',fontSize:13,cursor:'pointer'}}>✕</button>
+            </div>
+            <div style={{padding:'12px 16px',borderBottom:'1px solid #eee',flexShrink:0,display:'flex',gap:8,flexWrap:'wrap'}}>
+              <input placeholder="검색..." value={loadSearch} onChange={e=>setLoadSearch(e.target.value)}
+                style={{flex:1,minWidth:120,padding:'6px 10px',border:'1px solid #ddd',borderRadius:7,fontSize:13,outline:'none'}}/>
+              <select value={loadSrc} onChange={e=>setLoadSrc(e.target.value)}
+                style={{padding:'6px 10px',border:'1px solid #ddd',borderRadius:7,fontSize:13,outline:'none'}}>
+                <option value="">전체 교재</option>
+                {[...new Set(loadedPassages.map(p=>p.id.split('_')[0]))].sort().map(s=>(
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div style={{overflow:'auto',flex:1}}>
+              {loadedPassages
+                .filter(p=>{
+                  if(loadSrc&&!p.id.startsWith(loadSrc)) return false;
+                  if(loadSearch&&!p.id.toLowerCase().includes(loadSearch.toLowerCase())&&
+                    !(p.title||'').toLowerCase().includes(loadSearch.toLowerCase())) return false;
+                  return true;
+                })
+                .map(p=>(
+                  <div key={p.id} onClick={()=>loadIntoSlot(p)}
+                    style={{padding:'10px 16px',borderBottom:'1px solid #f0f0f0',cursor:'pointer',
+                      display:'flex',alignItems:'center',gap:10,transition:'background .1s'}}
+                    onMouseEnter={e=>e.currentTarget.style.background='#f0f6ff'}
+                    onMouseLeave={e=>e.currentTarget.style.background='#fff'}>
+                    <span style={{fontSize:10.5,fontFamily:'monospace',color:'#185FA5',flexShrink:0,minWidth:120}}>{p.id}</span>
+                    <span style={{fontSize:12.5,color:'#333',flex:1,lineHeight:1.35}}>{p.title||'제목없음'}</span>
+                    <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,
+                      background:p.difficulty==='상'?'#FDECEA':p.difficulty==='하'?'#E1F5EE':'#FFF3E0',
+                      color:p.difficulty==='상'?'#c0392b':p.difficulty==='하'?'#2d8a60':'#BA7517'}}>
+                      {p.difficulty||'?'}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {showSet&&(
         <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
