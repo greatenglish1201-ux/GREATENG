@@ -396,9 +396,9 @@ window.addEventListener('load',()=>{
   fetch('passages.js')
     .then(r=>r.text())
     .then(text=>{
-      // eval로 PASSAGES 전역 변수 설정
-      // eslint-disable-next-line no-eval
-      eval(text);
+      // const → window 전역으로 노출
+      const modified = text.replace(/^\s*(const|let|var)\s+PASSAGES\s*=/, 'window.PASSAGES =');
+      new Function(modified)();
       init();
     })
     .catch(e=>{
