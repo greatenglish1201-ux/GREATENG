@@ -15422,36 +15422,34 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_001",
-    "difficulty": "높음",
-    "title": "지식의 한계",
+    "difficulty": "보통",
+    "title": "뉴스 프레임",
     "sentences": [
-      "The knowledge problem is most evident when we discuss our ability to predict that which has not yet been observed.",
-      "Most people would say that they \"know\" the Sun will rise tomorrow.",
-      "However, can we call this a certainty?",
-      "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
-      "We don't know if this prediction is true, but it is consistent with our best understanding and we cannot rule it out.",
-      "It is also possible that the Earth will explode due to some internal process with its molten core, which we had not anticipated.",
-      "A massive comet that our telescopes have not observed may crash into the Earth and destroy the planet.",
-      "These examples seem a bit extreme, but consider the 230,000 people who died in the tsunami in Sumatra in 2004, which resulted from an undersea megathrust earthquake that had not been anticipated.",
-      "The most reasonable prediction on that day was that it would be an average day, like so many days before it, not that a massive wave was going to destroy many thousands of lives; tragically, such was the case."
+      "Many news media studies use experimental designs to see whether citizens' opinions are influenced by different news content.",
+      "For example, in one study, researchers created newspaper stories to frame the death penalty in different ways.",
+      "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
+      "Social media platforms have largely replaced traditional newspapers as sources of news.",
+      "Some subjects read the story with the morality frame, and others read the one with the innocence frame.",
+      "Subjects then completed a questionnaire that asked them to list the important factors they considered when determining their opinion on the death penalty.",
+      "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
+      "Thus, the news frames shaped the ingredients of the subjects' death penalty attitudes."
     ],
-    "abstract": "Human knowledge has inherent limits, making absolute certainty about future events impossible even for seemingly predictable phenomena.",
+    "abstract": "This passage examines how different news frames influence citizens' opinions on the death penalty through experimental research.",
     "topic_options": [
-      "The limits of human knowledge make absolute certainty about future events unattainable",
-      "Scientific methods can eventually predict all natural disasters accurately",
-      "The Sun's eventual death proves that astronomy is an uncertain science",
-      "Historical disasters demonstrate the need for better prediction technology",
-      "Human beings are generally overconfident in their predictive abilities"
+      "News frames shape people's opinions on the death penalty",
+      "Experimental designs are rarely used in media studies",
+      "The morality frame is more effective than the innocence frame",
+      "Questionnaires are the best tool for measuring public opinion",
+      "Citizens form opinions independently of news content"
     ],
     "topic_answer": 1,
-    "blank_sentence_index": 4,
-    "blank_target": "rule it out",
+    "blank_sentence_index": 7,
+    "blank_target": "shaped the ingredients",
     "blank_options": [
-      "rule it out",
-      "take it in",
-      "carry it out",
-      "bring it about",
-      "pass it over"
+      "shaped the ingredients",
+      "ignored the components",
+      "reversed the outcomes",
+      "questioned the validity"
     ],
     "blank_answer": 1,
     "order_given_index": 0,
@@ -15466,15 +15464,15 @@ const PASSAGES = [
       {
         "label": "C",
         "sentence_indices": [
-          3,
-          4
+          4,
+          5
         ]
       },
       {
         "label": "D",
         "sentence_indices": [
-          5,
-          6
+          6,
+          7
         ]
       }
     ],
@@ -15486,112 +15484,112 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
-    "insert_sentence": "Yet history repeatedly shows that even the most confident predictions can fail in the face of unexpected events.",
-    "insert_answer": 3,
-    "summary_template": "Although most people believe they can _____(A)_____ future events with certainty, the reality is that human knowledge is _____(B)_____ and absolute prediction is impossible.",
+    "insert_sentence": "This method allows researchers to isolate the effect of framing on public attitudes.",
+    "insert_answer": 1,
+    "summary_template": "Researchers used __(A)__ to test how different news frames affected subjects' __(B)__ on the death penalty.",
     "summary_A_options": [
-      "predict",
-      "control",
-      "prevent",
-      "observe",
-      "recall"
+      "experimental designs",
+      "survey methods",
+      "historical analysis",
+      "case studies",
+      "statistical models"
     ],
     "summary_A_answer": 1,
     "summary_B_options": [
-      "limited",
-      "expanding",
-      "reliable",
-      "sufficient",
-      "precise"
+      "opinions",
+      "emotions",
+      "behaviors",
+      "knowledge",
+      "sentences"
     ],
     "summary_B_answer": 1,
-    "implication_sentence_index": 8,
-    "implication_keyword": "such was the case",
+    "implication_sentence_index": 7,
+    "implication_keyword": "shaped the ingredients",
     "implication_options": [
-      "The tragic and devastating event actually occurred despite its seeming improbability",
-      "The average day turned out to be perfectly normal and uneventful",
-      "Scientists had correctly predicted the massive wave in advance",
-      "People were fully prepared for the disaster that followed",
-      "The prediction about an average day proved to be accurate"
+      "News frames determined what factors people used to form their opinions",
+      "News frames provided recipes for cooking attitudes",
+      "News frames physically altered subjects' brain chemistry",
+      "News frames were used to manufacture fake news stories",
+      "News frames encouraged subjects to ignore their own values"
     ],
     "implication_answer": 1,
-    "irrelevant_sentence_index": 2,
+    "irrelevant_sentence_index": 3,
     "aGroup": [
-      "predict",
-      "control",
-      "prevent"
+      "experimental designs",
+      "survey methods",
+      "historical analysis"
     ],
     "bGroup": [
-      "limited",
-      "expanding",
-      "reliable"
+      "opinions",
+      "emotions",
+      "behaviors"
     ],
     "grammar_items": [
       {
         "sent": 0,
-        "word": "to predict",
+        "word": "influenced",
         "correct": true,
-        "note": "ability 뒤에 to부정사가 올바름"
+        "note": "수동태 올바르게 사용됨 (opinions are influenced by)"
       },
       {
         "sent": 1,
-        "word": "would say",
+        "word": "created",
         "correct": true,
-        "note": "간접화법에서 조동사 과거형 적절"
+        "note": "과거시제 동사로 올바르게 사용됨"
       },
       {
-        "sent": 3,
-        "word": "swells",
-        "correct": false,
-        "note": "→ swelling: 병렬구조상 'runs out', 'swells', 'consumes'는 동사원형이 아닌 동사 병렬이어야 하나, 문맥상 'running out', 'swelling', 'consuming'이 적절"
+        "sent": 2,
+        "word": "whereas",
+        "correct": true,
+        "note": "대조를 나타내는 접속사로 올바르게 사용됨"
       },
       {
         "sent": 5,
-        "word": "which",
-        "correct": true,
-        "note": "선행사 'some internal process'를 수식하는 관계대명사"
+        "word": "considered",
+        "correct": false,
+        "note": "→ 'they had considered' 또는 문맥상 'considering'이 더 자연스러움; 관계절 내 시제 불일치"
       },
       {
         "sent": 7,
-        "word": "resulted",
+        "word": "shaped",
         "correct": true,
-        "note": "관계절에서 과거시제 동사 적절"
+        "note": "과거시제 동사로 올바르게 사용됨"
       }
     ],
-    "grammar_answer": 3,
+    "grammar_answer": 4,
     "vocab_items": [
       {
         "sent": 0,
-        "word": "evident",
-        "alt": "obscure",
+        "word": "influenced",
+        "alt": "affected",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "fundamentally",
+        "alt": "essentially",
+        "correct": true
+      },
+      {
+        "sent": 4,
+        "word": "subjects",
+        "alt": "participants",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "considerations",
+        "alt": "distractions",
         "correct": false
       },
       {
-        "sent": 1,
-        "word": "rise",
-        "alt": "set",
-        "correct": true
-      },
-      {
-        "sent": 3,
-        "word": "predicted",
-        "alt": "assumed",
-        "correct": true
-      },
-      {
-        "sent": 5,
-        "word": "anticipated",
-        "alt": "expected",
-        "correct": true
-      },
-      {
         "sent": 7,
-        "word": "extreme",
-        "alt": "excessive",
+        "word": "shaped",
+        "alt": "influenced",
         "correct": true
       }
     ],
-    "vocab_answer": 1
+    "vocab_answer": 4
   },
   {
     "id": "27STYD_01_001",
