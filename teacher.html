@@ -850,9 +850,7 @@ function App(){
   const [mainGhSaving,setMainGhSaving]=useState(false);
   const [viewMode,setViewMode]=useState('teacher');
   const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
-  const [appsURL,setAppsURL]=useState(()=>localStorage.getItem(LS.URL)||'');
   const [keyInput,setKeyInput]=useState('');
-  const [urlInput,setUrlInput]=useState('');
   const [ghToken,setGhToken]=useState(()=>localStorage.getItem('gh_token')||'');
   const [ghRepo,setGhRepo]=useState(()=>localStorage.getItem('gh_repo')||'greatenglish1201-ux/GREATENG');
   const [ghTokenInput,setGhTokenInput]=useState('');
@@ -1025,7 +1023,6 @@ function App(){
       {showSet&&(
         <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
           {[{lbl:'Claude API Key',val:keyInput||(apiKey?'••••••••':''),set:setKeyInput,ph:'sk-ant-api03-...',type:'password'},
-            {lbl:'Apps Script URL',val:urlInput||appsURL,set:setUrlInput,ph:'https://script.google.com/...',type:'text'},
             {lbl:'GitHub Token',val:ghTokenInput||(ghToken?'••••••••':''),set:setGhTokenInput,ph:'ghp_...',type:'password'},
             {lbl:'GitHub 저장소',val:ghRepoInput||ghRepo,set:setGhRepoInput,ph:'greatenglish1201-ux/GREATENG',type:'text'}].map((r,i)=>(
             <div key={i} style={{display:'flex',gap:10,alignItems:'center'}}>
@@ -1038,9 +1035,8 @@ function App(){
           <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
             <span style={{fontSize:11,color:'#88aacc',alignSelf:'center'}}>브라우저에만 저장됩니다</span>
             <button onClick={()=>{
-              const k=keyInput||apiKey,u=urlInput||appsURL;
+              const k=keyInput||apiKey;
               if(k){localStorage.setItem(LS.KEY,k);setApiKey(k);}
-              if(u){localStorage.setItem(LS.URL,u);setAppsURL(u);}
               const t=ghTokenInput||ghToken,r2=ghRepoInput||ghRepo;
               if(ghTokenInput){localStorage.setItem('gh_token',ghTokenInput);setGhToken(ghTokenInput);}
               if(ghRepoInput){localStorage.setItem('gh_repo',ghRepoInput);setGhRepo(ghRepoInput);}
