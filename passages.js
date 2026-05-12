@@ -15422,151 +15422,262 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_001",
-    "difficulty": "Ã«ÂÂÃ¬ÂÂ",
-    "title": "감정표현",
+    "title": "",
+    "difficulty": "상",
     "sentences": [
-      "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species.",
-      "At the same time, Izard's formulation of \"affective-cognitive structures\" shows that emotions are in reality not separable from the particular circumstances that are associated with them.",
-      "The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures.",
-      "These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances.",
-      "As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it.",
-      "To use Lewis's terms, the contextual reality of emotional expression transforms \"state\" into \"experience.\""
-    ],
-    "abstract": "Facial expressions and emotional behaviors are universal yet shaped by particular circumstances and cultural contexts.",
-    "topic_options": [
-      "Universal emotional expressions are always embedded in and shaped by particular situational circumstances.",
-      "Facial expressions vary widely across cultures with no universal meaning.",
-      "Izard's affective-cognitive structures prove emotions are entirely independent of context.",
-      "Basic emotions can be fully listed and are entirely context-free.",
-      "Human communicative functions are unrelated to emotional expression."
-    ],
-    "topic_answer": 1,
-    "blank_sentence_index": 1,
-    "blank_target": "not separable from the particular circumstances",
-    "blank_options": [
-      "not separable from the particular circumstances",
-      "closely tied to cultural norms and traditions",
-      "dependent on linguistic categories and labels",
-      "universally identical regardless of situation",
-      "reducible to biological instincts alone"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
-    "insert_sentence": "In this way, the environment does not merely witness emotional expression but actively participates in forming it.",
-    "insert_answer": 5,
-    "summary_template": "While emotions have a ________(A)________ repertoire shared across the species, they are always expressed within ________(B)________ that shape their meaning.",
-    "summary_A_options": [
-      "universal",
-      "cultural",
-      "linguistic",
-      "individual",
-      "random"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "particular circumstances",
-      "abstract concepts",
-      "biological instincts",
-      "verbal categories",
-      "isolated settings"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 5,
-    "implication_keyword": "transforms \"state\" into \"experience\"",
-    "implication_options": [
-      "Context turns a raw internal emotional condition into a meaningful, lived emotional event.",
-      "Emotions are entirely biological and unaffected by environment.",
-      "States and experiences are identical and interchangeable concepts.",
-      "Context eliminates the internal dimension of emotion entirely.",
-      "Experience is inferior to state as a description of emotion."
-    ],
-    "implication_answer": 1,
-    "irrelevant_sentence_index": 3,
-    "aGroup": [
-      "universal",
-      "cultural",
-      "linguistic"
-    ],
-    "bGroup": [
-      "particular circumstances",
-      "abstract concepts",
-      "biological instincts"
-    ],
-    "grammar_items": [
       {
-        "sent": 0,
-        "word": "synonymous",
-        "correct": true,
-        "note": "Ã­ÂÂÃ¬ÂÂ©Ã¬ÂÂ¬Ã«Â¡Â Ã¬Â£Â¼ÃªÂ²Â©Ã«Â³Â´Ã¬ÂÂ´ Ã¬ÂÂ­Ã­ÂÂ Ã¬ÂÂ Ã­ÂÂÃ«Â©Â° Ã«Â¬Â¸Ã«Â²ÂÃ¬Â ÂÃ¬ÂÂ¼Ã«Â¡Â Ã¬Â ÂÃ¬Â ÂÃ­ÂÂ¨"
+        "num": 1,
+        "text": "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species.",
+        "symbol": "G",
+        "role": "얼굴 표정의 보편성과 감정의 사회화 주제 제시",
+        "keyWords": [
+          "universality",
+          "finite repertoire",
+          "synonymous"
+        ],
+        "chunks": [
+          {
+            "en": "Research on the universality of facial expressions",
+            "ko": "얼굴 표정의 보편성에 관한 연구는"
+          },
+          {
+            "en": "suggests that the socialization of affect",
+            "ko": "감정의 사회화가"
+          },
+          {
+            "en": "involves interactions",
+            "ko": "상호작용을 포함한다고 시사한다"
+          },
+          {
+            "en": "between situational variables",
+            "ko": "상황적 변수들과"
+          },
+          {
+            "en": "and a finite repertoire of human emotions",
+            "ko": "한정된 인간 감정 목록 사이의"
+          },
+          {
+            "en": "whose meanings are at least roughly synonymous",
+            "ko": "그 의미가 적어도 대략적으로 동의어인"
+          },
+          {
+            "en": "among all members of the species",
+            "ko": "종의 모든 구성원들 사이에서"
+          }
+        ]
       },
       {
-        "sent": 1,
-        "word": "separable",
-        "correct": true,
-        "note": "Ã­ÂÂÃ¬ÂÂ©Ã¬ÂÂ¬Ã«Â¡Â Ã«Â³Â´Ã¬ÂÂ´ Ã¬ÂÂ­Ã­ÂÂ Ã¬ÂÂ Ã­ÂÂÃ«Â©Â° Ã«Â¬Â¸Ã«Â§Â¥Ã¬ÂÂ Ã¬Â ÂÃ¬Â ÂÃ­ÂÂ¨"
+        "num": 2,
+        "text": "At the same time, Izard's formulation of \"affective-cognitive structures\" shows that emotions are in reality not separable from the particular circumstances that are associated with them.",
+        "symbol": "↔",
+        "role": "감정은 특정 상황과 분리 불가능함을 대비적으로 제시",
+        "keyWords": [
+          "affective-cognitive structures",
+          "not separable",
+          "particular circumstances"
+        ],
+        "chunks": [
+          {
+            "en": "At the same time,",
+            "ko": "동시에,"
+          },
+          {
+            "en": "Izard's formulation of \"affective-cognitive structures\"",
+            "ko": "Izard의 '정서-인지 구조' 공식화는"
+          },
+          {
+            "en": "shows that emotions are in reality",
+            "ko": "감정이 실제로는"
+          },
+          {
+            "en": "not separable from the particular circumstances",
+            "ko": "특정 상황들로부터 분리될 수 없음을 보여준다"
+          },
+          {
+            "en": "that are associated with them",
+            "ko": "그것들과 연관된"
+          }
+        ]
       },
       {
-        "sent": 2,
-        "word": "derives",
-        "correct": true,
-        "note": "Ã¬Â£Â¼Ã¬ÂÂ´ 'The fact'Ã¬ÂÂ Ã¬ÂÂ Ã¬ÂÂ¼Ã¬Â¹ÂÃ­ÂÂÃ¬ÂÂ¬ Ã«ÂÂ¨Ã¬ÂÂ Ã«ÂÂÃ¬ÂÂ¬ Ã¬ÂÂ¬Ã¬ÂÂ© Ã¬Â ÂÃ¬Â Â"
+        "num": 3,
+        "text": "The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures.",
+        "symbol": "+",
+        "role": "보편적 감정 목록의 근거가 얼굴 표정뿐 아니라 더 넓은 표현 행동에 있음을 부연",
+        "keyWords": [
+          "universally recognizable",
+          "species-specific repertoire",
+          "expressive behaviors"
+        ],
+        "chunks": [
+          {
+            "en": "The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions",
+            "ko": "'기본적'이고 보편적으로 인식 가능한 감정 목록을 구성하는 것이 가능하다는 사실은"
+          },
+          {
+            "en": "derives not only from a species-specific repertoire of facial expressions,",
+            "ko": "종 특유의 얼굴 표정 목록에서만 비롯되는 것이 아니라,"
+          },
+          {
+            "en": "but perhaps more fundamentally from a larger set of human expressive behaviors,",
+            "ko": "아마도 더 근본적으로는 더 광범위한 인간 표현 행동들에서 비롯된다,"
+          },
+          {
+            "en": "including laughter and crying",
+            "ko": "웃음과 울음을 포함하여"
+          },
+          {
+            "en": "as well as bodily movements and postures",
+            "ko": "신체 동작과 자세도 마찬가지로"
+          }
+        ]
       },
       {
-        "sent": 3,
-        "word": "carried out",
-        "correct": false,
-        "note": "Ã¢ÂÂ 'are carried out'Ã«Â¡Â Ã¬ÂÂÃ«ÂÂÃ­ÂÂ Ã¬ÂÂÃ¬ÂÂ± Ã­ÂÂÃ¬ÂÂ; Ã­ÂÂÃ¬ÂÂ¬ Ã«Â¬Â¸Ã¬ÂÂ¥Ã¬ÂÂÃ¬ÂÂ 'are also, without exception, carried out'Ã«ÂÂ Ã¬ÂÂ¤Ã¬Â ÂÃ«Â¡ÂÃ«ÂÂ Ã«Â§ÂÃ¬ÂÂ¼Ã«ÂÂ 'without exception' Ã¬ÂÂ½Ã¬ÂÂÃªÂµÂ¬ Ã¬ÂÂÃ¬Â¹ÂÃ«Â¡Â Ã­ÂÂ¼Ã«ÂÂ Ã¬ÂÂ Ã«Â°Â Ã¢ÂÂ Ã¬ÂÂ¤Ã¬Â Â Ã¬ÂÂ¤Ã«Â¥Â Ã¬ÂÂ¤Ã¬Â Â: 'exists' Ã¢ÂÂ 'exist' (ÃªÂ´ÂÃªÂ³ÂÃ¬Â Â Ã«ÂÂ´ Ã¬Â£Â¼Ã¬ÂÂ´ 'a universal capacity'Ã«ÂÂ Ã«ÂÂ¨Ã¬ÂÂÃ¬ÂÂ´Ã«Â¯ÂÃ«Â¡Â existsÃªÂ°Â Ã«Â§ÂÃ¬ÂÂ; Ã¬ÂÂ¤Ã«Â¥Â Ã¬ÂÂ¤Ã¬Â Â Ã«Â¶ÂÃªÂ°Â Ã¢ÂÂ carried out Ã¬ÂÂ are Ã¬ÂÂÃ«ÂÂµÃ¬ÂÂ¼Ã«Â¡Â Ã¬ÂÂ¤Ã«Â¥Â Ã¬ÂÂ¤Ã¬Â Â)"
+        "num": 4,
+        "text": "These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances.",
+        "symbol": "==",
+        "role": "보편적 표현 행동도 예외 없이 특정 상황 속에서 수행됨을 재확인",
+        "keyWords": [
+          "universal capacity",
+          "without exception",
+          "particular circumstances"
+        ],
+        "chunks": [
+          {
+            "en": "These behaviors,",
+            "ko": "이러한 행동들은,"
+          },
+          {
+            "en": "for which a universal capacity exists,",
+            "ko": "그에 대한 보편적 능력이 존재하는,"
+          },
+          {
+            "en": "are also, without exception,",
+            "ko": "또한, 예외 없이,"
+          },
+          {
+            "en": "carried out in particular circumstances",
+            "ko": "특정 상황 속에서 수행된다"
+          }
+        ]
       },
       {
-        "sent": 4,
-        "word": "being shaped",
-        "correct": true,
-        "note": "Ã«Â¶ÂÃ¬ÂÂ¬ÃªÂµÂ¬Ã«Â¬Â¸Ã¬ÂÂ¼Ã«Â¡Â Ã¬ÂÂÃ«ÂÂ Ã¬ÂÂÃ«Â¯Â¸Ã«Â¥Â¼ Ã«ÂÂÃ­ÂÂÃ«ÂÂ´Ã«Â©Â° Ã«Â¬Â¸Ã«Â²ÂÃ¬Â ÂÃ¬ÂÂ¼Ã«Â¡Â Ã¬Â ÂÃ¬Â ÂÃ­ÂÂ¨"
+        "num": 5,
+        "text": "As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it.",
+        "symbol": "→",
+        "role": "표현 행동이 환경과 쌍방향적 관계를 맺음을 인과적으로 설명",
+        "keyWords": [
+          "communicative function",
+          "necessity of response",
+          "shaped by"
+        ],
+        "chunks": [
+          {
+            "en": "As elements in the human communicative function,",
+            "ko": "인간 소통 기능의 요소로서,"
+          },
+          {
+            "en": "they create the necessity of response from the environment",
+            "ko": "그것들은 환경으로부터의 반응 필요성을 만들어내며"
+          },
+          {
+            "en": "while also being shaped by it",
+            "ko": "동시에 환경에 의해 형성되기도 한다"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "To use Lewis's terms, the contextual reality of emotional expression transforms \"state\" into \"experience.\"",
+        "symbol": "→",
+        "role": "감정 표현의 맥락적 현실이 '상태'를 '경험'으로 전환함을 결론으로 제시",
+        "keyWords": [
+          "contextual reality",
+          "state",
+          "experience"
+        ],
+        "chunks": [
+          {
+            "en": "To use Lewis's terms,",
+            "ko": "Lewis의 용어를 사용하자면,"
+          },
+          {
+            "en": "the contextual reality of emotional expression",
+            "ko": "감정 표현의 맥락적 현실은"
+          },
+          {
+            "en": "transforms \"state\" into \"experience\"",
+            "ko": "'상태'를 '경험'으로 변환시킨다"
+          }
+        ]
       }
     ],
-    "grammar_answer": 4,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "finite",
-        "alt": "infinite",
-        "correct": true
-      },
-      {
-        "sent": 1,
-        "word": "separable",
-        "alt": "inseparable",
-        "correct": true
-      },
-      {
-        "sent": 2,
-        "word": "fundamentally",
-        "alt": "superficially",
-        "correct": false
-      },
-      {
-        "sent": 3,
-        "word": "universal",
-        "alt": "particular",
-        "correct": true
-      },
-      {
-        "sent": 4,
-        "word": "shaped",
-        "alt": "ignored",
-        "correct": true
-      }
-    ],
-    "vocab_answer": 3
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "보편성 제시",
+          "nameEn": "Universal Claim",
+          "color": "blue",
+          "sentenceNums": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "name": "상황 맥락과의 불가분성",
+          "nameEn": "Inseparability from Context",
+          "color": "coral",
+          "sentenceNums": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "name": "쌍방향적 소통과 결론",
+          "nameEn": "Bidirectional Communication & Conclusion",
+          "color": "teal",
+          "sentenceNums": [
+            5,
+            6
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "↔",
+        "→"
+      ],
+      "keyword": "감정 표현의 보편성과 맥락성",
+      "topicSummary": "얼굴 표정을 포함한 인간의 감정 표현은 보편적 목록을 가지지만, 동시에 특정 상황·맥락과 분리될 수 없으며, 환경과 상호작용하면서 단순한 '상태'가 아닌 '경험'으로 전환된다.",
+      "structureType": "보편성 제시 → 맥락 불가분성 대비·심화 → 결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 1,
+          "text": "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species.",
+          "structure": "주절(suggests) + that절 내부: interactions between A and B whose meanings...(관계절 수식)",
+          "translation": "얼굴 표정의 보편성에 관한 연구는, 감정의 사회화가 상황적 변수들과 종의 모든 구성원들 사이에서 그 의미가 적어도 대략적으로 동일한 한정된 인간 감정 목록 사이의 상호작용을 포함한다고 시사한다.",
+          "point": "whose는 'a finite repertoire of human emotions'를 선행사로 하는 관계대명사. 'socialization of affect(감정의 사회화)'와 'finite repertoire(한정된 목록)'라는 추상 명사구의 정확한 파악이 핵심."
+        },
+        {
+          "num": 3,
+          "text": "The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures.",
+          "structure": "The fact that절(동격) + derives not only from A, but (more fundamentally) from B (상관접속사 구조) + including 분사구(B의 예시)",
+          "translation": "'기본적'이고 보편적으로 인식 가능한 감정 목록을 구성하는 것이 가능하다는 사실은, 종 특유의 얼굴 표정 목록에서만 비롯되는 것이 아니라, 아마도 더 근본적으로는 웃음, 울음, 신체 동작 및 자세를 포함한 더 광범위한 인간 표현 행동들로부터 비롯된다.",
+          "point": "not only A but (more fundamentally) B 상관구조에서 부사 'perhaps more fundamentally'가 삽입되어 구조 파악이 어려움. 핵심 주장: 보편성의 근거는 얼굴 표정보다 더 넓은 표현 행동 전반에 있다."
+        },
+        {
+          "num": 6,
+          "text": "To use Lewis's terms, the contextual reality of emotional expression transforms \"state\" into \"experience.\"",
+          "structure": "To부정사구(부대상황) + 주어(the contextual reality) + transforms A into B",
+          "translation": "Lewis의 용어를 빌리자면, 감정 표현의 맥락적 현실은 '상태'를 '경험'으로 변환시킨다.",
+          "point": "'state'는 단순한 생리적·내적 감정 상태, 'experience'는 맥락과 상호작용을 통해 의미화된 경험을 뜻함. 앞선 논의 전체를 Lewis의 개념으로 압축하는 결론 문장."
+        }
+      ]
+    }
   },
   {
     "id": "27STYD_01_001",
@@ -15978,7 +16089,7 @@ const PASSAGES = [
   {
     "id": "27STYD_01_002",
     "title": "",
-    "difficulty": "중",
+    "difficulty": "하",
     "sentences": [
       {
         "num": 1,
@@ -16226,7 +16337,7 @@ const PASSAGES = [
           "num": 6,
           "text": "Similarly, a large-scale analysis of query logs revealed that when people repeat queries they are significantly less likely to click on a result they've clicked before if the result's rank has changed, and significantly slower to click when they do.",
           "structure": "주어(a large-scale analysis)+동사(revealed)+that절 / that절 안에 조건절(when/if) 중첩, 병렬구조(less likely... and significantly slower...)",
-          "translation": "마찬가지로, 쿼리 로그에 대한 대규모 분석은 사람들이 검색어를 반복할 때 결과의 순위가 바뀌었다면 이전에 클릭했던 결과를 클릭할 가능성이 훨씬 낮고, 클릭하더라도 훨씬 느리다는 것을 밝혔다.",
+          "translation": "마찬가지로, 쿼리 로그에 대한 대규모 분석은 사람들이 검색어를 반복할 때 결과의 순위가 바뀌었다면dd 이전에 클릭했던 결과를 클릭할 가능성이 훨씬 낮고, 클릭하더라도 훨씬 느리다는 것을 밝혔다.",
           "point": "'when they do'의 do는 앞의 'click on a result'를 대신하는 대동사이며, less likely와 slower의 병렬 비교 구조를 정확히 파악해야 함"
         },
         {
