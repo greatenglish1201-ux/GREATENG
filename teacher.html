@@ -1123,7 +1123,13 @@ function App(){
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
             {mainGhSaving?'저장중...':'GitHub 저장 ↗'}
           </button>}
-          <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:5},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
+          <button onClick={()=>buildAllDOCX(slots,'teacher')}
+            style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>📄 전체 교사용</button>
+          <button onClick={()=>buildAllDOCX(slots,'student')}
+            style={{background:'rgba(45,138,96,.7)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>📄 전체 학생용</button>
+          <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:10},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',
               borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>🗑</button>
 
