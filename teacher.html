@@ -79,6 +79,20 @@ const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. �
 difficulty: 상/중/하. color: blue/coral/teal/purple/green/amber/gray.
 블록 2~4개. difficultSentences 2~3개.`;
 
+function upsertPassages(currentContent,newEntries){
+  const start=currentContent.indexOf('[');
+  const end=currentContent.lastIndexOf(']');
+  if(start<0||end<0)throw new Error('passages.js 형식 오류');
+  let existing;
+  try{existing=JSON.parse(currentContent.slice(start,end+1));}
+  catch{throw new Error('passages.js JSON 파싱 실패');}
+  newEntries.forEach(ne=>{
+    const idx=existing.findIndex(e=>e.id===ne.id);
+    if(idx>=0)existing[idx]=ne;else existing.push(ne);
+  });
+  return currentContent.slice(0,start)+JSON.stringify(existing,null,2)+currentContent.slice(end+1);
+}
+
 function callClaude(key,sys,user){
   if(!key) throw new Error('API 키 없음');
   return fetch('https://api.anthropic.com/v1/messages',{
@@ -449,12 +463,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText}){
       const fileData=await getRes.json();
       const currentContent=decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
       // 2. 새 내용 append
-      const newEntries=jsonText.replace(/^\/\/.*\n/gm,'').trim();
-      let newContent;
-      // PASSAGES 배열 마지막 ] 앞에 삽입
-      const lastBracket=currentContent.lastIndexOf(']');
-      if(lastBracket<0)throw new Error('passages.js 형식 오류');
-      newContent=currentContent.slice(0,lastBracket)+',\n'+newEntries+'\n'+currentContent.slice(lastBracket);
+      const parsedNew=JSON.parse('['+jsonText.replace(/^\/\/.*\n/gm,'').trim()+']');
+      const newContent=upsertPassages(currentContent,parsedNew);
       // 3. 커밋
       const encoded=btoa(unescape(encodeURIComponent(newContent)));
       const putRes=await fetch(apiBase,{
@@ -917,9 +927,7 @@ function App(){
       if(!getRes.ok)throw new Error('passages.js 읽기 실패');
       const getJson=await getRes.json();
       const decoded=decodeURIComponent(escape(atob(getJson.content.replace(/\n/g,''))));
-      const lastBracket=decoded.lastIndexOf(']');
-      if(lastBracket<0)throw new Error('passages.js 형식 오류');
-      const newContent=decoded.slice(0,lastBracket)+',\n\n'+jsonText+'\n'+decoded.slice(lastBracket);
+      const newContent=upsertPassages(decoded,entries);
       const putRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{
         method:'PUT',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
         body:JSON.stringify({message:'Add passages via teacher.html',content:btoa(unescape(encodeURIComponent(newContent))),sha:getJson.sha})
@@ -1050,24 +1058,26 @@ function App(){
               const selCount=Object.keys(loadSel).filter(k=>loadSel[k]).length;
               return(<>
                 <div style={{overflow:'auto',flex:1}}>
-                  {filtered.map(p=>(
-                    <div key={p.id}
-                      onClick={()=>setLoadSel(prev=>({...prev,[p.id]:!prev[p.id]}))}
-                      style={{padding:'10px 16px',borderBottom:'1px solid #f0f0f0',cursor:'pointer',
-                        display:'flex',alignItems:'center',gap:10,
-                        background:loadSel[p.id]?'#EBF3FF':'#fff'}}
-                      onMouseEnter={e=>{if(!loadSel[p.id])e.currentTarget.style.background='#f8faff'}}
-                      onMouseLeave={e=>{if(!loadSel[p.id])e.currentTarget.style.background='#fff'}}>
-                      <input type="checkbox" checked={!!loadSel[p.id]} onChange={()=>{}} style={{width:14,height:14,accentColor:'#185FA5',flexShrink:0}}/>
-                      <span style={{fontSize:10.5,fontFamily:'monospace',color:'#185FA5',flexShrink:0,minWidth:120}}>{p.id}</span>
-                      <span style={{fontSize:12.5,color:'#333',flex:1,lineHeight:1.35}}>{p.title||'제목없음'}</span>
-                      <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,
-                        background:p.difficulty==='상'?'#FDECEA':p.difficulty==='하'?'#E1F5EE':'#FFF3E0',
-                        color:p.difficulty==='상'?'#c0392b':p.difficulty==='하'?'#2d8a60':'#BA7517'}}>
-                        {p.difficulty||'?'}
-                      </span>
-                    </div>
-                  ))}
+                  {filtered
+                    .filter(p=>p.flow&&p.flow.blocks&&p.flow.blocks.length>0)
+                    .map(p=>{
+                      const diff=['상','중','하'].includes(p.difficulty)?p.difficulty:'?';
+                      const diffC=diff==='상'?'#c0392b':diff==='하'?'#2d8a60':'#BA7517';
+                      const diffBg=diff==='상'?'#FDECEA':diff==='하'?'#E1F5EE':'#FFF3E0';
+                      return(
+                      <div key={p.id}
+                        onClick={()=>setLoadSel(prev=>({...prev,[p.id]:!prev[p.id]}))}
+                        style={{padding:'9px 16px',borderBottom:'1px solid #f0f0f0',cursor:'pointer',
+                          display:'flex',alignItems:'center',gap:10,
+                          background:loadSel[p.id]?'#EBF3FF':'#fff'}}
+                        onMouseEnter={e=>{if(!loadSel[p.id])e.currentTarget.style.background='#f8faff'}}
+                        onMouseLeave={e=>{if(!loadSel[p.id])e.currentTarget.style.background='#fff'}}>
+                        <input type="checkbox" checked={!!loadSel[p.id]} onChange={()=>{}} style={{width:14,height:14,accentColor:'#185FA5',flexShrink:0}}/>
+                        <span style={{fontSize:11,fontFamily:'monospace',color:'#185FA5',flex:1}}>{p.id}</span>
+                        {p.title&&<span style={{fontSize:11.5,color:'#555',flex:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.title}</span>}
+                        <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,background:diffBg,color:diffC,fontWeight:600}}>{diff}</span>
+                      </div>);
+                    })}
                 </div>
                 <div style={{padding:'10px 16px',borderTop:'1px solid #eee',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
                   <span style={{fontSize:12,color:'#888'}}>{selCount}개 선택됨</span>
