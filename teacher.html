@@ -312,14 +312,14 @@ const ch=[];
 }
 
 function buildDOCX(slot,mode){
-  const {Document,Packer,WidthType}=docx;
+  const {Document,Packer}=docx;
   const IS=mode==='student';
   const {meta}=slot;
   if(!slot.analysis)return;
   const id=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
   const ch=buildDOCXChildren(slot,mode);
   const doc=new Document({
-    styles:{default:{document:{run:{font:F,size:P9}}}},
+    styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},
     sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},children:ch}]
   });
   Packer.toBlob(doc).then(blob=>saveAs(blob,id+'_'+(IS?'학생용':'교사용')+'.docx'));
@@ -491,25 +491,19 @@ function buildPassageData(a,pfx,ch,num){
   };
 }
 
-function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta, initialPassageData}){
-  const [step,setStep]=useState('setup'); // setup|proc|edit|out
-  const [rawText,setRawText]=useState('');
-  React.useEffect(()=>{
+function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta, initialPassageData}){
+  const [passages,setPassages]=useState(()=>{
     if(initialPassageData){
-      // 기존 분석 데이터로 바로 편집 화면
-      const p=initialPassageData;
-      const normed=p.sentences||[];
-      setPassages([{id:0,rawText:normed.map(s=>typeof s==='string'?s:s.text||'').join(' '),data:p,error:null,loading:false}]);
-      setStep('edit');
-    } else if(initialText){
-      setRawText(initialText);
-      setStep('setup');
+      const normed=initialPassageData.sentences||[];
+      return[{id:0,rawText:normed.map(s=>typeof s==='string'?s:s.text||'').join(' '),data:initialPassageData,error:null,loading:false}];
     }
-  },[initialText,initialPassageData]);
-  const [pfx,setPfx]=useState(()=>initialMeta?.source||'27STYD');
-  const [chapter,setChapter]=useState(()=>parseInt(initialMeta?.chapter)||1);
-  const [startNum,setStartNum]=useState(()=>parseInt(initialMeta?.number)||1);
-  const [passages,setPassages]=useState([]); // [{rawText,data,error,loading}]
+    return[];
+  });
+  const [step,setStep]=useState(()=>initialPassageData?'edit':'setup');
+  const [rawText,setRawText]=useState(()=>initialText||'');
+  const [pfx,setPfx]=useState(initialMeta?.source||'27STYD');
+  const [chapter,setChapter]=useState(parseInt(initialMeta?.chapter)||1);
+  const [startNum,setStartNum]=useState(parseInt(initialMeta?.number)||1);
   const [pi,setPi]=useState(0);
   const [at,setAt]=useState(0);
   const [outText,setOutText]=useState('');
@@ -995,6 +989,7 @@ function App(){
   const [authorInitText,setAuthorInitText]=useState('');
   const [authorInitMeta,setAuthorInitMeta]=useState(null);
   const [authorInitPassageData,setAuthorInitPassageData]=useState(null);
+  const [authorKey,setAuthorKey]=useState(0);
   const [mainGhSaving,setMainGhSaving]=useState(false);
   const [viewMode,setViewMode]=useState('teacher');
   const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
@@ -1102,6 +1097,10 @@ function App(){
     try{
       const entries=slots.filter(s=>s.status==='saved'&&s.passageData).map(s=>{
         const p=s.passageData;
+        const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
+        const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};
+        const gItems=p.grammar_items?.length?p.grammar_items:gs.items;
+        const vItems=p.vocab_items?.length?p.vocab_items:vs.items;
         return{id:p.id,difficulty:p.difficulty||s.meta.difficulty,title:p.title||'',
           sentences:p.sentences||s.analysis?.sentences||[],
           abstract:p.abstract,
@@ -1117,9 +1116,9 @@ function App(){
           implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
           implication_options:p.implication_options,implication_answer:p.implication_answer,
           irrelevant_sentence_index:p.irrelevant_sentence_index,
-          grammar_items:[...(p.grammar_items||[])].sort((a,b)=>a.sent-b.sent),
+          grammar_items:[...gItems].sort((a,b)=>a.sent-b.sent),
           grammar_answer:p.grammar_answer,
-          vocab_items:[...(p.vocab_items||[])].sort((a,b)=>a.sent-b.sent),
+          vocab_items:[...vItems].sort((a,b)=>a.sent-b.sent),
           vocab_answer:p.vocab_answer,
           aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
           flow:p.flow||s.analysis?.flow||{},grammar:p.grammar||s.analysis?.grammar||{},
@@ -1183,25 +1182,25 @@ function App(){
   },[slots,upSlot]);
 
   const loadSelected=useCallback((selected)=>{
-    const startIdx=0;
-    selected.forEach((p,i)=>{
-      const slotIdx=(startIdx+i)%slots.length;
-      const normed=normalizeSentences(p.sentences);
-      const text=normed.map(s=>s.text||'').join(' ');
-      upSlot(slots[slotIdx].id,{
-        text,
-        meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
-          number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
-        status:'saved',
-        passageData:p,
-        analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
-        blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
-        open:i===0
+    setSlots(prev=>{
+      const next=[...prev];
+      selected.forEach((p,i)=>{
+        const slotIdx=i%next.length;
+        const normed=normalizeSentences(p.sentences);
+        const text=normed.map(s=>s.text||'').join(' ');
+        next[slotIdx]={...next[slotIdx],text,
+          meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
+            number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
+          status:'saved',passageData:p,
+          analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
+          blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
+          open:i===0};
       });
+      return next;
     });
     flash('✓ '+selected.length+'개 지문 불러오기 완료');
     setShowLoad(false);
-  },[slots,upSlot,normalizeSentences]);
+  },[normalizeSentences]);
 
 
 
@@ -1288,11 +1287,11 @@ function App(){
               return(<>
                 <div style={{overflow:'auto',flex:1}}>
                   {filtered
-                    .filter(p=>p.flow&&p.flow.blocks&&p.flow.blocks.length>0)
                     .map(p=>{
                       const diff=['상','중','하'].includes(p.difficulty)?p.difficulty:'?';
                       const diffC=diff==='상'?'#c0392b':diff==='하'?'#2d8a60':'#BA7517';
                       const diffBg=diff==='상'?'#FDECEA':diff==='하'?'#E1F5EE':'#FFF3E0';
+                      const hasFlow=p.flow&&p.flow.blocks&&p.flow.blocks.length>0;
                       return(
                       <div key={p.id}
                         onClick={()=>setLoadSel(prev=>({...prev,[p.id]:!prev[p.id]}))}
@@ -1304,13 +1303,14 @@ function App(){
                         <input type="checkbox" checked={!!loadSel[p.id]} onChange={()=>{}} style={{width:14,height:14,accentColor:'#185FA5',flexShrink:0}}/>
                         <span style={{fontSize:11,fontFamily:'monospace',color:'#185FA5',flex:1}}>{p.id}</span>
                         {p.title&&<span style={{fontSize:11.5,color:'#555',flex:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.title}</span>}
+                        {!hasFlow&&<span style={{fontSize:10,padding:'2px 6px',borderRadius:10,flexShrink:0,background:'#F3E8FF',color:'#6A0DAD',fontWeight:600}}>✏ 저작</span>}
                         <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,background:diffBg,color:diffC,fontWeight:600}}>{diff}</span>
                       </div>);
                     })}
                 </div>
                 <div style={{padding:'10px 16px',borderTop:'1px solid #eee',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
                   <div style={{display:'flex',gap:8,alignItems:'center'}}>
-                    <button onClick={()=>{const all={};filtered.filter(p=>p.flow&&p.flow.blocks&&p.flow.blocks.length>0).forEach(p=>{all[p.id]=true;});setLoadSel(all);}} style={{padding:'5px 12px',fontSize:12,fontWeight:600,background:'#f0f4ff',color:'#185FA5',border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>전체선택</button>
+                    <button onClick={()=>{const all={};filtered.forEach(p=>{all[p.id]=true;});setLoadSel(all);}} style={{padding:'5px 12px',fontSize:12,fontWeight:600,background:'#f0f4ff',color:'#185FA5',border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>전체선택</button>
                     <button onClick={()=>setLoadSel({})} style={{padding:'5px 12px',fontSize:12,fontWeight:600,background:'#f5f5f5',color:'#666',border:'1px solid #ddd',borderRadius:6,cursor:'pointer'}}>선택해제</button>
                     <span style={{fontSize:12,color:'#888'}}>{selCount}개 선택됨</span>
                   </div>
@@ -1358,7 +1358,7 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
+      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} slots={slots} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -1394,10 +1394,10 @@ function App(){
             onAuthor={()=>{
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
-                // passageData 없으면 PASSAGES에서 ID로 찾기
                 const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
-                const found=PASSAGES.find(p=>p.id===pid);
+                const found=(window.PASSAGES||[]).find(p=>p.id===pid);
                 setAuthorInitPassageData(slot.passageData||found||null);
+                setAuthorKey(k=>k+1);
                 setViewMode('authoring');
               }}
             onText={v=>upSlot(slot.id,{text:v})}
