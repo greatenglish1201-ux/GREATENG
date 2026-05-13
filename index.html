@@ -592,7 +592,6 @@ function App(){
         if(q) combos.push(q);
       }
     }
-    console.log('[genQuestions] pool:',pool.length,'types:',types,'combos:',combos.length,'qCount:',qCount);
     // 셔플 후 target 개수만큼 추출 (같은 지문+유형 조합 없음 보장)
     const shuffled=shuffle(combos);
     const qs=shuffled.slice(0,Math.min(qCount,shuffled.length));
@@ -623,7 +622,7 @@ function App(){
   if(!q)return <div style={{padding:40,textAlign:'center'}}>문제 없음<br/><button onClick={()=>setScreen('setup')}>돌아가기</button></div>;
 
   return <Quiz q={q} idx={curIdx} total={questions.length} userAnswer={userAns[curIdx]}
-    showAnswer={showAns||(ansMode==='immediate'&&!!userAns[curIdx])}
+    showAnswer={showAns||(ansMode==='immediate'&&!!userAns[curIdx]&&!userAns[curIdx]?.expired)}
     onSubmit={ans=>{setUserAns(p=>({...p,[curIdx]:ans}));if(ansMode==='immediate')setShowAns(true);}}
     onNext={()=>{setShowAns(false);setTimerKey(Date.now());if(curIdx+1>=questions.length)setScreen('results');else setCurIdx(curIdx+1);}}
     score={score} ansMode={ansMode} goHome={()=>setScreen('setup')}
