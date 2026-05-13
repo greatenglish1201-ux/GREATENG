@@ -995,16 +995,27 @@ function App(){
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
     setMainGhSaving(true);
     try{
-      const entries=slots.filter(s=>s.analysis&&s.text.trim()).map(s=>{
-        const d=s.data||{};
-        return{
-          id:d.id||s.meta.source+'_'+String(s.meta.chapter).padStart(2,'0')+'_'+String(s.meta.number).padStart(3,'0'),
-          title:d.title||'',difficulty:s.meta.difficulty||'보통',
-          sentences:s.analysis.sentences||[],
-          flow:s.analysis.flow||{},
-          grammar:s.analysis.grammar||{},
-          blockSummaries:Array.isArray(s.blockSummaries)?s.blockSummaries:undefined
-        };
+      const entries=passages.filter(p=>p.data&&p.rawText&&p.rawText.trim()).map(({data:p})=>{
+        const gs=(p.grammar_sets||[])[p.grammar_sel]||{items:[],answer:1};
+        const vs=(p.vocab_sets||[])[p.vocab_sel]||{items:[],answer:1};
+        return{id:p.id,difficulty:p.difficulty,title:p.title,sentences:p.sentences,abstract:p.abstract,
+          topic_options:p.topic_options,topic_answer:p.topic_answer,
+          blank_sentence_index:p.blank_sentence_index,blank_target:p.blank_target,
+          blank_options:p.blank_options,blank_answer:p.blank_answer,
+          order_given_index:p.order_given_index,order_blocks:p.order_blocks,
+          order_options:p.order_options,order_answer:p.order_answer,
+          insert_sentence:p.insert_sentence,insert_answer:p.insert_answer,
+          summary_template:p.summary_template,
+          summary_A_options:p.summary_A_options,summary_A_answer:p.summary_A_answer,
+          summary_B_options:p.summary_B_options,summary_B_answer:p.summary_B_answer,
+          implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
+          implication_options:p.implication_options,implication_answer:p.implication_answer,
+          irrelevant_sentence_index:p.irrelevant_sentence_index,
+          aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
+          grammar_items:gs.items,grammar_answer:p.grammar_answer,
+          vocab_items:vs.items,vocab_answer:p.vocab_answer,
+          flow:p.flow||{},grammar:p.grammar||{},
+          blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:undefined};
       });
       if(!entries.length){alert('저장할 분석 데이터가 없습니다.');setMainGhSaving(false);return;}
       const jsonText=entries.map(e=>JSON.stringify(e,null,2)).join(',\n\n');
@@ -1022,7 +1033,7 @@ function App(){
       alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
     }catch(e){alert('오류: '+e.message);}
     setMainGhSaving(false);
-  },[slots,ghToken,ghRepo]);
+  },[passages,ghToken,ghRepo]);
 
   const fetchPassages=useCallback(async()=>{
     if(loadedPassages.length>0){setShowLoad(true);return;}
