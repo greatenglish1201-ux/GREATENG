@@ -491,10 +491,21 @@ function buildPassageData(a,pfx,ch,num){
   };
 }
 
-function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
+function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta, initialPassageData}){
   const [step,setStep]=useState('setup'); // setup|proc|edit|out
   const [rawText,setRawText]=useState('');
-  React.useEffect(()=>{if(initialText){setRawText(initialText);setStep('setup');}},[initialText]);
+  React.useEffect(()=>{
+    if(initialPassageData){
+      // 기존 분석 데이터로 바로 편집 화면
+      const p=initialPassageData;
+      const normed=p.sentences||[];
+      setPassages([{id:0,rawText:normed.map(s=>typeof s==='string'?s:s.text||'').join(' '),data:p,error:null,loading:false}]);
+      setStep('edit');
+    } else if(initialText){
+      setRawText(initialText);
+      setStep('setup');
+    }
+  },[initialText,initialPassageData]);
   const [pfx,setPfx]=useState(()=>initialMeta?.source||'27STYD');
   const [chapter,setChapter]=useState(()=>parseInt(initialMeta?.chapter)||1);
   const [startNum,setStartNum]=useState(()=>parseInt(initialMeta?.number)||1);
@@ -983,6 +994,7 @@ function App(){
   const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:10},(_,i)=>makeSlot(i)));
   const [authorInitText,setAuthorInitText]=useState('');
   const [authorInitMeta,setAuthorInitMeta]=useState(null);
+  const [authorInitPassageData,setAuthorInitPassageData]=useState(null);
   const [mainGhSaving,setMainGhSaving]=useState(false);
   const [viewMode,setViewMode]=useState('teacher');
   const [apiKey,setApiKey]=useState(()=>localStorage.getItem(LS.KEY)||'');
@@ -1346,7 +1358,7 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} initialText={authorInitText} initialMeta={authorInitMeta}/>:
+      {viewMode==='authoring'?<AuthoringTool apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -1379,7 +1391,7 @@ function App(){
 
         {slots.map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
-            onAuthor={()=>{setAuthorInitText(slot.text);setAuthorInitMeta(slot.meta);setViewMode('authoring');}}
+            onAuthor={()=>{setAuthorInitText(slot.text);setAuthorInitMeta(slot.meta);setAuthorInitPassageData(slot.passageData||null);setViewMode('authoring');}}
             onText={v=>upSlot(slot.id,{text:v})}
             onMeta={handleMeta}
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
