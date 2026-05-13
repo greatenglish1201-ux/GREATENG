@@ -1202,8 +1202,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
                             <label key={p.id} style={{display:'flex',alignItems:'center',gap:7,padding:'8px 12px',borderBottom:'1px solid #f1f5f9',cursor:'pointer',fontSize:11.5,background:selPassages.has(p.id)?'#f0f7ff':'transparent'}}>
                               <input type="checkbox" checked={selPassages.has(p.id)} onChange={()=>toggleP(p.id)} style={{accentColor:'#4f7df7',flexShrink:0}}/>
                               <span style={{color:p.difficulty==='높음'?'#e53935':'#b0bec5',fontWeight:600,fontSize:10,flexShrink:0}}>{p.difficulty==='높음'?'★':'☆'}</span>
-                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{p.title||p.id}</span>
-                              <span style={{color:'#b0bec5',fontSize:9,flexShrink:0}}>{p.id.split('_').slice(-1)[0]}</span>
+                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{p.id.split('_').slice(-1)[0]}{p.title?' '+p.title:''}</span>
                             </label>
                           ))}
                         </div>
