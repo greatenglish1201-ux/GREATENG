@@ -15422,60 +15422,37 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_001",
-    "difficulty": "보통",
-    "title": "뉴스 프레임",
+    "difficulty": "높음",
+    "title": "감정표현",
     "sentences": [
-      "Many news media studies use experimental designs to see whether citizens' opinions are influenced by different news content.",
-      "For example, in one study, researchers created newspaper stories to frame the death penalty in different ways.",
-      "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
-      "Social media platforms have largely replaced traditional newspapers as sources of news.",
-      "Some subjects read the story with the morality frame, and others read the one with the innocence frame.",
-      "Subjects then completed a questionnaire that asked them to list the important factors they considered when determining their opinion on the death penalty.",
-      "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
-      "Thus, the news frames shaped the ingredients of the subjects' death penalty attitudes."
+      "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species.",
+      "At the same time, Izard's formulation of 'affective-cognitive structures' shows that emotions are in reality not separable from the particular circumstances that are associated with them.",
+      "The fact that it is possible to construct a list of 'basic,' universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures.",
+      "These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances.",
+      "As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it.",
+      "To use Lewis's terms, the contextual reality of emotional expression transforms 'state' into 'experience.'"
     ],
-    "abstract": "This passage examines how different news frames influence citizens' opinions on the death penalty through experimental research.",
+    "abstract": "Facial expressions and emotional behaviors are universal yet shaped by particular situational circumstances.",
     "topic_options": [
-      "News frames shape people's opinions on the death penalty",
-      "Experimental designs are rarely used in media studies",
-      "The morality frame is more effective than the innocence frame",
-      "Questionnaires are the best tool for measuring public opinion",
-      "Citizens form opinions independently of news content"
+      "Universal emotional expressions are always embedded in and shaped by particular situational contexts.",
+      "Facial expressions are entirely determined by cultural socialization processes.",
+      "Basic emotions are fully separable from the circumstances in which they occur.",
+      "Izard's affective-cognitive structures disprove the universality of facial expressions.",
+      "Human expressive behaviors like laughter are unique to specific cultural groups."
     ],
     "topic_answer": 1,
-    "blank_sentence_index": 7,
-    "blank_target": "shaped the ingredients",
+    "blank_sentence_index": 5,
+    "blank_target": "contextual reality of emotional expression",
     "blank_options": [
-      "shaped the ingredients",
-      "ignored the components",
-      "reversed the outcomes",
-      "questioned the validity"
+      "contextual reality of emotional expression",
+      "biological universality of facial signals",
+      "cognitive complexity of affective structures",
+      "cultural variability of emotional display",
+      "individual uniqueness of personal feeling"
     ],
     "blank_answer": 1,
     "order_given_index": 0,
-    "order_blocks": [
-      {
-        "label": "B",
-        "sentence_indices": [
-          1,
-          2
-        ]
-      },
-      {
-        "label": "C",
-        "sentence_indices": [
-          4,
-          5
-        ]
-      },
-      {
-        "label": "D",
-        "sentence_indices": [
-          6,
-          7
-        ]
-      }
-    ],
+    "order_blocks": [],
     "order_options": [
       "(A)-(B)-(C)",
       "(B)-(C)-(A)",
@@ -15484,112 +15461,112 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
-    "insert_sentence": "This method allows researchers to isolate the effect of framing on public attitudes.",
-    "insert_answer": 1,
-    "summary_template": "Researchers used __(A)__ to test how different news frames affected subjects' __(B)__ on the death penalty.",
+    "insert_sentence": "This dual nature of emotion — both universal and context-dependent — has significant implications for cross-cultural communication.",
+    "insert_answer": 4,
+    "summary_template": "Human expressive behaviors such as laughter and crying reflect a ________(A)________ capacity, yet they always take place within ________(B)________ contexts.",
     "summary_A_options": [
-      "experimental designs",
-      "survey methods",
-      "historical analysis",
-      "case studies",
-      "statistical models"
+      "universal",
+      "culturally specific",
+      "individually unique",
+      "randomly occurring",
+      "biologically random"
     ],
     "summary_A_answer": 1,
     "summary_B_options": [
-      "opinions",
-      "emotions",
-      "behaviors",
-      "knowledge",
-      "sentences"
+      "particular",
+      "universal",
+      "abstract",
+      "imaginary",
+      "isolated"
     ],
     "summary_B_answer": 1,
-    "implication_sentence_index": 7,
-    "implication_keyword": "shaped the ingredients",
+    "implication_sentence_index": 5,
+    "implication_keyword": "transforms 'state' into 'experience'",
     "implication_options": [
-      "News frames determined what factors people used to form their opinions",
-      "News frames provided recipes for cooking attitudes",
-      "News frames physically altered subjects' brain chemistry",
-      "News frames were used to manufacture fake news stories",
-      "News frames encouraged subjects to ignore their own values"
+      "A raw emotional state becomes meaningful experience only when it is situated within a specific context.",
+      "Emotional states are purely biological and independent of external circumstances.",
+      "Experience is always prior to and more fundamental than emotional states.",
+      "The transformation of emotions is solely a cognitive process unrelated to context.",
+      "Lewis argues that 'state' and 'experience' are essentially the same thing."
     ],
     "implication_answer": 1,
     "irrelevant_sentence_index": 3,
     "aGroup": [
-      "experimental designs",
-      "survey methods",
-      "historical analysis"
+      "universal",
+      "culturally specific",
+      "individually unique"
     ],
     "bGroup": [
-      "opinions",
-      "emotions",
-      "behaviors"
+      "particular",
+      "universal",
+      "abstract"
     ],
     "grammar_items": [
       {
         "sent": 0,
-        "word": "influenced",
+        "word": "involves",
         "correct": true,
-        "note": "수동태 올바르게 사용됨 (opinions are influenced by)"
+        "note": "주어 'socialization'에 맞는 단수 동사"
       },
       {
         "sent": 1,
-        "word": "created",
+        "word": "shows",
         "correct": true,
-        "note": "과거시제 동사로 올바르게 사용됨"
+        "note": "단수 주어에 맞는 단수 동사"
       },
       {
         "sent": 2,
-        "word": "whereas",
+        "word": "including",
         "correct": true,
-        "note": "대조를 나타내는 접속사로 올바르게 사용됨"
+        "note": "전치사로서 명사를 목적어로 취함"
+      },
+      {
+        "sent": 3,
+        "word": "exists",
+        "correct": false,
+        "note": "→ 'exist' — 관계절 내 주어 'which'는 'behaviors'를 선행사로 받으므로 복수 동사 'exist'가 적절"
       },
       {
         "sent": 5,
-        "word": "considered",
-        "correct": false,
-        "note": "→ 'they had considered' 또는 문맥상 'considering'이 더 자연스러움; 관계절 내 시제 불일치"
-      },
-      {
-        "sent": 7,
-        "word": "shaped",
+        "word": "transforms",
         "correct": true,
-        "note": "과거시제 동사로 올바르게 사용됨"
+        "note": "단수 주어 'contextual reality'에 맞는 동사"
       }
     ],
     "grammar_answer": 4,
     "vocab_items": [
       {
         "sent": 0,
-        "word": "influenced",
-        "alt": "affected",
+        "word": "universality",
+        "alt": "particularity",
+        "correct": true
+      },
+      {
+        "sent": 0,
+        "word": "synonymous",
+        "alt": "contradictory",
+        "correct": false
+      },
+      {
+        "sent": 1,
+        "word": "separable",
+        "alt": "distinct",
         "correct": true
       },
       {
         "sent": 2,
         "word": "fundamentally",
-        "alt": "essentially",
+        "alt": "superficially",
         "correct": true
       },
       {
         "sent": 4,
-        "word": "subjects",
-        "alt": "participants",
-        "correct": true
-      },
-      {
-        "sent": 6,
-        "word": "considerations",
-        "alt": "distractions",
-        "correct": false
-      },
-      {
-        "sent": 7,
         "word": "shaped",
         "alt": "influenced",
         "correct": true
       }
     ],
-    "vocab_answer": 4
+    "vocab_answer": 2
   },
   {
     "id": "27STYD_01_002",
