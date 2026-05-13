@@ -304,7 +304,7 @@ function gen(passage, type, allP){
     if(!passage.implication_keyword || !passage.implication_options || passage.implication_options.length < 5) return null;
     const sentIdx = passage.implication_sentence_index || 0;
     const targetSent = s[sentIdx];
-    if(!targetSent || !targetSent.includes(passage.implication_keyword)) return null;
+    if(!targetSent) return null;
     const opts = passage.implication_options.map((text, i) => ({
       text,
       correct: i === (passage.implication_answer - 1)
