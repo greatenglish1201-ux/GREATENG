@@ -491,6 +491,19 @@ function buildPassageData(a,pfx,ch,num){
   };
 }
 
+function GrammarItemInput({value, onSave, placeholder, style}){
+  const [v,setV]=useState(value||'');
+  useEffect(()=>setV(value||''),[value]);
+  return<input value={v} onChange={e=>setV(e.target.value)} onBlur={()=>onSave(v)}
+    placeholder={placeholder||''} style={style}/>;
+}
+function LocalTextarea({value, onSave, rows, style}){
+  const [v,setV]=useState(value||'');
+  useEffect(()=>setV(value||''),[value]);
+  return<textarea value={v} onChange={e=>setV(e.target.value)} onBlur={()=>onSave(v)}
+    rows={rows||3} style={style}/>;
+}
+
 function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta, initialPassageData}){
   const [passages,setPassages]=useState(()=>{
     if(initialPassageData){
@@ -543,6 +556,87 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
   const upP=(patch)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:{...p.data,...patch}}:p));
   const upPDeep=(fn)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:fn({...p.data})}:p));
 
+  const [genLoading,setGenLoading]=useState('');
+
+  const genBlankDistractors=async(sentIdx,keyword,pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    setGenLoading('blank');
+    try{
+      const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const prompt=`You are a Korean CSAT English exam expert.\nPassage:\n${passage}\n\nThe blank word/phrase is: "${keyword}" (from sentence [${sentIdx}])\n\nGenerate 4 plausible but incorrect distractors for this blank question.\nDistractors must:\n- Be similar in form, length, or meaning to confuse students\n- Be grammatically plausible in context\n- NOT be synonyms that could be correct\n\nReturn JSON only:\n{"distractors":["d1","d2","d3","d4"]}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      const distractors=parsed.distractors||[];
+      upPDeep(p=>{
+        const opts=[keyword,...distractors.slice(0,4)];
+        while(opts.length<5)opts.push('');
+        return{...p,blank_options:opts};
+      });
+    }catch(e){alert('오답 생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
+  const genGrammarVocabSet=async(isG,pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    setGenLoading(isG?'grammar':'vocab');
+    try{
+      const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const prompt=isG
+        ?`You are a Korean CSAT English grammar exam expert.
+Passage:
+${passage}
+
+Generate a new grammar (어법) question set with exactly 5 items.
+- Pick 5 words/phrases from different sentences
+- Exactly 1 item must be INCORRECT (wrong grammar), the rest CORRECT
+- The incorrect item should require a realistic grammar fix
+- answer = 1-based index of the incorrect item
+
+Return JSON only:
+{"items":[{"sent":0,"word":"exact word","correct":true,"note":"이유 또는 → correction"},{"sent":1,"word":"exact word","correct":true,"note":"이유"},{"sent":2,"word":"exact word","correct":false,"note":"→ corrected form"},{"sent":3,"word":"exact word","correct":true,"note":"이유"},{"sent":4,"word":"exact word","correct":true,"note":"이유"}],"answer":3}`
+        :`You are a Korean CSAT English vocabulary exam expert.
+Passage:
+${passage}
+
+Generate a new vocabulary (어휘) question set with exactly 5 items.
+- Pick 5 words from different sentences
+- Exactly 1 item must have an INCORRECT replacement (wrong word), the rest CORRECT
+- The incorrect item's alt should be a plausible but wrong word
+- answer = 1-based index of the incorrect item
+
+Return JSON only:
+{"items":[{"sent":0,"word":"original","alt":"replacement","correct":true},{"sent":1,"word":"original","alt":"replacement","correct":true},{"sent":2,"word":"original","alt":"replacement","correct":false},{"sent":3,"word":"original","alt":"replacement","correct":true},{"sent":4,"word":"original","alt":"replacement","correct":true}],"answer":3}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      if(!parsed.items?.length)throw new Error('항목 없음');
+      upPDeep(p=>{
+        const sets=[...(isG?p.grammar_sets:p.vocab_sets)];
+        const sel=isG?p.grammar_sel:p.vocab_sel;
+        sets[sel]={...sets[sel],items:parsed.items,answer:parsed.answer||1};
+        return isG?{...p,grammar_sets:sets,grammar_answer:parsed.answer||1}:{...p,vocab_sets:sets,vocab_answer:parsed.answer||1};
+      });
+    }catch(e){alert('재생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
+  const genImplicationOptions=async(sentIdx,keyword,pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    setGenLoading('implication');
+    try{
+      const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const prompt=`You are a Korean CSAT English exam expert.\nPassage:\n${passage}\n\nThe underlined expression is: "${keyword}" (from sentence [${sentIdx}])\n\nGenerate 5 answer choices for "what does the underlined part mean?"\n- Choice 1 must be the CORRECT meaning in context\n- Choices 2-5 must be plausible but incorrect interpretations\n- All choices should be natural English phrases of similar length\n\nReturn JSON only:\n{"candidates":["correct meaning","wrong1","wrong2","wrong3","wrong4"]}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      const candidates=parsed.candidates||[];
+      while(candidates.length<5)candidates.push('');
+      upP({implication_options:candidates,implication_answer:1});
+    }catch(e){alert('선지 생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
   const analyze=async()=>{
     if(!apiKey){setErr('설정 메뉴에서 API Key를 먼저 입력해주세요.');return;}
     if(!rawText.trim()){setErr('지문 텍스트를 입력해주세요.');return;}
@@ -575,20 +669,22 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
   const renderSent=(p,s,i)=>{
     const bc=p.blank_candidates?.[p.blank_sel];
     if(at===1){
-      const isTarget=bc?.sentence_index===i;
-      const isBlankSent=isTarget&&bc?.keyword;
+      const isTarget=p.blank_sentence_index===i;
+      const kw=p.blank_target||(bc?.sentence_index===i?bc?.keyword:'');
       return<span
         style={{fontSize:12,lineHeight:1.8,cursor:'text',userSelect:'text'}}
         onMouseUp={()=>{
           const sel=window.getSelection();
           const txt=sel?.toString().trim();
           if(txt&&txt.length>1){
-            upPDeep(p=>({...p,blank_sentence_index:i,blank_target:txt,blank_options:[txt,...(p.blank_options||[]).slice(1)],blank_sel:-1}));
+            const curP=passages[pi]?.data;
+            upPDeep(p=>({...p,blank_sentence_index:i,blank_target:txt,blank_options:[txt,...(p.blank_options||[]).slice(1)]}));
             sel.removeAllRanges();
+            genBlankDistractors(i,txt,curP);
           }
         }}
-      >{isBlankSent
-        ?(()=>{const idx=s.indexOf(bc.keyword);if(idx<0)return s;return<>{s.slice(0,idx)}<span style={{background:'#993C1D22',borderBottom:'2px solid #993C1D',fontWeight:700,color:'#993C1D',padding:'0 2px'}}>{bc.keyword}</span>{s.slice(idx+bc.keyword.length)}</>})()
+      >{isTarget&&kw
+        ?(()=>{const idx=s.indexOf(kw);if(idx<0)return s;return<>{s.slice(0,idx)}<span style={{background:'#993C1D22',borderBottom:'2px solid #993C1D',fontWeight:700,color:'#993C1D',padding:'0 2px'}}>{kw}</span>{s.slice(idx+kw.length)}</>})()
         :s
       }</span>;
     }
@@ -601,8 +697,10 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
           const sel=window.getSelection();
           const txt=sel?.toString().trim();
           if(txt&&txt.length>1){
+            const curP=passages[pi]?.data;
             upP({implication_sentence_index:i,implication_keyword:txt});
             sel.removeAllRanges();
+            genImplicationOptions(i,txt,curP);
           }
         }}
       >{isTarget&&kw
@@ -703,15 +801,20 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
         <div style={{fontSize:13,fontWeight:p.blank_sel===ci?600:400,color:p.blank_sel===ci?'#993C1D':'#1d1d1f'}}>"{c.keyword}"</div>
       </button>)}
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>② 오답 선택지</div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>② 오답 선택지</div>
+        {genLoading==='blank'
+          ?<span style={{fontSize:11,color:'#993C1D',animation:'pulse 1s infinite'}}>⏳ AI 생성 중...</span>
+          :<button onClick={()=>genBlankDistractors(p.blank_sentence_index,p.blank_target,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #993C1D',background:'#993C1D10',color:'#993C1D',cursor:'pointer'}}>↻ 오답 재생성</button>}
+      </div>
       <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
         <span style={{fontSize:12,color:'#993C1D',fontWeight:600,whiteSpace:'nowrap'}}>정답:</span>
-        <input value={p.blank_target||''} onChange={e=>{const opts=[...p.blank_options];opts[0]=e.target.value;upP({blank_target:e.target.value,blank_options:opts});}}
+        <input value={p.blank_target||''} onChange={e=>{const opts=[...(p.blank_options||[])];opts[0]=e.target.value;upP({blank_target:e.target.value,blank_options:opts});}}
           style={{flex:1,fontSize:13,fontWeight:700,padding:'5px 9px',borderRadius:6,border:'1px solid #993C1D',color:'#993C1D'}}/>
       </div>
       {[0,1,2,3].map(i=><div key={i} style={{display:'flex',alignItems:'center',gap:5,marginBottom:5}}>
         <span style={{fontSize:11,color:'#bbb',minWidth:32}}>오답{i+1}</span>
-        <input value={p.blank_options[i+1]||''} onChange={e=>{const opts=[...p.blank_options];opts[i+1]=e.target.value;upP({blank_options:opts});}} style={{flex:1,fontSize:12,padding:'5px 8px',border:'0.5px solid #e5e5e5',borderRadius:6}}/>
+        <input value={p.blank_options?.[i+1]||''} onChange={e=>{const opts=[...(p.blank_options||[])];opts[i+1]=e.target.value;upP({blank_options:opts});}} style={{flex:1,fontSize:12,padding:'5px 8px',border:'0.5px solid #e5e5e5',borderRadius:6}}/>
       </div>)}
     </div>;
 
@@ -747,11 +850,11 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
       {[{key:'A',c:'#854F0B',opts:'summary_A_options',ans:'summary_A_answer'},{key:'B',c:'#185FA5',opts:'summary_B_options',ans:'summary_B_answer'}].map(({key,c,opts,ans})=>
         <div key={key} style={{padding:10,background:c+'08',border:`0.5px solid ${c}44`,borderRadius:8,marginBottom:8}}>
           <div style={{fontSize:11,fontWeight:700,color:c,marginBottom:5}}>빈칸 ({key})</div>
-          <input defaultValue={p[opts]?.[0]||''} onBlur={e=>{const o=[...p[opts]];o[0]=e.target.value;upP({[opts]:o});}} style={{width:'100%',fontSize:13,fontWeight:600,padding:'5px 8px',border:'0.5px solid #e5e5e5',borderRadius:6,marginBottom:5}}/>
-          {[0,1,2,3].map(i=><input key={i} defaultValue={p[opts]?.[i+1]||''} onBlur={e=>{const o=[...p[opts]];o[i+1]=e.target.value;upP({[opts]:o});}} placeholder={`오답${i+1}`} style={{width:'100%',fontSize:12,padding:'4px 8px',border:'0.5px solid #e5e5e5',borderRadius:6,marginBottom:4}}/>)}
+          <GrammarItemInput value={p[opts]?.[0]||''} onSave={v=>{const o=[...(p[opts]||[])];o[0]=v;upP({[opts]:o});}} style={{width:'100%',fontSize:13,fontWeight:600,padding:'5px 8px',border:'0.5px solid #e5e5e5',borderRadius:6,marginBottom:5}}/>
+          {[0,1,2,3].map(i=><GrammarItemInput key={i} value={p[opts]?.[i+1]||''} onSave={v=>{const o=[...(p[opts]||[])];o[i+1]=v;upP({[opts]:o});}} placeholder={`오답${i+1}`} style={{width:'100%',fontSize:12,padding:'4px 8px',border:'0.5px solid #e5e5e5',borderRadius:6,marginBottom:4}}/>)}
         </div>
       )}
-      <textarea defaultValue={p.summary_template} onBlur={e=>upP({summary_template:e.target.value})} rows={3} style={{width:'100%',fontSize:12,padding:'7px 9px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
+      <LocalTextarea value={p.summary_template||''} onSave={v=>upP({summary_template:v})} rows={3} style={{width:'100%',fontSize:12,padding:'7px 9px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
     </div>;
 
     if(at===4)return<div>
@@ -761,7 +864,12 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
           {p.implication_keyword||'미선택'} <span style={{fontSize:11,color:'#bbb',fontWeight:400}}>문장[{p.implication_sentence_index}]</span>
         </div>
       </div>
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>선지 편집 &amp; 정답 선택</div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>선지 편집 &amp; 정답 선택</div>
+        {genLoading==='implication'
+          ?<span style={{fontSize:11,color:'#993556',animation:'pulse 1s infinite'}}>⏳ AI 생성 중...</span>
+          :<button onClick={()=>genImplicationOptions(p.implication_sentence_index,p.implication_keyword,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #993556',background:'#99355610',color:'#993556',cursor:'pointer'}}>↻ 선지 재생성</button>}
+      </div>
       {(()=>{const opts=[...(p.implication_options||[])];while(opts.length<5)opts.push('');return opts;})().map((o,i)=>{const isSel=p.implication_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
         <button onClick={()=>upP({implication_answer:i+1})} style={{minWidth:28,height:28,borderRadius:14,border:`1px solid ${isSel?'#993556':'#ddd'}`,background:isSel?'#993556':'transparent',color:isSel?'#fff':'#999',fontSize:12,cursor:'pointer',fontWeight:700}}>{i+1}</button>
         <input value={o} onChange={e=>{const opts=[...(p.implication_options||[])];while(opts.length<5)opts.push('');opts[i]=e.target.value;upP({implication_options:opts});}}
@@ -778,7 +886,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
       </button>)}
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
-      <textarea defaultValue={p.irrel_candidates?.[p.irrel_sel]||''} onBlur={e=>{const c=[...(p.irrel_candidates||[])];c[p.irrel_sel]=e.target.value;upP({irrel_candidates:c});}} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
+      <LocalTextarea value={p.irrel_candidates?.[p.irrel_sel]||''} onSave={v=>{const c=[...(p.irrel_candidates||[])];c[p.irrel_sel]=v;upP({irrel_candidates:c});}} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
       {!p.irrel_confirmed?
         <button onClick={()=>upPDeep(p=>{
           const pos=p.irrel_insert_pos||0,sent=p.irrel_candidates?.[p.irrel_sel]||'';
@@ -803,7 +911,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
       </button>)}
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
-      <textarea defaultValue={p.insert_sentence||''} onBlur={e=>upP({insert_sentence:e.target.value})} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical'}}/>
+      <LocalTextarea value={p.insert_sentence||''} onSave={v=>upP({insert_sentence:v})} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical'}}/>
     </div>;
 
     if(at===7||at===8){
@@ -815,7 +923,12 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
       const ansKey=isG?'grammar_answer':'vocab_answer';
       const c='#E24B4A';
       return<div>
-        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 세트 선택</div>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+          <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 세트 선택</div>
+          {genLoading===(isG?'grammar':'vocab')
+            ?<span style={{fontSize:11,color:'#1d1d1f'}}>⏳ AI 생성 중...</span>
+            :<button onClick={()=>genGrammarVocabSet(isG,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #555',background:'#55555510',color:'#555',cursor:'pointer'}}>↻ 세트 재생성</button>}
+        </div>
         {sets?.map((set,si)=><button key={si} onClick={()=>upP({[selKey]:si,[ansKey]:set.answer})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:8,background:sel===si?'#f5f5f7':'transparent',border:`1px solid ${sel===si?'#185FA5':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
           {sel===si&&bdg('✓','#185FA5')}{si===0&&bdg('AI 추천','#854F0B')}
           <div style={{marginTop:6,display:'flex',flexWrap:'wrap',gap:4}}>
@@ -834,7 +947,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
           return<div key={ii} style={{marginBottom:8,border:`1px solid ${isSel?'#E24B4A':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',background:isSel?'#E24B4A08':'#fff'}}>
             <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
               <span style={{fontSize:11,color:'#bbb',minWidth:18}}>{ii+1}.</span>
-              <input key={`word-${ii}`} defaultValue={item.word} onBlur={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
+              <GrammarItemInput value={item.word}
+                onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:v};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
                 style={{flex:1,border:'1px solid #ddd',borderRadius:6,padding:'4px 8px',fontSize:13,fontWeight:700}}/>
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],correct:!items[ii].correct};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:`1px solid ${item.correct?'#185FA5':'#E24B4A'}`,background:item.correct?'#185FA518':'#E24B4A18',color:item.correct?'#185FA5':'#E24B4A',cursor:'pointer',whiteSpace:'nowrap'}}>
@@ -846,7 +960,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=sets[isG?p.grammar_sel:p.vocab_sel].items.filter((_,i)=>i!==ii);sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets,grammar_answer:1}:{...p,vocab_sets:sets,vocab_answer:1};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:'1px solid #fcc',background:'#fff5f5',color:'#E24B4A',cursor:'pointer'}}>삭제</button>
             </div>
-            <input key={`note-${ii}`} defaultValue={isG?item.note:(item.alt||'')} onBlur={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:e.target.value}:{...items[ii],alt:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
+            <GrammarItemInput value={isG?item.note:(item.alt||'')}
+              onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:v}:{...items[ii],alt:v};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
               placeholder={isG?'어법 설명':'대체 표현'} style={{width:'100%',border:'1px solid #eee',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#888',boxSizing:'border-box'}}/>
           </div>;
         });})()}
@@ -863,20 +978,27 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
       const vs=(p.vocab_sets||[])[p.vocab_sel]||{items:[],answer:1};
       return{id:p.id,difficulty:p.difficulty,title:p.title,sentences:p.sentences,abstract:p.abstract,
         topic_options:p.topic_options,topic_answer:p.topic_answer,
+        blank_sel:p.blank_sel||0,blank_candidates:p.blank_candidates||[],
         blank_sentence_index:p.blank_sentence_index,blank_target:p.blank_target,
         blank_options:p.blank_options,blank_answer:p.blank_answer,
         order_given_index:p.order_given_index,order_blocks:p.order_blocks,
         order_options:p.order_options,order_answer:p.order_answer,
+        insert_sel:p.insert_sel||0,insert_candidates:p.insert_candidates||[],
         insert_sentence:p.insert_sentence,insert_answer:p.insert_answer,
+        summary_sel:p.summary_sel||0,summary_candidates:p.summary_candidates||[],
         summary_template:p.summary_template,
         summary_A_options:p.summary_A_options,summary_A_answer:p.summary_A_answer,
         summary_B_options:p.summary_B_options,summary_B_answer:p.summary_B_answer,
         implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
         implication_options:p.implication_options,implication_answer:p.implication_answer,
+        irrel_sel:p.irrel_sel||0,irrel_candidates:p.irrel_candidates||[],
+        irrel_insert_pos:p.irrel_insert_pos||0,irrel_confirmed:p.irrel_confirmed||false,
         irrelevant_sentence_index:p.irrelevant_sentence_index,
-        aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
+        grammar_sets:p.grammar_sets||[],grammar_sel:p.grammar_sel||0,
         grammar_items:gs.items,grammar_answer:p.grammar_answer,
-        vocab_items:vs.items,vocab_answer:p.vocab_answer};
+        vocab_sets:p.vocab_sets||[],vocab_sel:p.vocab_sel||0,
+        vocab_items:vs.items,vocab_answer:p.vocab_answer,
+        aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3)};
     });
     return`// GREATENG passageData 추가분 (${entries.length}개)\n// order_answer는 merge 스크립트 재처리 필요\n\n`+entries.map(e=>JSON.stringify(e,null,2)).join(',\n\n');
   };
@@ -1105,19 +1227,26 @@ function App(){
           sentences:p.sentences||s.analysis?.sentences||[],
           abstract:p.abstract,
           topic_options:p.topic_options,topic_answer:p.topic_answer,
+          blank_sel:p.blank_sel||0,blank_candidates:p.blank_candidates||[],
           blank_sentence_index:p.blank_sentence_index,blank_target:p.blank_target,
           blank_options:p.blank_options,blank_answer:p.blank_answer,
           order_given_index:p.order_given_index,order_blocks:p.order_blocks,
           order_options:p.order_options,order_answer:p.order_answer,
+          insert_sel:p.insert_sel||0,insert_candidates:p.insert_candidates||[],
           insert_sentence:p.insert_sentence,insert_answer:p.insert_answer,
+          summary_sel:p.summary_sel||0,summary_candidates:p.summary_candidates||[],
           summary_template:p.summary_template,
           summary_A_options:p.summary_A_options,summary_A_answer:p.summary_A_answer,
           summary_B_options:p.summary_B_options,summary_B_answer:p.summary_B_answer,
           implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
           implication_options:p.implication_options,implication_answer:p.implication_answer,
+          irrel_sel:p.irrel_sel||0,irrel_candidates:p.irrel_candidates||[],
+          irrel_insert_pos:p.irrel_insert_pos||0,irrel_confirmed:p.irrel_confirmed||false,
           irrelevant_sentence_index:p.irrelevant_sentence_index,
+          grammar_sets:p.grammar_sets||[],grammar_sel:p.grammar_sel||0,
           grammar_items:[...gItems].sort((a,b)=>a.sent-b.sent),
           grammar_answer:p.grammar_answer,
+          vocab_sets:p.vocab_sets||[],vocab_sel:p.vocab_sel||0,
           vocab_items:[...vItems].sort((a,b)=>a.sent-b.sent),
           vocab_answer:p.vocab_answer,
           aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
