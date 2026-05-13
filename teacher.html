@@ -480,7 +480,7 @@ function buildPassageData(a,pfx,ch,num){
     summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1,
     implication_sentence_index:a.implication.possible!==false?a.implication.sentence_index:0,
     implication_keyword:a.implication.possible!==false?a.implication.keyword:'',
-    implication_options:a.implication.possible!==false?a.implication.candidates:['','','','',''],implication_answer:1,
+    implication_options:a.implication.possible!==false?(()=>{const opts=a.implication.candidates||[];while(opts.length<5)opts.push('');return opts;})():['','','','',''],implication_answer:1,
     irrel_sel:0,irrel_candidates:a.irrelevant.candidates,irrel_insert_pos:a.irrelevant.recommended_pos||1,irrel_confirmed:false,
     irrelevant_sentence_index:a.irrelevant.recommended_pos||1,
     insert_sel:0,insert_candidates:a.insert.candidates,
@@ -673,7 +673,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
       rows.push(<div key={i} style={{display:'flex',gap:6,marginBottom:5,padding:'5px 8px',borderRadius:6,background:bg,borderLeft:bl}}>
         <span style={{color:'#bbb',fontFamily:'monospace',fontSize:11,flexShrink:0,marginTop:2,minWidth:20}}>[{i}]</span>
         {at===2&&getBlockLabel(p,i)&&<span style={{fontSize:11,fontWeight:700,color:BLK_C[getBlockLabel(p,i)],marginRight:2,flexShrink:0,marginTop:2}}>({getBlockLabel(p,i)})</span>}
-        {renderSent(p,s,i)}
+        {renderSent(p,typeof s==='string'?s:(s?.text||''),i)}
       </div>);
     }
     return<div style={{overflowY:'auto',maxHeight:500}}><div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>{at===5||at===6?'▶ 클릭으로 삽입 위치 선택':'전체 지문'}</div>{rows}</div>;
@@ -762,9 +762,9 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
         </div>
       </div>
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>선지 편집 &amp; 정답 선택</div>
-      {p.implication_options?.map((o,i)=>{const isSel=p.implication_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
+      {(()=>{const opts=[...(p.implication_options||[])];while(opts.length<5)opts.push('');return opts;})().map((o,i)=>{const isSel=p.implication_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
         <button onClick={()=>upP({implication_answer:i+1})} style={{minWidth:28,height:28,borderRadius:14,border:`1px solid ${isSel?'#993556':'#ddd'}`,background:isSel?'#993556':'transparent',color:isSel?'#fff':'#999',fontSize:12,cursor:'pointer',fontWeight:700}}>{i+1}</button>
-        <input value={o} onChange={e=>{const opts=[...p.implication_options];opts[i]=e.target.value;upP({implication_options:opts});}}
+        <input value={o} onChange={e=>{const opts=[...(p.implication_options||[])];while(opts.length<5)opts.push('');opts[i]=e.target.value;upP({implication_options:opts});}}
           style={{flex:1,fontSize:13,padding:'6px 9px',borderRadius:7,border:`1px solid ${isSel?'#993556':'#e5e5e5'}`,fontWeight:isSel?600:400,color:isSel?'#993556':'#1d1d1f'}}/>
         {isSel&&<span style={{fontSize:11,color:'#993556',whiteSpace:'nowrap'}}>✓ 정답</span>}
       </div>;})}
@@ -1391,12 +1391,28 @@ function App(){
 
         {slots.map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
-            onAuthor={()=>{
+            onAuthor={async()=>{
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
                 const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
-                const found=(window.PASSAGES||[]).find(p=>p.id===pid);
-                setAuthorInitPassageData(slot.passageData||found||null);
+                let passageData=slot.passageData;
+                if(!passageData){
+                  let pool=loadedPassages.length?loadedPassages:(window.PASSAGES||[]);
+                  let found=pool.find(p=>p.id===pid);
+                  if(!found&&loadedPassages.length===0){
+                    try{
+                      const r=await fetch('passages.js?t='+Date.now());
+                      const text=await r.text();
+                      const modified=text.replace(/^\s*(const|let|var)\s+PASSAGES\s*=/,'window.__LOAD_PASSAGES =');
+                      new Function(modified)();
+                      const ps=window.__LOAD_PASSAGES||[];
+                      setLoadedPassages(ps);
+                      found=ps.find(p=>p.id===pid);
+                    }catch(e){}
+                  }
+                  passageData=found||null;
+                }
+                setAuthorInitPassageData(passageData);
                 setAuthorKey(k=>k+1);
                 setViewMode('authoring');
               }}
