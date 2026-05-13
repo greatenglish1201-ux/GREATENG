@@ -536,41 +536,16 @@ function App(){
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    const target=Math.min(qCount,pool.length);
-    const summaryPool=pool.filter(p=>p.summary_template&&p.summary_A_options&&p.summary_B_options);
-    const usedIds=new Set();
-    // 유형 랜덤 배분
-    const typePool=shuffle([...Array(target)].map((_,i)=>types[i%types.length]));
-    const qs=[];
-    let poolIdx=0;
-    for(let i=0;i<target;i++){
-      const t=typePool[i];
-      let q=null;
-      // pool에서 문제 생성 가능한 지문 찾기 (이미 사용한 지문 제외)
-      let attempts=0;
-      while(!q && poolIdx+attempts < pool.length){
-        const p=pool[(poolIdx+attempts)%pool.length];
-        if(!usedIds.has(p.id)){
-          q=gen(p,t,allPassages);
-          if(!q){
-            // 다른 타입으로 fallback
-            const fallbackOrder=[...types.filter(x=>x!==t)];
-            for(const ft of fallbackOrder){q=gen(p,ft,allPassages);if(q)break;}
-          }
-          if(q){usedIds.add(p.id);poolIdx+=attempts+1;break;}
-        }
-        attempts++;
+    // 가능한 모든 (지문, 유형) 조합 생성 → 지문 1개에 여러 문제 가능
+    const combos=[];
+    for(const p of pool){
+      for(const t of types){
+        const q=gen(p,t,allPassages);
+        if(q) combos.push(q);
       }
-      // 그래도 없으면 전체 pool에서 미사용 지문으로 재시도
-      if(!q){
-        const spare=pool.find(p=>!usedIds.has(p.id));
-        if(spare){
-          const fallbackOrder=[...types];
-          for(const ft of fallbackOrder){q=gen(spare,ft,allPassages);if(q){usedIds.add(spare.id);break;}}
-        }
-      }
-      if(q)qs.push(q);
     }
+    const shuffled=shuffle(combos);
+    const qs=shuffled.slice(0,Math.min(qCount,shuffled.length));
     setQuestions(qs);setCurIdx(0);setUserAns({});setShowAns(false);setTimerKey(Date.now());setScreen('quiz');
   };
 
