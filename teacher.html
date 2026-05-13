@@ -1336,8 +1336,14 @@ Return JSON only:
             <button onClick={()=>{setOutText(buildOutput());setStep('out');}} style={{padding:'5px 14px',fontSize:12,background:'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>출력 ↗</button>
           </div>
         </div>
-        <div style={{display:'flex',gap:5,flexWrap:'wrap',marginBottom:12}}>
+        <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center',marginBottom:12}}>
           {AUTHOR_TABS.map((t,i)=><button key={i} onClick={()=>setAt(i)} style={{fontSize:12,padding:'4px 10px',borderRadius:6,border:`0.5px solid ${at===i?t.c:'#e5e5e5'}`,background:at===i?t.c+'18':'transparent',color:at===i?t.c:'#666',fontWeight:at===i?600:400,cursor:'pointer'}}>{t.lb}</button>)}
+          <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
+            <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>제목</span>
+            <GrammarItemInput value={p?.title||''} onSave={v=>upP({title:v})}
+              placeholder="지문 제목"
+              style={{fontSize:12,padding:'4px 9px',border:'1px solid #e5e5e5',borderRadius:6,width:220,color:'#1d1d1f'}}/>
+          </div>
         </div>
         {p&&<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
           <div style={{...card,padding:'12px'}}><LeftPanel p={p}/></div>
