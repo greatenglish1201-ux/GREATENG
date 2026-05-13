@@ -584,43 +584,17 @@ function App(){
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    const target=qCount;
-    // 지문별 사용된 유형 추적 (같은 지문, 같은 유형 중복 방지)
-    const usedTypes={};  // {passageId: Set<type>}
-    const typePool2=[...Array(target)].map((_,i)=>types[i%types.length]);
-    // 지문 풀을 순환하며 배정
-    const qs=[];
-    for(let i=0;i<target;i++){
-      const t=typePool2[i];
-      let q=null;
-      // 1. 해당 유형 아직 안 쓴 지문 우선
-      for(let j=0;j<pool.length;j++){
-        const p=pool[(i+j)%pool.length];
-        if(usedTypes[p.id]?.has(t)) continue;
-        q=gen(p,t,allPassages);
-        if(q){
-          if(!usedTypes[p.id]) usedTypes[p.id]=new Set();
-          usedTypes[p.id].add(t);
-          break;
-        }
+    // 가능한 모든 (지문, 유형) 조합 생성
+    const combos=[];
+    for(const p of pool){
+      for(const t of types){
+        const q=gen(p,t,allPassages);
+        if(q) combos.push(q);
       }
-      // 2. fallback: 어떤 지문이든 다른 유형으로
-      if(!q){
-        for(let j=0;j<pool.length&&!q;j++){
-          const p=pool[(i+j)%pool.length];
-          const fallbacks=types.filter(x=>x!==t&&!usedTypes[p.id]?.has(x));
-          for(const ft of fallbacks){
-            q=gen(p,ft,allPassages);
-            if(q){
-              if(!usedTypes[p.id]) usedTypes[p.id]=new Set();
-              usedTypes[p.id].add(ft);
-              break;
-            }
-          }
-        }
-      }
-      if(q)qs.push(q);
     }
+    // 셔플 후 target 개수만큼 추출 (같은 지문+유형 조합 없음 보장)
+    const shuffled=shuffle(combos);
+    const qs=shuffled.slice(0,Math.min(qCount,shuffled.length));
     return qs;
   };
 
