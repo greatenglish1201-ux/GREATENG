@@ -577,6 +577,72 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
     setGenLoading('');
   };
 
+  const genSummaryCandidates=async(pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    setGenLoading('summary');
+    try{
+      const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const prompt=`You are a Korean CSAT English summary exam expert.
+Passage:
+${passage}
+
+Generate 5 summary sentence templates. Each template has two blanks (A) and (B).
+Each candidate must:
+- Be a one-sentence English summary of the passage
+- Have exactly two blanks marked as ________(A)________ and ________(B)________
+- Provide correct answers and 4 distractors for each blank
+
+Return JSON only:
+{"candidates":[
+  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"word or phrase","A_distractors":["d1","d2","d3","d4"],"B_correct":"word or phrase","B_distractors":["d1","d2","d3","d4"]},
+  {"template":"tmpl2","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]},
+  {"template":"tmpl3","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]},
+  {"template":"tmpl4","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]},
+  {"template":"tmpl5","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]}
+]}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      if(!parsed.candidates?.length)throw new Error('후보 없음');
+      const sc=parsed.candidates[0];
+      upPDeep(p=>({...p,
+        summary_candidates:parsed.candidates,summary_sel:0,
+        summary_template:sc.template,
+        summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
+        summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1}));
+    }catch(e){alert('요약문 생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
+  const genIrrelCandidates=async(pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    setGenLoading('irrel');
+    try{
+      const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const prompt=`You are a Korean CSAT English exam expert.
+Passage:
+${passage}
+
+Generate 3 sentences that do NOT belong in this passage.
+Each sentence must:
+- Be topically unrelated to the main idea
+- Sound natural and academic
+- Be similar in style/length to the passage sentences
+- Recommended insertion position (0-based index before which sentence)
+
+Return JSON only:
+{"candidates":["unrelated sentence 1","unrelated sentence 2","unrelated sentence 3"],"recommended_pos":2}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      if(!parsed.candidates?.length)throw new Error('후보 없음');
+      upPDeep(p=>({...p,
+        irrel_candidates:parsed.candidates,irrel_sel:0,
+        irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false}));
+    }catch(e){alert('무관문장 생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
   const genGrammarVocabSet=async(isG,pData)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
     setGenLoading(isG?'grammar':'vocab');
@@ -837,7 +903,16 @@ Return JSON only:
     }
 
     if(at===3)return<div>
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 요약문 템플릿 선택</div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 요약문 템플릿 선택</div>
+        {genLoading==='summary'
+          ?<span style={{fontSize:11,color:'#854F0B'}}>⏳ AI 생성 중...</span>
+          :<button onClick={()=>genSummaryCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #854F0B',background:'#854F0B10',color:'#854F0B',cursor:'pointer'}}>↻ 후보 재생성</button>}
+      </div>
+      {(!p.summary_candidates||p.summary_candidates.length===0)&&genLoading!=='summary'&&
+        <div style={{padding:'10px 12px',background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:7,fontSize:12,color:'#856404',marginBottom:8}}>
+          후보가 없습니다. ↻ 버튼으로 AI 생성하세요.
+        </div>}
       {p.summary_candidates?.map((c,ci)=>{
         const tpl=c.template.replace('________(A)________',`<span style="background:#854F0B22;color:#854F0B;fontWeight:700;padding:0 3px">(A):${c.A_correct}</span>`).replace('________(B)________',`<span style="background:#185FA522;color:#185FA5;fontWeight:700;padding:0 3px">(B):${c.B_correct}</span>`);
         const sel=p.summary_sel===ci;
@@ -879,7 +954,16 @@ Return JSON only:
     </div>;
 
     if(at===5)return<div>
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 무관 문장 선택</div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 무관 문장 선택</div>
+        {genLoading==='irrel'
+          ?<span style={{fontSize:11,color:'#0F6E56'}}>⏳ AI 생성 중...</span>
+          :<button onClick={()=>genIrrelCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #0F6E56',background:'#0F6E5610',color:'#0F6E56',cursor:'pointer'}}>↻ 후보 재생성</button>}
+      </div>
+      {(!p.irrel_candidates||p.irrel_candidates.length===0)&&genLoading!=='irrel'&&
+        <div style={{padding:'10px 12px',background:'#F0FFF8',border:'0.5px solid #0F6E5640',borderRadius:7,fontSize:12,color:'#0F6E56',marginBottom:8}}>
+          후보가 없습니다. ↻ 버튼으로 AI 생성하세요.
+        </div>}
       {p.irrel_candidates?.map((s,ci)=><button key={ci} onClick={()=>upP({irrel_sel:ci})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.irrel_sel===ci?'#0F6E5610':'transparent',border:`1px solid ${p.irrel_sel===ci?'#0F6E56':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
         {p.irrel_sel===ci&&bdg('✓','#0F6E56')}{ci===0&&bdg('AI 추천','#854F0B')}
         <div style={{fontSize:12,lineHeight:1.6,marginTop:4}}>{s}</div>
@@ -929,6 +1013,10 @@ Return JSON only:
             ?<span style={{fontSize:11,color:'#1d1d1f'}}>⏳ AI 생성 중...</span>
             :<button onClick={()=>genGrammarVocabSet(isG,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #555',background:'#55555510',color:'#555',cursor:'pointer'}}>↻ 세트 재생성</button>}
         </div>
+        {(!sets||sets.length===0)&&genLoading!==(isG?'grammar':'vocab')&&
+          <div style={{padding:'10px 12px',background:'#F5F5F7',border:'0.5px solid #ddd',borderRadius:7,fontSize:12,color:'#888',marginBottom:8}}>
+            세트가 없습니다. ↻ 버튼으로 AI 생성하세요.
+          </div>}
         {sets?.map((set,si)=><button key={si} onClick={()=>upP({[selKey]:si,[ansKey]:set.answer})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:8,background:sel===si?'#f5f5f7':'transparent',border:`1px solid ${sel===si?'#185FA5':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
           {sel===si&&bdg('✓','#185FA5')}{si===0&&bdg('AI 추천','#854F0B')}
           <div style={{marginTop:6,display:'flex',flexWrap:'wrap',gap:4}}>
