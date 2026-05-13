@@ -995,10 +995,11 @@ function App(){
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
     setMainGhSaving(true);
     try{
-      const entries=passages.filter(p=>p.data&&p.rawText&&p.rawText.trim()).map(({data:p})=>{
-        const gs=(p.grammar_sets||[])[p.grammar_sel]||{items:[],answer:1};
-        const vs=(p.vocab_sets||[])[p.vocab_sel]||{items:[],answer:1};
-        return{id:p.id,difficulty:p.difficulty,title:p.title,sentences:p.sentences,abstract:p.abstract,
+      const entries=slots.filter(s=>s.status==='saved'&&s.passageData).map(s=>{
+        const p=s.passageData;
+        return{id:p.id,difficulty:p.difficulty||s.meta.difficulty,title:p.title||'',
+          sentences:p.sentences||s.analysis?.sentences||[],
+          abstract:p.abstract,
           topic_options:p.topic_options,topic_answer:p.topic_answer,
           blank_sentence_index:p.blank_sentence_index,blank_target:p.blank_target,
           blank_options:p.blank_options,blank_answer:p.blank_answer,
@@ -1012,10 +1013,8 @@ function App(){
           implication_options:p.implication_options,implication_answer:p.implication_answer,
           irrelevant_sentence_index:p.irrelevant_sentence_index,
           aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
-          grammar_items:gs.items,grammar_answer:p.grammar_answer,
-          vocab_items:vs.items,vocab_answer:p.vocab_answer,
-          flow:p.flow||{},grammar:p.grammar||{},
-          blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:undefined};
+          flow:p.flow||s.analysis?.flow||{},grammar:p.grammar||s.analysis?.grammar||{},
+          blockSummaries:Array.isArray(s.blockSummaries)?s.blockSummaries:undefined};
       });
       if(!entries.length){alert('저장할 분석 데이터가 없습니다.');setMainGhSaving(false);return;}
       const jsonText=entries.map(e=>JSON.stringify(e,null,2)).join(',\n\n');
@@ -1033,7 +1032,7 @@ function App(){
       alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
     }catch(e){alert('오류: '+e.message);}
     setMainGhSaving(false);
-  },[passages,ghToken,ghRepo]);
+  },[slots,ghToken,ghRepo]);
 
   const fetchPassages=useCallback(async()=>{
     if(loadedPassages.length>0){setShowLoad(true);return;}
@@ -1066,6 +1065,7 @@ function App(){
       meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
         number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
       status:'saved',
+      passageData:p,
       analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
       blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
       open:true
@@ -1084,6 +1084,7 @@ function App(){
         meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
           number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
         status:'saved',
+        passageData:p,
         analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
         blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
         open:i===0
