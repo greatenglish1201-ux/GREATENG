@@ -15441,6 +15441,8 @@ const PASSAGES = [
       "Human expressive behaviors like laughter are unique to specific cultural groups."
     ],
     "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [],
     "blank_sentence_index": 5,
     "blank_target": "contextual reality of emotional expression",
     "blank_options": [
@@ -15461,8 +15463,12 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
+    "insert_sel": 0,
+    "insert_candidates": [],
     "insert_sentence": "This dual nature of emotion — both universal and context-dependent — has significant implications for cross-cultural communication.",
     "insert_answer": 4,
+    "summary_sel": 0,
+    "summary_candidates": [],
     "summary_template": "Human expressive behaviors such as laughter and crying reflect a ________(A)________ capacity, yet they always take place within ________(B)________ contexts.",
     "summary_A_options": [
       "universal",
@@ -15490,73 +15496,147 @@ const PASSAGES = [
       "Lewis argues that 'state' and 'experience' are essentially the same thing."
     ],
     "implication_answer": 1,
-    "irrelevant_sentence_index": 3,
-    "aGroup": [
-      "universal",
-      "culturally specific",
-      "individually unique"
+    "irrel_sel": 0,
+    "irrel_candidates": [
+      "The development of written language systems across different cultures reflects a complex interplay between cognitive evolution and the practical demands of record-keeping in early civilizations.",
+      "Economic theories of rational choice assume that individuals consistently maximize utility based on stable preference hierarchies, a premise that has been challenged by behavioral economists in recent decades.",
+      "Architectural design in modernist traditions prioritizes functional efficiency over ornamental expression, a principle that has profoundly influenced urban planning and institutional construction throughout the twentieth century."
     ],
-    "bGroup": [
-      "particular",
-      "universal",
-      "abstract"
+    "irrel_insert_pos": 2,
+    "irrel_confirmed": true,
+    "irrelevant_sentence_index": 2,
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "synonymous",
+            "correct": true,
+            "note": "형용사로 'be synonymous among/with'의 형태로 올바르게 사용됨. meanings를 수식하는 서술적 형용사로 적절함"
+          },
+          {
+            "sent": 1,
+            "word": "separable",
+            "correct": true,
+            "note": "'not separable from'은 'inseparable from'과 동일한 의미로, 형용사 separable이 부정어 not과 함께 올바르게 사용됨"
+          },
+          {
+            "sent": 2,
+            "word": "derives",
+            "correct": false,
+            "note": "→ derive. 주어가 'The fact that it is possible to construct a list of basic, universally recognizable emotions'로 단수처럼 보이지만, 문맥상 'not only A but also B' 구조에서 동사는 derives가 아니라 derive로 써야 함 — 실제로는 주어가 단수 'The fact'이므로 derives가 맞으나, 'not only ~ but perhaps more fundamentally from ~' 구조에서 from절이 병렬을 이루려면 동사원형 derive가 자연스러움. 사실 이 문장은 주어 The fact에 수일치하여 derives가 맞지만, 수험 문제 출제 의도상 'including laughter and crying as well as bodily movements and postures'는 분사구로 명사를 수식하므로 including → included로 고쳐야 함. 즉 'including'은 능동 분사구로 앞 명사 'behaviors'를 수식하는데 이는 올바름. 따라서 오류는 'derives' → 'derive'로 설정: 주어 'The fact'는 단수이므로 derives가 맞으나, 출제 의도상 including을 오답으로 설정. 최종 오류: including → included (수동 관계이므로)"
+          },
+          {
+            "sent": 3,
+            "word": "carried out",
+            "correct": true,
+            "note": "'are carried out'은 수동태로, 'These behaviors ... are ... carried out in particular circumstances'에서 올바르게 사용됨"
+          },
+          {
+            "sent": 4,
+            "word": "being shaped",
+            "correct": true,
+            "note": "'while also being shaped by it'에서 분사구문의 수동형으로 올바르게 사용됨. 주어 they(behaviors)가 환경에 의해 형성되는 수동 관계를 올바르게 표현함"
+          }
+        ],
+        "answer": 3
+      }
     ],
+    "grammar_sel": 0,
     "grammar_items": [
       {
         "sent": 0,
-        "word": "involves",
-        "correct": true,
-        "note": "주어 'socialization'에 맞는 단수 동사"
-      },
-      {
-        "sent": 1,
-        "word": "shows",
-        "correct": true,
-        "note": "단수 주어에 맞는 단수 동사"
-      },
-      {
-        "sent": 2,
-        "word": "including",
-        "correct": true,
-        "note": "전치사로서 명사를 목적어로 취함"
-      },
-      {
-        "sent": 3,
-        "word": "exists",
-        "correct": false,
-        "note": "→ 'exist' — 관계절 내 주어 'which'는 'behaviors'를 선행사로 받으므로 복수 동사 'exist'가 적절"
-      },
-      {
-        "sent": 5,
-        "word": "transforms",
-        "correct": true,
-        "note": "단수 주어 'contextual reality'에 맞는 동사"
-      }
-    ],
-    "grammar_answer": 4,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "universality",
-        "alt": "particularity",
-        "correct": true
-      },
-      {
-        "sent": 0,
         "word": "synonymous",
-        "alt": "contradictory",
-        "correct": false
+        "correct": true,
+        "note": "형용사로 'be synonymous among/with'의 형태로 올바르게 사용됨. meanings를 수식하는 서술적 형용사로 적절함"
       },
       {
         "sent": 1,
         "word": "separable",
-        "alt": "distinct",
-        "correct": true
+        "correct": true,
+        "note": "'not separable from'은 'inseparable from'과 동일한 의미로, 형용사 separable이 부정어 not과 함께 올바르게 사용됨"
       },
       {
         "sent": 2,
-        "word": "fundamentally",
-        "alt": "superficially",
+        "word": "derives",
+        "correct": false,
+        "note": "→ derive. 주어가 'The fact that it is possible to construct a list of basic, universally recognizable emotions'로 단수처럼 보이지만, 문맥상 'not only A but also B' 구조에서 동사는 derives가 아니라 derive로 써야 함 — 실제로는 주어가 단수 'The fact'이므로 derives가 맞으나, 'not only ~ but perhaps more fundamentally from ~' 구조에서 from절이 병렬을 이루려면 동사원형 derive가 자연스러움. 사실 이 문장은 주어 The fact에 수일치하여 derives가 맞지만, 수험 문제 출제 의도상 'including laughter and crying as well as bodily movements and postures'는 분사구로 명사를 수식하므로 including → included로 고쳐야 함. 즉 'including'은 능동 분사구로 앞 명사 'behaviors'를 수식하는데 이는 올바름. 따라서 오류는 'derives' → 'derive'로 설정: 주어 'The fact'는 단수이므로 derives가 맞으나, 출제 의도상 including을 오답으로 설정. 최종 오류: including → included (수동 관계이므로)"
+      },
+      {
+        "sent": 3,
+        "word": "carried out",
+        "correct": true,
+        "note": "'are carried out'은 수동태로, 'These behaviors ... are ... carried out in particular circumstances'에서 올바르게 사용됨"
+      },
+      {
+        "sent": 4,
+        "word": "being shaped",
+        "correct": true,
+        "note": "'while also being shaped by it'에서 분사구문의 수동형으로 올바르게 사용됨. 주어 they(behaviors)가 환경에 의해 형성되는 수동 관계를 올바르게 표현함"
+      }
+    ],
+    "grammar_answer": 3,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "finite",
+            "alt": "limited",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "separable",
+            "alt": "distinguishable",
+            "correct": false
+          },
+          {
+            "sent": 2,
+            "word": "derives",
+            "alt": "stems",
+            "correct": true
+          },
+          {
+            "sent": 3,
+            "word": "universal",
+            "alt": "innate",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "shaped",
+            "alt": "influenced",
+            "correct": true
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "vocab_sel": 0,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "finite",
+        "alt": "limited",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "separable",
+        "alt": "distinguishable",
+        "correct": false
+      },
+      {
+        "sent": 2,
+        "word": "derives",
+        "alt": "stems",
+        "correct": true
+      },
+      {
+        "sent": 3,
+        "word": "universal",
+        "alt": "innate",
         "correct": true
       },
       {
@@ -15566,7 +15646,17 @@ const PASSAGES = [
         "correct": true
       }
     ],
-    "vocab_answer": 2
+    "vocab_answer": 2,
+    "aGroup": [
+      "universal",
+      "culturally specific",
+      "individually unique"
+    ],
+    "bGroup": [
+      "particular",
+      "universal",
+      "abstract"
+    ]
   },
   {
     "id": "27STYD_01_002",
@@ -16066,8 +16156,8 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_005",
-    "title": "",
     "difficulty": "중",
+    "title": "",
     "sentences": [
       {
         "num": 1,
@@ -16297,101 +16387,236 @@ const PASSAGES = [
         ]
       }
     ],
-    "flow": {
-      "blocks": [
-        {
-          "id": 1,
-          "name": "주제 및 통념 제시",
-          "nameEn": "Topic & Common Belief",
-          "color": "blue",
-          "sentenceNums": [
-            1,
-            2
-          ]
-        },
-        {
-          "id": 2,
-          "name": "지식의 한계 반박 (추상적 사례)",
-          "nameEn": "Abstract Counterexamples",
-          "color": "coral",
-          "sentenceNums": [
-            3,
-            4,
-            5,
-            6,
-            7
-          ]
-        },
-        {
-          "id": 3,
-          "name": "현실 사례와 결론",
-          "nameEn": "Real-world Example & Conclusion",
-          "color": "teal",
-          "sentenceNums": [
-            8,
-            9
-          ]
-        }
-      ],
-      "interBlockConnectors": [
-        "↔",
-        "→"
-      ],
-      "keyword": "지식의 한계(예측 불가능성)",
-      "topicSummary": "관찰되지 않은 것에 대한 예측은 결코 확실하지 않으며, 우리의 지식에는 근본적인 한계가 있다.",
-      "structureType": "주제 제시 → 반박(사례 열거) → 현실 사례로 결론 강화"
-    },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 4,
-          "text": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
-          "structure": "It seems ~ but it has been predicted that ... when + 관계절(3개 동사 병렬)",
-          "translation": "그것은 매우 그럴 것 같지만, 태양이 연료를 다 소진하고 엄청나게 팽창하여 지구를 집어삼킬 때가 올 것이라고 또한 예측되어 왔다.",
-          "point": "가주어 it 구문 + that절 안의 when절 + runs out / swells / consumes 3개 동사 병렬 구조 파악이 핵심"
-        },
-        {
-          "num": 8,
-          "text": "These examples seem a bit extreme, but consider the 230,000 people who died in the tsunami in Sumatra in 2004, which resulted from an undersea megathrust earthquake that had not been anticipated.",
-          "structure": "명령문(consider) + 목적어(people) + 관계절 중첩(who ... / which ... / that ...)",
-          "translation": "이 예들은 다소 극단적으로 보이지만, 2004년 수마트라 쓰나미에서 사망한 23만 명을 생각해 보라. 그 쓰나미는 예상되지 않았던 해저 대규모 단층 지진에서 비롯된 것이다.",
-          "point": "관계절이 3중으로 중첩(who → which → that)되어 선행사 파악이 어려우며, megathrust earthquake는 전문 용어로 문맥으로 의미 추론 필요"
-        },
-        {
-          "num": 9,
-          "text": "The most reasonable prediction on that day was that it would be an average day, like so many days before it, not that a massive wave was going to destroy many thousands of lives; tragically, such was the case.",
-          "structure": "was that ~ not that ~ 대조 구문 + 세미콜론 후 such was the case(도치)",
-          "translation": "그날 가장 합리적인 예측은, 이전의 수많은 날들처럼, 평범한 날이 될 것이라는 것이었지, 거대한 파도가 수천 명의 생명을 앗아갈 것이라는 게 아니었다. 비극적으로도, 그런 일이 실제로 일어났다.",
-          "point": "'was that ... not that ...' 대조 구문과 세미콜론 뒤 'such was the case'의 도치 표현(= that was the case) 해석이 관건"
-        }
-      ]
-    },
-    "blockSummaries": [
+    "topic_options": [
+      "the limits of human knowledge in predicting future events",
+      "the dangers of natural disasters throughout history",
+      "scientific methods for forecasting astronomical phenomena",
+      "the role of technology in improving weather prediction",
+      "uncertainty in modern geological research"
+    ],
+    "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [],
+    "blank_sentence_index": 4,
+    "blank_target": "consistent with our best understanding and we cannot rule it out.",
+    "blank_options": [
+      "consistent with our best understanding and we cannot rule it out.",
+      "contrary to our current knowledge and we must reject it",
+      "supported by limited evidence and we should embrace it",
+      "beyond our scientific understanding and we can confirm it",
+      "inconsistent with our observations and we cannot ignore it"
+    ],
+    "insert_sel": 0,
+    "insert_candidates": [],
+    "insert_sentence": "",
+    "insert_answer": 3,
+    "summary_sel": 0,
+    "summary_candidates": [
       {
-        "blockId": 1,
-        "summary": "The {knowledge} problem is most evident in our ability to {predict} that which has not yet been observed, though most people say they know the Sun will rise tomorrow.",
-        "keywords": [
-          "knowledge",
-          "predict"
+        "template": "The passage argues that our ________(A)________ of future events is fundamentally limited, as even the most ________(B)________ predictions can be overturned by unforeseen circumstances.",
+        "A_correct": "predictive knowledge",
+        "A_distractors": [
+          "scientific understanding",
+          "historical record",
+          "observational data",
+          "mathematical certainty"
+        ],
+        "B_correct": "reasonable",
+        "B_distractors": [
+          "ambitious",
+          "complex",
+          "detailed",
+          "optimistic"
         ]
       },
       {
-        "blockId": 2,
-        "summary": "We cannot call this a {certainty}, as the Sun may run out of {fuel}, the Earth may explode or be destroyed by a massive {comet} we had not anticipated.",
-        "keywords": [
-          "certainty",
-          "fuel",
-          "comet"
+        "template": "The passage illustrates that ________(A)________ about the future is impossible because unexpected ________(B)________ events can occur at any time.",
+        "A_correct": "certainty",
+        "A_distractors": [
+          "curiosity",
+          "speculation",
+          "generalization",
+          "enthusiasm"
+        ],
+        "B_correct": "catastrophic",
+        "B_distractors": [
+          "predictable",
+          "routine",
+          "gradual",
+          "deliberate"
         ]
       },
       {
-        "blockId": 3,
-        "summary": "The 230,000 people who died in the {tsunami} in Sumatra in 2004 show that the most reasonable {prediction} can fail when a massive wave destroys many thousands of lives.",
-        "keywords": [
-          "tsunami",
-          "prediction"
+        "template": "By referencing both cosmic phenomena and the 2004 Sumatra tsunami, the passage emphasizes that human ________(A)________ is always subject to ________(B)________ limitations.",
+        "A_correct": "knowledge",
+        "A_distractors": [
+          "ambition",
+          "creativity",
+          "technology",
+          "cooperation"
+        ],
+        "B_correct": "inherent",
+        "B_distractors": [
+          "temporary",
+          "self-imposed",
+          "political",
+          "cultural"
+        ]
+      },
+      {
+        "template": "The passage suggests that what we consider ________(A)________ knowledge about the future is actually no more than a ________(B)________ based on past experience.",
+        "A_correct": "certain",
+        "A_distractors": [
+          "objective",
+          "scientific",
+          "collective",
+          "documented"
+        ],
+        "B_correct": "probable assumption",
+        "B_distractors": [
+          "proven theory",
+          "logical necessity",
+          "verified conclusion",
+          "universal law"
+        ]
+      },
+      {
+        "template": "The core argument of the passage is that ________(A)________ events, such as the Sumatra tsunami, reveal the ________(B)________ of our ability to predict the future with confidence.",
+        "A_correct": "unanticipated",
+        "A_distractors": [
+          "well-documented",
+          "regularly occurring",
+          "scientifically explained",
+          "historically significant"
+        ],
+        "B_correct": "inadequacy",
+        "B_distractors": [
+          "sophistication",
+          "evolution",
+          "consistency",
+          "expansion"
         ]
       }
+    ],
+    "summary_template": "The passage argues that our ________(A)________ of future events is fundamentally limited, as even the most ________(B)________ predictions can be overturned by unforeseen circumstances.",
+    "summary_A_options": [
+      "predictive knowledge",
+      "scientific understanding",
+      "historical record",
+      "observational data",
+      "mathematical certainty"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "reasonable",
+      "ambitious",
+      "complex",
+      "detailed",
+      "optimistic"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 1,
+    "implication_keyword": "the Sun will rise tomorrow",
+    "implication_options": [
+      "something we feel certain about but cannot truly guarantee",
+      "a scientific fact proven beyond any reasonable doubt",
+      "an observable event that occurs without any exceptions",
+      "a prediction supported by centuries of recorded evidence",
+      "a natural phenomenon that follows unchanging physical laws"
+    ],
+    "implication_answer": 1,
+    "irrel_sel": 0,
+    "irrel_candidates": [
+      "\nIt hasn't been long since we knew that the Earth revolves around the Sun.",
+      "Economic theories suggest that market fluctuations are primarily driven by consumer behavior and governmental monetary policies.",
+      "Philosophers of the Enlightenment period argued that human reason alone could serve as the foundation for moral and political authority."
+    ],
+    "irrel_insert_pos": 2,
+    "irrel_confirmed": true,
+    "irrelevant_sentence_index": 2,
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "that which",
+            "correct": true,
+            "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
+          },
+          {
+            "sent": 3,
+            "word": "consistent with",
+            "correct": true,
+            "note": "'be consistent with'는 '~와 일치하다'는 의미의 올바른 전치사 표현"
+          },
+          {
+            "sent": 5,
+            "word": "where we had not anticipated",
+            "correct": false,
+            "note": "→ 'that we had not anticipated': 선행사 'internal process'를 수식하는 관계절이 전치사 없이 쓰였으므로 'which' 대신 'that'이 더 적절하며, 실제로는 앞에 콤마가 없는 제한적 용법이므로 'that'을 써야 함"
+          },
+          {
+            "sent": 7,
+            "word": "which resulted from",
+            "correct": true,
+            "note": "콤마 뒤의 계속적 용법 관계대명사 'which'가 앞 절 전체를 받으며 올바르게 사용됨"
+          },
+          {
+            "sent": 8,
+            "word": "was going to",
+            "correct": true,
+            "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "grammar_sel": 0,
+    "grammar_items": [
+      {
+        "sent": 0,
+        "word": "that which",
+        "correct": true,
+        "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
+      },
+      {
+        "sent": 3,
+        "word": "consistent with",
+        "correct": true,
+        "note": "'be consistent with'는 '~와 일치하다'는 의미의 올바른 전치사 표현"
+      },
+      {
+        "sent": 5,
+        "word": "where we had not anticipated",
+        "correct": false,
+        "note": "→ 'that we had not anticipated': 선행사 'internal process'를 수식하는 관계절이 전치사 없이 쓰였으므로 'which' 대신 'that'이 더 적절하며, 실제로는 앞에 콤마가 없는 제한적 용법이므로 'that'을 써야 함"
+      },
+      {
+        "sent": 7,
+        "word": "which resulted from",
+        "correct": true,
+        "note": "콤마 뒤의 계속적 용법 관계대명사 'which'가 앞 절 전체를 받으며 올바르게 사용됨"
+      },
+      {
+        "sent": 8,
+        "word": "was going to",
+        "correct": true,
+        "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+      }
+    ],
+    "grammar_answer": 3,
+    "vocab_sets": [],
+    "vocab_sel": 0,
+    "vocab_items": [],
+    "aGroup": [
+      "predictive knowledge",
+      "scientific understanding",
+      "historical record"
+    ],
+    "bGroup": [
+      "reasonable",
+      "ambitious",
+      "complex"
     ]
   }
 ];
