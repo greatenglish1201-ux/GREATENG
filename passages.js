@@ -16408,7 +16408,7 @@ const PASSAGES = [
     ],
     "insert_sel": 0,
     "insert_candidates": [],
-    "insert_sentence": "",
+    "insert_sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
     "insert_answer": 3,
     "summary_sel": 0,
     "summary_candidates": [
@@ -16605,9 +16605,77 @@ const PASSAGES = [
       }
     ],
     "grammar_answer": 3,
-    "vocab_sets": [],
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "evident",
+            "alt": "apparent",
+            "correct": true
+          },
+          {
+            "sent": 3,
+            "word": "consistent",
+            "alt": "compatible",
+            "correct": true
+          },
+          {
+            "sent": 5,
+            "word": "anticipated",
+            "alt": "predicted",
+            "correct": true
+          },
+          {
+            "sent": 6,
+            "word": "massive",
+            "alt": "tiny",
+            "correct": false
+          },
+          {
+            "sent": 7,
+            "word": "extreme",
+            "alt": "excessive",
+            "correct": true
+          }
+        ],
+        "answer": 4
+      }
+    ],
     "vocab_sel": 0,
-    "vocab_items": [],
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "evident",
+        "alt": "apparent",
+        "correct": true
+      },
+      {
+        "sent": 3,
+        "word": "consistent",
+        "alt": "compatible",
+        "correct": true
+      },
+      {
+        "sent": 5,
+        "word": "anticipated",
+        "alt": "predicted",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "massive",
+        "alt": "tiny",
+        "correct": false
+      },
+      {
+        "sent": 7,
+        "word": "extreme",
+        "alt": "excessive",
+        "correct": true
+      }
+    ],
+    "vocab_answer": 4,
     "aGroup": [
       "predictive knowledge",
       "scientific understanding",
