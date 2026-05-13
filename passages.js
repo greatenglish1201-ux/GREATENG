@@ -16553,7 +16553,7 @@ const PASSAGES = [
             "sent": 5,
             "word": "where we had not anticipated",
             "correct": false,
-            "note": "→ 'that we had not anticipated': 선행사 'internal process'를 수식하는 관계절이 전치사 없이 쓰였으므로 'which' 대신 'that'이 더 적절하며, 실제로는 앞에 콤마가 없는 제한적 용법이므로 'that'을 써야 함"
+            "note": "where -> which"
           },
           {
             "sent": 7,
@@ -16589,7 +16589,7 @@ const PASSAGES = [
         "sent": 5,
         "word": "where we had not anticipated",
         "correct": false,
-        "note": "→ 'that we had not anticipated': 선행사 'internal process'를 수식하는 관계절이 전치사 없이 쓰였으므로 'which' 대신 'that'이 더 적절하며, 실제로는 앞에 콤마가 없는 제한적 용법이므로 'that'을 써야 함"
+        "note": "where -> which"
       },
       {
         "sent": 7,
