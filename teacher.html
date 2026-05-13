@@ -535,6 +535,13 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
         pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];
         pd.vocab_sel=0;
       }
+      if(pd.insert_candidates?.length){
+        pd.insert_candidates=pd.insert_candidates.filter(c=>c&&typeof c==='object'&&c.sentence);
+      }
+      if((!pd.insert_candidates||!pd.insert_candidates.length)&&pd.insert_sentence){
+        pd.insert_candidates=[{sentence:pd.insert_sentence,pos:pd.insert_answer||1}];
+        pd.insert_sel=0;
+      }
       return[{id:0,rawText:normed.map(s=>typeof s==='string'?s:s.text||'').join(' '),data:pd,error:null,loading:false}];
     }
     return[];
@@ -1148,24 +1155,39 @@ Return JSON only:
     </div>;
 
     if(at===6)return<div>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
-        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 삽입 문장 선택</div>
+      {/* 현재 선택 상태 */}
+      <div style={{marginBottom:12,padding:'10px 12px',background:'#534AB708',border:'1px solid #534AB733',borderRadius:8}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#534AB7',marginBottom:6}}>현재 선택</div>
+        <div style={{fontSize:12,color:'#534AB7',fontWeight:600,marginBottom:4,lineHeight:1.5}}>
+          {p.insert_sentence||<span style={{color:'#bbb',fontWeight:400}}>삽입 문장 없음 — 아래에서 입력하거나 AI 생성</span>}
+        </div>
+        <div style={{fontSize:11,color:'#888'}}>삽입 위치: <b style={{color:'#534AB7'}}>[{p.insert_answer}] 앞</b> <span style={{color:'#bbb'}}>(왼쪽 본문에서 ▶ 클릭으로 변경)</span></div>
+      </div>
+      {/* 삽입 문장 직접 입력 */}
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:5}}>① 삽입 문장 직접 입력/수정</div>
+      <LocalTextarea value={p.insert_sentence||''} onSave={v=>upP({insert_sentence:v})} rows={3}
+        style={{width:'100%',fontSize:12,padding:'7px',border:'1px solid #534AB733',borderRadius:7,resize:'vertical',marginBottom:10}}/>
+      {/* AI 후보 */}
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>② AI 추천 후보</div>
         {genLoading==='insert'
           ?<span style={{fontSize:11,color:'#534AB7'}}>⏳ AI 생성 중...</span>
-          :<button onClick={()=>genInsertCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #534AB7',background:'#534AB710',color:'#534AB7',cursor:'pointer'}}>↻ 후보 재생성</button>}
+          :<button onClick={()=>genInsertCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #534AB7',background:'#534AB710',color:'#534AB7',cursor:'pointer'}}>↻ 후보 생성</button>}
       </div>
-      {(!p.insert_candidates||p.insert_candidates.length===0)&&genLoading!=='insert'&&
-        <div style={{padding:'10px 12px',background:'#F0EEFF',border:'0.5px solid #534AB740',borderRadius:7,fontSize:12,color:'#534AB7',marginBottom:8}}>
-          후보가 없습니다. ↻ 버튼으로 AI 생성하세요.
+      {(!p.insert_candidates||p.insert_candidates.filter(c=>c?.sentence).length===0)&&genLoading!=='insert'&&
+        <div style={{padding:'8px 12px',background:'#F0EEFF',border:'0.5px solid #534AB740',borderRadius:7,fontSize:12,color:'#534AB7',marginBottom:6}}>
+          ↻ 버튼으로 AI 후보를 생성하세요.
         </div>}
-      {p.insert_candidates?.filter(c=>c?.sentence).map((c,ci)=><button key={ci} onClick={()=>upP({insert_sel:ci,insert_sentence:c.sentence,insert_answer:c.pos})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.insert_sel===ci?'#534AB710':'transparent',border:`1px solid ${p.insert_sel===ci?'#534AB7':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
-        {p.insert_sel===ci&&bdg('✓','#534AB7')}{ci===0&&bdg('AI 추천','#854F0B')}
-        <div style={{fontSize:12,lineHeight:1.6,marginTop:4}}>{c.sentence}</div>
-        <div style={{fontSize:11,color:'#bbb',marginTop:2}}>삽입 위치: [{c.pos}] 앞</div>
-      </button>)}
-      <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
-      <LocalTextarea value={p.insert_sentence||''} onSave={v=>upP({insert_sentence:v})} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical'}}/>
+      {p.insert_candidates?.filter(c=>c?.sentence).map((c,ci)=>{
+        const isSel=p.insert_sel===ci&&p.insert_sentence===c.sentence;
+        return<button key={ci} onClick={()=>upP({insert_sel:ci,insert_sentence:c.sentence,insert_answer:c.pos})}
+          style={{display:'block',width:'100%',textAlign:'left',marginBottom:6,background:isSel?'#534AB712':'transparent',
+            border:`1px solid ${isSel?'#534AB7':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',cursor:'pointer'}}>
+          {isSel&&bdg('✓ 선택됨','#534AB7')}{ci===0&&!isSel&&bdg('AI 추천','#854F0B')}
+          <div style={{fontSize:12,lineHeight:1.55,marginTop:4,color:isSel?'#534AB7':'#1d1d1f',fontWeight:isSel?600:400}}>{c.sentence}</div>
+          <div style={{fontSize:11,color:'#bbb',marginTop:3}}>권장 삽입위치 [{c.pos}] 앞</div>
+        </button>;
+      })}
     </div>;
 
     if(at===7||at===8){
@@ -1822,7 +1844,7 @@ function App(){
                       found=ps.find(p=>p.id===pid);
                     }catch(e){}
                   }
-                  passageData=found||null;
+                  passageData=found?restorePassageData(found):null;
                 }
                 setAuthorInitPassageData(passageData);
                 setAuthorKey(k=>k+1);
