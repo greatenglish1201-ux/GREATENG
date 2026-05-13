@@ -15861,12 +15861,6 @@ const PASSAGES = [
     "grammar_answer": 4,
     "vocab_items": [
       {
-        "sent": 0,
-        "word": "expressive",
-        "alt": "suppressive",
-        "correct": true
-      },
-      {
         "sent": 2,
         "word": "fundamental",
         "alt": "superficial",
@@ -15889,9 +15883,16 @@ const PASSAGES = [
         "word": "locus",
         "alt": "center",
         "correct": true
+      },
+      {
+        "sent": 10,
+        "word": "fit",
+        "correct": true,
+        "note": "",
+        "alt": ""
       }
     ],
-    "vocab_answer": 2
+    "vocab_answer": 1
   },
   {
     "id": "27STYD_01_004",
