@@ -678,10 +678,16 @@ Return JSON only:
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.items?.length)throw new Error('항목 없음');
       upPDeep(p=>{
-        const sets=[...(isG?p.grammar_sets:p.vocab_sets)];
+        const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
         const sel=isG?p.grammar_sel:p.vocab_sel;
-        sets[sel]={...sets[sel],items:parsed.items,answer:parsed.answer||1};
-        return isG?{...p,grammar_sets:sets,grammar_answer:parsed.answer||1}:{...p,vocab_sets:sets,vocab_answer:parsed.answer||1};
+        const items=parsed.items.map(it=>({...it,sent:Number(it.sent)}));
+        const newSet={items,answer:parsed.answer||1};
+        if(sets.length===0){sets.push(newSet);}
+        else{sets[sel<sets.length?sel:0]=newSet;}
+        const newSel=sel<sets.length?sel:0;
+        return isG
+          ?{...p,grammar_sets:sets,grammar_sel:newSel,grammar_answer:parsed.answer||1}
+          :{...p,vocab_sets:sets,vocab_sel:newSel,vocab_answer:parsed.answer||1};
       });
     }catch(e){alert('재생성 실패: '+e.message);}
     setGenLoading('');
@@ -778,32 +784,70 @@ Return JSON only:
       const isG=at===7;
       const sets=isG?p.grammar_sets:p.vocab_sets;
       const sel=isG?p.grammar_sel:p.vocab_sel;
-      const curItems=sets?.[sel]?.items||[];
+      const curItems=(sets&&sel<(sets||[]).length)?sets[sel]?.items||[]:[];
       // 지문 순서(sent) 기준으로 정렬된 번호 맵
-      const sortedItems=[...curItems].sort((a,b)=>a.sent-b.sent);
+      const sortedItems=[...curItems].sort((a,b)=>Number(a.sent)-Number(b.sent));
       const numMap=new Map(sortedItems.map((it,idx)=>[it,idx+1]));
-      const words=s.split(/(\s+)/);
-      return<span style={{fontSize:12,lineHeight:1.8}}>{words.map((w,wi)=>{
-        if(!w.trim())return<span key={wi}>{w}</span>;
-        const item=curItems.find(it=>it.sent===i&&it.word===w);
-        const c=item?(item.correct?'#185FA5':'#E24B4A'):null;
-        const num=item?numMap.get(item):null;
-        return<span key={wi}
+      // 이 문장에 해당하는 항목들 (phrase 포함)
+      const sentItems=curItems.filter(it=>Number(it.sent)===i);
+      if(!sentItems.length){
+        // 항목 없는 문장 - 클릭 가능하게 단어 단위 렌더
+        const words=s.split(/(\s+)/);
+        return<span style={{fontSize:12,lineHeight:1.8}}>{words.map((w,wi)=>{
+          if(!w.trim())return<span key={wi}>{w}</span>;
+          return<span key={wi}
+            onClick={()=>{
+              if(w.trim().length<2)return;
+              upPDeep(p=>{
+                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+                const si=isG?p.grammar_sel:p.vocab_sel;
+                if(!ss[si])ss[si]={items:[],answer:1};
+                ss[si]={...ss[si],items:[...ss[si].items,{sent:i,word:w,correct:true,note:'',alt:''}]};
+                return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};
+              });
+            }}
+            style={{padding:'0 2px',borderBottom:'1px dashed transparent',cursor:'pointer'}}
+            onMouseEnter={e=>{if(w.trim().length>1)e.target.style.background='#1d1d1f11';}}
+            onMouseLeave={e=>{e.target.style.background='transparent';}}
+          >{w}</span>;
+        })}</span>;
+      }
+      // 항목 있는 문장 - substring 하이라이트
+      const parts=[];
+      let remain=s;let offset=0;
+      // sent 항목들을 문장 내 위치 순으로 정렬
+      const positioned=sentItems.map(it=>{const idx=s.indexOf(it.word);return{it,idx};}).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
+      positioned.forEach(({it,idx})=>{
+        if(idx>offset)parts.push(<span key={offset}
           onClick={()=>{
-            if(w.trim().length<2)return;
-            if(item){
-              // 이미 있으면 제거
-              upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=sets[sel].items.filter(it=>!(it.sent===i&&it.word===w));sets[sel]={...sets[sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});
-            } else {
-              // 새 항목 추가
-              upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[sel].items,{sent:i,word:w,correct:true,note:'',alt:''}];sets[sel]={...sets[sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});
-            }
+            upPDeep(p=>{
+              const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+              const si=isG?p.grammar_sel:p.vocab_sel;
+              if(!ss[si])return p;
+              // 클릭한 위치의 단어를 새 항목으로 추가 (빈 영역 클릭 시)
+              return p;
+            });
           }}
-          style={{background:c?c+'22':'transparent',borderBottom:c?'2px solid '+c:'1px dashed transparent',fontWeight:c?700:400,padding:'0 2px',color:c||'inherit',borderRadius:2,cursor:'pointer',transition:'background .1s'}}
-          onMouseEnter={e=>{if(!item&&w.trim().length>1)e.target.style.background='#1d1d1f11';}}
-          onMouseLeave={e=>{if(!item)e.target.style.background='transparent';}}
-        >{num?`${num}. `:''}{w}</span>;
-      })}</span>;
+          style={{cursor:'default'}}>{s.slice(offset,idx)}</span>);
+        const c=it.correct?'#185FA5':'#E24B4A';
+        const num=numMap.get(it);
+        parts.push(<span key={idx}
+          onClick={()=>{
+            upPDeep(p=>{
+              const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+              const si=isG?p.grammar_sel:p.vocab_sel;
+              if(!ss[si])return p;
+              ss[si]={...ss[si],items:ss[si].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};
+              return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};
+            });
+          }}
+          style={{background:c+'22',borderBottom:'2px solid '+c,fontWeight:700,padding:'0 2px',color:c,borderRadius:2,cursor:'pointer'}}>
+          {num?`${num}. `:''}{it.word}
+        </span>);
+        offset=idx+it.word.length;
+      });
+      if(offset<s.length)parts.push(<span key={offset} style={{cursor:'default'}}>{s.slice(offset)}</span>);
+      return<span style={{fontSize:12,lineHeight:1.8}}>{parts}</span>;
     }
     return<span style={{fontSize:12,lineHeight:1.6,color:'#555'}}>{s}</span>;
   };
@@ -833,7 +877,7 @@ Return JSON only:
       else if(at===1){p.blank_candidates?.forEach((c,ci)=>{if(ci!==p.blank_sel&&c.sentence_index===i){bg='#854F0B06';bl='3px solid #854F0B33';}});}
       else if(at===2){const bl2=getBlockLabel(p,i);if(bl2){const bc2=BLK_C[bl2];bg=bc2+'12';bl='3px solid '+bc2;}}
       else if(at===4&&i===p.implication_sentence_index){bg='#99355610';bl='3px solid #993556';}
-      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?p.grammar_sel:p.vocab_sel;const item=sets?.[sel]?.items?.find(it=>it.sent===i);if(item){const c=item.correct?'#185FA5':'#E24B4A';bg=c+'08';bl='3px solid '+c;}}
+      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?p.grammar_sel:p.vocab_sel;const item=sets?.[sel]?.items?.find(it=>Number(it.sent)===i);if(item){const c=item.correct?'#185FA5':'#E24B4A';bg=c+'08';bl='3px solid '+c;}}
       rows.push(<div key={i} style={{display:'flex',gap:6,marginBottom:5,padding:'5px 8px',borderRadius:6,background:bg,borderLeft:bl}}>
         <span style={{color:'#bbb',fontFamily:'monospace',fontSize:11,flexShrink:0,marginTop:2,minWidth:20}}>[{i}]</span>
         {at===2&&getBlockLabel(p,i)&&<span style={{fontSize:11,fontWeight:700,color:BLK_C[getBlockLabel(p,i)],marginRight:2,flexShrink:0,marginTop:2}}>({getBlockLabel(p,i)})</span>}
