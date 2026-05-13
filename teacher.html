@@ -570,22 +570,40 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
   const renderSent=(p,s,i)=>{
     const bc=p.blank_candidates?.[p.blank_sel];
     if(at===1){
-      // 단어 클릭으로 빈칸 지정
-      const words=s.split(/(\s+|(?=[^a-zA-Z0-9'])|(?<=[^a-zA-Z0-9']))/);
       const isTarget=bc?.sentence_index===i;
-      return<span style={{fontSize:12,lineHeight:1.8,cursor:'pointer'}}>{words.map((w,wi)=>{
-        if(!w.trim())return<span key={wi}>{w}</span>;
-        const isBlank=isTarget&&bc?.keyword===w;
-        return<span key={wi} onClick={()=>{if(w.trim().length>1)upPDeep(p=>({...p,blank_sentence_index:i,blank_target:w,blank_options:[w,'','','',''],blank_sel:-1}));}}
-          style={{background:isBlank?'#993C1D22':'transparent',borderBottom:isBlank?'2px solid #993C1D':'1px dashed transparent',fontWeight:isBlank?700:400,padding:'0 1px',color:isBlank?'#993C1D':'inherit',borderRadius:2,transition:'background .1s'}}
-          onMouseEnter={e=>{if(w.trim().length>1)e.target.style.background='#993C1D11';}}
-          onMouseLeave={e=>{if(!isBlank)e.target.style.background='transparent';}}
-        >{w}</span>;
-      })}</span>;
+      const isBlankSent=isTarget&&bc?.keyword;
+      return<span
+        style={{fontSize:12,lineHeight:1.8,cursor:'text',userSelect:'text'}}
+        onMouseUp={()=>{
+          const sel=window.getSelection();
+          const txt=sel?.toString().trim();
+          if(txt&&txt.length>1){
+            upPDeep(p=>({...p,blank_sentence_index:i,blank_target:txt,blank_options:[txt,...(p.blank_options||[]).slice(1)],blank_sel:-1}));
+            sel.removeAllRanges();
+          }
+        }}
+      >{isBlankSent
+        ?(()=>{const idx=s.indexOf(bc.keyword);if(idx<0)return s;return<>{s.slice(0,idx)}<span style={{background:'#993C1D22',borderBottom:'2px solid #993C1D',fontWeight:700,color:'#993C1D',padding:'0 2px'}}>{bc.keyword}</span>{s.slice(idx+bc.keyword.length)}</>})()
+        :s
+      }</span>;
     }
-    if(at===4&&i===p.implication_sentence_index&&p.implication_keyword){
-      const idx=s.indexOf(p.implication_keyword);
-      if(idx>=0)return<span style={{fontSize:12,lineHeight:1.6}}>{s.slice(0,idx)}<u style={{textDecorationColor:'#993556',fontWeight:600}}>{p.implication_keyword}</u>{s.slice(idx+p.implication_keyword.length)}</span>;
+    if(at===4){
+      const isTarget=i===p.implication_sentence_index;
+      const kw=p.implication_keyword;
+      return<span
+        style={{fontSize:12,lineHeight:1.8,cursor:'text',userSelect:'text',background:isTarget?'#99355608':'transparent',borderRadius:4,padding:'1px 2px'}}
+        onMouseUp={()=>{
+          const sel=window.getSelection();
+          const txt=sel?.toString().trim();
+          if(txt&&txt.length>1){
+            upP({implication_sentence_index:i,implication_keyword:txt});
+            sel.removeAllRanges();
+          }
+        }}
+      >{isTarget&&kw
+        ?(()=>{const ki=s.indexOf(kw);if(ki<0)return s;return<>{s.slice(0,ki)}<u style={{textDecorationColor:'#993556',fontWeight:700,color:'#993556'}}>{kw}</u>{s.slice(ki+kw.length)}</>;})()
+        :s
+      }</span>;
     }
     if((at===7||at===8)){
       const isG=at===7;
@@ -729,10 +747,19 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
     </div>;
 
     if(at===4)return<div>
-      <div style={{padding:'8px 10px',background:'#99355610',borderRadius:7,marginBottom:10,fontSize:12}}>
-        <b style={{color:'#993556'}}>밑줄 표현:</b> {p.implication_keyword}<div style={{color:'#888',fontSize:11,marginTop:2}}>문장 [{p.implication_sentence_index}]</div>
+      <div style={{marginBottom:10}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:4}}>밑줄 표현 (지문에서 드래그로 변경)</div>
+        <div style={{padding:'7px 10px',background:'#99355610',borderRadius:7,fontSize:13,color:'#993556',fontWeight:600}}>
+          {p.implication_keyword||'미선택'} <span style={{fontSize:11,color:'#bbb',fontWeight:400}}>문장[{p.implication_sentence_index}]</span>
+        </div>
       </div>
-      {p.implication_options?.map((o,i)=>optBtn(p.implication_answer===i+1,i===0,i+1,o,()=>upP({implication_answer:i+1})))}
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>선지 편집 &amp; 정답 선택</div>
+      {p.implication_options?.map((o,i)=>{const isSel=p.implication_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
+        <button onClick={()=>upP({implication_answer:i+1})} style={{minWidth:28,height:28,borderRadius:14,border:`1px solid ${isSel?'#993556':'#ddd'}`,background:isSel?'#993556':'transparent',color:isSel?'#fff':'#999',fontSize:12,cursor:'pointer',fontWeight:700}}>{i+1}</button>
+        <input value={o} onChange={e=>{const opts=[...p.implication_options];opts[i]=e.target.value;upP({implication_options:opts});}}
+          style={{flex:1,fontSize:13,padding:'6px 9px',borderRadius:7,border:`1px solid ${isSel?'#993556':'#e5e5e5'}`,fontWeight:isSel?600:400,color:isSel?'#993556':'#1d1d1f'}}/>
+        {isSel&&<span style={{fontSize:11,color:'#993556',whiteSpace:'nowrap'}}>✓ 정답</span>}
+      </div>;})}
     </div>;
 
     if(at===5)return<div>
@@ -794,7 +821,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
           return<div key={ii} style={{marginBottom:8,border:`1px solid ${isSel?'#E24B4A':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',background:isSel?'#E24B4A08':'#fff'}}>
             <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
               <span style={{fontSize:11,color:'#bbb',minWidth:18}}>{ii+1}.</span>
-              <input value={item.word} onChange={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
+              <input key={`word-${ii}`} defaultValue={item.word} onBlur={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
                 style={{flex:1,border:'1px solid #ddd',borderRadius:6,padding:'4px 8px',fontSize:13,fontWeight:700}}/>
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],correct:!items[ii].correct};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:`1px solid ${item.correct?'#185FA5':'#E24B4A'}`,background:item.correct?'#185FA518':'#E24B4A18',color:item.correct?'#185FA5':'#E24B4A',cursor:'pointer',whiteSpace:'nowrap'}}>
@@ -806,7 +833,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=sets[isG?p.grammar_sel:p.vocab_sel].items.filter((_,i)=>i!==ii);sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets,grammar_answer:1}:{...p,vocab_sets:sets,vocab_answer:1};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:'1px solid #fcc',background:'#fff5f5',color:'#E24B4A',cursor:'pointer'}}>삭제</button>
             </div>
-            <input value={isG?item.note:(item.alt||'')} onChange={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:e.target.value}:{...items[ii],alt:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
+            <input key={`note-${ii}`} defaultValue={isG?item.note:(item.alt||'')} onBlur={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:e.target.value}:{...items[ii],alt:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
               placeholder={isG?'어법 설명':'대체 표현'} style={{width:'100%',border:'1px solid #eee',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#888',boxSizing:'border-box'}}/>
           </div>;
         })}
