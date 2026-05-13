@@ -747,6 +747,35 @@ Return JSON only:
     setGenLoading('');
   };
 
+  const genInsertCandidates=async(pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    setGenLoading('insert');
+    try{
+      const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='You must return ONLY a single valid JSON object. No markdown. No explanation. Start with { and end with }.';
+      const prompt=`You are a Korean CSAT English exam expert.
+Passage:
+${passage}
+
+Generate 3 sentence insertion candidates.
+Each candidate must:
+- Be a sentence that logically belongs in the passage but is REMOVED
+- Have a clear insertion position (pos = index before which it should be inserted, 0-based)
+- The sentence should flow naturally before sentence[pos]
+
+Return JSON only:
+{"candidates":[{"sentence":"insert sentence 1","pos":2},{"sentence":"insert sentence 2","pos":4},{"sentence":"insert sentence 3","pos":3}]}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      if(!parsed.candidates?.length)throw new Error('후보 없음');
+      const first=parsed.candidates[0];
+      upPDeep(p=>({...p,
+        insert_candidates:parsed.candidates,insert_sel:0,
+        insert_sentence:first.sentence,insert_answer:first.pos}));
+    }catch(e){alert('삽입문장 생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
   const genImplicationOptions=async(sentIdx,keyword,pData)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
     setGenLoading('implication');
@@ -886,9 +915,18 @@ Return JSON only:
       };
       const positioned=sentItems.map(it=>{const idx=findWordIdx(s,it.word);return{it,idx};}).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
       if(!positioned.length){
-        // word가 본문에 없는 경우 - 문장 전체에 오류 색 배경만 표시
-        const fc=sentItems.some(it=>!it.correct)?'#E24B4A':'#185FA5';
-        return<span style={{fontSize:12,lineHeight:1.8,background:fc+'11',borderRadius:3,padding:'0 2px'}}>{s}</span>;
+        // word가 본문에 없는 경우 - 문장 앞에 항목 번호+단어 인라인 표시
+        return<span style={{fontSize:12,lineHeight:1.8}}>
+          {sentItems.map((it,k)=>{
+            const c2=it.correct?'#185FA5':'#E24B4A';
+            const num2=numMap.get(it);
+            return<span key={k} style={{display:'inline-flex',alignItems:'center',marginRight:4,padding:'0 6px',borderRadius:12,background:c2+'18',border:`1px solid ${c2}44`,color:c2,fontWeight:700,fontSize:11,cursor:'pointer'}}
+              onClick={()=>{upPDeep(p=>{const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
+              {num2?`${num2}. `:''}{it.word} ✕
+            </span>;
+          })}
+          <span style={{color:'#aaa',fontStyle:'italic'}}>{s}</span>
+        </span>;
       }
       positioned.forEach(({it,idx})=>{
         if(idx<offset)return; // 이미 처리된 영역 건너뜀
@@ -1110,10 +1148,20 @@ Return JSON only:
     </div>;
 
     if(at===6)return<div>
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 삽입 문장 선택</div>
-      {p.insert_candidates?.map((c,ci)=><button key={ci} onClick={()=>upP({insert_sel:ci,insert_sentence:c.sentence,insert_answer:c.pos})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.insert_sel===ci?'#534AB710':'transparent',border:`1px solid ${p.insert_sel===ci?'#534AB7':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+        <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 삽입 문장 선택</div>
+        {genLoading==='insert'
+          ?<span style={{fontSize:11,color:'#534AB7'}}>⏳ AI 생성 중...</span>
+          :<button onClick={()=>genInsertCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #534AB7',background:'#534AB710',color:'#534AB7',cursor:'pointer'}}>↻ 후보 재생성</button>}
+      </div>
+      {(!p.insert_candidates||p.insert_candidates.length===0)&&genLoading!=='insert'&&
+        <div style={{padding:'10px 12px',background:'#F0EEFF',border:'0.5px solid #534AB740',borderRadius:7,fontSize:12,color:'#534AB7',marginBottom:8}}>
+          후보가 없습니다. ↻ 버튼으로 AI 생성하세요.
+        </div>}
+      {p.insert_candidates?.filter(c=>c?.sentence).map((c,ci)=><button key={ci} onClick={()=>upP({insert_sel:ci,insert_sentence:c.sentence,insert_answer:c.pos})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.insert_sel===ci?'#534AB710':'transparent',border:`1px solid ${p.insert_sel===ci?'#534AB7':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
         {p.insert_sel===ci&&bdg('✓','#534AB7')}{ci===0&&bdg('AI 추천','#854F0B')}
         <div style={{fontSize:12,lineHeight:1.6,marginTop:4}}>{c.sentence}</div>
+        <div style={{fontSize:11,color:'#bbb',marginTop:2}}>삽입 위치: [{c.pos}] 앞</div>
       </button>)}
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
@@ -1499,13 +1547,24 @@ function App(){
   const restorePassageData=(p)=>{
     if(!p)return p;
     let pd={...p};
+    // grammar_sets 없고 grammar_items 있으면 복원
     if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){
       pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];
       pd.grammar_sel=0;
     }
+    // vocab_sets 없고 vocab_items 있으면 복원
     if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){
       pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];
       pd.vocab_sel=0;
+    }
+    // insert_candidates 구버전(문자열 배열) 또는 잘못된 구조 정리
+    if(pd.insert_candidates?.length){
+      pd.insert_candidates=pd.insert_candidates.filter(c=>c&&typeof c==='object'&&c.sentence);
+    }
+    // insert_candidates 없고 insert_sentence 있으면 단일 후보로 복원
+    if((!pd.insert_candidates||!pd.insert_candidates.length)&&pd.insert_sentence){
+      pd.insert_candidates=[{sentence:pd.insert_sentence,pos:pd.insert_answer||1}];
+      pd.insert_sel=0;
     }
     return pd;
   };
