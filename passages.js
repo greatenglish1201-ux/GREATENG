@@ -16157,7 +16157,7 @@ const PASSAGES = [
   {
     "id": "27STYD_01_005",
     "difficulty": "중",
-    "title": "",
+    "title": "지식의 한계와 예측 불가능성",
     "sentences": [
       {
         "num": 1,
