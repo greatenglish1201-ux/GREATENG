@@ -592,6 +592,7 @@ function App(){
         if(q) combos.push(q);
       }
     }
+    console.log('[genQuestions] pool:',pool.length,'types:',types,'combos:',combos.length,'qCount:',qCount);
     // 셔플 후 target 개수만큼 추출 (같은 지문+유형 조합 없음 보장)
     const shuffled=shuffle(combos);
     const qs=shuffled.slice(0,Math.min(qCount,shuffled.length));
