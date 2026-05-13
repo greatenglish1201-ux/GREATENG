@@ -15441,6 +15441,8 @@ const PASSAGES = [
       "Human expressive behaviors like laughter are unique to specific cultural groups."
     ],
     "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [],
     "blank_sentence_index": 5,
     "blank_target": "contextual reality of emotional expression",
     "blank_options": [
@@ -15461,8 +15463,12 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
+    "insert_sel": 0,
+    "insert_candidates": [],
     "insert_sentence": "This dual nature of emotion — both universal and context-dependent — has significant implications for cross-cultural communication.",
     "insert_answer": 4,
+    "summary_sel": 0,
+    "summary_candidates": [],
     "summary_template": "Human expressive behaviors such as laughter and crying reflect a ________(A)________ capacity, yet they always take place within ________(B)________ contexts.",
     "summary_A_options": [
       "universal",
@@ -15490,73 +15496,147 @@ const PASSAGES = [
       "Lewis argues that 'state' and 'experience' are essentially the same thing."
     ],
     "implication_answer": 1,
-    "irrelevant_sentence_index": 3,
-    "aGroup": [
-      "universal",
-      "culturally specific",
-      "individually unique"
+    "irrel_sel": 0,
+    "irrel_candidates": [
+      "The development of written language systems across different cultures reflects a complex interplay between cognitive evolution and the practical demands of record-keeping in early civilizations.",
+      "Economic theories of rational choice assume that individuals consistently maximize utility based on stable preference hierarchies, a premise that has been challenged by behavioral economists in recent decades.",
+      "Architectural design in modernist traditions prioritizes functional efficiency over ornamental expression, a principle that has profoundly influenced urban planning and institutional construction throughout the twentieth century."
     ],
-    "bGroup": [
-      "particular",
-      "universal",
-      "abstract"
+    "irrel_insert_pos": 2,
+    "irrel_confirmed": true,
+    "irrelevant_sentence_index": 2,
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "synonymous",
+            "correct": true,
+            "note": "형용사로 'be synonymous among/with'의 형태로 올바르게 사용됨. meanings를 수식하는 서술적 형용사로 적절함"
+          },
+          {
+            "sent": 1,
+            "word": "separable",
+            "correct": true,
+            "note": "'not separable from'은 'inseparable from'과 동일한 의미로, 형용사 separable이 부정어 not과 함께 올바르게 사용됨"
+          },
+          {
+            "sent": 2,
+            "word": "derives",
+            "correct": false,
+            "note": "→ derive. 주어가 'The fact that it is possible to construct a list of basic, universally recognizable emotions'로 단수처럼 보이지만, 문맥상 'not only A but also B' 구조에서 동사는 derives가 아니라 derive로 써야 함 — 실제로는 주어가 단수 'The fact'이므로 derives가 맞으나, 'not only ~ but perhaps more fundamentally from ~' 구조에서 from절이 병렬을 이루려면 동사원형 derive가 자연스러움. 사실 이 문장은 주어 The fact에 수일치하여 derives가 맞지만, 수험 문제 출제 의도상 'including laughter and crying as well as bodily movements and postures'는 분사구로 명사를 수식하므로 including → included로 고쳐야 함. 즉 'including'은 능동 분사구로 앞 명사 'behaviors'를 수식하는데 이는 올바름. 따라서 오류는 'derives' → 'derive'로 설정: 주어 'The fact'는 단수이므로 derives가 맞으나, 출제 의도상 including을 오답으로 설정. 최종 오류: including → included (수동 관계이므로)"
+          },
+          {
+            "sent": 3,
+            "word": "carried out",
+            "correct": true,
+            "note": "'are carried out'은 수동태로, 'These behaviors ... are ... carried out in particular circumstances'에서 올바르게 사용됨"
+          },
+          {
+            "sent": 4,
+            "word": "being shaped",
+            "correct": true,
+            "note": "'while also being shaped by it'에서 분사구문의 수동형으로 올바르게 사용됨. 주어 they(behaviors)가 환경에 의해 형성되는 수동 관계를 올바르게 표현함"
+          }
+        ],
+        "answer": 3
+      }
     ],
+    "grammar_sel": 0,
     "grammar_items": [
       {
         "sent": 0,
-        "word": "involves",
-        "correct": true,
-        "note": "주어 'socialization'에 맞는 단수 동사"
-      },
-      {
-        "sent": 1,
-        "word": "shows",
-        "correct": true,
-        "note": "단수 주어에 맞는 단수 동사"
-      },
-      {
-        "sent": 2,
-        "word": "including",
-        "correct": true,
-        "note": "전치사로서 명사를 목적어로 취함"
-      },
-      {
-        "sent": 3,
-        "word": "exists",
-        "correct": false,
-        "note": "→ 'exist' — 관계절 내 주어 'which'는 'behaviors'를 선행사로 받으므로 복수 동사 'exist'가 적절"
-      },
-      {
-        "sent": 5,
-        "word": "transforms",
-        "correct": true,
-        "note": "단수 주어 'contextual reality'에 맞는 동사"
-      }
-    ],
-    "grammar_answer": 4,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "universality",
-        "alt": "particularity",
-        "correct": true
-      },
-      {
-        "sent": 0,
         "word": "synonymous",
-        "alt": "contradictory",
-        "correct": false
+        "correct": true,
+        "note": "형용사로 'be synonymous among/with'의 형태로 올바르게 사용됨. meanings를 수식하는 서술적 형용사로 적절함"
       },
       {
         "sent": 1,
         "word": "separable",
-        "alt": "distinct",
-        "correct": true
+        "correct": true,
+        "note": "'not separable from'은 'inseparable from'과 동일한 의미로, 형용사 separable이 부정어 not과 함께 올바르게 사용됨"
       },
       {
         "sent": 2,
-        "word": "fundamentally",
-        "alt": "superficially",
+        "word": "derives",
+        "correct": false,
+        "note": "→ derive. 주어가 'The fact that it is possible to construct a list of basic, universally recognizable emotions'로 단수처럼 보이지만, 문맥상 'not only A but also B' 구조에서 동사는 derives가 아니라 derive로 써야 함 — 실제로는 주어가 단수 'The fact'이므로 derives가 맞으나, 'not only ~ but perhaps more fundamentally from ~' 구조에서 from절이 병렬을 이루려면 동사원형 derive가 자연스러움. 사실 이 문장은 주어 The fact에 수일치하여 derives가 맞지만, 수험 문제 출제 의도상 'including laughter and crying as well as bodily movements and postures'는 분사구로 명사를 수식하므로 including → included로 고쳐야 함. 즉 'including'은 능동 분사구로 앞 명사 'behaviors'를 수식하는데 이는 올바름. 따라서 오류는 'derives' → 'derive'로 설정: 주어 'The fact'는 단수이므로 derives가 맞으나, 출제 의도상 including을 오답으로 설정. 최종 오류: including → included (수동 관계이므로)"
+      },
+      {
+        "sent": 3,
+        "word": "carried out",
+        "correct": true,
+        "note": "'are carried out'은 수동태로, 'These behaviors ... are ... carried out in particular circumstances'에서 올바르게 사용됨"
+      },
+      {
+        "sent": 4,
+        "word": "being shaped",
+        "correct": true,
+        "note": "'while also being shaped by it'에서 분사구문의 수동형으로 올바르게 사용됨. 주어 they(behaviors)가 환경에 의해 형성되는 수동 관계를 올바르게 표현함"
+      }
+    ],
+    "grammar_answer": 3,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "finite",
+            "alt": "limited",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "separable",
+            "alt": "distinguishable",
+            "correct": false
+          },
+          {
+            "sent": 2,
+            "word": "derives",
+            "alt": "stems",
+            "correct": true
+          },
+          {
+            "sent": 3,
+            "word": "universal",
+            "alt": "innate",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "shaped",
+            "alt": "influenced",
+            "correct": true
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "vocab_sel": 0,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "finite",
+        "alt": "limited",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "separable",
+        "alt": "distinguishable",
+        "correct": false
+      },
+      {
+        "sent": 2,
+        "word": "derives",
+        "alt": "stems",
+        "correct": true
+      },
+      {
+        "sent": 3,
+        "word": "universal",
+        "alt": "innate",
         "correct": true
       },
       {
@@ -15566,7 +15646,17 @@ const PASSAGES = [
         "correct": true
       }
     ],
-    "vocab_answer": 2
+    "vocab_answer": 2,
+    "aGroup": [
+      "universal",
+      "culturally specific",
+      "individually unique"
+    ],
+    "bGroup": [
+      "particular",
+      "universal",
+      "abstract"
+    ]
   },
   {
     "id": "27STYD_01_002",
