@@ -27,6 +27,9 @@ const TYPES = [
   { id:'blank', name:'빈칸 추론', icon:'📝' },
   { id:'summary', name:'요약문', icon:'📋' },
   { id:'implication', name:'함축적 의미', icon:'💡' },
+  { id:'grammar', name:'어법', icon:'✏️' },
+  { id:'vocab', name:'어휘', icon:'📖' },
+  { id:'irrelevant', name:'무관한 문장', icon:'🚫' },
 ];
 
 const BOOKS = [
@@ -358,6 +361,30 @@ function gen(passage, type, allP){
     const correctNum = numberedIdxs.indexOf(insertAt) + 1;
     if(correctNum === 0) return null;
     return {type, passage, full, numberedIdxs, correctNum, foreignSource: rOther.title, instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
+  }
+
+  /* ⑧ 어법 */
+  case 'grammar':{
+    if(!passage.grammar_items||passage.grammar_items.length<2) return null;
+    const answer=passage.grammar_answer||1;
+    const opts=passage.grammar_items.map((item,i)=>({
+      text:item.word,
+      note:item.note||'',
+      correct:i+1===answer
+    }));
+    return {type,passage,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?'};
+  }
+
+  /* ⑨ 어휘 */
+  case 'vocab':{
+    if(!passage.vocab_items||passage.vocab_items.length<2) return null;
+    const answer=passage.vocab_answer||1;
+    const opts=passage.vocab_items.map((item,i)=>({
+      text:item.word,
+      alt:item.alt||'',
+      correct:i+1===answer
+    }));
+    return {type,passage,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?'};
   }
 
   default: return null;
@@ -1545,6 +1572,34 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         <p style={{fontSize:11.5,fontWeight:700,color:'#475569',margin:'0 0 5px'}}>▼ 요약문</p>
         <p style={{fontSize:15,color:'#1e293b',margin:0,lineHeight:1.8}}>{sumText}</p>
       </div>
+    </div>);
+  }
+
+  if(q.type==='grammar'||q.type==='vocab'){
+    const items=q.options||[];
+    return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
+      {q.passage.sentences.map((s,si)=>{
+        const item=items.find((it,ii)=>{
+          const p=q.passage;
+          const srcItems=q.type==='grammar'?p.grammar_items:p.vocab_items;
+          return srcItems?.[ii]?.sent===si;
+        });
+        if(!item){return <span key={si}>{s} </span>;}
+        const num=items.indexOf(item)+1;
+        const isCorrect=showAnswer&&item.correct===false;
+        const isSelected=false;
+        const word=item.text;
+        const idx=s.indexOf(word);
+        if(idx<0)return <span key={si}>{s} </span>;
+        const isAns=showAnswer&&!item.correct;
+        return <span key={si}>
+          {s.slice(0,idx)}
+          <span style={{borderBottom:`2px solid ${isAns?'#ef4444':'#334155'}`,fontWeight:700,color:isAns?'#ef4444':'#1e293b',padding:'0 1px'}}>
+            {num}. {word}
+          </span>
+          {s.slice(idx+word.length)}{' '}
+        </span>;
+      })}
     </div>);
   }
 
