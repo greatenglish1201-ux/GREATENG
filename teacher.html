@@ -610,12 +610,15 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
       const sets=isG?p.grammar_sets:p.vocab_sets;
       const sel=isG?p.grammar_sel:p.vocab_sel;
       const curItems=sets?.[sel]?.items||[];
+      // 지문 순서(sent) 기준으로 정렬된 번호 맵
+      const sortedItems=[...curItems].sort((a,b)=>a.sent-b.sent);
+      const numMap=new Map(sortedItems.map((it,idx)=>[it,idx+1]));
       const words=s.split(/(\s+)/);
       return<span style={{fontSize:12,lineHeight:1.8}}>{words.map((w,wi)=>{
         if(!w.trim())return<span key={wi}>{w}</span>;
         const item=curItems.find(it=>it.sent===i&&it.word===w);
         const c=item?(item.correct?'#185FA5':'#E24B4A'):null;
-        const num=item?curItems.indexOf(item)+1:null;
+        const num=item?numMap.get(item):null;
         return<span key={wi}
           onClick={()=>{
             if(w.trim().length<2)return;
@@ -816,8 +819,13 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
         </button>)}
         <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
         <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>② 항목 편집 &amp; 정답 선택</div>
-        {sets?.[sel]?.items?.map((item,ii)=>{
+        {(()=>{
+          const items=sets?.[sel]?.items||[];
+          const sorted=[...items].sort((a,b)=>a.sent-b.sent);
+          const numMap=new Map(sorted.map((it,idx)=>[it,idx+1]));
+          return items.map((item,ii)=>{
           const isSel=ans===ii+1;
+          const dispNum=numMap.get(item)||ii+1;
           return<div key={ii} style={{marginBottom:8,border:`1px solid ${isSel?'#E24B4A':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',background:isSel?'#E24B4A08':'#fff'}}>
             <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
               <span style={{fontSize:11,color:'#bbb',minWidth:18}}>{ii+1}.</span>
@@ -836,7 +844,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, initialText, initialMeta}){
             <input key={`note-${ii}`} defaultValue={isG?item.note:(item.alt||'')} onBlur={e=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:e.target.value}:{...items[ii],alt:e.target.value};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
               placeholder={isG?'어법 설명':'대체 표현'} style={{width:'100%',border:'1px solid #eee',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#888',boxSizing:'border-box'}}/>
           </div>;
-        })}
+        });})()}
         <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items,{sent:0,word:'새 항목',correct:false,note:'',alt:''}];sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
           style={{width:'100%',padding:'8px',fontSize:12,borderRadius:7,border:'1px dashed #ccc',background:'transparent',color:'#666',cursor:'pointer',marginTop:4}}>+ 항목 추가</button>
       </div>;
@@ -1097,6 +1105,10 @@ function App(){
           implication_sentence_index:p.implication_sentence_index,implication_keyword:p.implication_keyword,
           implication_options:p.implication_options,implication_answer:p.implication_answer,
           irrelevant_sentence_index:p.irrelevant_sentence_index,
+          grammar_items:[...(p.grammar_items||[])].sort((a,b)=>a.sent-b.sent),
+          grammar_answer:p.grammar_answer,
+          vocab_items:[...(p.vocab_items||[])].sort((a,b)=>a.sent-b.sent),
+          vocab_answer:p.vocab_answer,
           aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
           flow:p.flow||s.analysis?.flow||{},grammar:p.grammar||s.analysis?.grammar||{},
           blockSummaries:Array.isArray(s.blockSummaries)?s.blockSummaries:undefined};
