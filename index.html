@@ -557,28 +557,40 @@ function App(){
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    const target=Math.min(qCount,pool.length);
-    const summaryPool2=pool.filter(p=>p.summary_template&&p.summary_A_options&&p.summary_B_options);
-    const usedIds2=new Set();
-    const typePool2=shuffle([...Array(target)].map((_,i)=>types[i%types.length]));
+    const target=qCount;
+    // 지문별 사용된 유형 추적 (같은 지문, 같은 유형 중복 방지)
+    const usedTypes={};  // {passageId: Set<type>}
+    const typePool2=[...Array(target)].map((_,i)=>types[i%types.length]);
+    // 지문 풀을 순환하며 배정
     const qs=[];
-    let poolIdx=0;
     for(let i=0;i<target;i++){
       const t=typePool2[i];
       let q=null;
-      let attempts=0;
-      while(!q&&poolIdx+attempts<pool.length){
-        const p=pool[(poolIdx+attempts)%pool.length];
-        if(!usedIds2.has(p.id)){
-          q=gen(p,t,allPassages);
-          if(!q){const fallbackOrder=[...types.filter(x=>x!==t)];for(const ft of fallbackOrder){q=gen(p,ft,allPassages);if(q)break;}}
-          if(q){usedIds2.add(p.id);poolIdx+=attempts+1;break;}
+      // 1. 해당 유형 아직 안 쓴 지문 우선
+      for(let j=0;j<pool.length;j++){
+        const p=pool[(i+j)%pool.length];
+        if(usedTypes[p.id]?.has(t)) continue;
+        q=gen(p,t,allPassages);
+        if(q){
+          if(!usedTypes[p.id]) usedTypes[p.id]=new Set();
+          usedTypes[p.id].add(t);
+          break;
         }
-        attempts++;
       }
+      // 2. fallback: 어떤 지문이든 다른 유형으로
       if(!q){
-        const spare=pool.find(p=>!usedIds2.has(p.id));
-        if(spare){const fallbackOrder=[...types];for(const ft of fallbackOrder){q=gen(spare,ft,allPassages);if(q){usedIds2.add(spare.id);break;}}}
+        for(let j=0;j<pool.length&&!q;j++){
+          const p=pool[(i+j)%pool.length];
+          const fallbacks=types.filter(x=>x!==t&&!usedTypes[p.id]?.has(x));
+          for(const ft of fallbacks){
+            q=gen(p,ft,allPassages);
+            if(q){
+              if(!usedTypes[p.id]) usedTypes[p.id]=new Set();
+              usedTypes[p.id].add(ft);
+              break;
+            }
+          }
+        }
       }
       if(q)qs.push(q);
     }
