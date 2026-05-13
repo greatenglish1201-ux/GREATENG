@@ -15570,301 +15570,151 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_002",
-    "title": "",
-    "difficulty": "하",
+    "difficulty": "높음",
+    "title": "동적변화",
     "sentences": [
+      "Changes are often useful ─ people want to see new emails, better search results, and new news stories ─ but they can disrupt the user's ability to re-find information.",
+      "As an example, dynamic menus were developed to help people access menu items faster by bubbling common items to the top of the menu.",
+      "Rather than decreasing access time, research revealed dynamic menus actually slow their users down because commonly sought items no longer appear where expected.",
+      "As another example, some researchers tried to help people search better by giving them lists of relevant sentences that were dynamically reranked based on implicit feedback gathered during the search process.",
+      "To the researchers' surprise, people did not enjoy the search experience as much or perform as well as they did when the sentence list was static.",
+      "Similarly, a large-scale analysis of query logs revealed that when people repeat queries they are significantly less likely to click on a result they've clicked before if the result's rank has changed, and significantly slower to click when they do."
+    ],
+    "abstract": "Dynamic changes in digital interfaces, though intended to help, often disrupt users' ability to re-find information efficiently.",
+    "topic_options": [
+      "Dynamic changes in interfaces disrupt users' ability to re-find information",
+      "Dynamic menus improve access speed for frequent users",
+      "Search engines benefit from implicit user feedback",
+      "Query logs help developers optimize ranking algorithms",
+      "Users adapt quickly to dynamically reranked search results"
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 0,
+    "blank_target": "re-find information",
+    "blank_options": [
+      "re-find information",
+      "access new content",
+      "browse menus efficiently",
+      "submit search queries",
+      "evaluate search results"
+    ],
+    "blank_answer": 1,
+    "order_given_index": 0,
+    "order_blocks": [],
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 1,
+    "insert_sentence": "This finding suggests that stability in interface design may be more valuable than novelty.",
+    "insert_answer": 5,
+    "summary_template": "Dynamic interface changes intended to ________(A)________ users often backfire by making it harder for them to ________(B)________ information.",
+    "summary_A_options": [
+      "help",
+      "mislead",
+      "distract",
+      "confuse",
+      "overwhelm"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "re-find",
+      "discover",
+      "upload",
+      "delete",
+      "create"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 1,
+    "implication_keyword": "bubbling common items to the top",
+    "implication_options": [
+      "Frequently used menu items were automatically moved to the top for easier access",
+      "Menu items were sorted alphabetically for user convenience",
+      "Users manually dragged items to their preferred positions",
+      "Common items were highlighted in a different color",
+      "Menu items were hidden until the user searched for them"
+    ],
+    "implication_answer": 1,
+    "irrelevant_sentence_index": 2,
+    "aGroup": [
+      "help",
+      "mislead",
+      "distract"
+    ],
+    "bGroup": [
+      "re-find",
+      "discover",
+      "upload"
+    ],
+    "grammar_items": [
       {
-        "num": 1,
-        "text": "Changes are often useful ─ people want to see new emails, better search results, and new news stories ─ but they can disrupt the user's ability to re-find information.",
-        "symbol": "G",
-        "role": "통념 제시 및 역접 도입",
-        "keyWords": [
-          "Changes",
-          "disrupt",
-          "re-find information"
-        ],
-        "chunks": [
-          {
-            "en": "Changes are often useful",
-            "ko": "변화는 종종 유용하다"
-          },
-          {
-            "en": "─ people want to see new emails, better search results, and new news stories ─",
-            "ko": "─ 사람들은 새 이메일, 더 나은 검색 결과, 새로운 뉴스 기사를 보고 싶어 한다 ─"
-          },
-          {
-            "en": "but they can disrupt",
-            "ko": "하지만 그것들은 방해할 수 있다"
-          },
-          {
-            "en": "the user's ability to re-find information",
-            "ko": "사용자가 정보를 다시 찾는 능력을"
-          }
-        ]
+        "sent": 0,
+        "word": "disrupt",
+        "correct": true,
+        "note": "주어 they에 호응하는 동사원형으로 적절"
       },
       {
-        "num": 2,
-        "text": "As an example, dynamic menus were developed to help people access menu items faster by bubbling common items to the top of the menu.",
-        "symbol": "S",
-        "role": "첫 번째 구체 사례 도입",
-        "keyWords": [
-          "dynamic menus",
-          "bubbling common items"
-        ],
-        "chunks": [
-          {
-            "en": "As an example,",
-            "ko": "예를 들어,"
-          },
-          {
-            "en": "dynamic menus were developed",
-            "ko": "동적 메뉴가 개발되었다"
-          },
-          {
-            "en": "to help people access menu items faster",
-            "ko": "사람들이 메뉴 항목에 더 빨리 접근하도록 돕기 위해"
-          },
-          {
-            "en": "by bubbling common items to the top of the menu",
-            "ko": "자주 쓰는 항목을 메뉴 상단으로 띄워 올림으로써"
-          }
-        ]
+        "sent": 1,
+        "word": "developed",
+        "correct": true,
+        "note": "수동태 were developed로 적절"
       },
       {
-        "num": 3,
-        "text": "Rather than decreasing access time, research revealed dynamic menus actually slow their users down because commonly sought items no longer appear where expected.",
-        "symbol": "↔",
-        "role": "사례 결과: 기대와 반대되는 결과 제시",
-        "keyWords": [
-          "slow down",
-          "no longer appear where expected"
-        ],
-        "chunks": [
-          {
-            "en": "Rather than decreasing access time,",
-            "ko": "접근 시간을 줄이기는커녕,"
-          },
-          {
-            "en": "research revealed",
-            "ko": "연구는 밝혔다"
-          },
-          {
-            "en": "dynamic menus actually slow their users down",
-            "ko": "동적 메뉴가 실제로 사용자를 더 느리게 만든다는 것을"
-          },
-          {
-            "en": "because commonly sought items no longer appear where expected",
-            "ko": "자주 찾는 항목이 더 이상 예상되는 위치에 나타나지 않기 때문에"
-          }
-        ]
+        "sent": 2,
+        "word": "decreasing",
+        "correct": false,
+        "note": "→ Rather than decrease: 전치사 than 뒤 동명사 또는 원형 둘 다 가능하나, 문맥상 'slow down'과 대조되는 구조로 원형 decrease가 더 자연스러움"
       },
       {
-        "num": 4,
-        "text": "As another example, some researchers tried to help people search better by giving them lists of relevant sentences that were dynamically reranked based on implicit feedback gathered during the search process.",
-        "symbol": "S",
-        "role": "두 번째 구체 사례 도입",
-        "keyWords": [
-          "dynamically reranked",
-          "implicit feedback"
-        ],
-        "chunks": [
-          {
-            "en": "As another example,",
-            "ko": "또 다른 예로,"
-          },
-          {
-            "en": "some researchers tried to help people search better",
-            "ko": "일부 연구자들은 사람들이 더 잘 검색하도록 돕고자 했다"
-          },
-          {
-            "en": "by giving them lists of relevant sentences",
-            "ko": "관련 문장 목록을 제공함으로써"
-          },
-          {
-            "en": "that were dynamically reranked",
-            "ko": "동적으로 재정렬된"
-          },
-          {
-            "en": "based on implicit feedback gathered during the search process",
-            "ko": "검색 과정에서 수집된 암묵적 피드백을 기반으로"
-          }
-        ]
+        "sent": 3,
+        "word": "gathered",
+        "correct": true,
+        "note": "과거분사로 implicit feedback를 수식하는 형용사구로 적절"
       },
       {
-        "num": 5,
-        "text": "To the researchers' surprise, people did not enjoy the search experience as much or perform as well as they did when the sentence list was static.",
-        "symbol": "↔",
-        "role": "두 번째 사례 결과: 기대와 반대되는 결과",
-        "keyWords": [
-          "surprise",
-          "static"
-        ],
-        "chunks": [
-          {
-            "en": "To the researchers' surprise,",
-            "ko": "연구자들이 놀랍게도,"
-          },
-          {
-            "en": "people did not enjoy the search experience as much",
-            "ko": "사람들은 검색 경험을 그만큼 즐기지 못했다"
-          },
-          {
-            "en": "or perform as well",
-            "ko": "또는 그만큼 잘 수행하지도 못했다"
-          },
-          {
-            "en": "as they did when the sentence list was static",
-            "ko": "문장 목록이 고정되어 있을 때만큼"
-          }
-        ]
-      },
-      {
-        "num": 6,
-        "text": "Similarly, a large-scale analysis of query logs revealed that when people repeat queries they are significantly less likely to click on a result they've clicked before if the result's rank has changed, and significantly slower to click when they do.",
-        "symbol": "+",
-        "role": "추가 근거: 쿼리 로그 분석으로 주제 강화",
-        "keyWords": [
-          "query logs",
-          "rank has changed",
-          "less likely to click"
-        ],
-        "chunks": [
-          {
-            "en": "Similarly,",
-            "ko": "마찬가지로,"
-          },
-          {
-            "en": "a large-scale analysis of query logs revealed",
-            "ko": "쿼리 로그에 대한 대규모 분석이 밝혔다"
-          },
-          {
-            "en": "that when people repeat queries",
-            "ko": "사람들이 검색어를 반복할 때"
-          },
-          {
-            "en": "they are significantly less likely to click on a result they've clicked before",
-            "ko": "그들은 이전에 클릭했던 결과를 클릭할 가능성이 훨씬 낮다"
-          },
-          {
-            "en": "if the result's rank has changed,",
-            "ko": "결과의 순위가 바뀌었을 경우"
-          },
-          {
-            "en": "and significantly slower to click when they do",
-            "ko": "그리고 클릭하더라도 훨씬 더 느리게 클릭한다"
-          }
-        ]
+        "sent": 4,
+        "word": "as well as",
+        "correct": true,
+        "note": "비교 구문으로 적절하게 사용됨"
       }
     ],
-    "flow": {
-      "blocks": [
-        {
-          "id": 1,
-          "name": "통념 제시",
-          "nameEn": "General Claim",
-          "color": "blue",
-          "sentenceNums": [
-            1
-          ]
-        },
-        {
-          "id": 2,
-          "name": "사례 1: 동적 메뉴",
-          "nameEn": "Case 1: Dynamic Menus",
-          "color": "coral",
-          "sentenceNums": [
-            2,
-            3
-          ]
-        },
-        {
-          "id": 3,
-          "name": "사례 2: 동적 재정렬",
-          "nameEn": "Case 2: Dynamic Reranking",
-          "color": "teal",
-          "sentenceNums": [
-            4,
-            5
-          ]
-        },
-        {
-          "id": 4,
-          "name": "추가 근거: 쿼리 로그 분석",
-          "nameEn": "Supporting Evidence: Query Log Analysis",
-          "color": "purple",
-          "sentenceNums": [
-            6
-          ]
-        }
-      ],
-      "interBlockConnectors": [
-        "↔",
-        "S",
-        "+"
-      ],
-      "keyword": "동적 변화와 정보 재탐색 방해",
-      "topicSummary": "인터페이스의 동적 변화는 유용해 보이지만, 실제로는 사용자가 정보를 다시 찾는 능력을 방해한다.",
-      "structureType": "통념→반박 사례 나열→추가 근거"
-    },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 4,
-          "text": "As another example, some researchers tried to help people search better by giving them lists of relevant sentences that were dynamically reranked based on implicit feedback gathered during the search process.",
-          "structure": "주어(some researchers)+동사(tried)+to부정사+by동명사구 / that절(관계사절 내 분사구 중첩)",
-          "translation": "또 다른 예로, 일부 연구자들은 검색 과정에서 수집된 암묵적 피드백을 기반으로 동적으로 재정렬된 관련 문장 목록을 제공함으로써 사람들이 더 잘 검색하도록 돕고자 했다.",
-          "point": "'dynamically reranked based on implicit feedback gathered during the search process'에서 분사구가 겹쳐 수식 관계를 파악하는 것이 핵심"
-        },
-        {
-          "num": 6,
-          "text": "Similarly, a large-scale analysis of query logs revealed that when people repeat queries they are significantly less likely to click on a result they've clicked before if the result's rank has changed, and significantly slower to click when they do.",
-          "structure": "주어(a large-scale analysis)+동사(revealed)+that절 / that절 안에 조건절(when/if) 중첩, 병렬구조(less likely... and significantly slower...)",
-          "translation": "마찬가지로, 쿼리 로그에 대한 대규모 분석은 사람들이 검색어를 반복할 때 결과의 순위가 바뀌었다면dd 이전에 클릭했던 결과를 클릭할 가능성이 훨씬 낮고, 클릭하더라도 훨씬 느리다는 것을 밝혔다.",
-          "point": "'when they do'의 do는 앞의 'click on a result'를 대신하는 대동사이며, less likely와 slower의 병렬 비교 구조를 정확히 파악해야 함"
-        },
-        {
-          "num": 3,
-          "text": "Rather than decreasing access time, research revealed dynamic menus actually slow their users down because commonly sought items no longer appear where expected.",
-          "structure": "Rather than+동명사구(양보/대조)+주절 / where expected = where they are expected to appear(장소 관계부사절 축약)",
-          "translation": "접근 시간을 줄이기는커녕, 연구는 자주 찾는 항목이 더 이상 예상되는 위치에 나타나지 않기 때문에 동적 메뉴가 실제로 사용자를 더 느리게 만든다는 것을 밝혔다.",
-          "point": "'where expected'는 'where they are expected to appear'의 축약형으로, 생략된 주어와 be동사를 복원하여 해석해야 함"
-        }
-      ]
-    },
-    "blockSummaries": [
+    "grammar_answer": 3,
+    "vocab_items": [
       {
-        "blockId": 1,
-        "summary": "Changes can {disrupt} the user's ability to {re-find} information.",
-        "keywords": [
-          "disrupt",
-          "re-find"
-        ]
+        "sent": 0,
+        "word": "disrupt",
+        "alt": "enhance",
+        "correct": true
       },
       {
-        "blockId": 2,
-        "summary": "{Dynamic menus} actually {slow} their users down because commonly sought items no longer appear where expected.",
-        "keywords": [
-          "Dynamic menus",
-          "slow"
-        ]
+        "sent": 1,
+        "word": "bubbling",
+        "alt": "pushing",
+        "correct": true
       },
       {
-        "blockId": 3,
-        "summary": "People did not {perform} as well when the {sentence list} was dynamically reranked as when it was static.",
-        "keywords": [
-          "perform",
-          "sentence list"
-        ]
+        "sent": 2,
+        "word": "revealed",
+        "alt": "concealed",
+        "correct": false
       },
       {
-        "blockId": 4,
-        "summary": "When people repeat {queries}, they are significantly less likely to click on a result if the result's {rank} has changed.",
-        "keywords": [
-          "queries",
-          "rank"
-        ]
+        "sent": 3,
+        "word": "implicit",
+        "alt": "explicit",
+        "correct": true
+      },
+      {
+        "sent": 4,
+        "word": "static",
+        "alt": "fixed",
+        "correct": true
       }
-    ]
+    ],
+    "vocab_answer": 3
   },
   {
     "id": "27STYD_01_003",
