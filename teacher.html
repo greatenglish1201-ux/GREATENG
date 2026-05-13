@@ -165,7 +165,7 @@ const makeSlot=i=>({
 
 function saveSlots(slots){
   try{localStorage.setItem(LS.SLOTS,JSON.stringify(
-    slots.map(s=>({id:s.id,text:s.text,meta:s.meta,status:s.status,analysis:s.analysis,error:'',open:s.open}))
+    slots.map(s=>({id:s.id,text:s.text,meta:s.meta,status:s.status,analysis:s.analysis,passageData:s.passageData||null,error:'',open:s.open}))
   ));}catch(e){}
 }
 function loadSlots(){
