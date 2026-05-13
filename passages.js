@@ -15896,293 +15896,173 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_004",
-    "title": "",
-    "difficulty": "중",
+    "difficulty": "보통",
+    "title": "뉴스프레임",
     "sentences": [
+      "Many news media studies use experimental designs to see whether citizens' opinions are influenced by different news content.",
+      "For example, in one study, researchers created newspaper stories to frame the death penalty in different ways.",
+      "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
+      "Some subjects read the story with the morality frame, and others read the one with the innocence frame.",
+      "Subjects then completed a questionnaire that asked them to list the important factors they considered when determining their opinion on the death penalty.",
+      "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
+      "Thus, the news frames shaped the ingredients of the subjects' death penalty attitudes."
+    ],
+    "abstract": "Experimental studies show that different news frames influence citizens' opinions by shaping the factors they consider important.",
+    "topic_options": [
+      "News frames shape the factors people consider when forming opinions on the death penalty.",
+      "Experimental designs are the most reliable method for studying public opinion.",
+      "The death penalty is a controversial topic that divides public opinion.",
+      "Newspaper stories are more influential than television in shaping attitudes.",
+      "Moral values are the primary driver of opinions on capital punishment."
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 6,
+    "blank_target": "shaped the ingredients",
+    "blank_options": [
+      "shaped the ingredients",
+      "determined the outcomes",
+      "altered the foundations",
+      "reinforced the biases"
+    ],
+    "blank_answer": 1,
+    "order_given_index": 0,
+    "order_blocks": [
       {
-        "num": 1,
-        "text": "Many news media studies use experimental designs to see whether citizens' opinions are influenced by different news content.",
-        "symbol": "G",
-        "role": "연구 목적 소개: 뉴스 내용이 시민 의견에 영향을 미치는지 실험적으로 검증",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Many news media studies",
-            "ko": "많은 뉴스 미디어 연구들은"
-          },
-          {
-            "en": "use experimental designs",
-            "ko": "실험적 설계를 사용한다"
-          },
-          {
-            "en": "to see whether citizens' opinions are influenced",
-            "ko": "시민들의 의견이 영향을 받는지 알아보기 위해"
-          },
-          {
-            "en": "by different news content",
-            "ko": "다양한 뉴스 내용에 의해"
-          }
+        "label": "B",
+        "sentence_indices": [
+          1,
+          2
         ]
       },
       {
-        "num": 2,
-        "text": "For example, in one study, researchers created newspaper stories to frame the death penalty in different ways.",
-        "symbol": "S",
-        "role": "구체적 실험 사례 도입: 사형제도를 다르게 프레이밍한 신문 기사 제작",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "For example, in one study,",
-            "ko": "예를 들어, 한 연구에서"
-          },
-          {
-            "en": "researchers created newspaper stories",
-            "ko": "연구자들은 신문 기사를 만들었다"
-          },
-          {
-            "en": "to frame the death penalty",
-            "ko": "사형제도를 프레이밍하기 위해"
-          },
-          {
-            "en": "in different ways",
-            "ko": "서로 다른 방식으로"
-          }
+        "label": "C",
+        "sentence_indices": [
+          3,
+          4
         ]
       },
       {
-        "num": 3,
-        "text": "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
-        "symbol": "S",
-        "role": "두 프레임 대비: 도덕성 프레임 vs 무죄 프레임",
-        "keyWords": [
-          "frame"
-        ],
-        "chunks": [
-          {
-            "en": "One story constructed the death penalty",
-            "ko": "한 기사는 사형제도를 구성했다"
-          },
-          {
-            "en": "as an affront to moral values",
-            "ko": "도덕적 가치에 대한 모욕으로"
-          },
-          {
-            "en": "(the morality frame),",
-            "ko": "(도덕성 프레임)"
-          },
-          {
-            "en": "whereas another story emphasized",
-            "ko": "반면 다른 기사는 강조했다"
-          },
-          {
-            "en": "that the policy was fundamentally flawed",
-            "ko": "그 정책이 근본적으로 결함이 있다고"
-          },
-          {
-            "en": "because innocent people might be executed",
-            "ko": "무고한 사람들이 처형될 수 있기 때문에"
-          },
-          {
-            "en": "(the innocence frame)",
-            "ko": "(무죄 프레임)"
-          }
-        ]
-      },
-      {
-        "num": 4,
-        "text": "Some subjects read the story with the morality frame, and others read the one with the innocence frame.",
-        "symbol": "S",
-        "role": "실험 집단 배분: 피험자들을 두 프레임 집단으로 나눔",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Some subjects read the story",
-            "ko": "일부 피험자들은 기사를 읽었고"
-          },
-          {
-            "en": "with the morality frame,",
-            "ko": "도덕성 프레임이 담긴"
-          },
-          {
-            "en": "and others read the one",
-            "ko": "다른 피험자들은 읽었다"
-          },
-          {
-            "en": "with the innocence frame",
-            "ko": "무죄 프레임이 담긴 기사를"
-          }
-        ]
-      },
-      {
-        "num": 5,
-        "text": "Subjects then completed a questionnaire that asked them to list the important factors they considered when determining their opinion on the death penalty.",
-        "symbol": "S",
-        "role": "측정 방법: 사형제도에 대한 의견 형성 시 고려 요인 설문",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Subjects then completed a questionnaire",
-            "ko": "피험자들은 그 후 설문지를 작성했다"
-          },
-          {
-            "en": "that asked them to list the important factors",
-            "ko": "중요한 요인들을 나열하도록 요청하는"
-          },
-          {
-            "en": "they considered",
-            "ko": "그들이 고려한"
-          },
-          {
-            "en": "when determining their opinion on the death penalty",
-            "ko": "사형제도에 대한 의견을 결정할 때"
-          }
-        ]
-      },
-      {
-        "num": 6,
-        "text": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
-        "symbol": "S",
-        "role": "실험 결과: 무죄 프레임 노출 집단이 무죄 관련 요인을 더 많이 언급",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "It was found that",
-            "ko": "~인 것으로 밝혀졌다"
-          },
-          {
-            "en": "subjects exposed to the innocence frame",
-            "ko": "무죄 프레임에 노출된 피험자들이"
-          },
-          {
-            "en": "were more likely to mention",
-            "ko": "더 많이 언급할 가능성이 있었다"
-          },
-          {
-            "en": "innocence-related considerations as important factors",
-            "ko": "무죄 관련 고려 사항을 중요한 요인으로"
-          },
-          {
-            "en": "in determining their attitudes toward the death penalty",
-            "ko": "사형제도에 대한 태도를 결정하는 데 있어"
-          },
-          {
-            "en": "than subjects presented with the morality frame",
-            "ko": "도덕성 프레임을 접한 피험자들보다"
-          }
-        ]
-      },
-      {
-        "num": 7,
-        "text": "Thus, the news frames shaped the ingredients of the subjects' death penalty attitudes.",
-        "symbol": "→",
-        "role": "결론 도출: 뉴스 프레임이 사형제도 태도의 구성 요소를 형성함",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Thus,",
-            "ko": "따라서"
-          },
-          {
-            "en": "the news frames shaped",
-            "ko": "뉴스 프레임은 형성했다"
-          },
-          {
-            "en": "the ingredients",
-            "ko": "구성 요소들을"
-          },
-          {
-            "en": "of the subjects' death penalty attitudes",
-            "ko": "피험자들의 사형제도 태도의"
-          }
+        "label": "D",
+        "sentence_indices": [
+          5,
+          6
         ]
       }
     ],
-    "flow": {
-      "blocks": [
-        {
-          "id": 1,
-          "name": "연구 목적 제시",
-          "nameEn": "Research Purpose",
-          "color": "blue",
-          "sentenceNums": [
-            1
-          ]
-        },
-        {
-          "id": 2,
-          "name": "실험 설계 및 과정",
-          "nameEn": "Experimental Design & Procedure",
-          "color": "teal",
-          "sentenceNums": [
-            2,
-            3,
-            4,
-            5
-          ]
-        },
-        {
-          "id": 3,
-          "name": "실험 결과 및 결론",
-          "nameEn": "Results & Conclusion",
-          "color": "coral",
-          "sentenceNums": [
-            6,
-            7
-          ]
-        }
-      ],
-      "interBlockConnectors": [
-        "S",
-        "→"
-      ],
-      "keyword": "뉴스 프레임(news frame)",
-      "topicSummary": "뉴스 프레임은 시민들이 사형제도에 대한 태도를 형성할 때 고려하는 요소에 영향을 미친다.",
-      "structureType": "주제 제시→실험 사례→결론"
-    },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 3,
-          "text": "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
-          "structure": "[One story + V + O as N] whereas [another story + V + that절]",
-          "translation": "한 기사는 사형제도를 도덕적 가치에 대한 모욕으로 구성한 반면(도덕성 프레임), 다른 기사는 무고한 사람들이 처형될 수 있기 때문에 그 정책이 근본적으로 결함이 있다고 강조했다(무죄 프레임).",
-          "point": "whereas는 대조 접속사. 'construct A as B(A를 B로 구성하다)', 'affront to(~에 대한 모욕)'의 어휘가 어렵고, 두 프레임의 핵심 차이를 정확히 구분해야 함."
-        },
-        {
-          "num": 6,
-          "text": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
-          "structure": "It was found that [주어(subjects exposed to…) + were more likely to V + than 비교대상]",
-          "translation": "무죄 프레임에 노출된 피험자들이 사형제도에 대한 태도를 결정하는 데 있어 무죄 관련 고려 사항을 중요한 요인으로 언급할 가능성이 도덕성 프레임을 접한 피험자들보다 더 높은 것으로 밝혀졌다.",
-          "point": "주어(subjects)와 동사(were) 사이에 과거분사구(exposed to the innocence frame)가 삽입되어 문장이 길어짐. 비교 구문(more likely ~ than)의 비교 대상을 정확히 파악해야 함."
-        }
-      ]
-    },
-    "blockSummaries": [
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 1,
+    "insert_sentence": "Both frames presented factual information but emphasized entirely different aspects of the same policy.",
+    "insert_answer": 3,
+    "summary_template": "Researchers used ________(A)________ to test how different news frames about the death penalty affected the ________(B)________ subjects considered important.",
+    "summary_A_options": [
+      "experimental designs",
+      "survey questionnaires",
+      "observational methods",
+      "statistical models",
+      "interview techniques"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "factors",
+      "emotions",
+      "policies",
+      "attitudes",
+      "beliefs"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 6,
+    "implication_keyword": "shaped the ingredients",
+    "implication_options": [
+      "The news frames determined what considerations people used to form their death penalty opinions.",
+      "The news frames provided readers with factual information about the death penalty.",
+      "The news frames changed people's final conclusions about the death penalty.",
+      "The news frames made the death penalty a more important political issue.",
+      "The news frames convinced subjects to oppose the death penalty."
+    ],
+    "implication_answer": 1,
+    "irrelevant_sentence_index": 2,
+    "aGroup": [
+      "experimental designs",
+      "survey questionnaires",
+      "observational methods"
+    ],
+    "bGroup": [
+      "factors",
+      "emotions",
+      "policies"
+    ],
+    "grammar_items": [
       {
-        "blockId": 1,
-        "summary": "Many {news media} studies use {experimental designs} to see whether citizens' opinions are influenced by different news content.",
-        "keywords": [
-          "news media",
-          "experimental designs"
-        ]
+        "sent": 0,
+        "word": "influenced",
+        "correct": true,
+        "note": "수동태 올바르게 사용됨: opinions are influenced by content"
       },
       {
-        "blockId": 2,
-        "summary": "Researchers created {newspaper stories} to {frame} the death penalty in different ways, and subjects read different frames before completing a questionnaire.",
-        "keywords": [
-          "newspaper stories",
-          "frame"
-        ]
+        "sent": 1,
+        "word": "to frame",
+        "correct": true,
+        "note": "to부정사 부사적 용법으로 목적을 나타냄"
       },
       {
-        "blockId": 3,
-        "summary": "Subjects exposed to the {innocence frame} were more likely to mention innocence-related considerations, showing that {news frames} shaped their death penalty attitudes.",
-        "keywords": [
-          "innocence frame",
-          "news frames"
-        ]
+        "sent": 2,
+        "word": "whereas",
+        "correct": true,
+        "note": "대조를 나타내는 접속사로 적절히 사용됨"
+      },
+      {
+        "sent": 4,
+        "word": "completing",
+        "correct": false,
+        "note": "→ completed: 주어 Subjects에 맞는 동사 필요"
+      },
+      {
+        "sent": 6,
+        "word": "shaped",
+        "correct": true,
+        "note": "과거시제 동사로 문맥에 적절함"
       }
-    ]
+    ],
+    "grammar_answer": 4,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "influenced",
+        "alt": "determined",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "frame",
+        "alt": "present",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "affront",
+        "alt": "insult",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "emphasized",
+        "alt": "neglected",
+        "correct": false
+      },
+      {
+        "sent": 6,
+        "word": "shaped",
+        "alt": "influenced",
+        "correct": true
+      }
+    ],
+    "vocab_answer": 4
   },
   {
     "id": "27STYD_01_005",
