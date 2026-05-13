@@ -15723,7 +15723,6 @@ const PASSAGES = [
     "sentences": [
       "Verbal metaphors help make our language more colorful and expressive.",
       "They influence how we think about something, but they do not change the thing itself.",
-      "The history of typography shows how visual design influences readability and user comfort.",
       "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
       "The metaphor that is chosen for an interface shapes how it can be used.",
       "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
@@ -15734,23 +15733,23 @@ const PASSAGES = [
       "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
       "Interface metaphors need to fit both the feel and function of the application."
     ],
-    "abstract": "Interface metaphors shape both the function and emotional feel of how users interact with technology, unlike verbal metaphors which only influence thought.",
+    "abstract": "Interface metaphors shape both the function and emotional feel of how users experience and interact with technology.",
     "topic_options": [
-      "Interface metaphors shape both function and emotional experience in technology use",
-      "Verbal metaphors make language more expressive and colorful",
-      "The desktop metaphor was developed for office work in the 1980s",
-      "Computer files and folders help organize digital information",
-      "Personal computers were primarily designed for office use"
+      "Interface metaphors shape both function and feeling in our technological experience.",
+      "Verbal metaphors make language more colorful and expressive.",
+      "The desktop metaphor was the best design choice for personal computers.",
+      "Computer files and folders constrain what users can do with information.",
+      "Office work is the primary use case for personal computers."
     ],
     "topic_answer": 1,
-    "blank_sentence_index": 3,
-    "blank_target": "affecting function as well as feeling",
+    "blank_sentence_index": 5,
+    "blank_target": "machine",
     "blank_options": [
-      "affecting function as well as feeling",
-      "influencing only the visual design",
-      "changing the underlying technology",
-      "simplifying user interaction",
-      "replacing verbal metaphors entirely"
+      "machine",
+      "",
+      "",
+      "",
+      ""
     ],
     "blank_answer": 1,
     "order_given_index": 0,
@@ -15758,23 +15757,23 @@ const PASSAGES = [
       {
         "label": "B",
         "sentence_indices": [
-          3,
-          4
+          2,
+          3
         ]
       },
       {
         "label": "C",
         "sentence_indices": [
-          5,
-          6
+          4,
+          5
         ]
       },
       {
         "label": "D",
         "sentence_indices": [
+          6,
           7,
-          8,
-          9
+          8
         ]
       }
     ],
@@ -15786,45 +15785,45 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
-    "insert_sentence": "This limitation becomes especially clear when users try to perform tasks that the metaphor does not support.",
-    "insert_answer": 6,
-    "summary_template": "Unlike verbal metaphors that only affect thought, interface metaphors ________(A)________ and also shape the ________(B)________ of using technology.",
+    "insert_sentence": "This is why choosing the right metaphor is a critical step in interface design.",
+    "insert_answer": 4,
+    "summary_template": "Interface metaphors play a fundamental role by _____(A)_____ how technology is used and experienced, and thus they must _____(B)_____ both the feel and function of an application.",
     "summary_A_options": [
-      "constrain function",
-      "improve clarity",
-      "simplify language",
-      "reduce complexity",
-      "enhance creativity"
+      "shaping",
+      "ignoring",
+      "replacing",
+      "complicating",
+      "reversing"
     ],
     "summary_A_answer": 1,
     "summary_B_options": [
-      "emotional and aesthetic response",
-      "hardware performance",
-      "software architecture",
-      "visual resolution",
-      "processing speed"
+      "fit",
+      "ignore",
+      "limit",
+      "override",
+      "separate"
     ],
     "summary_B_answer": 1,
-    "implication_sentence_index": 7,
-    "implication_keyword": "calls to mind office work: secretaries, bosses, quarterly plans, and cubicles",
+    "implication_sentence_index": 6,
+    "implication_keyword": "calls to mind office work",
     "implication_options": [
-      "The desktop metaphor carries connotations of formal, hierarchical office culture that may not suit all computing contexts",
-      "The desktop metaphor was designed specifically for secretaries and office managers",
-      "Computers should only be used in professional office environments",
-      "The desktop interface literally resembles a physical office desk",
-      "Office workers prefer the desktop metaphor over all other interfaces"
+      "The desktop metaphor evokes associations with a traditional professional office environment.",
+      "The desktop metaphor was literally designed inside an office building.",
+      "The desktop metaphor forces users to do office work on their computers.",
+      "The desktop metaphor makes computers look like physical office desks.",
+      "The desktop metaphor was invented by office workers for secretarial tasks."
     ],
     "implication_answer": 1,
     "irrelevant_sentence_index": 2,
     "aGroup": [
-      "constrain function",
-      "improve clarity",
-      "simplify language"
+      "shaping",
+      "ignoring",
+      "replacing"
     ],
     "bGroup": [
-      "emotional and aesthetic response",
-      "hardware performance",
-      "software architecture"
+      "fit",
+      "ignore",
+      "limit"
     ],
     "grammar_items": [
       {
@@ -15834,64 +15833,66 @@ const PASSAGES = [
         "note": "help + 동사원형: 'help make'는 올바른 구조"
       },
       {
-        "sent": 1,
-        "word": "how we think",
-        "correct": true,
-        "note": "influence + 간접의문문: 올바른 구조"
-      },
-      {
-        "sent": 3,
+        "sent": 2,
         "word": "affecting",
         "correct": true,
-        "note": "분사구문으로 앞 절을 부연 설명하는 올바른 용법"
-      },
-      {
-        "sent": 5,
-        "word": "organized",
-        "correct": true,
-        "note": "수동태 'is organized'로 정보가 정렬되는 것을 올바르게 표현"
-      },
-      {
-        "sent": 8,
-        "word": "was seen",
-        "correct": false,
-        "note": "→ 문맥상 옳으나 'when office work was seen' 대신 능동 표현이 자연스러움; 수동태 자체는 문법적으로 허용되나 'seeing' 능동 분사구문으로 대체 가능"
-      }
-    ],
-    "grammar_answer": 5,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "expressive",
-        "alt": "suppressive",
-        "correct": true
+        "note": "분사구문으로 앞 절을 부연 설명하는 올바른 현재분사 사용"
       },
       {
         "sent": 3,
+        "word": "chosen",
+        "correct": true,
+        "note": "수동의 의미를 가진 과거분사로 'The metaphor'를 수식하는 올바른 형태"
+      },
+      {
+        "sent": 7,
+        "word": "seeing",
+        "correct": false,
+        "note": "수동태 'was seen as' 문법적으로 올바른 형태"
+      },
+      {
+        "sent": 10,
+        "word": "feel",
+        "correct": true,
+        "note": "",
+        "alt": ""
+      }
+    ],
+    "grammar_answer": 4,
+    "vocab_items": [
+      {
+        "sent": 2,
         "word": "fundamental",
         "alt": "superficial",
         "correct": false
       },
       {
-        "sent": 4,
+        "sent": 3,
         "word": "shapes",
-        "alt": "distorts",
+        "alt": "determines",
         "correct": true
       },
       {
-        "sent": 6,
+        "sent": 5,
         "word": "aesthetic",
-        "alt": "ethical",
+        "alt": "artistic",
         "correct": true
       },
       {
-        "sent": 11,
-        "word": "fit",
-        "alt": "ignore",
+        "sent": 9,
+        "word": "locus",
+        "alt": "center",
         "correct": true
+      },
+      {
+        "sent": 10,
+        "word": "fit",
+        "correct": true,
+        "note": "",
+        "alt": ""
       }
     ],
-    "vocab_answer": 2
+    "vocab_answer": 1
   },
   {
     "id": "27STYD_01_004",
