@@ -1122,6 +1122,40 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             })}
           </div>
 
+          {/* 검색창 */}
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+            <div style={{flex:1,position:'relative'}}>
+              <span style={{position:'absolute',left:10,top:'50%',transform:'translateY(-50%)',fontSize:14,color:'#94a3b8'}}>🔍</span>
+              <input
+                value={searchText}
+                onChange={e=>setSearchText(e.target.value)}
+                placeholder="지문 제목 또는 ID 검색..."
+                style={{width:'100%',padding:'9px 12px 9px 32px',borderRadius:10,border:'1.5px solid #e2e8f0',fontSize:13,outline:'none',boxSizing:'border-box',color:'#334155',background:'#f8fafc'}}
+              />
+            </div>
+            {searchText&&<button onClick={()=>setSearchText('')} style={{padding:'7px 12px',borderRadius:9,border:'1px solid #fca5a5',background:'#fef2f2',color:'#dc2626',fontSize:12,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✕ 초기화</button>}
+          </div>
+          {searchText&&(
+            <div style={{marginBottom:10,maxHeight:260,overflowY:'auto',border:'1.5px solid #e2e8f0',borderRadius:10,background:'#fff'}}>
+              {filtP.length===0
+                ? <div style={{padding:'14px',textAlign:'center',fontSize:13,color:'#94a3b8'}}>검색 결과 없음</div>
+                : filtP.map(p=>{
+                    const sel=selPassages.has(p.id);
+                    return(
+                      <div key={p.id} onClick={()=>toggleP(p.id)} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 14px',cursor:'pointer',background:sel?'#eff6ff':'#fff',borderBottom:'1px solid #f1f5f9',transition:'background .1s'}}>
+                        <span style={{fontSize:16}}>{sel?'☑':'☐'}</span>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:13,fontWeight:sel?700:500,color:sel?'#1d4ed8':'#334155',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{p.title||p.id}</div>
+                          <div style={{fontSize:10.5,color:'#94a3b8',marginTop:1}}>{p.id}</div>
+                        </div>
+                        {sel&&<span style={{fontSize:11,color:'#4f7df7',fontWeight:700,whiteSpace:'nowrap'}}>✓ 선택됨</span>}
+                      </div>
+                    );
+                  })
+              }
+            </div>
+          )}
+
           {/* 전체 선택/해제 + 빠른 선택 */}
           <QuickSelectBar activeBook={activeBook} allPassages={allPassages} selPassages={selPassages} toggleP={toggleP} allSelInBook={allSelInBook} selectAllInBook={selectAllInBook} deselectAllInBook={deselectAllInBook} />
 
