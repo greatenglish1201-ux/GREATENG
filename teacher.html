@@ -1391,7 +1391,15 @@ function App(){
 
         {slots.map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
-            onAuthor={()=>{setAuthorInitText(slot.text);setAuthorInitMeta(slot.meta);setAuthorInitPassageData(slot.passageData||null);setViewMode('authoring');}}
+            onAuthor={()=>{
+                setAuthorInitText(slot.text);
+                setAuthorInitMeta(slot.meta);
+                // passageData 없으면 PASSAGES에서 ID로 찾기
+                const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
+                const found=PASSAGES.find(p=>p.id===pid);
+                setAuthorInitPassageData(slot.passageData||found||null);
+                setViewMode('authoring');
+              }}
             onText={v=>upSlot(slot.id,{text:v})}
             onMeta={handleMeta}
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
