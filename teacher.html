@@ -525,7 +525,17 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
   const [passages,setPassages]=useState(()=>{
     if(initialPassageData){
       const normed=initialPassageData.sentences||[];
-      return[{id:0,rawText:normed.map(s=>typeof s==='string'?s:s.text||'').join(' '),data:initialPassageData,error:null,loading:false}];
+      // grammar_sets/vocab_sets 없고 grammar_items만 있으면 sets 형태로 복원
+      let pd={...initialPassageData};
+      if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){
+        pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];
+        pd.grammar_sel=0;
+      }
+      if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){
+        pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];
+        pd.vocab_sel=0;
+      }
+      return[{id:0,rawText:normed.map(s=>typeof s==='string'?s:s.text||'').join(' '),data:pd,error:null,loading:false}];
     }
     return[];
   });
@@ -856,7 +866,7 @@ Return JSON only:
           >{w}</span>;
         })}</span>;
       }
-      // 항목 있는 문장 - substring 하이라이트
+      // positioned 없으면(본문에 word 없음) 문장 배경만 표시하고 전체 텍스트 렌더
       const parts=[];
       let offset=0;
       // sent 항목들을 문장 내 위치 순으로 정렬
@@ -875,6 +885,11 @@ Return JSON only:
         return-1;
       };
       const positioned=sentItems.map(it=>{const idx=findWordIdx(s,it.word);return{it,idx};}).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
+      if(!positioned.length){
+        // word가 본문에 없는 경우 - 문장 전체에 오류 색 배경만 표시
+        const fc=sentItems.some(it=>!it.correct)?'#E24B4A':'#185FA5';
+        return<span style={{fontSize:12,lineHeight:1.8,background:fc+'11',borderRadius:3,padding:'0 2px'}}>{s}</span>;
+      }
       positioned.forEach(({it,idx})=>{
         if(idx<offset)return; // 이미 처리된 영역 건너뜀
         if(idx>offset)parts.push(<span key={offset}
@@ -942,7 +957,7 @@ Return JSON only:
       else if(at===1){p.blank_candidates?.forEach((c,ci)=>{if(ci!==p.blank_sel&&c.sentence_index===i){bg='#854F0B06';bl='3px solid #854F0B33';}});}
       else if(at===2){const bl2=getBlockLabel(p,i);if(bl2){const bc2=BLK_C[bl2];bg=bc2+'12';bl='3px solid '+bc2;}}
       else if(at===4&&i===p.implication_sentence_index){bg='#99355610';bl='3px solid #993556';}
-      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?p.grammar_sel:p.vocab_sel;const item=sets?.[sel]?.items?.find(it=>Number(it.sent)===i);if(item){const c=item.correct?'#185FA5':'#E24B4A';bg=c+'08';bl='3px solid '+c;}}
+      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?(p.grammar_sel||0):(p.vocab_sel||0);const item=sets?.[sel]?.items?.find(it=>Number(it.sent)===i);if(item){const c=item.correct?'#185FA5':'#E24B4A';bg=c+'08';bl='3px solid '+c;}}
       rows.push(<div key={i} style={{display:'flex',gap:6,marginBottom:5,padding:'5px 8px',borderRadius:6,background:bg,borderLeft:bl}}>
         <span style={{color:'#bbb',fontFamily:'monospace',fontSize:11,flexShrink:0,marginTop:2,minWidth:20}}>[{i}]</span>
         {at===2&&getBlockLabel(p,i)&&<span style={{fontSize:11,fontWeight:700,color:BLK_C[getBlockLabel(p,i)],marginRight:2,flexShrink:0,marginTop:2}}>({getBlockLabel(p,i)})</span>}
@@ -1108,8 +1123,8 @@ Return JSON only:
     if(at===7||at===8){
       const isG=at===7;
       const sets=isG?p.grammar_sets:p.vocab_sets;
-      const sel=isG?p.grammar_sel:p.vocab_sel;
-      const ans=isG?p.grammar_answer:p.vocab_answer;
+      const sel=isG?(p.grammar_sel||0):(p.vocab_sel||0);
+      const ans=isG?(p.grammar_answer||1):(p.vocab_answer||1);
       const selKey=isG?'grammar_sel':'vocab_sel';
       const ansKey=isG?'grammar_answer':'vocab_answer';
       const c='#E24B4A';
@@ -1481,6 +1496,20 @@ function App(){
     setLoadFetching(false);
   },[loadedPassages]);
 
+  const restorePassageData=(p)=>{
+    if(!p)return p;
+    let pd={...p};
+    if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){
+      pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];
+      pd.grammar_sel=0;
+    }
+    if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){
+      pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];
+      pd.vocab_sel=0;
+    }
+    return pd;
+  };
+
   const normalizeSentences=(sents)=>{
     if(!sents||!sents.length) return [];
     if(typeof sents[0]==='string') return sents.map((t,i)=>({num:i+1,text:t,symbol:'',role:'',chunks:[]}));
@@ -1497,7 +1526,7 @@ function App(){
       meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
         number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
       status:'saved',
-      passageData:p,
+      passageData:restorePassageData(p),
       analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
       blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
       open:true
@@ -1515,7 +1544,7 @@ function App(){
         next[slotIdx]={...next[slotIdx],text,
           meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
             number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
-          status:'saved',passageData:p,
+          status:'saved',passageData:restorePassageData(p),
           analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
           blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
           open:i===0};
