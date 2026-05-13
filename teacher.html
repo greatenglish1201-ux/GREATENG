@@ -138,7 +138,24 @@ function callClaude(key,sys,user){
 
 function parseJSON(text){
   let s=text.replace(/```(?:json)?|```/g,'').trim();
-  if(!s.endsWith('}')){const i=s.lastIndexOf('}');if(i>0)s=s.slice(0,i+1);}
+  // 중첩 괄호 추적으로 정확한 JSON 경계 추출
+  const start=s.search(/[{[]/);
+  if(start<0)throw new Error('JSON 시작 없음');
+  const opener=s[start];
+  const closer=opener==='{'?'}':']';
+  let depth=0,inStr=false,escape=false,end=-1;
+  for(let i=start;i<s.length;i++){
+    const c=s[i];
+    if(escape){escape=false;continue;}
+    if(c==='\\'){escape=true;continue;}
+    if(c==='"'){inStr=!inStr;continue;}
+    if(inStr)continue;
+    if(c==='{'||c==='[')depth++;
+    else if(c==='}'||c===']')depth--;
+    if(depth===0){end=i;break;}
+  }
+  if(end>=0)s=s.slice(start,end+1);
+  else s=s.slice(start);
   return JSON.parse(s);
 }
 
@@ -675,7 +692,7 @@ Return JSON only:
     setGenLoading(isG?'grammar':'vocab');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const sys='You must return ONLY a single valid JSON object. No markdown. No explanation. No text before or after the JSON. Start your response with { and end with }.';
       const prompt=isG
         ?`You are a Korean CSAT English grammar exam expert.
 Passage:
