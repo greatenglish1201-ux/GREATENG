@@ -15718,400 +15718,180 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_003",
-    "title": "",
-    "difficulty": "중",
+    "difficulty": "높음",
+    "title": "인터페이스 은유",
     "sentences": [
+      "Verbal metaphors help make our language more colorful and expressive.",
+      "They influence how we think about something, but they do not change the thing itself.",
+      "The history of typography shows how visual design influences readability and user comfort.",
+      "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
+      "The metaphor that is chosen for an interface shapes how it can be used.",
+      "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
+      "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
+      "The desktop metaphor calls to mind office work: secretaries, bosses, quarterly plans, and cubicles.",
+      "It was developed in the late 1970s and early 1980s, when office work was seen as the primary use for personal computers.",
+      "The desktop image certainly is appropriate for that setting.",
+      "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
+      "Interface metaphors need to fit both the feel and function of the application."
+    ],
+    "abstract": "Interface metaphors shape both the function and emotional feel of how users interact with technology, unlike verbal metaphors which only influence thought.",
+    "topic_options": [
+      "Interface metaphors shape both function and emotional experience in technology use",
+      "Verbal metaphors make language more expressive and colorful",
+      "The desktop metaphor was developed for office work in the 1980s",
+      "Computer files and folders help organize digital information",
+      "Personal computers were primarily designed for office use"
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 3,
+    "blank_target": "affecting function as well as feeling",
+    "blank_options": [
+      "affecting function as well as feeling",
+      "influencing only the visual design",
+      "changing the underlying technology",
+      "simplifying user interaction",
+      "replacing verbal metaphors entirely"
+    ],
+    "blank_answer": 1,
+    "order_given_index": 0,
+    "order_blocks": [
       {
-        "num": 1,
-        "text": "Verbal metaphors help make our language more colorful and expressive.",
-        "symbol": "G",
-        "role": "언어적 은유의 기능 제시 (배경/비교 대상)",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Verbal metaphors",
-            "ko": "언어적 은유는"
-          },
-          {
-            "en": "help make our language",
-            "ko": "우리의 언어를 만드는 데 도움을 준다"
-          },
-          {
-            "en": "more colorful and expressive",
-            "ko": "더 다채롭고 표현력 있게"
-          }
+        "label": "B",
+        "sentence_indices": [
+          3,
+          4
         ]
       },
       {
-        "num": 2,
-        "text": "They influence how we think about something, but they do not change the thing itself.",
-        "symbol": "G",
-        "role": "언어적 은유의 한계 — 생각에만 영향, 사물 자체는 불변",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "They influence",
-            "ko": "그것들은 영향을 미친다"
-          },
-          {
-            "en": "how we think about something,",
-            "ko": "우리가 무언가에 대해 생각하는 방식에"
-          },
-          {
-            "en": "but they do not change",
-            "ko": "하지만 그것들은 바꾸지는 않는다"
-          },
-          {
-            "en": "the thing itself",
-            "ko": "사물 그 자체를"
-          }
+        "label": "C",
+        "sentence_indices": [
+          5,
+          6
         ]
       },
       {
-        "num": 3,
-        "text": "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
-        "symbol": "↔",
-        "role": "인터페이스 은유는 언어적 은유보다 근본적 — 느낌뿐 아니라 기능에도 영향",
-        "keyWords": [
-          "Interface metaphors"
-        ],
-        "chunks": [
-          {
-            "en": "Interface metaphors",
-            "ko": "인터페이스 은유는"
-          },
-          {
-            "en": "play a more fundamental role",
-            "ko": "더 근본적인 역할을 한다"
-          },
-          {
-            "en": "in how we experience and interact",
-            "ko": "우리가 경험하고 상호작용하는 방식에"
-          },
-          {
-            "en": "with the technological world,",
-            "ko": "기술적 세계와"
-          },
-          {
-            "en": "affecting function as well as feeling",
-            "ko": "느낌뿐만 아니라 기능에도 영향을 미치면서"
-          }
-        ]
-      },
-      {
-        "num": 4,
-        "text": "The metaphor that is chosen for an interface shapes how it can be used.",
-        "symbol": "==",
-        "role": "3번 재진술 — 선택된 은유가 사용 방식을 결정",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "The metaphor",
-            "ko": "은유는"
-          },
-          {
-            "en": "that is chosen for an interface",
-            "ko": "인터페이스를 위해 선택된"
-          },
-          {
-            "en": "shapes how it can be used",
-            "ko": "그것이 사용될 수 있는 방식을 형성한다"
-          }
-        ]
-      },
-      {
-        "num": 5,
-        "text": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
-        "symbol": "S",
-        "role": "파일/폴더 예시 — 은유가 사고를 돕는 동시에 행동을 제약",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "When we put computer \"files\" into \"folders,\"",
-            "ko": "컴퓨터 '파일'을 '폴더'에 넣을 때"
-          },
-          {
-            "en": "these metaphoric constructs",
-            "ko": "이러한 은유적 구성물들은"
-          },
-          {
-            "en": "help us think about the way",
-            "ko": "우리가 방식을 생각하도록 도와준다"
-          },
-          {
-            "en": "information is organized in our machine,",
-            "ko": "정보가 컴퓨터 안에서 구성되는"
-          },
-          {
-            "en": "but they also constrain",
-            "ko": "하지만 그것들은 또한 제한하기도 한다"
-          },
-          {
-            "en": "what we can do with it",
-            "ko": "우리가 그것으로 할 수 있는 것을"
-          }
-        ]
-      },
-      {
-        "num": 6,
-        "text": "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
-        "symbol": "+",
-        "role": "기능뿐 아니라 감성적·심미적 경험에도 영향",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Interface metaphors also influence",
-            "ko": "인터페이스 은유는 또한 영향을 미친다"
-          },
-          {
-            "en": "the feel of the experience,",
-            "ko": "경험의 느낌에"
-          },
-          {
-            "en": "the emotional and aesthetic response",
-            "ko": "감정적·심미적 반응"
-          },
-          {
-            "en": "we have to our interactions",
-            "ko": "우리가 상호작용에 대해 갖는"
-          },
-          {
-            "en": "with and via the machine",
-            "ko": "기계와 함께하고 기계를 통해 이루어지는"
-          }
-        ]
-      },
-      {
-        "num": 7,
-        "text": "The desktop metaphor calls to mind office work: secretaries, bosses, quarterly plans, and cubicles.",
-        "symbol": "S",
-        "role": "데스크톱 은유 예시 — 사무실 업무 연상",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "The desktop metaphor",
-            "ko": "데스크톱 은유는"
-          },
-          {
-            "en": "calls to mind office work:",
-            "ko": "사무실 업무를 떠올리게 한다:"
-          },
-          {
-            "en": "secretaries, bosses, quarterly plans, and cubicles",
-            "ko": "비서, 상사, 분기별 계획, 그리고 칸막이 사무실"
-          }
-        ]
-      },
-      {
-        "num": 8,
-        "text": "It was developed in the late 1970s and early 1980s, when office work was seen as the primary use for personal computers.",
-        "symbol": "S",
-        "role": "데스크톱 은유의 역사적 맥락 — 1970~80년대 사무용 PC 시대",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "It was developed",
-            "ko": "그것은 개발되었다"
-          },
-          {
-            "en": "in the late 1970s and early 1980s,",
-            "ko": "1970년대 후반과 1980년대 초반에"
-          },
-          {
-            "en": "when office work was seen",
-            "ko": "사무실 업무가 여겨지던 시절"
-          },
-          {
-            "en": "as the primary use for personal computers",
-            "ko": "개인용 컴퓨터의 주된 용도로"
-          }
-        ]
-      },
-      {
-        "num": 9,
-        "text": "The desktop image certainly is appropriate for that setting.",
-        "symbol": "G",
-        "role": "당시 맥락에서는 데스크톱 은유가 적절했음을 인정",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "The desktop image",
-            "ko": "데스크톱 이미지는"
-          },
-          {
-            "en": "certainly is appropriate",
-            "ko": "분명히 적절하다"
-          },
-          {
-            "en": "for that setting",
-            "ko": "그 상황에서는"
-          }
-        ]
-      },
-      {
-        "num": 10,
-        "text": "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
-        "symbol": "↔",
-        "role": "오락·소셜 용도에는 데스크톱 은유가 부적절 — 한계 지적",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "However, it is less appropriate",
-            "ko": "하지만 그것은 덜 적절하다"
-          },
-          {
-            "en": "when we use the computer",
-            "ko": "우리가 컴퓨터를 사용할 때"
-          },
-          {
-            "en": "as an entertainment center",
-            "ko": "오락 센터로"
-          },
-          {
-            "en": "or as the locus of our social life",
-            "ko": "혹은 우리 사회적 삶의 중심지로"
-          }
-        ]
-      },
-      {
-        "num": 11,
-        "text": "Interface metaphors need to fit both the feel and function of the application.",
-        "symbol": "→",
-        "role": "결론 — 인터페이스 은유는 느낌과 기능 모두에 맞아야 함",
-        "keyWords": [],
-        "chunks": [
-          {
-            "en": "Interface metaphors need to fit",
-            "ko": "인터페이스 은유는 맞아야 한다"
-          },
-          {
-            "en": "both the feel and function",
-            "ko": "느낌과 기능 모두에"
-          },
-          {
-            "en": "of the application",
-            "ko": "그 응용 프로그램의"
-          }
+        "label": "D",
+        "sentence_indices": [
+          7,
+          8,
+          9
         ]
       }
     ],
-    "flow": {
-      "blocks": [
-        {
-          "id": 1,
-          "name": "언어적 은유 vs 인터페이스 은유",
-          "nameEn": "Verbal vs Interface Metaphors",
-          "color": "blue",
-          "sentenceNums": [
-            1,
-            2,
-            3,
-            4
-          ]
-        },
-        {
-          "id": 2,
-          "name": "인터페이스 은유의 두 가지 영향",
-          "nameEn": "Two Effects of Interface Metaphors",
-          "color": "teal",
-          "sentenceNums": [
-            5,
-            6
-          ]
-        },
-        {
-          "id": 3,
-          "name": "데스크톱 은유의 적절성과 한계",
-          "nameEn": "Desktop Metaphor: Fit and Misfit",
-          "color": "coral",
-          "sentenceNums": [
-            7,
-            8,
-            9,
-            10
-          ]
-        },
-        {
-          "id": 4,
-          "name": "결론",
-          "nameEn": "Conclusion",
-          "color": "amber",
-          "sentenceNums": [
-            11
-          ]
-        }
-      ],
-      "interBlockConnectors": [
-        "+",
-        "S",
-        "→"
-      ],
-      "keyword": "Interface metaphors",
-      "topicSummary": "인터페이스 은유는 언어적 은유와 달리 기술 세계와의 상호작용 방식과 감성적 경험 모두에 근본적인 영향을 미치므로, 응용 프로그램의 느낌과 기능 양쪽에 모두 부합해야 한다.",
-      "structureType": "비교→예시→결론"
-    },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 3,
-          "text": "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
-          "structure": "주어(Interface metaphors) + 동사(play) + 목적어(a more fundamental role) + 전치사구(in how절) + 분사구문(affecting ~)",
-          "translation": "인터페이스 은유는 우리가 기술 세계를 경험하고 상호작용하는 방식에 더 근본적인 역할을 하며, 느낌뿐만 아니라 기능에도 영향을 미친다.",
-          "point": "'as well as'가 'feeling'만이 아니라 'function'까지 영향을 준다는 핵심 주장을 담고 있으며, 분사구문 'affecting ~'이 앞 절 전체를 부연한다."
-        },
-        {
-          "num": 5,
-          "text": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
-          "structure": "부사절(When ~) + 주절1(these metaphoric constructs help us think about ~) + 역접(but) + 주절2(they also constrain what ~)",
-          "translation": "컴퓨터 '파일'을 '폴더'에 넣을 때, 이러한 은유적 구성물들은 정보가 기계 안에서 구성되는 방식을 생각하도록 도와주지만, 동시에 우리가 그것으로 할 수 있는 것을 제한하기도 한다.",
-          "point": "'help us think'(긍정)와 'constrain'(부정)의 대조 구조가 인터페이스 은유의 양면성(기능 보조 + 행동 제약)을 동시에 보여주는 핵심 문장이다."
-        },
-        {
-          "num": 6,
-          "text": "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
-          "structure": "주어 + 동사(influence) + 목적어1(the feel ~) + 목적어 동격(the emotional and aesthetic response) + 관계절(we have to our interactions with and via the machine)",
-          "translation": "인터페이스 은유는 또한 경험의 느낌, 즉 기계와 함께하거나 기계를 통해 이루어지는 상호작용에 대해 우리가 갖는 감정적·심미적 반응에도 영향을 미친다.",
-          "point": "'the emotional and aesthetic response'가 'the feel of the experience'와 동격 관계이며, 'with and via the machine'처럼 전치사 두 개가 공유 구조로 묶인 점을 파악해야 한다."
-        }
-      ]
-    },
-    "blockSummaries": [
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 1,
+    "insert_sentence": "This limitation becomes especially clear when users try to perform tasks that the metaphor does not support.",
+    "insert_answer": 6,
+    "summary_template": "Unlike verbal metaphors that only affect thought, interface metaphors ________(A)________ and also shape the ________(B)________ of using technology.",
+    "summary_A_options": [
+      "constrain function",
+      "improve clarity",
+      "simplify language",
+      "reduce complexity",
+      "enhance creativity"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "emotional and aesthetic response",
+      "hardware performance",
+      "software architecture",
+      "visual resolution",
+      "processing speed"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 7,
+    "implication_keyword": "calls to mind office work: secretaries, bosses, quarterly plans, and cubicles",
+    "implication_options": [
+      "The desktop metaphor carries connotations of formal, hierarchical office culture that may not suit all computing contexts",
+      "The desktop metaphor was designed specifically for secretaries and office managers",
+      "Computers should only be used in professional office environments",
+      "The desktop interface literally resembles a physical office desk",
+      "Office workers prefer the desktop metaphor over all other interfaces"
+    ],
+    "implication_answer": 1,
+    "irrelevant_sentence_index": 2,
+    "aGroup": [
+      "constrain function",
+      "improve clarity",
+      "simplify language"
+    ],
+    "bGroup": [
+      "emotional and aesthetic response",
+      "hardware performance",
+      "software architecture"
+    ],
+    "grammar_items": [
       {
-        "blockId": 1,
-        "summary": "Unlike verbal {metaphors} that only affect language, {interface} metaphors play a more fundamental role in how we {interact} with the technological world.",
-        "keywords": [
-          "metaphors",
-          "interface",
-          "interact"
-        ]
+        "sent": 0,
+        "word": "make",
+        "correct": true,
+        "note": "help + 동사원형: 'help make'는 올바른 구조"
       },
       {
-        "blockId": 2,
-        "summary": "Interface metaphors both {constrain} what we can do with information and influence the {emotional} response we have to our interactions with the machine.",
-        "keywords": [
-          "constrain",
-          "emotional"
-        ]
+        "sent": 1,
+        "word": "how we think",
+        "correct": true,
+        "note": "influence + 간접의문문: 올바른 구조"
       },
       {
-        "blockId": 3,
-        "summary": "The {desktop} metaphor was developed for office work and is {appropriate} for that setting, but less so when the computer is used as an entertainment center or the locus of our {social} life.",
-        "keywords": [
-          "desktop",
-          "appropriate",
-          "social"
-        ]
+        "sent": 3,
+        "word": "affecting",
+        "correct": true,
+        "note": "분사구문으로 앞 절을 부연 설명하는 올바른 용법"
       },
       {
-        "blockId": 4,
-        "summary": "Interface {metaphors} need to fit both the {feel} and {function} of the application.",
-        "keywords": [
-          "metaphors",
-          "feel",
-          "function"
-        ]
+        "sent": 5,
+        "word": "organized",
+        "correct": true,
+        "note": "수동태 'is organized'로 정보가 정렬되는 것을 올바르게 표현"
+      },
+      {
+        "sent": 8,
+        "word": "was seen",
+        "correct": false,
+        "note": "→ 문맥상 옳으나 'when office work was seen' 대신 능동 표현이 자연스러움; 수동태 자체는 문법적으로 허용되나 'seeing' 능동 분사구문으로 대체 가능"
       }
-    ]
+    ],
+    "grammar_answer": 5,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "expressive",
+        "alt": "suppressive",
+        "correct": true
+      },
+      {
+        "sent": 3,
+        "word": "fundamental",
+        "alt": "superficial",
+        "correct": false
+      },
+      {
+        "sent": 4,
+        "word": "shapes",
+        "alt": "distorts",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "aesthetic",
+        "alt": "ethical",
+        "correct": true
+      },
+      {
+        "sent": 11,
+        "word": "fit",
+        "alt": "ignore",
+        "correct": true
+      }
+    ],
+    "vocab_answer": 2
   },
   {
     "id": "27STYD_01_004",
