@@ -841,7 +841,7 @@ Return JSON only:
       }
       // 항목 있는 문장 - substring 하이라이트
       const parts=[];
-      let remain=s;let offset=0;
+      let offset=0;
       // sent 항목들을 문장 내 위치 순으로 정렬
       // 단어 경계 체크 함수 - "who"가 "whose" 안에서 매칭되지 않도록
       const findWordIdx=(str,word)=>{
@@ -859,6 +859,7 @@ Return JSON only:
       };
       const positioned=sentItems.map(it=>{const idx=findWordIdx(s,it.word);return{it,idx};}).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
       positioned.forEach(({it,idx})=>{
+        if(idx<offset)return; // 이미 처리된 영역 건너뜀
         if(idx>offset)parts.push(<span key={offset}
           onClick={()=>{
             upPDeep(p=>{
@@ -900,9 +901,15 @@ Return JSON only:
     for(let i=0;i<=p.sentences.length;i++){
       if(at===5){
         const isP=irrelPos===i;
-        rows.push(<div key={'ip'+i} onClick={()=>upP({irrel_insert_pos:i})} style={{cursor:'pointer',display:'flex',alignItems:'center',gap:4,margin:'2px 0',padding:'2px 6px',borderRadius:4,background:isP?'#0F6E5614':'transparent',border:'1px dashed '+(isP?'#0F6E56':'transparent')}}>
-          <span style={{fontSize:10,color:isP?'#0F6E56':'#ccc',fontWeight:700}}>▶ {isP?'여기에 삽입':'클릭'}</span></div>);
-        if(isP)rows.push(<div key={'iprev'+i} style={{margin:'2px 0 4px 24px',padding:'6px 9px',borderLeft:'3px solid #0F6E56',borderRadius:4,background:'#0F6E5610',fontSize:12,color:'#0F6E56',fontStyle:'italic'}}>{p.irrel_candidates?.[p.irrel_sel]}</div>);
+        const confirmed=p.irrel_confirmed&&p.irrelevant_sentence_index===i;
+        if(!p.irrel_confirmed){
+          rows.push(<div key={'ip'+i} onClick={()=>upP({irrel_insert_pos:i})} style={{cursor:'pointer',display:'flex',alignItems:'center',gap:4,margin:'2px 0',padding:'2px 6px',borderRadius:4,background:isP?'#0F6E5614':'transparent',border:'1px dashed '+(isP?'#0F6E56':'transparent')}}>
+            <span style={{fontSize:10,color:isP?'#0F6E56':'#ccc',fontWeight:700}}>▶ {isP?'여기에 삽입':'클릭'}</span></div>);
+          if(isP)rows.push(<div key={'iprev'+i} style={{margin:'2px 0 4px 24px',padding:'6px 9px',borderLeft:'3px solid #0F6E56',borderRadius:4,background:'#0F6E5610',fontSize:12,color:'#0F6E56',fontStyle:'italic'}}>{p.irrel_candidates?.[p.irrel_sel]}</div>);
+        } else if(confirmed){
+          rows.push(<div key={'iprev'+i} style={{margin:'2px 0 4px 0',padding:'6px 9px',borderLeft:'3px solid #0F6E56',borderRadius:4,background:'#0F6E5610',fontSize:12,color:'#0F6E56',fontStyle:'italic'}}>
+            ✓ [{i}] {p.irrel_candidates?.[p.irrel_sel]}</div>);
+        }
       }
       if(at===6){
         const isP=insPos===i;
@@ -941,7 +948,7 @@ Return JSON only:
           ?<span style={{fontSize:11,color:'#185FA5'}}>⏳ AI 생성 중...</span>
           :<button onClick={()=>genTopicOptions(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #185FA5',background:'#185FA510',color:'#185FA5',cursor:'pointer'}}>↻ 선지 재생성</button>}
       </div>
-      {p.topic_options.map((o,i)=>{const isSel=p.topic_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
+      {(p.topic_options||[]).map((o,i)=>{const isSel=p.topic_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
         <button onClick={()=>upP({topic_answer:i+1})} style={{minWidth:28,height:28,borderRadius:14,border:`1px solid ${isSel?'#185FA5':'#ddd'}`,background:isSel?'#185FA5':'transparent',color:isSel?'#fff':'#999',fontSize:12,cursor:'pointer',fontWeight:700}}>{i+1}</button>
         <input value={o} onChange={e=>{const opts=[...p.topic_options];opts[i]=e.target.value;upP({topic_options:opts});}}
           style={{flex:1,fontSize:13,padding:'6px 9px',borderRadius:7,border:`1px solid ${isSel?'#185FA5':'#e5e5e5'}`,fontWeight:isSel?600:400,color:isSel?'#185FA5':'#1d1d1f'}}/>
@@ -983,7 +990,7 @@ Return JSON only:
           return<div key={b.label} style={{marginBottom:8,border:`1px solid ${c}44`,borderRadius:9,overflow:'hidden'}}>
             <div style={{background:c+'22',padding:'5px 11px',fontSize:11,fontWeight:700,color:c}}>({b.label}) 문장[{b.sentence_indices.join(', ')}]</div>
             <div style={{padding:'8px 11px',fontSize:12,color:'#555',lineHeight:1.5}}>
-              {b.sentence_indices.map((idx,n)=><div key={idx}>{n>0&&<div style={{borderTop:'0.5px solid #f0f0f0',margin:'3px 0'}}/>}<span style={{color:'#bbb',fontSize:10,marginRight:4}}>[{idx}]</span>{p.sentences[idx]}</div>)}
+              {b.sentence_indices.map((idx,n)=>{const ss=p.sentences[idx];const st=typeof ss==='string'?ss:(ss?.text||'');return<div key={idx}>{n>0&&<div style={{borderTop:'0.5px solid #f0f0f0',margin:'3px 0'}}/>}<span style={{color:'#bbb',fontSize:10,marginRight:4}}>[{idx}]</span>{st}</div>})}
             </div>
           </div>;
         })}
@@ -1062,19 +1069,12 @@ Return JSON only:
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
       <LocalTextarea value={p.irrel_candidates?.[p.irrel_sel]||''} onSave={v=>{const c=[...(p.irrel_candidates||[])];c[p.irrel_sel]=v;upP({irrel_candidates:c});}} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
       {!p.irrel_confirmed?
-        <button onClick={()=>upPDeep(p=>{
-          const pos=p.irrel_insert_pos||0,sent=p.irrel_candidates?.[p.irrel_sel]||'';
-          const ns=[...p.sentences];ns.splice(pos,0,sent);
-          const shift=x=>x>=pos?x+1:x;
-          return{...p,sentences:ns,irrelevant_sentence_index:pos,irrel_confirmed:true,
-            blank_sentence_index:shift(p.blank_sentence_index),insert_answer:shift(p.insert_answer),
-            implication_sentence_index:shift(p.implication_sentence_index),
-            order_given_index:shift(p.order_given_index),
-            order_blocks:(p.order_blocks||[]).map(b=>({...b,sentence_indices:b.sentence_indices.map(shift)})),
-            grammar_sets:(p.grammar_sets||[]).map(s=>({...s,items:s.items.map(it=>({...it,sent:shift(it.sent)}))})),
-            vocab_sets:(p.vocab_sets||[]).map(s=>({...s,items:s.items.map(it=>({...it,sent:shift(it.sent)}))}))};
-        })} style={{width:'100%',padding:'9px',borderRadius:8,background:'#0F6E5618',border:'1px solid #0F6E56',color:'#0F6E56',fontWeight:600,cursor:'pointer',fontSize:13}}>✓ 확정 — sentences에 삽입</button>
-        :<div style={{padding:'8px 10px',background:'#0F6E5610',borderRadius:7,fontSize:12,color:'#0F6E56'}}>✓ 확정됨 — 문장[{p.irrelevant_sentence_index}]이 무관문장</div>}
+        <button onClick={()=>upP({irrelevant_sentence_index:p.irrel_insert_pos||0,irrel_confirmed:true})}
+          style={{width:'100%',padding:'9px',borderRadius:8,background:'#0F6E5618',border:'1px solid #0F6E56',color:'#0F6E56',fontWeight:600,cursor:'pointer',fontSize:13}}>✓ 확정</button>
+        :<div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 10px',background:'#0F6E5610',borderRadius:7,fontSize:12,color:'#0F6E56'}}>
+          <span>✓ 확정됨 — [{p.irrel_insert_pos}] 위치, 무관문장 삽입</span>
+          <button onClick={()=>upP({irrel_confirmed:false})} style={{fontSize:11,padding:'2px 8px',borderRadius:5,border:'1px solid #0F6E56',background:'transparent',color:'#0F6E56',cursor:'pointer'}}>취소</button>
+        </div>}
     </div>;
 
     if(at===6)return<div>
