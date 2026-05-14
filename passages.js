@@ -16356,7 +16356,7 @@ const PASSAGES = [
   {
     "id": "27STYD_01_005",
     "difficulty": "중",
-    "title": "",
+    "title": "지식의 한계",
     "sentences": [
       {
         "num": 1,
