@@ -521,7 +521,7 @@ function LocalTextarea({value, onSave, rows, style}){
     rows={rows||3} style={style}/>;
 }
 
-function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta, initialPassageData}){
+function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, initialText, initialMeta, initialPassageData}){
   const [passages,setPassages]=useState(()=>{
     if(initialPassageData){
       const normed=initialPassageData.sentences||[];
@@ -557,6 +557,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
   const [copied,setCopied]=useState(false);
   const [err,setErr]=useState('');
   const [ghSaving,setGhSaving]=useState(false);
+  const [genLoading,setGenLoading]=useState('');
 
   const saveToGitHub=async(jsonText)=>{
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 먼저 입력해주세요.');return;}
@@ -585,12 +586,20 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, initialText, initialMeta
     setGhSaving(false);
   };
 
+  const restorePassageData=(p)=>{
+    if(!p)return p;
+    let pd={...p};
+    if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];pd.grammar_sel=0;}
+    if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];pd.vocab_sel=0;}
+    if(pd.insert_candidates?.length){pd.insert_candidates=pd.insert_candidates.filter(c=>c&&typeof c==='object'&&c.sentence);}
+    if((!pd.insert_candidates||!pd.insert_candidates.length)&&pd.insert_sentence){pd.insert_candidates=[{sentence:pd.insert_sentence,pos:pd.insert_answer||1}];pd.insert_sel=0;}
+    return pd;
+  };
   const P=()=>passages[pi]?.data;
+
 
   const upP=(patch)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:{...p.data,...patch}}:p));
   const upPDeep=(fn)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:fn({...p.data})}:p));
-
-  const [genLoading,setGenLoading]=useState('');
 
   const genBlankDistractors=async(sentIdx,keyword,pData)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
@@ -1317,8 +1326,30 @@ Return JSON only:
 
   if(step==='edit'){
     const p=P();
+    const curId=p?.id||'';
+    const savedSlots=(slots||[]).filter(s=>s.status==='saved'&&s.passageData);
     return(
       <div style={{padding:'14px'}}>
+        {/* 교재ID/번호 + 슬롯 전환 */}
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,flexWrap:'wrap'}}>
+          {curId&&<span style={{fontSize:12,fontFamily:'monospace',background:'#185FA510',color:'#185FA5',border:'1px solid #185FA540',borderRadius:6,padding:'3px 10px',fontWeight:600}}>{curId}</span>}
+          {savedSlots.length>0&&<>
+            <span style={{fontSize:11,color:'#bbb'}}>|</span>
+            <span style={{fontSize:11,color:'#888'}}>슬롯 전환:</span>
+            {savedSlots.map((s,si)=>{
+              const sid=s.passageData?.id||(s.meta?.source+'_'+String(s.meta?.chapter||1).padStart(2,'0')+'_'+String(s.meta?.number||1).padStart(3,'0'));
+              const isNow=sid===curId;
+              return<button key={si} onClick={()=>{if(!isNow&&onSlotChange)onSlotChange(restorePassageData(s.passageData),s.meta);}}
+                style={{fontSize:11,padding:'3px 9px',borderRadius:6,
+                  border:`1px solid ${isNow?'#185FA5':'#e5e5e5'}`,
+                  background:isNow?'#185FA5':'transparent',
+                  color:isNow?'#fff':'#555',
+                  cursor:isNow?'default':'pointer',fontWeight:isNow?600:400}}>
+                {sid}
+              </button>;
+            })}
+          </>}
+        </div>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
           <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
             {passages.filter(pg=>pg.data).map((pg,_,arr)=><button key={pg.id} onClick={()=>{setPi(pg.id);setAt(0);}} style={{background:pi===pg.id?'#1d1d1f':'transparent',color:pi===pg.id?'#fff':'#555',border:'0.5px solid #e5e5e5',borderRadius:7,padding:'4px 12px',fontSize:13,cursor:'pointer',fontWeight:pi===pg.id?500:400}}>{pg.data.title}</button>)}
@@ -1780,7 +1811,7 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} slots={slots} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
+      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} slots={slots} onSlotChange={(pd,meta)=>{setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
