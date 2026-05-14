@@ -15832,14 +15832,16 @@ const PASSAGES = [
       "Office work is the primary use case for personal computers."
     ],
     "topic_answer": 1,
-    "blank_sentence_index": 5,
-    "blank_target": "machine",
+    "blank_sel": 0,
+    "blank_candidates": [],
+    "blank_sentence_index": 10,
+    "blank_target": "fit both the feel and function of the application",
     "blank_options": [
-      "machine",
-      "",
-      "",
-      "",
-      ""
+      "fit both the feel and function of the application",
+      "match the technical complexity of the system",
+      "reflect the visual design and aesthetic of the interface",
+      "align with the historical origins of the technology",
+      "appeal to both novice and experienced users equally"
     ],
     "blank_answer": 1,
     "order_given_index": 0,
@@ -15875,8 +15877,17 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
-    "insert_sentence": "This is why choosing the right metaphor is a critical step in interface design.",
-    "insert_answer": 4,
+    "insert_sel": 0,
+    "insert_candidates": [
+      {
+        "sentence": "This is why choosing the right metaphor is a critical step in interface design.",
+        "pos": 4
+      }
+    ],
+    "insert_sentence": "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
+    "insert_answer": 9,
+    "summary_sel": 0,
+    "summary_candidates": [],
     "summary_template": "Interface metaphors play a fundamental role by _____(A)_____ how technology is used and experienced, and thus they must _____(B)_____ both the feel and function of an application.",
     "summary_A_options": [
       "shaping",
@@ -15894,61 +15905,131 @@ const PASSAGES = [
       "separate"
     ],
     "summary_B_answer": 1,
-    "implication_sentence_index": 6,
-    "implication_keyword": "calls to mind office work",
+    "implication_sentence_index": 4,
+    "implication_keyword": "\"files\" into \"folders,\"",
     "implication_options": [
-      "The desktop metaphor evokes associations with a traditional professional office environment.",
-      "The desktop metaphor was literally designed inside an office building.",
-      "The desktop metaphor forces users to do office work on their computers.",
-      "The desktop metaphor makes computers look like physical office desks.",
-      "The desktop metaphor was invented by office workers for secretarial tasks."
+      "organizing digital information using familiar physical office concepts",
+      "transferring physical documents into storage cabinets permanently",
+      "compressing large data sets into smaller manageable units",
+      "converting file formats to be compatible with folder systems",
+      "moving temporary files into secured encrypted storage spaces"
     ],
     "implication_answer": 1,
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 5,
+    "irrel_confirmed": false,
     "irrelevant_sentence_index": 2,
-    "aGroup": [
-      "shaping",
-      "ignoring",
-      "replacing"
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "how we think about something",
+            "correct": true,
+            "note": "influence의 목적어로 간접의문문(how + 주어 + 동사)이 올바르게 사용됨"
+          },
+          {
+            "sent": 3,
+            "word": "how it can be used",
+            "correct": true,
+            "note": "shapes의 목적어로 간접의문문이 올바르게 사용되었으며, 수동태(can be used) 형태도 적절함"
+          },
+          {
+            "sent": 5,
+            "word": "the emotional and aesthetic response we have to our interactions",
+            "correct": true,
+            "note": "명사구 the feel of the experience와 동격으로 쓰인 명사구이며, 관계절이 response를 수식하는 구조가 올바름"
+          },
+          {
+            "sent": 7,
+            "word": "when office work was seeing as the primary use",
+            "correct": false,
+            "note": "→ when office work was seen as the primary used: 아니라, 문맥상 'seen as'는 올바르나 'seen' 대신 능동 'viewed'로 바꿀 필요는 없음. 실제 오류: 'seen' → 'seeing' (분사구문으로 혼동 유발) — 정확히는 'when office work was seeing as the primary use'가 아니라 수동태 'was seen'이 맞으므로, 여기서 오류 항목을 재설정: 'was seen' → 'was seeing'으로 잘못 쓰인 경우, was seeing은 틀리고 was seen이 올바름"
+          },
+          {
+            "sent": 10,
+            "word": "need to fit both the feel and function",
+            "correct": true,
+            "note": "both A and B 구문으로 the feel과 function이 병렬 구조를 이루며 올바르게 사용됨"
+          }
+        ],
+        "answer": 4
+      }
     ],
-    "bGroup": [
-      "fit",
-      "ignore",
-      "limit"
-    ],
+    "grammar_sel": 0,
     "grammar_items": [
       {
-        "sent": 0,
-        "word": "make",
+        "sent": 1,
+        "word": "how we think about something",
         "correct": true,
-        "note": "help + 동사원형: 'help make'는 올바른 구조"
-      },
-      {
-        "sent": 2,
-        "word": "affecting",
-        "correct": true,
-        "note": "분사구문으로 앞 절을 부연 설명하는 올바른 현재분사 사용"
+        "note": "influence의 목적어로 간접의문문(how + 주어 + 동사)이 올바르게 사용됨"
       },
       {
         "sent": 3,
-        "word": "chosen",
+        "word": "how it can be used",
         "correct": true,
-        "note": "수동의 의미를 가진 과거분사로 'The metaphor'를 수식하는 올바른 형태"
+        "note": "shapes의 목적어로 간접의문문이 올바르게 사용되었으며, 수동태(can be used) 형태도 적절함"
+      },
+      {
+        "sent": 5,
+        "word": "the emotional and aesthetic response we have to our interactions",
+        "correct": true,
+        "note": "명사구 the feel of the experience와 동격으로 쓰인 명사구이며, 관계절이 response를 수식하는 구조가 올바름"
       },
       {
         "sent": 7,
-        "word": "seeing",
+        "word": "when office work was seeing as the primary use",
         "correct": false,
-        "note": "수동태 'was seen as' 문법적으로 올바른 형태"
+        "note": "→ when office work was seen as the primary used: 아니라, 문맥상 'seen as'는 올바르나 'seen' 대신 능동 'viewed'로 바꿀 필요는 없음. 실제 오류: 'seen' → 'seeing' (분사구문으로 혼동 유발) — 정확히는 'when office work was seeing as the primary use'가 아니라 수동태 'was seen'이 맞으므로, 여기서 오류 항목을 재설정: 'was seen' → 'was seeing'으로 잘못 쓰인 경우, was seeing은 틀리고 was seen이 올바름"
       },
       {
         "sent": 10,
-        "word": "feel",
+        "word": "need to fit both the feel and function",
         "correct": true,
-        "note": "",
-        "alt": ""
+        "note": "both A and B 구문으로 the feel과 function이 병렬 구조를 이루며 올바르게 사용됨"
       }
     ],
     "grammar_answer": 4,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 2,
+            "word": "fundamental",
+            "alt": "superficial",
+            "correct": false
+          },
+          {
+            "sent": 3,
+            "word": "shapes",
+            "alt": "determines",
+            "correct": true
+          },
+          {
+            "sent": 5,
+            "word": "aesthetic",
+            "alt": "artistic",
+            "correct": true
+          },
+          {
+            "sent": 9,
+            "word": "locus",
+            "alt": "center",
+            "correct": true
+          },
+          {
+            "sent": 10,
+            "word": "fit",
+            "correct": true,
+            "note": "",
+            "alt": ""
+          }
+        ],
+        "answer": 1
+      }
+    ],
+    "vocab_sel": 0,
     "vocab_items": [
       {
         "sent": 2,
@@ -15982,7 +16063,17 @@ const PASSAGES = [
         "alt": ""
       }
     ],
-    "vocab_answer": 1
+    "vocab_answer": 1,
+    "aGroup": [
+      "shaping",
+      "ignoring",
+      "replacing"
+    ],
+    "bGroup": [
+      "fit",
+      "ignore",
+      "limit"
+    ]
   },
   {
     "id": "27STYD_01_004",
