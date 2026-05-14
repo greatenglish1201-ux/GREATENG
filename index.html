@@ -8,7 +8,9 @@
 </head>
 <body>
 <div id="root"></div>
-<script src="passages.js"></script>
+<script>
+(function(){var s=document.createElement('script');s.src='passages.js?t='+Date.now();document.head.appendChild(s);})();
+</script>
 <script>
 // PASSAGES loaded from passages.js
 </script>
@@ -270,9 +272,17 @@ function gen(passage, type, allP){
   /* ④ 문장 삽입 */
   case 'insert':{
     if(!passage.insert_sentence || !passage.insert_answer) return null;
-    if(s.length < 5) return null;
+    if(s.length < 4) return null;
     const correctPos = passage.insert_answer;
-    const total = s.length;
+    // insert_answer 위치 문장이 sentences에 포함된 경우 제거 (주어진 문장과 동일하면 제거)
+    const insertSentText = passage.insert_sentence.trim().slice(0,20);
+    const sAtPos = typeof s[correctPos]==='string'?s[correctPos]:(s[correctPos]?.text||'');
+    const needRemove = sAtPos.trim().startsWith(insertSentText);
+    // 제거 시 correctPos 이후 인덱스가 당겨지므로 마커 위치 기준은 제거 후 배열 기준으로
+    // correctPos는 "이 위치 앞에 삽입" 의미 → 제거 후에도 동일 숫자 유지
+    const sClean = needRemove ? [...s.slice(0,correctPos),...s.slice(correctPos+1)] : s;
+    const realPos = correctPos; // 제거 후 배열에서 삽입 위치 (before slot)
+    const total = sClean.length;
     const markerCount = Math.min(5, total - 1);
     // correctPos가 들어갈 번호 슬롯을 랜덤 결정 (균등 분포)
     const targetSlot = Math.floor(Math.random() * markerCount);
@@ -280,9 +290,9 @@ function gen(passage, type, allP){
     // correctPos 앞: targetSlot개, 뒤: markerCount-1-targetSlot개 마커 필요
     const before = []; // correctPos보다 앞 인덱스
     const after = [];  // correctPos보다 뒤 인덱스
-    for(let i = 1; i < total; i++){
-      if(i < correctPos) before.push(i);
-      else if(i > correctPos) after.push(i);
+    for(let i = 0; i < total; i++){
+      if(i < realPos) before.push(i);
+      else if(i >= realPos) after.push(i);
     }
     // targetSlot을 실제 before/after 가용 범위에 맞게 조정
     // needBefore + 1 + needAfter = 최대한 markerCount에 가깝게
@@ -303,8 +313,8 @@ function gen(passage, type, allP){
     const afterPicks = [];
     for(let k=0; k<needAfter && k<after.length; k++) afterPicks.push(after[Math.round(k*stepA)]);
     // 최종 markerIdxs: 정렬
-    const markerIdxs = [...beforePicks, correctPos, ...afterPicks].sort((a,b)=>a-b);
-    return {type, passage, removed: passage.insert_sentence, remaining: s, markerIdxs, correctPos, instruction: '글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?'};
+    const markerIdxs = [...beforePicks, realPos, ...afterPicks].sort((a,b)=>a-b);
+    return {type, passage, removed: passage.insert_sentence, remaining: sClean, markerIdxs, correctPos:realPos, instruction: '글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?'};
   }
 
   /* ⑤ 요약문 완성 */
@@ -645,7 +655,7 @@ function App(){
   return <Quiz q={q} idx={curIdx} total={questions.length} userAnswer={userAns[curIdx]}
     showAnswer={showAns||(ansMode==='immediate'&&!!userAns[curIdx]&&!userAns[curIdx]?.expired)}
     onSubmit={ans=>{setUserAns(p=>({...p,[curIdx]:ans}));if(ansMode==='immediate')setShowAns(true);}}
-    onNext={()=>{setShowAns(false);if(curIdx+1>=questions.length){setScreen('results');}else{setCurIdx(curIdx+1);setTimerKey(Date.now());}}}
+    onNext={()=>{setShowAns(false);setTimerKey(Date.now());if(curIdx+1>=questions.length)setScreen('results');else setCurIdx(curIdx+1);}}
     score={score} ansMode={ansMode} goHome={()=>setScreen('setup')}
     questions={questions} userAns={userAns} timerKey={timerKey}
     doPrint={doPrintFromQuiz}
@@ -1349,11 +1359,9 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
 function Timer({timerKey,onExpire,stopped}){
   const [left,setLeft]=useState(120);
   const [paused,setPaused]=useState(false);
-  const [frozen,setFrozen]=useState(false);
-  useEffect(()=>{setLeft(120);setPaused(false);setFrozen(false);},[timerKey]);
-  useEffect(()=>{if(stopped)setFrozen(true);},[stopped]);
+  useEffect(()=>{setLeft(120);setPaused(false);},[timerKey]);
   useEffect(()=>{
-    if(paused||frozen)return;
+    if(paused||stopped)return;
     if(left<=0){onExpire?.();return;}
     const t=setTimeout(()=>setLeft(l=>l-1),1000);
     return()=>clearTimeout(t);
@@ -1610,29 +1618,38 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
     const items=q.options||[];
     const p=q.passage;
     const srcItems=q.type==='grammar'?p.grammar_items:p.vocab_items;
+    // sent 인덱스 보정: AI가 잘못 배정한 경우 word가 실제 있는 문장으로 재매핑
+    const sentences=q.passage.sentences;
+    const correctedItems=(srcItems||[]).map(item=>{
+      const w=(item.word||'').trim();
+      if(!w) return item;
+      const claimedSent=typeof sentences[Number(item.sent)]==='string'?sentences[Number(item.sent)]:(sentences[Number(item.sent)]?.text||'');
+      if(claimedSent.includes(w)) return item; // 맞으면 그대로
+      // 틀리면 word가 실제로 있는 문장 찾기
+      const realSi=sentences.findIndex((raw)=>{const t=typeof raw==='string'?raw:(raw?.text||'');return t.includes(w);});
+      if(realSi>=0) return {...item,sent:realSi};
+      return item;
+    });
     return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
       {q.passage.sentences.map((raw,si)=>{
         const s=typeof raw==='string'?raw:(raw?.text||'');
-        // 이 문장에 해당하는 항목 찾기 (sent 타입 통일)
-        const srcIdx=(srcItems||[]).findIndex(it=>Number(it.sent)===si);
+        // 이 문장에 해당하는 항목 찾기 (보정된 sent 사용)
+        const srcIdx=(correctedItems||[]).findIndex(it=>Number(it.sent)===si);
         const item=srcIdx>=0?items[srcIdx]:null;
         if(!item){return <span key={si}>{s} </span>;}
         const num=srcIdx+1;
         const word=item.text||'';
         // original이 있으면 original로 위치 찾고 word로 표시
-        const srcItem=srcItems[srcIdx];
+        const srcItem=correctedItems[srcIdx];
         // pos 있으면 직접 사용, original 있으면 탐색, 없으면 word로 탐색
         const findIdx=(str,w)=>{
-          if(!w)return -1;
           let start=0;
           while(start<=str.length-w.length){
             const i=str.indexOf(w,start);
             if(i<0)break;
-            const before=i>0?str[i-1]:' ';
-            const after=i+w.length<str.length?str[i+w.length]:' ';
-            const bOk=/[^a-zA-Z0-9']/.test(before);
-            const aOk=/[^a-zA-Z0-9']/.test(after);
-            if(bOk&&aOk)return i;
+            const before=i>0?str[i-1]:'';
+            const after=i+w.length<str.length?str[i+w.length]:'';
+            if((/[^a-zA-Z']/.test(before)||before==='')&&(/[^a-zA-Z']/.test(after)||after===''))return i;
             start=i+1;
           }
           return-1;
@@ -1649,17 +1666,16 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         const isAns=showAnswer&&item.correct===false;
         const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
         const uc=isAns?'#ef4444':'#1e293b';
-        const circleNum=['①','②','③','④','⑤'][num-1]||num;
         if(idx<0){
-          // 위치 못 찾을 때 — 문장 앞에 word 밑줄 표시 후 문장
-          return <span key={si}>
-            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px'}}>{circleNum} {word}</span>{' '}{s}{' '}
+          // 위치 못 찾을 때 — 문장 뒤에 word만 밑줄 표시
+          return <span key={si}>{s}{' '}
+            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',fontSize:13}}>{num}. {word}</span>{' '}
           </span>;
         }
         return <span key={si}>
           {s.slice(0,idx)}
           <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>
-            {circleNum} {word}
+            {num}. {word}
           </span>
           {s.slice(idx+searchLen)}{' '}
         </span>;
