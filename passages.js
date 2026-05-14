@@ -16744,36 +16744,38 @@ const PASSAGES = [
         "items": [
           {
             "sent": 0,
-            "word": "that which",
+            "word": "most evident",
             "correct": true,
-            "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
-          },
-          {
-            "sent": 8,
-            "word": "was going to",
-            "correct": true,
-            "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+            "note": "형용사 최상급 'most evident'가 주격보어로 적절하게 사용됨",
+            "original": ""
           },
           {
             "sent": 3,
             "word": "predicted",
             "correct": true,
-            "note": "",
-            "alt": ""
+            "note": "'it has been predicted'는 수동태 현재완료로 문맥상 적절함",
+            "original": ""
           },
           {
             "sent": 5,
             "word": "where",
-            "correct": true,
-            "note": "which로 수정",
-            "alt": ""
+            "correct": false,
+            "note": "→ 'that' 또는 삭제. 'due to some internal process with its molten core'가 선행사를 수식하는 관계절이 아니라, 문장 전체 내용을 보면 'which we had not anticipated'에서 선행사가 'some internal process'이므로 관계대명사 which는 가능하나, 앞에 'it is also possible that' 구조에서 that절 내의 주어 'the Earth'를 수식하는 구조를 보면 'with its molten core' 뒤의 관계절 연결이 어색함. 'which' → 'that'으로 교체하여 제한적 관계절로 써야 자연스러움",
+            "original": "which"
           },
           {
             "sent": 7,
-            "word": "which",
+            "word": "resulted from",
             "correct": true,
-            "note": "",
-            "alt": ""
+            "note": "'which resulted from'은 계속적 용법의 관계절로 앞 명사 'earthquake'를 수식하며 문법적으로 적절함",
+            "original": ""
+          },
+          {
+            "sent": 8,
+            "word": "such was the case",
+            "correct": true,
+            "note": "'such was the case'는 도치 구문으로 '실제로 그러했다'는 의미로 문법적으로 적절함",
+            "original": ""
           }
         ],
         "answer": 3
@@ -16783,39 +16785,41 @@ const PASSAGES = [
     "grammar_items": [
       {
         "sent": 0,
-        "word": "that which",
+        "word": "most evident",
         "correct": true,
-        "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
+        "note": "형용사 최상급 'most evident'가 주격보어로 적절하게 사용됨",
+        "original": ""
       },
       {
         "sent": 3,
         "word": "predicted",
         "correct": true,
-        "note": "",
-        "alt": ""
+        "note": "'it has been predicted'는 수동태 현재완료로 문맥상 적절함",
+        "original": ""
       },
       {
         "sent": 5,
         "word": "where",
-        "correct": true,
-        "note": "which로 수정",
-        "alt": ""
+        "correct": false,
+        "note": "→ 'that' 또는 삭제. 'due to some internal process with its molten core'가 선행사를 수식하는 관계절이 아니라, 문장 전체 내용을 보면 'which we had not anticipated'에서 선행사가 'some internal process'이므로 관계대명사 which는 가능하나, 앞에 'it is also possible that' 구조에서 that절 내의 주어 'the Earth'를 수식하는 구조를 보면 'with its molten core' 뒤의 관계절 연결이 어색함. 'which' → 'that'으로 교체하여 제한적 관계절로 써야 자연스러움",
+        "original": "which"
       },
       {
         "sent": 7,
-        "word": "which",
+        "word": "resulted from",
         "correct": true,
-        "note": "",
-        "alt": ""
+        "note": "'which resulted from'은 계속적 용법의 관계절로 앞 명사 'earthquake'를 수식하며 문법적으로 적절함",
+        "original": ""
       },
       {
         "sent": 8,
-        "word": "was going to",
+        "word": "such was the case",
         "correct": true,
-        "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+        "note": "'such was the case'는 도치 구문으로 '실제로 그러했다'는 의미로 문법적으로 적절함",
+        "original": ""
       }
     ],
-    "grammar_answer": 4,
+    "grammar_answer": 3,
     "vocab_sets": [
       {
         "items": [
