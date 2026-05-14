@@ -1617,6 +1617,8 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         if(!item){return <span key={si}>{s} </span>;}
         const num=srcIdx+1;
         const word=item.text||'';
+        // original이 있으면 original로 위치 찾고 word로 표시
+        const searchWord=(q.type==='grammar'&&srcItems[srcIdx]?.original)||word;
         // 단어 경계 체크로 정확한 위치 찾기
         const findIdx=(str,w)=>{
           let start=0;
@@ -1630,12 +1632,12 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
           }
           return-1;
         };
-        const idx=findIdx(s,word);
+        const idx=findIdx(s,searchWord);
         const isAns=showAnswer&&item.correct===false;
         const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
         const uc=isAns?'#ef4444':'#1e293b';
         if(idx<0){
-          // word가 본문에 없을 때 — 문장 표시 후 word만 밑줄 표시
+          // 위치 못 찾을 때 — 문장 뒤에 word만 밑줄 표시
           return <span key={si}>{s}{' '}
             <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',fontSize:13}}>{num}. {word}</span>{' '}
           </span>;
@@ -1645,7 +1647,7 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
           <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>
             {num}. {word}
           </span>
-          {s.slice(idx+word.length)}{' '}
+          {s.slice(idx+searchWord.length)}{' '}
         </span>;
       })}
     </div>);
