@@ -341,8 +341,12 @@ function gen(passage, type, allP){
     // 새 데이터: irrelevant_sentence_index 사용
     if(passage.irrelevant_sentence_index !== null && passage.irrelevant_sentence_index !== undefined){
       const insertAt = passage.irrelevant_sentence_index;
-      if(insertAt <= 0 || insertAt >= s.length) return null;
+      if(insertAt < 0 || insertAt > s.length) return null;
+      // 무관 문장 텍스트
+      const irrelSent = passage.irrel_sentence || (passage.irrel_candidates?.[passage.irrel_sel||0]) || null;
+      if(!irrelSent) return null;
       const full = [...s];
+      full.splice(insertAt, 0, irrelSent);
       const markerCount = 5;
       // insertAt을 ①~⑤ 중 랜덤 슬롯에 배정 (균등 분포)
       const targetSlot = Math.floor(Math.random() * markerCount);
@@ -1612,13 +1616,7 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         };
         const idx=findIdx(s,word);
         const isAns=showAnswer&&item.correct===false;
-        if(idx<0)return <span key={si}>
-          <span style={{display:'inline-flex',alignItems:'center',marginRight:4,padding:'0 6px',borderRadius:10,
-            background:isAns?'#ef444420':'#33415520',border:`1px solid ${isAns?'#ef4444':'#334155'}44`,
-            color:isAns?'#ef4444':'#334155',fontWeight:700,fontSize:13}}>
-            {num}. {word}
-          </span>{s}{' '}
-        </span>;
+        if(idx<0)return <span key={si}>{s}{' '}</span>;
         return <span key={si}>
           {s.slice(0,idx)}
           <span style={{borderBottom:`2px solid ${isAns?'#ef4444':'#334155'}`,fontWeight:700,color:isAns?'#ef4444':'#1e293b',padding:'0 1px'}}>
