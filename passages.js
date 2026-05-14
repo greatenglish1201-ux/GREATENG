@@ -15922,79 +15922,88 @@ const PASSAGES = [
     "irrel_insert_pos": 5,
     "irrel_confirmed": false,
     "irrelevant_sentence_index": 2,
+    "irrel_sentence": "However, these interfaces have expanded in various ways, ranging from computers to smartphones.",
     "grammar_sets": [
       {
         "items": [
           {
             "sent": 0,
-            "word": "make",
+            "word": "more colorful and expressive",
             "correct": true,
-            "note": "help + 동사원형: 'help make'는 올바른 구조"
+            "note": "비교급 형용사가 등위접속사 and로 병렬 연결된 올바른 구조",
+            "original": ""
           },
           {
             "sent": 2,
             "word": "affecting",
             "correct": true,
-            "note": "분사구문으로 앞 절을 부연 설명하는 올바른 현재분사 사용"
+            "note": "분사구문으로 앞 절 전체를 부가 설명하는 현재분사의 적절한 사용",
+            "original": ""
           },
           {
-            "sent": 3,
-            "word": "chosen",
+            "sent": 4,
+            "word": "what we can do with it",
             "correct": true,
-            "note": "수동의 의미를 가진 과거분사로 'The metaphor'를 수식하는 올바른 형태"
+            "note": "constrain의 목적어로 쓰인 관계대명사 what절의 올바른 사용",
+            "original": ""
+          },
+          {
+            "sent": 6,
+            "word": "calls to mind",
+            "correct": true,
+            "note": "주어 'The desktop metaphor'에 수일치된 3인칭 단수 동사의 올바른 사용",
+            "original": ""
           },
           {
             "sent": 7,
-            "word": "seeing",
+            "word": "seen",
             "correct": false,
-            "note": "수동태 'was seen as' 문법적으로 올바른 형태"
-          },
-          {
-            "sent": 10,
-            "word": "feel",
-            "correct": true,
-            "note": "",
-            "alt": ""
+            "note": "→ 문맥상 'when office work was seen as the primary use'에서 수동태 자체는 옳으나, 선행사를 수식하는 관계절이 아닌 시간 부사절이므로 능동 표현인 'when people saw office work as'가 더 자연스럽고 문법적으로 정확함; 여기서는 'was seen'의 보어 자리에 'as being the primary use'가 되어야 하므로 → 'as being the primary use'",
+            "original": "was seen"
           }
         ],
-        "answer": 4
+        "answer": 5
       }
     ],
     "grammar_sel": 0,
     "grammar_items": [
       {
         "sent": 0,
-        "word": "make",
+        "word": "more colorful and expressive",
         "correct": true,
-        "note": "help + 동사원형: 'help make'는 올바른 구조"
+        "note": "비교급 형용사가 등위접속사 and로 병렬 연결된 올바른 구조",
+        "original": ""
       },
       {
         "sent": 2,
         "word": "affecting",
         "correct": true,
-        "note": "분사구문으로 앞 절을 부연 설명하는 올바른 현재분사 사용"
+        "note": "분사구문으로 앞 절 전체를 부가 설명하는 현재분사의 적절한 사용",
+        "original": ""
       },
       {
-        "sent": 3,
-        "word": "chosen",
+        "sent": 4,
+        "word": "what we can do with it",
         "correct": true,
-        "note": "수동의 의미를 가진 과거분사로 'The metaphor'를 수식하는 올바른 형태"
+        "note": "constrain의 목적어로 쓰인 관계대명사 what절의 올바른 사용",
+        "original": ""
+      },
+      {
+        "sent": 6,
+        "word": "calls to mind",
+        "correct": true,
+        "note": "주어 'The desktop metaphor'에 수일치된 3인칭 단수 동사의 올바른 사용",
+        "original": ""
       },
       {
         "sent": 7,
-        "word": "seeing",
+        "word": "seen",
         "correct": false,
-        "note": "수동태 'was seen as' 문법적으로 올바른 형태"
-      },
-      {
-        "sent": 10,
-        "word": "feel",
-        "correct": true,
-        "note": "",
-        "alt": ""
+        "note": "→ 문맥상 'when office work was seen as the primary use'에서 수동태 자체는 옳으나, 선행사를 수식하는 관계절이 아닌 시간 부사절이므로 능동 표현인 'when people saw office work as'가 더 자연스럽고 문법적으로 정확함; 여기서는 'was seen'의 보어 자리에 'as being the primary use'가 되어야 하므로 → 'as being the primary use'",
+        "original": "was seen"
       }
     ],
-    "grammar_answer": 4,
+    "grammar_answer": 5,
     "vocab_sets": [
       {
         "items": [
