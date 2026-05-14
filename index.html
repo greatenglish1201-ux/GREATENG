@@ -645,7 +645,7 @@ function App(){
   return <Quiz q={q} idx={curIdx} total={questions.length} userAnswer={userAns[curIdx]}
     showAnswer={showAns||(ansMode==='immediate'&&!!userAns[curIdx]&&!userAns[curIdx]?.expired)}
     onSubmit={ans=>{setUserAns(p=>({...p,[curIdx]:ans}));if(ansMode==='immediate')setShowAns(true);}}
-    onNext={()=>{setShowAns(false);setTimerKey(Date.now());if(curIdx+1>=questions.length)setScreen('results');else setCurIdx(curIdx+1);}}
+    onNext={()=>{setShowAns(false);if(curIdx+1>=questions.length){setScreen('results');}else{setCurIdx(curIdx+1);setTimerKey(Date.now());}}}
     score={score} ansMode={ansMode} goHome={()=>setScreen('setup')}
     questions={questions} userAns={userAns} timerKey={timerKey}
     doPrint={doPrintFromQuiz}
@@ -1349,9 +1349,11 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
 function Timer({timerKey,onExpire,stopped}){
   const [left,setLeft]=useState(120);
   const [paused,setPaused]=useState(false);
-  useEffect(()=>{setLeft(120);setPaused(false);},[timerKey]);
+  const [frozen,setFrozen]=useState(false);
+  useEffect(()=>{setLeft(120);setPaused(false);setFrozen(false);},[timerKey]);
+  useEffect(()=>{if(stopped)setFrozen(true);},[stopped]);
   useEffect(()=>{
-    if(paused||stopped)return;
+    if(paused||frozen)return;
     if(left<=0){onExpire?.();return;}
     const t=setTimeout(()=>setLeft(l=>l-1),1000);
     return()=>clearTimeout(t);
@@ -1621,13 +1623,16 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         const srcItem=srcItems[srcIdx];
         // pos 있으면 직접 사용, original 있으면 탐색, 없으면 word로 탐색
         const findIdx=(str,w)=>{
+          if(!w)return -1;
           let start=0;
           while(start<=str.length-w.length){
             const i=str.indexOf(w,start);
             if(i<0)break;
-            const before=i>0?str[i-1]:'';
-            const after=i+w.length<str.length?str[i+w.length]:'';
-            if((/[^a-zA-Z']/.test(before)||before==='')&&(/[^a-zA-Z']/.test(after)||after===''))return i;
+            const before=i>0?str[i-1]:' ';
+            const after=i+w.length<str.length?str[i+w.length]:' ';
+            const bOk=/[^a-zA-Z0-9']/.test(before);
+            const aOk=/[^a-zA-Z0-9']/.test(after);
+            if(bOk&&aOk)return i;
             start=i+1;
           }
           return-1;
@@ -1644,16 +1649,17 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         const isAns=showAnswer&&item.correct===false;
         const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
         const uc=isAns?'#ef4444':'#1e293b';
+        const circleNum=['①','②','③','④','⑤'][num-1]||num;
         if(idx<0){
-          // 위치 못 찾을 때 — 문장 뒤에 word만 밑줄 표시
-          return <span key={si}>{s}{' '}
-            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',fontSize:13}}>{num}. {word}</span>{' '}
+          // 위치 못 찾을 때 — 문장 앞에 word 밑줄 표시 후 문장
+          return <span key={si}>
+            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px'}}>{circleNum} {word}</span>{' '}{s}{' '}
           </span>;
         }
         return <span key={si}>
           {s.slice(0,idx)}
           <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>
-            {num}. {word}
+            {circleNum} {word}
           </span>
           {s.slice(idx+searchLen)}{' '}
         </span>;
