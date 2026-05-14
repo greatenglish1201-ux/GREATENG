@@ -751,7 +751,7 @@ Return JSON only:
       upPDeep(p=>{
         const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
         const sel=isG?p.grammar_sel:p.vocab_sel;
-        const items=parsed.items.map(it=>({...it,sent:Number(it.sent)}));
+        const items=parsed.items.map(it=>({...it,sent:Number(it.sent),original:it.original||''}));
         const newSet={items,answer:parsed.answer||1};
         if(sets.length===0){sets.push(newSet);}
         else{sets[sel<sets.length?sel:0]=newSet;}
@@ -930,7 +930,12 @@ Return JSON only:
         }
         return-1;
       };
-      const positioned=sentItems.map(it=>{const idx=findWordIdx(s,it.word);return{it,idx};}).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
+      // original이 있으면 original로 위치 찾고 word로 표시, 없으면 word로 찾기
+      const positioned=sentItems.map(it=>{
+        const searchWord=it.original||it.word;
+        const idx=findWordIdx(s,searchWord);
+        return{it,idx,displayWord:it.word,searchLen:(it.original||it.word).length};
+      }).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
       if(!positioned.length){
         // word가 본문에 없는 경우 - 문장 앞에 항목 번호+단어 인라인 표시
         return<span style={{fontSize:12,lineHeight:1.8}}>
@@ -971,9 +976,9 @@ Return JSON only:
             });
           }}
           style={{background:c+'22',borderBottom:'2px solid '+c,fontWeight:700,padding:'0 2px',color:c,borderRadius:2,cursor:'pointer'}}>
-          {num?`${num}. `:''}{it.word}
+          {num?`${num}. `:''}{displayWord}
         </span>);
-        offset=idx+it.word.length;
+        offset=idx+searchLen;
       });
       if(offset<s.length)parts.push(<span key={offset} style={{cursor:'default'}}>{s.slice(offset)}</span>);
       return<span style={{fontSize:12,lineHeight:1.8}}>{parts}</span>;
@@ -1232,12 +1237,15 @@ Return JSON only:
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=sets[isG?p.grammar_sel:p.vocab_sel].items.filter((_,i)=>i!==ii);sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets,grammar_answer:1}:{...p,vocab_sets:sets,vocab_answer:1};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:'1px solid #fcc',background:'#fff5f5',color:'#E24B4A',cursor:'pointer'}}>삭제</button>
             </div>
+            {isG&&<GrammarItemInput value={item.original||''}
+              onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[p.grammar_sel].items];items[ii]={...items[ii],original:v};sets[p.grammar_sel]={...sets[p.grammar_sel],items};return{...p,grammar_sets:sets};});}}
+              placeholder='본문 원문 (위치 탐색용)' style={{width:'100%',border:'1px solid #185FA533',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#185FA5',boxSizing:'border-box',marginBottom:4}}/>}
             <GrammarItemInput value={isG?item.note:(item.alt||'')}
               onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:v}:{...items[ii],alt:v};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
               placeholder={isG?'어법 설명':'대체 표현'} style={{width:'100%',border:'1px solid #eee',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#888',boxSizing:'border-box'}}/>
           </div>;
         });})()}
-        <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items,{sent:0,word:'새 항목',correct:false,note:'',alt:''}];sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
+        <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items,{sent:0,word:'새 항목',correct:false,note:'',alt:'',original:''}];sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
           style={{width:'100%',padding:'8px',fontSize:12,borderRadius:7,border:'1px dashed #ccc',background:'transparent',color:'#666',cursor:'pointer',marginTop:4}}>+ 항목 추가</button>
       </div>;
     }
