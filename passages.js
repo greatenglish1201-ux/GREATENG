@@ -16729,6 +16729,7 @@ const PASSAGES = [
     "irrel_insert_pos": 2,
     "irrel_confirmed": true,
     "irrelevant_sentence_index": 2,
+    "irrel_sentence": "\nIt hasn't been long since we knew that the Earth revolves around the Sun.",
     "grammar_sets": [
       {
         "items": [
@@ -16740,7 +16741,7 @@ const PASSAGES = [
           },
           {
             "sent": 5,
-            "word": "where we had not anticipated",
+            "word": "where",
             "correct": false,
             "note": "where -> which"
           },
@@ -16776,8 +16777,15 @@ const PASSAGES = [
         "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
       },
       {
+        "sent": 3,
+        "word": "predicted",
+        "correct": true,
+        "note": "",
+        "alt": ""
+      },
+      {
         "sent": 5,
-        "word": "where we had not anticipated",
+        "word": "where",
         "correct": false,
         "note": "where -> which"
       },
@@ -16792,16 +16800,9 @@ const PASSAGES = [
         "word": "was going to",
         "correct": true,
         "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
-      },
-      {
-        "sent": 3,
-        "word": "predicted",
-        "correct": true,
-        "note": "",
-        "alt": ""
       }
     ],
-    "grammar_answer": 2,
+    "grammar_answer": 3,
     "vocab_sets": [
       {
         "items": [
