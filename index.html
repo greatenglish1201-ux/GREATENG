@@ -345,28 +345,48 @@ function gen(passage, type, allP){
       // 무관 문장 텍스트
       const irrelSent = passage.irrel_sentence || (passage.irrel_candidates?.[passage.irrel_sel||0]) || null;
       if(!irrelSent) return null;
-      const full = [...s];
-      full.splice(insertAt, 0, irrelSent);
-      const markerCount = 5;
-      // insertAt을 ①~⑤ 중 랜덤 슬롯에 배정 (균등 분포)
-      const targetSlot = Math.floor(Math.random() * markerCount);
-      const before = [];
-      const after = [];
-      for(let i = 1; i < full.length; i++){
-        if(i < insertAt) before.push(i);
-        else if(i > insertAt) after.push(i);
+      // sentences가 객체 배열이면 text 추출
+      const sTexts = s.map(x=>typeof x==='string'?x:(x?.text||''));
+      const full = [...sTexts, '']; // 임시 자리 확보
+      // insertAt이 0이면 1로 보정 (0번 문장은 번호 표시 안 됨)
+      const safeInsertAt = Math.max(1, Math.min(insertAt, sTexts.length));
+      full.splice(safeInsertAt, 1); // 임시 제거
+      full.splice(safeInsertAt, 0, irrelSent);
+      // full = sTexts에 irrelSent 삽입한 순수 문자열 배열
+      const fullClean = [...sTexts];
+      fullClean.splice(safeInsertAt, 0, irrelSent);
+      // 청크 방식으로 5개 번호 배정 (1번 이상, safeInsertAt 반드시 포함)
+      const fLen = fullClean.length;
+      const chunkSize2 = (fLen - 1) / 5;
+      const picked = new Set([safeInsertAt]);
+      for(let c=0; c<5; c++){
+        const lo = 1 + Math.floor(c * chunkSize2);
+        const hi = Math.min(fLen, 1 + Math.floor((c+1) * chunkSize2));
+        const seg = [];
+        for(let k=lo; k<hi; k++) seg.push(k);
+        if(!seg.length){ picked.add(Math.min(lo, fLen-1)); continue; }
+        if(seg.includes(safeInsertAt)) picked.add(safeInsertAt);
+        else picked.add(seg[Math.floor(Math.random()*seg.length)]);
       }
-      const needBefore = targetSlot;
-      const needAfter = markerCount - 1 - targetSlot;
-      const stepB = before.length > needBefore ? (before.length-1)/(needBefore||1) : 1;
-      const beforePicks = [];
-      for(let k=0; k<needBefore && k<before.length; k++) beforePicks.push(before[Math.round(k*stepB)]);
-      const stepA = after.length > needAfter ? (after.length-1)/(needAfter||1) : 1;
-      const afterPicks = [];
-      for(let k=0; k<needAfter && k<after.length; k++) afterPicks.push(after[Math.round(k*stepA)]);
-      const numberedIdxs = [...beforePicks, insertAt, ...afterPicks].sort((a,b)=>a-b);
-      const correctNum = numberedIdxs.indexOf(insertAt) + 1;
-      return {type, passage, full, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
+      let numberedIdxs = [...picked].filter(x=>x>=1&&x<fLen).sort((a,b)=>a-b);
+      // 부족하면 채우기
+      for(let i=1; i<fLen && numberedIdxs.length<5; i++){
+        if(!numberedIdxs.includes(i)) numberedIdxs.push(i);
+      }
+      numberedIdxs.sort((a,b)=>a-b);
+      // 초과하면 safeInsertAt 유지하며 5개로
+      if(numberedIdxs.length>5){
+        const rest=numberedIdxs.filter(x=>x!==safeInsertAt);
+        const step=Math.max(1,Math.floor(rest.length/4));
+        const p4=[];
+        for(let k=0;k<4&&p4.length<4;k++) if(rest[k*step]!==undefined) p4.push(rest[k*step]);
+        // 부족하면 앞에서 채우기
+        for(let i=0;i<rest.length&&p4.length<4;i++) if(!p4.includes(rest[i])) p4.push(rest[i]);
+        numberedIdxs=[...p4,safeInsertAt].sort((a,b)=>a-b);
+      }
+      const correctNum = numberedIdxs.indexOf(safeInsertAt) + 1;
+      if(correctNum===0) return null;
+      return {type, passage, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
     }
     // 구 데이터 fallback: 다른 지문에서 외래 문장 삽입
     const others = allP.filter(p => p.id !== passage.id);
@@ -1619,9 +1639,9 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
         const uc=isAns?'#ef4444':'#1e293b';
         if(idx<0){
-          // word가 본문에 없을 때 — 문장 뒤에 번호+word 표시
-          return <span key={si}>{s}{' '}
-            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>{num}. {word}</span>{' '}
+          // word가 본문에 없을 때 — 문장 전체에 번호+밑줄 표시
+          return <span key={si}>
+            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>{num}. {s}</span>{' '}
           </span>;
         }
         return <span key={si}>
