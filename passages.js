@@ -16343,7 +16343,7 @@ const PASSAGES = [
   {
     "id": "27STYD_01_005",
     "difficulty": "중",
-    "title": "지식의 한계와 예측 불가능성",
+    "title": "",
     "sentences": [
       {
         "num": 1,
@@ -16593,7 +16593,12 @@ const PASSAGES = [
       "inconsistent with our observations and we cannot ignore it"
     ],
     "insert_sel": 0,
-    "insert_candidates": [],
+    "insert_candidates": [
+      {
+        "sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
+        "pos": 3
+      }
+    ],
     "insert_sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
     "insert_answer": 3,
     "summary_sel": 0,
@@ -16730,12 +16735,6 @@ const PASSAGES = [
             "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
           },
           {
-            "sent": 3,
-            "word": "consistent with",
-            "correct": true,
-            "note": "'be consistent with'는 '~와 일치하다'는 의미의 올바른 전치사 표현"
-          },
-          {
             "sent": 5,
             "word": "where we had not anticipated",
             "correct": false,
@@ -16752,6 +16751,13 @@ const PASSAGES = [
             "word": "was going to",
             "correct": true,
             "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+          },
+          {
+            "sent": 3,
+            "word": "predicted",
+            "correct": true,
+            "note": "",
+            "alt": ""
           }
         ],
         "answer": 3
@@ -16764,12 +16770,6 @@ const PASSAGES = [
         "word": "that which",
         "correct": true,
         "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
-      },
-      {
-        "sent": 3,
-        "word": "consistent with",
-        "correct": true,
-        "note": "'be consistent with'는 '~와 일치하다'는 의미의 올바른 전치사 표현"
       },
       {
         "sent": 5,
@@ -16788,9 +16788,16 @@ const PASSAGES = [
         "word": "was going to",
         "correct": true,
         "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+      },
+      {
+        "sent": 3,
+        "word": "predicted",
+        "correct": true,
+        "note": "",
+        "alt": ""
       }
     ],
-    "grammar_answer": 3,
+    "grammar_answer": 2,
     "vocab_sets": [
       {
         "items": [
