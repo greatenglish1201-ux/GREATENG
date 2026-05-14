@@ -15834,14 +15834,14 @@ const PASSAGES = [
     "topic_answer": 1,
     "blank_sel": 0,
     "blank_candidates": [],
-    "blank_sentence_index": 5,
-    "blank_target": "machine",
+    "blank_sentence_index": 10,
+    "blank_target": "fit both the feel and function of the application",
     "blank_options": [
-      "machine",
-      "",
-      "",
-      "",
-      ""
+      "fit both the feel and function of the application",
+      "match the visual style and speed of the system",
+      "reflect the history and origin of the technology",
+      "appeal to both the developer and the end user",
+      "balance the complexity and simplicity of the design"
     ],
     "blank_answer": 1,
     "order_given_index": 0,
@@ -15916,8 +15916,10 @@ const PASSAGES = [
     ],
     "implication_answer": 1,
     "irrel_sel": 0,
-    "irrel_candidates": [],
-    "irrel_insert_pos": 0,
+    "irrel_candidates": [
+      "However, these interfaces have expanded in various ways, ranging from computers to smartphones."
+    ],
+    "irrel_insert_pos": 5,
     "irrel_confirmed": false,
     "irrelevant_sentence_index": 2,
     "grammar_sets": [
