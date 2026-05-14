@@ -1618,67 +1618,80 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
     const p=q.passage;
     const srcItems=q.type==='grammar'?p.grammar_items:p.vocab_items;
     const allSents=q.passage.sentences;
-    const fixedItems=(srcItems||[]).map(item=>{
-      const w=(item.word||'').trim();
-      if(!w)return item;
-      const si=Number(item.sent);
+    // sent 보정 + sent순 정렬 (같은 sent에 여러 항목 가능)
+    const merged=(srcItems||[]).map((srcItem,i)=>{
+      const w=(srcItem.word||'').trim();
+      const si=Number(srcItem.sent);
       const claimed=typeof allSents[si]==='string'?allSents[si]:(allSents[si]?.text||'');
-      if(claimed.includes(w))return item;
-      const ri=allSents.findIndex(r=>{const t=typeof r==='string'?r:(r?.text||'');return t.includes(w);});
-      return ri>=0?{...item,sent:ri}:item;
+      let finalSent=si;
+      if(w&&!claimed.includes(w)){
+        const ri=allSents.findIndex(r=>{const t=typeof r==='string'?r:(r?.text||'');return t.includes(w);});
+        if(ri>=0)finalSent=ri;
+      }
+      return{srcItem:{...srcItem,sent:finalSent},item:items[i],origIdx:i};
+    }).sort((a,b)=>a.srcItem.sent-b.srcItem.sent);
+    // 문장별 항목 맵 (한 문장에 여러 항목 가능)
+    const sentMap={};
+    merged.forEach((m,rank)=>{
+      const s=m.srcItem.sent;
+      if(!sentMap[s])sentMap[s]=[];
+      sentMap[s].push({...m,rank});
     });
+    const findWordIdx=(str,w)=>{
+      if(!w)return -1;
+      let start=0;
+      while(start<=str.length-w.length){
+        const i=str.indexOf(w,start);
+        if(i<0)break;
+        const before=i>0?str[i-1]:' ';
+        const after=i+w.length<str.length?str[i+w.length]:' ';
+        if(/[^a-zA-Z0-9']/.test(before)&&/[^a-zA-Z0-9']/.test(after))return i;
+        start=i+1;
+      }
+      return -1;
+    };
+    const CIRCLES=['①','②','③','④','⑤'];
     return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
       {q.passage.sentences.map((raw,si)=>{
         const s=typeof raw==='string'?raw:(raw?.text||'');
-        // 보정된 fixedItems로 항목 찾기
-        const srcIdx=(fixedItems||[]).findIndex(it=>Number(it.sent)===si);
-        const item=srcIdx>=0?items[srcIdx]:null;
-        if(!item){return <span key={si}>{s} </span>;}
-        const num=srcIdx+1;
-        const word=item.text||'';
-        // original이 있으면 original로 위치 찾고 word로 표시
-        const srcItem=fixedItems[srcIdx];
-        // pos 있으면 직접 사용, original 있으면 탐색, 없으면 word로 탐색
-        const findIdx=(str,w)=>{
-          if(!w)return -1;
-          let start=0;
-          while(start<=str.length-w.length){
-            const i=str.indexOf(w,start);
-            if(i<0)break;
-            const before=i>0?str[i-1]:' ';
-            const after=i+w.length<str.length?str[i+w.length]:' ';
-            const bOk=/[^a-zA-Z0-9']/.test(before);
-            const aOk=/[^a-zA-Z0-9']/.test(after);
-            if(bOk&&aOk)return i;
-            start=i+1;
-          }
-          return-1;
-        };
-        let idx,searchLen;
-        if(srcItem?.pos!=null){
-          idx=srcItem.pos;
-          searchLen=(srcItem.original||word).length;
-        } else {
-          const searchWord=srcItem?.original||word;
-          idx=findIdx(s,searchWord);
-          searchLen=(srcItem?.original||word).length;
-        }
-        const isAns=showAnswer&&item.correct===false;
-        const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
-        const uc=isAns?'#ef4444':'#1e293b';
-        const circleNum=['①','②','③','④','⑤'][num-1]||num;
-        if(idx<0){
-          return <span key={si}>
-            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px'}}>{circleNum} {word}</span>{' '}{s}{' '}
-          </span>;
-        }
-        return <span key={si}>
-          {s.slice(0,idx)}
-          <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>
-            {circleNum} {word}
-          </span>
-          {s.slice(idx+searchLen)}{' '}
-        </span>;
+        const mList=sentMap[si];
+        if(!mList||!mList.length){return <span key={si}>{s} </span>;}
+        // 한 문장에 여러 밑줄: 위치 찾아서 순서대로 슬라이싱
+        const underlines=mList.map(m=>{
+          const word=m.item.text||'';
+          const srcItem=m.srcItem;
+          let idx,len;
+          if(srcItem?.pos!=null){idx=srcItem.pos;len=(srcItem.original||word).length;}
+          else{const sw=srcItem?.original||word;idx=findWordIdx(s,sw);len=(srcItem?.original||word).length;}
+          return{idx,len,word,rank:m.rank,correct:m.item.correct};
+        }).filter(u=>u.idx>=0).sort((a,b)=>a.idx-b.idx);
+        // 위치 못 찾은 항목
+        const notFound=mList.filter(m=>{
+          const word=m.item.text||'';
+          const sw=m.srcItem?.original||word;
+          const i=m.srcItem?.pos!=null?m.srcItem.pos:findWordIdx(s,sw);
+          return i<0;
+        });
+        // 문장을 밑줄 위치에 따라 분할 렌더링
+        let parts=[];
+        let cursor=0;
+        underlines.forEach(u=>{
+          if(u.idx>cursor)parts.push(<span key={'t'+u.idx}>{s.slice(cursor,u.idx)}</span>);
+          const isAns=showAnswer&&u.correct===false;
+          const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
+          const uc=isAns?'#ef4444':'#1e293b';
+          parts.push(<span key={'u'+u.idx} style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>{CIRCLES[u.rank]||u.rank+1} {u.word}</span>);
+          cursor=u.idx+u.len;
+        });
+        if(cursor<s.length)parts.push(<span key='tail'>{s.slice(cursor)}</span>);
+        // 위치 못 찾은 항목은 문장 앞에 표시
+        const prefix=notFound.map(m=>{
+          const isAns=showAnswer&&m.item.correct===false;
+          const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
+          const uc=isAns?'#ef4444':'#1e293b';
+          return<span key={'nf'+m.rank} style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',marginRight:4}}>{CIRCLES[m.rank]||m.rank+1} {m.item.text}</span>;
+        });
+        return <span key={si}>{prefix}{parts}{' '}</span>;
       })}
     </div>);
   }
