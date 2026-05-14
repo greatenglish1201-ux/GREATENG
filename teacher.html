@@ -521,7 +521,7 @@ function LocalTextarea({value, onSave, rows, style}){
     rows={rows||3} style={style}/>;
 }
 
-function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, initialText, initialMeta, initialPassageData}){
+function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComplete, initialText, initialMeta, initialPassageData}){
   const [passages,setPassages]=useState(()=>{
     if(initialPassageData){
       const normed=initialPassageData.sentences||[];
@@ -582,6 +582,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, initialTex
       });
       if(!putRes.ok)throw new Error('커밋 실패: '+putRes.status);
       alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
+      if(onSaveComplete)onSaveComplete(passages[pi]?.data);
     }catch(e){alert('저장 실패: '+e.message);}
     setGhSaving(false);
   };
@@ -1815,7 +1816,7 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} slots={slots} onSlotChange={(pd,meta)=>{setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
+      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} slots={slots} onSlotChange={(pd,meta)=>{setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);}} onSaveComplete={(pd)=>{if(!pd)return;setSlots(prev=>prev.map(s=>s.passageData?.id===pd.id?{...s,passageData:{...s.passageData,...pd}}:s));}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
