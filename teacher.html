@@ -891,9 +891,12 @@ Return JSON only:
       // 이 문장에 해당하는 항목들 (phrase 포함)
       const sentItems=curItems.filter(it=>Number(it.sent)===i);
       if(!sentItems.length){
-        // 항목 없는 문장 - 클릭 가능하게 단어 단위 렌더
+        // 항목 없는 문장 - 클릭 가능하게 단어 단위 렌더 (pos=charOffset 저장)
         const words=s.split(/(\s+)/);
+        let charPos=0;
         return<span style={{fontSize:12,lineHeight:1.8}}>{words.map((w,wi)=>{
+          const wPos=charPos;
+          charPos+=w.length;
           if(!w.trim())return<span key={wi}>{w}</span>;
           return<span key={wi}
             onClick={()=>{
@@ -902,7 +905,7 @@ Return JSON only:
                 const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])ss[si]={items:[],answer:1};
-                ss[si]={...ss[si],items:[...ss[si].items,{sent:i,word:w,correct:true,note:'',alt:''}]};
+                ss[si]={...ss[si],items:[...ss[si].items,{sent:i,word:w,pos:wPos,correct:true,note:'',alt:''}]};
                 return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};
               });
             }}
@@ -930,11 +933,19 @@ Return JSON only:
         }
         return-1;
       };
-      // original이 있으면 original로 위치 찾고 word로 표시, 없으면 word로 찾기
+      // pos 있으면 직접 사용, original 있으면 탐색, 없으면 word로 탐색
       const positioned=sentItems.map(it=>{
-        const searchWord=it.original||it.word;
-        const idx=findWordIdx(s,searchWord);
-        return{it,idx,displayWord:it.word,searchLen:(it.original||it.word).length};
+        let idx,searchLen;
+        if(it.pos!=null){
+          // charOffset 기반 - 원문 단어 길이로 slice
+          idx=it.pos;
+          searchLen=(it.original||it.word).length;
+        } else {
+          const searchWord=it.original||it.word;
+          idx=findWordIdx(s,searchWord);
+          searchLen=(it.original||it.word).length;
+        }
+        return{it,idx,displayWord:it.word,searchLen};
       }).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx);
       if(!positioned.length){
         // word가 본문에 없는 경우 - 문장 앞에 항목 번호+단어 인라인 표시
@@ -1237,7 +1248,7 @@ Return JSON only:
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=sets[isG?p.grammar_sel:p.vocab_sel].items.filter((_,i)=>i!==ii);sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets,grammar_answer:1}:{...p,vocab_sets:sets,vocab_answer:1};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:'1px solid #fcc',background:'#fff5f5',color:'#E24B4A',cursor:'pointer'}}>삭제</button>
             </div>
-            {isG&&<GrammarItemInput value={item.original||''}
+            {isG&&item.pos==null&&<GrammarItemInput value={item.original||''}
               onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[p.grammar_sel].items];items[ii]={...items[ii],original:v};sets[p.grammar_sel]={...sets[p.grammar_sel],items};return{...p,grammar_sets:sets};});}}
               placeholder='본문 원문 (위치 탐색용)' style={{width:'100%',border:'1px solid #185FA533',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#185FA5',boxSizing:'border-box',marginBottom:4}}/>}
             <GrammarItemInput value={isG?item.note:(item.alt||'')}
