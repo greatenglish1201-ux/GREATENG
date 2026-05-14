@@ -388,8 +388,10 @@ function gen(passage, type, allP){
 
   /* ⑧ 어법 */
   case 'grammar':{
-    if(!passage.grammar_items||passage.grammar_items.length<2) return null;
-    const answer=passage.grammar_answer||1;
+    if(!passage.grammar_items||passage.grammar_items.length<1) return null;
+    // correct:false인 항목을 정답으로 자동 탐지
+    const wrongIdx=passage.grammar_items.findIndex(it=>it.correct===false);
+    const answer=wrongIdx>=0?wrongIdx+1:(passage.grammar_answer||1);
     const opts=passage.grammar_items.map((item,i)=>({
       text:item.word,
       note:item.note||'',
@@ -400,8 +402,10 @@ function gen(passage, type, allP){
 
   /* ⑨ 어휘 */
   case 'vocab':{
-    if(!passage.vocab_items||passage.vocab_items.length<2) return null;
-    const answer=passage.vocab_answer||1;
+    if(!passage.vocab_items||passage.vocab_items.length<1) return null;
+    // correct:false인 항목을 정답으로 자동 탐지
+    const wrongIdx2=passage.vocab_items.findIndex(it=>it.correct===false);
+    const answer=wrongIdx2>=0?wrongIdx2+1:(passage.vocab_answer||1);
     const opts=passage.vocab_items.map((item,i)=>({
       text:item.word,
       alt:item.alt||'',
@@ -1582,21 +1586,39 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
 
   if(q.type==='grammar'||q.type==='vocab'){
     const items=q.options||[];
+    const p=q.passage;
+    const srcItems=q.type==='grammar'?p.grammar_items:p.vocab_items;
     return(<div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
-      {q.passage.sentences.map((s,si)=>{
-        const item=items.find((it,ii)=>{
-          const p=q.passage;
-          const srcItems=q.type==='grammar'?p.grammar_items:p.vocab_items;
-          return srcItems?.[ii]?.sent===si;
-        });
+      {q.passage.sentences.map((raw,si)=>{
+        const s=typeof raw==='string'?raw:(raw?.text||'');
+        // 이 문장에 해당하는 항목 찾기 (sent 타입 통일)
+        const srcIdx=(srcItems||[]).findIndex(it=>Number(it.sent)===si);
+        const item=srcIdx>=0?items[srcIdx]:null;
         if(!item){return <span key={si}>{s} </span>;}
-        const num=items.indexOf(item)+1;
-        const isCorrect=showAnswer&&item.correct===false;
-        const isSelected=false;
-        const word=item.text;
-        const idx=s.indexOf(word);
-        if(idx<0)return <span key={si}>{s} </span>;
-        const isAns=showAnswer&&!item.correct;
+        const num=srcIdx+1;
+        const word=item.text||'';
+        // 단어 경계 체크로 정확한 위치 찾기
+        const findIdx=(str,w)=>{
+          let start=0;
+          while(start<=str.length-w.length){
+            const i=str.indexOf(w,start);
+            if(i<0)break;
+            const before=i>0?str[i-1]:'';
+            const after=i+w.length<str.length?str[i+w.length]:'';
+            if((/[^a-zA-Z']/.test(before)||before==='')&&(/[^a-zA-Z']/.test(after)||after===''))return i;
+            start=i+1;
+          }
+          return-1;
+        };
+        const idx=findIdx(s,word);
+        const isAns=showAnswer&&item.correct===false;
+        if(idx<0)return <span key={si}>
+          <span style={{display:'inline-flex',alignItems:'center',marginRight:4,padding:'0 6px',borderRadius:10,
+            background:isAns?'#ef444420':'#33415520',border:`1px solid ${isAns?'#ef4444':'#334155'}44`,
+            color:isAns?'#ef4444':'#334155',fontWeight:700,fontSize:13}}>
+            {num}. {word}
+          </span>{s}{' '}
+        </span>;
         return <span key={si}>
           {s.slice(0,idx)}
           <span style={{borderBottom:`2px solid ${isAns?'#ef4444':'#334155'}`,fontWeight:700,color:isAns?'#ef4444':'#1e293b',padding:'0 1px'}}>
