@@ -950,7 +950,7 @@ Return JSON only:
           <span style={{color:'#aaa',fontStyle:'italic'}}>{s}</span>
         </span>;
       }
-      positioned.forEach(({it,idx})=>{
+      positioned.forEach(({it,idx,displayWord,searchLen})=>{
         if(idx<offset)return; // 이미 처리된 영역 건너뜀
         if(idx>offset)parts.push(<span key={offset}
           onClick={()=>{
