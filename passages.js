@@ -15832,6 +15832,8 @@ const PASSAGES = [
       "Office work is the primary use case for personal computers."
     ],
     "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [],
     "blank_sentence_index": 5,
     "blank_target": "machine",
     "blank_options": [
@@ -15875,8 +15877,17 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
+    "insert_sel": 0,
+    "insert_candidates": [
+      {
+        "sentence": "This is why choosing the right metaphor is a critical step in interface design.",
+        "pos": 4
+      }
+    ],
     "insert_sentence": "This is why choosing the right metaphor is a critical step in interface design.",
     "insert_answer": 4,
+    "summary_sel": 0,
+    "summary_candidates": [],
     "summary_template": "Interface metaphors play a fundamental role by _____(A)_____ how technology is used and experienced, and thus they must _____(B)_____ both the feel and function of an application.",
     "summary_A_options": [
       "shaping",
@@ -15904,17 +15915,50 @@ const PASSAGES = [
       "The desktop metaphor was invented by office workers for secretarial tasks."
     ],
     "implication_answer": 1,
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
     "irrelevant_sentence_index": 2,
-    "aGroup": [
-      "shaping",
-      "ignoring",
-      "replacing"
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "make",
+            "correct": true,
+            "note": "help + 동사원형: 'help make'는 올바른 구조"
+          },
+          {
+            "sent": 2,
+            "word": "affecting",
+            "correct": true,
+            "note": "분사구문으로 앞 절을 부연 설명하는 올바른 현재분사 사용"
+          },
+          {
+            "sent": 3,
+            "word": "chosen",
+            "correct": true,
+            "note": "수동의 의미를 가진 과거분사로 'The metaphor'를 수식하는 올바른 형태"
+          },
+          {
+            "sent": 7,
+            "word": "seeing",
+            "correct": false,
+            "note": "수동태 'was seen as' 문법적으로 올바른 형태"
+          },
+          {
+            "sent": 10,
+            "word": "feel",
+            "correct": true,
+            "note": "",
+            "alt": ""
+          }
+        ],
+        "answer": 4
+      }
     ],
-    "bGroup": [
-      "fit",
-      "ignore",
-      "limit"
-    ],
+    "grammar_sel": 0,
     "grammar_items": [
       {
         "sent": 0,
@@ -15949,6 +15993,45 @@ const PASSAGES = [
       }
     ],
     "grammar_answer": 4,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 2,
+            "word": "fundamental",
+            "alt": "superficial",
+            "correct": false
+          },
+          {
+            "sent": 3,
+            "word": "shapes",
+            "alt": "determines",
+            "correct": true
+          },
+          {
+            "sent": 5,
+            "word": "aesthetic",
+            "alt": "artistic",
+            "correct": true
+          },
+          {
+            "sent": 9,
+            "word": "locus",
+            "alt": "center",
+            "correct": true
+          },
+          {
+            "sent": 10,
+            "word": "fit",
+            "correct": true,
+            "note": "",
+            "alt": ""
+          }
+        ],
+        "answer": 1
+      }
+    ],
+    "vocab_sel": 0,
     "vocab_items": [
       {
         "sent": 2,
@@ -15982,7 +16065,17 @@ const PASSAGES = [
         "alt": ""
       }
     ],
-    "vocab_answer": 1
+    "vocab_answer": 1,
+    "aGroup": [
+      "shaping",
+      "ignoring",
+      "replacing"
+    ],
+    "bGroup": [
+      "fit",
+      "ignore",
+      "limit"
+    ]
   },
   {
     "id": "27STYD_01_004",
@@ -16006,6 +16099,8 @@ const PASSAGES = [
       "Moral values are the primary driver of opinions on capital punishment."
     ],
     "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [],
     "blank_sentence_index": 6,
     "blank_target": "shaped the ingredients",
     "blank_options": [
@@ -16047,8 +16142,17 @@ const PASSAGES = [
       "(A)-(C)-(B)"
     ],
     "order_answer": 1,
-    "insert_sentence": "Both frames presented factual information but emphasized entirely different aspects of the same policy.",
-    "insert_answer": 3,
+    "insert_sel": 0,
+    "insert_candidates": [
+      {
+        "sentence": "Both frames presented factual information but emphasized entirely different aspects of the same policy.",
+        "pos": 3
+      }
+    ],
+    "insert_sentence": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
+    "insert_answer": 5,
+    "summary_sel": 0,
+    "summary_candidates": [],
     "summary_template": "Researchers used ________(A)________ to test how different news frames about the death penalty affected the ________(B)________ subjects considered important.",
     "summary_A_options": [
       "experimental designs",
@@ -16076,17 +16180,53 @@ const PASSAGES = [
       "The news frames convinced subjects to oppose the death penalty."
     ],
     "implication_answer": 1,
-    "irrelevant_sentence_index": 2,
-    "aGroup": [
-      "experimental designs",
-      "survey questionnaires",
-      "observational methods"
+    "irrel_sel": 0,
+    "irrel_candidates": [
+      "There are various reasons regarding the death penalty, but it is still too early for social consensus.",
+      "Climate change researchers have documented significant shifts in global temperature patterns over the past several decades.",
+      "Political participation rates tend to vary considerably based on factors such as age, education level, and socioeconomic status."
     ],
-    "bGroup": [
-      "factors",
-      "emotions",
-      "policies"
+    "irrel_insert_pos": 6,
+    "irrel_confirmed": true,
+    "irrelevant_sentence_index": 6,
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "influenced",
+            "correct": true,
+            "note": "수동태 올바르게 사용됨: opinions are influenced by content"
+          },
+          {
+            "sent": 1,
+            "word": "to frame",
+            "correct": true,
+            "note": "to부정사 부사적 용법으로 목적을 나타냄"
+          },
+          {
+            "sent": 2,
+            "word": "whereas",
+            "correct": true,
+            "note": "대조를 나타내는 접속사로 적절히 사용됨"
+          },
+          {
+            "sent": 4,
+            "word": "completing",
+            "correct": false,
+            "note": "→ completed: 주어 Subjects에 맞는 동사 필요"
+          },
+          {
+            "sent": 6,
+            "word": "shaped",
+            "correct": true,
+            "note": "과거시제 동사로 문맥에 적절함"
+          }
+        ],
+        "answer": 4
+      }
     ],
+    "grammar_sel": 0,
     "grammar_items": [
       {
         "sent": 0,
@@ -16120,6 +16260,44 @@ const PASSAGES = [
       }
     ],
     "grammar_answer": 4,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "influenced",
+            "alt": "determined",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "frame",
+            "alt": "present",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "affront",
+            "alt": "insult",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "emphasized",
+            "alt": "neglected",
+            "correct": false
+          },
+          {
+            "sent": 6,
+            "word": "shaped",
+            "alt": "influenced",
+            "correct": true
+          }
+        ],
+        "answer": 4
+      }
+    ],
+    "vocab_sel": 0,
     "vocab_items": [
       {
         "sent": 0,
@@ -16152,12 +16330,22 @@ const PASSAGES = [
         "correct": true
       }
     ],
-    "vocab_answer": 4
+    "vocab_answer": 4,
+    "aGroup": [
+      "experimental designs",
+      "survey questionnaires",
+      "observational methods"
+    ],
+    "bGroup": [
+      "factors",
+      "emotions",
+      "policies"
+    ]
   },
   {
     "id": "27STYD_01_005",
     "difficulty": "중",
-    "title": "지식의 한계와 예측 불가능성",
+    "title": "",
     "sentences": [
       {
         "num": 1,
@@ -16407,7 +16595,12 @@ const PASSAGES = [
       "inconsistent with our observations and we cannot ignore it"
     ],
     "insert_sel": 0,
-    "insert_candidates": [],
+    "insert_candidates": [
+      {
+        "sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
+        "pos": 3
+      }
+    ],
     "insert_sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
     "insert_answer": 3,
     "summary_sel": 0,
@@ -16544,12 +16737,6 @@ const PASSAGES = [
             "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
           },
           {
-            "sent": 3,
-            "word": "consistent with",
-            "correct": true,
-            "note": "'be consistent with'는 '~와 일치하다'는 의미의 올바른 전치사 표현"
-          },
-          {
             "sent": 5,
             "word": "where we had not anticipated",
             "correct": false,
@@ -16566,6 +16753,13 @@ const PASSAGES = [
             "word": "was going to",
             "correct": true,
             "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+          },
+          {
+            "sent": 3,
+            "word": "predicted",
+            "correct": true,
+            "note": "",
+            "alt": ""
           }
         ],
         "answer": 3
@@ -16578,12 +16772,6 @@ const PASSAGES = [
         "word": "that which",
         "correct": true,
         "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
-      },
-      {
-        "sent": 3,
-        "word": "consistent with",
-        "correct": true,
-        "note": "'be consistent with'는 '~와 일치하다'는 의미의 올바른 전치사 표현"
       },
       {
         "sent": 5,
@@ -16602,9 +16790,16 @@ const PASSAGES = [
         "word": "was going to",
         "correct": true,
         "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
+      },
+      {
+        "sent": 3,
+        "word": "predicted",
+        "correct": true,
+        "note": "",
+        "alt": ""
       }
     ],
-    "grammar_answer": 3,
+    "grammar_answer": 2,
     "vocab_sets": [
       {
         "items": [
