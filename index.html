@@ -347,12 +347,8 @@ function gen(passage, type, allP){
       if(!irrelSent) return null;
       // sentences가 객체 배열이면 text 추출
       const sTexts = s.map(x=>typeof x==='string'?x:(x?.text||''));
-      const full = [...sTexts, '']; // 임시 자리 확보
       // insertAt이 0이면 1로 보정 (0번 문장은 번호 표시 안 됨)
       const safeInsertAt = Math.max(1, Math.min(insertAt, sTexts.length));
-      full.splice(safeInsertAt, 1); // 임시 제거
-      full.splice(safeInsertAt, 0, irrelSent);
-      // full = sTexts에 irrelSent 삽입한 순수 문자열 배열
       const fullClean = [...sTexts];
       fullClean.splice(safeInsertAt, 0, irrelSent);
       // 청크 방식으로 5개 번호 배정 (1번 이상, safeInsertAt 반드시 포함)
@@ -1639,9 +1635,9 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         const ul=`2px solid ${isAns?'#ef4444':'#334155'}`;
         const uc=isAns?'#ef4444':'#1e293b';
         if(idx<0){
-          // word가 본문에 없을 때 — 문장 전체에 번호+밑줄 표시
-          return <span key={si}>
-            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 1px'}}>{num}. {s}</span>{' '}
+          // word가 본문에 없을 때 — 문장 표시 후 word만 밑줄 표시
+          return <span key={si}>{s}{' '}
+            <span style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',fontSize:13}}>{num}. {word}</span>{' '}
           </span>;
         }
         return <span key={si}>
