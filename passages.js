@@ -16740,18 +16740,6 @@ const PASSAGES = [
             "note": "'that which'는 'what'과 동일한 의미로 쓰이는 관계대명사 구문으로 문법적으로 올바름"
           },
           {
-            "sent": 5,
-            "word": "where",
-            "correct": false,
-            "note": "where -> which"
-          },
-          {
-            "sent": 7,
-            "word": "which resulted from",
-            "correct": true,
-            "note": "콤마 뒤의 계속적 용법 관계대명사 'which'가 앞 절 전체를 받으며 올바르게 사용됨"
-          },
-          {
             "sent": 8,
             "word": "was going to",
             "correct": true,
@@ -16760,6 +16748,20 @@ const PASSAGES = [
           {
             "sent": 3,
             "word": "predicted",
+            "correct": true,
+            "note": "",
+            "alt": ""
+          },
+          {
+            "sent": 5,
+            "word": "where",
+            "correct": true,
+            "note": "which로 수정",
+            "alt": ""
+          },
+          {
+            "sent": 7,
+            "word": "which",
             "correct": true,
             "note": "",
             "alt": ""
@@ -16786,14 +16788,16 @@ const PASSAGES = [
       {
         "sent": 5,
         "word": "where",
-        "correct": false,
-        "note": "where -> which"
+        "correct": true,
+        "note": "which로 수정",
+        "alt": ""
       },
       {
         "sent": 7,
-        "word": "which resulted from",
+        "word": "which",
         "correct": true,
-        "note": "콤마 뒤의 계속적 용법 관계대명사 'which'가 앞 절 전체를 받으며 올바르게 사용됨"
+        "note": "",
+        "alt": ""
       },
       {
         "sent": 8,
@@ -16802,7 +16806,7 @@ const PASSAGES = [
         "note": "과거 시점에서의 미래를 나타내는 'was going to'가 문맥상 올바르게 사용됨"
       }
     ],
-    "grammar_answer": 3,
+    "grammar_answer": 4,
     "vocab_sets": [
       {
         "items": [
