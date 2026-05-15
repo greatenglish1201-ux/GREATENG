@@ -1551,7 +1551,7 @@ function App(){
         const gItems=p.grammar_items?.length?p.grammar_items:gs.items;
         const vItems=p.vocab_items?.length?p.vocab_items:vs.items;
         return{id:p.id,difficulty:p.difficulty||s.meta.difficulty,title:p.title||'',
-          sentences:p.sentences||s.analysis?.sentences||[],
+          sentences:s.analysis?.sentences?.length?s.analysis.sentences:p.sentences||[],
           abstract:p.abstract,
           topic_options:p.topic_options,topic_answer:p.topic_answer,
           blank_sel:p.blank_sel||0,blank_candidates:p.blank_candidates||[],

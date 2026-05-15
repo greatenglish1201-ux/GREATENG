@@ -297,20 +297,20 @@ function gen(passage, type, allP){
     const clampedSlot = minSlot + Math.floor(Math.random() * (maxSlot - minSlot + 1));
     const needBefore = clampedSlot;
     const needAfter = markerCount - 1 - needBefore;
-    const beforePicks = [];
-    if(needBefore > 0 && before.length > 0){
-      for(let k=0; k<needBefore; k++){
-        const idx = Math.round(k * (before.length - 1) / (needBefore - 1 || 1));
-        beforePicks.push(before[Math.min(idx, before.length-1)]);
+    // 균등 분배: 배열을 n등분해서 각 구간 중간값 선택
+    const pickEvenly=(arr,n)=>{
+      if(n<=0||arr.length===0)return[];
+      if(n>=arr.length)return[...arr];
+      const picks=[];
+      for(let k=0;k<n;k++){
+        const lo=Math.floor(k*arr.length/n);
+        const hi=Math.floor((k+1)*arr.length/n)-1;
+        picks.push(arr[Math.floor((lo+hi)/2)]);
       }
-    }
-    const afterPicks = [];
-    if(needAfter > 0 && after.length > 0){
-      for(let k=0; k<needAfter; k++){
-        const idx = Math.round(k * (after.length - 1) / (needAfter - 1 || 1));
-        afterPicks.push(after[Math.min(idx, after.length-1)]);
-      }
-    }
+      return picks;
+    };
+    const beforePicks=pickEvenly(before,needBefore);
+    const afterPicks=pickEvenly(after,needAfter);
     const markerIdxs = [...new Set([...beforePicks, realPos, ...afterPicks])].sort((a,b)=>a-b);
     return {type, passage, removed: passage.insert_sentence, remaining: sClean, markerIdxs, correctPos:realPos, instruction: '글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?'};
   }
