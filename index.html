@@ -281,37 +281,39 @@ function gen(passage, type, allP){
     // needRemove시 문장이 제거돼 realPos는 sClean 길이를 넘지 않도록 보정
     const realPos = needRemove ? Math.min(correctPos, sClean.length) : correctPos;
     const total = sClean.length;
-    const markerCount = Math.min(5, total - 1);
-    // correctPos가 들어갈 번호 슬롯을 랜덤 결정 (균등 분포)
-    const targetSlot = Math.floor(Math.random() * markerCount);
-    // 문장 앞부분/뒷부분을 나눠서 자연스러운 마커 위치 생성
-    // correctPos 앞: targetSlot개, 뒤: markerCount-1-targetSlot개 마커 필요
-    const before = []; // correctPos보다 앞 인덱스
-    const after = [];  // correctPos보다 뒤 인덱스
+    const markerCount = Math.min(5, total);
+    // realPos 앞/뒤 인덱스 (realPos 자체 제외)
+    const before = [];
+    const after = [];
     for(let i = 0; i < total; i++){
       if(i < realPos) before.push(i);
-      else if(i >= realPos) after.push(i);
+      else if(i > realPos) after.push(i);
     }
-    // targetSlot을 실제 before/after 가용 범위에 맞게 조정
-    // needBefore + 1 + needAfter = 최대한 markerCount에 가깝게
+    // realPos 슬롯 위치를 before/after 가용 개수 기반으로 결정
     const maxBefore = Math.min(before.length, markerCount - 1);
     const maxAfter = Math.min(after.length, markerCount - 1);
-    // targetSlot 범위를 실제 가능한 범위로 제한
     const minSlot = Math.max(0, markerCount - 1 - maxAfter);
     const maxSlot = Math.min(markerCount - 1, maxBefore);
     const clampedSlot = minSlot + Math.floor(Math.random() * (maxSlot - minSlot + 1));
-    const needBefore = Math.min(clampedSlot, before.length);
-    const needAfter = Math.min(markerCount - 1 - needBefore, after.length);
-    // 앞 마커: before에서 균등하게 선택
-    const stepB = before.length > needBefore ? (before.length-1)/(needBefore||1) : 1;
+    const needBefore = clampedSlot;
+    const needAfter = markerCount - 1 - needBefore;
+    // before에서 균등하게 needBefore개 선택
     const beforePicks = [];
-    for(let k=0; k<needBefore && k<before.length; k++) beforePicks.push(before[Math.round(k*stepB)]);
-    // 뒤 마커: after에서 균등하게 선택
-    const stepA = after.length > needAfter ? (after.length-1)/(needAfter||1) : 1;
+    if(needBefore > 0 && before.length > 0){
+      for(let k=0; k<needBefore; k++){
+        const idx = Math.round(k * (before.length - 1) / (needBefore - 1 || 1));
+        beforePicks.push(before[Math.min(idx, before.length-1)]);
+      }
+    }
+    // after에서 균등하게 needAfter개 선택
     const afterPicks = [];
-    for(let k=0; k<needAfter && k<after.length; k++) afterPicks.push(after[Math.round(k*stepA)]);
-    // 최종 markerIdxs: 정렬
-    const markerIdxs = [...beforePicks, realPos, ...afterPicks].sort((a,b)=>a-b);
+    if(needAfter > 0 && after.length > 0){
+      for(let k=0; k<needAfter; k++){
+        const idx = Math.round(k * (after.length - 1) / (needAfter - 1 || 1));
+        afterPicks.push(after[Math.min(idx, after.length-1)]);
+      }
+    }
+    const markerIdxs = [...new Set([...beforePicks, realPos, ...afterPicks])].sort((a,b)=>a-b);
     return {type, passage, removed: passage.insert_sentence, remaining: sClean, markerIdxs, correctPos:realPos, instruction: '글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?'};
   }
 
