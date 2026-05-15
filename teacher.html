@@ -1544,7 +1544,7 @@ function App(){
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
     setMainGhSaving(true);
     try{
-      const entries=slots.filter(s=>s.status==='saved'&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
+      const entries=slots.filter(s=>['saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
         const p=s.passageData||{};
         const metaId=s.meta.source+'_'+String(s.meta.chapter).padStart(2,'0')+'_'+String(s.meta.number).padStart(3,'0');
         const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -1905,6 +1905,7 @@ function App(){
             onMeta={handleMeta}
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
+            onSave={()=>upSlot(slot.id,{status:'saved'})}
             onReanalyze={()=>reanalyze(slot)}
             onAnalysis={upAnalysis}
             onGenSum={()=>generateBlockSummaries(slot)}
@@ -1915,7 +1916,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanalyze,onAnalysis,onAuthor,onGenSum}){
+function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onSave,onReanalyze,onAnalysis,onAuthor,onGenSum}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -2257,6 +2258,10 @@ function SlotCard({slot,viewMode,iB,sB,onText,onMeta,onToggle,onConfirm,onReanal
             {slot.status==='analyzed'&&(
               <button onClick={onConfirm} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
                 background:'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>✓ 흐름 확정</button>
+            )}
+            {slot.status==='confirmed'&&(
+              <button onClick={onSave} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
+                background:'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>💾 저장</button>
             )}
             {['analyzed','confirmed','saved'].includes(slot.status)&&(
               <button onClick={onReanalyze} style={{padding:'7px 14px',fontSize:12.5,background:'transparent',
