@@ -281,14 +281,16 @@ function gen(passage, type, allP){
     // needRemove시 문장이 제거돼 realPos는 sClean 길이를 넘지 않도록 보정
     const realPos = needRemove ? Math.min(correctPos, sClean.length) : correctPos;
     const total = sClean.length;
-    const markerCount = Math.min(5, total);
-    // realPos 앞/뒤 인덱스 (realPos 자체 제외)
+    // realPos가 total과 같으면 맨 끝 삽입 (after 없음)
+    // before: realPos보다 앞, after: realPos보다 뒤 (realPos=total이면 after 없음)
     const before = [];
     const after = [];
     for(let i = 0; i < total; i++){
-      if(i < realPos) before.push(i);
+      if(i < realPos && i > 0) before.push(i); // i=0 제외: 첫 문장 앞에 번호 금지
       else if(i > realPos) after.push(i);
     }
+    // markerCount: before+after+1(realPos자리) 중 최대 5
+    const markerCount = Math.min(5, before.length + after.length + 1);
     // realPos 슬롯 위치를 before/after 가용 개수 기반으로 결정
     const maxBefore = Math.min(before.length, markerCount - 1);
     const maxAfter = Math.min(after.length, markerCount - 1);
@@ -1520,7 +1522,7 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
       </div>
       <div style={{fontSize:15,lineHeight:2,color:'#334155'}}>
         {q.remaining.map((sent,i)=>{
-          const mNum = markerIdxs.indexOf(i);
+          const mNum = (i===0) ? -1 : markerIdxs.indexOf(i); // 맨 앞 번호 금지
           if(mNum === -1) return <span key={i}>{sent}{' '}</span>;
           const isCorrect=showAnswer&&i===q.correctPos;
           const isSel=insertSel===i;
@@ -1535,6 +1537,23 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
             {sent}{' '}
           </span>);
         })}
+        {(()=>{
+          // 맨 끝 마커(realPos=remaining.length인 경우) 별도 렌더링
+          const lastPos=q.remaining.length;
+          const mNum=markerIdxs.indexOf(lastPos);
+          if(mNum===-1)return null;
+          const isCorrect=showAnswer&&lastPos===q.correctPos;
+          const isSel=insertSel===lastPos;
+          const isWrong=showAnswer&&isSel&&lastPos!==q.correctPos;
+          return<span key='last'>
+            <span onClick={()=>setInsertSel&&setInsertSel(lastPos)} style={{
+              cursor:setInsertSel?'pointer':'default',display:'inline-block',margin:'0 3px',
+              padding:'1px 5px',borderRadius:4,fontWeight:700,fontSize:14.5,
+              color:isCorrect?'#16a34a':isWrong?'#dc2626':isSel?'#4f7df7':'#f59e0b',
+              background:isCorrect?'#dcfce7':isWrong?'#fee2e2':isSel?'#dbeafe':'transparent',
+            }}>{M[mNum]}</span>
+          </span>;
+        })()}
       </div>
     </div>);
   }
