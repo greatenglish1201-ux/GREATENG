@@ -1618,7 +1618,7 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
     const opts=q.options||[];
     const rawSrc=q.type==='grammar'?q.passage.grammar_items:q.passage.vocab_items;
     const allS=q.passage.sentences;
-    function wIdx(str,w){
+    const wIdx=(str,w)=>{
       if(!w)return -1;
       let st=0;
       while(st<=str.length-w.length){
@@ -1629,7 +1629,7 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         st=i+1;
       }
       return -1;
-    }
+    };
     const ranked=(rawSrc||[]).map((si2,i)=>{
       const w=(si2.word||'').trim();
       const cl=Number(si2.sent);
