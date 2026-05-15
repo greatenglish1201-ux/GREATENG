@@ -511,7 +511,7 @@ function buildPassageData(a,pfx,ch,num){
 function GrammarItemInput({value, onSave, placeholder, style}){
   const [v,setV]=useState(value||'');
   useEffect(()=>setV(value||''),[value]);
-  return<input value={v} onChange={e=>setV(e.target.value)} onBlur={()=>onSave(v)}
+  return<input value={v} onChange={e=>{setV(e.target.value);onSave(e.target.value);}} onBlur={()=>onSave(v)}
     placeholder={placeholder||''} style={style}/>;
 }
 function LocalTextarea({value, onSave, rows, style}){
@@ -1578,7 +1578,7 @@ function App(){
           vocab_items:(()=>{const sorted=[...vItems].sort((a,b)=>Number(a.sent)-Number(b.sent));return sorted;})(),
           vocab_answer:(()=>{const sorted=[...vItems].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);return idx>=0?idx+1:(p.vocab_answer||vs.answer||1);})(),
           aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
-          flow:p.flow||s.analysis?.flow||{},grammar:p.grammar||s.analysis?.grammar||{},
+          flow:s.analysis?.flow&&Object.keys(s.analysis.flow).length?s.analysis.flow:p.flow||{},grammar:s.analysis?.grammar&&Object.keys(s.analysis.grammar).length?s.analysis.grammar:p.grammar||{},
           blockSummaries:Array.isArray(s.blockSummaries)?s.blockSummaries:undefined};
       });
       if(!entries.length){alert('저장할 분석 데이터가 없습니다.');setMainGhSaving(false);return;}
