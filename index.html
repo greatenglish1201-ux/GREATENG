@@ -283,15 +283,13 @@ function gen(passage, type, allP){
     const total = sClean.length;
     // realPos가 total과 같으면 맨 끝 삽입 (after 없음)
     // before: realPos보다 앞, after: realPos보다 뒤 (realPos=total이면 after 없음)
+    // before: 1~realPos-1, after: realPos+1~total (total=맨끝 자리 포함)
     const before = [];
     const after = [];
-    for(let i = 0; i < total; i++){
-      if(i < realPos && i > 0) before.push(i); // i=0 제외: 첫 문장 앞에 번호 금지
-      else if(i > realPos) after.push(i);
-    }
-    // markerCount: before+after+1(realPos자리) 중 최대 5
+    for(let i = 1; i < realPos; i++) before.push(i); // i=0 제외
+    for(let i = realPos + 1; i <= total; i++) after.push(i); // total=맨끝 자리
+    // markerCount: before+after+1(realPos) 중 최대 5
     const markerCount = Math.min(5, before.length + after.length + 1);
-    // realPos 슬롯 위치를 before/after 가용 개수 기반으로 결정
     const maxBefore = Math.min(before.length, markerCount - 1);
     const maxAfter = Math.min(after.length, markerCount - 1);
     const minSlot = Math.max(0, markerCount - 1 - maxAfter);
@@ -299,7 +297,6 @@ function gen(passage, type, allP){
     const clampedSlot = minSlot + Math.floor(Math.random() * (maxSlot - minSlot + 1));
     const needBefore = clampedSlot;
     const needAfter = markerCount - 1 - needBefore;
-    // before에서 균등하게 needBefore개 선택
     const beforePicks = [];
     if(needBefore > 0 && before.length > 0){
       for(let k=0; k<needBefore; k++){
@@ -307,7 +304,6 @@ function gen(passage, type, allP){
         beforePicks.push(before[Math.min(idx, before.length-1)]);
       }
     }
-    // after에서 균등하게 needAfter개 선택
     const afterPicks = [];
     if(needAfter > 0 && after.length > 0){
       for(let k=0; k<needAfter; k++){
