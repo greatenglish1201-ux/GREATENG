@@ -15989,550 +15989,671 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_003",
-    "difficulty": "높음",
-    "title": "인터페이스 은유",
+    "difficulty": "중",
+    "title": "",
     "sentences": [
-      "Verbal metaphors help make our language more colorful and expressive.",
-      "They influence how we think about something, but they do not change the thing itself.",
-      "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
-      "The metaphor that is chosen for an interface shapes how it can be used.",
-      "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
-      "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
-      "The desktop metaphor calls to mind office work: secretaries, bosses, quarterly plans, and cubicles.",
-      "It was developed in the late 1970s and early 1980s, when office work was seen as the primary use for personal computers.",
-      "The desktop image certainly is appropriate for that setting.",
-      "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
-      "Interface metaphors need to fit both the feel and function of the application."
+      {
+        "num": 1,
+        "text": "Verbal metaphors help make our language more colorful and expressive.",
+        "symbol": "G",
+        "role": "언어적 은유의 기능 제시 (배경/비교 대상)",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Verbal metaphors",
+            "ko": "언어적 은유는"
+          },
+          {
+            "en": "help make our language",
+            "ko": "우리의 언어를 만드는 데 도움을 준다"
+          },
+          {
+            "en": "more colorful and expressive",
+            "ko": "더 다채롭고 표현력 있게"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "They influence how we think about something, but they do not change the thing itself.",
+        "symbol": "G",
+        "role": "언어적 은유의 한계 — 생각에만 영향, 사물 자체는 불변",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "They influence",
+            "ko": "그것들은 영향을 미친다"
+          },
+          {
+            "en": "how we think about something,",
+            "ko": "우리가 무언가에 대해 생각하는 방식에"
+          },
+          {
+            "en": "but they do not change",
+            "ko": "하지만 그것들은 바꾸지는 않는다"
+          },
+          {
+            "en": "the thing itself",
+            "ko": "사물 그 자체를"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
+        "symbol": "↔",
+        "role": "인터페이스 은유는 언어적 은유보다 근본적 — 느낌뿐 아니라 기능에도 영향",
+        "keyWords": [
+          "Interface metaphors"
+        ],
+        "chunks": [
+          {
+            "en": "Interface metaphors",
+            "ko": "인터페이스 은유는"
+          },
+          {
+            "en": "play a more fundamental role",
+            "ko": "더 근본적인 역할을 한다"
+          },
+          {
+            "en": "in how we experience and interact",
+            "ko": "우리가 경험하고 상호작용하는 방식에"
+          },
+          {
+            "en": "with the technological world,",
+            "ko": "기술적 세계와"
+          },
+          {
+            "en": "affecting function as well as feeling",
+            "ko": "느낌뿐만 아니라 기능에도 영향을 미치면서"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "The metaphor that is chosen for an interface shapes how it can be used.",
+        "symbol": "==",
+        "role": "3번 재진술 — 선택된 은유가 사용 방식을 결정",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "The metaphor",
+            "ko": "은유는"
+          },
+          {
+            "en": "that is chosen for an interface",
+            "ko": "인터페이스를 위해 선택된"
+          },
+          {
+            "en": "shapes how it can be used",
+            "ko": "그것이 사용될 수 있는 방식을 형성한다"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
+        "symbol": "S",
+        "role": "파일/폴더 예시 — 은유가 사고를 돕는 동시에 행동을 제약",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "When we put computer \"files\" into \"folders,\"",
+            "ko": "컴퓨터 '파일'을 '폴더'에 넣을 때"
+          },
+          {
+            "en": "these metaphoric constructs",
+            "ko": "이러한 은유적 구성물들은"
+          },
+          {
+            "en": "help us think about the way",
+            "ko": "우리가 방식을 생각하도록 도와준다"
+          },
+          {
+            "en": "information is organized in our machine,",
+            "ko": "정보가 컴퓨터 안에서 구성되는"
+          },
+          {
+            "en": "but they also constrain",
+            "ko": "하지만 그것들은 또한 제한하기도 한다"
+          },
+          {
+            "en": "what we can do with it",
+            "ko": "우리가 그것으로 할 수 있는 것을"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
+        "symbol": "+",
+        "role": "기능뿐 아니라 감성적·심미적 경험에도 영향",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Interface metaphors also influence",
+            "ko": "인터페이스 은유는 또한 영향을 미친다"
+          },
+          {
+            "en": "the feel of the experience,",
+            "ko": "경험의 느낌에"
+          },
+          {
+            "en": "the emotional and aesthetic response",
+            "ko": "감정적·심미적 반응"
+          },
+          {
+            "en": "we have to our interactions",
+            "ko": "우리가 상호작용에 대해 갖는"
+          },
+          {
+            "en": "with and via the machine",
+            "ko": "기계와 함께하고 기계를 통해 이루어지는"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "The desktop metaphor calls to mind office work: secretaries, bosses, quarterly plans, and cubicles.",
+        "symbol": "S",
+        "role": "데스크톱 은유 예시 — 사무실 업무 연상",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "The desktop metaphor",
+            "ko": "데스크톱 은유는"
+          },
+          {
+            "en": "calls to mind office work:",
+            "ko": "사무실 업무를 떠올리게 한다:"
+          },
+          {
+            "en": "secretaries, bosses, quarterly plans, and cubicles",
+            "ko": "비서, 상사, 분기별 계획, 그리고 칸막이 사무실"
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "text": "It was developed in the late 1970s and early 1980s, when office work was seen as the primary use for personal computers.",
+        "symbol": "S",
+        "role": "데스크톱 은유의 역사적 맥락 — 1970~80년대 사무용 PC 시대",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "It was developed",
+            "ko": "그것은 개발되었다"
+          },
+          {
+            "en": "in the late 1970s and early 1980s,",
+            "ko": "1970년대 후반과 1980년대 초반에"
+          },
+          {
+            "en": "when office work was seen",
+            "ko": "사무실 업무가 여겨지던 시절"
+          },
+          {
+            "en": "as the primary use for personal computers",
+            "ko": "개인용 컴퓨터의 주된 용도로"
+          }
+        ]
+      },
+      {
+        "num": 9,
+        "text": "The desktop image certainly is appropriate for that setting.",
+        "symbol": "G",
+        "role": "당시 맥락에서는 데스크톱 은유가 적절했음을 인정",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "The desktop image",
+            "ko": "데스크톱 이미지는"
+          },
+          {
+            "en": "certainly is appropriate",
+            "ko": "분명히 적절하다"
+          },
+          {
+            "en": "for that setting",
+            "ko": "그 상황에서는"
+          }
+        ]
+      },
+      {
+        "num": 10,
+        "text": "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
+        "symbol": "↔",
+        "role": "오락·소셜 용도에는 데스크톱 은유가 부적절 — 한계 지적",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "However, it is less appropriate",
+            "ko": "하지만 그것은 덜 적절하다"
+          },
+          {
+            "en": "when we use the computer",
+            "ko": "우리가 컴퓨터를 사용할 때"
+          },
+          {
+            "en": "as an entertainment center",
+            "ko": "오락 센터로"
+          },
+          {
+            "en": "or as the locus of our social life",
+            "ko": "혹은 우리 사회적 삶의 중심지로"
+          }
+        ]
+      },
+      {
+        "num": 11,
+        "text": "Interface metaphors need to fit both the feel and function of the application.",
+        "symbol": "→",
+        "role": "결론 — 인터페이스 은유는 느낌과 기능 모두에 맞아야 함",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Interface metaphors need to fit",
+            "ko": "인터페이스 은유는 맞아야 한다"
+          },
+          {
+            "en": "both the feel and function",
+            "ko": "느낌과 기능 모두에"
+          },
+          {
+            "en": "of the application",
+            "ko": "그 응용 프로그램의"
+          }
+        ]
+      }
     ],
-    "abstract": "Interface metaphors shape both the function and emotional feel of how users experience and interact with technology.",
-    "topic_options": [
-      "Interface metaphors shape both function and feeling in our technological experience.",
-      "Verbal metaphors make language more colorful and expressive.",
-      "The desktop metaphor was the best design choice for personal computers.",
-      "Computer files and folders constrain what users can do with information.",
-      "Office work is the primary use case for personal computers."
-    ],
-    "topic_answer": 1,
+    "abstract": "",
     "blank_sel": 0,
     "blank_candidates": [],
-    "blank_sentence_index": 10,
-    "blank_target": "fit both the feel and function of the application",
-    "blank_options": [
-      "fit both the feel and function of the application",
-      "match the visual style and speed of the system",
-      "reflect the history and origin of the technology",
-      "appeal to both the developer and the end user",
-      "balance the complexity and simplicity of the design"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [
-      {
-        "label": "B",
-        "sentence_indices": [
-          2,
-          3
-        ]
-      },
-      {
-        "label": "C",
-        "sentence_indices": [
-          4,
-          5
-        ]
-      },
-      {
-        "label": "D",
-        "sentence_indices": [
-          6,
-          7,
-          8
-        ]
-      }
-    ],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "This is why choosing the right metaphor is a critical step in interface design.",
-        "pos": 4
-      }
-    ],
-    "insert_sentence": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
-    "insert_answer": 4,
+    "insert_candidates": [],
     "summary_sel": 0,
     "summary_candidates": [],
-    "summary_template": "Interface metaphors play a fundamental role by _____(A)_____ how technology is used and experienced, and thus they must _____(B)_____ both the feel and function of an application.",
-    "summary_A_options": [
-      "shaping",
-      "ignoring",
-      "replacing",
-      "complicating",
-      "reversing"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "fit",
-      "ignore",
-      "limit",
-      "override",
-      "separate"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 6,
-    "implication_keyword": "calls to mind office work",
-    "implication_options": [
-      "The desktop metaphor evokes associations with a traditional professional office environment.",
-      "The desktop metaphor was literally designed inside an office building.",
-      "The desktop metaphor forces users to do office work on their computers.",
-      "The desktop metaphor makes computers look like physical office desks.",
-      "The desktop metaphor was invented by office workers for secretarial tasks."
-    ],
-    "implication_answer": 1,
     "irrel_sel": 0,
-    "irrel_candidates": [
-      "However, these interfaces have expanded in various ways, ranging from computers to smartphones."
-    ],
-    "irrel_insert_pos": 5,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
     "irrel_confirmed": false,
-    "irrelevant_sentence_index": 2,
-    "irrel_sentence": "However, these interfaces have expanded in various ways, ranging from computers to smartphones.",
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "more colorful and expressive",
-            "correct": true,
-            "note": "비교급 형용사가 등위접속사 and로 병렬 연결된 올바른 구조",
-            "original": ""
-          },
-          {
-            "sent": 2,
-            "word": "affecting",
-            "correct": true,
-            "note": "분사구문으로 앞 절 전체를 부가 설명하는 현재분사의 적절한 사용",
-            "original": ""
-          },
-          {
-            "sent": 4,
-            "word": "what we can do with it",
-            "correct": true,
-            "note": "constrain의 목적어로 쓰인 관계대명사 what절의 올바른 사용",
-            "original": ""
-          },
-          {
-            "sent": 6,
-            "word": "calls to mind",
-            "correct": true,
-            "note": "주어 'The desktop metaphor'에 수일치된 3인칭 단수 동사의 올바른 사용",
-            "original": ""
-          },
-          {
-            "sent": 7,
-            "word": "seen",
-            "correct": false,
-            "note": "→ 문맥상 'when office work was seen as the primary use'에서 수동태 자체는 옳으나, 선행사를 수식하는 관계절이 아닌 시간 부사절이므로 능동 표현인 'when people saw office work as'가 더 자연스럽고 문법적으로 정확함; 여기서는 'was seen'의 보어 자리에 'as being the primary use'가 되어야 하므로 → 'as being the primary use'",
-            "original": "was seen"
-          }
-        ],
-        "answer": 5
-      }
-    ],
+    "irrel_sentence": "",
+    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "more colorful and expressive",
-        "correct": true,
-        "note": "비교급 형용사가 등위접속사 and로 병렬 연결된 올바른 구조",
-        "original": ""
-      },
-      {
-        "sent": 2,
-        "word": "affecting",
-        "correct": true,
-        "note": "분사구문으로 앞 절 전체를 부가 설명하는 현재분사의 적절한 사용",
-        "original": ""
-      },
-      {
-        "sent": 4,
-        "word": "what we can do with it",
-        "correct": true,
-        "note": "constrain의 목적어로 쓰인 관계대명사 what절의 올바른 사용",
-        "original": ""
-      },
-      {
-        "sent": 6,
-        "word": "calls to mind",
-        "correct": true,
-        "note": "주어 'The desktop metaphor'에 수일치된 3인칭 단수 동사의 올바른 사용",
-        "original": ""
-      },
-      {
-        "sent": 7,
-        "word": "seen",
-        "correct": false,
-        "note": "→ 문맥상 'when office work was seen as the primary use'에서 수동태 자체는 옳으나, 선행사를 수식하는 관계절이 아닌 시간 부사절이므로 능동 표현인 'when people saw office work as'가 더 자연스럽고 문법적으로 정확함; 여기서는 'was seen'의 보어 자리에 'as being the primary use'가 되어야 하므로 → 'as being the primary use'",
-        "original": "was seen"
-      }
-    ],
-    "grammar_answer": 5,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 2,
-            "word": "fundamental",
-            "alt": "superficial",
-            "correct": false
-          },
-          {
-            "sent": 3,
-            "word": "shapes",
-            "alt": "determines",
-            "correct": true
-          },
-          {
-            "sent": 5,
-            "word": "aesthetic",
-            "alt": "artistic",
-            "correct": true
-          },
-          {
-            "sent": 9,
-            "word": "locus",
-            "alt": "center",
-            "correct": true
-          },
-          {
-            "sent": 10,
-            "word": "fit",
-            "correct": true,
-            "note": "",
-            "alt": ""
-          }
-        ],
-        "answer": 1
-      }
-    ],
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [
-      {
-        "sent": 2,
-        "word": "fundamental",
-        "alt": "superficial",
-        "correct": false
-      },
-      {
-        "sent": 3,
-        "word": "shapes",
-        "alt": "determines",
-        "correct": true
-      },
-      {
-        "sent": 5,
-        "word": "aesthetic",
-        "alt": "artistic",
-        "correct": true
-      },
-      {
-        "sent": 9,
-        "word": "locus",
-        "alt": "center",
-        "correct": true
-      },
-      {
-        "sent": 10,
-        "word": "fit",
-        "correct": true,
-        "note": "",
-        "alt": ""
-      }
-    ],
+    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [
-      "shaping",
-      "ignoring",
-      "replacing"
-    ],
-    "bGroup": [
-      "fit",
-      "ignore",
-      "limit"
-    ]
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "언어적 은유 vs 인터페이스 은유",
+          "nameEn": "Verbal vs Interface Metaphors",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "id": 2,
+          "name": "인터페이스 은유의 두 가지 영향",
+          "nameEn": "Two Effects of Interface Metaphors",
+          "color": "teal",
+          "sentenceNums": [
+            5,
+            6
+          ]
+        },
+        {
+          "id": 3,
+          "name": "데스크톱 은유의 적절성과 한계",
+          "nameEn": "Desktop Metaphor: Fit and Misfit",
+          "color": "coral",
+          "sentenceNums": [
+            7,
+            8,
+            9,
+            10
+          ]
+        },
+        {
+          "id": 4,
+          "name": "결론",
+          "nameEn": "Conclusion",
+          "color": "amber",
+          "sentenceNums": [
+            11
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "+",
+        "S",
+        "→"
+      ],
+      "keyword": "Interface metaphors",
+      "topicSummary": "인터페이스 은유는 언어적 은유와 달리 기술 세계와의 상호작용 방식과 감성적 경험 모두에 근본적인 영향을 미치므로, 응용 프로그램의 느낌과 기능 양쪽에 모두 부합해야 한다.",
+      "structureType": "비교→예시→결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 3,
+          "text": "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
+          "structure": "주어(Interface metaphors) + 동사(play) + 목적어(a more fundamental role) + 전치사구(in how절) + 분사구문(affecting ~)",
+          "translation": "인터페이스 은유는 우리가 기술 세계를 경험하고 상호작용하는 방식에 더 근본적인 역할을 하며, 느낌뿐만 아니라 기능에도 영향을 미친다.",
+          "point": "'as well as'가 'feeling'만이 아니라 'function'까지 영향을 준다는 핵심 주장을 담고 있으며, 분사구문 'affecting ~'이 앞 절 전체를 부연한다."
+        },
+        {
+          "num": 5,
+          "text": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
+          "structure": "부사절(When ~) + 주절1(these metaphoric constructs help us think about ~) + 역접(but) + 주절2(they also constrain what ~)",
+          "translation": "컴퓨터 '파일'을 '폴더'에 넣을 때, 이러한 은유적 구성물들은 정보가 기계 안에서 구성되는 방식을 생각하도록 도와주지만, 동시에 우리가 그것으로 할 수 있는 것을 제한하기도 한다.",
+          "point": "'help us think'(긍정)와 'constrain'(부정)의 대조 구조가 인터페이스 은유의 양면성(기능 보조 + 행동 제약)을 동시에 보여주는 핵심 문장이다."
+        },
+        {
+          "num": 6,
+          "text": "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
+          "structure": "주어 + 동사(influence) + 목적어1(the feel ~) + 목적어 동격(the emotional and aesthetic response) + 관계절(we have to our interactions with and via the machine)",
+          "translation": "인터페이스 은유는 또한 경험의 느낌, 즉 기계와 함께하거나 기계를 통해 이루어지는 상호작용에 대해 우리가 갖는 감정적·심미적 반응에도 영향을 미친다.",
+          "point": "'the emotional and aesthetic response'가 'the feel of the experience'와 동격 관계이며, 'with and via the machine'처럼 전치사 두 개가 공유 구조로 묶인 점을 파악해야 한다."
+        }
+      ]
+    }
   },
   {
     "id": "27STYD_01_004",
-    "difficulty": "보통",
-    "title": "뉴스프레임",
+    "difficulty": "중",
+    "title": "",
     "sentences": [
-      "Many news media studies use experimental designs to see whether citizens' opinions are influenced by different news content.",
-      "For example, in one study, researchers created newspaper stories to frame the death penalty in different ways.",
-      "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
-      "Some subjects read the story with the morality frame, and others read the one with the innocence frame.",
-      "Subjects then completed a questionnaire that asked them to list the important factors they considered when determining their opinion on the death penalty.",
-      "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
-      "Thus, the news frames shaped the ingredients of the subjects' death penalty attitudes."
+      {
+        "num": 1,
+        "text": "Many news media studies use experimental designs to see whether citizens' opinions are influenced by different news content.",
+        "symbol": "G",
+        "role": "연구 목적 소개: 뉴스 내용이 시민 의견에 영향을 미치는지 실험적으로 검증",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Many news media studies",
+            "ko": "많은 뉴스 미디어 연구들은"
+          },
+          {
+            "en": "use experimental designs",
+            "ko": "실험적 설계를 사용한다"
+          },
+          {
+            "en": "to see whether citizens' opinions are influenced",
+            "ko": "시민들의 의견이 영향을 받는지 알아보기 위해"
+          },
+          {
+            "en": "by different news content",
+            "ko": "다양한 뉴스 내용에 의해"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "For example, in one study, researchers created newspaper stories to frame the death penalty in different ways.",
+        "symbol": "S",
+        "role": "구체적 실험 사례 도입: 사형제도를 다르게 프레이밍한 신문 기사 제작",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "For example, in one study,",
+            "ko": "예를 들어, 한 연구에서"
+          },
+          {
+            "en": "researchers created newspaper stories",
+            "ko": "연구자들은 신문 기사를 만들었다"
+          },
+          {
+            "en": "to frame the death penalty",
+            "ko": "사형제도를 프레이밍하기 위해"
+          },
+          {
+            "en": "in different ways",
+            "ko": "서로 다른 방식으로"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
+        "symbol": "S",
+        "role": "두 프레임 대비: 도덕성 프레임 vs 무죄 프레임",
+        "keyWords": [
+          "frame"
+        ],
+        "chunks": [
+          {
+            "en": "One story constructed the death penalty",
+            "ko": "한 기사는 사형제도를 구성했다"
+          },
+          {
+            "en": "as an affront to moral values",
+            "ko": "도덕적 가치에 대한 모욕으로"
+          },
+          {
+            "en": "(the morality frame),",
+            "ko": "(도덕성 프레임)"
+          },
+          {
+            "en": "whereas another story emphasized",
+            "ko": "반면 다른 기사는 강조했다"
+          },
+          {
+            "en": "that the policy was fundamentally flawed",
+            "ko": "그 정책이 근본적으로 결함이 있다고"
+          },
+          {
+            "en": "because innocent people might be executed",
+            "ko": "무고한 사람들이 처형될 수 있기 때문에"
+          },
+          {
+            "en": "(the innocence frame)",
+            "ko": "(무죄 프레임)"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "Some subjects read the story with the morality frame, and others read the one with the innocence frame.",
+        "symbol": "S",
+        "role": "실험 집단 배분: 피험자들을 두 프레임 집단으로 나눔",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Some subjects read the story",
+            "ko": "일부 피험자들은 기사를 읽었고"
+          },
+          {
+            "en": "with the morality frame,",
+            "ko": "도덕성 프레임이 담긴"
+          },
+          {
+            "en": "and others read the one",
+            "ko": "다른 피험자들은 읽었다"
+          },
+          {
+            "en": "with the innocence frame",
+            "ko": "무죄 프레임이 담긴 기사를"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "Subjects then completed a questionnaire that asked them to list the important factors they considered when determining their opinion on the death penalty.",
+        "symbol": "S",
+        "role": "측정 방법: 사형제도에 대한 의견 형성 시 고려 요인 설문",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Subjects then completed a questionnaire",
+            "ko": "피험자들은 그 후 설문지를 작성했다"
+          },
+          {
+            "en": "that asked them to list the important factors",
+            "ko": "중요한 요인들을 나열하도록 요청하는"
+          },
+          {
+            "en": "they considered",
+            "ko": "그들이 고려한"
+          },
+          {
+            "en": "when determining their opinion on the death penalty",
+            "ko": "사형제도에 대한 의견을 결정할 때"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
+        "symbol": "S",
+        "role": "실험 결과: 무죄 프레임 노출 집단이 무죄 관련 요인을 더 많이 언급",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "It was found that",
+            "ko": "~인 것으로 밝혀졌다"
+          },
+          {
+            "en": "subjects exposed to the innocence frame",
+            "ko": "무죄 프레임에 노출된 피험자들이"
+          },
+          {
+            "en": "were more likely to mention",
+            "ko": "더 많이 언급할 가능성이 있었다"
+          },
+          {
+            "en": "innocence-related considerations as important factors",
+            "ko": "무죄 관련 고려 사항을 중요한 요인으로"
+          },
+          {
+            "en": "in determining their attitudes toward the death penalty",
+            "ko": "사형제도에 대한 태도를 결정하는 데 있어"
+          },
+          {
+            "en": "than subjects presented with the morality frame",
+            "ko": "도덕성 프레임을 접한 피험자들보다"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "Thus, the news frames shaped the ingredients of the subjects' death penalty attitudes.",
+        "symbol": "→",
+        "role": "결론 도출: 뉴스 프레임이 사형제도 태도의 구성 요소를 형성함",
+        "keyWords": [],
+        "chunks": [
+          {
+            "en": "Thus,",
+            "ko": "따라서"
+          },
+          {
+            "en": "the news frames shaped",
+            "ko": "뉴스 프레임은 형성했다"
+          },
+          {
+            "en": "the ingredients",
+            "ko": "구성 요소들을"
+          },
+          {
+            "en": "of the subjects' death penalty attitudes",
+            "ko": "피험자들의 사형제도 태도의"
+          }
+        ]
+      }
     ],
-    "abstract": "Experimental studies show that different news frames influence citizens' opinions by shaping the factors they consider important.",
-    "topic_options": [
-      "News frames shape the factors people consider when forming opinions on the death penalty.",
-      "Experimental designs are the most reliable method for studying public opinion.",
-      "The death penalty is a controversial topic that divides public opinion.",
-      "Newspaper stories are more influential than television in shaping attitudes.",
-      "Moral values are the primary driver of opinions on capital punishment."
-    ],
-    "topic_answer": 1,
+    "abstract": "",
     "blank_sel": 0,
     "blank_candidates": [],
-    "blank_sentence_index": 6,
-    "blank_target": "shaped the ingredients",
-    "blank_options": [
-      "shaped the ingredients",
-      "determined the outcomes",
-      "altered the foundations",
-      "reinforced the biases"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [
-      {
-        "label": "B",
-        "sentence_indices": [
-          1,
-          2
-        ]
-      },
-      {
-        "label": "C",
-        "sentence_indices": [
-          3,
-          4
-        ]
-      },
-      {
-        "label": "D",
-        "sentence_indices": [
-          5,
-          6
-        ]
-      }
-    ],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "Both frames presented factual information but emphasized entirely different aspects of the same policy.",
-        "pos": 3
-      }
-    ],
-    "insert_sentence": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
-    "insert_answer": 5,
+    "insert_candidates": [],
     "summary_sel": 0,
     "summary_candidates": [],
-    "summary_template": "Researchers used ________(A)________ to test how different news frames about the death penalty affected the ________(B)________ subjects considered important.",
-    "summary_A_options": [
-      "experimental designs",
-      "survey questionnaires",
-      "observational methods",
-      "statistical models",
-      "interview techniques"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "factors",
-      "emotions",
-      "policies",
-      "attitudes",
-      "beliefs"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 6,
-    "implication_keyword": "shaped the ingredients",
-    "implication_options": [
-      "The news frames determined what considerations people used to form their death penalty opinions.",
-      "The news frames provided readers with factual information about the death penalty.",
-      "The news frames changed people's final conclusions about the death penalty.",
-      "The news frames made the death penalty a more important political issue.",
-      "The news frames convinced subjects to oppose the death penalty."
-    ],
-    "implication_answer": 1,
     "irrel_sel": 0,
-    "irrel_candidates": [
-      "There are various reasons regarding the death penalty, but it is still too early for social consensus.",
-      "Climate change researchers have documented significant shifts in global temperature patterns over the past several decades.",
-      "Political participation rates tend to vary considerably based on factors such as age, education level, and socioeconomic status."
-    ],
-    "irrel_insert_pos": 6,
-    "irrel_confirmed": true,
-    "irrelevant_sentence_index": 6,
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "influenced",
-            "correct": true,
-            "note": "수동태 올바르게 사용됨: opinions are influenced by content"
-          },
-          {
-            "sent": 1,
-            "word": "to frame",
-            "correct": true,
-            "note": "to부정사 부사적 용법으로 목적을 나타냄"
-          },
-          {
-            "sent": 2,
-            "word": "whereas",
-            "correct": true,
-            "note": "대조를 나타내는 접속사로 적절히 사용됨"
-          },
-          {
-            "sent": 4,
-            "word": "completing",
-            "correct": false,
-            "note": "→ completed: 주어 Subjects에 맞는 동사 필요"
-          },
-          {
-            "sent": 6,
-            "word": "shaped",
-            "correct": true,
-            "note": "과거시제 동사로 문맥에 적절함"
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
+    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "influenced",
-        "correct": true,
-        "note": "수동태 올바르게 사용됨: opinions are influenced by content"
-      },
-      {
-        "sent": 1,
-        "word": "to frame",
-        "correct": true,
-        "note": "to부정사 부사적 용법으로 목적을 나타냄"
-      },
-      {
-        "sent": 2,
-        "word": "whereas",
-        "correct": true,
-        "note": "대조를 나타내는 접속사로 적절히 사용됨"
-      },
-      {
-        "sent": 4,
-        "word": "completing",
-        "correct": false,
-        "note": "→ completed: 주어 Subjects에 맞는 동사 필요"
-      },
-      {
-        "sent": 6,
-        "word": "shaped",
-        "correct": true,
-        "note": "과거시제 동사로 문맥에 적절함"
-      }
-    ],
-    "grammar_answer": 4,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "influenced",
-            "alt": "determined",
-            "correct": true
-          },
-          {
-            "sent": 1,
-            "word": "frame",
-            "alt": "present",
-            "correct": true
-          },
-          {
-            "sent": 2,
-            "word": "affront",
-            "alt": "insult",
-            "correct": true
-          },
-          {
-            "sent": 2,
-            "word": "emphasized",
-            "alt": "neglected",
-            "correct": false
-          },
-          {
-            "sent": 6,
-            "word": "shaped",
-            "alt": "influenced",
-            "correct": true
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "influenced",
-        "alt": "determined",
-        "correct": true
-      },
-      {
-        "sent": 1,
-        "word": "frame",
-        "alt": "present",
-        "correct": true
-      },
-      {
-        "sent": 2,
-        "word": "affront",
-        "alt": "insult",
-        "correct": true
-      },
-      {
-        "sent": 2,
-        "word": "emphasized",
-        "alt": "neglected",
-        "correct": false
-      },
-      {
-        "sent": 6,
-        "word": "shaped",
-        "alt": "influenced",
-        "correct": true
-      }
-    ],
-    "vocab_answer": 4,
-    "aGroup": [
-      "experimental designs",
-      "survey questionnaires",
-      "observational methods"
-    ],
-    "bGroup": [
-      "factors",
-      "emotions",
-      "policies"
-    ]
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "연구 목적 제시",
+          "nameEn": "Research Purpose",
+          "color": "blue",
+          "sentenceNums": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "name": "실험 설계 및 과정",
+          "nameEn": "Experimental Design & Procedure",
+          "color": "teal",
+          "sentenceNums": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "id": 3,
+          "name": "실험 결과 및 결론",
+          "nameEn": "Results & Conclusion",
+          "color": "coral",
+          "sentenceNums": [
+            6,
+            7
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "S",
+        "→"
+      ],
+      "keyword": "뉴스 프레임(news frame)",
+      "topicSummary": "뉴스 프레임은 시민들이 사형제도에 대한 태도를 형성할 때 고려하는 요소에 영향을 미친다.",
+      "structureType": "주제 제시→실험 사례→결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 3,
+          "text": "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
+          "structure": "[One story + V + O as N] whereas [another story + V + that절]",
+          "translation": "한 기사는 사형제도를 도덕적 가치에 대한 모욕으로 구성한 반면(도덕성 프레임), 다른 기사는 무고한 사람들이 처형될 수 있기 때문에 그 정책이 근본적으로 결함이 있다고 강조했다(무죄 프레임).",
+          "point": "whereas는 대조 접속사. 'construct A as B(A를 B로 구성하다)', 'affront to(~에 대한 모욕)'의 어휘가 어렵고, 두 프레임의 핵심 차이를 정확히 구분해야 함."
+        },
+        {
+          "num": 6,
+          "text": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
+          "structure": "It was found that [주어(subjects exposed to…) + were more likely to V + than 비교대상]",
+          "translation": "무죄 프레임에 노출된 피험자들이 사형제도에 대한 태도를 결정하는 데 있어 무죄 관련 고려 사항을 중요한 요인으로 언급할 가능성이 도덕성 프레임을 접한 피험자들보다 더 높은 것으로 밝혀졌다.",
+          "point": "주어(subjects)와 동사(were) 사이에 과거분사구(exposed to the innocence frame)가 삽입되어 문장이 길어짐. 비교 구문(more likely ~ than)의 비교 대상을 정확히 파악해야 함."
+        }
+      ]
+    }
   },
   {
     "id": "27STYD_01_005",
@@ -16767,320 +16888,96 @@ const PASSAGES = [
         ]
       }
     ],
-    "topic_options": [
-      "the limits of human knowledge in predicting future events",
-      "the dangers of natural disasters throughout history",
-      "scientific methods for forecasting astronomical phenomena",
-      "the role of technology in improving weather prediction",
-      "uncertainty in modern geological research"
-    ],
-    "topic_answer": 1,
+    "abstract": "",
     "blank_sel": 0,
     "blank_candidates": [],
-    "blank_sentence_index": 4,
-    "blank_target": "consistent with our best understanding and we cannot rule it out.",
-    "blank_options": [
-      "consistent with our best understanding and we cannot rule it out.",
-      "contrary to our current knowledge and we must reject it",
-      "supported by limited evidence and we should embrace it",
-      "beyond our scientific understanding and we can confirm it",
-      "inconsistent with our observations and we cannot ignore it"
-    ],
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
-        "pos": 3
-      }
-    ],
-    "insert_sentence": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
-    "insert_answer": 3,
+    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [
-      {
-        "template": "The passage argues that our ________(A)________ of future events is fundamentally limited, as even the most ________(B)________ predictions can be overturned by unforeseen circumstances.",
-        "A_correct": "predictive knowledge",
-        "A_distractors": [
-          "scientific understanding",
-          "historical record",
-          "observational data",
-          "mathematical certainty"
-        ],
-        "B_correct": "reasonable",
-        "B_distractors": [
-          "ambitious",
-          "complex",
-          "detailed",
-          "optimistic"
-        ]
-      },
-      {
-        "template": "The passage illustrates that ________(A)________ about the future is impossible because unexpected ________(B)________ events can occur at any time.",
-        "A_correct": "certainty",
-        "A_distractors": [
-          "curiosity",
-          "speculation",
-          "generalization",
-          "enthusiasm"
-        ],
-        "B_correct": "catastrophic",
-        "B_distractors": [
-          "predictable",
-          "routine",
-          "gradual",
-          "deliberate"
-        ]
-      },
-      {
-        "template": "By referencing both cosmic phenomena and the 2004 Sumatra tsunami, the passage emphasizes that human ________(A)________ is always subject to ________(B)________ limitations.",
-        "A_correct": "knowledge",
-        "A_distractors": [
-          "ambition",
-          "creativity",
-          "technology",
-          "cooperation"
-        ],
-        "B_correct": "inherent",
-        "B_distractors": [
-          "temporary",
-          "self-imposed",
-          "political",
-          "cultural"
-        ]
-      },
-      {
-        "template": "The passage suggests that what we consider ________(A)________ knowledge about the future is actually no more than a ________(B)________ based on past experience.",
-        "A_correct": "certain",
-        "A_distractors": [
-          "objective",
-          "scientific",
-          "collective",
-          "documented"
-        ],
-        "B_correct": "probable assumption",
-        "B_distractors": [
-          "proven theory",
-          "logical necessity",
-          "verified conclusion",
-          "universal law"
-        ]
-      },
-      {
-        "template": "The core argument of the passage is that ________(A)________ events, such as the Sumatra tsunami, reveal the ________(B)________ of our ability to predict the future with confidence.",
-        "A_correct": "unanticipated",
-        "A_distractors": [
-          "well-documented",
-          "regularly occurring",
-          "scientifically explained",
-          "historically significant"
-        ],
-        "B_correct": "inadequacy",
-        "B_distractors": [
-          "sophistication",
-          "evolution",
-          "consistency",
-          "expansion"
-        ]
-      }
-    ],
-    "summary_template": "The passage argues that our ________(A)________ of future events is fundamentally limited, as even the most ________(B)________ predictions can be overturned by unforeseen circumstances.",
-    "summary_A_options": [
-      "predictive knowledge",
-      "scientific understanding",
-      "historical record",
-      "observational data",
-      "mathematical certainty"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "reasonable",
-      "ambitious",
-      "complex",
-      "detailed",
-      "optimistic"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 1,
-    "implication_keyword": "the Sun will rise tomorrow",
-    "implication_options": [
-      "something we feel certain about but cannot truly guarantee",
-      "a scientific fact proven beyond any reasonable doubt",
-      "an observable event that occurs without any exceptions",
-      "a prediction supported by centuries of recorded evidence",
-      "a natural phenomenon that follows unchanging physical laws"
-    ],
-    "implication_answer": 1,
+    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [
-      "\nIt hasn't been long since we knew that the Earth revolves around the Sun.",
-      "Economic theories suggest that market fluctuations are primarily driven by consumer behavior and governmental monetary policies.",
-      "Philosophers of the Enlightenment period argued that human reason alone could serve as the foundation for moral and political authority."
-    ],
-    "irrel_insert_pos": 2,
-    "irrel_confirmed": true,
-    "irrelevant_sentence_index": 2,
-    "irrel_sentence": "\nIt hasn't been long since we knew that the Earth revolves around the Sun.",
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "most evident",
-            "correct": true,
-            "note": "형용사 최상급 'most evident'가 주격보어로 적절하게 사용됨",
-            "original": ""
-          },
-          {
-            "sent": 3,
-            "word": "predicted",
-            "correct": true,
-            "note": "'it has been predicted'는 수동태 현재완료로 문맥상 적절함",
-            "original": ""
-          },
-          {
-            "sent": 5,
-            "word": "where",
-            "correct": false,
-            "note": "→ 'that' 또는 삭제. 'due to some internal process with its molten core'가 선행사를 수식하는 관계절이 아니라, 문장 전체 내용을 보면 'which we had not anticipated'에서 선행사가 'some internal process'이므로 관계대명사 which는 가능하나, 앞에 'it is also possible that' 구조에서 that절 내의 주어 'the Earth'를 수식하는 구조를 보면 'with its molten core' 뒤의 관계절 연결이 어색함. 'which' → 'that'으로 교체하여 제한적 관계절로 써야 자연스러움",
-            "original": "which"
-          },
-          {
-            "sent": 7,
-            "word": "resulted from",
-            "correct": true,
-            "note": "'which resulted from'은 계속적 용법의 관계절로 앞 명사 'earthquake'를 수식하며 문법적으로 적절함",
-            "original": ""
-          },
-          {
-            "sent": 8,
-            "word": "such was the case",
-            "correct": true,
-            "note": "'such was the case'는 도치 구문으로 '실제로 그러했다'는 의미로 문법적으로 적절함",
-            "original": ""
-          }
-        ],
-        "answer": 3
-      }
-    ],
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
+    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "most evident",
-        "correct": true,
-        "note": "형용사 최상급 'most evident'가 주격보어로 적절하게 사용됨",
-        "original": ""
-      },
-      {
-        "sent": 3,
-        "word": "predicted",
-        "correct": true,
-        "note": "'it has been predicted'는 수동태 현재완료로 문맥상 적절함",
-        "original": ""
-      },
-      {
-        "sent": 5,
-        "word": "where",
-        "correct": false,
-        "note": "→ 'that' 또는 삭제. 'due to some internal process with its molten core'가 선행사를 수식하는 관계절이 아니라, 문장 전체 내용을 보면 'which we had not anticipated'에서 선행사가 'some internal process'이므로 관계대명사 which는 가능하나, 앞에 'it is also possible that' 구조에서 that절 내의 주어 'the Earth'를 수식하는 구조를 보면 'with its molten core' 뒤의 관계절 연결이 어색함. 'which' → 'that'으로 교체하여 제한적 관계절로 써야 자연스러움",
-        "original": "which"
-      },
-      {
-        "sent": 7,
-        "word": "resulted from",
-        "correct": true,
-        "note": "'which resulted from'은 계속적 용법의 관계절로 앞 명사 'earthquake'를 수식하며 문법적으로 적절함",
-        "original": ""
-      },
-      {
-        "sent": 8,
-        "word": "such was the case",
-        "correct": true,
-        "note": "'such was the case'는 도치 구문으로 '실제로 그러했다'는 의미로 문법적으로 적절함",
-        "original": ""
-      }
-    ],
-    "grammar_answer": 3,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "evident",
-            "alt": "apparent",
-            "correct": true
-          },
-          {
-            "sent": 3,
-            "word": "consistent",
-            "alt": "compatible",
-            "correct": true
-          },
-          {
-            "sent": 5,
-            "word": "anticipated",
-            "alt": "predicted",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "massive",
-            "alt": "tiny",
-            "correct": false
-          },
-          {
-            "sent": 7,
-            "word": "extreme",
-            "alt": "excessive",
-            "correct": true
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "evident",
-        "alt": "apparent",
-        "correct": true
-      },
-      {
-        "sent": 3,
-        "word": "consistent",
-        "alt": "compatible",
-        "correct": true
-      },
-      {
-        "sent": 5,
-        "word": "anticipated",
-        "alt": "predicted",
-        "correct": true
-      },
-      {
-        "sent": 6,
-        "word": "massive",
-        "alt": "tiny",
-        "correct": false
-      },
-      {
-        "sent": 7,
-        "word": "extreme",
-        "alt": "excessive",
-        "correct": true
-      }
-    ],
-    "vocab_answer": 4,
-    "aGroup": [
-      "predictive knowledge",
-      "scientific understanding",
-      "historical record"
-    ],
-    "bGroup": [
-      "reasonable",
-      "ambitious",
-      "complex"
-    ]
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "주제 및 통념 제시",
+          "nameEn": "Topic & Common Belief",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "지식의 한계 반박 (추상적 사례)",
+          "nameEn": "Abstract Counterexamples",
+          "color": "coral",
+          "sentenceNums": [
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        {
+          "id": 3,
+          "name": "현실 사례와 결론",
+          "nameEn": "Real-world Example & Conclusion",
+          "color": "teal",
+          "sentenceNums": [
+            8,
+            9
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "↔",
+        "→"
+      ],
+      "keyword": "지식의 한계(예측 불가능성)",
+      "topicSummary": "관찰되지 않은 것에 대한 예측은 결코 확실하지 않으며, 우리의 지식에는 근본적인 한계가 있다.",
+      "structureType": "주제 제시 → 반박(사례 열거) → 현실 사례로 결론 강화"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 4,
+          "text": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
+          "structure": "It seems ~ but it has been predicted that ... when + 관계절(3개 동사 병렬)",
+          "translation": "그것은 매우 그럴 것 같지만, 태양이 연료를 다 소진하고 엄청나게 팽창하여 지구를 집어삼킬 때가 올 것이라고 또한 예측되어 왔다.",
+          "point": "가주어 it 구문 + that절 안의 when절 + runs out / swells / consumes 3개 동사 병렬 구조 파악이 핵심"
+        },
+        {
+          "num": 8,
+          "text": "These examples seem a bit extreme, but consider the 230,000 people who died in the tsunami in Sumatra in 2004, which resulted from an undersea megathrust earthquake that had not been anticipated.",
+          "structure": "명령문(consider) + 목적어(people) + 관계절 중첩(who ... / which ... / that ...)",
+          "translation": "이 예들은 다소 극단적으로 보이지만, 2004년 수마트라 쓰나미에서 사망한 23만 명을 생각해 보라. 그 쓰나미는 예상되지 않았던 해저 대규모 단층 지진에서 비롯된 것이다.",
+          "point": "관계절이 3중으로 중첩(who → which → that)되어 선행사 파악이 어려우며, megathrust earthquake는 전문 용어로 문맥으로 의미 추론 필요"
+        },
+        {
+          "num": 9,
+          "text": "The most reasonable prediction on that day was that it would be an average day, like so many days before it, not that a massive wave was going to destroy many thousands of lives; tragically, such was the case.",
+          "structure": "was that ~ not that ~ 대조 구문 + 세미콜론 후 such was the case(도치)",
+          "translation": "그날 가장 합리적인 예측은, 이전의 수많은 날들처럼, 평범한 날이 될 것이라는 것이었지, 거대한 파도가 수천 명의 생명을 앗아갈 것이라는 게 아니었다. 비극적으로도, 그런 일이 실제로 일어났다.",
+          "point": "'was that ... not that ...' 대조 구문과 세미콜론 뒤 'such was the case'의 도치 표현(= that was the case) 해석이 관건"
+        }
+      ]
+    }
   }
 ];
