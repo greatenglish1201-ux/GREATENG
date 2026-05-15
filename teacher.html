@@ -786,9 +786,14 @@ Return JSON only:
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.candidates?.length)throw new Error('후보 없음');
       const first=parsed.candidates[0];
-      upPDeep(p=>({...p,
-        insert_candidates:parsed.candidates,insert_sel:0,
-        insert_sentence:first.sentence,insert_answer:first.pos}));
+      upPDeep(p=>{
+        const pos=first.pos;
+        const sents=p.sentences||[];
+        const realSent=pos!=null&&sents[pos]?(typeof sents[pos]==='string'?sents[pos]:sents[pos].text||''):first.sentence;
+        return{...p,
+          insert_candidates:parsed.candidates,insert_sel:0,
+          insert_sentence:realSent,insert_answer:pos};
+      });
     }catch(e){alert('삽입문장 생성 실패: '+e.message);}
     setGenLoading('');
   };
