@@ -1647,6 +1647,7 @@ function App(){
 
   const loadIntoSlot=useCallback((p)=>{
     const normed=normalizeSentences(p.sentences);
+    const sents=p.sentences&&p.sentences.length&&typeof p.sentences[0]==='object'&&p.sentences[0].symbol?p.sentences:normed;
     const text=normed.map(s=>s.text||'').join(' ');
     const emptyIdx=slots.findIndex(s=>!s.text.trim()&&s.status==='idle');
     const idx=emptyIdx>=0?emptyIdx:0;
@@ -1656,7 +1657,7 @@ function App(){
         number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
       status:'saved',
       passageData:restorePassageData(p),
-      analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
+      analysis:{sentences:sents,flow:p.flow||{},grammar:p.grammar||{}},
       blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
       open:true
     });
@@ -1669,12 +1670,13 @@ function App(){
       selected.forEach((p,i)=>{
         const slotIdx=i%next.length;
         const normed=normalizeSentences(p.sentences);
+        const sents=p.sentences&&p.sentences.length&&typeof p.sentences[0]==='object'&&p.sentences[0].symbol?p.sentences:normed;
         const text=normed.map(s=>s.text||'').join(' ');
         next[slotIdx]={...next[slotIdx],text,
           meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
             number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
           status:'saved',passageData:restorePassageData(p),
-          analysis:{sentences:normed,flow:p.flow||{},grammar:p.grammar||{}},
+          analysis:{sentences:sents,flow:p.flow||{},grammar:p.grammar||{}},
           blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
           open:i===0};
       });
