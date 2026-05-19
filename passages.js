@@ -17217,7 +17217,7 @@ const PASSAGES = [
     "grammar_sel": 0,
     "grammar_answer": 3,
     "vocab_sel": 0,
-    "vocab_answer": 1,
+    "vocab_answer": 3,
     "flow": {
       "blocks": [
         {
@@ -17524,6 +17524,85 @@ const PASSAGES = [
         "original": "visited",
         "correct": true,
         "note": "'we've been visited'는 현재완료 수동태(have been p.p.) 구조로, 주어 'we'가 방문을 받는 대상이므로 수동태가 문법적으로 적절하다."
+      }
+    ],
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "patience",
+            "original": "patience",
+            "alt": "endurance",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "negative",
+            "original": "negative",
+            "alt": "unfavorable",
+            "correct": true
+          },
+          {
+            "sent": 6,
+            "word": "diminishes",
+            "original": "escalates",
+            "alt": "escalates",
+            "correct": false
+          },
+          {
+            "sent": 8,
+            "word": "diminish",
+            "original": "diminish",
+            "alt": "decrease",
+            "correct": true
+          },
+          {
+            "sent": 9,
+            "word": "stray",
+            "original": "stray",
+            "alt": "wandering",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "vocab_items": [
+      {
+        "sent": 1,
+        "word": "patience",
+        "original": "patience",
+        "alt": "endurance",
+        "correct": true
+      },
+      {
+        "sent": 4,
+        "word": "negative",
+        "original": "negative",
+        "alt": "unfavorable",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "diminishes",
+        "original": "escalates",
+        "alt": "escalates",
+        "correct": false
+      },
+      {
+        "sent": 8,
+        "word": "diminish",
+        "original": "diminish",
+        "alt": "decrease",
+        "correct": true
+      },
+      {
+        "sent": 9,
+        "word": "stray",
+        "original": "stray",
+        "alt": "wandering",
+        "correct": true
       }
     ]
   },
