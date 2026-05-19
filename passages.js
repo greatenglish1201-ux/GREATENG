@@ -17208,26 +17208,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -17298,7 +17288,15 @@ const PASSAGES = [
           "point": "'It's as if'는 비유적 가정법 표현. 'keep + -ing'는 '계속 ~하다'. 'be being fed'는 수동 진행형으로 '먹이를 받고 있는 중'을 의미."
         }
       ]
-    }
+    },
+    "topic_options": [
+      "the diminishing power of negative experiences through true acceptance rather than disguised resistance",
+      "the metaphor of a stray dog used to illustrate attention and its effects",
+      "the importance of patience and courage in dealing with difficult situations in life",
+      "the difference between acceptance and non-acceptance in human psychology",
+      "the role of attention in feeding unwanted thoughts and keeping them alive"
+    ],
+    "topic_answer": 1
   },
   {
     "id": "27STYD_01_007",
