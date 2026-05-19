@@ -17208,26 +17208,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
-    "irrel_insert_pos": 0,
-    "irrel_confirmed": false,
-    "irrel_sentence": "",
-    "grammar_sets": [],
+    "irrel_insert_pos": 5,
+    "irrel_confirmed": true,
+    "irrel_sentence": "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -17298,7 +17288,159 @@ const PASSAGES = [
           "point": "'It's as if'는 비유적 가정법 표현. 'keep + -ing'는 '계속 ~하다'. 'be being fed'는 수동 진행형으로 '먹이를 받고 있는 중'을 의미."
         }
       ]
-    }
+    },
+    "topic_options": [
+      "the diminishing power of negative experiences through true acceptance rather than disguised resistance",
+      "the metaphor of a stray dog used to illustrate attention and its effects",
+      "the importance of patience and courage in dealing with difficult situations in life",
+      "the difference between acceptance and non-acceptance in human psychology",
+      "the role of attention in feeding unwanted thoughts and keeping them alive"
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 10,
+    "blank_target": "Attention",
+    "blank_options": [
+      "Attention",
+      "Indifference",
+      "Courage",
+      "Acceptance",
+      "Patience"
+    ],
+    "summary_candidates": [
+      {
+        "template": "The passage argues that ________(A)________ leads to ________(B)________.",
+        "A_correct": "genuinely embracing an unwanted experience without ulterior motive",
+        "A_distractors": [
+          "strategically resisting a negative experience to overcome it",
+          "tolerating discomfort for a limited period of time",
+          "feeding attention to recurring painful experiences",
+          "practicing patience with a specific stray-dog situation"
+        ],
+        "B_correct": "a gradual reduction in the power that experience holds over us",
+        "B_distractors": [
+          "an immediate and complete elimination of the problem",
+          "a temporary relief from the emotional burden of fighting",
+          "the experience coming back less often as a stray dog",
+          "a permanent state of courage and emotional strength"
+        ]
+      },
+      {
+        "template": "Despite ________(A)________, the passage emphasizes ________(B)________.",
+        "A_correct": "the intuitive desire to eliminate discomfort by seeming to accept it",
+        "A_distractors": [
+          "the genuine effort to embrace hardship without reservation",
+          "the occasional success of resistance in removing problems",
+          "the courage required to face unwanted situations directly",
+          "the difficulty of a single distressing moment or episode"
+        ],
+        "B_correct": "that only unconditional acceptance withdraws the force of negative experiences",
+        "B_distractors": [
+          "that persistent resistance eventually weakens problematic situations",
+          "that partial acknowledgment of difficulty is enough to reduce its impact",
+          "that stopping to feed the stray dog makes it lose interest",
+          "that any form of mindfulness practice improves emotional well-being"
+        ]
+      },
+      {
+        "template": "True ________(A)________ requires ________(B)________ rather than mere appearance.",
+        "A_correct": "reconciliation with negative experiences",
+        "A_distractors": [
+          "avoidance of situations that trigger emotional distress",
+          "short-term endurance of uncomfortable feelings",
+          "confrontation with problems that keep recurring",
+          "management of a particular type of psychological disorder"
+        ],
+        "B_correct": "relinquishing the hidden wish to make those experiences disappear",
+        "B_distractors": [
+          "maintaining the secret hope that problems will eventually resolve",
+          "withdrawing attention only during the most intense moments of pain",
+          "starving the stray dog by refusing to engage with it at all",
+          "following a structured therapeutic program over several weeks"
+        ]
+      },
+      {
+        "template": "X depends on ________(A)________ while Y depends on ________(B)________.",
+        "A_correct": "disguised non-acceptance that secretly seeks to remove the problem",
+        "A_distractors": [
+          "wholehearted willingness to coexist with unwanted experiences",
+          "brief moments of tolerance when the experience feels manageable",
+          "the cycle of attention that keeps negative experiences returning",
+          "a single courageous act of confronting a threatening situation"
+        ],
+        "B_correct": "withdrawing investment so the experience naturally loses its grip",
+        "B_distractors": [
+          "actively fighting against the situation until it is fully resolved",
+          "partially reducing the frequency with which one revisits the problem",
+          "feeding the experience until it voluntarily disappears on its own",
+          "adopting a broad mindset of positivity toward all life events"
+        ]
+      },
+      {
+        "template": "The contrast between ________(A)________ and ________(B)________ reveals the central insight.",
+        "A_correct": "acceptance deployed as a covert strategy to escape discomfort",
+        "A_distractors": [
+          "sincere openness to experiences one cannot control or change",
+          "endurance practiced only when the problem seems minor",
+          "the courageous decision to stop resisting a difficult situation",
+          "avoidance of any thought related to a recurring problem"
+        ],
+        "B_correct": "acceptance practiced as genuine non-resistant coexistence with difficulty",
+        "B_distractors": [
+          "acceptance used as a tool to accelerate the removal of pain",
+          "acceptance applied selectively to experiences that feel tolerable",
+          "acceptance modeled on ignoring the stray dog until it departs",
+          "acceptance understood as a universal attitude toward all emotions"
+        ]
+      }
+    ],
+    "summary_template": "The passage argues that ________(A)________ leads to ________(B)________.",
+    "summary_A_options": [
+      "genuinely embracing an unwanted experience without ulterior motive",
+      "strategically resisting a negative experience to overcome it",
+      "tolerating discomfort for a limited period of time",
+      "feeding attention to recurring painful experiences",
+      "practicing patience with a specific stray-dog situation"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "a gradual reduction in the power that experience holds over us",
+      "an immediate and complete elimination of the problem",
+      "a temporary relief from the emotional burden of fighting",
+      "the experience coming back less often as a stray dog",
+      "a permanent state of courage and emotional strength"
+    ],
+    "summary_B_answer": 1,
+    "aGroup": [
+      "genuinely embracing an unwanted experience without ulterior motive",
+      "strategically resisting a negative experience to overcome it",
+      "tolerating discomfort for a limited period of time"
+    ],
+    "bGroup": [
+      "a gradual reduction in the power that experience holds over us",
+      "an immediate and complete elimination of the problem",
+      "a temporary relief from the emotional burden of fighting"
+    ],
+    "disabled_types": [
+      "order"
+    ],
+    "implication_sentence_index": 2,
+    "implication_keyword": "If I accept this then it will go awa",
+    "implication_options": [
+      "Accepting something with the hidden goal of eliminating it is not genuine acceptance",
+      "Truly accepting a problem will eventually make it disappear on its own",
+      "Refusing to accept a difficult situation will only make it worse over time",
+      "Acceptance requires letting go of any desire to control the outcome",
+      "Optimistic thinking can help resolve problems that seem impossible to overcome"
+    ],
+    "implication_answer": 1,
+    "irrel_candidates": [
+      "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
+      "The courage required for acceptance is best developed by actively confronting and fighting against difficult situations rather than passively allowing them to persist.",
+      "When we stop feeding our attention to a recurring problem, the experience tends to escalate and demand even greater emotional engagement before it finally disappears."
+    ],
+    "irrelevant_sentence_index": 5,
+    "insert_sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
+    "insert_answer": 5
   },
   {
     "id": "27STYD_01_007",
