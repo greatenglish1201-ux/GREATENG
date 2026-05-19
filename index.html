@@ -1691,13 +1691,14 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
           cur=r.i2+r.len;
         });
         if(cur<s.length)parts.push(<span key='tail'>{s.slice(cur)}</span>);
-        const prefix=notFound.map(r=>{
+        // notFound: 위치 못 찾은 경우 문장 끝에 붙임 (앞에 중복 표시 방지)
+        const suffix=notFound.map(r=>{
           const isAns=showAnswer&&r.opt&&r.opt.correct===false;
           const ul='2px solid '+(isAns?'#ef4444':'#334155');
           const uc=isAns?'#ef4444':'#1e293b';
-          return <span key={'nf'+r.rank} style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',marginRight:4}}>{CIRC[r.rank]||r.rank+1} {r.word}</span>;
+          return <span key={'nf'+r.rank} style={{borderBottom:ul,fontWeight:700,color:uc,padding:'0 2px',marginLeft:4}}>{CIRC[r.rank]||r.rank+1} {r.word}</span>;
         });
-        return <span key={si}>{prefix}{parts}{' '}</span>;
+        return <span key={si}>{parts}{suffix}{' '}</span>;
       })}
     </div>);
   }
