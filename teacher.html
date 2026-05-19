@@ -835,34 +835,29 @@ Return JSON only:
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.items?.length)throw new Error('항목 없음');
-      // 코드 레벨 안전장치
+      // 코드 레벨 안전장치 - 콜백 밖에서 처리
+      const currentP=passages[pi]?.data;
+      const sents=currentP?.sentences||[];
+      const getSent=(i)=>sents[i]?(typeof sents[i]==='string'?sents[i]:sents[i].text||''):'';
       const warnings=[];
-      upPDeep(p=>{
-        const sents=p.sentences||[];
-        const getSent=(i)=>sents[i]?(typeof sents[i]==='string'?sents[i]:sents[i].text||''):'';
-        const items=parsed.items.map((it,idx)=>{
-          const sent=Number(it.sent);
-          const sentText=getSent(sent);
-          let word=(it.word||'').trim();
-          let original=(it.original||'').trim();
-          // original이 없거나 본문에 없으면 word를 original로 사용
-          if(!original||!sentText.includes(original)){
-            // word가 본문에 있으면 그것을 original로
-            if(sentText.includes(word)){original=word;}
-            else{warnings.push(`${idx+1}번 항목: 본문 sentence[${sent}]에서 단어를 찾을 수 없음 (word="${word}", original="${original}")`);}
-          }
-          // INCORRECT인데 word===original이면 경고 (원문 그대로 두고 정답 처리한 케이스)
-          if(it.correct===false&&word===original&&word!==''){
-            warnings.push(`${idx+1}번 (오답 항목): word와 original이 같음 — 원문 단어를 틀린 형태로 교체해야 함 (현재: "${word}")`);
-          }
-          return{...it,sent,word,original};
-        });
-        if(warnings.length){
-          setTimeout(()=>alert('⚠️ 검증 경고:\n'+warnings.join('\n')),100);
+      const processedItems=parsed.items.map((it,idx)=>{
+        const sent=Number(it.sent);
+        const sentText=getSent(sent);
+        let word=(it.word||'').trim();
+        let original=(it.original||'').trim();
+        if(!original||!sentText.includes(original)){
+          if(sentText.includes(word)){original=word;}
+          else{warnings.push(`${idx+1}번 항목: 본문 sentence[${sent}]에서 단어를 찾을 수 없음 (word="${word}", original="${original}")`);}
         }
+        if(it.correct===false&&word===original&&word!==''){
+          warnings.push(`${idx+1}번 (오답 항목): word와 original이 같음 — 원문 단어를 틀린 형태로 교체해야 함 (현재: "${word}")`);
+        }
+        return{...it,sent,word,original};
+      });
+      upPDeep(p=>{
         const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
         const sel=isG?p.grammar_sel:p.vocab_sel;
-        const newSet={items,answer:parsed.answer||1};
+        const newSet={items:processedItems,answer:parsed.answer||1};
         if(sets.length===0){sets.push(newSet);}
         else{sets[sel<sets.length?sel:0]=newSet;}
         const newSel=sel<sets.length?sel:0;
@@ -870,6 +865,10 @@ Return JSON only:
           ?{...p,grammar_sets:sets,grammar_sel:newSel,grammar_answer:parsed.answer||1}
           :{...p,vocab_sets:sets,vocab_sel:newSel,vocab_answer:parsed.answer||1};
       });
+      if(warnings.length){
+        console.warn('⚠️ 검증 경고:',warnings);
+        // alert 대신 콘솔 경고만 - 화면 깨짐 방지
+      }
     }catch(e){alert('재생성 실패: '+e.message);}
     setGenLoading('');
   };
