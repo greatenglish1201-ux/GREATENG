@@ -16982,1297 +16982,1587 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_006",
-    "difficulty": "높음",
-    "title": "진정한 수용",
+    "difficulty": "상",
+    "title": "",
     "sentences": [
-      "Accepting or being at peace with things isn't easy.",
-      "It takes time, patience and a fair dose of courage.",
-      "True acceptance isn't about trying to make something go away, as in, 'If I accept this then it will go away'.",
-      "That's a good way to get dispirited when the problem, the thing, doesn't go away.",
-      "Using acceptance to make something go away is actually non-acceptance masquerading as acceptance in order to get rid of that towards which you have a negative attitude.",
-      "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
-      "It escalates!",
-      "We could then wonder what would happen if we stopped fighting with it.",
-      "Through true acceptance, the impact of such experiences starts to diminish and in their own time these experiences impact us less often.",
-      "It's as if we've been visited by a stray dog that keeps coming back because we keep feeding it, but soon it loses interest and goes away when it is not being fed.",
-      "Attention is the food that keeps it coming back."
+      {
+        "num": 1,
+        "text": "Accepting or being at peace with things isn't easy.",
+        "symbol": "G",
+        "role": "주제 도입: 수용이 쉽지 않음을 인정",
+        "chunks": [
+          {
+            "en": "Accepting or being at peace with things",
+            "ko": "무언가를 받아들이거나 그것과 평화롭게 지내는 것은"
+          },
+          {
+            "en": "isn't easy.",
+            "ko": "쉽지 않다."
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "It takes time, patience and a fair dose of courage.",
+        "symbol": "=",
+        "role": "1번 문장 재진술: 수용에 필요한 요소 열거",
+        "chunks": [
+          {
+            "en": "It takes",
+            "ko": "그것은 필요로 한다"
+          },
+          {
+            "en": "time, patience",
+            "ko": "시간, 인내"
+          },
+          {
+            "en": "and a fair dose of courage.",
+            "ko": "그리고 상당한 용기를."
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "True acceptance isn't about trying to make something go away, as in, 'If I accept this then it will go away'.",
+        "symbol": "↔",
+        "role": "통념 반박: 진정한 수용의 잘못된 정의 제시",
+        "chunks": [
+          {
+            "en": "True acceptance isn't about",
+            "ko": "진정한 수용은 ~에 관한 것이 아니다"
+          },
+          {
+            "en": "trying to make something go away,",
+            "ko": "무언가를 사라지게 만들려는 시도,"
+          },
+          {
+            "en": "as in,",
+            "ko": "즉,"
+          },
+          {
+            "en": "'If I accept this then it will go away'.",
+            "ko": "'이것을 받아들이면 그것이 사라질 것이다'라는 식의."
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "That's a good way to get dispirited when the problem, the thing, doesn't go away.",
+        "symbol": "→",
+        "role": "잘못된 수용의 결과: 낙담으로 이어짐",
+        "chunks": [
+          {
+            "en": "That's a good way to get dispirited",
+            "ko": "그것은 낙담하기 딱 좋은 방법이다"
+          },
+          {
+            "en": "when the problem, the thing, doesn't go away.",
+            "ko": "문제, 그 대상이 사라지지 않을 때."
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "Using acceptance to make something go away is actually non-acceptance masquerading as acceptance in order to get rid of that towards which you have a negative attitude.",
+        "symbol": "=",
+        "role": "핵심 정의: 가짜 수용의 본질 규정",
+        "chunks": [
+          {
+            "en": "Using acceptance to make something go away",
+            "ko": "무언가를 사라지게 하기 위해 수용을 이용하는 것은"
+          },
+          {
+            "en": "is actually non-acceptance",
+            "ko": "사실 비수용이다"
+          },
+          {
+            "en": "masquerading as acceptance",
+            "ko": "수용인 척 위장하는"
+          },
+          {
+            "en": "in order to get rid of that",
+            "ko": "제거하기 위해 그것을"
+          },
+          {
+            "en": "towards which you have a negative attitude.",
+            "ko": "당신이 부정적인 태도를 가지고 있는."
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
+        "symbol": "↔",
+        "role": "대안 제시: 낙담 대신 싸움의 결과 관찰 권유",
+        "chunks": [
+          {
+            "en": "Rather than getting dispirited",
+            "ko": "낙담하는 것보다"
+          },
+          {
+            "en": "we would be better to notice",
+            "ko": "우리는 알아채는 것이 더 낫다"
+          },
+          {
+            "en": "what happens when we fight with a situation or experience.",
+            "ko": "우리가 어떤 상황이나 경험과 싸울 때 무슨 일이 일어나는지를."
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "It escalates!",
+        "symbol": "→",
+        "role": "싸움의 결과: 문제가 악화됨",
+        "chunks": [
+          {
+            "en": "It escalates!",
+            "ko": "그것은 악화된다!"
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "text": "We could then wonder what would happen if we stopped fighting with it.",
+        "symbol": "+",
+        "role": "사고 전환 유도: 싸움을 멈추면 어떨지 질문",
+        "chunks": [
+          {
+            "en": "We could then wonder",
+            "ko": "그러면 우리는 궁금해할 수 있다"
+          },
+          {
+            "en": "what would happen",
+            "ko": "무슨 일이 일어날지를"
+          },
+          {
+            "en": "if we stopped fighting with it.",
+            "ko": "우리가 그것과 싸우기를 멈춘다면."
+          }
+        ]
+      },
+      {
+        "num": 9,
+        "text": "Through true acceptance, the impact of such experiences starts to diminish and in their own time these experiences impact us less often.",
+        "symbol": "G",
+        "role": "진정한 수용의 효과: 경험의 영향이 줄어듦",
+        "chunks": [
+          {
+            "en": "Through true acceptance,",
+            "ko": "진정한 수용을 통해,"
+          },
+          {
+            "en": "the impact of such experiences starts to diminish",
+            "ko": "그러한 경험들의 영향이 줄어들기 시작하고"
+          },
+          {
+            "en": "and in their own time",
+            "ko": "그리고 자연스러운 시간이 지나면"
+          },
+          {
+            "en": "these experiences impact us less often.",
+            "ko": "이러한 경험들은 우리에게 덜 자주 영향을 미친다."
+          }
+        ]
+      },
+      {
+        "num": 10,
+        "text": "It's as if we've been visited by a stray dog that keeps coming back because we keep feeding it, but soon it loses interest and goes away when it is not being fed.",
+        "symbol": "S",
+        "role": "비유: 주의를 주는 것이 경험을 되살린다는 비유",
+        "chunks": [
+          {
+            "en": "It's as if we've been visited by a stray dog",
+            "ko": "마치 우리가 떠돌이 개의 방문을 받은 것과 같다"
+          },
+          {
+            "en": "that keeps coming back because we keep feeding it,",
+            "ko": "우리가 계속 먹이를 주기 때문에 계속 돌아오는,"
+          },
+          {
+            "en": "but soon it loses interest and goes away",
+            "ko": "하지만 곧 그 개는 흥미를 잃고 떠난다"
+          },
+          {
+            "en": "when it is not being fed.",
+            "ko": "먹이를 받지 못할 때."
+          }
+        ]
+      },
+      {
+        "num": 11,
+        "text": "Attention is the food that keeps it coming back.",
+        "symbol": "→",
+        "role": "결론: 주의(관심)가 경험을 지속시키는 원인",
+        "chunks": [
+          {
+            "en": "Attention is the food",
+            "ko": "주의(관심)는 먹이이다"
+          },
+          {
+            "en": "that keeps it coming back.",
+            "ko": "그것을 계속 돌아오게 만드는."
+          }
+        ]
+      }
     ],
-    "abstract": "True acceptance means making peace with difficult experiences rather than trying to eliminate them, which paradoxically reduces their impact over time.",
-    "topic_options": [
-      "True acceptance means making peace with experiences rather than trying to eliminate them, which reduces their impact over time.",
-      "Courage and patience are the most important virtues in dealing with life's difficulties.",
-      "Fighting against negative experiences is a natural and effective way to overcome them.",
-      "Accepting problems immediately makes them disappear from our lives.",
-      "Negative attitudes are the root cause of all psychological suffering."
-    ],
-    "topic_answer": 1,
+    "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [
-      {
-        "sentence_index": 4,
-        "keyword": "masquerading as acceptance",
-        "distractors": [
-          "substituting for resistance",
-          "disguised as courage",
-          "functioning as tolerance",
-          "replacing true patience"
-        ]
-      },
-      {
-        "sentence_index": 2,
-        "keyword": "make something go away",
-        "distractors": [
-          "eliminate all suffering",
-          "resolve every conflict",
-          "suppress negative emotions",
-          "change our perspective"
-        ]
-      },
-      {
-        "sentence_index": 8,
-        "keyword": "starts to diminish",
-        "distractors": [
-          "begins to intensify",
-          "tends to fluctuate",
-          "seems to disappear",
-          "continues to grow"
-        ]
-      }
-    ],
-    "blank_sentence_index": 4,
-    "blank_target": "masquerading as acceptance",
-    "blank_options": [
-      "masquerading as acceptance",
-      "substituting for resistance",
-      "disguised as courage",
-      "functioning as tolerance",
-      "replacing true patience"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [
-      {
-        "label": "B",
-        "sentence_indices": [
-          2,
-          3
-        ]
-      },
-      {
-        "label": "C",
-        "sentence_indices": [
-          4,
-          5
-        ]
-      },
-      {
-        "label": "D",
-        "sentence_indices": [
-          6,
-          7,
-          8
-        ]
-      }
-    ],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
+    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "This distinction is crucial because the motivation behind acceptance determines whether it is genuine or merely a coping mechanism.",
-        "pos": 5
-      },
-      {
-        "sentence": "In other words, resistance amplifies the very thing we wish to be free from.",
-        "pos": 7
-      },
-      {
-        "sentence": "The key, therefore, is to withdraw that attention rather than fight the experience head-on.",
-        "pos": 10
-      }
-    ],
-    "insert_sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
-    "insert_answer": 5,
+    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [
-      {
-        "template": "True acceptance is not a strategy to ________(A)________ but rather a genuine peace with experience that causes its impact to ________(B)________.",
-        "A_correct": "make problems disappear",
-        "A_distractors": [
-          "build emotional resilience",
-          "suppress negative feelings",
-          "increase mental strength"
-        ],
-        "B_correct": "diminish over time",
-        "B_distractors": [
-          "escalate gradually",
-          "remain constant",
-          "intensify suddenly"
-        ]
-      },
-      {
-        "template": "Using acceptance as a tool to ________(A)________ is actually non-acceptance, and only genuine acceptance can reduce how often negative experiences ________(B)________.",
-        "A_correct": "get rid of problems",
-        "A_distractors": [
-          "build inner courage",
-          "develop new habits",
-          "strengthen our patience"
-        ],
-        "B_correct": "impact us",
-        "B_distractors": [
-          "appear to us",
-          "challenge us",
-          "define us"
-        ]
-      },
-      {
-        "template": "Just as a stray dog stops returning when it is ________(A)________, negative experiences lose their hold when we stop giving them our ________(B)________.",
-        "A_correct": "not being fed",
-        "A_distractors": [
-          "chased away forcefully",
-          "ignored completely",
-          "treated with kindness"
-        ],
-        "B_correct": "attention",
-        "B_distractors": [
-          "resistance",
-          "emotion",
-          "time"
-        ]
-      }
-    ],
-    "summary_template": "True acceptance is not a strategy to ________(A)________ but rather a genuine peace with experience that causes its impact to ________(B)________.",
-    "summary_A_options": [
-      "make problems disappear",
-      "build emotional resilience",
-      "suppress negative feelings",
-      "increase mental strength"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "diminish over time",
-      "escalate gradually",
-      "remain constant",
-      "intensify suddenly"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 9,
-    "implication_keyword": "stray dog that keeps coming back because we keep feeding it",
-    "implication_options": [
-      "Negative experiences persist because the attention we give them keeps reinforcing their presence in our minds.",
-      "Wild animals are attracted to human settlements due to the availability of food.",
-      "We should adopt stray animals to prevent them from causing disturbances.",
-      "Feeding animals regularly creates a sense of dependency that is hard to break.",
-      "The more we resist something, the stronger and more frequent it becomes."
-    ],
-    "implication_answer": 1,
+    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [
-      "Mindfulness meditation has been shown to lower cortisol levels in clinical studies.",
-      "Many psychologists recommend journaling as the primary method for emotional regulation.",
-      "Physical exercise is widely considered the best approach to managing daily stress."
-    ],
-    "irrel_insert_pos": 2,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
     "irrel_confirmed": false,
-    "irrelevant_sentence_index": 2,
-    "irrel_sentence": "Mindfulness meditation has been shown to lower cortisol levels in clinical studies.",
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "being",
-            "correct": true,
-            "note": "Accepting or being at peace: 병렬구조에서 동명사 사용 적절"
-          },
-          {
-            "sent": 1,
-            "word": "a fair dose of",
-            "correct": true,
-            "note": "courage를 수식하는 관용적 표현으로 적절"
-          },
-          {
-            "sent": 4,
-            "word": "masquerading",
-            "correct": true,
-            "note": "분사구문으로 주어 non-acceptance를 보충 설명하는 현재분사 적절"
-          },
-          {
-            "sent": 10,
-            "word": "keeps",
-            "correct": true,
-            "note": "Attention is the food that keeps it coming back: 주어 Attention에 단수 동사 keeps 적절"
-          },
-          {
-            "sent": 0,
-            "word": "새 항목",
-            "correct": false,
-            "note": "",
-            "alt": "",
-            "original": ""
-          }
-        ],
-        "answer": 4
-      },
-      {
-        "items": [
-          {
-            "sent": 1,
-            "word": "takes",
-            "correct": true,
-            "note": "It takes time: 비인칭 주어 It에 단수 동사 takes 적절"
-          },
-          {
-            "sent": 3,
-            "word": "dispirited",
-            "correct": true,
-            "note": "get dispirited: get + 형용사 구문으로 적절"
-          },
-          {
-            "sent": 5,
-            "word": "getting",
-            "correct": true,
-            "note": "Rather than getting dispirited: 전치사 rather than 뒤 동명사 적절"
-          },
-          {
-            "sent": 7,
-            "word": "kept fighting",
-            "correct": false,
-            "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
-          },
-          {
-            "sent": 9,
-            "word": "visited",
-            "correct": true,
-            "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
-          }
-        ],
-        "answer": 5
-      }
-    ],
-    "grammar_sel": 1,
-    "grammar_items": [
-      {
-        "sent": 1,
-        "word": "takes",
-        "correct": true,
-        "note": "It takes time: 비인칭 주어 It에 단수 동사 takes 적절"
-      },
-      {
-        "sent": 3,
-        "word": "dispirited",
-        "correct": true,
-        "note": "get dispirited: get + 형용사 구문으로 적절"
-      },
-      {
-        "sent": 5,
-        "word": "getting",
-        "correct": true,
-        "note": "Rather than getting dispirited: 전치사 rather than 뒤 동명사 적절"
-      },
-      {
-        "sent": 7,
-        "word": "kept fighting",
-        "correct": false,
-        "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
-      },
-      {
-        "sent": 9,
-        "word": "visited",
-        "correct": true,
-        "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
-      }
-    ],
-    "grammar_answer": 4,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "at peace with",
-            "alt": "at odds with",
-            "correct": true
-          },
-          {
-            "sent": 2,
-            "word": "True",
-            "alt": "Absolute",
-            "correct": true
-          },
-          {
-            "sent": 3,
-            "word": "spirited",
-            "alt": "desprited",
-            "correct": false
-          },
-          {
-            "sent": 8,
-            "word": "diminish",
-            "alt": "lessen",
-            "correct": true
-          },
-          {
-            "sent": 10,
-            "word": "Attention",
-            "alt": "Focus",
-            "correct": true
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "items": [
-          {
-            "sent": 1,
-            "word": "patience",
-            "alt": "impatience",
-            "correct": true
-          },
-          {
-            "sent": 4,
-            "word": "masquerading",
-            "alt": "disguising",
-            "correct": true
-          },
-          {
-            "sent": 5,
-            "word": "escalates",
-            "alt": "intensifies",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "escalates",
-            "alt": "diminishes",
-            "correct": false
-          },
-          {
-            "sent": 9,
-            "word": "stray",
-            "alt": "wandering",
-            "correct": true
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "irrel_sentence": "",
+    "grammar_sets": [],
+    "grammar_sel": 0,
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "at peace with",
-        "alt": "at odds with",
-        "correct": true
-      },
-      {
-        "sent": 2,
-        "word": "True",
-        "alt": "Absolute",
-        "correct": true
-      },
-      {
-        "sent": 3,
-        "word": "spirited",
-        "alt": "desprited",
-        "correct": false
-      },
-      {
-        "sent": 8,
-        "word": "diminish",
-        "alt": "lessen",
-        "correct": true
-      },
-      {
-        "sent": 10,
-        "word": "Attention",
-        "alt": "Focus",
-        "correct": true
-      }
-    ],
-    "vocab_answer": 3,
-    "aGroup": [
-      "make problems disappear",
-      "build emotional resilience",
-      "suppress negative feelings"
-    ],
-    "bGroup": [
-      "diminish over time",
-      "escalate gradually",
-      "remain constant"
-    ]
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "수용의 어려움과 잘못된 정의",
+          "nameEn": "Misconception of Acceptance",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "id": 2,
+          "name": "싸움 vs 수용: 대조와 효과",
+          "nameEn": "Fighting vs. True Acceptance",
+          "color": "coral",
+          "sentenceNums": [
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "id": 3,
+          "name": "비유와 결론: 주의가 경험을 유지시킴",
+          "nameEn": "Analogy & Conclusion",
+          "color": "teal",
+          "sentenceNums": [
+            10,
+            11
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "↔",
+        "→"
+      ],
+      "keyword": "true acceptance (진정한 수용)",
+      "topicSummary": "진정한 수용은 문제를 사라지게 하려는 수단이 아니며, 경험에 맞서 싸우지 않고 주의를 거둘 때 그 영향이 자연스럽게 줄어든다.",
+      "structureType": "통념 제시→반박·재정의→결론(비유)"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 5,
+          "text": "Using acceptance to make something go away is actually non-acceptance masquerading as acceptance in order to get rid of that towards which you have a negative attitude.",
+          "structure": "동명사구 주어 + is + 명사 + 현재분사구(masquerading) + 전치사구(towards which 관계절)",
+          "translation": "무언가를 사라지게 하기 위해 수용을 이용하는 것은, 사실 당신이 부정적인 태도를 가진 대상을 제거하기 위해 수용인 척 위장하는 비수용이다.",
+          "point": "'towards which you have a negative attitude'는 'that'를 수식하는 관계절로, 전치사가 관계대명사 앞으로 나온 형태. 'masquerading as acceptance'는 non-acceptance를 수식하는 현재분사구."
+        },
+        {
+          "num": 9,
+          "text": "Through true acceptance, the impact of such experiences starts to diminish and in their own time these experiences impact us less often.",
+          "structure": "전치사구 + 주어(the impact) + 동사 / and + 부사구(in their own time) + 주어(these experiences) + 동사",
+          "translation": "진정한 수용을 통해, 그러한 경험들의 영향이 줄어들기 시작하고, 자연스러운 시간이 지나면 이 경험들은 우리에게 덜 자주 영향을 미친다.",
+          "point": "'in their own time'은 '저절로, 자연스럽게'라는 숙어적 표현. 두 절이 and로 연결되며 주어가 바뀜에 주의."
+        },
+        {
+          "num": 10,
+          "text": "It's as if we've been visited by a stray dog that keeps coming back because we keep feeding it, but soon it loses interest and goes away when it is not being fed.",
+          "structure": "It's as if + 가정법(과거완료) / 관계절(that keeps ~) / 부사절(because / when)",
+          "translation": "마치 우리가 먹이를 계속 주기 때문에 계속 돌아오는 떠돌이 개의 방문을 받아온 것과 같지만, 먹이를 받지 못하면 곧 흥미를 잃고 떠난다.",
+          "point": "'It's as if'는 비유적 가정법 표현. 'keep + -ing'는 '계속 ~하다'. 'be being fed'는 수동 진행형으로 '먹이를 받고 있는 중'을 의미."
+        }
+      ]
+    }
   },
   {
     "id": "27STYD_01_007",
-    "difficulty": "높음",
-    "title": "우연의 수학",
+    "difficulty": "중",
+    "title": "",
     "sentences": [
-      "There are two classic problems that give us mathematically proper ways to evaluate coincidences.",
-      "One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday.",
-      "The other is the monkey problem, which asks: if given a large enough amount of time, could a monkey, randomly hitting the keys of a computer keyboard, write the first line of a Shakespeare sonnet?",
-      "These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.",
-      "This last law, the law of truly large numbers, is a philosophical adage.",
-      "In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time.",
-      "It's not a theorem that can be proven.",
-      "After all, I used the phrase \"bound to happen,\" which is as ambiguous as any phrase can be.",
-      "But it gives a sense of just how common coincidences are."
-    ],
-    "abstract": "Mathematical problems and laws help explain why coincidences occur far more frequently than we expect.",
-    "topic_options": [
-      "Mathematical laws and classic problems explain why coincidences happen more often than expected.",
-      "The birthday problem proves that probability is always counterintuitive.",
-      "Monkeys randomly typing can eventually reproduce great literature.",
-      "Hidden variables are the main cause of coincidences in everyday life.",
-      "Philosophical adages are more reliable than mathematical theorems."
-    ],
-    "topic_answer": 1,
-    "blank_sel": 2,
-    "blank_candidates": [
       {
-        "sentence_index": 4,
-        "keyword": "philosophical adage",
-        "distractors": [
-          "mathematical theorem",
-          "scientific hypothesis",
-          "logical paradox",
-          "empirical finding"
+        "num": 1,
+        "text": "There are two classic problems that give us mathematically proper ways to evaluate coincidences.",
+        "symbol": "G",
+        "role": "핵심 소재 도입: 우연의 일치를 수학적으로 평가하는 두 가지 고전적 문제 제시",
+        "chunks": [
+          {
+            "en": "There are two classic problems",
+            "ko": "두 가지 고전적 문제가 있다"
+          },
+          {
+            "en": "that give us",
+            "ko": "우리에게 제공하는"
+          },
+          {
+            "en": "mathematically proper ways",
+            "ko": "수학적으로 적절한 방법들을"
+          },
+          {
+            "en": "to evaluate coincidences",
+            "ko": "우연의 일치를 평가하기 위한"
+          }
         ]
       },
       {
-        "sentence_index": 1,
-        "keyword": "counterintuitive poser",
-        "distractors": [
-          "mathematical theorem",
-          "statistical paradox",
-          "logical puzzle",
-          "empirical problem"
+        "num": 2,
+        "text": "One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday.",
+        "symbol": "S",
+        "role": "첫 번째 문제(생일 문제) 구체적 설명 — 반직관적 결과 제시",
+        "chunks": [
+          {
+            "en": "One is a counterintuitive poser:",
+            "ko": "하나는 반직관적인 난제이다:"
+          },
+          {
+            "en": "the birthday problem,",
+            "ko": "생일 문제,"
+          },
+          {
+            "en": "which tells us that",
+            "ko": "이것은 우리에게 말해준다"
+          },
+          {
+            "en": "in any group of twenty-three people",
+            "ko": "23명의 어떤 그룹에서든"
+          },
+          {
+            "en": "the odds are better than even",
+            "ko": "확률이 50% 이상이라고"
+          },
+          {
+            "en": "that two people in the group",
+            "ko": "그 그룹 안의 두 사람이"
+          },
+          {
+            "en": "will have the same birthday",
+            "ko": "같은 생일을 가질"
+          }
         ]
       },
       {
-        "sentence_index": 5,
-        "keyword": "bound to happen",
-        "distractors": [
-          "unlikely to occur",
-          "hard to predict",
-          "easy to prove",
-          "bound to fail"
+        "num": 3,
+        "text": "The other is the monkey problem, which asks: if given a large enough amount of time, could a monkey, randomly hitting the keys of a computer keyboard, write the first line of a Shakespeare sonnet?",
+        "symbol": "S",
+        "role": "두 번째 문제(원숭이 문제) 구체적 설명 — 무한 시간 속 무작위 사건의 가능성",
+        "chunks": [
+          {
+            "en": "The other is the monkey problem,",
+            "ko": "다른 하나는 원숭이 문제이다,"
+          },
+          {
+            "en": "which asks:",
+            "ko": "이것은 묻는다:"
+          },
+          {
+            "en": "if given a large enough amount of time,",
+            "ko": "충분히 긴 시간이 주어진다면,"
+          },
+          {
+            "en": "could a monkey,",
+            "ko": "원숭이가 할 수 있을까,"
+          },
+          {
+            "en": "randomly hitting the keys of a computer keyboard,",
+            "ko": "컴퓨터 자판을 무작위로 두드려서,"
+          },
+          {
+            "en": "write the first line of a Shakespeare sonnet?",
+            "ko": "셰익스피어 소네트의 첫 행을 쓸 수 있을까?"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.",
+        "symbol": "→",
+        "role": "두 문제 + 수학 법칙들의 결론: 우연의 일치가 예상보다 훨씬 자주 발생하는 이유 설명",
+        "chunks": [
+          {
+            "en": "These two problems,",
+            "ko": "이 두 가지 문제는,"
+          },
+          {
+            "en": "along with the law of large numbers,",
+            "ko": "큰 수의 법칙과 함께,"
+          },
+          {
+            "en": "the theory of hidden variables,",
+            "ko": "숨겨진 변수 이론,"
+          },
+          {
+            "en": "and the law of truly large numbers,",
+            "ko": "그리고 진정으로 큰 수의 법칙과 함께,"
+          },
+          {
+            "en": "give us a reasonable understanding",
+            "ko": "우리에게 합리적인 이해를 제공한다"
+          },
+          {
+            "en": "of why coincidences happen",
+            "ko": "왜 우연의 일치가 발생하는지에 대한"
+          },
+          {
+            "en": "far more frequently than we expect",
+            "ko": "우리가 예상하는 것보다 훨씬 더 자주"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "This last law, the law of truly large numbers, is a philosophical adage.",
+        "symbol": "G",
+        "role": "진정으로 큰 수의 법칙을 철학적 격언으로 규정 — 핵심 법칙 심화 설명 시작",
+        "chunks": [
+          {
+            "en": "This last law,",
+            "ko": "이 마지막 법칙,"
+          },
+          {
+            "en": "the law of truly large numbers,",
+            "ko": "진정으로 큰 수의 법칙은,"
+          },
+          {
+            "en": "is a philosophical adage",
+            "ko": "철학적 격언이다"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time.",
+        "symbol": "==",
+        "role": "진정으로 큰 수의 법칙 핵심 내용 요약: 아무리 작은 확률도 결국 실현됨",
+        "chunks": [
+          {
+            "en": "In a nutshell,",
+            "ko": "간단히 말해서,"
+          },
+          {
+            "en": "it tells us that",
+            "ko": "이것은 우리에게 말해준다"
+          },
+          {
+            "en": "if there is any likelihood that something could happen,",
+            "ko": "어떤 일이 일어날 가능성이 있다면,"
+          },
+          {
+            "en": "no matter how small,",
+            "ko": "아무리 작더라도,"
+          },
+          {
+            "en": "it's bound to happen at some time",
+            "ko": "그것은 언젠가 반드시 일어나게 되어 있다"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "It's not a theorem that can be proven.",
+        "symbol": "↔",
+        "role": "법칙의 한계 인정: 수학적으로 증명 가능한 정리가 아님을 인정",
+        "chunks": [
+          {
+            "en": "It's not a theorem",
+            "ko": "이것은 정리가 아니다"
+          },
+          {
+            "en": "that can be proven",
+            "ko": "증명될 수 있는"
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "text": "After all, I used the phrase \"bound to happen,\" which is as ambiguous as any phrase can be.",
+        "symbol": "+",
+        "role": "표현의 모호성 인정: '반드시 일어난다'는 표현 자체의 불명확성 보완 설명",
+        "chunks": [
+          {
+            "en": "After all,",
+            "ko": "결국,"
+          },
+          {
+            "en": "I used the phrase \"bound to happen,\"",
+            "ko": "나는 '반드시 일어나게 되어 있다'는 표현을 사용했는데,"
+          },
+          {
+            "en": "which is as ambiguous",
+            "ko": "이것은 매우 모호하다"
+          },
+          {
+            "en": "as any phrase can be",
+            "ko": "어떤 표현이 그럴 수 있는 만큼이나"
+          }
+        ]
+      },
+      {
+        "num": 9,
+        "text": "But it gives a sense of just how common coincidences are.",
+        "symbol": "↔",
+        "role": "최종 결론: 한계에도 불구하고 이 법칙은 우연의 일치가 얼마나 흔한지 직관적으로 알려줌",
+        "chunks": [
+          {
+            "en": "But it gives a sense",
+            "ko": "하지만 이것은 감각을 준다"
+          },
+          {
+            "en": "of just how common coincidences are",
+            "ko": "우연의 일치가 얼마나 흔한지에 대한"
+          }
         ]
       }
     ],
-    "blank_sentence_index": 5,
-    "blank_target": "bound to happen",
-    "blank_options": [
-      "bound to happen",
-      "unlikely to occur",
-      "hard to predict",
-      "easy to prove",
-      "bound to fail"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [
-      {
-        "label": "B",
-        "sentence_indices": [
-          1,
-          2
-        ]
-      },
-      {
-        "label": "C",
-        "sentence_indices": [
-          3,
-          4
-        ]
-      },
-      {
-        "label": "D",
-        "sentence_indices": [
-          5,
-          6
-        ]
-      }
-    ],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
+    "abstract": "",
+    "blank_sel": 0,
+    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "Understanding these laws can help us avoid drawing false conclusions from seemingly remarkable events.",
-        "pos": 4
-      },
-      {
-        "sentence": "Despite its informal nature, this adage captures an important truth about probability.",
-        "pos": 6
-      },
-      {
-        "sentence": "Both problems illustrate how human intuition often fails when confronted with probability.",
-        "pos": 3
-      }
-    ],
-    "insert_sentence": "This last law, the law of truly large numbers, is a philosophical adage.",
-    "insert_answer": 4,
-    "summary_sel": 2,
-    "summary_candidates": [
-      {
-        "template": "Two classic problems — the ________(A)________ and the monkey problem — along with laws like the law of truly large numbers help explain why coincidences are ________(B)________ than we expect.",
-        "A_correct": "birthday problem",
-        "A_distractors": [
-          "hidden variable theory",
-          "theorem of probability",
-          "law of large numbers",
-          "philosophical adage"
-        ],
-        "B_correct": "far more frequent",
-        "B_distractors": [
-          "far less common",
-          "harder to predict",
-          "easier to prove",
-          "more ambiguous"
-        ]
-      },
-      {
-        "template": "The law of truly large numbers, a ________(A)________, states that anything with any likelihood of occurring is ________(B)________ at some time.",
-        "A_correct": "philosophical adage",
-        "A_distractors": [
-          "mathematical theorem",
-          "statistical law",
-          "scientific hypothesis",
-          "logical paradox"
-        ],
-        "B_correct": "bound to happen",
-        "B_distractors": [
-          "impossible to verify",
-          "unlikely to occur",
-          "easy to predict",
-          "bound to fail"
-        ]
-      },
-      {
-        "template": "Classic probability problems and the law of truly large numbers give a ________(A)________ of why coincidences happen, even though the law itself cannot be ________(B)________.",
-        "A_correct": "reasonable understanding",
-        "A_distractors": [
-          "mathematical proof",
-          "hidden variable",
-          "counterintuitive answer",
-          "philosophical theorem"
-        ],
-        "B_correct": "proven",
-        "B_distractors": [
-          "observed",
-          "applied",
-          "defined",
-          "questioned"
-        ]
-      }
-    ],
-    "summary_template": "Classic probability problems and the law of truly large numbers give a ________(A)________ of why coincidences happen, even though the law itself cannot be ________(B)________.",
-    "summary_A_options": [
-      "reasonable understanding",
-      "mathematical proof",
-      "hidden variable",
-      "counterintuitive answer",
-      "philosophical theorem"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "proven",
-      "observed",
-      "applied",
-      "defined",
-      "questioned"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 5,
-    "implication_keyword": "bound to happen",
-    "implication_options": [
-      "Any event with even the smallest probability will eventually occur given enough time.",
-      "All events are equally likely to occur regardless of their probability.",
-      "Only highly probable events can be expected to happen in reality.",
-      "The likelihood of an event increases each time it does not occur.",
-      "Events that seem impossible will never happen no matter how much time passes."
-    ],
-    "implication_answer": 1,
-    "irrel_sel": 1,
-    "irrel_candidates": [
-      "Statisticians often debate whether subjective probability has any scientific merit.",
-      "Shakespeare wrote 154 sonnets, many of which deal with themes of love and time.",
-      "Computer keyboards were first commercially introduced in the mid-twentieth century."
-    ],
-    "irrel_insert_pos": 3,
+    "insert_candidates": [],
+    "summary_sel": 0,
+    "summary_candidates": [],
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
     "irrel_confirmed": false,
-    "irrelevant_sentence_index": 2,
-    "irrel_sentence": "Shakespeare wrote 154 sonnets, many of which deal with themes of love and time.",
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "mathematically",
-            "correct": true,
-            "note": "부사로 형용사 proper를 수식하는 올바른 용법"
-          },
-          {
-            "sent": 2,
-            "word": "randomly hitting",
-            "correct": true,
-            "note": "분사구문으로 monkey를 수식하는 올바른 용법"
-          },
-          {
-            "sent": 3,
-            "word": "frequently",
-            "correct": true,
-            "note": "부사로 동사구 happen을 수식하는 올바른 용법"
-          },
-          {
-            "sent": 7,
-            "word": "ambiguous",
-            "correct": true,
-            "note": "형용사로 주격보어 역할을 하는 올바른 용법"
-          },
-          {
-            "sent": 1,
-            "word": "where",
-            "pos": 55,
-            "correct": false,
-            "note": "which로 수정",
-            "alt": ""
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "items": [
-          {
-            "sent": 1,
-            "word": "that",
-            "correct": true,
-            "note": "관계대명사로 the birthday problem을 선행사로 받는 올바른 용법"
-          },
-          {
-            "sent": 2,
-            "word": "could",
-            "correct": true,
-            "note": "가능성을 나타내는 조동사로 올바른 용법"
-          },
-          {
-            "sent": 4,
-            "word": "philosophical adage",
-            "correct": true,
-            "note": "명사구로 주격보어로 쓰인 올바른 용법"
-          },
-          {
-            "sent": 5,
-            "word": "no matter how small",
-            "correct": false,
-            "note": "→ no matter how small it may be (양보절에서 주어+동사 필요)"
-          },
-          {
-            "sent": 8,
-            "word": "how common",
-            "correct": true,
-            "note": "간접의문문에서 how+형용사 어순은 올바른 용법"
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "irrel_sentence": "",
+    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "mathematically",
-        "correct": true,
-        "note": "부사로 형용사 proper를 수식하는 올바른 용법"
-      },
-      {
-        "sent": 1,
-        "word": "where",
-        "pos": 55,
-        "correct": false,
-        "note": "which로 수정",
-        "alt": ""
-      },
-      {
-        "sent": 2,
-        "word": "randomly hitting",
-        "correct": true,
-        "note": "분사구문으로 monkey를 수식하는 올바른 용법"
-      },
-      {
-        "sent": 3,
-        "word": "frequently",
-        "correct": true,
-        "note": "부사로 동사구 happen을 수식하는 올바른 용법"
-      },
-      {
-        "sent": 7,
-        "word": "ambiguous",
-        "correct": true,
-        "note": "형용사로 주격보어 역할을 하는 올바른 용법"
-      }
-    ],
-    "grammar_answer": 2,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "evaluate",
-            "alt": "ignore",
-            "correct": true
-          },
-          {
-            "sent": 1,
-            "word": "odds",
-            "alt": "certainties",
-            "correct": true
-          },
-          {
-            "sent": 3,
-            "word": "unreasonable",
-            "alt": "reasonable",
-            "correct": false
-          },
-          {
-            "sent": 5,
-            "word": "likelihood",
-            "alt": "impossibility",
-            "correct": true
-          },
-          {
-            "sent": 8,
-            "word": "common",
-            "alt": "rare",
-            "correct": true
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "items": [
-          {
-            "sent": 1,
-            "word": "counterintuitive",
-            "alt": "predictable",
-            "correct": true
-          },
-          {
-            "sent": 2,
-            "word": "randomly",
-            "alt": "deliberately",
-            "correct": true
-          },
-          {
-            "sent": 4,
-            "word": "adage",
-            "alt": "theorem",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "proven",
-            "alt": "disproven",
-            "correct": true
-          },
-          {
-            "sent": 7,
-            "word": "ambiguous",
-            "alt": "precise",
-            "correct": false
-          }
-        ],
-        "answer": 5
-      }
-    ],
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "evaluate",
-        "alt": "ignore",
-        "correct": true
-      },
-      {
-        "sent": 1,
-        "word": "odds",
-        "alt": "certainties",
-        "correct": true
-      },
-      {
-        "sent": 3,
-        "word": "unreasonable",
-        "alt": "reasonable",
-        "correct": false
-      },
-      {
-        "sent": 5,
-        "word": "likelihood",
-        "alt": "impossibility",
-        "correct": true
-      },
-      {
-        "sent": 8,
-        "word": "common",
-        "alt": "rare",
-        "correct": true
-      }
-    ],
-    "vocab_answer": 3,
-    "aGroup": [
-      "reasonable understanding",
-      "mathematical proof",
-      "hidden variable"
-    ],
-    "bGroup": [
-      "proven",
-      "observed",
-      "applied"
-    ]
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "두 고전적 문제 소개",
+          "nameEn": "Two Classic Problems",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "name": "우연의 일치가 잦은 이유 — 법칙들의 역할",
+          "nameEn": "Mathematical Laws Explaining Coincidences",
+          "color": "teal",
+          "sentenceNums": [
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "name": "진정으로 큰 수의 법칙 심화",
+          "nameEn": "Law of Truly Large Numbers",
+          "color": "coral",
+          "sentenceNums": [
+            5,
+            6
+          ]
+        },
+        {
+          "id": 4,
+          "name": "법칙의 한계와 의의",
+          "nameEn": "Limitation and Value of the Law",
+          "color": "amber",
+          "sentenceNums": [
+            7,
+            8,
+            9
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "→",
+        "+",
+        "↔"
+      ],
+      "keyword": "우연의 일치(coincidences) / 진정으로 큰 수의 법칙",
+      "topicSummary": "생일 문제·원숭이 문제 등 수학적 도구와 '진정으로 큰 수의 법칙'은, 비록 엄밀히 증명되지 않더라도, 우연의 일치가 우리 예상보다 훨씬 자주 일어나는 이유를 이해하게 해준다.",
+      "structureType": "사례 나열 → 원리 도출 → 핵심 법칙 심화 → 한계 인정 후 의의 강조"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 2,
+          "text": "One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday.",
+          "structure": "One is [명사구]: [동격 명사], which tells us that [명사절(that절 내 주어·동사·that절 중첩)]",
+          "translation": "하나는 반직관적인 난제인 '생일 문제'인데, 이것은 23명의 어떤 그룹에서든 그 그룹 안의 두 사람이 같은 생일을 가질 확률이 50%보다 높다는 것을 알려준다.",
+          "point": "'the odds are better than even'은 숙어로 '확률이 절반(50%) 이상'을 의미. that절이 두 번 중첩(tells us that … that two people …)되어 구조 파악이 까다로움."
+        },
+        {
+          "num": 4,
+          "text": "These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.",
+          "structure": "These two problems [주어], along with A, B, and C [삽입 전치사구], give us [동사+간접목적어] a reasonable understanding of [의문사절] why …",
+          "translation": "이 두 가지 문제는 큰 수의 법칙, 숨겨진 변수 이론, 진정으로 큰 수의 법칙과 함께, 우연의 일치가 우리가 예상하는 것보다 훨씬 더 자주 일어나는 이유에 대한 합리적인 이해를 제공한다.",
+          "point": "'along with' 삽입구가 길어 주어(These two problems)와 동사(give)의 수 일치를 놓치기 쉬움. 'understanding of why'에서 why절이 명사절로 쓰인 구조 주의."
+        },
+        {
+          "num": 6,
+          "text": "In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time.",
+          "structure": "it tells us that [명사절: if … (조건절), no matter how small (양보절), it's bound to happen (주절)]",
+          "translation": "간단히 말해서, 이것은 어떤 일이 일어날 가능성이, 아무리 작더라도, 조금이라도 있다면 그것은 언젠가 반드시 일어나게 되어 있다고 우리에게 알려준다.",
+          "point": "'no matter how small'은 삽입된 양보절로 likelihood를 수식. 'be bound to do'는 '반드시 ~하게 되어 있다'는 필연성 표현. that절 내부에 if절·양보절·주절이 모두 들어있어 구조가 복잡함."
+        }
+      ]
+    }
   },
   {
     "id": "27STYD_01_008",
-    "difficulty": "높음",
-    "title": "심상 탐색",
+    "difficulty": "중",
+    "title": "",
     "sentences": [
-      "The phrase 'image scanning' refers to the cognitive processes that operate on visual mental images when a person moves his or her attention across imagined objects.",
-      "The first image scanning paradigm was designed to investigate the spatial properties of images.",
-      "In the original experiment, participants memorized drawings of elongated objects (such as a tower).",
-      "They were then asked to visualize one of the objects and to focus at one of its ends (for example, the bottom of the tower).",
-      "Lastly, participants heard the name of a feature on the object (e.g., a flag), and they had to look for it.",
-      "Participants were not instructed to scan their image, but were simply told to focus on the original location until the probe was delivered, and then to focus on the named part or feature.",
-      "They pressed one button when they had focused on the named part, and another button if they failed to find it.",
-      "The critical finding was that response times increased linearly with increasing distances from the focus point to the named part of the object.",
-      "This finding was taken as evidence that distance, as traversed by image scanning, is genuinely represented in visual mental images."
+      {
+        "num": 1,
+        "text": "The phrase 'image scanning' refers to the cognitive processes that operate on visual mental images when a person moves his or her attention across imagined objects.",
+        "symbol": "G",
+        "role": "'이미지 스캐닝'의 개념 정의",
+        "chunks": [
+          {
+            "en": "The phrase 'image scanning'",
+            "ko": "'이미지 스캐닝'이라는 용어는"
+          },
+          {
+            "en": "refers to the cognitive processes",
+            "ko": "인지 과정을 가리킨다"
+          },
+          {
+            "en": "that operate on visual mental images",
+            "ko": "시각적 심상에 작용하는"
+          },
+          {
+            "en": "when a person moves his or her attention",
+            "ko": "사람이 주의를 이동할 때"
+          },
+          {
+            "en": "across imagined objects",
+            "ko": "상상된 대상들 전반에 걸쳐"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "The first image scanning paradigm was designed to investigate the spatial properties of images.",
+        "symbol": "G",
+        "role": "실험의 목적 소개",
+        "chunks": [
+          {
+            "en": "The first image scanning paradigm",
+            "ko": "최초의 이미지 스캐닝 패러다임은"
+          },
+          {
+            "en": "was designed to investigate",
+            "ko": "조사하기 위해 설계되었다"
+          },
+          {
+            "en": "the spatial properties of images",
+            "ko": "심상의 공간적 속성을"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "In the original experiment, participants memorized drawings of elongated objects (such as a tower).",
+        "symbol": "S",
+        "role": "실험 절차 1단계: 자극 암기",
+        "chunks": [
+          {
+            "en": "In the original experiment",
+            "ko": "원래의 실험에서"
+          },
+          {
+            "en": "participants memorized",
+            "ko": "참가자들은 암기했다"
+          },
+          {
+            "en": "drawings of elongated objects",
+            "ko": "길쭉한 물체들의 그림을"
+          },
+          {
+            "en": "(such as a tower)",
+            "ko": "(예: 탑)"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "They were then asked to visualize one of the objects and to focus at one of its ends (for example, the bottom of the tower).",
+        "symbol": "S",
+        "role": "실험 절차 2단계: 심상 형성 및 특정 끝점 집중",
+        "chunks": [
+          {
+            "en": "They were then asked",
+            "ko": "그런 다음 참가자들은 요청받았다"
+          },
+          {
+            "en": "to visualize one of the objects",
+            "ko": "물체들 중 하나를 시각화하도록"
+          },
+          {
+            "en": "and to focus at one of its ends",
+            "ko": "그리고 그 끝 중 하나에 집중하도록"
+          },
+          {
+            "en": "(for example, the bottom of the tower)",
+            "ko": "(예: 탑의 바닥)"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "Lastly, participants heard the name of a feature on the object (e.g., a flag), and they had to look for it.",
+        "symbol": "S",
+        "role": "실험 절차 3단계: 탐침 자극 제시",
+        "chunks": [
+          {
+            "en": "Lastly, participants heard",
+            "ko": "마지막으로, 참가자들은 들었다"
+          },
+          {
+            "en": "the name of a feature on the object",
+            "ko": "물체의 특정 부위 이름을"
+          },
+          {
+            "en": "(e.g., a flag)",
+            "ko": "(예: 깃발)"
+          },
+          {
+            "en": "and they had to look for it",
+            "ko": "그리고 그것을 찾아야 했다"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "Participants were not instructed to scan their image, but were simply told to focus on the original location until the probe was delivered, and then to focus on the named part or feature.",
+        "symbol": "S",
+        "role": "실험 조건의 핵심: 스캔 지시 없음",
+        "chunks": [
+          {
+            "en": "Participants were not instructed to scan their image",
+            "ko": "참가자들은 심상을 스캔하라는 지시를 받지 않았다"
+          },
+          {
+            "en": "but were simply told",
+            "ko": "단지 지시받았을 뿐이다"
+          },
+          {
+            "en": "to focus on the original location",
+            "ko": "원래 위치에 집중하도록"
+          },
+          {
+            "en": "until the probe was delivered",
+            "ko": "탐침이 제시될 때까지"
+          },
+          {
+            "en": "and then to focus on the named part or feature",
+            "ko": "그런 다음 언급된 부위나 특징에 집중하도록"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "They pressed one button when they had focused on the named part, and another button if they failed to find it.",
+        "symbol": "S",
+        "role": "반응 측정 방법",
+        "chunks": [
+          {
+            "en": "They pressed one button",
+            "ko": "참가자들은 하나의 버튼을 눌렀다"
+          },
+          {
+            "en": "when they had focused on the named part",
+            "ko": "언급된 부위에 집중했을 때"
+          },
+          {
+            "en": "and another button",
+            "ko": "또 다른 버튼을"
+          },
+          {
+            "en": "if they failed to find it",
+            "ko": "찾지 못했을 경우"
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "text": "The critical finding was that response times increased linearly with increasing distances from the focus point to the named part of the object.",
+        "symbol": "→",
+        "role": "핵심 실험 결과: 거리와 반응 시간의 선형 관계",
+        "chunks": [
+          {
+            "en": "The critical finding was that",
+            "ko": "핵심적인 발견은 ~이었다"
+          },
+          {
+            "en": "response times increased linearly",
+            "ko": "반응 시간이 선형적으로 증가했다는 것"
+          },
+          {
+            "en": "with increasing distances",
+            "ko": "거리가 증가함에 따라"
+          },
+          {
+            "en": "from the focus point",
+            "ko": "집중 지점으로부터"
+          },
+          {
+            "en": "to the named part of the object",
+            "ko": "물체의 언급된 부위까지"
+          }
+        ]
+      },
+      {
+        "num": 9,
+        "text": "This finding was taken as evidence that distance, as traversed by image scanning, is genuinely represented in visual mental images.",
+        "symbol": "→",
+        "role": "결론: 시각적 심상의 공간적 거리가 실제로 표상됨",
+        "chunks": [
+          {
+            "en": "This finding was taken as evidence",
+            "ko": "이 발견은 증거로 받아들여졌다"
+          },
+          {
+            "en": "that distance",
+            "ko": "거리가"
+          },
+          {
+            "en": "as traversed by image scanning",
+            "ko": "이미지 스캐닝에 의해 가로질러지는"
+          },
+          {
+            "en": "is genuinely represented",
+            "ko": "실제로 표상된다는"
+          },
+          {
+            "en": "in visual mental images",
+            "ko": "시각적 심상 안에"
+          }
+        ]
+      }
     ],
-    "abstract": "Image scanning experiments reveal that visual mental images genuinely represent spatial distances, as response times increase linearly with distance scanned.",
-    "topic_options": [
-      "an image scanning experiment revealing spatial representation in mental images",
-      "cognitive processes involved in all types of visual perception",
-      "the role of memorization in visualizing elongated objects",
-      "response time measurement techniques in psychological research",
-      "spatial properties of physical drawings and their cognitive effects"
-    ],
-    "topic_answer": 1,
+    "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [
-      {
-        "sentence_index": 2,
-        "keyword": "elongated objects",
-        "distractors": [
-          "abstract concepts",
-          "simple shapes",
-          "moving targets",
-          "colored patterns"
-        ]
-      },
-      {
-        "sentence_index": 7,
-        "keyword": "increased linearly",
-        "distractors": [
-          "decreased sharply",
-          "remained constant",
-          "varied randomly",
-          "increased exponentially"
-        ]
-      },
-      {
-        "sentence_index": 5,
-        "keyword": "focus on the original location",
-        "distractors": [
-          "scan the entire image",
-          "memorize the object again",
-          "identify all features at once",
-          "move their eyes freely"
-        ]
-      }
-    ],
-    "blank_sentence_index": 1,
-    "blank_target": "designed to investigate the spatial properties of images",
-    "blank_options": [
-      "designed to investigate the spatial properties of images",
-      "intended to measure the temporal aspects of visual perception",
-      "conducted to examine the cognitive limitations of memory recall",
-      "developed to explore the emotional responses to mental imagery",
-      "created to analyze the sequential patterns of object recognition"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [
-      {
-        "label": "B",
-        "sentence_indices": [
-          2,
-          3
-        ]
-      },
-      {
-        "label": "C",
-        "sentence_indices": [
-          4,
-          5
-        ]
-      },
-      {
-        "label": "D",
-        "sentence_indices": [
-          6,
-          7
-        ]
-      }
-    ],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
+    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "This paradigm has since been replicated across multiple cultures and age groups with consistent results.",
-        "pos": 8
-      },
-      {
-        "sentence": "Before the experiment began, all participants were given clear instructions about the memorization task.",
-        "pos": 2
-      },
-      {
-        "sentence": "Such a linear relationship between distance and response time is known as the scanning effect.",
-        "pos": 8
-      }
-    ],
-    "insert_sentence": "They pressed one button when they had focused on the named part, and another button if they failed to find it.",
-    "insert_answer": 6,
+    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [
-      {
-        "template": "Image scanning studies show that participants scanning visual mental images have __________(A)__________ that __________(B)__________ with the distance from the focus point to the named feature.",
-        "A_correct": "response times",
-        "A_distractors": [
-          "error rates",
-          "memory spans",
-          "attention levels",
-          "visual acuity"
-        ],
-        "B_correct": "increase linearly",
-        "B_distractors": [
-          "decrease sharply",
-          "remain constant",
-          "vary randomly",
-          "increase exponentially"
-        ]
-      },
-      {
-        "template": "In image scanning experiments, participants memorized __________(A)__________ and were asked to locate named features, revealing that visual mental images genuinely represent __________(B)__________.",
-        "A_correct": "drawings of elongated objects",
-        "A_distractors": [
-          "abstract verbal descriptions",
-          "colored geometric shapes",
-          "moving visual stimuli",
-          "symbolic diagrams"
-        ],
-        "B_correct": "spatial distances",
-        "B_distractors": [
-          "emotional content",
-          "temporal sequences",
-          "semantic categories",
-          "logical relationships"
-        ]
-      },
-      {
-        "template": "The image scanning paradigm was designed to investigate the __________(A)__________ of images, and its critical finding supports that distance is __________(B)__________ in visual mental images.",
-        "A_correct": "spatial properties",
-        "A_distractors": [
-          "emotional properties",
-          "temporal properties",
-          "linguistic properties",
-          "abstract properties"
-        ],
-        "B_correct": "genuinely represented",
-        "B_distractors": [
-          "completely ignored",
-          "verbally encoded",
-          "randomly distorted",
-          "unconsciously suppressed"
-        ]
-      }
-    ],
-    "summary_template": "Image scanning studies show that participants scanning visual mental images have __________(A)__________ that __________(B)__________ with the distance from the focus point to the named feature.",
-    "summary_A_options": [
-      "response times",
-      "error rates",
-      "memory spans",
-      "attention levels",
-      "visual acuity"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "increase linearly",
-      "decrease sharply",
-      "remain constant",
-      "vary randomly",
-      "increase exponentially"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 8,
-    "implication_keyword": "genuinely represented in visual mental images",
-    "implication_options": [
-      "Visual mental images preserve real spatial relationships, not just abstract or symbolic ones",
-      "People can only form mental images of objects they have physically touched",
-      "Visual mental images are entirely constructed from verbal descriptions",
-      "Spatial distance in mental images is an illusion with no cognitive basis",
-      "Mental images are processed in a completely different brain region from real perception"
-    ],
-    "implication_answer": 1,
+    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [
-      "Researchers have also studied how auditory mental images represent pitch and rhythm in music.",
-      "Some cognitive scientists argue that mental imagery does not involve any spatial representation at all.",
-      "The study of working memory capacity has revealed individual differences in cognitive performance."
-    ],
-    "irrel_insert_pos": 5,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
     "irrel_confirmed": false,
-    "irrelevant_sentence_index": 2,
-    "irrel_sentence": "Researchers have also studied how auditory mental images represent pitch and rhythm in music.",
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "refers",
-            "correct": true,
-            "note": "주어 'The phrase'에 수일치하는 단수 동사"
-          },
-          {
-            "sent": 1,
-            "word": "was designed",
-            "correct": true,
-            "note": "수동태로 올바르게 사용됨"
-          },
-          {
-            "sent": 3,
-            "word": "to focus at",
-            "correct": false,
-            "note": "→ 'to focus on': focus는 전치사 'on'과 함께 사용"
-          },
-          {
-            "sent": 5,
-            "word": "were not instructed",
-            "correct": true,
-            "note": "수동태 부정형으로 올바르게 사용됨"
-          },
-          {
-            "sent": 7,
-            "word": "increased",
-            "correct": true,
-            "note": "과거 시제로 실험 결과를 서술하는 올바른 표현"
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "operate on",
-            "correct": true,
-            "note": "'operate on'은 '~에 작용하다'의 올바른 표현"
-          },
-          {
-            "sent": 2,
-            "word": "memorized",
-            "correct": true,
-            "note": "과거 시제 동사로 실험 절차를 올바르게 서술"
-          },
-          {
-            "sent": 4,
-            "word": "had to look for",
-            "correct": true,
-            "note": "의무를 나타내는 'had to'의 올바른 사용"
-          },
-          {
-            "sent": 6,
-            "word": "when they had focused",
-            "correct": false,
-            "note": "→ 'when they focused': 단순 과거로 충분하며 과거완료 불필요"
-          },
-          {
-            "sent": 8,
-            "word": "traversed",
-            "correct": true,
-            "note": "과거분사로 수동의 의미를 나타내는 올바른 사용"
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "irrel_sentence": "",
+    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "refers",
-        "correct": true,
-        "note": "주어 'The phrase'에 수일치하는 단수 동사"
-      },
-      {
-        "sent": 1,
-        "word": "was designed",
-        "correct": true,
-        "note": "수동태로 올바르게 사용됨"
-      },
-      {
-        "sent": 3,
-        "word": "to focus at",
-        "correct": false,
-        "note": "→ 'to focus on': focus는 전치사 'on'과 함께 사용"
-      },
-      {
-        "sent": 5,
-        "word": "were not instructed",
-        "correct": true,
-        "note": "수동태 부정형으로 올바르게 사용됨"
-      },
-      {
-        "sent": 7,
-        "word": "increased",
-        "correct": true,
-        "note": "과거 시제로 실험 결과를 서술하는 올바른 표현"
-      }
-    ],
-    "grammar_answer": 3,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "cognitive",
-            "alt": "physical",
-            "correct": true
-          },
-          {
-            "sent": 1,
-            "word": "paradigm",
-            "alt": "obstacle",
-            "correct": true
-          },
-          {
-            "sent": 5,
-            "word": "delivered",
-            "alt": "withheld",
-            "correct": true
-          },
-          {
-            "sent": 7,
-            "word": "linearly",
-            "alt": "consistently",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "managed",
-            "pos": 92,
-            "correct": true,
-            "note": "",
-            "alt": "failed "
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "refers to",
-            "alt": "contradicts",
-            "correct": true
-          },
-          {
-            "sent": 3,
-            "word": "visualize",
-            "alt": "describe",
-            "correct": true
-          },
-          {
-            "sent": 5,
-            "word": "instructed",
-            "alt": "forbidden",
-            "correct": true
-          },
-          {
-            "sent": 7,
-            "word": "critical",
-            "alt": "trivial",
-            "correct": false
-          },
-          {
-            "sent": 8,
-            "word": "genuinely",
-            "alt": "artificially",
-            "correct": true
-          }
-        ],
-        "answer": 4
-      }
-    ],
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "개념 정의 및 실험 목적",
+          "nameEn": "Definition & Purpose",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "실험 절차",
+          "nameEn": "Experimental Procedure",
+          "color": "teal",
+          "sentenceNums": [
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        {
+          "id": 3,
+          "name": "결과 및 결론",
+          "nameEn": "Findings & Conclusion",
+          "color": "coral",
+          "sentenceNums": [
+            8,
+            9
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "→",
+        "→"
+      ],
+      "keyword": "image scanning",
+      "topicSummary": "이미지 스캐닝 실험을 통해 시각적 심상 속 거리가 실제로 공간적으로 표상됨을 증명함",
+      "structureType": "개념정의→실험절차→결과/결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 6,
+          "text": "Participants were not instructed to scan their image, but were simply told to focus on the original location until the probe was delivered, and then to focus on the named part or feature.",
+          "structure": "were not instructed to V, but were told to V until S+V, and then to V",
+          "translation": "참가자들은 심상을 스캔하라는 지시를 받지 않았고, 단지 탐침이 제시될 때까지 원래 위치에 집중하다가 이후 언급된 부위에 집중하도록 지시받았다.",
+          "point": "but 이하에 told to V 구조가 두 번(until절 포함) 병렬되어 있어 문장 구조 파악이 까다로움. 스캔 지시 없이도 스캔과 같은 결과가 나왔음을 암시하는 실험 설계의 핵심 문장."
+        },
+        {
+          "num": 8,
+          "text": "The critical finding was that response times increased linearly with increasing distances from the focus point to the named part of the object.",
+          "structure": "The critical finding was that S+V [with+명사구(분사구문 역할)]",
+          "translation": "핵심적인 발견은 집중 지점에서 물체의 언급된 부위까지의 거리가 증가함에 따라 반응 시간이 선형적으로 증가했다는 것이었다.",
+          "point": "'with increasing distances'는 '거리가 증가함에 따라'라는 부대상황 표현. 'linearly'(선형적으로)의 의미와 함께 거리-시간의 비례 관계를 정확히 독해하는 것이 중요."
+        },
+        {
+          "num": 9,
+          "text": "This finding was taken as evidence that distance, as traversed by image scanning, is genuinely represented in visual mental images.",
+          "structure": "be taken as evidence that S [삽입구: as traversed by ~] V",
+          "translation": "이 발견은 이미지 스캐닝에 의해 가로질러지는 거리가 시각적 심상 안에 실제로 표상된다는 증거로 받아들여졌다.",
+          "point": "'as traversed by image scanning'은 삽입구로 주어 distance를 수식. 'genuinely represented'가 핵심 결론어로 심상 속 공간 거리가 단순한 비유가 아닌 실제 표상임을 강조."
+        }
+      ]
+    }
+  },
+  {
+    "id": "27STYD_01_009",
+    "difficulty": "하",
+    "title": "",
+    "sentences": [
       {
-        "sent": 0,
-        "word": "cognitive",
-        "alt": "physical",
-        "correct": true
+        "num": 1,
+        "text": "Social media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations.",
+        "symbol": "G",
+        "role": "주제 제시: 소셜 미디어의 전자상거래 플랫폼으로의 변화",
+        "chunks": [
+          {
+            "en": "Social media's transformation",
+            "ko": "소셜 미디어의 변화는"
+          },
+          {
+            "en": "into an e-commerce platform",
+            "ko": "전자상거래 플랫폼으로의"
+          },
+          {
+            "en": "is a significant milestone",
+            "ko": "중요한 이정표이다"
+          },
+          {
+            "en": "that enabled it to become",
+            "ko": "그것이 ~이 될 수 있게 한"
+          },
+          {
+            "en": "a platform for organizations",
+            "ko": "조직들을 위한 플랫폼"
+          }
+        ]
       },
       {
-        "sent": 1,
-        "word": "paradigm",
-        "alt": "obstacle",
-        "correct": true
+        "num": 2,
+        "text": "Social media was initially and mainly used for communication with friends and family.",
+        "symbol": "G",
+        "role": "초기 통념: 소셜 미디어는 원래 소통 도구였음",
+        "chunks": [
+          {
+            "en": "Social media",
+            "ko": "소셜 미디어는"
+          },
+          {
+            "en": "was initially and mainly used",
+            "ko": "처음에는 주로 사용되었다"
+          },
+          {
+            "en": "for communication",
+            "ko": "소통을 위해"
+          },
+          {
+            "en": "with friends and family",
+            "ko": "친구 및 가족과의"
+          }
+        ]
       },
       {
-        "sent": 5,
-        "word": "delivered",
-        "alt": "withheld",
-        "correct": true
+        "num": 3,
+        "text": "But with the popularity of some platforms, social media has turned into a vital tool for businesses seeking to sell their products online.",
+        "symbol": "↔",
+        "role": "역접/전환: 현재는 기업의 판매 도구로 변화",
+        "chunks": [
+          {
+            "en": "But with the popularity",
+            "ko": "그러나 인기에 힘입어"
+          },
+          {
+            "en": "of some platforms",
+            "ko": "일부 플랫폼들의"
+          },
+          {
+            "en": "social media has turned into",
+            "ko": "소셜 미디어는 변했다"
+          },
+          {
+            "en": "a vital tool",
+            "ko": "필수적인 도구로"
+          },
+          {
+            "en": "for businesses seeking",
+            "ko": "기업들을 위한 (찾는)"
+          },
+          {
+            "en": "to sell their products online",
+            "ko": "온라인으로 제품을 판매하려는"
+          }
+        ]
       },
       {
-        "sent": 6,
-        "word": "managed",
-        "pos": 92,
-        "correct": true,
-        "note": "",
-        "alt": "failed "
+        "num": 4,
+        "text": "Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers.",
+        "symbol": "==",
+        "role": "재진술: 기업이 소셜 미디어를 활용하는 구체적 방식",
+        "chunks": [
+          {
+            "en": "Social media is now used",
+            "ko": "소셜 미디어는 이제 사용된다"
+          },
+          {
+            "en": "by businesses",
+            "ko": "기업들에 의해"
+          },
+          {
+            "en": "to promote their products and offerings",
+            "ko": "제품과 서비스를 홍보하기 위해"
+          },
+          {
+            "en": "as well as provide",
+            "ko": "제공하는 것뿐만 아니라"
+          },
+          {
+            "en": "a direct shopping option",
+            "ko": "직접 구매 옵션을"
+          },
+          {
+            "en": "for buyers",
+            "ko": "구매자들을 위한"
+          }
+        ]
       },
       {
-        "sent": 7,
-        "word": "linearly",
-        "alt": "consistently",
-        "correct": true
+        "num": 5,
+        "text": "Influencer marketing is another way that social media has evolved into a platform for businesses.",
+        "symbol": "+",
+        "role": "추가 사례 도입: 인플루언서 마케팅이라는 또 다른 방식",
+        "chunks": [
+          {
+            "en": "Influencer marketing",
+            "ko": "인플루언서 마케팅은"
+          },
+          {
+            "en": "is another way",
+            "ko": "또 다른 방식이다"
+          },
+          {
+            "en": "that social media has evolved",
+            "ko": "소셜 미디어가 발전해 온"
+          },
+          {
+            "en": "into a platform for businesses",
+            "ko": "기업을 위한 플랫폼으로"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field.",
+        "symbol": "S",
+        "role": "개념 정의: 인플루언서가 누구인지 설명",
+        "chunks": [
+          {
+            "en": "Influencers are those users",
+            "ko": "인플루언서는 그런 사용자들이다"
+          },
+          {
+            "en": "who have a sizable social media following",
+            "ko": "상당한 소셜 미디어 팔로워를 가진"
+          },
+          {
+            "en": "and are recognized",
+            "ko": "그리고 인정받는"
+          },
+          {
+            "en": "as authorities or thought leaders",
+            "ko": "권위자 또는 의견 선도자로"
+          },
+          {
+            "en": "in their specialized field",
+            "ko": "자신의 전문 분야에서"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
+        "symbol": "→",
+        "role": "결론/인과: 인플루언서 마케팅의 효과와 신뢰 메커니즘",
+        "chunks": [
+          {
+            "en": "Influencer marketing allows businesses",
+            "ko": "인플루언서 마케팅은 기업이 ~할 수 있게 한다"
+          },
+          {
+            "en": "to reach the users' followers",
+            "ko": "해당 사용자의 팔로워들에게 도달하도록"
+          },
+          {
+            "en": "who are more likely to trust",
+            "ko": "더 신뢰하는 경향이 있는"
+          },
+          {
+            "en": "suggestions from people they follow",
+            "ko": "자신이 팔로우하는 사람들의 제안을"
+          },
+          {
+            "en": "on social media",
+            "ko": "소셜 미디어에서"
+          }
+        ]
       }
     ],
+    "abstract": "",
+    "blank_sel": 0,
+    "blank_candidates": [],
+    "insert_sel": 0,
+    "insert_candidates": [],
+    "summary_sel": 0,
+    "summary_candidates": [],
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
+    "grammar_sets": [],
+    "grammar_sel": 0,
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
+    "vocab_sel": 0,
+    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [
-      "response times",
-      "error rates",
-      "memory spans"
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "초기 통념",
+          "nameEn": "Initial Role of Social Media",
+          "color": "blue",
+          "sentenceNums": [
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "전환: 기업 플랫폼으로 변화",
+          "nameEn": "Transformation into Business Platform",
+          "color": "coral",
+          "sentenceNums": [
+            1,
+            3,
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "name": "심화 사례: 인플루언서 마케팅",
+          "nameEn": "Influencer Marketing as Further Evidence",
+          "color": "teal",
+          "sentenceNums": [
+            5,
+            6,
+            7
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "↔",
+        "+"
+      ],
+      "keyword": "소셜 미디어의 전자상거래·기업 플랫폼화",
+      "topicSummary": "소셜 미디어는 본래 개인 소통 수단이었으나, 현재는 제품 홍보·직접 판매·인플루언서 마케팅 등을 통해 기업을 위한 전자상거래 플랫폼으로 진화하였다.",
+      "structureType": "통념→전환(역접)→구체예시→결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 6,
+          "text": "Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field.",
+          "structure": "관계대명사 who절이 those users를 수식 / are recognized as A or B 구조",
+          "translation": "인플루언서는 상당한 소셜 미디어 팔로워를 보유하고 자신의 전문 분야에서 권위자 또는 의견 선도자로 인정받는 사용자들이다.",
+          "point": "'thought leaders(의견 선도자)'라는 복합명사와 'sizable(상당한)' 등 비즈니스 어휘에 주의"
+        },
+        {
+          "num": 7,
+          "text": "Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
+          "structure": "allow+목적어+to부정사 / 계속적 용법 관계대명사 who절 / be likely to 구조",
+          "translation": "인플루언서 마케팅은 기업이 해당 사용자의 팔로워들에게 도달할 수 있게 해주는데, 그 팔로워들은 소셜 미디어에서 자신이 팔로우하는 사람들의 제안을 더 신뢰하는 경향이 있다.",
+          "point": "계속적 용법 who절이 followers를 부연 설명하며, 'people they follow'에서 목적격 관계대명사가 생략된 구조에 주의"
+        }
+      ]
+    }
+  },
+  {
+    "id": "27STYD_01_010",
+    "difficulty": "중",
+    "title": "",
+    "sentences": [
+      {
+        "num": 1,
+        "text": "One way we stop listening is when we start preparing a response to what the other person has just said, often immediately after they have started speaking.",
+        "symbol": "G",
+        "role": "핵심 주제 제시: 듣기를 멈추는 방식 - 상대방 말에 응답을 준비할 때",
+        "chunks": [
+          {
+            "en": "One way we stop listening",
+            "ko": "우리가 듣기를 멈추는 한 가지 방식은"
+          },
+          {
+            "en": "is when we start preparing a response",
+            "ko": "응답을 준비하기 시작할 때이다"
+          },
+          {
+            "en": "to what the other person has just said,",
+            "ko": "상대방이 방금 말한 것에 대해"
+          },
+          {
+            "en": "often immediately after they have started speaking.",
+            "ko": "흔히 그들이 말을 시작한 직후에"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "For example, imagine you are in a meeting with your manager, who tells you that a reorganization is coming soon, and you and your team are going to be moved under a lower-level manager.",
+        "symbol": "S",
+        "role": "구체적 상황 예시 도입: 회의 중 조직개편 소식을 듣는 장면",
+        "chunks": [
+          {
+            "en": "For example,",
+            "ko": "예를 들어,"
+          },
+          {
+            "en": "imagine you are in a meeting with your manager,",
+            "ko": "당신이 상사와 회의 중이라고 상상해보라,"
+          },
+          {
+            "en": "who tells you that a reorganization is coming soon,",
+            "ko": "그 상사가 곧 조직개편이 있을 거라고 말하고,"
+          },
+          {
+            "en": "and you and your team are going to be moved",
+            "ko": "당신과 팀이 이동하게 될 것이라고 한다"
+          },
+          {
+            "en": "under a lower-level manager.",
+            "ko": "더 낮은 직급의 관리자 밑으로"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "As soon as you hear that news, you stop listening, and your mind goes into high gear.",
+        "symbol": "S",
+        "role": "예시 전개: 소식을 듣자마자 듣기를 멈추고 머릿속이 바빠지는 반응",
+        "chunks": [
+          {
+            "en": "As soon as you hear that news,",
+            "ko": "그 소식을 듣자마자,"
+          },
+          {
+            "en": "you stop listening,",
+            "ko": "당신은 듣기를 멈추고,"
+          },
+          {
+            "en": "and your mind goes into high gear.",
+            "ko": "머릿속은 빠르게 돌아가기 시작한다."
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "You start thinking of ways to convince your manager not to let that happen.",
+        "symbol": "S",
+        "role": "예시 전개: 상사를 설득할 방법을 생각하기 시작함",
+        "chunks": [
+          {
+            "en": "You start thinking of ways",
+            "ko": "당신은 방법들을 생각하기 시작한다"
+          },
+          {
+            "en": "to convince your manager",
+            "ko": "상사를 설득하기 위한"
+          },
+          {
+            "en": "not to let that happen.",
+            "ko": "그 일이 일어나지 않도록"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "You think of how much you don't like the manager you are about to be moved under, and you prepare to tell your manager that you are incompatible with the new person.",
+        "symbol": "S",
+        "role": "예시 심화: 새 상사에 대한 불만과 반박 논리를 준비하는 내면 상태",
+        "chunks": [
+          {
+            "en": "You think of how much you don't like",
+            "ko": "당신은 얼마나 싫어하는지를 생각하고"
+          },
+          {
+            "en": "the manager you are about to be moved under,",
+            "ko": "새로 배치될 관리자를,"
+          },
+          {
+            "en": "and you prepare to tell your manager",
+            "ko": "그리고 상사에게 말할 준비를 한다"
+          },
+          {
+            "en": "that you are incompatible with the new person.",
+            "ko": "새 사람과 자신이 맞지 않는다고"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "You fear your career is starting a downward spiral.",
+        "symbol": "S",
+        "role": "예시 심화: 경력에 대한 불안감으로 이어지는 내면의 흐름",
+        "chunks": [
+          {
+            "en": "You fear",
+            "ko": "당신은 두려워한다"
+          },
+          {
+            "en": "your career is starting a downward spiral.",
+            "ko": "자신의 경력이 하향 곡선을 그리기 시작한다고"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "Meanwhile, your manager has continued talking, laying out the rationale for the decision, and explaining why this is a good move for both you and your team.",
+        "symbol": "↔",
+        "role": "역접 전환: 그 사이 상사는 계속 말하며 결정의 이유와 긍정적 측면을 설명하고 있었음",
+        "chunks": [
+          {
+            "en": "Meanwhile,",
+            "ko": "그러는 동안,"
+          },
+          {
+            "en": "your manager has continued talking,",
+            "ko": "상사는 계속 말을 이어가고 있었고,"
+          },
+          {
+            "en": "laying out the rationale for the decision,",
+            "ko": "결정에 대한 근거를 제시하면서,"
+          },
+          {
+            "en": "and explaining why this is a good move",
+            "ko": "그리고 왜 이것이 좋은 변화인지 설명하면서"
+          },
+          {
+            "en": "for both you and your team.",
+            "ko": "당신과 팀 모두에게"
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "text": "Unfortunately, you stopped listening, so you missed everything beyond \"you are going to be moved to ...\"",
+        "symbol": "→",
+        "role": "결과 제시: 듣기를 멈췄기 때문에 중요한 정보를 모두 놓침",
+        "chunks": [
+          {
+            "en": "Unfortunately,",
+            "ko": "안타깝게도,"
+          },
+          {
+            "en": "you stopped listening,",
+            "ko": "당신은 듣기를 멈췄고,"
+          },
+          {
+            "en": "so you missed everything",
+            "ko": "그래서 모든 것을 놓쳤다"
+          },
+          {
+            "en": "beyond \"you are going to be moved to ...\"",
+            "ko": "\"당신은 ~로 이동하게 될 것입니다\" 이후의 모든 내용을"
+          }
+        ]
+      },
+      {
+        "num": 9,
+        "text": "When you prepare your response as the other person is talking, you are missing out on hearing what the other person is sharing with you.",
+        "symbol": "==",
+        "role": "주제 재진술 및 결론: 응답 준비가 상대방의 말을 놓치게 만든다는 핵심 메시지 반복",
+        "chunks": [
+          {
+            "en": "When you prepare your response",
+            "ko": "당신이 응답을 준비할 때"
+          },
+          {
+            "en": "as the other person is talking,",
+            "ko": "상대방이 말하는 동안"
+          },
+          {
+            "en": "you are missing out on hearing",
+            "ko": "당신은 듣지 못하게 된다"
+          },
+          {
+            "en": "what the other person is sharing with you.",
+            "ko": "상대방이 당신과 나누고 있는 것을"
+          }
+        ]
+      }
     ],
-    "bGroup": [
-      "increase linearly",
-      "decrease sharply",
-      "remain constant"
-    ]
+    "abstract": "",
+    "blank_sel": 0,
+    "blank_candidates": [],
+    "insert_sel": 0,
+    "insert_candidates": [],
+    "summary_sel": 0,
+    "summary_candidates": [],
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
+    "grammar_sets": [],
+    "grammar_sel": 0,
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
+    "vocab_sel": 0,
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "주제 제시",
+          "nameEn": "Topic Introduction",
+          "color": "blue",
+          "sentenceNums": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "name": "구체적 예시 전개",
+          "nameEn": "Concrete Example",
+          "color": "teal",
+          "sentenceNums": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "id": 3,
+          "name": "역접 및 결과",
+          "nameEn": "Contrast & Consequence",
+          "color": "coral",
+          "sentenceNums": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": 4,
+          "name": "결론 및 재진술",
+          "nameEn": "Conclusion & Restatement",
+          "color": "purple",
+          "sentenceNums": [
+            9
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "+",
+        "↔",
+        "→"
+      ],
+      "keyword": "listening / preparing a response",
+      "topicSummary": "상대방이 말하는 도중 응답을 준비하면 정작 중요한 내용을 듣지 못하게 된다.",
+      "structureType": "주제 제시 → 구체 예시 → 역접·결과 → 결론 재진술"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 1,
+          "text": "One way we stop listening is when we start preparing a response to what the other person has just said, often immediately after they have started speaking.",
+          "structure": "주어(One way we stop listening) + 동사(is) + 보어절(when we start preparing a response to what ...)",
+          "translation": "우리가 듣기를 멈추는 한 가지 방식은, 흔히 상대방이 말을 시작한 직후부터, 상대방이 방금 말한 것에 대한 응답을 준비하기 시작할 때이다.",
+          "point": "'One way ~ is when ~' 구조에서 when절이 보어 역할을 함. 'what the other person has just said'는 전치사 to의 목적어인 관계절."
+        },
+        {
+          "num": 7,
+          "text": "Meanwhile, your manager has continued talking, laying out the rationale for the decision, and explaining why this is a good move for both you and your team.",
+          "structure": "주어(your manager) + 동사(has continued talking) + 분사구문 병렬(laying out ..., and explaining ...)",
+          "translation": "그러는 동안, 상사는 계속 말을 이어가면서, 결정에 대한 근거를 제시하고, 왜 이것이 당신과 팀 모두에게 좋은 변화인지를 설명하고 있었다.",
+          "point": "현재완료 진행(has continued)과 두 개의 분사구문(laying, explaining)이 병렬 연결. 'laying out the rationale'에서 rationale(근거/이유)의 의미 파악이 핵심."
+        },
+        {
+          "num": 5,
+          "text": "You think of how much you don't like the manager you are about to be moved under, and you prepare to tell your manager that you are incompatible with the new person.",
+          "structure": "think of + [how much절] / prepare to tell + [that절] / 'be about to + be moved under'(수동 예정)",
+          "translation": "당신은 곧 배치될 관리자를 얼마나 싫어하는지를 생각하고, 새 사람과 자신이 맞지 않는다고 상사에게 말할 준비를 한다.",
+          "point": "'the manager you are about to be moved under'에서 관계절 내 'be about to'(막 ~하려 하다) + 수동태 구조 파악 필요. 'incompatible with'는 '~와 맞지 않는'의 의미."
+        }
+      ]
+    }
   }
 ];
