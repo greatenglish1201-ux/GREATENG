@@ -17215,9 +17215,9 @@ const PASSAGES = [
     "irrel_confirmed": true,
     "irrel_sentence": "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
     "grammar_sel": 0,
-    "grammar_answer": 1,
+    "grammar_answer": 3,
     "vocab_sel": 0,
-    "vocab_answer": 1,
+    "vocab_answer": 3,
     "flow": {
       "blocks": [
         {
@@ -17440,7 +17440,171 @@ const PASSAGES = [
     ],
     "irrelevant_sentence_index": 5,
     "insert_sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
-    "insert_answer": 5
+    "insert_answer": 5,
+    "insert_candidates": [
+      {
+        "sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
+        "pos": 5
+      }
+    ],
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "Accepting",
+            "original": "Accepting",
+            "correct": true,
+            "note": "등위접속사 or로 연결된 병렬구조에서 'Accepting'과 'being at peace'가 동명사 형태로 나란히 주어 역할을 하고 있어 문법적으로 적절하다."
+          },
+          {
+            "sent": 4,
+            "word": "masquerading",
+            "original": "masquerading",
+            "correct": true,
+            "note": "'non-acceptance masquerading as acceptance'에서 masquerading은 non-acceptance를 수식하는 현재분사로, 능동적 의미(~인 체하는)를 나타내므로 문법적으로 적절하다."
+          },
+          {
+            "sent": 5,
+            "word": "get",
+            "original": "getting",
+            "correct": false,
+            "note": "준동사(병렬구조) 오류. 'Rather than getting dispirited'는 전치사 rather than 뒤에 동명사(-ing)가 오는 구조이지만, 여기서 'Rather than'은 접속사적 용법으로 쓰여 'we would be better to notice'와 대비되는 구조를 이룬다. 그러나 실제 오류는 'better to notice' 부분에서 발생한다. → 수험생에게 제시되는 오답 형태: 'Rather than getting dispirited we would be better to notice'에서 'notice'를 'noticing'으로 바꾸면 'be better to-V' 패턴을 깨는 오류가 된다. ※ 이 문항에서는 'notice'를 'noticing'으로 제시하여 오류를 유발함. → 올바른 형태: notice (be better to-V 구문에서 to 부정사의 원형동사가 와야 함)"
+          },
+          {
+            "sent": 8,
+            "word": "starts",
+            "original": "starts",
+            "correct": true,
+            "note": "주어는 'the impact of such experiences'로 단수명사 'the impact'이므로 단수 동사 'starts'가 올바르게 쓰였다. 수식어구(of such experiences)에 현혹되지 않아야 한다."
+          },
+          {
+            "sent": 9,
+            "word": "visited",
+            "original": "visited",
+            "correct": true,
+            "note": "'we've been visited'는 현재완료 수동태(have been p.p.) 구조로, 주어 'we'가 방문을 받는 대상이므로 수동태가 문법적으로 적절하다."
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "grammar_items": [
+      {
+        "sent": 0,
+        "word": "Accepting",
+        "original": "Accepting",
+        "correct": true,
+        "note": "등위접속사 or로 연결된 병렬구조에서 'Accepting'과 'being at peace'가 동명사 형태로 나란히 주어 역할을 하고 있어 문법적으로 적절하다."
+      },
+      {
+        "sent": 4,
+        "word": "masquerading",
+        "original": "masquerading",
+        "correct": true,
+        "note": "'non-acceptance masquerading as acceptance'에서 masquerading은 non-acceptance를 수식하는 현재분사로, 능동적 의미(~인 체하는)를 나타내므로 문법적으로 적절하다."
+      },
+      {
+        "sent": 5,
+        "word": "get",
+        "original": "getting",
+        "correct": false,
+        "note": "준동사(병렬구조) 오류. 'Rather than getting dispirited'는 전치사 rather than 뒤에 동명사(-ing)가 오는 구조이지만, 여기서 'Rather than'은 접속사적 용법으로 쓰여 'we would be better to notice'와 대비되는 구조를 이룬다. 그러나 실제 오류는 'better to notice' 부분에서 발생한다. → 수험생에게 제시되는 오답 형태: 'Rather than getting dispirited we would be better to notice'에서 'notice'를 'noticing'으로 바꾸면 'be better to-V' 패턴을 깨는 오류가 된다. ※ 이 문항에서는 'notice'를 'noticing'으로 제시하여 오류를 유발함. → 올바른 형태: notice (be better to-V 구문에서 to 부정사의 원형동사가 와야 함)"
+      },
+      {
+        "sent": 8,
+        "word": "starts",
+        "original": "starts",
+        "correct": true,
+        "note": "주어는 'the impact of such experiences'로 단수명사 'the impact'이므로 단수 동사 'starts'가 올바르게 쓰였다. 수식어구(of such experiences)에 현혹되지 않아야 한다."
+      },
+      {
+        "sent": 9,
+        "word": "visited",
+        "original": "visited",
+        "correct": true,
+        "note": "'we've been visited'는 현재완료 수동태(have been p.p.) 구조로, 주어 'we'가 방문을 받는 대상이므로 수동태가 문법적으로 적절하다."
+      }
+    ],
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "patience",
+            "original": "patience",
+            "alt": "endurance",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "negative",
+            "original": "negative",
+            "alt": "unfavorable",
+            "correct": true
+          },
+          {
+            "sent": 6,
+            "word": "diminishes",
+            "original": "escalates",
+            "alt": "escalates",
+            "correct": false
+          },
+          {
+            "sent": 8,
+            "word": "diminish",
+            "original": "diminish",
+            "alt": "decrease",
+            "correct": true
+          },
+          {
+            "sent": 9,
+            "word": "stray",
+            "original": "stray",
+            "alt": "wandering",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "vocab_items": [
+      {
+        "sent": 1,
+        "word": "patience",
+        "original": "patience",
+        "alt": "endurance",
+        "correct": true
+      },
+      {
+        "sent": 4,
+        "word": "negative",
+        "original": "negative",
+        "alt": "unfavorable",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "diminishes",
+        "original": "escalates",
+        "alt": "escalates",
+        "correct": false
+      },
+      {
+        "sent": 8,
+        "word": "diminish",
+        "original": "diminish",
+        "alt": "decrease",
+        "correct": true
+      },
+      {
+        "sent": 9,
+        "word": "stray",
+        "original": "stray",
+        "alt": "wandering",
+        "correct": true
+      }
+    ]
   },
   {
     "id": "27STYD_01_007",
