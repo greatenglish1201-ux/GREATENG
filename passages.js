@@ -17296,7 +17296,16 @@ const PASSAGES = [
       "the difference between acceptance and non-acceptance in human psychology",
       "the role of attention in feeding unwanted thoughts and keeping them alive"
     ],
-    "topic_answer": 1
+    "topic_answer": 1,
+    "blank_sentence_index": 10,
+    "blank_target": "Attention",
+    "blank_options": [
+      "Attention",
+      "Indifference",
+      "Courage",
+      "Acceptance",
+      "Patience"
+    ]
   },
   {
     "id": "27STYD_01_007",
