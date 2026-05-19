@@ -17438,7 +17438,9 @@ const PASSAGES = [
       "The courage required for acceptance is best developed by actively confronting and fighting against difficult situations rather than passively allowing them to persist.",
       "When we stop feeding our attention to a recurring problem, the experience tends to escalate and demand even greater emotional engagement before it finally disappears."
     ],
-    "irrelevant_sentence_index": 5
+    "irrelevant_sentence_index": 5,
+    "insert_sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
+    "insert_answer": 5
   },
   {
     "id": "27STYD_01_007",
