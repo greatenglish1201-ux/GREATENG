@@ -553,6 +553,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
   const [startNum,setStartNum]=useState(parseInt(initialMeta?.number)||1);
   const [pi,setPi]=useState(0);
   const [at,setAt]=useState(0);
+  const [selectedGrammarIdx,setSelectedGrammarIdx]=useState(null);
   const [outText,setOutText]=useState('');
   const [copied,setCopied]=useState(false);
   const [err,setErr]=useState('');
@@ -991,7 +992,8 @@ Return JSON only:
               return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};
             });
           }}
-          style={{background:c+'22',borderBottom:'2px solid '+c,fontWeight:700,padding:'0 2px',color:c,borderRadius:2,cursor:'pointer'}}>
+          onClick={()=>setSelectedGrammarIdx(items.findIndex(x=>Number(x.sent)===i&&x.word===it.word))}
+          style={{background:c+'22',borderBottom:'2px solid '+c,fontWeight:700,padding:'0 2px',color:c,borderRadius:2,cursor:'pointer',outline:selectedGrammarIdx===items.findIndex(x=>Number(x.sent)===i&&x.word===it.word)?'2px solid '+c:'none'}}>
           {num?`${num}. `:''}{displayWord}
         </span>);
         offset=idx+searchLen;
@@ -1237,12 +1239,13 @@ Return JSON only:
           return items.map((item,ii)=>{
           const isSel=ans===ii+1;
           const dispNum=numMap.get(item)||ii+1;
-          return<div key={ii} style={{marginBottom:8,border:`1px solid ${isSel?'#E24B4A':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',background:isSel?'#E24B4A08':'#fff'}}>
+          const isBodySel=selectedGrammarIdx===ii;
+          return<div key={ii} onClick={()=>setSelectedGrammarIdx(ii)} style={{marginBottom:8,border:`1px solid ${isBodySel?'#F59E0B':isSel?'#E24B4A':'#e5e5e5'}`,borderRadius:8,padding:'9px 11px',background:isBodySel?'#FFFBF0':isSel?'#E24B4A08':'#fff',cursor:'pointer'}}>
             <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
-              <span style={{fontSize:11,color:'#bbb',minWidth:18}}>{ii+1}.</span>
+              <span style={{fontSize:11,color:isBodySel?'#F59E0B':'#bbb',minWidth:22,fontWeight:isBodySel?700:400}}>{ii+1}{isBodySel?'✎':''}</span>
               <GrammarItemInput value={item.word}
-                onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:v};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
-                style={{flex:1,border:'1px solid #ddd',borderRadius:6,padding:'4px 8px',fontSize:13,fontWeight:700}}/>
+                onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:v,original:items[ii].original||items[ii].word};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
+                style={{flex:1,border:`1px solid ${isBodySel?'#F59E0B':'#ddd'}`,borderRadius:6,padding:'4px 8px',fontSize:13,fontWeight:700,background:isBodySel?'#FFFBF0':'#fff'}}/>
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],correct:!items[ii].correct};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:`1px solid ${item.correct?'#185FA5':'#E24B4A'}`,background:item.correct?'#185FA518':'#E24B4A18',color:item.correct?'#185FA5':'#E24B4A',cursor:'pointer',whiteSpace:'nowrap'}}>
                 {item.correct?'✓ 올바름':'✗ 오류'}
@@ -1297,7 +1300,8 @@ Return JSON only:
         vocab_sets:p.vocab_sets||[],vocab_sel:p.vocab_sel||0,
         vocab_items:(()=>{const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));return sorted;})(),
         vocab_answer:(()=>{const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);return idx>=0?idx+1:(p.vocab_answer||vs.answer||1);})(),
-        aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3)};
+        aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
+        disabled_types:p.disabled_types||[]};
     });
     return`// GREATENG passageData 추가분 (${entries.length}개)\n// order_answer는 merge 스크립트 재처리 필요\n\n`+entries.map(e=>JSON.stringify(e,null,2)).join(',\n\n');
   };
@@ -1396,7 +1400,16 @@ Return JSON only:
           </div>
         </div>
         <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center',marginBottom:12}}>
-          {AUTHOR_TABS.map((t,i)=><button key={i} onClick={()=>setAt(i)} style={{fontSize:12,padding:'4px 10px',borderRadius:6,border:`0.5px solid ${at===i?t.c:'#e5e5e5'}`,background:at===i?t.c+'18':'transparent',color:at===i?t.c:'#666',fontWeight:at===i?600:400,cursor:'pointer'}}>{t.lb}</button>)}
+          {AUTHOR_TABS.map((t,i)=>{
+            const p=passages[pi]?.data;
+            const TYPE_KEYS=['topic','blank','order','summary','implication','irrelevant','insert','grammar','vocab'];
+            const typeKey=TYPE_KEYS[i];
+            const isDisabled=p?.disabled_types?.includes(typeKey);
+            return<div key={i} style={{display:'inline-flex',alignItems:'center',gap:2}}>
+              <button onClick={()=>setAt(i)} style={{fontSize:12,padding:'4px 10px',borderRadius:6,border:`0.5px solid ${at===i?t.c:'#e5e5e5'}`,background:at===i?t.c+'18':'transparent',color:isDisabled?'#ccc':at===i?t.c:'#666',fontWeight:at===i?600:400,cursor:'pointer',textDecoration:isDisabled?'line-through':'none'}}>{t.lb}</button>
+              <button title={isDisabled?'출제 활성화':'미출제 설정'} onClick={()=>{upPDeep(p=>{const dt=[...(p.disabled_types||[])];const idx=dt.indexOf(typeKey);if(idx>=0)dt.splice(idx,1);else dt.push(typeKey);return{...p,disabled_types:dt};});}} style={{fontSize:9,padding:'2px 4px',borderRadius:4,border:`0.5px solid ${isDisabled?'#E24B4A':'#ddd'}`,background:isDisabled?'#E24B4A18':'transparent',color:isDisabled?'#E24B4A':'#bbb',cursor:'pointer'}}>{isDisabled?'✕':'−'}</button>
+            </div>;
+          })}
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
             <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>제목</span>
             <GrammarItemInput value={p?.title||''} onSave={v=>upP({title:v})}

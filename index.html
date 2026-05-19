@@ -189,6 +189,9 @@ function gen(passage, type, allP){
   passage = normalizePassage(passage);
   const s = passage.sentences;
   if(!s || s.length === 0) return null;
+  // 미출제 유형 건너뜀
+  const TYPE_KEYS={topic:'topic',order:'order',blank:'blank',summary:'summary',implication:'implication',irrelevant:'irrelevant',insert:'insert',grammar:'grammar',vocab:'vocab'};
+  if((passage.disabled_types||[]).includes(TYPE_KEYS[type])) return null;
 
   switch(type){
 
