@@ -17242,14 +17242,14 @@ const PASSAGES = [
           },
           {
             "sent": 7,
-            "word": "stopped fighting",
-            "correct": true,
+            "word": "kept fighting",
+            "correct": false,
             "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
           },
           {
             "sent": 9,
             "word": "visited",
-            "correct": false,
+            "correct": true,
             "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
           }
         ],
@@ -17278,18 +17278,18 @@ const PASSAGES = [
       },
       {
         "sent": 7,
-        "word": "stopped fighting",
-        "correct": true,
+        "word": "kept fighting",
+        "correct": false,
         "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
       },
       {
         "sent": 9,
         "word": "visited",
-        "correct": false,
+        "correct": true,
         "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
       }
     ],
-    "grammar_answer": 5,
+    "grammar_answer": 4,
     "vocab_sets": [
       {
         "items": [
@@ -17405,6 +17405,440 @@ const PASSAGES = [
       "diminish over time",
       "escalate gradually",
       "remain constant"
+    ]
+  },
+  {
+    "id": "27STYD_01_007",
+    "difficulty": "높음",
+    "title": "우연의 수학",
+    "sentences": [
+      "There are two classic problems that give us mathematically proper ways to evaluate coincidences.",
+      "One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday.",
+      "The other is the monkey problem, which asks: if given a large enough amount of time, could a monkey, randomly hitting the keys of a computer keyboard, write the first line of a Shakespeare sonnet?",
+      "These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.",
+      "This last law, the law of truly large numbers, is a philosophical adage.",
+      "In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time.",
+      "It's not a theorem that can be proven.",
+      "After all, I used the phrase \"bound to happen,\" which is as ambiguous as any phrase can be.",
+      "But it gives a sense of just how common coincidences are."
+    ],
+    "abstract": "Mathematical problems and laws help explain why coincidences occur far more frequently than we expect.",
+    "topic_options": [
+      "Mathematical laws and classic problems explain why coincidences happen more often than expected.",
+      "The birthday problem proves that probability is always counterintuitive.",
+      "Monkeys randomly typing can eventually reproduce great literature.",
+      "Hidden variables are the main cause of coincidences in everyday life.",
+      "Philosophical adages are more reliable than mathematical theorems."
+    ],
+    "topic_answer": 1,
+    "blank_sel": 2,
+    "blank_candidates": [
+      {
+        "sentence_index": 4,
+        "keyword": "philosophical adage",
+        "distractors": [
+          "mathematical theorem",
+          "scientific hypothesis",
+          "logical paradox",
+          "empirical finding"
+        ]
+      },
+      {
+        "sentence_index": 1,
+        "keyword": "counterintuitive poser",
+        "distractors": [
+          "mathematical theorem",
+          "statistical paradox",
+          "logical puzzle",
+          "empirical problem"
+        ]
+      },
+      {
+        "sentence_index": 5,
+        "keyword": "bound to happen",
+        "distractors": [
+          "unlikely to occur",
+          "hard to predict",
+          "easy to prove",
+          "bound to fail"
+        ]
+      }
+    ],
+    "blank_sentence_index": 5,
+    "blank_target": "bound to happen",
+    "blank_options": [
+      "bound to happen",
+      "unlikely to occur",
+      "hard to predict",
+      "easy to prove",
+      "bound to fail"
+    ],
+    "blank_answer": 1,
+    "order_given_index": 0,
+    "order_blocks": [
+      {
+        "label": "B",
+        "sentence_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "label": "C",
+        "sentence_indices": [
+          3,
+          4
+        ]
+      },
+      {
+        "label": "D",
+        "sentence_indices": [
+          5,
+          6
+        ]
+      }
+    ],
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 1,
+    "insert_sel": 0,
+    "insert_candidates": [
+      {
+        "sentence": "Understanding these laws can help us avoid drawing false conclusions from seemingly remarkable events.",
+        "pos": 4
+      },
+      {
+        "sentence": "Despite its informal nature, this adage captures an important truth about probability.",
+        "pos": 6
+      },
+      {
+        "sentence": "Both problems illustrate how human intuition often fails when confronted with probability.",
+        "pos": 3
+      }
+    ],
+    "insert_sentence": "This last law, the law of truly large numbers, is a philosophical adage.",
+    "insert_answer": 4,
+    "summary_sel": 2,
+    "summary_candidates": [
+      {
+        "template": "Two classic problems — the ________(A)________ and the monkey problem — along with laws like the law of truly large numbers help explain why coincidences are ________(B)________ than we expect.",
+        "A_correct": "birthday problem",
+        "A_distractors": [
+          "hidden variable theory",
+          "theorem of probability",
+          "law of large numbers",
+          "philosophical adage"
+        ],
+        "B_correct": "far more frequent",
+        "B_distractors": [
+          "far less common",
+          "harder to predict",
+          "easier to prove",
+          "more ambiguous"
+        ]
+      },
+      {
+        "template": "The law of truly large numbers, a ________(A)________, states that anything with any likelihood of occurring is ________(B)________ at some time.",
+        "A_correct": "philosophical adage",
+        "A_distractors": [
+          "mathematical theorem",
+          "statistical law",
+          "scientific hypothesis",
+          "logical paradox"
+        ],
+        "B_correct": "bound to happen",
+        "B_distractors": [
+          "impossible to verify",
+          "unlikely to occur",
+          "easy to predict",
+          "bound to fail"
+        ]
+      },
+      {
+        "template": "Classic probability problems and the law of truly large numbers give a ________(A)________ of why coincidences happen, even though the law itself cannot be ________(B)________.",
+        "A_correct": "reasonable understanding",
+        "A_distractors": [
+          "mathematical proof",
+          "hidden variable",
+          "counterintuitive answer",
+          "philosophical theorem"
+        ],
+        "B_correct": "proven",
+        "B_distractors": [
+          "observed",
+          "applied",
+          "defined",
+          "questioned"
+        ]
+      }
+    ],
+    "summary_template": "Classic probability problems and the law of truly large numbers give a ________(A)________ of why coincidences happen, even though the law itself cannot be ________(B)________.",
+    "summary_A_options": [
+      "reasonable understanding",
+      "mathematical proof",
+      "hidden variable",
+      "counterintuitive answer",
+      "philosophical theorem"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "proven",
+      "observed",
+      "applied",
+      "defined",
+      "questioned"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 5,
+    "implication_keyword": "bound to happen",
+    "implication_options": [
+      "Any event with even the smallest probability will eventually occur given enough time.",
+      "All events are equally likely to occur regardless of their probability.",
+      "Only highly probable events can be expected to happen in reality.",
+      "The likelihood of an event increases each time it does not occur.",
+      "Events that seem impossible will never happen no matter how much time passes."
+    ],
+    "implication_answer": 1,
+    "irrel_sel": 1,
+    "irrel_candidates": [
+      "Statisticians often debate whether subjective probability has any scientific merit.",
+      "Shakespeare wrote 154 sonnets, many of which deal with themes of love and time.",
+      "Computer keyboards were first commercially introduced in the mid-twentieth century."
+    ],
+    "irrel_insert_pos": 3,
+    "irrel_confirmed": false,
+    "irrelevant_sentence_index": 2,
+    "irrel_sentence": "Shakespeare wrote 154 sonnets, many of which deal with themes of love and time.",
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "mathematically",
+            "correct": true,
+            "note": "부사로 형용사 proper를 수식하는 올바른 용법"
+          },
+          {
+            "sent": 2,
+            "word": "randomly hitting",
+            "correct": true,
+            "note": "분사구문으로 monkey를 수식하는 올바른 용법"
+          },
+          {
+            "sent": 3,
+            "word": "frequently",
+            "correct": true,
+            "note": "부사로 동사구 happen을 수식하는 올바른 용법"
+          },
+          {
+            "sent": 7,
+            "word": "ambiguous",
+            "correct": true,
+            "note": "형용사로 주격보어 역할을 하는 올바른 용법"
+          },
+          {
+            "sent": 1,
+            "word": "where",
+            "pos": 55,
+            "correct": false,
+            "note": "which로 수정",
+            "alt": ""
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "that",
+            "correct": true,
+            "note": "관계대명사로 the birthday problem을 선행사로 받는 올바른 용법"
+          },
+          {
+            "sent": 2,
+            "word": "could",
+            "correct": true,
+            "note": "가능성을 나타내는 조동사로 올바른 용법"
+          },
+          {
+            "sent": 4,
+            "word": "philosophical adage",
+            "correct": true,
+            "note": "명사구로 주격보어로 쓰인 올바른 용법"
+          },
+          {
+            "sent": 5,
+            "word": "no matter how small",
+            "correct": false,
+            "note": "→ no matter how small it may be (양보절에서 주어+동사 필요)"
+          },
+          {
+            "sent": 8,
+            "word": "how common",
+            "correct": true,
+            "note": "간접의문문에서 how+형용사 어순은 올바른 용법"
+          }
+        ],
+        "answer": 4
+      }
+    ],
+    "grammar_sel": 0,
+    "grammar_items": [
+      {
+        "sent": 0,
+        "word": "mathematically",
+        "correct": true,
+        "note": "부사로 형용사 proper를 수식하는 올바른 용법"
+      },
+      {
+        "sent": 1,
+        "word": "where",
+        "pos": 55,
+        "correct": false,
+        "note": "which로 수정",
+        "alt": ""
+      },
+      {
+        "sent": 2,
+        "word": "randomly hitting",
+        "correct": true,
+        "note": "분사구문으로 monkey를 수식하는 올바른 용법"
+      },
+      {
+        "sent": 3,
+        "word": "frequently",
+        "correct": true,
+        "note": "부사로 동사구 happen을 수식하는 올바른 용법"
+      },
+      {
+        "sent": 7,
+        "word": "ambiguous",
+        "correct": true,
+        "note": "형용사로 주격보어 역할을 하는 올바른 용법"
+      }
+    ],
+    "grammar_answer": 2,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "evaluate",
+            "alt": "ignore",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "odds",
+            "alt": "certainties",
+            "correct": true
+          },
+          {
+            "sent": 3,
+            "word": "unreasonable",
+            "alt": "reasonable",
+            "correct": false
+          },
+          {
+            "sent": 5,
+            "word": "likelihood",
+            "alt": "impossibility",
+            "correct": true
+          },
+          {
+            "sent": 8,
+            "word": "common",
+            "alt": "rare",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "counterintuitive",
+            "alt": "predictable",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "randomly",
+            "alt": "deliberately",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "adage",
+            "alt": "theorem",
+            "correct": true
+          },
+          {
+            "sent": 6,
+            "word": "proven",
+            "alt": "disproven",
+            "correct": true
+          },
+          {
+            "sent": 7,
+            "word": "ambiguous",
+            "alt": "precise",
+            "correct": false
+          }
+        ],
+        "answer": 5
+      }
+    ],
+    "vocab_sel": 0,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "evaluate",
+        "alt": "ignore",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "odds",
+        "alt": "certainties",
+        "correct": true
+      },
+      {
+        "sent": 3,
+        "word": "unreasonable",
+        "alt": "reasonable",
+        "correct": false
+      },
+      {
+        "sent": 5,
+        "word": "likelihood",
+        "alt": "impossibility",
+        "correct": true
+      },
+      {
+        "sent": 8,
+        "word": "common",
+        "alt": "rare",
+        "correct": true
+      }
+    ],
+    "vocab_answer": 3,
+    "aGroup": [
+      "reasonable understanding",
+      "mathematical proof",
+      "hidden variable"
+    ],
+    "bGroup": [
+      "proven",
+      "observed",
+      "applied"
     ]
   }
 ];
