@@ -1,4 +1,4 @@
-const PASSAGES = [
+﻿const PASSAGES = [
   {
     "id": "27ST_E_03_01",
     "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
@@ -15614,26 +15614,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -15891,26 +15881,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -16268,26 +16248,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -16574,26 +16544,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -16890,26 +16850,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -17211,13 +17161,13 @@ const PASSAGES = [
     "insert_sel": 0,
     "summary_sel": 0,
     "irrel_sel": 0,
-    "irrel_insert_pos": 5,
-    "irrel_confirmed": true,
-    "irrel_sentence": "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
     "grammar_sel": 0,
-    "grammar_answer": 3,
+    "grammar_answer": 1,
     "vocab_sel": 0,
-    "vocab_answer": 3,
+    "vocab_answer": 1,
     "flow": {
       "blocks": [
         {
@@ -17289,321 +17239,8 @@ const PASSAGES = [
         }
       ]
     },
-    "topic_options": [
-      "the diminishing power of negative experiences through true acceptance rather than disguised resistance",
-      "the metaphor of a stray dog used to illustrate attention and its effects",
-      "the importance of patience and courage in dealing with difficult situations in life",
-      "the difference between acceptance and non-acceptance in human psychology",
-      "the role of attention in feeding unwanted thoughts and keeping them alive"
-    ],
-    "topic_answer": 1,
-    "blank_sentence_index": 10,
-    "blank_target": "Attention",
-    "blank_options": [
-      "Attention",
-      "Indifference",
-      "Courage",
-      "Acceptance",
-      "Patience"
-    ],
-    "summary_candidates": [
-      {
-        "template": "The passage argues that ________(A)________ leads to ________(B)________.",
-        "A_correct": "genuinely embracing an unwanted experience without ulterior motive",
-        "A_distractors": [
-          "strategically resisting a negative experience to overcome it",
-          "tolerating discomfort for a limited period of time",
-          "feeding attention to recurring painful experiences",
-          "practicing patience with a specific stray-dog situation"
-        ],
-        "B_correct": "a gradual reduction in the power that experience holds over us",
-        "B_distractors": [
-          "an immediate and complete elimination of the problem",
-          "a temporary relief from the emotional burden of fighting",
-          "the experience coming back less often as a stray dog",
-          "a permanent state of courage and emotional strength"
-        ]
-      },
-      {
-        "template": "Despite ________(A)________, the passage emphasizes ________(B)________.",
-        "A_correct": "the intuitive desire to eliminate discomfort by seeming to accept it",
-        "A_distractors": [
-          "the genuine effort to embrace hardship without reservation",
-          "the occasional success of resistance in removing problems",
-          "the courage required to face unwanted situations directly",
-          "the difficulty of a single distressing moment or episode"
-        ],
-        "B_correct": "that only unconditional acceptance withdraws the force of negative experiences",
-        "B_distractors": [
-          "that persistent resistance eventually weakens problematic situations",
-          "that partial acknowledgment of difficulty is enough to reduce its impact",
-          "that stopping to feed the stray dog makes it lose interest",
-          "that any form of mindfulness practice improves emotional well-being"
-        ]
-      },
-      {
-        "template": "True ________(A)________ requires ________(B)________ rather than mere appearance.",
-        "A_correct": "reconciliation with negative experiences",
-        "A_distractors": [
-          "avoidance of situations that trigger emotional distress",
-          "short-term endurance of uncomfortable feelings",
-          "confrontation with problems that keep recurring",
-          "management of a particular type of psychological disorder"
-        ],
-        "B_correct": "relinquishing the hidden wish to make those experiences disappear",
-        "B_distractors": [
-          "maintaining the secret hope that problems will eventually resolve",
-          "withdrawing attention only during the most intense moments of pain",
-          "starving the stray dog by refusing to engage with it at all",
-          "following a structured therapeutic program over several weeks"
-        ]
-      },
-      {
-        "template": "X depends on ________(A)________ while Y depends on ________(B)________.",
-        "A_correct": "disguised non-acceptance that secretly seeks to remove the problem",
-        "A_distractors": [
-          "wholehearted willingness to coexist with unwanted experiences",
-          "brief moments of tolerance when the experience feels manageable",
-          "the cycle of attention that keeps negative experiences returning",
-          "a single courageous act of confronting a threatening situation"
-        ],
-        "B_correct": "withdrawing investment so the experience naturally loses its grip",
-        "B_distractors": [
-          "actively fighting against the situation until it is fully resolved",
-          "partially reducing the frequency with which one revisits the problem",
-          "feeding the experience until it voluntarily disappears on its own",
-          "adopting a broad mindset of positivity toward all life events"
-        ]
-      },
-      {
-        "template": "The contrast between ________(A)________ and ________(B)________ reveals the central insight.",
-        "A_correct": "acceptance deployed as a covert strategy to escape discomfort",
-        "A_distractors": [
-          "sincere openness to experiences one cannot control or change",
-          "endurance practiced only when the problem seems minor",
-          "the courageous decision to stop resisting a difficult situation",
-          "avoidance of any thought related to a recurring problem"
-        ],
-        "B_correct": "acceptance practiced as genuine non-resistant coexistence with difficulty",
-        "B_distractors": [
-          "acceptance used as a tool to accelerate the removal of pain",
-          "acceptance applied selectively to experiences that feel tolerable",
-          "acceptance modeled on ignoring the stray dog until it departs",
-          "acceptance understood as a universal attitude toward all emotions"
-        ]
-      }
-    ],
-    "summary_template": "The passage argues that ________(A)________ leads to ________(B)________.",
-    "summary_A_options": [
-      "genuinely embracing an unwanted experience without ulterior motive",
-      "strategically resisting a negative experience to overcome it",
-      "tolerating discomfort for a limited period of time",
-      "feeding attention to recurring painful experiences",
-      "practicing patience with a specific stray-dog situation"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "a gradual reduction in the power that experience holds over us",
-      "an immediate and complete elimination of the problem",
-      "a temporary relief from the emotional burden of fighting",
-      "the experience coming back less often as a stray dog",
-      "a permanent state of courage and emotional strength"
-    ],
-    "summary_B_answer": 1,
-    "aGroup": [
-      "genuinely embracing an unwanted experience without ulterior motive",
-      "strategically resisting a negative experience to overcome it",
-      "tolerating discomfort for a limited period of time"
-    ],
-    "bGroup": [
-      "a gradual reduction in the power that experience holds over us",
-      "an immediate and complete elimination of the problem",
-      "a temporary relief from the emotional burden of fighting"
-    ],
     "disabled_types": [
       "order"
-    ],
-    "implication_sentence_index": 2,
-    "implication_keyword": "If I accept this then it will go awa",
-    "implication_options": [
-      "Accepting something with the hidden goal of eliminating it is not genuine acceptance",
-      "Truly accepting a problem will eventually make it disappear on its own",
-      "Refusing to accept a difficult situation will only make it worse over time",
-      "Acceptance requires letting go of any desire to control the outcome",
-      "Optimistic thinking can help resolve problems that seem impossible to overcome"
-    ],
-    "implication_answer": 1,
-    "irrel_candidates": [
-      "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
-      "The courage required for acceptance is best developed by actively confronting and fighting against difficult situations rather than passively allowing them to persist.",
-      "When we stop feeding our attention to a recurring problem, the experience tends to escalate and demand even greater emotional engagement before it finally disappears."
-    ],
-    "irrelevant_sentence_index": 5,
-    "insert_sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
-    "insert_answer": 5,
-    "insert_candidates": [
-      {
-        "sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
-        "pos": 5
-      }
-    ],
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "Accepting",
-            "original": "Accepting",
-            "correct": true,
-            "note": "등위접속사 or로 연결된 병렬구조에서 'Accepting'과 'being at peace'가 동명사 형태로 나란히 주어 역할을 하고 있어 문법적으로 적절하다."
-          },
-          {
-            "sent": 4,
-            "word": "masquerading",
-            "original": "masquerading",
-            "correct": true,
-            "note": "'non-acceptance masquerading as acceptance'에서 masquerading은 non-acceptance를 수식하는 현재분사로, 능동적 의미(~인 체하는)를 나타내므로 문법적으로 적절하다."
-          },
-          {
-            "sent": 5,
-            "word": "get",
-            "original": "getting",
-            "correct": false,
-            "note": "준동사(병렬구조) 오류. 'Rather than getting dispirited'는 전치사 rather than 뒤에 동명사(-ing)가 오는 구조이지만, 여기서 'Rather than'은 접속사적 용법으로 쓰여 'we would be better to notice'와 대비되는 구조를 이룬다. 그러나 실제 오류는 'better to notice' 부분에서 발생한다. → 수험생에게 제시되는 오답 형태: 'Rather than getting dispirited we would be better to notice'에서 'notice'를 'noticing'으로 바꾸면 'be better to-V' 패턴을 깨는 오류가 된다. ※ 이 문항에서는 'notice'를 'noticing'으로 제시하여 오류를 유발함. → 올바른 형태: notice (be better to-V 구문에서 to 부정사의 원형동사가 와야 함)"
-          },
-          {
-            "sent": 8,
-            "word": "starts",
-            "original": "starts",
-            "correct": true,
-            "note": "주어는 'the impact of such experiences'로 단수명사 'the impact'이므로 단수 동사 'starts'가 올바르게 쓰였다. 수식어구(of such experiences)에 현혹되지 않아야 한다."
-          },
-          {
-            "sent": 9,
-            "word": "visited",
-            "original": "visited",
-            "correct": true,
-            "note": "'we've been visited'는 현재완료 수동태(have been p.p.) 구조로, 주어 'we'가 방문을 받는 대상이므로 수동태가 문법적으로 적절하다."
-          }
-        ],
-        "answer": 3
-      }
-    ],
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "Accepting",
-        "original": "Accepting",
-        "correct": true,
-        "note": "등위접속사 or로 연결된 병렬구조에서 'Accepting'과 'being at peace'가 동명사 형태로 나란히 주어 역할을 하고 있어 문법적으로 적절하다."
-      },
-      {
-        "sent": 4,
-        "word": "masquerading",
-        "original": "masquerading",
-        "correct": true,
-        "note": "'non-acceptance masquerading as acceptance'에서 masquerading은 non-acceptance를 수식하는 현재분사로, 능동적 의미(~인 체하는)를 나타내므로 문법적으로 적절하다."
-      },
-      {
-        "sent": 5,
-        "word": "get",
-        "original": "getting",
-        "correct": false,
-        "note": "준동사(병렬구조) 오류. 'Rather than getting dispirited'는 전치사 rather than 뒤에 동명사(-ing)가 오는 구조이지만, 여기서 'Rather than'은 접속사적 용법으로 쓰여 'we would be better to notice'와 대비되는 구조를 이룬다. 그러나 실제 오류는 'better to notice' 부분에서 발생한다. → 수험생에게 제시되는 오답 형태: 'Rather than getting dispirited we would be better to notice'에서 'notice'를 'noticing'으로 바꾸면 'be better to-V' 패턴을 깨는 오류가 된다. ※ 이 문항에서는 'notice'를 'noticing'으로 제시하여 오류를 유발함. → 올바른 형태: notice (be better to-V 구문에서 to 부정사의 원형동사가 와야 함)"
-      },
-      {
-        "sent": 8,
-        "word": "starts",
-        "original": "starts",
-        "correct": true,
-        "note": "주어는 'the impact of such experiences'로 단수명사 'the impact'이므로 단수 동사 'starts'가 올바르게 쓰였다. 수식어구(of such experiences)에 현혹되지 않아야 한다."
-      },
-      {
-        "sent": 9,
-        "word": "visited",
-        "original": "visited",
-        "correct": true,
-        "note": "'we've been visited'는 현재완료 수동태(have been p.p.) 구조로, 주어 'we'가 방문을 받는 대상이므로 수동태가 문법적으로 적절하다."
-      }
-    ],
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 1,
-            "word": "patience",
-            "original": "patience",
-            "alt": "endurance",
-            "correct": true
-          },
-          {
-            "sent": 4,
-            "word": "negative",
-            "original": "negative",
-            "alt": "unfavorable",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "diminishes",
-            "original": "escalates",
-            "alt": "escalates",
-            "correct": false
-          },
-          {
-            "sent": 8,
-            "word": "diminish",
-            "original": "diminish",
-            "alt": "decrease",
-            "correct": true
-          },
-          {
-            "sent": 9,
-            "word": "stray",
-            "original": "stray",
-            "alt": "wandering",
-            "correct": true
-          }
-        ],
-        "answer": 3
-      }
-    ],
-    "vocab_items": [
-      {
-        "sent": 1,
-        "word": "patience",
-        "original": "patience",
-        "alt": "endurance",
-        "correct": true
-      },
-      {
-        "sent": 4,
-        "word": "negative",
-        "original": "negative",
-        "alt": "unfavorable",
-        "correct": true
-      },
-      {
-        "sent": 6,
-        "word": "diminishes",
-        "original": "escalates",
-        "alt": "escalates",
-        "correct": false
-      },
-      {
-        "sent": 8,
-        "word": "diminish",
-        "original": "diminish",
-        "alt": "decrease",
-        "correct": true
-      },
-      {
-        "sent": 9,
-        "word": "stray",
-        "original": "stray",
-        "alt": "wandering",
-        "correct": true
-      }
     ]
   },
   {
@@ -17846,26 +17483,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -18181,26 +17808,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -18273,410 +17890,278 @@ const PASSAGES = [
   },
   {
     "id": "27STYD_01_009",
-    "difficulty": "보통",
-    "title": "소셜미디어",
+    "difficulty": "하",
+    "title": "",
     "sentences": [
-      "Social media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations.",
-      "Social media was initially and mainly used for communication with friends and family.",
-      "But with the popularity of some platforms, social media has turned into a vital tool for businesses seeking to sell their products online.",
-      "Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers.",
-      "Influencer marketing is another way that social media has evolved into a platform for businesses.",
-      "Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field.",
-      "Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media."
+      {
+        "num": 1,
+        "text": "Social media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations.",
+        "symbol": "G",
+        "role": "주제 제시: 소셜 미디어의 전자상거래 플랫폼으로의 변화",
+        "chunks": [
+          {
+            "en": "Social media's transformation",
+            "ko": "소셜 미디어의 변화는"
+          },
+          {
+            "en": "into an e-commerce platform",
+            "ko": "전자상거래 플랫폼으로의"
+          },
+          {
+            "en": "is a significant milestone",
+            "ko": "중요한 이정표이다"
+          },
+          {
+            "en": "that enabled it to become",
+            "ko": "그것이 ~이 될 수 있게 한"
+          },
+          {
+            "en": "a platform for organizations",
+            "ko": "조직들을 위한 플랫폼"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "Social media was initially and mainly used for communication with friends and family.",
+        "symbol": "G",
+        "role": "초기 통념: 소셜 미디어는 원래 소통 도구였음",
+        "chunks": [
+          {
+            "en": "Social media",
+            "ko": "소셜 미디어는"
+          },
+          {
+            "en": "was initially and mainly used",
+            "ko": "처음에는 주로 사용되었다"
+          },
+          {
+            "en": "for communication",
+            "ko": "소통을 위해"
+          },
+          {
+            "en": "with friends and family",
+            "ko": "친구 및 가족과의"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "But with the popularity of some platforms, social media has turned into a vital tool for businesses seeking to sell their products online.",
+        "symbol": "↔",
+        "role": "역접/전환: 현재는 기업의 판매 도구로 변화",
+        "chunks": [
+          {
+            "en": "But with the popularity",
+            "ko": "그러나 인기에 힘입어"
+          },
+          {
+            "en": "of some platforms",
+            "ko": "일부 플랫폼들의"
+          },
+          {
+            "en": "social media has turned into",
+            "ko": "소셜 미디어는 변했다"
+          },
+          {
+            "en": "a vital tool",
+            "ko": "필수적인 도구로"
+          },
+          {
+            "en": "for businesses seeking",
+            "ko": "기업들을 위한 (찾는)"
+          },
+          {
+            "en": "to sell their products online",
+            "ko": "온라인으로 제품을 판매하려는"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers.",
+        "symbol": "==",
+        "role": "재진술: 기업이 소셜 미디어를 활용하는 구체적 방식",
+        "chunks": [
+          {
+            "en": "Social media is now used",
+            "ko": "소셜 미디어는 이제 사용된다"
+          },
+          {
+            "en": "by businesses",
+            "ko": "기업들에 의해"
+          },
+          {
+            "en": "to promote their products and offerings",
+            "ko": "제품과 서비스를 홍보하기 위해"
+          },
+          {
+            "en": "as well as provide",
+            "ko": "제공하는 것뿐만 아니라"
+          },
+          {
+            "en": "a direct shopping option",
+            "ko": "직접 구매 옵션을"
+          },
+          {
+            "en": "for buyers",
+            "ko": "구매자들을 위한"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "Influencer marketing is another way that social media has evolved into a platform for businesses.",
+        "symbol": "+",
+        "role": "추가 사례 도입: 인플루언서 마케팅이라는 또 다른 방식",
+        "chunks": [
+          {
+            "en": "Influencer marketing",
+            "ko": "인플루언서 마케팅은"
+          },
+          {
+            "en": "is another way",
+            "ko": "또 다른 방식이다"
+          },
+          {
+            "en": "that social media has evolved",
+            "ko": "소셜 미디어가 발전해 온"
+          },
+          {
+            "en": "into a platform for businesses",
+            "ko": "기업을 위한 플랫폼으로"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field.",
+        "symbol": "S",
+        "role": "개념 정의: 인플루언서가 누구인지 설명",
+        "chunks": [
+          {
+            "en": "Influencers are those users",
+            "ko": "인플루언서는 그런 사용자들이다"
+          },
+          {
+            "en": "who have a sizable social media following",
+            "ko": "상당한 소셜 미디어 팔로워를 가진"
+          },
+          {
+            "en": "and are recognized",
+            "ko": "그리고 인정받는"
+          },
+          {
+            "en": "as authorities or thought leaders",
+            "ko": "권위자 또는 의견 선도자로"
+          },
+          {
+            "en": "in their specialized field",
+            "ko": "자신의 전문 분야에서"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
+        "symbol": "→",
+        "role": "결론/인과: 인플루언서 마케팅의 효과와 신뢰 메커니즘",
+        "chunks": [
+          {
+            "en": "Influencer marketing allows businesses",
+            "ko": "인플루언서 마케팅은 기업이 ~할 수 있게 한다"
+          },
+          {
+            "en": "to reach the users' followers",
+            "ko": "해당 사용자의 팔로워들에게 도달하도록"
+          },
+          {
+            "en": "who are more likely to trust",
+            "ko": "더 신뢰하는 경향이 있는"
+          },
+          {
+            "en": "suggestions from people they follow",
+            "ko": "자신이 팔로우하는 사람들의 제안을"
+          },
+          {
+            "en": "on social media",
+            "ko": "소셜 미디어에서"
+          }
+        ]
+      }
     ],
-    "abstract": "Social media has evolved from a communication tool into a vital e-commerce and marketing platform for businesses.",
-    "topic_options": [
-      "social media's evolution into a business and e-commerce platform",
-      "the history and development of social media",
-      "the role of influencers in modern marketing",
-      "how businesses advertise products online",
-      "the impact of social media on personal communication"
-    ],
-    "topic_answer": 1,
+    "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [
-      {
-        "sentence_index": 2,
-        "keyword": "vital tool",
-        "distractors": [
-          "common channel",
-          "minor factor",
-          "useful guide"
-        ]
-      },
-      {
-        "sentence_index": 0,
-        "keyword": "significant milestone",
-        "distractors": [
-          "minor development",
-          "gradual decline",
-          "temporary shift"
-        ]
-      },
-      {
-        "sentence_index": 5,
-        "keyword": "thought leaders",
-        "distractors": [
-          "passive users",
-          "anonymous members",
-          "casual followers"
-        ]
-      }
-    ],
-    "blank_sentence_index": 5,
-    "blank_target": "authorities",
-    "blank_options": [
-      "authorities",
-      "pioneers",
-      "celebrities",
-      "advocates",
-      "representatives"
-    ],
-    "blank_answer": 1,
-    "order_given_index": 0,
-    "order_blocks": [],
-    "order_options": [
-      "(A)-(B)-(C)",
-      "(B)-(C)-(A)",
-      "(C)-(A)-(B)",
-      "(B)-(A)-(C)",
-      "(A)-(C)-(B)"
-    ],
-    "order_answer": 1,
     "insert_sel": 0,
-    "insert_candidates": [
-      {
-        "sentence": "This shift has opened new revenue streams and changed how consumers discover and purchase products.",
-        "pos": 3
-      },
-      {
-        "sentence": "These influencers create content that resonates with their audience and subtly promotes brand products.",
-        "pos": 6
-      },
-      {
-        "sentence": "As a result, companies now allocate significant portions of their marketing budgets to social media campaigns.",
-        "pos": 4
-      }
-    ],
-    "insert_sentence": "Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers.",
-    "insert_answer": 3,
-    "summary_sel": 2,
-    "summary_candidates": [
-      {
-        "template": "Social media has evolved from a ________(A)________ tool into a platform where businesses use ________(B)________ to reach consumers.",
-        "A_correct": "communication",
-        "A_distractors": [
-          "financial",
-          "governmental",
-          "scientific",
-          "manufacturing"
-        ],
-        "B_correct": "influencer marketing",
-        "B_distractors": [
-          "print advertising",
-          "cold calling",
-          "direct mailing",
-          "television ads"
-        ]
-      },
-      {
-        "template": "Once used mainly for ________(A)________, social media now provides businesses with ________(B)________ and direct shopping options.",
-        "A_correct": "personal communication",
-        "A_distractors": [
-          "selling products",
-          "academic research",
-          "financial trading",
-          "government services"
-        ],
-        "B_correct": "promotional tools",
-        "B_distractors": [
-          "legal advice",
-          "tax assistance",
-          "medical guidance",
-          "manufacturing support"
-        ]
-      },
-      {
-        "template": "Social media's shift to e-commerce is a ________(A)________, and influencers help businesses gain ________(B)________ from followers.",
-        "A_correct": "significant milestone",
-        "A_distractors": [
-          "minor setback",
-          "temporary trend",
-          "financial loss",
-          "legal barrier"
-        ],
-        "B_correct": "trust",
-        "B_distractors": [
-          "criticism",
-          "indifference",
-          "rejection",
-          "opposition"
-        ]
-      }
-    ],
-    "summary_template": "Social media's shift to e-commerce is a ________(A)________, and influencers help businesses gain ________(B)________ from followers.",
-    "summary_A_options": [
-      "significant milestone",
-      "minor setback",
-      "temporary trend",
-      "financial loss",
-      "legal barrier"
-    ],
-    "summary_A_answer": 1,
-    "summary_B_options": [
-      "trust",
-      "criticism",
-      "indifference",
-      "rejection",
-      "opposition"
-    ],
-    "summary_B_answer": 1,
-    "implication_sentence_index": 5,
-    "implication_keyword": "thought leaders",
-    "implication_options": [
-      "People who shape opinions and are seen as experts in a specific area",
-      "People who only post personal photos for entertainment",
-      "Government officials responsible for policy decisions",
-      "Academic professors who publish research papers",
-      "Business executives who manage large corporations"
-    ],
-    "implication_answer": 1,
+    "summary_sel": 0,
     "irrel_sel": 0,
-    "irrel_candidates": [
-      "Social media platforms have faced increasing scrutiny over user data privacy regulations worldwide.",
-      "Many users prefer reading physical books over consuming digital content on social media.",
-      "Traditional television advertising remains the dominant marketing channel for luxury brands."
-    ],
-    "irrel_insert_pos": 5,
+    "irrel_insert_pos": 0,
     "irrel_confirmed": false,
-    "irrelevant_sentence_index": 2,
-    "irrel_sentence": "Social media platforms have faced increasing scrutiny over user data privacy regulations worldwide.",
-    "grammar_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "enabled",
-            "correct": true,
-            "note": "관계사절 내 과거동사로 적절하게 사용됨"
-          },
-          {
-            "sent": 1,
-            "word": "initially",
-            "correct": true,
-            "note": "동사를 수식하는 부사로 적절히 사용됨"
-          },
-          {
-            "sent": 4,
-            "word": "evolved",
-            "correct": true,
-            "note": "→ 문맥상 현재완료 has evolved가 적절하나 원문은 정상; 만약 'evolve' 단독 사용 시 has evolved로 수정 필요"
-          },
-          {
-            "sent": 6,
-            "word": "likely",
-            "correct": true,
-            "note": "more likely to의 형용사로 적절히 사용됨"
-          },
-          {
-            "sent": 5,
-            "word": "recognizing",
-            "pos": 78,
-            "correct": true,
-            "note": "recognized",
-            "alt": ""
-          }
-        ],
-        "answer": 4
-      },
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "transformation",
-            "correct": true,
-            "note": "주어 자리의 명사로 적절히 사용됨"
-          },
-          {
-            "sent": 2,
-            "word": "turned",
-            "correct": true,
-            "note": "has turned 현재완료 형태로 적절히 사용됨"
-          },
-          {
-            "sent": 3,
-            "word": "provide",
-            "correct": false,
-            "note": "→ 병렬 구조상 'to promote'와 맞추어 'to provide'가 되어야 함"
-          },
-          {
-            "sent": 5,
-            "word": "recognized",
-            "correct": true,
-            "note": "수동 분사구로 users를 수식하며 적절히 사용됨"
-          },
-          {
-            "sent": 6,
-            "word": "allows",
-            "correct": true,
-            "note": "주어 Influencer marketing에 호응하는 단수 동사로 적절함"
-          }
-        ],
-        "answer": 3
-      }
-    ],
+    "irrel_sentence": "",
     "grammar_sel": 0,
-    "grammar_items": [
-      {
-        "sent": 0,
-        "word": "enabled",
-        "correct": true,
-        "note": "관계사절 내 과거동사로 적절하게 사용됨"
-      },
-      {
-        "sent": 1,
-        "word": "initially",
-        "correct": true,
-        "note": "동사를 수식하는 부사로 적절히 사용됨"
-      },
-      {
-        "sent": 4,
-        "word": "evolved",
-        "correct": true,
-        "note": "→ 문맥상 현재완료 has evolved가 적절하나 원문은 정상; 만약 'evolve' 단독 사용 시 has evolved로 수정 필요"
-      },
-      {
-        "sent": 5,
-        "word": "recognizing",
-        "pos": 78,
-        "correct": true,
-        "note": "recognized",
-        "alt": ""
-      },
-      {
-        "sent": 6,
-        "word": "likely",
-        "correct": true,
-        "note": "more likely to의 형용사로 적절히 사용됨"
-      }
-    ],
-    "grammar_answer": 5,
-    "vocab_sets": [
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "significant",
-            "alt": "insignificant",
-            "correct": true
-          },
-          {
-            "sent": 1,
-            "word": "initially",
-            "alt": "ultimately",
-            "correct": true
-          },
-          {
-            "sent": 2,
-            "word": "vital",
-            "alt": "trivial",
-            "correct": true
-          },
-          {
-            "sent": 4,
-            "word": "evolved",
-            "alt": "developed",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "suggestions",
-            "alt": "recommendations",
-            "correct": true
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "items": [
-          {
-            "sent": 0,
-            "word": "enabled",
-            "alt": "allowed",
-            "correct": true
-          },
-          {
-            "sent": 2,
-            "word": "seeking",
-            "alt": "attempting",
-            "correct": true
-          },
-          {
-            "sent": 3,
-            "word": "promote",
-            "alt": "conceal",
-            "correct": false
-          },
-          {
-            "sent": 5,
-            "word": "sizable",
-            "alt": "large",
-            "correct": true
-          },
-          {
-            "sent": 6,
-            "word": "followers",
-            "alt": "subscribers",
-            "correct": true
-          }
-        ],
-        "answer": 3
-      }
-    ],
+    "grammar_answer": 1,
     "vocab_sel": 0,
-    "vocab_items": [
-      {
-        "sent": 0,
-        "word": "significant",
-        "alt": "insignificant",
-        "correct": true
-      },
-      {
-        "sent": 1,
-        "word": "initially",
-        "alt": "ultimately",
-        "correct": true
-      },
-      {
-        "sent": 2,
-        "word": "vital",
-        "alt": "trivial",
-        "correct": true
-      },
-      {
-        "sent": 4,
-        "word": "evolved",
-        "alt": "developed",
-        "correct": true
-      },
-      {
-        "sent": 6,
-        "word": "suggestions",
-        "alt": "recommendations",
-        "correct": true
-      }
-    ],
     "vocab_answer": 1,
-    "aGroup": [
-      "significant milestone",
-      "minor setback",
-      "temporary trend"
-    ],
-    "bGroup": [
-      "trust",
-      "criticism",
-      "indifference"
-    ]
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "초기 통념",
+          "nameEn": "Initial Role of Social Media",
+          "color": "blue",
+          "sentenceNums": [
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "전환: 기업 플랫폼으로 변화",
+          "nameEn": "Transformation into Business Platform",
+          "color": "coral",
+          "sentenceNums": [
+            1,
+            3,
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "name": "심화 사례: 인플루언서 마케팅",
+          "nameEn": "Influencer Marketing as Further Evidence",
+          "color": "teal",
+          "sentenceNums": [
+            5,
+            6,
+            7
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "↔",
+        "+"
+      ],
+      "keyword": "소셜 미디어의 전자상거래·기업 플랫폼화",
+      "topicSummary": "소셜 미디어는 본래 개인 소통 수단이었으나, 현재는 제품 홍보·직접 판매·인플루언서 마케팅 등을 통해 기업을 위한 전자상거래 플랫폼으로 진화하였다.",
+      "structureType": "통념→전환(역접)→구체예시→결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 6,
+          "text": "Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field.",
+          "structure": "관계대명사 who절이 those users를 수식 / are recognized as A or B 구조",
+          "translation": "인플루언서는 상당한 소셜 미디어 팔로워를 보유하고 자신의 전문 분야에서 권위자 또는 의견 선도자로 인정받는 사용자들이다.",
+          "point": "'thought leaders(의견 선도자)'라는 복합명사와 'sizable(상당한)' 등 비즈니스 어휘에 주의"
+        },
+        {
+          "num": 7,
+          "text": "Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
+          "structure": "allow+목적어+to부정사 / 계속적 용법 관계대명사 who절 / be likely to 구조",
+          "translation": "인플루언서 마케팅은 기업이 해당 사용자의 팔로워들에게 도달할 수 있게 해주는데, 그 팔로워들은 소셜 미디어에서 자신이 팔로우하는 사람들의 제안을 더 신뢰하는 경향이 있다.",
+          "point": "계속적 용법 who절이 followers를 부연 설명하며, 'people they follow'에서 목적격 관계대명사가 생략된 구조에 주의"
+        }
+      ]
+    }
   },
   {
     "id": "27STYD_01_010",
@@ -18894,26 +18379,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
