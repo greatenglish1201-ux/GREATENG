@@ -1893,7 +1893,7 @@ function App(){
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
                 const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
-                let passageData=slot.passageData;
+                let passageData=slot.passageData?restorePassageData(slot.passageData):null;
                 if(!passageData){
                   let pool=loadedPassages.length?loadedPassages:(window.PASSAGES||[]);
                   let found=pool.find(p=>p.id===pid);
