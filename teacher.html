@@ -511,7 +511,7 @@ function buildPassageData(a,pfx,ch,num){
 function GrammarItemInput({value, onSave, placeholder, style}){
   const [v,setV]=useState(value||'');
   useEffect(()=>setV(value||''),[value]);
-  return<input value={v} onChange={e=>{setV(e.target.value);onSave(e.target.value);}} onBlur={()=>onSave(v)}
+  return<input value={v} onChange={e=>setV(e.target.value)} onBlur={()=>onSave(v)}
     placeholder={placeholder||''} style={style}/>;
 }
 function LocalTextarea({value, onSave, rows, style}){
@@ -569,7 +569,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
       const getRes=await fetch(apiBase,{headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json'}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패: '+getRes.status);
       const fileData=await getRes.json();
-      const currentContent=new TextDecoder('utf-8').decode(Uint8Array.from(atob(fileData.content.replace(/\n/g,'')),c=>c.charCodeAt(0)));
+      const currentContent=decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
       // 2. 새 내용 append
       const parsedNew=JSON.parse('['+jsonText.replace(/^\/\/.*\n/gm,'').trim()+']');
       const newContent=upsertPassages(currentContent,parsedNew);
@@ -727,24 +727,29 @@ ${passage}
 
 Generate a new grammar (어법) question set with exactly 5 items.
 - Pick 5 words/phrases from different sentences
-- Exactly 1 item must be INCORRECT (wrong grammar), the rest CORRECT
-- The incorrect item should require a realistic grammar fix
+- For CORRECT items: keep the exact original word/phrase from the passage as "word", set "original" to the same value
+- For the INCORRECT item: REPLACE the original word with a grammatically WRONG form as "word" (e.g. change "suggested" to "suggesting", "to run" to "running"), set "original" to the exact original word from the passage
+- NEVER use "word" = original form for the incorrect item. The "word" must be the WRONG version actually substituted into the passage.
+- Exactly 1 item must be INCORRECT, the rest CORRECT
 - answer = 1-based index of the incorrect item
 
 Return JSON only:
-{"items":[{"sent":0,"word":"exact word","correct":true,"note":"이유 또는 → correction"},{"sent":1,"word":"exact word","correct":true,"note":"이유"},{"sent":2,"word":"exact word","correct":false,"note":"→ corrected form"},{"sent":3,"word":"exact word","correct":true,"note":"이유"},{"sent":4,"word":"exact word","correct":true,"note":"이유"}],"answer":3}`
+{"items":[{"sent":0,"word":"exact word from passage","original":"exact word from passage","correct":true,"note":"이유"},{"sent":1,"word":"exact word from passage","original":"exact word from passage","correct":true,"note":"이유"},{"sent":2,"word":"WRONG form substituted","original":"exact original word","correct":false,"note":"→ correct form, 이유"},{"sent":3,"word":"exact word from passage","original":"exact word from passage","correct":true,"note":"이유"},{"sent":4,"word":"exact word from passage","original":"exact word from passage","correct":true,"note":"이유"}],"answer":3}`
         :`You are a Korean CSAT English vocabulary exam expert.
 Passage:
 ${passage}
 
 Generate a new vocabulary (어휘) question set with exactly 5 items.
 - Pick 5 words from different sentences
-- Exactly 1 item must have an INCORRECT replacement (wrong word), the rest CORRECT
-- The incorrect item's alt should be a plausible but wrong word
+- "word" = the word AS IT APPEARS in the passage (may be correct or replaced with wrong word)
+- "original" = the exact original word from the passage (always the passage word)
+- For CORRECT items: "word" = original word, "alt" = a plausible synonym used correctly in context
+- For the INCORRECT item: "word" = a WRONG/inappropriate word substituted into the passage (different from original), "original" = original passage word, "alt" = the correct word (same as original)
+- Exactly 1 item must be INCORRECT (word replaced with wrong vocab), the rest CORRECT
 - answer = 1-based index of the incorrect item
 
 Return JSON only:
-{"items":[{"sent":0,"word":"original","alt":"replacement","correct":true},{"sent":1,"word":"original","alt":"replacement","correct":true},{"sent":2,"word":"original","alt":"replacement","correct":false},{"sent":3,"word":"original","alt":"replacement","correct":true},{"sent":4,"word":"original","alt":"replacement","correct":true}],"answer":3}`;
+{"items":[{"sent":0,"word":"passage word","original":"passage word","alt":"synonym","correct":true},{"sent":1,"word":"passage word","original":"passage word","alt":"synonym","correct":true},{"sent":2,"word":"WRONG word substituted","original":"original passage word","alt":"correct word","correct":false},{"sent":3,"word":"passage word","original":"passage word","alt":"synonym","correct":true},{"sent":4,"word":"passage word","original":"passage word","alt":"synonym","correct":true}],"answer":3}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.items?.length)throw new Error('항목 없음');
@@ -1588,7 +1593,7 @@ function App(){
       const getRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{headers:{'Authorization':'token '+ghToken}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패');
       const getJson=await getRes.json();
-      const decoded=new TextDecoder('utf-8').decode(Uint8Array.from(atob(getJson.content.replace(/\n/g,'')),c=>c.charCodeAt(0)));
+      const decoded=decodeURIComponent(escape(atob(getJson.content.replace(/\n/g,''))));
       const newContent=upsertPassages(decoded,entries);
       const putRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{
         method:'PUT',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
