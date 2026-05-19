@@ -17211,9 +17211,9 @@ const PASSAGES = [
     "insert_sel": 0,
     "summary_sel": 0,
     "irrel_sel": 0,
-    "irrel_insert_pos": 0,
-    "irrel_confirmed": false,
-    "irrel_sentence": "",
+    "irrel_insert_pos": 5,
+    "irrel_confirmed": true,
+    "irrel_sentence": "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
     "grammar_sel": 0,
     "grammar_answer": 1,
     "vocab_sel": 0,
@@ -17432,7 +17432,13 @@ const PASSAGES = [
       "Acceptance requires letting go of any desire to control the outcome",
       "Optimistic thinking can help resolve problems that seem impossible to overcome"
     ],
-    "implication_answer": 1
+    "implication_answer": 1,
+    "irrel_candidates": [
+      "True acceptance is most effective when it serves as a deliberate strategy to eliminate the problem, allowing the unwanted experience to fade away more quickly.",
+      "The courage required for acceptance is best developed by actively confronting and fighting against difficult situations rather than passively allowing them to persist.",
+      "When we stop feeding our attention to a recurring problem, the experience tends to escalate and demand even greater emotional engagement before it finally disappears."
+    ],
+    "irrelevant_sentence_index": 5
   },
   {
     "id": "27STYD_01_007",
