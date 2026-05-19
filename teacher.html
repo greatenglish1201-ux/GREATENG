@@ -454,7 +454,7 @@ const AUTH_PROMPT=t=>`You are a Korean CSAT English exam expert. Extract ONLY th
 {"title":"Korean 2-6 chars","difficulty":"보통 or 높음","abstract":"one English sentence",
 "sentences":[{"num":1,"text":"s0","symbol":"G","role":"핵심 내용 15자 이내 한국어 요약 — 주제 제시/근거/예시/결론 등 담화 기능 포함"},{"num":2,"text":"s1","symbol":"S","role":"핵심 내용 요약"}],
 "topic":{"candidates":["CORRECT","w2","w3","w4","w5"]},
-"blank":{"candidates":[{"sentence_index":2,"keyword":"exact phrase","distractors":["w1","w2","w3","w4"]},{"sentence_index":0,"keyword":"phrase2","distractors":["w1","w2","w3","w4"]},{"sentence_index":4,"keyword":"phrase3","distractors":["w1","w2","w3","w4"]}]},
+"blank":{"candidates":[{"sentence_index":2,"keyword":"key phrase that paraphrases the passage thesis","distractors":["w1","w2","w3","w4"]},{"sentence_index":0,"keyword":"another paraphrasable thesis","distractors":["w1","w2","w3","w4"]},{"sentence_index":4,"keyword":"conclusion paraphrase","distractors":["w1","w2","w3","w4"]}]},
 "order":{"possible":true,"blocks":[{"label":"B","sentence_indices":[1,2,3]},{"label":"C","sentence_indices":[4,5]},{"label":"D","sentence_indices":[6,7,8]}]},
 "summary":{"candidates":[{"template":"...________(A)________...________(B)________...","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl2","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl3","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]}]},
 "implication":{"possible":true,"sentence_index":2,"keyword":"figurative phrase","candidates":["CORRECT meaning","w2","w3","w4","w5"]},
@@ -462,7 +462,27 @@ const AUTH_PROMPT=t=>`You are a Korean CSAT English exam expert. Extract ONLY th
 "insert":{"candidates":[{"sentence":"insert sentence","pos":3},{"sentence":"s2","pos":5},{"sentence":"s3","pos":2}]},
 "grammar":{"sets":[{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":1,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":false,"note":"→ correction"},{"sent":4,"word":"w","correct":true,"note":"이유"},{"sent":6,"word":"w","correct":true,"note":"이유"}],"answer":3},{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":true,"note":"이유"},{"sent":3,"word":"w","correct":false,"note":"→ correction"},{"sent":5,"word":"w","correct":true,"note":"이유"},{"sent":7,"word":"w","correct":true,"note":"이유"}],"answer":3}]},
 "vocab":{"sets":[{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":1,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":false},{"sent":4,"word":"orig","alt":"wrong","correct":true},{"sent":6,"word":"orig","alt":"wrong","correct":true}],"answer":3},{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":true},{"sent":3,"word":"orig","alt":"wrong","correct":false},{"sent":5,"word":"orig","alt":"wrong","correct":true},{"sent":7,"word":"orig","alt":"wrong","correct":true}],"answer":3}]}}
-Rules: topic.candidates[0]=correct. blank.keyword=exact substring. order.possible=false if <7 sentences. order.blocks must include ALL sentences except order_given_index(=0); every sentence index must appear in exactly one block. grammar/vocab word=exact word from that sentence. answer=1-based index of wrong item. sentences[].role=핵심 내용 15자 이내 한국어 요약(담화 기능+내용 포함, 예: '주제 제시: 소셜 미디어의 변화', '근거: 실험 결과 제시', '결론: 수용의 진정한 의미'). sentences[].symbol=G(일반)/S(지지)/+(추가)/↔(역접)/→(인과) 중 택1.
+Rules: topic.candidates[0]=correct.
+blank rules (CSAT-style):
+- Select THESIS sentence as blank location (글의 핵심 주장 문장)
+- keyword = exact substring from that sentence that PARAPHRASES the main idea (not copies it verbatim from elsewhere)
+- Prefer sentences with negation/contrast structures (cannot, not A but B) — these are CSAT favorites
+- distractors must be PLAUSIBLE TRAPS using vocab/concepts from the passage but wrong in meaning
+- distractors should NOT be obvious synonyms of the answer (would create ambiguity)
+- One distractor should be the OPPOSITE/REVERSE of correct (most reliable trap)
+- One distractor should be PARTIALLY correct (only covers part of the meaning)
+blank.keyword=exact substring. order rules (CSAT-style 36~37번):
+- possible=false if <7 sentences (sentences too few for 3-block split)
+- ALL sentences except order_given_index must be in exactly one block (모든 문장 포함)
+- given글(order_given_index, default=0) introduces the topic
+- B/C/D each = 2-4 consecutive sentences forming a logical chunk
+- Each block should START with a sentence containing a discourse cue:
+  * Demonstratives: This/These/Such/That + [noun] (back-reference to previous block)
+  * Connectives: However/Therefore/Moreover/For example/In contrast (logical signal)
+  * Pronouns: it/they/he/she referring to entity in prior block
+- The CORRECT order should have UNAMBIGUOUS cues — each block's opening cue must logically link only to ONE specific prior block
+- 평가원 favorite: answer is often B-C-A or C-B-A (NOT obvious A-B-C)
+order.blocks must include ALL sentences except order_given_index(=0); every sentence index must appear in exactly one block. grammar/vocab word=exact word from that sentence. answer=1-based index of wrong item. sentences[].role=핵심 내용 15자 이내 한국어 요약(담화 기능+내용 포함, 예: '주제 제시: 소셜 미디어의 변화', '근거: 실험 결과 제시', '결론: 수용의 진정한 의미'). sentences[].symbol=G(일반)/S(지지)/+(추가)/↔(역접)/→(인과) 중 택1.
 TEXT:\n`+t;
 
 function splitTexts(text){
@@ -609,7 +629,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert.\nPassage:\n${passage}\n\nThe blank word/phrase is: "${keyword}" (from sentence [${sentIdx}])\n\nGenerate 4 plausible but incorrect distractors for this blank question.\nDistractors must:\n- Be similar in form, length, or meaning to confuse students\n- Be grammatically plausible in context\n- NOT be synonyms that could be correct\n\nReturn JSON only:\n{"distractors":["d1","d2","d3","d4"]}`;
+      const prompt=`You are a Korean CSAT English exam expert specializing in 빈칸추론 (blank inference) — the hardest CSAT question type.\nPassage:\n${passage}\n\nThe correct answer is: "${keyword}" (from sentence [${sentIdx}])\n\nGenerate 4 high-quality distractors following CSAT 평가원 patterns:\n\nCSAT distractor patterns (use ALL 4 categories):\n1. OPPOSITE/REVERSE — Express the opposite of the correct answer (most reliable trap, 평가원 favorite)\n2. PARTIAL — Covers only PART of the correct meaning (true but incomplete, misses the main point)\n3. BAIT — Uses prominent vocab/concepts from the passage but in a WRONG logical role (looks attractive because of familiar words)\n4. OFF-TOPIC — Plausible-sounding but unrelated to the actual thesis (tests careless reading)\n\nCRITICAL rules:\n- NEVER use synonyms or paraphrases of the correct answer (would create ambiguity for the test)\n- Match grammatical form, length, and abstraction level of the correct answer\n- Each distractor must be grammatically valid in the blank\n- Use vocabulary actually present in the passage when possible (makes traps stronger)\n\nReturn JSON only:\n{"distractors":["opposite_trap","partial_trap","bait_trap","offtopic_trap"]}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       const distractors=parsed.distractors||[];
@@ -628,18 +648,27 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert.
+      const prompt=`You are a Korean CSAT English exam expert specializing in 주제/제목 (22~24번 문항).
+
+CRITICAL CSAT 평가원 topic rules:
+- The CORRECT topic must capture the THESIS — the central claim of the passage, not just the subject
+- Topic = noun phrase form, typically "the + 명사 + 수식어구" structure
+- The topic must be MANIFEST (명료) — avoid vague metaphors or ambiguous phrasing (24번 이의제기 사례 회피)
+- Cover the SCOPE of the entire passage — not just the introduction or one example
+
+Distractor patterns (use ALL 4):
+- TOO NARROW — covers only one example/detail from the passage
+- TOO BROAD — generalizes beyond the passage's actual claim
+- PARTIAL — half-truth using passage vocab but misses the main thrust
+- OFF-FOCUS — mentions a topic touched on but not the main one (강한 함정)
+
 Passage:
 ${passage}
 
-Generate 5 topic/main idea options for this passage.
-- Option 1 must be the CORRECT answer (accurate main idea)
-- Options 2-5 must be plausible but incorrect (too broad, too narrow, or off-topic)
-- Each option should be a concise phrase (not a full sentence)
-- All options in English
+Generate 5 options. Option 1 = correct, Options 2-5 = one of each distractor type.
 
 Return JSON only:
-{"options":["correct main idea","wrong1","wrong2","wrong3","wrong4"]}`;
+{"options":["correct thesis as noun phrase","too narrow distractor","too broad distractor","partial distractor","off-focus distractor"]}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.options?.length)throw new Error('선지 없음');
@@ -655,23 +684,37 @@ Return JSON only:
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English summary exam expert.
+      const prompt=`You are a Korean CSAT English summary exam expert specializing in 요약문 완성 (40번 문항).
+
+CRITICAL CSAT 평가원 summary rules:
+- The summary template = ONE complete sentence that captures the THESIS of the passage
+- (A) and (B) = the TWO key concepts of the thesis (e.g., cause-effect, problem-solution, contrast pair)
+- Correct answers to (A)(B) are typically NOT verbatim from the passage — they are PARAPHRASES/ABSTRACTIONS (평가원 매우 중요 원칙)
+- The summary itself should reveal the structure of the thesis (e.g., "X leads to Y" / "Despite X, Y" / "X requires Y")
+
+Distractor rules (4 per blank):
+- 1 OPPOSITE — reverses the correct meaning (most reliable trap)
+- 1 PARTIAL — touches only part of the meaning
+- 1 BAIT — uses prominent passage vocabulary in wrong logical role
+- 1 SCOPE — too narrow (specific example) or too broad (general category)
+- NEVER use synonyms of the correct answer (would cause appeals)
+- A and B distractors should be conceptually distinct from each other
+
+Template variety (across 5 candidates):
+- Use diverse sentence structures: "X leads to Y", "Despite X, Y emerges", "X is achieved by Y", "Although X, the key is Y", "X without Y is meaningless"
+
 Passage:
 ${passage}
 
-Generate 5 summary sentence templates. Each template has two blanks (A) and (B).
-Each candidate must:
-- Be a one-sentence English summary of the passage
-- Have exactly two blanks marked as ________(A)________ and ________(B)________
-- Provide correct answers and 4 distractors for each blank
+Generate 5 distinct summary candidates. Each candidate paraphrases the same thesis differently.
 
 Return JSON only:
 {"candidates":[
-  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"word or phrase","A_distractors":["d1","d2","d3","d4"],"B_correct":"word or phrase","B_distractors":["d1","d2","d3","d4"]},
-  {"template":"tmpl2","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]},
-  {"template":"tmpl3","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]},
-  {"template":"tmpl4","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]},
-  {"template":"tmpl5","A_correct":"w","A_distractors":["d1","d2","d3","d4"],"B_correct":"w","B_distractors":["d1","d2","d3","d4"]}
+  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"paraphrase of cause concept","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase of effect concept","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"Despite ________(A)________, the passage emphasizes ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"True ________(A)________ requires ________(B)________ rather than mere appearance.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"X depends on ________(A)________ while Y depends on ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"The contrast between ________(A)________ and ________(B)________ reveals the central insight.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]}
 ]}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
@@ -692,19 +735,29 @@ Return JSON only:
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert.
+      const prompt=`You are a Korean CSAT English exam expert specializing in 무관 문장 고르기 (35번 문항).
+
+CRITICAL CSAT 평가원 irrelevant sentence rules:
+- The irrelevant sentence MUST share the same SUBJECT or KEY VOCABULARY as the passage (would otherwise be too easy to spot)
+- BUT the LOGIC/POSITION/CLAIM must contradict or deviate from the passage's argument flow
+- 평가원 typical patterns:
+  * Same topic, OPPOSITE claim (passage argues X, sentence supports not-X)
+  * Same vocab, DIFFERENT angle (passage focuses on cause, sentence describes unrelated effect)
+  * Surface-level topical match, but breaks the logical progression
+- AVOID:
+  * Sentences about completely different subjects (too obvious)
+  * Sentences with no shared vocabulary (too easy)
+  * Sentences that are factually wrong but logically aligned (not 평가원 style)
+
+Recommended position should be in the MIDDLE of the passage (not first/last), where breaking the flow creates genuine difficulty.
+
 Passage:
 ${passage}
 
-Generate 3 sentences that do NOT belong in this passage.
-Each sentence must:
-- Be topically unrelated to the main idea
-- Sound natural and academic
-- Be similar in style/length to the passage sentences
-- Recommended insertion position (0-based index before which sentence)
+Generate 3 distinct irrelevant sentence candidates that share vocabulary but break the argument flow.
 
 Return JSON only:
-{"candidates":["unrelated sentence 1","unrelated sentence 2","unrelated sentence 3"],"recommended_pos":2}`;
+{"candidates":["shared vocab but opposite claim","shared vocab but different angle","shared vocab but breaks logical chain"],"recommended_pos":2}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.candidates?.length)throw new Error('후보 없음');
@@ -722,37 +775,93 @@ Return JSON only:
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='You must return ONLY a single valid JSON object. No markdown. No explanation. No text before or after the JSON. Start your response with { and end with }.';
       const prompt=isG
-        ?`You are a Korean CSAT English grammar exam expert.
+        ?`You are a Korean CSAT English grammar exam expert specializing in 어법 (29번 문항).
+
+CRITICAL CSAT 평가원 grammar rules:
+- The INCORRECT item must be UNAMBIGUOUSLY wrong (명백한 어법 오류) — 평가원 NEVER uses style/preference-based errors
+- The wrong form must be substituted INTO the passage (NOT the original word marked as wrong)
+- "word" = the WRONG form that students see; "original" = the original passage word (the correct form)
+- For correct items, "word" = "original" = passage word (no substitution)
+
+Frequent CSAT grammar test points (focus on these):
+- 준동사 (participles/gerunds/infinitives): -ing vs -ed, to V vs V-ing
+- 관계사: that vs which, who vs whom, where vs which (with prep)
+- 수일치: subject-verb agreement with intervening phrases, collective nouns
+- 시제·태: active vs passive, tense consistency
+- 도치: negative inversion, "only" inversion
+- 병렬구조: parallel structure in lists or "both A and B"
+- 대명사: pronoun agreement with antecedent
+- 형용사 vs 부사: modifying verbs/adjectives vs nouns
+
 Passage:
 ${passage}
 
-Generate a new grammar (어법) question set with exactly 5 items.
-- Pick 5 words/phrases from different sentences
-- Exactly 1 item must be INCORRECT (wrong grammar), the rest CORRECT
-- The incorrect item should require a realistic grammar fix
-- answer = 1-based index of the incorrect item
+Generate exactly 5 items from DIFFERENT sentences:
+- 4 CORRECT items: word = original (the original grammatical form, no change)
+- 1 INCORRECT item: word = a grammatically WRONG substitution that produces an unambiguous error
+  Example: original "suggests" → word "suggesting" (subject-verb agreement broken)
+  Example: original "to run" → word "running" (verb pattern violation)
+  Example: original "which" → word "what" (relative pronoun misuse)
+- The wrong item must test ONE of the frequent test points above
+- note = brief Korean explanation + → correct form
 
 Return JSON only:
-{"items":[{"sent":0,"word":"exact word","correct":true,"note":"이유 또는 → correction"},{"sent":1,"word":"exact word","correct":true,"note":"이유"},{"sent":2,"word":"exact word","correct":false,"note":"→ corrected form"},{"sent":3,"word":"exact word","correct":true,"note":"이유"},{"sent":4,"word":"exact word","correct":true,"note":"이유"}],"answer":3}`
-        :`You are a Korean CSAT English vocabulary exam expert.
+{"items":[{"sent":0,"word":"original word","original":"original word","correct":true,"note":"문법적으로 적절한 이유"},{"sent":1,"word":"original word","original":"original word","correct":true,"note":"이유"},{"sent":2,"word":"WRONG substituted form","original":"original word","correct":false,"note":"오류 유형 + → original word"},{"sent":3,"word":"original word","original":"original word","correct":true,"note":"이유"},{"sent":4,"word":"original word","original":"original word","correct":true,"note":"이유"}],"answer":3}`
+        :`You are a Korean CSAT English vocabulary exam expert specializing in 어휘 (30번 문항).
+
+CRITICAL CSAT 평가원 vocabulary rules:
+- The INCORRECT answer must be the OPPOSITE/REVERSE of the original word (반의어 원칙 — most reliable, no controversy)
+- 평가원 NEVER uses near-synonyms or nuance-based wrong answers (would cause official appeals)
+- The wrong word, when read in context, must make the sentence contradict the passage's flow
+- Word swaps based on subtle meaning differences are FORBIDDEN
+
+For each item:
+- "word" = the form AS IT APPEARS in the displayed passage (correct items = original passage word; incorrect item = the WRONG substituted word)
+- "original" = the EXACT original passage word (always, for both correct and incorrect)
+- "alt" = the correct vocabulary that should replace the wrong one (= original for incorrect; a contextual synonym for correct items)
+- "correct" = true means this word fits the context; false means this word breaks the meaning
+
 Passage:
 ${passage}
 
-Generate a new vocabulary (어휘) question set with exactly 5 items.
-- Pick 5 words from different sentences
-- Exactly 1 item must have an INCORRECT replacement (wrong word), the rest CORRECT
-- The incorrect item's alt should be a plausible but wrong word
-- answer = 1-based index of the incorrect item
+Generate exactly 5 items from DIFFERENT sentences:
+- 4 CORRECT items: word = original passage word; alt = a contextually plausible synonym
+- 1 INCORRECT item: word = OPPOSITE-meaning word substituted in place of the original; original = original word; alt = original (the correct word)
+- Pick semantically loaded content words (verbs/adjectives/nouns), not function words
+- The incorrect item's context must make the opposition CLEAR and UNAMBIGUOUS
 
 Return JSON only:
-{"items":[{"sent":0,"word":"original","alt":"replacement","correct":true},{"sent":1,"word":"original","alt":"replacement","correct":true},{"sent":2,"word":"original","alt":"replacement","correct":false},{"sent":3,"word":"original","alt":"replacement","correct":true},{"sent":4,"word":"original","alt":"replacement","correct":true}],"answer":3}`;
+{"items":[{"sent":0,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":1,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":2,"word":"OPPOSITE-meaning substituted","original":"original passage word","alt":"original passage word","correct":false},{"sent":3,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":4,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true}],"answer":3}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.items?.length)throw new Error('항목 없음');
+      // 코드 레벨 안전장치
+      const warnings=[];
       upPDeep(p=>{
+        const sents=p.sentences||[];
+        const getSent=(i)=>sents[i]?(typeof sents[i]==='string'?sents[i]:sents[i].text||''):'';
+        const items=parsed.items.map((it,idx)=>{
+          const sent=Number(it.sent);
+          const sentText=getSent(sent);
+          let word=(it.word||'').trim();
+          let original=(it.original||'').trim();
+          // original이 없거나 본문에 없으면 word를 original로 사용
+          if(!original||!sentText.includes(original)){
+            // word가 본문에 있으면 그것을 original로
+            if(sentText.includes(word)){original=word;}
+            else{warnings.push(`${idx+1}번 항목: 본문 sentence[${sent}]에서 단어를 찾을 수 없음 (word="${word}", original="${original}")`);}
+          }
+          // INCORRECT인데 word===original이면 경고 (원문 그대로 두고 정답 처리한 케이스)
+          if(it.correct===false&&word===original&&word!==''){
+            warnings.push(`${idx+1}번 (오답 항목): word와 original이 같음 — 원문 단어를 틀린 형태로 교체해야 함 (현재: "${word}")`);
+          }
+          return{...it,sent,word,original};
+        });
+        if(warnings.length){
+          setTimeout(()=>alert('⚠️ 검증 경고:\n'+warnings.join('\n')),100);
+        }
         const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
         const sel=isG?p.grammar_sel:p.vocab_sel;
-        const items=parsed.items.map(it=>({...it,sent:Number(it.sent),original:it.original||''}));
         const newSet={items,answer:parsed.answer||1};
         if(sets.length===0){sets.push(newSet);}
         else{sets[sel<sets.length?sel:0]=newSet;}
@@ -771,29 +880,54 @@ Return JSON only:
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='You must return ONLY a single valid JSON object. No markdown. No explanation. Start with { and end with }.';
-      const prompt=`You are a Korean CSAT English exam expert.
+      const prompt=`You are a Korean CSAT English exam expert specializing in 문장 삽입 (38~39번 문항).
+
+CRITICAL CSAT 평가원 sentence insertion rules:
+- The given sentence must be REMOVED from the passage, creating a logical DISCONTINUITY (단절) at its position
+- The insertion sentence must contain a CUE that links back to what comes before it:
+  * Demonstrative: This/These/Such + noun referring to prior content
+  * Connective: However/Therefore/Moreover/For example marking logical relation
+  * Pronoun: it/they referring to entity introduced before
+- Without the inserted sentence, sentence[pos-1] and sentence[pos] should feel DISCONNECTED:
+  * Missing reference (pronoun has no antecedent)
+  * Logical jump (cause without setup, conclusion without premise)
+  * Topic shift without bridge
+- The insertion position should NOT be obvious from surface clues — students must analyze the logical flow
+- AVOID positions 0 or last-index (too obvious / no upstream context)
+
+ABSOLUTELY CRITICAL — 원문 문장 강제 규칙:
+- "sentence" MUST be an EXACT VERBATIM copy of one of the numbered sentences in the passage above
+- DO NOT paraphrase, rewrite, shorten, or modify the sentence in ANY way
+- DO NOT invent or fabricate new sentences
+- If no passage sentence has strong back-reference cues suitable for insertion, return fewer candidates (1-2) rather than fabricating
+- The "pos" must equal the INDEX of that sentence in the original passage (the sentence will be removed from that position and presented as the inserted sentence)
+- Verify: copy-paste the sentence character-by-character from the numbered passage above
+
 Passage:
 ${passage}
 
-Generate 3 sentence insertion candidates.
-Each candidate must:
-- Be a sentence that logically belongs in the passage but is REMOVED
-- Have a clear insertion position (pos = index before which it should be inserted, 0-based)
-- The sentence should flow naturally before sentence[pos]
+Generate 3 distinct insertion candidates from different positions (preferring middle-passage positions where logical analysis is required).
 
 Return JSON only:
-{"candidates":[{"sentence":"insert sentence 1","pos":2},{"sentence":"insert sentence 2","pos":4},{"sentence":"insert sentence 3","pos":3}]}`;
+{"candidates":[{"sentence":"verbatim sentence from passage with strong back-reference cue","pos":2,"cue":"This/However/etc + brief explanation"},{"sentence":"another original sentence","pos":4,"cue":"cue type"},{"sentence":"third","pos":3,"cue":"cue type"}]}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.candidates?.length)throw new Error('후보 없음');
-      const first=parsed.candidates[0];
+      // 모든 후보의 sentence를 원문 문장으로 강제 교체 (AI가 만든 가짜 문장 차단)
       upPDeep(p=>{
-        const pos=first.pos;
         const sents=p.sentences||[];
-        const realSent=pos!=null&&sents[pos]?(typeof sents[pos]==='string'?sents[pos]:sents[pos].text||''):first.sentence;
+        const getSent=(i)=>sents[i]?(typeof sents[i]==='string'?sents[i]:sents[i].text||''):'';
+        const validCandidates=parsed.candidates
+          .filter(c=>c.pos!=null&&sents[c.pos])
+          .map(c=>({...c,sentence:getSent(c.pos)}));
+        if(!validCandidates.length){
+          alert('유효한 삽입 후보가 없습니다. (AI가 원문 문장을 사용하지 않음)');
+          return p;
+        }
+        const first=validCandidates[0];
         return{...p,
-          insert_candidates:parsed.candidates,insert_sel:0,
-          insert_sentence:realSent,insert_answer:pos};
+          insert_candidates:validCandidates,insert_sel:0,
+          insert_sentence:first.sentence,insert_answer:first.pos};
       });
     }catch(e){alert('삽입문장 생성 실패: '+e.message);}
     setGenLoading('');
@@ -805,7 +939,7 @@ Return JSON only:
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert.\nPassage:\n${passage}\n\nThe underlined expression is: "${keyword}" (from sentence [${sentIdx}])\n\nGenerate 5 answer choices for "what does the underlined part mean?"\n- Choice 1 must be the CORRECT meaning in context\n- Choices 2-5 must be plausible but incorrect interpretations\n- All choices should be natural English phrases of similar length\n\nReturn JSON only:\n{"candidates":["correct meaning","wrong1","wrong2","wrong3","wrong4"]}`;
+      const prompt=`You are a Korean CSAT English exam expert specializing in 함축적 의미 추론 (21번 문항).\n\nCRITICAL CSAT 평가원 implication rules:\n- The underlined expression is FIGURATIVE/METAPHORICAL — students must decode its meaning IN CONTEXT\n- The correct answer is essentially a BLANK INFERENCE in disguise (함의 = 결국 빈칸 추론)\n- Correct answer = the THESIS or KEY CLAIM that the metaphor expresses\n- The correct answer should be PARAPHRASED in different words from the passage (NOT verbatim)\n\nDistractor patterns (use ALL 4):\n- LITERAL — surface/literal meaning of the metaphor (most common trap)\n- OPPOSITE — expresses the reverse of the figurative meaning\n- PARTIAL — captures only part of the implied meaning\n- OFF-CONTEXT — plausible interpretation if read alone, but wrong in passage context\n\nPassage:\n${passage}\n\nThe underlined figurative expression is: "${keyword}" (from sentence [${sentIdx}])\n\nGenerate 5 choices following the patterns above.\n\nReturn JSON only:\n{"candidates":["correct figurative meaning paraphrased","literal trap","opposite trap","partial trap","off-context trap"]}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       const candidates=parsed.candidates||[];
