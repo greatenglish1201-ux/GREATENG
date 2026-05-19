@@ -17840,5 +17840,439 @@ const PASSAGES = [
       "observed",
       "applied"
     ]
+  },
+  {
+    "id": "27STYD_01_008",
+    "difficulty": "높음",
+    "title": "심상 탐색",
+    "sentences": [
+      "The phrase 'image scanning' refers to the cognitive processes that operate on visual mental images when a person moves his or her attention across imagined objects.",
+      "The first image scanning paradigm was designed to investigate the spatial properties of images.",
+      "In the original experiment, participants memorized drawings of elongated objects (such as a tower).",
+      "They were then asked to visualize one of the objects and to focus at one of its ends (for example, the bottom of the tower).",
+      "Lastly, participants heard the name of a feature on the object (e.g., a flag), and they had to look for it.",
+      "Participants were not instructed to scan their image, but were simply told to focus on the original location until the probe was delivered, and then to focus on the named part or feature.",
+      "They pressed one button when they had focused on the named part, and another button if they failed to find it.",
+      "The critical finding was that response times increased linearly with increasing distances from the focus point to the named part of the object.",
+      "This finding was taken as evidence that distance, as traversed by image scanning, is genuinely represented in visual mental images."
+    ],
+    "abstract": "Image scanning experiments reveal that visual mental images genuinely represent spatial distances, as response times increase linearly with distance scanned.",
+    "topic_options": [
+      "an image scanning experiment revealing spatial representation in mental images",
+      "cognitive processes involved in all types of visual perception",
+      "the role of memorization in visualizing elongated objects",
+      "response time measurement techniques in psychological research",
+      "spatial properties of physical drawings and their cognitive effects"
+    ],
+    "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [
+      {
+        "sentence_index": 2,
+        "keyword": "elongated objects",
+        "distractors": [
+          "abstract concepts",
+          "simple shapes",
+          "moving targets",
+          "colored patterns"
+        ]
+      },
+      {
+        "sentence_index": 7,
+        "keyword": "increased linearly",
+        "distractors": [
+          "decreased sharply",
+          "remained constant",
+          "varied randomly",
+          "increased exponentially"
+        ]
+      },
+      {
+        "sentence_index": 5,
+        "keyword": "focus on the original location",
+        "distractors": [
+          "scan the entire image",
+          "memorize the object again",
+          "identify all features at once",
+          "move their eyes freely"
+        ]
+      }
+    ],
+    "blank_sentence_index": 1,
+    "blank_target": "designed to investigate the spatial properties of images",
+    "blank_options": [
+      "designed to investigate the spatial properties of images",
+      "intended to measure the temporal aspects of visual perception",
+      "conducted to examine the cognitive limitations of memory recall",
+      "developed to explore the emotional responses to mental imagery",
+      "created to analyze the sequential patterns of object recognition"
+    ],
+    "blank_answer": 1,
+    "order_given_index": 0,
+    "order_blocks": [
+      {
+        "label": "B",
+        "sentence_indices": [
+          2,
+          3
+        ]
+      },
+      {
+        "label": "C",
+        "sentence_indices": [
+          4,
+          5
+        ]
+      },
+      {
+        "label": "D",
+        "sentence_indices": [
+          6,
+          7
+        ]
+      }
+    ],
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 1,
+    "insert_sel": 0,
+    "insert_candidates": [
+      {
+        "sentence": "This paradigm has since been replicated across multiple cultures and age groups with consistent results.",
+        "pos": 8
+      },
+      {
+        "sentence": "Before the experiment began, all participants were given clear instructions about the memorization task.",
+        "pos": 2
+      },
+      {
+        "sentence": "Such a linear relationship between distance and response time is known as the scanning effect.",
+        "pos": 8
+      }
+    ],
+    "insert_sentence": "They pressed one button when they had focused on the named part, and another button if they failed to find it.",
+    "insert_answer": 6,
+    "summary_sel": 0,
+    "summary_candidates": [
+      {
+        "template": "Image scanning studies show that participants scanning visual mental images have __________(A)__________ that __________(B)__________ with the distance from the focus point to the named feature.",
+        "A_correct": "response times",
+        "A_distractors": [
+          "error rates",
+          "memory spans",
+          "attention levels",
+          "visual acuity"
+        ],
+        "B_correct": "increase linearly",
+        "B_distractors": [
+          "decrease sharply",
+          "remain constant",
+          "vary randomly",
+          "increase exponentially"
+        ]
+      },
+      {
+        "template": "In image scanning experiments, participants memorized __________(A)__________ and were asked to locate named features, revealing that visual mental images genuinely represent __________(B)__________.",
+        "A_correct": "drawings of elongated objects",
+        "A_distractors": [
+          "abstract verbal descriptions",
+          "colored geometric shapes",
+          "moving visual stimuli",
+          "symbolic diagrams"
+        ],
+        "B_correct": "spatial distances",
+        "B_distractors": [
+          "emotional content",
+          "temporal sequences",
+          "semantic categories",
+          "logical relationships"
+        ]
+      },
+      {
+        "template": "The image scanning paradigm was designed to investigate the __________(A)__________ of images, and its critical finding supports that distance is __________(B)__________ in visual mental images.",
+        "A_correct": "spatial properties",
+        "A_distractors": [
+          "emotional properties",
+          "temporal properties",
+          "linguistic properties",
+          "abstract properties"
+        ],
+        "B_correct": "genuinely represented",
+        "B_distractors": [
+          "completely ignored",
+          "verbally encoded",
+          "randomly distorted",
+          "unconsciously suppressed"
+        ]
+      }
+    ],
+    "summary_template": "Image scanning studies show that participants scanning visual mental images have __________(A)__________ that __________(B)__________ with the distance from the focus point to the named feature.",
+    "summary_A_options": [
+      "response times",
+      "error rates",
+      "memory spans",
+      "attention levels",
+      "visual acuity"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "increase linearly",
+      "decrease sharply",
+      "remain constant",
+      "vary randomly",
+      "increase exponentially"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 8,
+    "implication_keyword": "genuinely represented in visual mental images",
+    "implication_options": [
+      "Visual mental images preserve real spatial relationships, not just abstract or symbolic ones",
+      "People can only form mental images of objects they have physically touched",
+      "Visual mental images are entirely constructed from verbal descriptions",
+      "Spatial distance in mental images is an illusion with no cognitive basis",
+      "Mental images are processed in a completely different brain region from real perception"
+    ],
+    "implication_answer": 1,
+    "irrel_sel": 0,
+    "irrel_candidates": [
+      "Researchers have also studied how auditory mental images represent pitch and rhythm in music.",
+      "Some cognitive scientists argue that mental imagery does not involve any spatial representation at all.",
+      "The study of working memory capacity has revealed individual differences in cognitive performance."
+    ],
+    "irrel_insert_pos": 5,
+    "irrel_confirmed": false,
+    "irrelevant_sentence_index": 2,
+    "irrel_sentence": "Researchers have also studied how auditory mental images represent pitch and rhythm in music.",
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "refers",
+            "correct": true,
+            "note": "주어 'The phrase'에 수일치하는 단수 동사"
+          },
+          {
+            "sent": 1,
+            "word": "was designed",
+            "correct": true,
+            "note": "수동태로 올바르게 사용됨"
+          },
+          {
+            "sent": 3,
+            "word": "to focus at",
+            "correct": false,
+            "note": "→ 'to focus on': focus는 전치사 'on'과 함께 사용"
+          },
+          {
+            "sent": 5,
+            "word": "were not instructed",
+            "correct": true,
+            "note": "수동태 부정형으로 올바르게 사용됨"
+          },
+          {
+            "sent": 7,
+            "word": "increased",
+            "correct": true,
+            "note": "과거 시제로 실험 결과를 서술하는 올바른 표현"
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "operate on",
+            "correct": true,
+            "note": "'operate on'은 '~에 작용하다'의 올바른 표현"
+          },
+          {
+            "sent": 2,
+            "word": "memorized",
+            "correct": true,
+            "note": "과거 시제 동사로 실험 절차를 올바르게 서술"
+          },
+          {
+            "sent": 4,
+            "word": "had to look for",
+            "correct": true,
+            "note": "의무를 나타내는 'had to'의 올바른 사용"
+          },
+          {
+            "sent": 6,
+            "word": "when they had focused",
+            "correct": false,
+            "note": "→ 'when they focused': 단순 과거로 충분하며 과거완료 불필요"
+          },
+          {
+            "sent": 8,
+            "word": "traversed",
+            "correct": true,
+            "note": "과거분사로 수동의 의미를 나타내는 올바른 사용"
+          }
+        ],
+        "answer": 4
+      }
+    ],
+    "grammar_sel": 0,
+    "grammar_items": [
+      {
+        "sent": 0,
+        "word": "refers",
+        "correct": true,
+        "note": "주어 'The phrase'에 수일치하는 단수 동사"
+      },
+      {
+        "sent": 1,
+        "word": "was designed",
+        "correct": true,
+        "note": "수동태로 올바르게 사용됨"
+      },
+      {
+        "sent": 3,
+        "word": "to focus at",
+        "correct": false,
+        "note": "→ 'to focus on': focus는 전치사 'on'과 함께 사용"
+      },
+      {
+        "sent": 5,
+        "word": "were not instructed",
+        "correct": true,
+        "note": "수동태 부정형으로 올바르게 사용됨"
+      },
+      {
+        "sent": 7,
+        "word": "increased",
+        "correct": true,
+        "note": "과거 시제로 실험 결과를 서술하는 올바른 표현"
+      }
+    ],
+    "grammar_answer": 3,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "cognitive",
+            "alt": "physical",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "paradigm",
+            "alt": "obstacle",
+            "correct": true
+          },
+          {
+            "sent": 5,
+            "word": "delivered",
+            "alt": "withheld",
+            "correct": true
+          },
+          {
+            "sent": 7,
+            "word": "linearly",
+            "alt": "consistently",
+            "correct": true
+          },
+          {
+            "sent": 6,
+            "word": "managed",
+            "pos": 92,
+            "correct": true,
+            "note": "",
+            "alt": "failed "
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "refers to",
+            "alt": "contradicts",
+            "correct": true
+          },
+          {
+            "sent": 3,
+            "word": "visualize",
+            "alt": "describe",
+            "correct": true
+          },
+          {
+            "sent": 5,
+            "word": "instructed",
+            "alt": "forbidden",
+            "correct": true
+          },
+          {
+            "sent": 7,
+            "word": "critical",
+            "alt": "trivial",
+            "correct": false
+          },
+          {
+            "sent": 8,
+            "word": "genuinely",
+            "alt": "artificially",
+            "correct": true
+          }
+        ],
+        "answer": 4
+      }
+    ],
+    "vocab_sel": 0,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "cognitive",
+        "alt": "physical",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "paradigm",
+        "alt": "obstacle",
+        "correct": true
+      },
+      {
+        "sent": 5,
+        "word": "delivered",
+        "alt": "withheld",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "managed",
+        "pos": 92,
+        "correct": true,
+        "note": "",
+        "alt": "failed "
+      },
+      {
+        "sent": 7,
+        "word": "linearly",
+        "alt": "consistently",
+        "correct": true
+      }
+    ],
+    "vocab_answer": 1,
+    "aGroup": [
+      "response times",
+      "error rates",
+      "memory spans"
+    ],
+    "bGroup": [
+      "increase linearly",
+      "decrease sharply",
+      "remain constant"
+    ]
   }
 ];
