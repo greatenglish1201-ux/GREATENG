@@ -119,7 +119,7 @@ function upsertPassages(currentContent,newEntries){
   // 새 항목 upsert
   newEntries.forEach(ne=>{
     const idx=existing.findIndex(e=>e.id===ne.id);
-    if(idx>=0)existing[idx]=ne;else existing.push(ne);
+    if(idx>=0)existing[idx]=Object.fromEntries(Object.entries({...existing[idx],...ne}).filter(([,v])=>v!==null&&v!==undefined&&!(Array.isArray(v)&&v.length===0)));else existing.push(ne);
   });
   return currentContent.slice(0,start)+JSON.stringify(existing,null,2)+currentContent.slice(end+1);
 }
@@ -1605,7 +1605,7 @@ function App(){
       const newContent=upsertPassages(decoded,entries);
       const putRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{
         method:'PUT',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
-        body:JSON.stringify({message:'Add passages via teacher.html',content:btoa(unescape(encodeURIComponent(newContent))),sha:getJson.sha})
+        body:JSON.stringify({message:'Add passages via teacher.html',content:btoa(unescape(encodeURIComponent('\uFEFF'+newContent))),sha:getJson.sha})
       });
       if(!putRes.ok)throw new Error('GitHub 저장 실패: '+(await putRes.text()));
       alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
