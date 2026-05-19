@@ -1650,11 +1650,13 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
     };
     const ranked=(rawSrc||[]).map((si2,i)=>{
       const w=(si2.word||'').trim();
+      const orig=(si2.original||'').trim();
+      const searchW=orig||w; // original 우선으로 본문에서 위치 탐색
       const cl=Number(si2.sent);
       const ct=typeof allS[cl]==='string'?allS[cl]:(allS[cl]?.text||'');
       let fs=cl;
-      if(w&&!ct.includes(w)){
-        const ri=allS.findIndex(r=>{const t=typeof r==='string'?r:(r?.text||'');return t.includes(w);});
+      if(searchW&&!ct.includes(searchW)){
+        const ri=allS.findIndex(r=>{const t=typeof r==='string'?r:(r?.text||'');return t.includes(searchW);});
         if(ri>=0)fs=ri;
       }
       return{src:{...si2,sent:fs},opt:opts[i]};
