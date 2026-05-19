@@ -16979,5 +16979,432 @@ const PASSAGES = [
         }
       ]
     }
+  },
+  {
+    "id": "27STYD_01_006",
+    "difficulty": "높음",
+    "title": "진정한 수용",
+    "sentences": [
+      "Accepting or being at peace with things isn't easy.",
+      "It takes time, patience and a fair dose of courage.",
+      "True acceptance isn't about trying to make something go away, as in, 'If I accept this then it will go away'.",
+      "That's a good way to get dispirited when the problem, the thing, doesn't go away.",
+      "Using acceptance to make something go away is actually non-acceptance masquerading as acceptance in order to get rid of that towards which you have a negative attitude.",
+      "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
+      "It escalates!",
+      "We could then wonder what would happen if we stopped fighting with it.",
+      "Through true acceptance, the impact of such experiences starts to diminish and in their own time these experiences impact us less often.",
+      "It's as if we've been visited by a stray dog that keeps coming back because we keep feeding it, but soon it loses interest and goes away when it is not being fed.",
+      "Attention is the food that keeps it coming back."
+    ],
+    "abstract": "True acceptance means making peace with difficult experiences rather than trying to eliminate them, which paradoxically reduces their impact over time.",
+    "topic_options": [
+      "True acceptance means making peace with experiences rather than trying to eliminate them, which reduces their impact over time.",
+      "Courage and patience are the most important virtues in dealing with life's difficulties.",
+      "Fighting against negative experiences is a natural and effective way to overcome them.",
+      "Accepting problems immediately makes them disappear from our lives.",
+      "Negative attitudes are the root cause of all psychological suffering."
+    ],
+    "topic_answer": 1,
+    "blank_sel": 0,
+    "blank_candidates": [
+      {
+        "sentence_index": 4,
+        "keyword": "masquerading as acceptance",
+        "distractors": [
+          "substituting for resistance",
+          "disguised as courage",
+          "functioning as tolerance",
+          "replacing true patience"
+        ]
+      },
+      {
+        "sentence_index": 2,
+        "keyword": "make something go away",
+        "distractors": [
+          "eliminate all suffering",
+          "resolve every conflict",
+          "suppress negative emotions",
+          "change our perspective"
+        ]
+      },
+      {
+        "sentence_index": 8,
+        "keyword": "starts to diminish",
+        "distractors": [
+          "begins to intensify",
+          "tends to fluctuate",
+          "seems to disappear",
+          "continues to grow"
+        ]
+      }
+    ],
+    "blank_sentence_index": 4,
+    "blank_target": "masquerading as acceptance",
+    "blank_options": [
+      "masquerading as acceptance",
+      "substituting for resistance",
+      "disguised as courage",
+      "functioning as tolerance",
+      "replacing true patience"
+    ],
+    "blank_answer": 1,
+    "order_given_index": 0,
+    "order_blocks": [
+      {
+        "label": "B",
+        "sentence_indices": [
+          2,
+          3
+        ]
+      },
+      {
+        "label": "C",
+        "sentence_indices": [
+          4,
+          5
+        ]
+      },
+      {
+        "label": "D",
+        "sentence_indices": [
+          6,
+          7,
+          8
+        ]
+      }
+    ],
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 1,
+    "insert_sel": 0,
+    "insert_candidates": [
+      {
+        "sentence": "This distinction is crucial because the motivation behind acceptance determines whether it is genuine or merely a coping mechanism.",
+        "pos": 5
+      },
+      {
+        "sentence": "In other words, resistance amplifies the very thing we wish to be free from.",
+        "pos": 7
+      },
+      {
+        "sentence": "The key, therefore, is to withdraw that attention rather than fight the experience head-on.",
+        "pos": 10
+      }
+    ],
+    "insert_sentence": "Rather than getting dispirited we would be better to notice what happens when we fight with a situation or experience.",
+    "insert_answer": 5,
+    "summary_sel": 0,
+    "summary_candidates": [
+      {
+        "template": "True acceptance is not a strategy to ________(A)________ but rather a genuine peace with experience that causes its impact to ________(B)________.",
+        "A_correct": "make problems disappear",
+        "A_distractors": [
+          "build emotional resilience",
+          "suppress negative feelings",
+          "increase mental strength"
+        ],
+        "B_correct": "diminish over time",
+        "B_distractors": [
+          "escalate gradually",
+          "remain constant",
+          "intensify suddenly"
+        ]
+      },
+      {
+        "template": "Using acceptance as a tool to ________(A)________ is actually non-acceptance, and only genuine acceptance can reduce how often negative experiences ________(B)________.",
+        "A_correct": "get rid of problems",
+        "A_distractors": [
+          "build inner courage",
+          "develop new habits",
+          "strengthen our patience"
+        ],
+        "B_correct": "impact us",
+        "B_distractors": [
+          "appear to us",
+          "challenge us",
+          "define us"
+        ]
+      },
+      {
+        "template": "Just as a stray dog stops returning when it is ________(A)________, negative experiences lose their hold when we stop giving them our ________(B)________.",
+        "A_correct": "not being fed",
+        "A_distractors": [
+          "chased away forcefully",
+          "ignored completely",
+          "treated with kindness"
+        ],
+        "B_correct": "attention",
+        "B_distractors": [
+          "resistance",
+          "emotion",
+          "time"
+        ]
+      }
+    ],
+    "summary_template": "True acceptance is not a strategy to ________(A)________ but rather a genuine peace with experience that causes its impact to ________(B)________.",
+    "summary_A_options": [
+      "make problems disappear",
+      "build emotional resilience",
+      "suppress negative feelings",
+      "increase mental strength"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "diminish over time",
+      "escalate gradually",
+      "remain constant",
+      "intensify suddenly"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 9,
+    "implication_keyword": "stray dog that keeps coming back because we keep feeding it",
+    "implication_options": [
+      "Negative experiences persist because the attention we give them keeps reinforcing their presence in our minds.",
+      "Wild animals are attracted to human settlements due to the availability of food.",
+      "We should adopt stray animals to prevent them from causing disturbances.",
+      "Feeding animals regularly creates a sense of dependency that is hard to break.",
+      "The more we resist something, the stronger and more frequent it becomes."
+    ],
+    "implication_answer": 1,
+    "irrel_sel": 0,
+    "irrel_candidates": [
+      "Mindfulness meditation has been shown to lower cortisol levels in clinical studies.",
+      "Many psychologists recommend journaling as the primary method for emotional regulation.",
+      "Physical exercise is widely considered the best approach to managing daily stress."
+    ],
+    "irrel_insert_pos": 2,
+    "irrel_confirmed": false,
+    "irrelevant_sentence_index": 2,
+    "irrel_sentence": "Mindfulness meditation has been shown to lower cortisol levels in clinical studies.",
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "being",
+            "correct": true,
+            "note": "Accepting or being at peace: 병렬구조에서 동명사 사용 적절"
+          },
+          {
+            "sent": 1,
+            "word": "a fair dose of",
+            "correct": true,
+            "note": "courage를 수식하는 관용적 표현으로 적절"
+          },
+          {
+            "sent": 4,
+            "word": "masquerading",
+            "correct": true,
+            "note": "분사구문으로 주어 non-acceptance를 보충 설명하는 현재분사 적절"
+          },
+          {
+            "sent": 10,
+            "word": "keeps",
+            "correct": true,
+            "note": "Attention is the food that keeps it coming back: 주어 Attention에 단수 동사 keeps 적절"
+          },
+          {
+            "sent": 0,
+            "word": "새 항목",
+            "correct": false,
+            "note": "",
+            "alt": "",
+            "original": ""
+          }
+        ],
+        "answer": 4
+      },
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "takes",
+            "correct": true,
+            "note": "It takes time: 비인칭 주어 It에 단수 동사 takes 적절"
+          },
+          {
+            "sent": 3,
+            "word": "dispirited",
+            "correct": true,
+            "note": "get dispirited: get + 형용사 구문으로 적절"
+          },
+          {
+            "sent": 5,
+            "word": "getting",
+            "correct": true,
+            "note": "Rather than getting dispirited: 전치사 rather than 뒤 동명사 적절"
+          },
+          {
+            "sent": 7,
+            "word": "stopped fighting",
+            "correct": true,
+            "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
+          },
+          {
+            "sent": 9,
+            "word": "visited",
+            "correct": false,
+            "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
+          }
+        ],
+        "answer": 5
+      }
+    ],
+    "grammar_sel": 1,
+    "grammar_items": [
+      {
+        "sent": 1,
+        "word": "takes",
+        "correct": true,
+        "note": "It takes time: 비인칭 주어 It에 단수 동사 takes 적절"
+      },
+      {
+        "sent": 3,
+        "word": "dispirited",
+        "correct": true,
+        "note": "get dispirited: get + 형용사 구문으로 적절"
+      },
+      {
+        "sent": 5,
+        "word": "getting",
+        "correct": true,
+        "note": "Rather than getting dispirited: 전치사 rather than 뒤 동명사 적절"
+      },
+      {
+        "sent": 7,
+        "word": "stopped fighting",
+        "correct": true,
+        "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
+      },
+      {
+        "sent": 9,
+        "word": "visited",
+        "correct": false,
+        "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
+      }
+    ],
+    "grammar_answer": 5,
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "at peace with",
+            "alt": "at odds with",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "True",
+            "alt": "Absolute",
+            "correct": true
+          },
+          {
+            "sent": 3,
+            "word": "spirited",
+            "alt": "desprited",
+            "correct": false
+          },
+          {
+            "sent": 8,
+            "word": "diminish",
+            "alt": "lessen",
+            "correct": true
+          },
+          {
+            "sent": 10,
+            "word": "Attention",
+            "alt": "Focus",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "items": [
+          {
+            "sent": 1,
+            "word": "patience",
+            "alt": "impatience",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "masquerading",
+            "alt": "disguising",
+            "correct": true
+          },
+          {
+            "sent": 5,
+            "word": "escalates",
+            "alt": "intensifies",
+            "correct": true
+          },
+          {
+            "sent": 6,
+            "word": "escalates",
+            "alt": "diminishes",
+            "correct": false
+          },
+          {
+            "sent": 9,
+            "word": "stray",
+            "alt": "wandering",
+            "correct": true
+          }
+        ],
+        "answer": 4
+      }
+    ],
+    "vocab_sel": 0,
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "at peace with",
+        "alt": "at odds with",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "True",
+        "alt": "Absolute",
+        "correct": true
+      },
+      {
+        "sent": 3,
+        "word": "spirited",
+        "alt": "desprited",
+        "correct": false
+      },
+      {
+        "sent": 8,
+        "word": "diminish",
+        "alt": "lessen",
+        "correct": true
+      },
+      {
+        "sent": 10,
+        "word": "Attention",
+        "alt": "Focus",
+        "correct": true
+      }
+    ],
+    "vocab_answer": 3,
+    "aGroup": [
+      "make problems disappear",
+      "build emotional resilience",
+      "suppress negative feelings"
+    ],
+    "bGroup": [
+      "diminish over time",
+      "escalate gradually",
+      "remain constant"
+    ]
   }
 ];
