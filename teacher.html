@@ -455,14 +455,14 @@ const AUTH_PROMPT=t=>`You are a Korean CSAT English exam expert. Extract ONLY th
 "sentences":[{"num":1,"text":"s0","symbol":"G","role":"핵심 내용 15자 이내 한국어 요약 — 주제 제시/근거/예시/결론 등 담화 기능 포함"},{"num":2,"text":"s1","symbol":"S","role":"핵심 내용 요약"}],
 "topic":{"candidates":["CORRECT","w2","w3","w4","w5"]},
 "blank":{"candidates":[{"sentence_index":2,"keyword":"exact phrase","distractors":["w1","w2","w3","w4"]},{"sentence_index":0,"keyword":"phrase2","distractors":["w1","w2","w3","w4"]},{"sentence_index":4,"keyword":"phrase3","distractors":["w1","w2","w3","w4"]}]},
-"order":{"possible":true,"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4]},{"label":"D","sentence_indices":[5,6]}]},
+"order":{"possible":true,"blocks":[{"label":"B","sentence_indices":[1,2,3]},{"label":"C","sentence_indices":[4,5]},{"label":"D","sentence_indices":[6,7,8]}]},
 "summary":{"candidates":[{"template":"...________(A)________...________(B)________...","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl2","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl3","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]}]},
 "implication":{"possible":true,"sentence_index":2,"keyword":"figurative phrase","candidates":["CORRECT meaning","w2","w3","w4","w5"]},
 "irrelevant":{"candidates":["unrelated sentence1","unrelated sentence2","unrelated sentence3"],"recommended_pos":2},
 "insert":{"candidates":[{"sentence":"insert sentence","pos":3},{"sentence":"s2","pos":5},{"sentence":"s3","pos":2}]},
 "grammar":{"sets":[{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":1,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":false,"note":"→ correction"},{"sent":4,"word":"w","correct":true,"note":"이유"},{"sent":6,"word":"w","correct":true,"note":"이유"}],"answer":3},{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":true,"note":"이유"},{"sent":3,"word":"w","correct":false,"note":"→ correction"},{"sent":5,"word":"w","correct":true,"note":"이유"},{"sent":7,"word":"w","correct":true,"note":"이유"}],"answer":3}]},
 "vocab":{"sets":[{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":1,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":false},{"sent":4,"word":"orig","alt":"wrong","correct":true},{"sent":6,"word":"orig","alt":"wrong","correct":true}],"answer":3},{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":true},{"sent":3,"word":"orig","alt":"wrong","correct":false},{"sent":5,"word":"orig","alt":"wrong","correct":true},{"sent":7,"word":"orig","alt":"wrong","correct":true}],"answer":3}]}}
-Rules: topic.candidates[0]=correct. blank.keyword=exact substring. order.possible=false if <7 sentences. grammar/vocab word=exact word from that sentence. answer=1-based index of wrong item. sentences[].role=핵심 내용 15자 이내 한국어 요약(담화 기능+내용 포함, 예: '주제 제시: 소셜 미디어의 변화', '근거: 실험 결과 제시', '결론: 수용의 진정한 의미'). sentences[].symbol=G(일반)/S(지지)/+(추가)/↔(역접)/→(인과) 중 택1.
+Rules: topic.candidates[0]=correct. blank.keyword=exact substring. order.possible=false if <7 sentences. order.blocks must include ALL sentences except order_given_index(=0); every sentence index must appear in exactly one block. grammar/vocab word=exact word from that sentence. answer=1-based index of wrong item. sentences[].role=핵심 내용 15자 이내 한국어 요약(담화 기능+내용 포함, 예: '주제 제시: 소셜 미디어의 변화', '근거: 실험 결과 제시', '결론: 수용의 진정한 의미'). sentences[].symbol=G(일반)/S(지지)/+(추가)/↔(역접)/→(인과) 중 택1.
 TEXT:\n`+t;
 
 function splitTexts(text){
@@ -569,7 +569,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
       const getRes=await fetch(apiBase,{headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json'}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패: '+getRes.status);
       const fileData=await getRes.json();
-      const currentContent=decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
+      const currentContent=new TextDecoder('utf-8').decode(Uint8Array.from(atob(fileData.content.replace(/\n/g,'')),c=>c.charCodeAt(0)));
       // 2. 새 내용 append
       const parsedNew=JSON.parse('['+jsonText.replace(/^\/\/.*\n/gm,'').trim()+']');
       const newContent=upsertPassages(currentContent,parsedNew);
@@ -1588,7 +1588,7 @@ function App(){
       const getRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{headers:{'Authorization':'token '+ghToken}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패');
       const getJson=await getRes.json();
-      const decoded=decodeURIComponent(escape(atob(getJson.content.replace(/\n/g,''))));
+      const decoded=new TextDecoder('utf-8').decode(Uint8Array.from(atob(getJson.content.replace(/\n/g,'')),c=>c.charCodeAt(0)));
       const newContent=upsertPassages(decoded,entries);
       const putRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{
         method:'PUT',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
