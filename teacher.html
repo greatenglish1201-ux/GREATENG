@@ -527,11 +527,11 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
       const normed=initialPassageData.sentences||[];
       // grammar_sets/vocab_sets 없고 grammar_items만 있으면 sets 형태로 복원
       let pd={...initialPassageData};
-      if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){
+      if((!pd.grammar_sets||!pd.grammar_sets.length||pd.grammar_sets.every(s=>!s?.items?.length))&&pd.grammar_items?.length){
         pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];
         pd.grammar_sel=0;
       }
-      if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){
+      if((!pd.vocab_sets||!pd.vocab_sets.length||pd.vocab_sets.every(s=>!s?.items?.length))&&pd.vocab_items?.length){
         pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];
         pd.vocab_sel=0;
       }
@@ -591,8 +591,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
   const restorePassageData=(p)=>{
     if(!p)return p;
     let pd={...p};
-    if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];pd.grammar_sel=0;}
-    if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];pd.vocab_sel=0;}
+    if((!pd.grammar_sets||!pd.grammar_sets.length||pd.grammar_sets.every(s=>!s?.items?.length))&&pd.grammar_items?.length){pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];pd.grammar_sel=0;}
+    if((!pd.vocab_sets||!pd.vocab_sets.length||pd.vocab_sets.every(s=>!s?.items?.length))&&pd.vocab_items?.length){pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];pd.vocab_sel=0;}
     if(pd.insert_candidates?.length){pd.insert_candidates=pd.insert_candidates.filter(c=>c&&typeof c==='object'&&c.sentence);}
     if((!pd.insert_candidates||!pd.insert_candidates.length)&&pd.insert_sentence){pd.insert_candidates=[{sentence:pd.insert_sentence,pos:pd.insert_answer||1}];pd.insert_sel=0;}
     return pd;
@@ -1632,12 +1632,12 @@ function App(){
     if(!p)return p;
     let pd={...p};
     // grammar_sets 없고 grammar_items 있으면 복원
-    if((!pd.grammar_sets||!pd.grammar_sets.length)&&pd.grammar_items?.length){
+    if((!pd.grammar_sets||!pd.grammar_sets.length||pd.grammar_sets.every(s=>!s?.items?.length))&&pd.grammar_items?.length){
       pd.grammar_sets=[{items:pd.grammar_items,answer:pd.grammar_answer||1}];
       pd.grammar_sel=0;
     }
     // vocab_sets 없고 vocab_items 있으면 복원
-    if((!pd.vocab_sets||!pd.vocab_sets.length)&&pd.vocab_items?.length){
+    if((!pd.vocab_sets||!pd.vocab_sets.length||pd.vocab_sets.every(s=>!s?.items?.length))&&pd.vocab_items?.length){
       pd.vocab_sets=[{items:pd.vocab_items,answer:pd.vocab_answer||1}];
       pd.vocab_sel=0;
     }
