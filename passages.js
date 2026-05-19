@@ -17242,14 +17242,14 @@ const PASSAGES = [
           },
           {
             "sent": 7,
-            "word": "stopped fighting",
-            "correct": true,
+            "word": "kept fighting",
+            "correct": false,
             "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
           },
           {
             "sent": 9,
             "word": "visited",
-            "correct": false,
+            "correct": true,
             "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
           }
         ],
@@ -17278,18 +17278,18 @@ const PASSAGES = [
       },
       {
         "sent": 7,
-        "word": "stopped fighting",
-        "correct": true,
+        "word": "kept fighting",
+        "correct": false,
         "note": "stop + 동명사: '~하는 것을 멈추다' 의미로 적절"
       },
       {
         "sent": 9,
         "word": "visited",
-        "correct": false,
+        "correct": true,
         "note": "→ It's as if we've been visited: 가정법에서 'have been visited'보다 'were visited'가 문법적으로 더 정확하나, 현재완료 수동태도 가능. 실제 오류: 'it loses interest and goes away when it is not being fed'에서 'not being fed' → 'not fed'로 단순 수동이 더 자연스러움"
       }
     ],
-    "grammar_answer": 5,
+    "grammar_answer": 4,
     "vocab_sets": [
       {
         "items": [
