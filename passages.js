@@ -17742,7 +17742,7 @@ const PASSAGES = [
           {
             "sent": 3,
             "word": "unreasonable",
-            "alt": "superficial",
+            "alt": "reasonable",
             "correct": false
           },
           {
@@ -17813,7 +17813,7 @@ const PASSAGES = [
       {
         "sent": 3,
         "word": "unreasonable",
-        "alt": "superficial",
+        "alt": "reasonable",
         "correct": false
       },
       {
