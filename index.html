@@ -1672,10 +1672,11 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
         if(!list||!list.length)return <span key={si}>{s} </span>;
         const positioned=list.map(r=>{
           const word=r.opt?r.opt.text||'':'';
-          const sw=r.src.original||word;
+          const original=r.src.original||'';
+          const sw=original||word;
           const i2=r.src.pos!=null?r.src.pos:wIdx(s,sw);
-          const len=r.src.pos!=null?(r.src.original||word).length:sw.length;
-          return{...r,word,i2,len};
+          const len=r.src.pos!=null?(original||word).length:sw.length;
+          return{...r,word,sw,i2,len};
         });
         const found=positioned.filter(r=>r.i2>=0).sort((a,b)=>a.i2-b.i2);
         const notFound=positioned.filter(r=>r.i2<0);
