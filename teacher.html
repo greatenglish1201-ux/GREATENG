@@ -569,7 +569,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, slots, onSlotChange, onSaveComp
       const getRes=await fetch(apiBase,{headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json'}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패: '+getRes.status);
       const fileData=await getRes.json();
-      const currentContent=decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
+      const currentContent=new TextDecoder('utf-8').decode(Uint8Array.from(atob(fileData.content.replace(/\n/g,'')),c=>c.charCodeAt(0)));
       // 2. 새 내용 append
       const parsedNew=JSON.parse('['+jsonText.replace(/^\/\/.*\n/gm,'').trim()+']');
       const newContent=upsertPassages(currentContent,parsedNew);
@@ -1588,7 +1588,7 @@ function App(){
       const getRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{headers:{'Authorization':'token '+ghToken}});
       if(!getRes.ok)throw new Error('passages.js 읽기 실패');
       const getJson=await getRes.json();
-      const decoded=decodeURIComponent(escape(atob(getJson.content.replace(/\n/g,''))));
+      const decoded=new TextDecoder('utf-8').decode(Uint8Array.from(atob(getJson.content.replace(/\n/g,'')),c=>c.charCodeAt(0)));
       const newContent=upsertPassages(decoded,entries);
       const putRes=await fetch('https://api.github.com/repos/'+ghRepo+'/contents/'+path,{
         method:'PUT',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},
