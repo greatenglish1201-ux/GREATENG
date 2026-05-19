@@ -17422,7 +17422,17 @@ const PASSAGES = [
     ],
     "disabled_types": [
       "order"
-    ]
+    ],
+    "implication_sentence_index": 2,
+    "implication_keyword": "If I accept this then it will go awa",
+    "implication_options": [
+      "Accepting something with the hidden goal of eliminating it is not genuine acceptance",
+      "Truly accepting a problem will eventually make it disappear on its own",
+      "Refusing to accept a difficult situation will only make it worse over time",
+      "Acceptance requires letting go of any desire to control the outcome",
+      "Optimistic thinking can help resolve problems that seem impossible to overcome"
+    ],
+    "implication_answer": 1
   },
   {
     "id": "27STYD_01_007",
