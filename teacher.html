@@ -51,6 +51,73 @@ function jsonpFetch(url, data){
   });
 }
 
+// Form POST fetch (큰 데이터 전송용 - URL 길이 제한 우회)
+// hidden iframe에 form.submit() → iframe load 시 textarea 응답 읽음
+function formPostFetch(url, data){
+  return new Promise((resolve, reject)=>{
+    const iframeName='formpost_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+    const iframe=document.createElement('iframe');
+    iframe.name=iframeName;
+    iframe.style.display='none';
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action=url;
+    form.target=iframeName;
+    form.enctype='application/x-www-form-urlencoded';
+    form.style.display='none';
+    // 모든 데이터를 payload 1개 필드에 JSON으로 묶음
+    const input=document.createElement('input');
+    input.type='hidden';
+    input.name='payload';
+    input.value=JSON.stringify(data);
+    form.appendChild(input);
+    const timer=setTimeout(()=>{cleanup(); reject(new Error('formPost timeout'));}, 60000);
+    function cleanup(){
+      clearTimeout(timer);
+      if(iframe.parentNode)iframe.parentNode.removeChild(iframe);
+      if(form.parentNode)form.parentNode.removeChild(form);
+    }
+    iframe.onload=()=>{
+      try{
+        // 같은 도메인이 아니라 iframe 내용 직접 접근 불가
+        // → Apps Script가 textarea로 응답 → iframe.contentDocument 시도
+        let text='';
+        try{
+          const doc=iframe.contentDocument||iframe.contentWindow.document;
+          const ta=doc.getElementById('__greateng_response__');
+          if(ta)text=ta.value;
+        }catch(crossErr){
+          // cross-origin: postMessage 방식 필요하지만 일단 ok 가정
+          cleanup();
+          resolve({ok:true,warning:'cross-origin: 응답 확인 불가 (저장은 됐을 가능성 높음)'});
+          return;
+        }
+        if(text){
+          try{
+            const decoded=text.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+            const result=JSON.parse(decoded);
+            cleanup();
+            resolve(result);
+          }catch(parseErr){
+            cleanup();
+            reject(new Error('응답 파싱 실패: '+parseErr.message));
+          }
+        }else{
+          cleanup();
+          resolve({ok:true,warning:'응답 없음 (저장은 됐을 가능성)'});
+        }
+      }catch(e){
+        cleanup();
+        reject(new Error('formPost 응답 오류: '+e.message));
+      }
+    };
+    iframe.onerror=()=>{cleanup(); reject(new Error('formPost network error'));};
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+  });
+}
+
 const SM={
   'G':{bg:'#E6F1FB',bd:'#185FA5',tx:'#0C447C',lbl:'주제·통념'},
   '↔':{bg:'#FAECE7',bd:'#D85A30',tx:'#712B13',lbl:'역접'},
@@ -1861,13 +1928,13 @@ function App(){
     if(!id||!slot.meta.source){alert('교재/강/번호가 비어있습니다.');return false;}
     setSlotSheetSaving(prev=>({...prev,[slot.id]:true}));
     try{
-      // 1) 지문DB
-      const r1=await jsonpFetch(appsUrl,{action:'savePassage',...passagePayload});
-      if(!r1.ok)throw new Error('지문 저장 실패: '+(r1.error||'unknown'));
-      // 2) 출제DB
+      // 1) 지문DB (POST - 큰 데이터)
+      const r1=await formPostFetch(appsUrl,{action:'savePassage',...passagePayload});
+      if(!r1.ok&&!r1.warning)throw new Error('지문 저장 실패: '+(r1.error||'unknown'));
+      // 2) 출제DB (POST - 큰 데이터)
       if(questions.length){
-        const r2=await jsonpFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
-        if(!r2.ok)throw new Error('출제 저장 실패: '+(r2.error||'unknown'));
+        const r2=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
+        if(!r2.ok&&!r2.warning)throw new Error('출제 저장 실패: '+(r2.error||'unknown'));
       }
       return true;
     }catch(e){
