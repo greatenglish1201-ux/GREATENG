@@ -34,7 +34,22 @@ const SYMS=['G','↔','=','S','→','+'];
 const STRUCTS=['통념→반박→결론','문제→해결책','질문→답변','실험/일화→교훈','인과 관계','비교 대조'];
 const NSTR=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
 const nStr=n=>NSTR[n-1]||'('+n+')';
-const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots'};
+const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots',APPS_URL:'te_apps_script_url'};
+
+// JSONP fetch (CORS 우회 - Apps Script 호출용)
+function jsonpFetch(url, data){
+  return new Promise((resolve, reject)=>{
+    const cb='jsonp_cb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+    const params=new URLSearchParams({...data, callback:cb}).toString();
+    const script=document.createElement('script');
+    const timer=setTimeout(()=>{cleanup(); reject(new Error('JSONP timeout'));}, 30000);
+    function cleanup(){clearTimeout(timer); delete window[cb]; if(script.parentNode)script.parentNode.removeChild(script);}
+    window[cb]=(res)=>{cleanup(); resolve(res);};
+    script.src=url+(url.includes('?')?'&':'?')+params;
+    script.onerror=()=>{cleanup(); reject(new Error('JSONP network error'));};
+    document.body.appendChild(script);
+  });
+}
 
 const SM={
   'G':{bg:'#E6F1FB',bd:'#185FA5',tx:'#0C447C',lbl:'주제·통념'},
@@ -1614,6 +1629,16 @@ function App(){
   const [ghRepo,setGhRepo]=useState(()=>localStorage.getItem('gh_repo')||'greatenglish1201-ux/GREATENG');
   const [ghTokenInput,setGhTokenInput]=useState('');
   const [ghRepoInput,setGhRepoInput]=useState('');
+  const [appsUrl,setAppsUrl]=useState(()=>localStorage.getItem(LS.APPS_URL)||'');
+  const [appsUrlInput,setAppsUrlInput]=useState('');
+  const [sheetSaving,setSheetSaving]=useState(false);
+  const [sheetLoading,setSheetLoading]=useState(false);
+  const [slotSheetSaving,setSlotSheetSaving]=useState({});
+  const [showSheetLoad,setShowSheetLoad]=useState(false);
+  const [sheetPassages,setSheetPassages]=useState([]);
+  const [sheetLoadSrc,setSheetLoadSrc]=useState('');
+  const [sheetLoadSearch,setSheetLoadSearch]=useState('');
+  const [sheetLoadSel,setSheetLoadSel]=useState({});
   const [showSet,setShowSet]=useState(false);
   const [showLoad,setShowLoad]=useState(false);
   const [loadedPassages,setLoadedPassages]=useState([]);
@@ -1766,6 +1791,195 @@ function App(){
     }catch(e){alert('오류: '+e.message);}
     setMainGhSaving(false);
   },[slots,ghToken,ghRepo]);
+
+  // ──────────────────────────────────────────────
+  // 시트 저장 — 슬롯 1개를 지문DB + 출제DB에 저장
+  // ──────────────────────────────────────────────
+  const buildSlotPayload=useCallback((slot)=>{
+    const p=slot.passageData||{};
+    const metaId=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
+    const id=p.id||metaId;
+    // 지문DB payload
+    const sentences=slot.analysis?.sentences?.length?slot.analysis.sentences:(p.sentences||[]);
+    const flow=slot.analysis?.flow&&Object.keys(slot.analysis.flow).length?slot.analysis.flow:(p.flow||{});
+    const blockSummaries=slot.blockSummaries&&slot.blockSummaries!=='loading'?slot.blockSummaries:null;
+    const passagePayload={
+      id,
+      source:slot.meta.source||'',
+      chapter:slot.meta.chapter||'',
+      number:slot.meta.number||'',
+      difficulty:p.difficulty||slot.meta.difficulty||'',
+      title:p.title||'',
+      abstract:p.abstract||'',
+      sentences_json:JSON.stringify(sentences),
+      flow_json:JSON.stringify(flow),
+      blockSummaries_json:blockSummaries?JSON.stringify(blockSummaries):'',
+    };
+    // 출제DB payload — 9가지 유형 (데이터가 있는 것만 저장)
+    const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
+    const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};
+    const questions=[];
+    if(p.topic_options&&p.topic_options.length){
+      questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''});
+    }
+    if(p.blank_candidates&&p.blank_candidates.length){
+      questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:p.blank_candidates,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options}),answer:p.blank_answer||''});
+    }
+    if(p.order_blocks||p.order_options){
+      questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''});
+    }
+    if(p.insert_candidates&&p.insert_candidates.length){
+      questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:p.insert_candidates,sentence:p.insert_sentence}),answer:p.insert_answer||''});
+    }
+    if(p.summary_candidates&&p.summary_candidates.length){
+      questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer,B_options:p.summary_B_options,B_answer:p.summary_B_answer}),answer:''});
+    }
+    if(p.implication_options&&p.implication_options.length){
+      questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''});
+    }
+    if(p.irrel_candidates&&p.irrel_candidates.length){
+      questions.push({type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index}),answer:''});
+    }
+    if(gs.items&&gs.items.length){
+      const sorted=[...gs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));
+      const idx=sorted.findIndex(it=>it.correct===false);
+      const ans=idx>=0?idx+1:(p.grammar_answer||gs.answer||1);
+      questions.push({type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted}),answer:ans});
+    }
+    if(vs.items&&vs.items.length){
+      const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));
+      const idx=sorted.findIndex(it=>it.correct===false);
+      const ans=idx>=0?idx+1:(p.vocab_answer||vs.answer||1);
+      questions.push({type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted}),answer:ans});
+    }
+    return{passagePayload,questions,id};
+  },[]);
+
+  const saveSlotToSheet=useCallback(async(slot)=>{
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return false;}
+    const {passagePayload,questions,id}=buildSlotPayload(slot);
+    if(!id||!slot.meta.source){alert('교재/강/번호가 비어있습니다.');return false;}
+    setSlotSheetSaving(prev=>({...prev,[slot.id]:true}));
+    try{
+      // 1) 지문DB
+      const r1=await jsonpFetch(appsUrl,{action:'savePassage',...passagePayload});
+      if(!r1.ok)throw new Error('지문 저장 실패: '+(r1.error||'unknown'));
+      // 2) 출제DB
+      if(questions.length){
+        const r2=await jsonpFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
+        if(!r2.ok)throw new Error('출제 저장 실패: '+(r2.error||'unknown'));
+      }
+      return true;
+    }catch(e){
+      alert('시트 저장 오류 ('+id+'): '+e.message);
+      return false;
+    }finally{
+      setSlotSheetSaving(prev=>{const n={...prev};delete n[slot.id];return n;});
+    }
+  },[appsUrl,buildSlotPayload]);
+
+  const saveAllToSheet=useCallback(async()=>{
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    const targets=slots.filter(s=>['saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length));
+    if(!targets.length){alert('저장할 슬롯이 없습니다. (저장완료/흐름확정 상태만 대상)');return;}
+    if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`))return;
+    setSheetSaving(true);
+    let ok=0,fail=0;
+    for(const slot of targets){
+      const success=await saveSlotToSheet(slot);
+      if(success)ok++;else fail++;
+    }
+    setSheetSaving(false);
+    alert(`✓ 시트 저장 완료\n성공 ${ok}개 / 실패 ${fail}개`);
+  },[appsUrl,slots,saveSlotToSheet]);
+
+  // ──────────────────────────────────────────────
+  // 시트 불러오기 — 지문DB + 출제DB 통합
+  // ──────────────────────────────────────────────
+  const loadFromSheet=useCallback(async()=>{
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    setSheetLoading(true);
+    try{
+      const r=await jsonpFetch(appsUrl,{action:'getPassages'});
+      if(!r.ok)throw new Error(r.error||'unknown');
+      setSheetPassages(r.passages||[]);
+      setShowSheetLoad(true);
+    }catch(e){
+      alert('시트 불러오기 실패: '+e.message);
+    }
+    setSheetLoading(false);
+  },[appsUrl]);
+
+  const loadSheetIntoSlots=useCallback(async(selectedIds)=>{
+    if(!selectedIds.length){alert('선택된 지문이 없습니다.');return;}
+    setSheetLoading(true);
+    const restored=[];
+    try{
+      for(const id of selectedIds){
+        const sp=sheetPassages.find(p=>p.id===id);
+        if(!sp)continue;
+        // 출제DB도 함께
+        const r=await jsonpFetch(appsUrl,{action:'getQuestions',pid:id});
+        const qs=r.ok?(r.questions||[]):[];
+        // passageData 복원
+        const pd={
+          id:sp.id,
+          difficulty:sp.difficulty,
+          title:sp.title,
+          abstract:sp.abstract,
+          sentences:sp.sentences_json?JSON.parse(sp.sentences_json):[],
+          flow:sp.flow_json?JSON.parse(sp.flow_json):{},
+        };
+        const blockSummaries=sp.blockSummaries_json?JSON.parse(sp.blockSummaries_json):null;
+        // 각 출제 타입을 passageData에 다시 분해 흡수
+        qs.forEach(q=>{
+          let d={};
+          try{d=q.data_json?JSON.parse(q.data_json):{};}catch{return;}
+          if(q.type==='topic'){pd.topic_options=d.options;pd.topic_answer=q.answer;}
+          else if(q.type==='blank'){pd.blank_sel=d.sel;pd.blank_candidates=d.candidates;pd.blank_sentence_index=d.sentence_index;pd.blank_target=d.target;pd.blank_options=d.options;pd.blank_answer=q.answer;}
+          else if(q.type==='order'){pd.order_given_index=d.given_index;pd.order_blocks=d.blocks;pd.order_options=d.options;pd.order_answer=q.answer;}
+          else if(q.type==='insert'){pd.insert_sel=d.sel;pd.insert_candidates=d.candidates;pd.insert_sentence=d.sentence;pd.insert_answer=q.answer;}
+          else if(q.type==='summary'){pd.summary_sel=d.sel;pd.summary_candidates=d.candidates;pd.summary_template=d.template;pd.summary_A_options=d.A_options;pd.summary_A_answer=d.A_answer;pd.summary_B_options=d.B_options;pd.summary_B_answer=d.B_answer;}
+          else if(q.type==='implication'){pd.implication_sentence_index=d.sentence_index;pd.implication_keyword=d.keyword;pd.implication_options=d.options;pd.implication_answer=q.answer;}
+          else if(q.type==='irrelevant'){pd.irrel_sel=d.sel;pd.irrel_candidates=d.candidates;pd.irrel_insert_pos=d.insert_pos;pd.irrel_confirmed=d.confirmed;pd.irrelevant_sentence_index=d.sentence_index;}
+          else if(q.type==='grammar'){pd.grammar_sets=d.sets;pd.grammar_sel=d.sel;pd.grammar_items=d.items;pd.grammar_answer=q.answer;}
+          else if(q.type==='vocab'){pd.vocab_sets=d.sets;pd.vocab_sel=d.sel;pd.vocab_items=d.items;pd.vocab_answer=q.answer;}
+        });
+        restored.push({sp,pd,blockSummaries});
+      }
+      // 빈 슬롯에 차례로 채우기
+      setSlots(prev=>{
+        const next=[...prev];
+        let idx=0;
+        for(const {sp,pd,blockSummaries} of restored){
+          // 빈 슬롯 찾기
+          while(idx<next.length&&next[idx].text&&next[idx].text.trim())idx++;
+          if(idx>=next.length)break;
+          const sentenceText=(pd.sentences||[]).map(s=>typeof s==='string'?s:(s.text||'')).join(' ');
+          next[idx]={
+            ...next[idx],
+            text:sentenceText,
+            meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
+            status:'saved',
+            analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{}},
+            passageData:pd,
+            blockSummaries,
+            open:true,
+            error:'',
+          };
+          idx++;
+        }
+        saveSlots(next);
+        return next;
+      });
+      setShowSheetLoad(false);
+      setSheetLoadSel({});
+      alert(`✓ ${restored.length}개 지문을 슬롯에 불러왔습니다.`);
+    }catch(e){
+      alert('불러오기 오류: '+e.message);
+    }
+    setSheetLoading(false);
+  },[appsUrl,sheetPassages]);
 
   const fetchPassages=useCallback(async()=>{
     if(loadedPassages.length>0){setShowLoad(true);return;}
@@ -1942,6 +2156,16 @@ function App(){
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
             {mainGhSaving?'저장중...':'GitHub 저장 ↗'}
           </button>}
+          {viewMode!=='authoring'&&<button onClick={loadFromSheet} disabled={sheetLoading}
+            style={{background:'rgba(24,95,165,.55)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            {sheetLoading?'로딩...':'📊 시트 불러오기'}
+          </button>}
+          {viewMode!=='authoring'&&<button onClick={saveAllToSheet} disabled={sheetSaving}
+            style={{background:sheetSaving?'rgba(0,0,0,.3)':'rgba(83,74,183,.6)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            {sheetSaving?'저장중...':'📊 시트 일괄저장'}
+          </button>}
           <button onClick={()=>buildAllDOCX(slots,'teacher')}
             style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>📄 전체 교사용</button>
@@ -2027,11 +2251,66 @@ function App(){
         </div>
       )}
 
+      {showSheetLoad&&(()=>{
+        const sources=Array.from(new Set(sheetPassages.map(p=>p.source).filter(Boolean))).sort();
+        const filtered=sheetPassages.filter(p=>{
+          if(sheetLoadSrc&&p.source!==sheetLoadSrc)return false;
+          if(sheetLoadSearch){
+            const q=sheetLoadSearch.toLowerCase();
+            if(!(p.id||'').toLowerCase().includes(q)&&!(p.title||'').toLowerCase().includes(q))return false;
+          }
+          return true;
+        });
+        const selCount=Object.values(sheetLoadSel).filter(Boolean).length;
+        return(<div style={{background:'#fff',borderBottom:'0.5px solid #e5e5e5',padding:'14px 20px',maxHeight:400,overflow:'auto'}}>
+          <div style={{display:'flex',gap:8,marginBottom:10,alignItems:'center',flexWrap:'wrap'}}>
+            <span style={{fontSize:13,fontWeight:600}}>📊 시트 불러오기 ({filtered.length}개)</span>
+            <select value={sheetLoadSrc} onChange={e=>setSheetLoadSrc(e.target.value)}
+              style={{padding:'4px 8px',fontSize:12,borderRadius:5,border:'0.5px solid #ccc'}}>
+              <option value="">전체 교재</option>
+              {sources.map(s=><option key={s} value={s}>{s}</option>)}
+            </select>
+            <input value={sheetLoadSearch} onChange={e=>setSheetLoadSearch(e.target.value)}
+              placeholder="ID/제목 검색" style={{padding:'4px 8px',fontSize:12,borderRadius:5,border:'0.5px solid #ccc',flex:1,minWidth:120}}/>
+            <button onClick={()=>{const all={};filtered.forEach(p=>{all[p.id]=true;});setSheetLoadSel(all);}}
+              style={{padding:'4px 10px',fontSize:11,background:'#f5f5f5',border:'0.5px solid #ccc',borderRadius:5,cursor:'pointer'}}>전체선택</button>
+            <button onClick={()=>setSheetLoadSel({})}
+              style={{padding:'4px 10px',fontSize:11,background:'#f5f5f5',border:'0.5px solid #ccc',borderRadius:5,cursor:'pointer'}}>해제</button>
+            <button onClick={()=>{setShowSheetLoad(false);setSheetLoadSel({});}}
+              style={{padding:'4px 10px',fontSize:11,background:'#f5f5f5',border:'0.5px solid #ccc',borderRadius:5,cursor:'pointer'}}>닫기</button>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:6,marginBottom:10}}>
+            {filtered.map(p=>(
+              <label key={p.id} style={{display:'flex',gap:6,alignItems:'center',padding:'6px 8px',
+                border:`0.5px solid ${sheetLoadSel[p.id]?'#185FA5':'#e5e5e5'}`,
+                background:sheetLoadSel[p.id]?'#E6F1FB':'#fff',borderRadius:6,cursor:'pointer',fontSize:12}}>
+                <input type="checkbox" checked={!!sheetLoadSel[p.id]}
+                  onChange={e=>setSheetLoadSel(prev=>({...prev,[p.id]:e.target.checked}))}/>
+                <span style={{fontFamily:'monospace',fontWeight:600,color:'#185FA5'}}>{p.id}</span>
+                {p.title&&<span style={{color:'#666',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.title}</span>}
+              </label>
+            ))}
+          </div>
+          <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+            <button onClick={()=>{
+              const ids=Object.keys(sheetLoadSel).filter(k=>sheetLoadSel[k]);
+              loadSheetIntoSlots(ids);
+            }} disabled={selCount===0||sheetLoading}
+              style={{padding:'8px 18px',fontSize:13,fontWeight:600,
+                background:selCount>0?'#185FA5':'#ccc',
+                color:'#fff',border:'none',borderRadius:7,cursor:selCount>0?'pointer':'not-allowed'}}>
+              {sheetLoading?'불러오는 중...':`슬롯에 불러오기 (${selCount})`}
+            </button>
+          </div>
+        </div>);
+      })()}
+
       {showSet&&(
         <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
           {[{lbl:'Claude API Key',val:keyInput||(apiKey?'••••••••':''),set:setKeyInput,ph:'sk-ant-api03-...',type:'password'},
             {lbl:'GitHub Token',val:ghTokenInput||(ghToken?'••••••••':''),set:setGhTokenInput,ph:'ghp_...',type:'password'},
-            {lbl:'GitHub 저장소',val:ghRepoInput||ghRepo,set:setGhRepoInput,ph:'greatenglish1201-ux/GREATENG',type:'text'}].map((r,i)=>(
+            {lbl:'GitHub 저장소',val:ghRepoInput||ghRepo,set:setGhRepoInput,ph:'greatenglish1201-ux/GREATENG',type:'text'},
+            {lbl:'Apps Script URL',val:appsUrlInput||appsUrl,set:setAppsUrlInput,ph:'https://script.google.com/macros/s/.../exec',type:'text'}].map((r,i)=>(
             <div key={i} style={{display:'flex',gap:10,alignItems:'center'}}>
               <span style={{color:'#a5d6f5',fontSize:12.5,width:140,flexShrink:0}}>{r.lbl}</span>
               <input type={r.type} value={r.val} onChange={e=>r.set(e.target.value)}
@@ -2047,7 +2326,8 @@ function App(){
               const t=ghTokenInput||ghToken,r2=ghRepoInput||ghRepo;
               if(ghTokenInput){localStorage.setItem('gh_token',ghTokenInput);setGhToken(ghTokenInput);}
               if(ghRepoInput){localStorage.setItem('gh_repo',ghRepoInput);setGhRepo(ghRepoInput);}
-              setGhTokenInput('');setGhRepoInput('');
+              if(appsUrlInput){localStorage.setItem(LS.APPS_URL,appsUrlInput);setAppsUrl(appsUrlInput);}
+              setGhTokenInput('');setGhRepoInput('');setAppsUrlInput('');
               setShowSet(false);flash('설정 저장 ✓');
             }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:6,
               padding:'7px 20px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>저장</button>
@@ -2133,6 +2413,8 @@ function App(){
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onSave={()=>upSlot(slot.id,{status:'saved'})}
+            onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok)flash('시트 저장 ✓');}}
+            sheetSaving={!!slotSheetSaving[slot.id]}
             onReanalyze={()=>reanalyze(slot)}
             onAnalysis={upAnalysis}
             onGenSum={()=>generateBlockSummaries(slot)}
@@ -2143,7 +2425,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onReanalyze,onAnalysis,onAuthor,onGenSum}){
+function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onReanalyze,onAnalysis,onAuthor,onGenSum}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -2496,6 +2778,12 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
             {['analyzed','confirmed','saved'].includes(slot.status)&&(
               <button onClick={onReanalyze} style={{padding:'7px 14px',fontSize:12.5,background:'transparent',
                 color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
+            )}
+            {['confirmed','saved'].includes(slot.status)&&onSheetSave&&(
+              <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 14px',fontSize:12.5,fontWeight:600,
+                background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:6,cursor:sheetSaving?'wait':'pointer'}}>
+                {sheetSaving?'저장중...':'📊 시트 저장'}
+              </button>
             )}
 
           </div>
