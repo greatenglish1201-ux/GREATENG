@@ -15689,7 +15689,36 @@
           "point": "'state'는 단순한 생리적·내적 감정 상태, 'experience'는 맥락과 상호작용을 통해 의미화된 경험을 뜻함. 앞선 논의 전체를 Lewis의 개념으로 압축하는 결론 문장."
         }
       ]
-    }
+    },
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "Research suggests that {facial expressions} reveal a {finite repertoire} of {human emotions} that are roughly synonymous across all members of the species.",
+        "keywords": [
+          "facial expressions",
+          "finite repertoire",
+          "human emotions"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "Emotions are not separable from {particular circumstances}, as {basic} universally recognizable {behaviors} such as laughter and crying are always carried out in specific contexts.",
+        "keywords": [
+          "particular circumstances",
+          "basic",
+          "behaviors"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "As elements in {human communicative function}, emotional {behaviors} are shaped by the environment while also creating a necessity of {response}, transforming state into experience.",
+        "keywords": [
+          "human communicative function",
+          "behaviors",
+          "response"
+        ]
+      }
+    ]
   },
   {
     "id": "27STYD_01_002",
@@ -18729,6 +18758,575 @@
   },
   {
     "id": "ABSO_01_012",
+    "difficulty": "중",
+    "title": "",
+    "sentences": [
+      {
+        "num": 1,
+        "text": "For the longest time, it was debated how bees computed the distance to their nectar, but we have now figured it out.",
+        "symbol": "G",
+        "role": "오랫동안 논쟁이 되어온 벌의 거리 계산 방식 - 현재는 해명됨",
+        "chunks": [
+          {
+            "en": "For the longest time,",
+            "ko": "아주 오랫동안"
+          },
+          {
+            "en": "it was debated",
+            "ko": "논쟁이 있었다"
+          },
+          {
+            "en": "how bees computed the distance",
+            "ko": "벌이 거리를 어떻게 계산하는지에 대해"
+          },
+          {
+            "en": "to their nectar,",
+            "ko": "꿀까지의"
+          },
+          {
+            "en": "but we have now figured it out.",
+            "ko": "하지만 우리는 이제 그것을 알아냈다"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "The bee is actually approximating distance by measuring the amount of visual stimuli it receives on the trip.",
+        "symbol": "==",
+        "role": "벌의 거리 계산 방식 핵심 메커니즘 제시",
+        "chunks": [
+          {
+            "en": "The bee is actually",
+            "ko": "벌은 사실"
+          },
+          {
+            "en": "approximating distance",
+            "ko": "거리를 어림잡는다"
+          },
+          {
+            "en": "by measuring",
+            "ko": "측정함으로써"
+          },
+          {
+            "en": "the amount of visual stimuli",
+            "ko": "시각적 자극의 양을"
+          },
+          {
+            "en": "it receives on the trip.",
+            "ko": "이동 중에 받는"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "Imagine this setup.",
+        "symbol": "S",
+        "role": "실험 설명 도입",
+        "chunks": [
+          {
+            "en": "Imagine this setup.",
+            "ko": "이 실험 장치를 상상해보라"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "You take a paper towel tube, split it open, and paint a bunch of tiny trees all along the inside.",
+        "symbol": "S",
+        "role": "실험 장치 제작 과정 1단계",
+        "chunks": [
+          {
+            "en": "You take a paper towel tube,",
+            "ko": "종이 타월 튜브를 가져다가"
+          },
+          {
+            "en": "split it open,",
+            "ko": "쪼개 펼친 다음"
+          },
+          {
+            "en": "and paint a bunch of tiny trees",
+            "ko": "작은 나무들을 잔뜩 그린다"
+          },
+          {
+            "en": "all along the inside.",
+            "ko": "안쪽 전체에"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "Then you tape it back up and put the tube at the door of the hive so that the bees must fly through it to exit.",
+        "symbol": "S",
+        "role": "실험 장치 제작 과정 2단계 - 벌집 출구에 설치",
+        "chunks": [
+          {
+            "en": "Then you tape it back up",
+            "ko": "그런 다음 다시 테이프로 붙이고"
+          },
+          {
+            "en": "and put the tube at the door of the hive",
+            "ko": "튜브를 벌집 입구에 놓는다"
+          },
+          {
+            "en": "so that the bees must fly through it",
+            "ko": "벌들이 반드시 그것을 통과해 날아야"
+          },
+          {
+            "en": "to exit.",
+            "ko": "나갈 수 있도록"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "Bug scientists discovered that while the bee only flies ten inches through the tube, from its point of view, it just flew through an entire forest.",
+        "symbol": "S",
+        "role": "실험 결과 - 벌의 시각적 착각 발생",
+        "chunks": [
+          {
+            "en": "Bug scientists discovered that",
+            "ko": "곤충학자들은 발견했다"
+          },
+          {
+            "en": "while the bee only flies ten inches through the tube,",
+            "ko": "벌이 튜브를 통해 불과 10인치를 날았지만"
+          },
+          {
+            "en": "from its point of view,",
+            "ko": "벌의 관점에서는"
+          },
+          {
+            "en": "it just flew through an entire forest.",
+            "ko": "숲 전체를 날아온 것이었다"
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "text": "If the scientists put a nectar source right at the end of the tube, the bee would fly ten inches to it, but go back and report that there is nectar a whole forest away.",
+        "symbol": "S",
+        "role": "시각 착각이 거리 보고에 미치는 영향 - 과장된 거리 보고",
+        "chunks": [
+          {
+            "en": "If the scientists put a nectar source",
+            "ko": "과학자들이 꿀 공급원을 놓으면"
+          },
+          {
+            "en": "right at the end of the tube,",
+            "ko": "튜브 끝 바로 앞에"
+          },
+          {
+            "en": "the bee would fly ten inches to it,",
+            "ko": "벌은 10인치를 날아가지만"
+          },
+          {
+            "en": "but go back and report",
+            "ko": "돌아와서 보고한다"
+          },
+          {
+            "en": "that there is nectar a whole forest away.",
+            "ko": "꿀이 숲 하나를 건너에 있다고"
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "text": "This was confirmed by removing the tube, then putting tiny little RPIDs on the backs of the bees that saw the dance of the tricked bee and went on to overshoot the location by a mile.",
+        "symbol": "S",
+        "role": "추적 실험으로 결과 재확인 - 다른 벌들도 과장된 거리로 이동",
+        "chunks": [
+          {
+            "en": "This was confirmed by removing the tube,",
+            "ko": "이것은 튜브를 제거하는 방식으로 확인됐다"
+          },
+          {
+            "en": "then putting tiny little RPIDs on the backs of the bees",
+            "ko": "그런 다음 벌들의 등에 작은 RPID를 붙여"
+          },
+          {
+            "en": "that saw the dance of the tricked bee",
+            "ko": "속은 벌의 춤을 본"
+          },
+          {
+            "en": "and went on to overshoot the location by a mile.",
+            "ko": "그리고 실제 위치를 훨씬 넘어 날아간"
+          }
+        ]
+      },
+      {
+        "num": 9,
+        "text": "So the bee is really just a simple little robot driven by cunning algorithms.",
+        "symbol": "→",
+        "role": "결론 - 벌은 정교한 알고리즘으로 구동되는 단순 로봇",
+        "chunks": [
+          {
+            "en": "So the bee is really",
+            "ko": "따라서 벌은 사실"
+          },
+          {
+            "en": "just a simple little robot",
+            "ko": "단순한 작은 로봇에 불과하다"
+          },
+          {
+            "en": "driven by cunning algorithms.",
+            "ko": "교묘한 알고리즘으로 구동되는"
+          }
+        ]
+      }
+    ],
+    "abstract": "",
+    "blank_sel": 0,
+    "blank_candidates": [],
+    "insert_sel": 0,
+    "insert_candidates": [],
+    "summary_sel": 0,
+    "summary_candidates": [],
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
+    "grammar_sets": [],
+    "grammar_sel": 0,
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
+    "vocab_sel": 0,
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "핵심 메커니즘 제시",
+          "nameEn": "Core Mechanism",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "실험 장치 및 결과",
+          "nameEn": "Experiment & Results",
+          "color": "teal",
+          "sentenceNums": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "id": 3,
+          "name": "결론",
+          "nameEn": "Conclusion",
+          "color": "coral",
+          "sentenceNums": [
+            9
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "→",
+        "→"
+      ],
+      "keyword": "시각적 자극 기반 거리 계산",
+      "topicSummary": "벌은 실제 비행 거리가 아닌 이동 중 받는 시각적 자극의 양으로 거리를 어림잡으며, 이는 교묘한 알고리즘으로 작동하는 단순한 메커니즘이다.",
+      "structureType": "원리 제시→실험 예시→결론"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 2,
+          "text": "The bee is actually approximating distance by measuring the amount of visual stimuli it receives on the trip.",
+          "structure": "[주어 The bee] + [동사 is approximating] + [목적어 distance] + [수단 by measuring the amount of visual stimuli (it receives on the trip)]",
+          "translation": "벌은 사실 이동 중에 받는 시각적 자극의 양을 측정함으로써 거리를 어림잡는다.",
+          "point": "'visual stimuli it receives'에서 목적격 관계대명사가 생략된 구조. by -ing(수단)가 핵심 메커니즘을 설명함."
+        },
+        {
+          "num": 7,
+          "text": "If the scientists put a nectar source right at the end of the tube, the bee would fly ten inches to it, but go back and report that there is nectar a whole forest away.",
+          "structure": "[가정 If절] + [귀결 주절: would fly / go back and report] + [that절 명사절: there is nectar a whole forest away]",
+          "translation": "과학자들이 튜브 끝에 꿀 공급원을 놓으면, 벌은 10인치를 날아가지만 돌아와서 꿀이 숲 하나를 건너에 있다고 보고할 것이다.",
+          "point": "'a whole forest away'는 '숲 하나만큼 떨어진 거리에'를 의미하는 거리 표현. 가정법 현재(If+현재, would+동사원형)의 구조 파악이 중요."
+        },
+        {
+          "num": 8,
+          "text": "This was confirmed by removing the tube, then putting tiny little RPIDs on the backs of the bees that saw the dance of the tricked bee and went on to overshoot the location by a mile.",
+          "structure": "[주어 This] + [수동태 was confirmed] + [by -ing 수단구] + [관계절 that saw ... and went on to overshoot]",
+          "translation": "이것은 튜브를 제거한 뒤, 속은 벌의 춤을 보고 실제 위치를 훨씬 지나쳐 날아간 벌들의 등에 작은 RPID를 붙이는 방식으로 확인됐다.",
+          "point": "'went on to overshoot the location by a mile'에서 'by a mile'은 '엄청나게, 훨씬'이라는 관용적 표현. 관계절(that)이 'bees'를 수식하는 구조 파악 필요."
+        }
+      ]
+    }
+  },
+  {
+    "id": "27STYD_01_011",
+    "difficulty": "중",
+    "title": "",
+    "sentences": [
+      {
+        "num": 1,
+        "text": "Many marketers believe that buying should be regarded as a process whereby buyers attempt to reduce the risk of a purchase decision, rather than maximising their gain.",
+        "symbol": "G",
+        "role": "핵심 주장 제시: 구매는 이익 극대화가 아닌 위험 감소 과정",
+        "chunks": [
+          {
+            "en": "Many marketers believe",
+            "ko": "많은 마케터들은 믿는다"
+          },
+          {
+            "en": "that buying should be regarded as a process",
+            "ko": "구매가 하나의 과정으로 여겨져야 한다고"
+          },
+          {
+            "en": "whereby buyers attempt to reduce the risk",
+            "ko": "구매자들이 위험을 줄이려 시도하는"
+          },
+          {
+            "en": "of a purchase decision,",
+            "ko": "구매 결정의"
+          },
+          {
+            "en": "rather than maximising their gain.",
+            "ko": "이익을 극대화하는 것이 아니라"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "text": "When a person is faced with competing brands in a new product field, they feel risk ─ for example, uncertainty about whether the brand will work, whether they will be wasting money, whether their peer group will disagree with their choice, or whether they will feel comfortable with the purchase, etc.",
+        "symbol": "S",
+        "role": "구체 예시: 구매자가 느끼는 다양한 위험 유형 열거",
+        "chunks": [
+          {
+            "en": "When a person is faced with competing brands",
+            "ko": "사람이 경쟁 브랜드들에 직면했을 때"
+          },
+          {
+            "en": "in a new product field,",
+            "ko": "새로운 제품 분야에서"
+          },
+          {
+            "en": "they feel risk ─",
+            "ko": "그들은 위험을 느낀다 ─"
+          },
+          {
+            "en": "uncertainty about whether the brand will work,",
+            "ko": "브랜드가 효과가 있을지에 대한 불확실성"
+          },
+          {
+            "en": "whether they will be wasting money,",
+            "ko": "돈을 낭비하게 될지"
+          },
+          {
+            "en": "whether their peer group will disagree with their choice,",
+            "ko": "동료 집단이 선택에 반대할지"
+          },
+          {
+            "en": "or whether they will feel comfortable with the purchase,",
+            "ko": "또는 구매에 편안함을 느낄지"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "text": "Successful brand marketing should therefore be concerned with understanding buyers' perceptions of risk, followed by developing and presenting the brand in such a way that buyers feel minimal risk.",
+        "symbol": "→",
+        "role": "결론 도출: 성공적 마케팅은 위험 인식 최소화에 집중해야 함",
+        "chunks": [
+          {
+            "en": "Successful brand marketing should therefore be concerned with",
+            "ko": "따라서 성공적인 브랜드 마케팅은 ~에 관심을 가져야 한다"
+          },
+          {
+            "en": "understanding buyers' perceptions of risk,",
+            "ko": "구매자의 위험 인식을 이해하는 것"
+          },
+          {
+            "en": "followed by developing and presenting the brand",
+            "ko": "그 다음으로 브랜드를 개발하고 제시하는 것"
+          },
+          {
+            "en": "in such a way that buyers feel minimal risk.",
+            "ko": "구매자가 최소한의 위험을 느끼도록 하는 방식으로"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "text": "An example of an industry appreciating perceived risk is the pharmaceutical industry.",
+        "symbol": "S",
+        "role": "사례 전환: 지각된 위험을 인식하는 산업으로 제약업계 소개",
+        "chunks": [
+          {
+            "en": "An example of an industry",
+            "ko": "하나의 산업 사례"
+          },
+          {
+            "en": "appreciating perceived risk",
+            "ko": "지각된 위험을 중시하는"
+          },
+          {
+            "en": "is the pharmaceutical industry.",
+            "ko": "는 제약 산업이다"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "text": "A company marketing a new drug suitable for children needs to consider the parent's concerns about risk.",
+        "symbol": "S",
+        "role": "세부 사례: 아동용 신약 마케팅 시 부모의 위험 우려 고려 필요",
+        "chunks": [
+          {
+            "en": "A company marketing a new drug",
+            "ko": "새로운 약을 마케팅하는 회사는"
+          },
+          {
+            "en": "suitable for children",
+            "ko": "어린이에게 적합한"
+          },
+          {
+            "en": "needs to consider the parent's concerns about risk.",
+            "ko": "위험에 대한 부모의 우려를 고려해야 한다"
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "text": "One company launching such a product worked with a series of pain specialists in pediatric hospitals, providing clinical data and product trials, so that specialist endorsement of the brand would reassure parents and help to minimise their perception of risk.",
+        "symbol": "S",
+        "role": "구체적 실행 사례: 전문가 보증으로 부모의 위험 인식 최소화",
+        "chunks": [
+          {
+            "en": "One company launching such a product",
+            "ko": "그러한 제품을 출시한 한 회사는"
+          },
+          {
+            "en": "worked with a series of pain specialists",
+            "ko": "여러 통증 전문가들과 협력했다"
+          },
+          {
+            "en": "in pediatric hospitals,",
+            "ko": "소아과 병원의"
+          },
+          {
+            "en": "providing clinical data and product trials,",
+            "ko": "임상 데이터와 제품 시험을 제공하면서"
+          },
+          {
+            "en": "so that specialist endorsement of the brand",
+            "ko": "그래서 브랜드에 대한 전문가 보증이"
+          },
+          {
+            "en": "would reassure parents",
+            "ko": "부모를 안심시키고"
+          },
+          {
+            "en": "and help to minimise their perception of risk.",
+            "ko": "위험 인식을 최소화하는 데 도움이 되도록"
+          }
+        ]
+      }
+    ],
+    "abstract": "",
+    "blank_sel": 0,
+    "blank_candidates": [],
+    "insert_sel": 0,
+    "insert_candidates": [],
+    "summary_sel": 0,
+    "summary_candidates": [],
+    "irrel_sel": 0,
+    "irrel_candidates": [],
+    "irrel_insert_pos": 0,
+    "irrel_confirmed": false,
+    "irrel_sentence": "",
+    "grammar_sets": [],
+    "grammar_sel": 0,
+    "grammar_items": [],
+    "grammar_answer": 1,
+    "vocab_sets": [],
+    "vocab_sel": 0,
+    "vocab_items": [],
+    "vocab_answer": 1,
+    "aGroup": [],
+    "bGroup": [],
+    "flow": {
+      "blocks": [
+        {
+          "id": 1,
+          "name": "핵심 주장",
+          "nameEn": "Core Claim",
+          "color": "blue",
+          "sentenceNums": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "마케팅 전략 결론",
+          "nameEn": "Marketing Strategy Conclusion",
+          "color": "teal",
+          "sentenceNums": [
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "name": "구체적 산업 사례",
+          "nameEn": "Industry Case Study",
+          "color": "amber",
+          "sentenceNums": [
+            4,
+            5,
+            6
+          ]
+        }
+      ],
+      "interBlockConnectors": [
+        "→",
+        "S"
+      ],
+      "keyword": "perceived risk (지각된 위험)",
+      "topicSummary": "구매는 이익 극대화가 아닌 위험 감소 과정이므로, 성공적인 브랜드 마케팅은 구매자의 위험 인식을 이해하고 최소화하는 데 집중해야 한다.",
+      "structureType": "주장→근거→결론→사례"
+    },
+    "grammar": {
+      "difficultSentences": [
+        {
+          "num": 1,
+          "text": "Many marketers believe that buying should be regarded as a process whereby buyers attempt to reduce the risk of a purchase decision, rather than maximising their gain.",
+          "structure": "believe [that절] / whereby 관계부사절 / rather than 대조",
+          "translation": "많은 마케터들은 구매가, 이익을 극대화하는 것이 아니라, 구매자들이 구매 결정의 위험을 줄이려 시도하는 과정으로 여겨져야 한다고 믿는다.",
+          "point": "whereby(= by which)는 관계부사로 선행사 process를 수식. rather than이 핵심 대조 구조를 형성하며 글 전체 주제를 압축."
+        },
+        {
+          "num": 3,
+          "text": "Successful brand marketing should therefore be concerned with understanding buyers' perceptions of risk, followed by developing and presenting the brand in such a way that buyers feel minimal risk.",
+          "structure": "be concerned with + 동명사 / followed by + 동명사 / in such a way that절",
+          "translation": "따라서 성공적인 브랜드 마케팅은 구매자의 위험 인식을 이해하는 것에 관심을 가져야 하고, 이어서 구매자가 최소한의 위험을 느끼도록 하는 방식으로 브랜드를 개발하고 제시해야 한다.",
+          "point": "followed by는 분사구문으로 '그 다음으로 ~하면서'의 순서를 표현. in such a way that은 결과/방식의 that절을 이끄는 관용 표현."
+        },
+        {
+          "num": 6,
+          "text": "One company launching such a product worked with a series of pain specialists in pediatric hospitals, providing clinical data and product trials, so that specialist endorsement of the brand would reassure parents and help to minimise their perception of risk.",
+          "structure": "launching(현재분사 후치수식) / providing(분사구문, 동시동작) / so that(목적절)",
+          "translation": "그러한 제품을 출시한 한 회사는 소아과 병원의 여러 통증 전문가들과 협력하여, 임상 데이터와 제품 시험을 제공했는데, 이는 브랜드에 대한 전문가 보증이 부모를 안심시키고 위험 인식을 최소화하는 데 도움이 되도록 하기 위해서였다.",
+          "point": "launching은 company를 수식하는 현재분사, providing은 부대상황 분사구문, so that은 목적을 나타내는 접속사로 문장이 3단 구조로 압축되어 있어 독해 난이도가 높음."
+        }
+      ]
+    }
+  },
+  {
+    "id": "27STYD_01_012",
     "difficulty": "중",
     "title": "",
     "sentences": [
