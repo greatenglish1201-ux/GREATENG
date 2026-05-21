@@ -1,4 +1,4 @@
-﻿const PASSAGES = [
+const PASSAGES = [
   {
     "id": "27ST_E_03_01",
     "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
@@ -15617,13 +15617,13 @@
     "insert_sel": 0,
     "summary_sel": 0,
     "irrel_sel": 0,
-    "irrel_insert_pos": 0,
-    "irrel_confirmed": false,
-    "irrel_sentence": "",
+    "irrel_insert_pos": 4,
+    "irrel_confirmed": true,
+    "irrel_sentence": "However, research on facial expressions has demonstrated that the repertoire of human emotions is entirely culture-specific, meaning that the meanings of emotional displays differ so fundamentally across members of the species that no universal emotional vocabulary can be established.",
     "grammar_sel": 0,
-    "grammar_answer": 1,
+    "grammar_answer": 3,
     "vocab_sel": 0,
-    "vocab_answer": 1,
+    "vocab_answer": 3,
     "flow": {
       "blocks": [
         {
@@ -15718,6 +15718,313 @@
           "response"
         ]
       }
+    ],
+    "topic_options": [
+      "the dual nature of emotional expression as both universal and shaped by particular contextual circumstances",
+      "the role of laughter and crying as universal expressive behaviors in human communication",
+      "the general influence of socialization and environment on all forms of human behavior",
+      "the universal repertoire of facial expressions as the basis for recognizing basic human emotions",
+      "the separability of basic emotions from the cognitive structures that define affective experience"
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 0,
+    "blank_target": "interactions between situational variables and a finite repertoire of human emotions",
+    "blank_options": [
+      "interactions between situational variables and a finite repertoire of human emotions",
+      "a universal repertoire of fixed emotional responses that operate independently of situational variables",
+      "a species-specific capacity for recognizing basic facial expressions",
+      "interactions between affective-cognitive structures and the contextual reality of emotional experience",
+      "exchanges between communicative functions and the biological mechanisms of laughter and crying"
+    ],
+    "insert_sentence": "These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances.",
+    "insert_answer": 3,
+    "summary_candidates": [
+      {
+        "template": "The passage argues that ________(A)________ leads to ________(B)________.",
+        "A_correct": "the interplay between universal expressive capacity and particular circumstances",
+        "A_distractors": [
+          "the complete independence of emotions from social context",
+          "the species-wide repertoire of facial expressions alone",
+          "the finite list of basic universally recognizable emotions",
+          "laughter and crying as isolated biological reflexes"
+        ],
+        "B_correct": "emotional states being transformed into culturally shaped experiences",
+        "B_distractors": [
+          "emotions becoming entirely detached from cognitive structures",
+          "the suppression of affect in communicative environments",
+          "a uniform emotional response across all human cultures",
+          "the recognition of laughter as the primary expressive behavior"
+        ]
+      },
+      {
+        "template": "Despite ________(A)________, the passage emphasizes ________(B)________.",
+        "A_correct": "a shared biological foundation for emotional expression across the species",
+        "A_distractors": [
+          "the complete absence of any universal emotional capacity",
+          "the universality of laughter and crying alone",
+          "a culturally constructed set of affective-cognitive labels",
+          "individual variation in facial musculature across populations"
+        ],
+        "B_correct": "that emotional expression is always embedded in and shaped by specific situational contexts",
+        "B_distractors": [
+          "that emotions can be fully understood apart from their circumstances",
+          "that the environment plays no meaningful role in shaping affect",
+          "that bodily postures override facial expressions in communication",
+          "that basic emotions are reducible to neurological states alone"
+        ]
+      },
+      {
+        "template": "True ________(A)________ requires ________(B)________ rather than mere appearance.",
+        "A_correct": "understanding of human emotional expression",
+        "A_distractors": [
+          "suppression of culturally variable affective responses",
+          "cataloguing of facial muscle movements",
+          "elimination of context from emotional analysis",
+          "measurement of laughter frequency across societies"
+        ],
+        "B_correct": "recognition of how context transforms raw affective states into meaningful experience",
+        "B_distractors": [
+          "isolation of universal signals from their situational surroundings",
+          "prioritizing biological repertoire over cognitive interpretation",
+          "mapping each emotion onto a single corresponding facial expression",
+          "separating communicative function from environmental response"
+        ]
+      },
+      {
+        "template": "X depends on ________(A)________ while Y depends on ________(B)________.",
+        "A_correct": "a species-universal repertoire that makes emotions broadly intelligible across cultures",
+        "A_distractors": [
+          "culturally exclusive codes that prevent cross-cultural emotional recognition",
+          "the specific facial expression of disgust as a prototype",
+          "affective-cognitive structures defined solely by individual memory",
+          "bodily posture as the sole determinant of emotional meaning"
+        ],
+        "B_correct": "the contextual shaping of expression that gives emotion its particular lived meaning",
+        "B_distractors": [
+          "the biological hardwiring that operates independently of social environment",
+          "the communicative demand placed on the observer alone",
+          "the number of discrete states catalogued in a universal emotion list",
+          "the suppression of environmental feedback during emotional episodes"
+        ]
+      },
+      {
+        "template": "The contrast between ________(A)________ and ________(B)________ reveals the central insight.",
+        "A_correct": "the fixed, universal capacity for emotional expression inherent in the species",
+        "A_distractors": [
+          "the complete cultural relativity of all affective responses",
+          "the learned suppression of instinctive facial signals",
+          "the dominance of cognitive structures over biological emotion",
+          "the infinite variety of human expressive behaviors"
+        ],
+        "B_correct": "the context-dependent transformation that converts biological states into human experiences",
+        "B_distractors": [
+          "the purely instinctive reflex that bypasses social interaction entirely",
+          "the environmental demand for a single standardized emotional response",
+          "the reduction of all emotion to measurable facial muscle contractions",
+          "the communicative necessity that eliminates individual variation"
+        ]
+      }
+    ],
+    "summary_template": "The passage argues that ________(A)________ leads to ________(B)________.",
+    "summary_A_options": [
+      "the interplay between universal expressive capacity and particular circumstances",
+      "the complete independence of emotions from social context",
+      "the species-wide repertoire of facial expressions alone",
+      "the finite list of basic universally recognizable emotions",
+      "laughter and crying as isolated biological reflexes"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "emotional states being transformed into culturally shaped experiences",
+      "emotions becoming entirely detached from cognitive structures",
+      "the suppression of affect in communicative environments",
+      "a uniform emotional response across all human cultures",
+      "the recognition of laughter as the primary expressive behavior"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 5,
+    "implication_keyword": "transforms \"state\" into \"experience.\"",
+    "implication_options": [
+      "Emotional expression, shaped by and responsive to its social context, turns a raw biological reaction into a personally and culturally meaningful event",
+      "The act of expressing an emotion physically changes one's internal feeling state into a lived memory",
+      "Universal emotional states remain unchanged regardless of the particular circumstances in which they are expressed",
+      "Specific situational circumstances trigger the emergence of basic emotions from a species-wide repertoire",
+      "Repeated emotional experiences accumulate over time to gradually redefine an individual's core affective identity"
+    ],
+    "implication_answer": 1,
+    "irrel_candidates": [
+      "However, research on facial expressions has demonstrated that the repertoire of human emotions is entirely culture-specific, meaning that the meanings of emotional displays differ so fundamentally across members of the species that no universal emotional vocabulary can be established.",
+      "The universally recognizable nature of basic emotions suggests that these species-specific expressive behaviors, such as laughter and crying, operate independently of particular circumstances, remaining constant regardless of the social or environmental context in which they occur.",
+      "Izard's affective-cognitive structures, along with the broader set of human expressive behaviors including laughter and bodily postures, have been most extensively studied not for their communicative function within the species, but rather for their role in distinguishing humans from other primates in evolutionary biology."
+    ],
+    "irrelevant_sentence_index": 4,
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "whose",
+            "original": "whose",
+            "correct": true,
+            "note": "선행사 'a finite repertoire of human emotions'를 받는 관계대명사의 소유격으로, 'whose meanings'는 '그것의 의미들'을 뜻한다. 소유격 관계대명사 whose가 올바르게 쓰였다."
+          },
+          {
+            "sent": 1,
+            "word": "associated",
+            "original": "associated",
+            "correct": true,
+            "note": "'the particular circumstances that are associated with them'에서 associated는 수동태(be associated)의 과거분사로, circumstances가 감정과 '연관되는' 대상이므로 수동 표현이 문법적으로 적절하다."
+          },
+          {
+            "sent": 2,
+            "word": "included",
+            "original": "including",
+            "correct": false,
+            "note": "준동사(분사) 용법 오류. 'including'을 'included'로 바꾸면 어법 오류가 발생한다. 'including'은 능동의 전치사적 분사로 '~을 포함하여'의 의미이며, 뒤에 목적어(laughter and crying 등)를 취하므로 능동형 including이 올바른 형태이다. → including"
+          },
+          {
+            "sent": 3,
+            "word": "carried",
+            "original": "carried",
+            "correct": true,
+            "note": "'are also … carried out'은 수동태 구문으로, 주어 'These behaviors'가 '수행되는' 대상이므로 과거분사 carried가 be동사와 결합한 수동태 표현이 문법적으로 적절하다."
+          },
+          {
+            "sent": 4,
+            "word": "shaped",
+            "original": "shaped",
+            "correct": true,
+            "note": "'being shaped by it'은 수동의 동명사구로, 'they'(these behaviors)가 환경에 의해 '형성되는' 대상임을 나타낸다. 수동의 의미를 표현하기 위해 being + 과거분사 형태가 올바르게 사용되었다."
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "grammar_items": [
+      {
+        "sent": 0,
+        "word": "whose",
+        "original": "whose",
+        "correct": true,
+        "note": "선행사 'a finite repertoire of human emotions'를 받는 관계대명사의 소유격으로, 'whose meanings'는 '그것의 의미들'을 뜻한다. 소유격 관계대명사 whose가 올바르게 쓰였다."
+      },
+      {
+        "sent": 1,
+        "word": "associated",
+        "original": "associated",
+        "correct": true,
+        "note": "'the particular circumstances that are associated with them'에서 associated는 수동태(be associated)의 과거분사로, circumstances가 감정과 '연관되는' 대상이므로 수동 표현이 문법적으로 적절하다."
+      },
+      {
+        "sent": 2,
+        "word": "included",
+        "original": "including",
+        "correct": false,
+        "note": "준동사(분사) 용법 오류. 'including'을 'included'로 바꾸면 어법 오류가 발생한다. 'including'은 능동의 전치사적 분사로 '~을 포함하여'의 의미이며, 뒤에 목적어(laughter and crying 등)를 취하므로 능동형 including이 올바른 형태이다. → including"
+      },
+      {
+        "sent": 3,
+        "word": "carried",
+        "original": "carried",
+        "correct": true,
+        "note": "'are also … carried out'은 수동태 구문으로, 주어 'These behaviors'가 '수행되는' 대상이므로 과거분사 carried가 be동사와 결합한 수동태 표현이 문법적으로 적절하다."
+      },
+      {
+        "sent": 4,
+        "word": "shaped",
+        "original": "shaped",
+        "correct": true,
+        "note": "'being shaped by it'은 수동의 동명사구로, 'they'(these behaviors)가 환경에 의해 '형성되는' 대상임을 나타낸다. 수동의 의미를 표현하기 위해 being + 과거분사 형태가 올바르게 사용되었다."
+      }
+    ],
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "finite",
+            "original": "finite",
+            "alt": "limited",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "separable",
+            "original": "separable",
+            "alt": "distinguishable",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "particular",
+            "original": "universal",
+            "alt": "universal",
+            "correct": false
+          },
+          {
+            "sent": 3,
+            "word": "capacity",
+            "original": "capacity",
+            "alt": "ability",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "shaped",
+            "original": "shaped",
+            "alt": "influenced",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "finite",
+        "original": "finite",
+        "alt": "limited",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "separable",
+        "original": "separable",
+        "alt": "distinguishable",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "particular",
+        "original": "universal",
+        "alt": "universal",
+        "correct": false
+      },
+      {
+        "sent": 3,
+        "word": "capacity",
+        "original": "capacity",
+        "alt": "ability",
+        "correct": true
+      },
+      {
+        "sent": 4,
+        "word": "shaped",
+        "original": "shaped",
+        "alt": "influenced",
+        "correct": true
+      }
+    ],
+    "aGroup": [
+      "the interplay between universal expressive capacity and particular circumstances",
+      "the complete independence of emotions from social context",
+      "the species-wide repertoire of facial expressions alone"
+    ],
+    "bGroup": [
+      "emotional states being transformed into culturally shaped experiences",
+      "emotions becoming entirely detached from cognitive structures",
+      "the suppression of affect in communicative environments"
     ]
   },
   {
