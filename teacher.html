@@ -1697,8 +1697,8 @@ Return JSON only:
             </>);})()}
             <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 시트 저장'}</button>
             <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#1a5c3a',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
-            <button onClick={()=>buildAllDOCX(slots,'teacher')} style={{padding:'5px 14px',fontSize:12,background:'#6B3FA0',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 전체 교사용</button>
-            <button onClick={()=>buildAllDOCX(slots,'student')} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 전체 학생용</button>
+            <button onClick={()=>buildAllDOCX(slots,'teacher')} style={{padding:'5px 14px',fontSize:12,background:'#6B3FA0',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 교사용</button>
+            <button onClick={()=>buildAllDOCX(slots,'student')} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 학생용</button>
             <button onClick={()=>{setOutText(buildOutput());setStep('out');}} style={{padding:'5px 14px',fontSize:12,background:'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>출력 ↗</button>
           </div>
         </div>
@@ -2352,24 +2352,24 @@ function App(){
 
           {viewMode!=='authoring'&&<button onClick={loadFromSheet} disabled={sheetLoading}
             style={{background:'rgba(24,95,165,.55)',color:'#fff',border:'none',
-              borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer'}}>
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
             {sheetLoading?'로딩...':'📊 LOAD'}
           </button>}
           {viewMode!=='authoring'&&<button onClick={saveAllToSheet} disabled={sheetSaving}
             style={{background:sheetSaving?'rgba(0,0,0,.3)':'rgba(83,74,183,.6)',color:'#fff',border:'none',
-              borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer'}}>
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
             {sheetSaving?'저장중...':'📊 SAVE'}
           </button>}
           {viewMode!=='authoring'&&<button onClick={fetchPassages} disabled={loadFetching}
             style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
-              borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer',
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',
               display:'inline-flex',alignItems:'center',gap:4}}>
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style={{verticalAlign:'middle'}}><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
             {loadFetching?'로딩...':'LOAD'}
           </button>}
           {viewMode!=='authoring'&&<button onClick={saveMainToGitHub} disabled={mainGhSaving}
             style={{background:mainGhSaving?'rgba(0,0,0,.3)':'rgba(45,138,96,.5)',color:'#fff',border:'none',
-              borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer',
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',
               display:'inline-flex',alignItems:'center',gap:4}}>
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style={{verticalAlign:'middle'}}><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
             {mainGhSaving?'저장중...':'SAVE'}
@@ -2385,21 +2385,21 @@ function App(){
             URL.revokeObjectURL(a.href);
             flash('백업 다운로드 ✓');
           }} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
-            borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer'}}>
-            💾 백업
+            borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
+            💾
           </button>}
           <button onClick={()=>buildAllDOCX(slots,'teacher')}
             style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
-              borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer'}}>📄 전체 교사용</button>
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>📄 교사용</button>
           <button onClick={()=>buildAllDOCX(slots,'student')}
             style={{background:'rgba(45,138,96,.7)',color:'#fff',border:'none',
-              borderRadius:6,padding:'3px 8px',fontSize:10.5,fontWeight:600,cursor:'pointer'}}>📄 전체 학생용</button>
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>📄 학생용</button>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:12},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',
               borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>🗑</button>
 
           <button onClick={()=>setShowSet(v=>!v)} style={{background:'rgba(255,255,255,.15)',
-            color:'#fff',border:'none',borderRadius:6,padding:'3px 8px',fontSize:10.5,cursor:'pointer'}}>⚙</button>
+            color:'#fff',border:'none',borderRadius:6,padding:'2px 6px',fontSize:9.5,cursor:'pointer'}}>⚙</button>
         </div>
       </div>
 
