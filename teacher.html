@@ -2086,9 +2086,13 @@ function App(){
     if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`))return;
     setSheetSaving(true);
     let ok=0,fail=0;
+    const okIds=[];
     for(const slot of targets){
       const success=await saveSlotToSheet(slot);
-      if(success)ok++;else fail++;
+      if(success){ok++;okIds.push(slot.id);}else fail++;
+    }
+    if(okIds.length){
+      setSlots(prev=>prev.map(s=>okIds.includes(s.id)?{...s,status:'saved'}:s));
     }
     setSheetSaving(false);
     alert(`✓ 시트 저장 완료\n성공 ${ok}개 / 실패 ${fail}개`);
@@ -2790,7 +2794,7 @@ function App(){
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onSave={()=>upSlot(slot.id,{status:'saved'})}
-            onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok)flash('시트 저장 ✓');}}
+            onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok){upSlot(slot.id,{status:'saved'});flash('시트 저장 ✓');}}}
             sheetSaving={!!slotSheetSaving[slot.id]}
             onReanalyze={()=>reanalyze(slot)}
             onAnalysis={upAnalysis}
