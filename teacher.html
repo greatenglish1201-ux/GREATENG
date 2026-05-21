@@ -2233,6 +2233,20 @@ function App(){
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
             {sheetSaving?'저장중...':'📊 시트 일괄저장'}
           </button>}
+          {viewMode!=='authoring'&&<button onClick={()=>{
+            const data={te_slots:localStorage.getItem('te_slots'),te_claude_key:localStorage.getItem('te_claude_key'),te_apps_script_url:localStorage.getItem('te_apps_script_url'),gh_token:localStorage.getItem('gh_token'),gh_repo:localStorage.getItem('gh_repo'),backup_date:new Date().toISOString()};
+            const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+            const a=document.createElement('a');
+            a.href=URL.createObjectURL(blob);
+            const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+            a.download='teacher_backup_'+ts+'.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            flash('백업 다운로드 ✓');
+          }} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
+            borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            💾 백업
+          </button>}
           <button onClick={()=>buildAllDOCX(slots,'teacher')}
             style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>📄 전체 교사용</button>
@@ -2385,7 +2399,47 @@ function App(){
                   fontSize:12,fontFamily:'monospace'}}/>
             </div>
           ))}
-          <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}>
+            <button onClick={()=>{
+              const data={te_slots:localStorage.getItem('te_slots'),te_claude_key:localStorage.getItem('te_claude_key'),te_apps_script_url:localStorage.getItem('te_apps_script_url'),gh_token:localStorage.getItem('gh_token'),gh_repo:localStorage.getItem('gh_repo'),backup_date:new Date().toISOString()};
+              const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+              const a=document.createElement('a');
+              a.href=URL.createObjectURL(blob);
+              const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+              a.download='teacher_backup_'+ts+'.json';
+              a.click();
+              URL.revokeObjectURL(a.href);
+              flash('백업 다운로드 ✓');
+            }} style={{background:'#185FA5',color:'#fff',border:'none',borderRadius:6,
+              padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>💾 백업 다운로드</button>
+            <label style={{background:'#534AB7',color:'#fff',border:'none',borderRadius:6,
+              padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500,display:'inline-block'}}>
+              📂 복원
+              <input type="file" accept=".json" style={{display:'none'}} onChange={(e)=>{
+                const file=e.target.files?.[0];
+                if(!file)return;
+                if(!confirm('현재 데이터를 백업 파일로 덮어씁니다. 진행할까요?\\n\\n(현재 데이터를 먼저 백업해두는 것을 권장)')){
+                  e.target.value=''; return;
+                }
+                const reader=new FileReader();
+                reader.onload=(ev)=>{
+                  try{
+                    const data=JSON.parse(ev.target.result);
+                    if(data.te_slots)localStorage.setItem('te_slots',data.te_slots);
+                    if(data.te_claude_key)localStorage.setItem('te_claude_key',data.te_claude_key);
+                    if(data.te_apps_script_url)localStorage.setItem('te_apps_script_url',data.te_apps_script_url);
+                    if(data.gh_token)localStorage.setItem('gh_token',data.gh_token);
+                    if(data.gh_repo)localStorage.setItem('gh_repo',data.gh_repo);
+                    alert('✓ 복원 완료. 페이지를 새로고침합니다.');
+                    location.reload();
+                  }catch(err){
+                    alert('복원 실패: '+err.message);
+                  }
+                };
+                reader.readAsText(file);
+                e.target.value='';
+              }}/>
+            </label>
             <span style={{fontSize:11,color:'#88aacc',alignSelf:'center'}}>브라우저에만 저장됩니다</span>
             <button onClick={()=>{
               const k=keyInput||apiKey;
