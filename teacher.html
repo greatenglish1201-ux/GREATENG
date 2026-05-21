@@ -1107,6 +1107,37 @@ Return JSON only:
     setGenLoading('');
   };
 
+  const genOrderBlocks=async(pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    const sentences=pData.sentences||[];
+    if(sentences.length<5){alert('순서배열 불가: 문장 수 부족 (최소 5문장 필요)');return;}
+    setGenLoading('order');
+    try{
+      const passage=sentences.map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
+      const sys='Return ONLY valid JSON, no markdown, no explanation.';
+      const prompt=`You are a Korean CSAT English exam expert specializing in 순서배열 (36~37번 문항).\n\nCRITICAL CSAT 평가원 order rules:\n- given글(sentence [0]) introduces the topic\n- ALL sentences except [0] must be in exactly one block (모든 문장 포함)\n- B/C/D each = 2-4 consecutive sentences forming a logical chunk\n- Each block should START with a sentence containing a discourse cue:\n  * Demonstratives: This/These/Such/That + [noun]\n  * Connectives: However/Therefore/Moreover/For example/In contrast\n  * Pronouns: it/they/he/she referring to entity in prior block\n- The CORRECT order should have UNAMBIGUOUS cues\n- 평가원 favorite: answer is often B-C-A(2) or C-B-A(3) (NOT obvious A-B-C)\n- ALL sentence indices [1..${sentences.length-1}] must appear in exactly one block\n\nPassage:\n${passage}\n\nGenerate 3 blocks (B, C, D) and choose the correct order.\nanswer: 1=(A)-(B)-(C), 2=(B)-(C)-(A), 3=(C)-(A)-(B), 4=(B)-(A)-(C), 5=(A)-(C)-(B)\n(Note: A is always the given글, and other letters refer to your B/C/D blocks in original sequence)\n\nReturn JSON only:\n{"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4,5]},{"label":"D","sentence_indices":[6,7]}],"answer":2}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      const blocks=parsed.blocks||[];
+      const answer=parsed.answer||1;
+      if(!blocks.length)throw new Error('AI가 블록을 생성하지 못했습니다');
+      // 검증: 모든 문장 인덱스 1~N-1이 정확히 1번씩 등장하는지
+      const used=new Set();
+      blocks.forEach(b=>(b.sentence_indices||[]).forEach(i=>used.add(i)));
+      const expected=sentences.length-1;
+      if(used.size!==expected){
+        console.warn('순서 블록 인덱스 검증 실패:',used.size,'vs',expected);
+      }
+      upP({
+        order_given_index:0,
+        order_blocks:blocks,
+        order_options:['(A)-(B)-(C)','(B)-(C)-(A)','(C)-(A)-(B)','(B)-(A)-(C)','(A)-(C)-(B)'],
+        order_answer:answer,
+      });
+    }catch(e){alert('순서 생성 실패: '+e.message);}
+    setGenLoading('');
+  };
+
   const analyze=async()=>{
     if(!apiKey){setErr('설정 메뉴에서 API Key를 먼저 입력해주세요.');return;}
     if(!rawText.trim()){setErr('지문 텍스트를 입력해주세요.');return;}
@@ -1397,9 +1428,33 @@ Return JSON only:
     </div>;
 
     if(at===2){
-      if(!p.order_blocks?.length)return<p style={{color:'#E24B4A',fontSize:13}}>⚠ 순서배열 불가 (문장 수 부족)</p>;
+      if(!p.order_blocks?.length){
+        const sentCount=p.sentences?.length||0;
+        const canGen=sentCount>=5;
+        return<div style={{padding:'20px 16px',textAlign:'center'}}>
+          <div style={{color:'#E24B4A',fontSize:13,marginBottom:12}}>⚠ 순서배열 데이터 없음</div>
+          {canGen?(
+            <button onClick={()=>genOrderBlocks(p)} disabled={genLoading==='order'}
+              style={{padding:'9px 22px',fontSize:13,fontWeight:600,
+                background:genLoading==='order'?'#888':'#534AB7',color:'#fff',
+                border:'none',borderRadius:7,cursor:genLoading==='order'?'wait':'pointer'}}>
+              {genLoading==='order'?'생성 중...':'🔄 순서 AI 생성'}
+            </button>
+          ):(
+            <div style={{color:'#888',fontSize:12}}>문장 수 부족 (현재 {sentCount}, 최소 5필요)</div>
+          )}
+        </div>;
+      }
       return<div>
-        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>블록 구성 확인</div>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+          <span style={{fontSize:11,fontWeight:600,color:'#888',flex:1}}>블록 구성 확인</span>
+          <button onClick={()=>genOrderBlocks(p)} disabled={genLoading==='order'}
+            style={{padding:'4px 10px',fontSize:11,fontWeight:600,
+              background:'transparent',color:'#534AB7',border:'0.5px solid #534AB7',
+              borderRadius:5,cursor:genLoading==='order'?'wait':'pointer'}}>
+            {genLoading==='order'?'생성 중...':'↻ 재생성'}
+          </button>
+        </div>
         {[{label:'A',sentence_indices:[p.order_given_index]},...p.order_blocks].map(b=>{
           const c=BLK_C[b.label]||'#888';
           return<div key={b.label} style={{marginBottom:8,border:`1px solid ${c}44`,borderRadius:9,overflow:'hidden'}}>
@@ -3093,19 +3148,15 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
               <button onClick={onConfirm} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
                 background:'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>✓ 흐름 확정</button>
             )}
-            {slot.status==='confirmed'&&(
-              <button onClick={onSave} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
-                background:'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>💾 저장</button>
-            )}
-            {['analyzed','confirmed','saved'].includes(slot.status)&&(
-              <button onClick={onReanalyze} style={{padding:'7px 14px',fontSize:12.5,background:'transparent',
-                color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
-            )}
             {['confirmed','saved'].includes(slot.status)&&onSheetSave&&(
               <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 14px',fontSize:12.5,fontWeight:600,
                 background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:6,cursor:sheetSaving?'wait':'pointer'}}>
                 {sheetSaving?'저장중...':'📊 시트 저장'}
               </button>
+            )}
+            {['analyzed','confirmed','saved'].includes(slot.status)&&(
+              <button onClick={onReanalyze} style={{padding:'7px 14px',fontSize:12.5,background:'transparent',
+                color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
             )}
 
           </div>
