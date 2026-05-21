@@ -2329,11 +2329,6 @@ function App(){
             background:keyOk?'rgba(45,138,96,.4)':'rgba(200,60,40,.4)',
             color:keyOk?'#7febb6':'#ffb3a7'}}>{keyOk?'API ✓':'미설정'}</span>
 
-          {viewMode!=='authoring'&&<button onClick={fetchPassages} disabled={loadFetching}
-            style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
-              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
-            {loadFetching?'로딩...':'📂 불러오기'}
-          </button>}
           {viewMode!=='authoring'&&<button onClick={loadFromSheet} disabled={sheetLoading}
             style={{background:'rgba(24,95,165,.55)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
@@ -2343,6 +2338,11 @@ function App(){
             style={{background:sheetSaving?'rgba(0,0,0,.3)':'rgba(83,74,183,.6)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
             {sheetSaving?'저장중...':'📊 시트 일괄저장'}
+          </button>}
+          {viewMode!=='authoring'&&<button onClick={fetchPassages} disabled={loadFetching}
+            style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            {loadFetching?'로딩...':'📂 GitHub 불러오기'}
           </button>}
           {viewMode!=='authoring'&&<button onClick={saveMainToGitHub} disabled={mainGhSaving}
             style={{background:mainGhSaving?'rgba(0,0,0,.3)':'rgba(45,138,96,.5)',color:'#fff',border:'none',
