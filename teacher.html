@@ -712,16 +712,16 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
         questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''});
       }
       if(p.blank_candidates&&p.blank_candidates.length){
-        questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:p.blank_candidates,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options}),answer:p.blank_answer||''});
+        questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:p.blank_candidates,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer}),answer:p.blank_answer||''});
       }
       if(p.order_blocks||p.order_options){
         questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''});
       }
       if(p.insert_candidates&&p.insert_candidates.length){
-        questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:p.insert_candidates,sentence:p.insert_sentence}),answer:p.insert_answer||''});
+        questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:p.insert_candidates,sentence:p.insert_sentence,answer:p.insert_answer}),answer:p.insert_answer||''});
       }
       if(p.summary_candidates&&p.summary_candidates.length){
-        questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer,B_options:p.summary_B_options,B_answer:p.summary_B_answer}),answer:''});
+        questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1}),answer:''});
       }
       if(p.implication_options&&p.implication_options.length){
         questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''});
@@ -1685,8 +1685,8 @@ Return JSON only:
               <span style={{fontSize:12,color:'#888',alignSelf:'center'}}>{ci+1}/{ok.length}</span>
               <button onClick={()=>{if(ci<ok.length-1){setPi(ok[ci+1].id);setAt(0);}}} disabled={ci>=ok.length-1} style={{padding:'5px 10px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer',opacity:ci>=ok.length-1?.3:1}}>다음 ▶</button>
             </>);})()}
-            <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#1a5c3a',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
             <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 시트 저장'}</button>
+            <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#1a5c3a',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
             <button onClick={()=>buildAllDOCX(slots,'teacher')} style={{padding:'5px 14px',fontSize:12,background:'#6B3FA0',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 전체 교사용</button>
             <button onClick={()=>buildAllDOCX(slots,'student')} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 전체 학생용</button>
             <button onClick={()=>{setOutText(buildOutput());setStep('out');}} style={{padding:'5px 14px',fontSize:12,background:'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>출력 ↗</button>
@@ -1725,8 +1725,8 @@ Return JSON only:
         <div style={{display:'flex',gap:6}}>
           <button onClick={()=>setStep('edit')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 편집</button>
           <button onClick={()=>{const t=buildOutput();setOutText(t);navigator.clipboard.writeText(t);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사'}</button>
-          <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
           <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 시트 저장'}</button>
+          <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
         </div>
       </div>
       <div style={card}>
@@ -1948,16 +1948,16 @@ function App(){
       questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''});
     }
     if(p.blank_candidates&&p.blank_candidates.length){
-      questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:p.blank_candidates,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options}),answer:p.blank_answer||''});
+      questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:p.blank_candidates,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer}),answer:p.blank_answer||''});
     }
     if(p.order_blocks||p.order_options){
       questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''});
     }
     if(p.insert_candidates&&p.insert_candidates.length){
-      questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:p.insert_candidates,sentence:p.insert_sentence}),answer:p.insert_answer||''});
+      questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:p.insert_candidates,sentence:p.insert_sentence,answer:p.insert_answer}),answer:p.insert_answer||''});
     }
     if(p.summary_candidates&&p.summary_candidates.length){
-      questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer,B_options:p.summary_B_options,B_answer:p.summary_B_answer}),answer:''});
+      questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1}),answer:''});
     }
     if(p.implication_options&&p.implication_options.length){
       questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''});
@@ -2060,17 +2060,75 @@ function App(){
         qs.forEach(q=>{
           let d={};
           try{d=q.data_json?JSON.parse(q.data_json):{};}catch{return;}
-          if(q.type==='topic'){pd.topic_options=d.options;pd.topic_answer=q.answer;}
-          else if(q.type==='blank'){pd.blank_sel=d.sel;pd.blank_candidates=d.candidates;pd.blank_sentence_index=d.sentence_index;pd.blank_target=d.target;pd.blank_options=d.options;pd.blank_answer=q.answer;}
-          else if(q.type==='order'){pd.order_given_index=d.given_index;pd.order_blocks=d.blocks;pd.order_options=d.options;pd.order_answer=q.answer;}
-          else if(q.type==='insert'){pd.insert_sel=d.sel;pd.insert_candidates=d.candidates;pd.insert_sentence=d.sentence;pd.insert_answer=q.answer;}
-          else if(q.type==='summary'){pd.summary_sel=d.sel;pd.summary_candidates=d.candidates;pd.summary_template=d.template;pd.summary_A_options=d.A_options;pd.summary_A_answer=d.A_answer;pd.summary_B_options=d.B_options;pd.summary_B_answer=d.B_answer;}
-          else if(q.type==='implication'){pd.implication_sentence_index=d.sentence_index;pd.implication_keyword=d.keyword;pd.implication_options=d.options;pd.implication_answer=q.answer;}
-          else if(q.type==='irrelevant'){pd.irrel_sel=d.sel;pd.irrel_candidates=d.candidates;pd.irrel_insert_pos=d.insert_pos;pd.irrel_confirmed=d.confirmed;pd.irrelevant_sentence_index=d.sentence_index;}
-          else if(q.type==='grammar'){pd.grammar_sets=d.sets;pd.grammar_sel=d.sel;pd.grammar_items=d.items;pd.grammar_answer=q.answer;}
-          else if(q.type==='vocab'){pd.vocab_sets=d.sets;pd.vocab_sel=d.sel;pd.vocab_items=d.items;pd.vocab_answer=q.answer;}
+          if(q.type==='topic'){
+            pd.topic_options=d.options;
+            pd.topic_answer=q.answer;
+          }
+          else if(q.type==='blank'){
+            pd.blank_sel=d.sel||0;
+            pd.blank_candidates=d.candidates||[];
+            // 평탄 필드 복원: candidates[sel]로부터
+            const bc=pd.blank_candidates[pd.blank_sel]||{};
+            pd.blank_sentence_index=d.sentence_index??bc.sentence_index;
+            pd.blank_target=d.target??bc.target;
+            pd.blank_options=d.options||(bc.options||(bc.correct?[bc.correct,...(bc.distractors||[])]:[]));
+            pd.blank_answer=q.answer||bc.answer||1;
+          }
+          else if(q.type==='order'){
+            pd.order_given_index=d.given_index;
+            pd.order_blocks=d.blocks;
+            pd.order_options=d.options;
+            pd.order_answer=q.answer;
+          }
+          else if(q.type==='insert'){
+            pd.insert_sel=d.sel||0;
+            pd.insert_candidates=d.candidates||[];
+            // 평탄 필드 복원
+            const ic=pd.insert_candidates[pd.insert_sel]||{};
+            pd.insert_sentence=d.sentence||ic.sentence;
+            pd.insert_answer=q.answer||ic.pos||1;
+          }
+          else if(q.type==='summary'){
+            pd.summary_sel=d.sel||0;
+            pd.summary_candidates=d.candidates||[];
+            // 평탄 필드 복원: candidates[sel]로부터
+            const sc=pd.summary_candidates[pd.summary_sel]||{};
+            pd.summary_template=d.template||sc.template||'';
+            // A_options/B_options는 [correct, ...distractors] 형태로 평탄화
+            pd.summary_A_options=d.A_options||(sc.A_correct?[sc.A_correct,...(sc.A_distractors||[])]:[]);
+            pd.summary_A_answer=d.A_answer||1;
+            pd.summary_B_options=d.B_options||(sc.B_correct?[sc.B_correct,...(sc.B_distractors||[])]:[]);
+            pd.summary_B_answer=d.B_answer||1;
+          }
+          else if(q.type==='implication'){
+            pd.implication_sentence_index=d.sentence_index;
+            pd.implication_keyword=d.keyword;
+            pd.implication_options=d.options;
+            pd.implication_answer=q.answer;
+          }
+          else if(q.type==='irrelevant'){
+            pd.irrel_sel=d.sel||0;
+            pd.irrel_candidates=d.candidates||[];
+            pd.irrel_insert_pos=d.insert_pos||0;
+            pd.irrel_confirmed=d.confirmed||false;
+            pd.irrelevant_sentence_index=d.sentence_index;
+          }
+          else if(q.type==='grammar'){
+            pd.grammar_sets=d.sets||[];
+            pd.grammar_sel=d.sel||0;
+            pd.grammar_items=d.items||[];
+            pd.grammar_answer=q.answer||1;
+          }
+          else if(q.type==='vocab'){
+            pd.vocab_sets=d.sets||[];
+            pd.vocab_sel=d.sel||0;
+            pd.vocab_items=d.items||[];
+            pd.vocab_answer=q.answer||1;
+          }
         });
-        restored.push({sp,pd,blockSummaries});
+        // restorePassageData 호출하여 grammar_sets/vocab_sets/insert_candidates 정리
+        const restoredPd=restorePassageData(pd);
+        restored.push({sp,pd:restoredPd,blockSummaries});
       }
       // 빈 슬롯에 차례로 채우기
       setSlots(prev=>{
@@ -2276,11 +2334,6 @@ function App(){
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
             {loadFetching?'로딩...':'📂 불러오기'}
           </button>}
-          {viewMode!=='authoring'&&<button onClick={saveMainToGitHub} disabled={mainGhSaving}
-            style={{background:mainGhSaving?'rgba(0,0,0,.3)':'rgba(45,138,96,.5)',color:'#fff',border:'none',
-              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
-            {mainGhSaving?'저장중...':'GitHub 저장 ↗'}
-          </button>}
           {viewMode!=='authoring'&&<button onClick={loadFromSheet} disabled={sheetLoading}
             style={{background:'rgba(24,95,165,.55)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
@@ -2290,6 +2343,11 @@ function App(){
             style={{background:sheetSaving?'rgba(0,0,0,.3)':'rgba(83,74,183,.6)',color:'#fff',border:'none',
               borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
             {sheetSaving?'저장중...':'📊 시트 일괄저장'}
+          </button>}
+          {viewMode!=='authoring'&&<button onClick={saveMainToGitHub} disabled={mainGhSaving}
+            style={{background:mainGhSaving?'rgba(0,0,0,.3)':'rgba(45,138,96,.5)',color:'#fff',border:'none',
+              borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,cursor:'pointer'}}>
+            {mainGhSaving?'저장중...':'GitHub 저장 ↗'}
           </button>}
           {viewMode!=='authoring'&&<button onClick={()=>{
             const data={te_slots:localStorage.getItem('te_slots'),te_claude_key:localStorage.getItem('te_claude_key'),te_apps_script_url:localStorage.getItem('te_apps_script_url'),gh_token:localStorage.getItem('gh_token'),gh_repo:localStorage.getItem('gh_repo'),backup_date:new Date().toISOString()};
