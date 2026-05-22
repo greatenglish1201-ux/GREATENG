@@ -37,7 +37,7 @@ const nStr=n=>NSTR[n-1]||'('+n+')';
 const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots',APPS_URL:'te_apps_script_url',STUDENT_OPTS:'te_student_opts'};
 
 // 학생용 출력 디폴트 옵션
-const DEFAULT_STU_OPTS={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false};
+const DEFAULT_STU_OPTS={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false};
 function getStuOpts(){
   try{
     const s=localStorage.getItem(LS.STUDENT_OPTS);
@@ -299,7 +299,9 @@ const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
     AlignmentType,BorderStyle,WidthType,ShadingType,VerticalAlign}=docx;
   const IS=mode==='student';
   // 학생용 옵션 (교사용은 항상 전체 표시)
-  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false};
+  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+  // 학생용 + showAnswers=true → 교사용처럼 chunks/해석 다 표시. 빈칸 모드면 끊어읽기 숨김
+  const SHOW_ANSWERS=!IS||O.showAnswers;
   const {analysis,meta}=slot;
   if(!analysis)return;
   const {sentences=[],flow={},grammar={}}=analysis;
@@ -392,14 +394,25 @@ const ch=[];
   });
   ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:colW,
     rows:[new TableRow({children:hCells}),...bRows]}));
-  ch.push(para('',{sa:80}));
+  ch.push(para('',{sa:40}));
   }
 
-  /* 핵심소재/주제요약/구조 — 표 없이 텍스트 */
+  /* 핵심소재/주제요약/구조 — 가로 1행 표 (지면 절약) */
   if(O.keyTopics){
-  ch.push(new Paragraph({spacing:{before:0,after:50},children:[run('▸ 핵심 소재: ',{bold:true,size:P8}),IS?run('_________________________',{size:P8}):run(keyword,{size:P9})]}));
-  ch.push(new Paragraph({spacing:{before:0,after:50},children:[run('▸ 주제 요약: ',{bold:true,size:P8}),IS?run('_________________________',{size:P8}):run(topicSummary,{size:P9})]}));
-  ch.push(new Paragraph({spacing:{before:0,after:100},children:[run('▸ 구조 유형: ',{bold:true,size:P8}),IS?run('_________________________',{size:P8}):run(structureType,{size:P9})]}));
+    const ktItems=[
+      {lbl:'핵심 소재',val:keyword,w:2400},
+      {lbl:'주제 요약',val:topicSummary,w:4400},
+      {lbl:'구조 유형',val:structureType,w:2400},
+    ];
+    const ktCells=ktItems.map(it=>cell([new Paragraph({spacing:{before:0,after:0},children:[
+      run(it.lbl,{bold:true,size:P8,color:'666666'})
+    ]}),new Paragraph({spacing:{before:20,after:0},children:[
+      IS?run('________________',{size:P8}):run(it.val,{size:P8})
+    ]})],{bc:'CCCCCC',w:it.w,m:{top:60,bottom:60,left:120,right:120}}));
+    ch.push(new Table({width:{size:9200,type:WidthType.DXA},
+      columnWidths:ktItems.map(i=>i.w),
+      rows:[new TableRow({children:ktCells})]}));
+    ch.push(para('',{sa:40}));
   }
 
   /* 문장별 분석 */
@@ -414,7 +427,7 @@ const ch=[];
       ch.push(new Paragraph({spacing:{before:0,after:30},
         border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'CCCCCC',space:1}},
         children:[run(nStr(s.num)+' ('+s.symbol+')  ',{bold:true,size:P9}),run(s.text,{size:P8,italic:true,color:'333333'})]}));
-      if(!IS&&chunks.length){
+      if(SHOW_ANSWERS&&chunks.length){
         ch.push(new Paragraph({spacing:{before:30,after:0},indent:{left:200},
           children:[run(chunks.map(c=>c.en||'').join(' / '),{size:P8,italic:true})]}));
         ch.push(new Paragraph({spacing:{before:0,after:40},indent:{left:200},
@@ -424,17 +437,17 @@ const ch=[];
         [{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].forEach(r=>{
           ch.push(new Paragraph({spacing:{before:0,after:20},indent:{left:200},children:[
             run('['+r.l+'] ',{bold:true,size:P8,color:'555555'}),
-            IS&&r.f==='translation'?run('______________________________',{size:P8}):run(ds[r.f]||'',{size:P8}),
+            (IS&&!SHOW_ANSWERS&&r.f==='translation')?run('______________________________',{size:P8}):run(ds[r.f]||'',{size:P8}),
           ]}));
         });
-      }else if(IS){
-        // 학생용: 해설 없는 문장도 해석 빈칸은 표시
+      }else if(IS&&!SHOW_ANSWERS){
+        // 학생용 빈칸 모드: 해설 없는 문장도 해석 빈칸은 표시
         ch.push(new Paragraph({spacing:{before:0,after:20},indent:{left:200},children:[
           run('[해석] ',{bold:true,size:P8,color:'555555'}),
           run('______________________________',{size:P8}),
         ]}));
       }
-      ch.push(para('',{sa:60}));
+      ch.push(para('',{sa:20}));
     });
   }
   }
@@ -473,7 +486,8 @@ function buildAllDOCX(slots,mode,opts){
 /* ── HTML 출력 ── */
 function buildHTML(slot,mode,opts){
   const IS=mode==='student';
-  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false};
+  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+  const SHOW_ANSWERS=!IS||O.showAnswers;
   const {analysis,meta}=slot;
   if(!analysis)return'';
   const {sentences=[],flow={},grammar={}}=analysis;
@@ -513,9 +527,9 @@ function buildHTML(slot,mode,opts){
     const sc=SM[s.symbol]||{};
     const ds=difficultSentences.find(d=>d.num===s.num);
     const chunks=s.chunks||[];
-    const chunksDiv=!IS&&chunks.length?'<div style="padding:7px 12px;background:#fff;border-top:1px dashed #eee"><div style="font-size:.85em;font-style:italic;color:#222;line-height:1.9;word-break:keep-all">'+chunks.map(c=>c.en||'').join(' / ')+'</div><div style="font-size:.85em;color:#555;line-height:1.9;word-break:keep-all;border-top:1px dashed #e8e8e8;margin-top:3px;padding-top:3px">'+chunks.map(c=>c.ko||'').join(' / ')+'</div></div>':'';
-    const diffDiv=ds?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee">'+[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>'<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #f0f0f0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">'+r.l+'</span>'+(IS&&r.f==='translation'?'<div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div>':'<div style="font-size:.88em;color:#333;word-break:keep-all;flex:1">'+(ds[r.f]||'')+'</div>')+'</div>').join('')+'</div>':(IS?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee"><div style="display:flex;gap:8px;padding:3px 0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">해석</span><div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div></div></div>':'');
-    if(!chunksDiv&&!diffDiv)return IS?'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div></div>':'';
+    const chunksDiv=SHOW_ANSWERS&&chunks.length?'<div style="padding:7px 12px;background:#fff;border-top:1px dashed #eee"><div style="font-size:.85em;font-style:italic;color:#222;line-height:1.9;word-break:keep-all">'+chunks.map(c=>c.en||'').join(' / ')+'</div><div style="font-size:.85em;color:#555;line-height:1.9;word-break:keep-all;border-top:1px dashed #e8e8e8;margin-top:3px;padding-top:3px">'+chunks.map(c=>c.ko||'').join(' / ')+'</div></div>':'';
+    const diffDiv=ds?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee">'+[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>'<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #f0f0f0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">'+r.l+'</span>'+((IS&&!SHOW_ANSWERS&&r.f==='translation')?'<div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div>':'<div style="font-size:.88em;color:#333;word-break:keep-all;flex:1">'+(ds[r.f]||'')+'</div>')+'</div>').join('')+'</div>':(IS&&!SHOW_ANSWERS?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee"><div style="display:flex;gap:8px;padding:3px 0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">해석</span><div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div></div></div>':'');
+    if(!chunksDiv&&!diffDiv)return IS&&!SHOW_ANSWERS?'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div></div>':'';
     return'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div>'+chunksDiv+diffDiv+'</div>';
   }).filter(Boolean).join('');
 
@@ -2710,7 +2724,7 @@ function App(){
               ))}
             </div>
             {O.sentences&&(
-              <div style={{padding:'10px 12px',background:'#fafafa',borderRadius:7,marginBottom:18,border:'0.5px solid #eee'}}>
+              <div style={{padding:'10px 12px',background:'#fafafa',borderRadius:7,marginBottom:12,border:'0.5px solid #eee'}}>
                 <div style={{fontSize:12,fontWeight:600,marginBottom:7,color:'#555'}}>문장별 분석 범위</div>
                 <label style={{display:'flex',alignItems:'center',gap:7,marginBottom:5,cursor:'pointer',fontSize:12.5}}>
                   <input type="radio" checked={!O.hardOnly} onChange={()=>setO({hardOnly:false})}/>
@@ -2719,6 +2733,19 @@ function App(){
                 <label style={{display:'flex',alignItems:'center',gap:7,cursor:'pointer',fontSize:12.5}}>
                   <input type="radio" checked={O.hardOnly} onChange={()=>setO({hardOnly:true})}/>
                   <span>어려운 문장만 (구문 분석 있는 문장만)</span>
+                </label>
+              </div>
+            )}
+            {O.sentences&&(
+              <div style={{padding:'10px 12px',background:'#fafafa',borderRadius:7,marginBottom:18,border:'0.5px solid #eee'}}>
+                <div style={{fontSize:12,fontWeight:600,marginBottom:7,color:'#555'}}>해석 표시 방식</div>
+                <label style={{display:'flex',alignItems:'center',gap:7,marginBottom:5,cursor:'pointer',fontSize:12.5}}>
+                  <input type="radio" checked={!O.showAnswers} onChange={()=>setO({showAnswers:false})}/>
+                  <span>빈칸 (학생이 직접 작성)</span>
+                </label>
+                <label style={{display:'flex',alignItems:'center',gap:7,cursor:'pointer',fontSize:12.5}}>
+                  <input type="radio" checked={O.showAnswers} onChange={()=>setO({showAnswers:true})}/>
+                  <span>정답 포함 (교사용처럼 끊어읽기·해석 표시)</span>
                 </label>
               </div>
             )}
