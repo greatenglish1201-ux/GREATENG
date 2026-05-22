@@ -424,28 +424,27 @@ const ch=[];
           border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'CCCCCC',space:1}},
           children:[run(nStr(s.num)+' ('+s.symbol+')  ',{bold:true,size:P9}),
             run(chunks.map(c=>c.en||'').join(' / '),{size:P8,italic:true})]}));
-        ch.push(new Paragraph({spacing:{before:0,after:10},indent:{left:200},
+        ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},
           children:[run(chunks.map(c=>c.ko||'').join(' / '),{size:P8,color:'444444'})]}));
       }else{
-        ch.push(new Paragraph({spacing:{before:0,after:10},
+        ch.push(new Paragraph({spacing:{before:0,after:0},
           border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'CCCCCC',space:1}},
           children:[run(nStr(s.num)+' ('+s.symbol+')  ',{bold:true,size:P9}),run(s.text,{size:P8,italic:true,color:'333333'})]}));
       }
       if(ds){
         [{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].forEach(r=>{
-          ch.push(new Paragraph({spacing:{before:0,after:5},indent:{left:200},children:[
+          ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},children:[
             run('['+r.l+'] ',{bold:true,size:P8,color:'555555'}),
             (IS&&!SHOW_ANSWERS&&r.f==='translation')?run('______________________________',{size:P8}):run(ds[r.f]||'',{size:P8}),
           ]}));
         });
       }else if(IS&&!SHOW_ANSWERS){
         // 학생용 빈칸 모드: 해설 없는 문장도 해석 빈칸은 표시
-        ch.push(new Paragraph({spacing:{before:0,after:5},indent:{left:200},children:[
+        ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},children:[
           run('[해석] ',{bold:true,size:P8,color:'555555'}),
           run('______________________________',{size:P8}),
         ]}));
       }
-      ch.push(para('',{sa:0,size:8}));
     });
   }
   }
