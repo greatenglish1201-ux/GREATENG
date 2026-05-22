@@ -1,4 +1,4 @@
-const PASSAGES = [
+﻿const PASSAGES = [
   {
     "id": "27ST_E_03_01",
     "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
@@ -15665,31 +15665,7 @@ const PASSAGES = [
       "topicSummary": "얼굴 표정을 포함한 인간의 감정 표현은 보편적 목록을 가지지만, 동시에 특정 상황·맥락과 분리될 수 없으며, 환경과 상호작용하면서 단순한 '상태'가 아닌 '경험'으로 전환된다.",
       "structureType": "보편성 제시 → 맥락 불가분성 대비·심화 → 결론"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 1,
-          "text": "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species.",
-          "structure": "주절(suggests) + that절 내부: interactions between A and B whose meanings...(관계절 수식)",
-          "translation": "얼굴 표정의 보편성에 관한 연구는, 감정의 사회화가 상황적 변수들과 종의 모든 구성원들 사이에서 그 의미가 적어도 대략적으로 동일한 한정된 인간 감정 목록 사이의 상호작용을 포함한다고 시사한다.",
-          "point": "whose는 'a finite repertoire of human emotions'를 선행사로 하는 관계대명사. 'socialization of affect(감정의 사회화)'와 'finite repertoire(한정된 목록)'라는 추상 명사구의 정확한 파악이 핵심."
-        },
-        {
-          "num": 3,
-          "text": "The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures.",
-          "structure": "The fact that절(동격) + derives not only from A, but (more fundamentally) from B (상관접속사 구조) + including 분사구(B의 예시)",
-          "translation": "'기본적'이고 보편적으로 인식 가능한 감정 목록을 구성하는 것이 가능하다는 사실은, 종 특유의 얼굴 표정 목록에서만 비롯되는 것이 아니라, 아마도 더 근본적으로는 웃음, 울음, 신체 동작 및 자세를 포함한 더 광범위한 인간 표현 행동들로부터 비롯된다.",
-          "point": "not only A but (more fundamentally) B 상관구조에서 부사 'perhaps more fundamentally'가 삽입되어 구조 파악이 어려움. 핵심 주장: 보편성의 근거는 얼굴 표정보다 더 넓은 표현 행동 전반에 있다."
-        },
-        {
-          "num": 6,
-          "text": "To use Lewis's terms, the contextual reality of emotional expression transforms \"state\" into \"experience.\"",
-          "structure": "To부정사구(부대상황) + 주어(the contextual reality) + transforms A into B",
-          "translation": "Lewis의 용어를 빌리자면, 감정 표현의 맥락적 현실은 '상태'를 '경험'으로 변환시킨다.",
-          "point": "'state'는 단순한 생리적·내적 감정 상태, 'experience'는 맥락과 상호작용을 통해 의미화된 경험을 뜻함. 앞선 논의 전체를 Lewis의 개념으로 압축하는 결론 문장."
-        }
-      ]
-    },
+    "grammar": {},
     "blockSummaries": [
       {
         "blockId": 1,
@@ -16025,6 +16001,25 @@ const PASSAGES = [
       "emotional states being transformed into culturally shaped experiences",
       "emotions becoming entirely detached from cognitive structures",
       "the suppression of affect in communicative environments"
+    ],
+    "blank_candidates": [
+      {
+        "sentence_index": 0,
+        "keyword": "interactions between situational variables and a finite repertoire of human emotions",
+        "distractors": [
+          "a universal repertoire of fixed emotional responses that operate independently of situational variables",
+          "a species-specific capacity for recognizing basic facial expressions",
+          "interactions between affective-cognitive structures and the contextual reality of emotional experience",
+          "exchanges between communicative functions and the biological mechanisms of laughter and crying"
+        ]
+      }
+    ],
+    "blank_answer": 1,
+    "insert_candidates": [
+      {
+        "sentence": "These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances.",
+        "pos": 3
+      }
     ]
   },
   {
@@ -16220,13 +16215,13 @@ const PASSAGES = [
     "insert_sel": 0,
     "summary_sel": 0,
     "irrel_sel": 0,
-    "irrel_insert_pos": 0,
+    "irrel_insert_pos": 2,
     "irrel_confirmed": false,
-    "irrel_sentence": "",
+    "irrel_sentence": "Dynamic menus have been widely praised by users for significantly improving navigation efficiency, as the automatic reordering of frequently accessed items allows people to locate what they need more quickly than with static menus.",
     "grammar_sel": 0,
-    "grammar_answer": 1,
+    "grammar_answer": 3,
     "vocab_sel": 0,
-    "vocab_answer": 1,
+    "vocab_answer": 3,
     "flow": {
       "blocks": [
         {
@@ -16277,31 +16272,319 @@ const PASSAGES = [
       "topicSummary": "인터페이스의 동적 변화는 유용해 보이지만, 실제로는 사용자가 정보를 다시 찾는 능력을 방해한다.",
       "structureType": "통념→반박 사례 나열→추가 근거"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 4,
-          "text": "As another example, some researchers tried to help people search better by giving them lists of relevant sentences that were dynamically reranked based on implicit feedback gathered during the search process.",
-          "structure": "주어(some researchers)+동사(tried)+to부정사+by동명사구 / that절(관계사절 내 분사구 중첩)",
-          "translation": "또 다른 예로, 일부 연구자들은 검색 과정에서 수집된 암묵적 피드백을 기반으로 동적으로 재정렬된 관련 문장 목록을 제공함으로써 사람들이 더 잘 검색하도록 돕고자 했다.",
-          "point": "'dynamically reranked based on implicit feedback gathered during the search process'에서 분사구가 겹쳐 수식 관계를 파악하는 것이 핵심"
-        },
-        {
-          "num": 6,
-          "text": "Similarly, a large-scale analysis of query logs revealed that when people repeat queries they are significantly less likely to click on a result they've clicked before if the result's rank has changed, and significantly slower to click when they do.",
-          "structure": "주어(a large-scale analysis)+동사(revealed)+that절 / that절 안에 조건절(when/if) 중첩, 병렬구조(less likely... and significantly slower...)",
-          "translation": "마찬가지로, 쿼리 로그에 대한 대규모 분석은 사람들이 검색어를 반복할 때 결과의 순위가 바뀌었다면dd 이전에 클릭했던 결과를 클릭할 가능성이 훨씬 낮고, 클릭하더라도 훨씬 느리다는 것을 밝혔다.",
-          "point": "'when they do'의 do는 앞의 'click on a result'를 대신하는 대동사이며, less likely와 slower의 병렬 비교 구조를 정확히 파악해야 함"
-        },
-        {
-          "num": 3,
-          "text": "Rather than decreasing access time, research revealed dynamic menus actually slow their users down because commonly sought items no longer appear where expected.",
-          "structure": "Rather than+동명사구(양보/대조)+주절 / where expected = where they are expected to appear(장소 관계부사절 축약)",
-          "translation": "접근 시간을 줄이기는커녕, 연구는 자주 찾는 항목이 더 이상 예상되는 위치에 나타나지 않기 때문에 동적 메뉴가 실제로 사용자를 더 느리게 만든다는 것을 밝혔다.",
-          "point": "'where expected'는 'where they are expected to appear'의 축약형으로, 생략된 주어와 be동사를 복원하여 해석해야 함"
-        }
-      ]
-    }
+    "grammar": {},
+    "topic_options": [
+      "the disruptive effect of dynamic content changes on users' ability to re-find information",
+      "the slowing effect of dynamic menus on users' access to menu items",
+      "the negative impact of technological changes on overall user experience",
+      "the unintended consequences of dynamic ranking systems in search engines",
+      "the role of implicit user feedback in improving search result performance"
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 0,
+    "blank_target": "re-find information",
+    "blank_options": [
+      "re-find information",
+      "adapt to new information quickly",
+      "access menu items more efficiently",
+      "search for relevant sentences dynamically",
+      "evaluate the credibility of online sources"
+    ],
+    "insert_candidates": [
+      {
+        "sentence": "As another example, some researchers tried to help people search better by giving them lists of relevant sentences that were dynamically reranked based on implicit feedback gathered during the search process.",
+        "pos": 3
+      }
+    ],
+    "insert_sentence": "As another example, some researchers tried to help people search better by giving them lists of relevant sentences that were dynamically reranked based on implicit feedback gathered during the search process.",
+    "insert_answer": 3,
+    "summary_candidates": [
+      {
+        "template": "The passage argues that ________(A)________ leads to ________(B)________.",
+        "A_correct": "dynamically altering interface layouts to boost efficiency",
+        "A_distractors": [
+          "keeping interface layouts fixed and predictable",
+          "updating only the visual design of menus",
+          "reranking search results based on user queries",
+          "introducing minor cosmetic changes to digital systems"
+        ],
+        "B_correct": "degraded user performance due to violated spatial expectations",
+        "B_distractors": [
+          "improved user performance by meeting spatial expectations",
+          "slower loading times in menu and search systems",
+          "user frustration with irrelevant search results",
+          "reduced efficiency in a single type of navigation task"
+        ]
+      },
+      {
+        "template": "Despite ________(A)________, the passage emphasizes ________(B)________.",
+        "A_correct": "the intention to improve users' speed and access through adaptive systems",
+        "A_distractors": [
+          "the proven success of dynamic interfaces in real-world settings",
+          "minor inconveniences caused by static interface designs",
+          "the developers' effort to gather implicit user feedback",
+          "occasional improvements in menu item accessibility"
+        ],
+        "B_correct": "that consistency in information placement is essential for effective retrieval",
+        "B_distractors": [
+          "that novelty and change enhance long-term user engagement",
+          "that users prefer faster access over familiar layouts",
+          "that dynamic reranking helps users find relevant sentences",
+          "that predictability matters only in large-scale search systems"
+        ]
+      },
+      {
+        "template": "True ________(A)________ requires ________(B)________ rather than mere appearance.",
+        "A_correct": "usability enhancement in information systems",
+        "A_distractors": [
+          "aesthetic improvement in digital interface design",
+          "reduction of irrelevant content in search results",
+          "acceleration of menu item loading speed",
+          "optimization of a single feature within an application"
+        ],
+        "B_correct": "preserving the stable positional patterns users have already internalized",
+        "B_distractors": [
+          "abandoning all familiar structures to encourage adaptive behavior",
+          "supplying users with the most frequently accessed items only",
+          "dynamically reordering content based on implicit behavioral signals",
+          "maintaining static rankings on results from repeated queries"
+        ]
+      },
+      {
+        "template": "X depends on ________(A)________ while Y depends on ________(B)________.",
+        "A_correct": "user trust built through predictable and stable interface structures",
+        "A_distractors": [
+          "user trust eroded by unpredictable changes in interface layout",
+          "user satisfaction derived from receiving faster search responses",
+          "user engagement driven by exposure to novel menu arrangements",
+          "user confidence limited to familiarity with a single menu system"
+        ],
+        "B_correct": "adaptive algorithmic updates that prioritize efficiency over familiarity",
+        "B_distractors": [
+          "rigid adherence to original layouts regardless of usage patterns",
+          "implicit feedback mechanisms that track repetitive user behavior",
+          "incremental improvements that avoid disrupting existing structures",
+          "reranking logic applied exclusively to repeated search queries"
+        ]
+      },
+      {
+        "template": "The contrast between ________(A)________ and ________(B)________ reveals the central insight.",
+        "A_correct": "designers' assumption that adaptive change improves user experience",
+        "A_distractors": [
+          "users' explicit preference for dynamically updated search lists",
+          "researchers' success in accelerating access through menu bubbling",
+          "the efficiency gains observed in static query log analyses",
+          "the minor benefits of reranking in narrow experimental contexts"
+        ],
+        "B_correct": "users' actual reliance on spatial memory and positional consistency",
+        "B_distractors": [
+          "users' complete indifference to the position of interface elements",
+          "users' tendency to ignore previously clicked results entirely",
+          "designers' awareness of the cognitive costs of interface change",
+          "users' preference for visually prominent items over familiar ones"
+        ]
+      }
+    ],
+    "summary_template": "The passage argues that ________(A)________ leads to ________(B)________.",
+    "summary_A_options": [
+      "dynamically altering interface layouts to boost efficiency",
+      "keeping interface layouts fixed and predictable",
+      "updating only the visual design of menus",
+      "reranking search results based on user queries",
+      "introducing minor cosmetic changes to digital systems"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "degraded user performance due to violated spatial expectations",
+      "improved user performance by meeting spatial expectations",
+      "slower loading times in menu and search systems",
+      "user frustration with irrelevant search results",
+      "reduced efficiency in a single type of navigation task"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 1,
+    "implication_keyword": "bubbling common items to the top of the menu.",
+    "implication_options": [
+      "prioritizing frequently used options disrupts users' ability to locate them reliably",
+      "floating menu items upward like bubbles rising to the surface of a liquid",
+      "hiding less common menu items at the bottom to make the interface cleaner",
+      "making popular menu items more visible by moving them higher",
+      "sorting menu options automatically to reflect each user's personal preferences"
+    ],
+    "implication_answer": 1,
+    "irrel_candidates": [
+      "Dynamic menus have been widely praised by users for significantly improving navigation efficiency, as the automatic reordering of frequently accessed items allows people to locate what they need more quickly than with static menus.",
+      "The development of dynamic interfaces was driven largely by user demand for personalization, and many search platforms continue to invest heavily in real-time reranking algorithms precisely because users report higher satisfaction when results adapt to their preferences.",
+      "When researchers analyzed implicit feedback gathered during search sessions, they found that dynamically updated result lists helped users build more accurate mental models of information hierarchies, ultimately improving their ability to re-find previously accessed content."
+    ],
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "disrupt",
+            "original": "disrupt",
+            "correct": true,
+            "note": "주어 'they'(복수 대명사, Changes를 지칭)에 수일치한 복수 동사 형태로 적절하다."
+          },
+          {
+            "sent": 1,
+            "word": "bubbling",
+            "original": "bubbling",
+            "correct": true,
+            "note": "'by + -ing' 구조로 수단·방법을 나타내는 전치사 by의 목적어로 동명사가 사용된 것이며, 문맥상 메뉴 항목을 위로 올리는 동작을 표현하므로 능동적 의미의 현재분사(동명사)가 문법적으로 적절하다."
+          },
+          {
+            "sent": 2,
+            "word": "seeking",
+            "original": "sought",
+            "correct": false,
+            "note": "준동사(분사) 형태 오류. 'commonly sought items'에서 'sought'는 'seek'의 과거분사로 'items'를 수식하는 형용사적 용법의 과거분사이다. 앞에 수식어 'commonly'가 있으므로 부사가 동사를 수식하는 구조인데, 이를 능동 현재분사 'seeking'으로 바꾸면 '항목이 스스로 찾는다'는 의미가 되어 수동 관계를 나타내지 못하는 명백한 어법 오류가 된다. → sought"
+          },
+          {
+            "sent": 3,
+            "word": "gathered",
+            "original": "gathered",
+            "correct": true,
+            "note": "'implicit feedback'과 'gather' 사이의 관계가 수동(피드백이 수집되는 것)이므로 과거분사 'gathered'가 'implicit feedback'을 후치 수식하는 형태로 적절하다."
+          },
+          {
+            "sent": 4,
+            "word": "as much",
+            "original": "as much",
+            "correct": true,
+            "note": "'not as much'는 원급 비교 구조 'not as ~ as'의 일부로, 'enjoy the search experience as much (as they did when ~)'에서 동사 'enjoy'를 수식하는 부사 역할을 하므로 문법적으로 적절하다."
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "grammar_items": [
+      {
+        "sent": 0,
+        "word": "disrupt",
+        "original": "disrupt",
+        "correct": true,
+        "note": "주어 'they'(복수 대명사, Changes를 지칭)에 수일치한 복수 동사 형태로 적절하다."
+      },
+      {
+        "sent": 1,
+        "word": "bubbling",
+        "original": "bubbling",
+        "correct": true,
+        "note": "'by + -ing' 구조로 수단·방법을 나타내는 전치사 by의 목적어로 동명사가 사용된 것이며, 문맥상 메뉴 항목을 위로 올리는 동작을 표현하므로 능동적 의미의 현재분사(동명사)가 문법적으로 적절하다."
+      },
+      {
+        "sent": 2,
+        "word": "seeking",
+        "original": "sought",
+        "correct": false,
+        "note": "준동사(분사) 형태 오류. 'commonly sought items'에서 'sought'는 'seek'의 과거분사로 'items'를 수식하는 형용사적 용법의 과거분사이다. 앞에 수식어 'commonly'가 있으므로 부사가 동사를 수식하는 구조인데, 이를 능동 현재분사 'seeking'으로 바꾸면 '항목이 스스로 찾는다'는 의미가 되어 수동 관계를 나타내지 못하는 명백한 어법 오류가 된다. → sought"
+      },
+      {
+        "sent": 3,
+        "word": "gathered",
+        "original": "gathered",
+        "correct": true,
+        "note": "'implicit feedback'과 'gather' 사이의 관계가 수동(피드백이 수집되는 것)이므로 과거분사 'gathered'가 'implicit feedback'을 후치 수식하는 형태로 적절하다."
+      },
+      {
+        "sent": 4,
+        "word": "as much",
+        "original": "as much",
+        "correct": true,
+        "note": "'not as much'는 원급 비교 구조 'not as ~ as'의 일부로, 'enjoy the search experience as much (as they did when ~)'에서 동사 'enjoy'를 수식하는 부사 역할을 하므로 문법적으로 적절하다."
+      }
+    ],
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "disrupt",
+            "original": "disrupt",
+            "alt": "hinder",
+            "correct": true
+          },
+          {
+            "sent": 1,
+            "word": "common",
+            "original": "common",
+            "alt": "frequent",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "increasing",
+            "original": "decreasing",
+            "alt": "decreasing",
+            "correct": false
+          },
+          {
+            "sent": 3,
+            "word": "relevant",
+            "original": "relevant",
+            "alt": "related",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "static",
+            "original": "static",
+            "alt": "unchanged",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "disrupt",
+        "original": "disrupt",
+        "alt": "hinder",
+        "correct": true
+      },
+      {
+        "sent": 1,
+        "word": "common",
+        "original": "common",
+        "alt": "frequent",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "increasing",
+        "original": "decreasing",
+        "alt": "decreasing",
+        "correct": false
+      },
+      {
+        "sent": 3,
+        "word": "relevant",
+        "original": "relevant",
+        "alt": "related",
+        "correct": true
+      },
+      {
+        "sent": 4,
+        "word": "static",
+        "original": "static",
+        "alt": "unchanged",
+        "correct": true
+      }
+    ],
+    "aGroup": [
+      "dynamically altering interface layouts to boost efficiency",
+      "keeping interface layouts fixed and predictable",
+      "updating only the visual design of menus"
+    ],
+    "bGroup": [
+      "degraded user performance due to violated spatial expectations",
+      "improved user performance by meeting spatial expectations",
+      "slower loading times in menu and search systems"
+    ]
   },
   {
     "id": "27STYD_01_003",
@@ -16312,8 +16595,7 @@ const PASSAGES = [
         "num": 1,
         "text": "Verbal metaphors help make our language more colorful and expressive.",
         "symbol": "G",
-        "role": "언어적 은유의 기능 제시 (배경/비교 대상)",
-        "keyWords": [],
+        "role": "언어적 은유의 일반적 기능 소개",
         "chunks": [
           {
             "en": "Verbal metaphors",
@@ -16325,7 +16607,7 @@ const PASSAGES = [
           },
           {
             "en": "more colorful and expressive",
-            "ko": "더 다채롭고 표현력 있게"
+            "ko": "더 풍부하고 표현력 있게"
           }
         ]
       },
@@ -16333,8 +16615,7 @@ const PASSAGES = [
         "num": 2,
         "text": "They influence how we think about something, but they do not change the thing itself.",
         "symbol": "G",
-        "role": "언어적 은유의 한계 — 생각에만 영향, 사물 자체는 불변",
-        "keyWords": [],
+        "role": "언어적 은유의 한계 — 사고에만 영향, 실제 변화 없음",
         "chunks": [
           {
             "en": "They influence",
@@ -16342,15 +16623,15 @@ const PASSAGES = [
           },
           {
             "en": "how we think about something,",
-            "ko": "우리가 무언가에 대해 생각하는 방식에"
+            "ko": "우리가 무언가를 생각하는 방식에"
           },
           {
             "en": "but they do not change",
-            "ko": "하지만 그것들은 바꾸지는 않는다"
+            "ko": "하지만 그것들은 바꾸지 않는다"
           },
           {
             "en": "the thing itself",
-            "ko": "사물 그 자체를"
+            "ko": "그 사물 자체를"
           }
         ]
       },
@@ -16358,10 +16639,7 @@ const PASSAGES = [
         "num": 3,
         "text": "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
         "symbol": "↔",
-        "role": "인터페이스 은유는 언어적 은유보다 근본적 — 느낌뿐 아니라 기능에도 영향",
-        "keyWords": [
-          "Interface metaphors"
-        ],
+        "role": "인터페이스 은유는 감정뿐 아니라 기능까지 영향 — 언어적 은유와 대조",
         "chunks": [
           {
             "en": "Interface metaphors",
@@ -16381,16 +16659,15 @@ const PASSAGES = [
           },
           {
             "en": "affecting function as well as feeling",
-            "ko": "느낌뿐만 아니라 기능에도 영향을 미치면서"
+            "ko": "감정뿐만 아니라 기능에도 영향을 미치면서"
           }
         ]
       },
       {
         "num": 4,
         "text": "The metaphor that is chosen for an interface shapes how it can be used.",
-        "symbol": "==",
-        "role": "3번 재진술 — 선택된 은유가 사용 방식을 결정",
-        "keyWords": [],
+        "symbol": "→",
+        "role": "인터페이스 은유 선택 → 사용 방식 결정",
         "chunks": [
           {
             "en": "The metaphor",
@@ -16410,28 +16687,23 @@ const PASSAGES = [
         "num": 5,
         "text": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
         "symbol": "S",
-        "role": "파일/폴더 예시 — 은유가 사고를 돕는 동시에 행동을 제약",
-        "keyWords": [],
+        "role": "파일/폴더 예시 — 은유가 사고를 돕는 동시에 행동을 제약함",
         "chunks": [
           {
             "en": "When we put computer \"files\" into \"folders,\"",
-            "ko": "컴퓨터 '파일'을 '폴더'에 넣을 때"
+            "ko": "우리가 컴퓨터 '파일'을 '폴더'에 넣을 때"
           },
           {
             "en": "these metaphoric constructs",
-            "ko": "이러한 은유적 구성물들은"
+            "ko": "이러한 은유적 구조물들은"
           },
           {
-            "en": "help us think about the way",
-            "ko": "우리가 방식을 생각하도록 도와준다"
-          },
-          {
-            "en": "information is organized in our machine,",
-            "ko": "정보가 컴퓨터 안에서 구성되는"
+            "en": "help us think about the way information is organized",
+            "ko": "정보가 정리되는 방식을 생각하도록 도와주지만"
           },
           {
             "en": "but they also constrain",
-            "ko": "하지만 그것들은 또한 제한하기도 한다"
+            "ko": "동시에 제약하기도 한다"
           },
           {
             "en": "what we can do with it",
@@ -16443,8 +16715,7 @@ const PASSAGES = [
         "num": 6,
         "text": "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
         "symbol": "+",
-        "role": "기능뿐 아니라 감성적·심미적 경험에도 영향",
-        "keyWords": [],
+        "role": "기능뿐 아니라 정서적·미적 경험에도 영향",
         "chunks": [
           {
             "en": "Interface metaphors also influence",
@@ -16456,7 +16727,7 @@ const PASSAGES = [
           },
           {
             "en": "the emotional and aesthetic response",
-            "ko": "감정적·심미적 반응"
+            "ko": "감정적·미적 반응"
           },
           {
             "en": "we have to our interactions",
@@ -16464,7 +16735,7 @@ const PASSAGES = [
           },
           {
             "en": "with and via the machine",
-            "ko": "기계와 함께하고 기계를 통해 이루어지는"
+            "ko": "기계와 함께 그리고 기계를 통한"
           }
         ]
       },
@@ -16472,12 +16743,11 @@ const PASSAGES = [
         "num": 7,
         "text": "The desktop metaphor calls to mind office work: secretaries, bosses, quarterly plans, and cubicles.",
         "symbol": "S",
-        "role": "데스크톱 은유 예시 — 사무실 업무 연상",
-        "keyWords": [],
+        "role": "데스크탑 은유 — 사무실 이미지 연상",
         "chunks": [
           {
             "en": "The desktop metaphor",
-            "ko": "데스크톱 은유는"
+            "ko": "데스크탑 은유는"
           },
           {
             "en": "calls to mind office work:",
@@ -16485,7 +16755,7 @@ const PASSAGES = [
           },
           {
             "en": "secretaries, bosses, quarterly plans, and cubicles",
-            "ko": "비서, 상사, 분기별 계획, 그리고 칸막이 사무실"
+            "ko": "비서, 상사, 분기 계획, 그리고 칸막이 사무실"
           }
         ]
       },
@@ -16493,8 +16763,7 @@ const PASSAGES = [
         "num": 8,
         "text": "It was developed in the late 1970s and early 1980s, when office work was seen as the primary use for personal computers.",
         "symbol": "S",
-        "role": "데스크톱 은유의 역사적 맥락 — 1970~80년대 사무용 PC 시대",
-        "keyWords": [],
+        "role": "데스크탑 은유의 역사적 맥락 — 당시 PC 주요 용도와 일치",
         "chunks": [
           {
             "en": "It was developed",
@@ -16505,12 +16774,12 @@ const PASSAGES = [
             "ko": "1970년대 후반과 1980년대 초반에"
           },
           {
-            "en": "when office work was seen",
-            "ko": "사무실 업무가 여겨지던 시절"
+            "en": "when office work was seen as",
+            "ko": "그때 사무실 업무가 간주되었던"
           },
           {
-            "en": "as the primary use for personal computers",
-            "ko": "개인용 컴퓨터의 주된 용도로"
+            "en": "the primary use for personal computers",
+            "ko": "개인용 컴퓨터의 주요 사용 목적으로"
           }
         ]
       },
@@ -16518,20 +16787,15 @@ const PASSAGES = [
         "num": 9,
         "text": "The desktop image certainly is appropriate for that setting.",
         "symbol": "G",
-        "role": "당시 맥락에서는 데스크톱 은유가 적절했음을 인정",
-        "keyWords": [],
+        "role": "데스크탑 은유가 사무 환경에는 적합함을 인정",
         "chunks": [
           {
-            "en": "The desktop image",
-            "ko": "데스크톱 이미지는"
-          },
-          {
-            "en": "certainly is appropriate",
-            "ko": "분명히 적절하다"
+            "en": "The desktop image certainly is appropriate",
+            "ko": "데스크탑 이미지는 분명히 적합하다"
           },
           {
             "en": "for that setting",
-            "ko": "그 상황에서는"
+            "ko": "그 환경에는"
           }
         ]
       },
@@ -16539,12 +16803,11 @@ const PASSAGES = [
         "num": 10,
         "text": "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
         "symbol": "↔",
-        "role": "오락·소셜 용도에는 데스크톱 은유가 부적절 — 한계 지적",
-        "keyWords": [],
+        "role": "오락·사교 용도에는 데스크탑 은유가 부적합 — 한계 지적",
         "chunks": [
           {
             "en": "However, it is less appropriate",
-            "ko": "하지만 그것은 덜 적절하다"
+            "ko": "그러나 그것은 덜 적합하다"
           },
           {
             "en": "when we use the computer",
@@ -16552,11 +16815,11 @@ const PASSAGES = [
           },
           {
             "en": "as an entertainment center",
-            "ko": "오락 센터로"
+            "ko": "오락 센터로서"
           },
           {
             "en": "or as the locus of our social life",
-            "ko": "혹은 우리 사회적 삶의 중심지로"
+            "ko": "또는 우리 사회적 삶의 중심으로서"
           }
         ]
       },
@@ -16565,7 +16828,6 @@ const PASSAGES = [
         "text": "Interface metaphors need to fit both the feel and function of the application.",
         "symbol": "→",
         "role": "결론 — 인터페이스 은유는 느낌과 기능 모두에 맞아야 함",
-        "keyWords": [],
         "chunks": [
           {
             "en": "Interface metaphors need to fit",
@@ -16577,7 +16839,7 @@ const PASSAGES = [
           },
           {
             "en": "of the application",
-            "ko": "그 응용 프로그램의"
+            "ko": "해당 응용 프로그램의"
           }
         ]
       }
@@ -16587,13 +16849,13 @@ const PASSAGES = [
     "insert_sel": 0,
     "summary_sel": 0,
     "irrel_sel": 0,
-    "irrel_insert_pos": 0,
-    "irrel_confirmed": false,
-    "irrel_sentence": "",
+    "irrel_insert_pos": 4,
+    "irrel_confirmed": true,
+    "irrel_sentence": "Verbal metaphors, like interface metaphors, can also reshape the underlying structure of the technologies they describe, altering both function and form.",
     "grammar_sel": 0,
-    "grammar_answer": 1,
+    "grammar_answer": 5,
     "vocab_sel": 0,
-    "vocab_answer": 1,
+    "vocab_answer": 2,
     "flow": {
       "blocks": [
         {
@@ -16604,24 +16866,24 @@ const PASSAGES = [
           "sentenceNums": [
             1,
             2,
-            3,
-            4
+            3
           ]
         },
         {
           "id": 2,
-          "name": "인터페이스 은유의 두 가지 영향",
-          "nameEn": "Two Effects of Interface Metaphors",
+          "name": "인터페이스 은유의 기능·감성적 영향",
+          "nameEn": "Functional & Emotional Impact",
           "color": "teal",
           "sentenceNums": [
+            4,
             5,
             6
           ]
         },
         {
           "id": 3,
-          "name": "데스크톱 은유의 적절성과 한계",
-          "nameEn": "Desktop Metaphor: Fit and Misfit",
+          "name": "데스크탑 은유의 적합성과 한계",
+          "nameEn": "Desktop Metaphor: Fit & Limitation",
           "color": "coral",
           "sentenceNums": [
             7,
@@ -16632,48 +16894,429 @@ const PASSAGES = [
         },
         {
           "id": 4,
-          "name": "결론",
-          "nameEn": "Conclusion",
-          "color": "amber",
+          "name": "결론: 은유의 적합성 요건",
+          "nameEn": "Conclusion: Requirements for Fit",
+          "color": "green",
           "sentenceNums": [
             11
           ]
         }
       ],
       "interBlockConnectors": [
+        "↔",
         "+",
-        "S",
         "→"
       ],
-      "keyword": "Interface metaphors",
-      "topicSummary": "인터페이스 은유는 언어적 은유와 달리 기술 세계와의 상호작용 방식과 감성적 경험 모두에 근본적인 영향을 미치므로, 응용 프로그램의 느낌과 기능 양쪽에 모두 부합해야 한다.",
-      "structureType": "비교→예시→결론"
+      "keyword": "인터페이스 은유(Interface Metaphor)",
+      "topicSummary": "인터페이스 은유는 언어적 은유와 달리 기능과 감성 모두에 근본적 영향을 미치므로, 해당 응용 프로그램의 느낌과 기능 양쪽에 부합해야 한다.",
+      "structureType": "비교·대조 → 사례 분석 → 결론"
     },
     "grammar": {
       "difficultSentences": [
         {
           "num": 3,
           "text": "Interface metaphors play a more fundamental role in how we experience and interact with the technological world, affecting function as well as feeling.",
-          "structure": "주어(Interface metaphors) + 동사(play) + 목적어(a more fundamental role) + 전치사구(in how절) + 분사구문(affecting ~)",
-          "translation": "인터페이스 은유는 우리가 기술 세계를 경험하고 상호작용하는 방식에 더 근본적인 역할을 하며, 느낌뿐만 아니라 기능에도 영향을 미친다.",
-          "point": "'as well as'가 'feeling'만이 아니라 'function'까지 영향을 준다는 핵심 주장을 담고 있으며, 분사구문 'affecting ~'이 앞 절 전체를 부연한다."
+          "structure": "주어(Interface metaphors) + 동사(play) + 목적어(a more fundamental role) / 분사구문(affecting function as well as feeling) — 앞 문장과 역접 관계",
+          "translation": "인터페이스 은유는 우리가 기술 세계를 경험하고 상호작용하는 방식에 더 근본적인 역할을 하며, 감정뿐만 아니라 기능에도 영향을 미친다.",
+          "point": "'as well as'로 기능(function)과 감정(feeling) 두 측면을 연결하며, 앞의 언어적 은유와 비교·대조되는 핵심 문장"
         },
         {
           "num": 5,
           "text": "When we put computer \"files\" into \"folders,\" these metaphoric constructs help us think about the way information is organized in our machine, but they also constrain what we can do with it.",
-          "structure": "부사절(When ~) + 주절1(these metaphoric constructs help us think about ~) + 역접(but) + 주절2(they also constrain what ~)",
-          "translation": "컴퓨터 '파일'을 '폴더'에 넣을 때, 이러한 은유적 구성물들은 정보가 기계 안에서 구성되는 방식을 생각하도록 도와주지만, 동시에 우리가 그것으로 할 수 있는 것을 제한하기도 한다.",
-          "point": "'help us think'(긍정)와 'constrain'(부정)의 대조 구조가 인터페이스 은유의 양면성(기능 보조 + 행동 제약)을 동시에 보여주는 핵심 문장이다."
+          "structure": "부사절(When ~) + 주절1(help us think ~) + but + 주절2(constrain what ~) — 역접 병렬 구조",
+          "translation": "우리가 컴퓨터 '파일'을 '폴더'에 넣을 때, 이러한 은유적 구조물들은 기기 내 정보 정리 방식을 이해하도록 돕지만, 동시에 우리가 그것으로 할 수 있는 것을 제약하기도 한다.",
+          "point": "'help + 목적어 + 동사원형' 구조와 'constrain what we can do with it'의 관계사절을 정확히 파악해야 하며, 은유의 양면성(도움 vs 제약)이 핵심 논지"
         },
         {
           "num": 6,
           "text": "Interface metaphors also influence the feel of the experience, the emotional and aesthetic response we have to our interactions with and via the machine.",
-          "structure": "주어 + 동사(influence) + 목적어1(the feel ~) + 목적어 동격(the emotional and aesthetic response) + 관계절(we have to our interactions with and via the machine)",
-          "translation": "인터페이스 은유는 또한 경험의 느낌, 즉 기계와 함께하거나 기계를 통해 이루어지는 상호작용에 대해 우리가 갖는 감정적·심미적 반응에도 영향을 미친다.",
-          "point": "'the emotional and aesthetic response'가 'the feel of the experience'와 동격 관계이며, 'with and via the machine'처럼 전치사 두 개가 공유 구조로 묶인 점을 파악해야 한다."
+          "structure": "주어 + 동사(influence) + 목적어1(the feel) + , + 목적어1의 동격(the emotional and aesthetic response ~) — 동격 명사구 확장",
+          "translation": "인터페이스 은유는 또한 경험의 느낌, 즉 기계와 함께하고 기계를 통한 상호작용에 대해 우리가 갖는 감정적·미적 반응에도 영향을 미친다.",
+          "point": "'the emotional and aesthetic response we have to ~'가 앞의 'the feel of the experience'를 동격으로 부연 설명하는 구조를 인식해야 함"
         }
       ]
-    }
+    },
+    "topic_options": [
+      "the dual role of interface metaphors in shaping both the function and feel of user experience",
+      "the limitation of the desktop metaphor for non-office uses of computers",
+      "the influence of all types of metaphors on human language and thought",
+      "the constraint that interface metaphors place on how information is organized",
+      "the importance of choosing appropriate metaphors in effective communication"
+    ],
+    "topic_answer": 1,
+    "blank_sentence_index": 2,
+    "blank_target": "affecting function as well as feeling.",
+    "blank_options": [
+      "affecting function as well as feeling.",
+      "neglecting function in favor of feeling",
+      "shaping the feel of the experience alone",
+      "constraining what we can do with information",
+      "reflecting the historical context of office work"
+    ],
+    "order_given_index": 0,
+    "order_blocks": [
+      {
+        "label": "B",
+        "sentence_indices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "label": "C",
+        "sentence_indices": [
+          4,
+          5
+        ]
+      },
+      {
+        "label": "D",
+        "sentence_indices": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      }
+    ],
+    "order_options": [
+      "(A)-(B)-(C)",
+      "(B)-(C)-(A)",
+      "(C)-(A)-(B)",
+      "(B)-(A)-(C)",
+      "(A)-(C)-(B)"
+    ],
+    "order_answer": 2,
+    "insert_sentence": "However, it is less appropriate when we use the computer as an entertainment center or as the locus of our social life.",
+    "insert_answer": 9,
+    "summary_candidates": [
+      {
+        "template": "The passage argues that ________(A)________ leads to ________(B)________.",
+        "A_correct": "the choice of an interface metaphor",
+        "A_distractors": [
+          "the rejection of all interface metaphors",
+          "the visual design of an interface",
+          "the use of verbal metaphors in language",
+          "the desktop metaphor specifically"
+        ],
+        "B_correct": "constraints on both usability and user experience",
+        "B_distractors": [
+          "unlimited freedom in how users interact with technology",
+          "changes in the emotional tone of an interface",
+          "colorful and expressive digital communication",
+          "difficulties only with office-related software"
+        ]
+      },
+      {
+        "template": "Despite ________(A)________, the passage emphasizes ________(B)________.",
+        "A_correct": "the decorative appeal of verbal metaphors in everyday language",
+        "A_distractors": [
+          "the functional power of interface metaphors in shaping use",
+          "the complete absence of metaphor in technology design",
+          "the organizational role of file and folder labels",
+          "the historical dominance of the desktop metaphor"
+        ],
+        "B_correct": "the deeper functional and emotional impact interface metaphors have on human-technology interaction",
+        "B_distractors": [
+          "the superficial and purely aesthetic nature of all metaphors",
+          "the emotional response users feel toward office software",
+          "the importance of developing new metaphors every decade",
+          "the effect metaphors have only on professional computing contexts"
+        ]
+      },
+      {
+        "template": "True ________(A)________ requires ________(B)________ rather than mere appearance.",
+        "A_correct": "interface design effectiveness",
+        "A_distractors": [
+          "interface design failure",
+          "graphic attractiveness of a digital product",
+          "linguistic creativity in user manuals",
+          "the development of the desktop layout"
+        ],
+        "B_correct": "alignment between the metaphor's implications and the application's actual purpose and feel",
+        "B_distractors": [
+          "complete independence of function from any guiding metaphor",
+          "matching the interface color scheme to user preferences",
+          "copying the organizational structure of physical office spaces",
+          "choosing metaphors drawn exclusively from entertainment culture"
+        ]
+      },
+      {
+        "template": "X depends on ________(A)________ while Y depends on ________(B)________.",
+        "A_correct": "verbal metaphors, which shape only expression and thought without altering reality",
+        "A_distractors": [
+          "interface metaphors that restructure how technology functions",
+          "metaphors that simultaneously change both thought and physical objects",
+          "the use of folder and file terminology in computing",
+          "aesthetic responses triggered by screen layout"
+        ],
+        "B_correct": "interface metaphors, which actively constrain function and color emotional experience",
+        "B_distractors": [
+          "verbal metaphors that remain limited to decorative linguistic effects",
+          "the desktop metaphor's suitability for entertainment applications",
+          "user preferences that override the influence of any metaphor",
+          "quarterly planning tools embedded in office software"
+        ]
+      },
+      {
+        "template": "The contrast between ________(A)________ and ________(B)________ reveals the central insight.",
+        "A_correct": "metaphors that fit an application's context and purpose",
+        "A_distractors": [
+          "metaphors that are universally applicable across all digital uses",
+          "the visual style of a metaphor as perceived by users",
+          "the desktop metaphor's historical origins in office computing",
+          "verbal metaphors used to organize written communication"
+        ],
+        "B_correct": "metaphors that are misaligned with users' actual functional and emotional needs",
+        "B_distractors": [
+          "metaphors that perfectly serve every computing context simultaneously",
+          "the aesthetic limitations of early personal computer interfaces",
+          "the organizational constraints imposed by file and folder systems",
+          "metaphors borrowed from entertainment rather than office settings"
+        ]
+      }
+    ],
+    "summary_template": "The passage argues that ________(A)________ leads to ________(B)________.",
+    "summary_A_options": [
+      "the choice of an interface metaphor",
+      "the rejection of all interface metaphors",
+      "the visual design of an interface",
+      "the use of verbal metaphors in language",
+      "the desktop metaphor specifically"
+    ],
+    "summary_A_answer": 1,
+    "summary_B_options": [
+      "constraints on both usability and user experience",
+      "unlimited freedom in how users interact with technology",
+      "changes in the emotional tone of an interface",
+      "colorful and expressive digital communication",
+      "difficulties only with office-related software"
+    ],
+    "summary_B_answer": 1,
+    "implication_sentence_index": 4,
+    "implication_keyword": "\"files\" into \"folders,\"",
+    "implication_options": [
+      "organizing information digitally both enables certain interactions and restricts others",
+      "physically placing documents inside storage containers on a desk",
+      "digital interfaces should avoid using metaphors drawn from the physical world",
+      "the way computer interfaces are designed shapes only the aesthetic experience of users",
+      "familiar metaphors from everyday life make technology easier to learn for beginners"
+    ],
+    "implication_answer": 1,
+    "irrel_candidates": [
+      "Verbal metaphors, like interface metaphors, can also reshape the underlying structure of the technologies they describe, altering both function and form.",
+      "The desktop metaphor has proven so effective that it has been adopted across nearly all digital platforms, demonstrating how a single interface metaphor can unify rather than constrain the user experience.",
+      "While interface metaphors shape how users interact with technology, the most successful designs deliberately avoid relying on metaphors so that users can engage with digital systems in entirely new and unrestricted ways."
+    ],
+    "irrelevant_sentence_index": 4,
+    "grammar_sets": [
+      {
+        "items": [
+          {
+            "sent": 2,
+            "word": "affecting",
+            "original": "affecting",
+            "correct": true,
+            "note": "분사구문으로 쓰인 현재분사 affecting은 주절의 주어(Interface metaphors)가 능동적으로 '영향을 미치는' 행위자이므로 현재분사(-ing) 형태가 문법적으로 적절하다."
+          },
+          {
+            "sent": 3,
+            "word": "chosen",
+            "original": "chosen",
+            "correct": true,
+            "note": "관계절 내에서 선행사 The metaphor를 수식하는 과거분사 chosen은 '선택되어진' 수동의 의미를 나타내므로 과거분사(-ed) 형태가 문법적으로 적절하다."
+          },
+          {
+            "sent": 5,
+            "word": "we have",
+            "original": "we have",
+            "correct": true,
+            "note": "관계절에서 목적격 관계대명사가 이끄는 절의 동사 자리이므로 올바른 형태는 we have이지만, 이 자리를 주격 관계대명사절로 오인하여 삽입된 경우라면 구조가 맞지 않는다. — 실제 오류: 선행사 the emotional and aesthetic response를 받는 목적격 관계대명사절에서 'we have'는 적절하나, 이를 'having'으로 바꾸면 동사가 사라져 절 구조가 성립하지 않는다. → we have"
+          },
+          {
+            "sent": 7,
+            "word": "seeing",
+            "original": "seen",
+            "correct": true,
+            "note": "when절에서 office work가 '여겨지는' 대상이므로 수동태 was seen이 올바르며, 과거분사 seen은 be동사와 결합하여 수동의 의미를 적절히 나타낸다."
+          },
+          {
+            "sent": 9,
+            "word": "entertainment",
+            "original": "entertainment",
+            "correct": false,
+            "note": "전치사 as 뒤에서 명사 역할을 하는 자리이므로 명사 entertainment가 와야 한다. entertaining은 형용사/현재분사로, 명사 center를 수식하는 형용사로 오해될 수 있으나 'an entertaining center'는 '재미있는 센터'라는 의미가 되어 문맥상 맞지 않으며, 구조적으로도 'as + 명사(구)' 형태를 충족하지 못한다. → entertainment"
+          }
+        ],
+        "answer": 5
+      }
+    ],
+    "grammar_items": [
+      {
+        "sent": 2,
+        "word": "affecting",
+        "original": "affecting",
+        "correct": true,
+        "note": "분사구문으로 쓰인 현재분사 affecting은 주절의 주어(Interface metaphors)가 능동적으로 '영향을 미치는' 행위자이므로 현재분사(-ing) 형태가 문법적으로 적절하다."
+      },
+      {
+        "sent": 3,
+        "word": "chosen",
+        "original": "chosen",
+        "correct": true,
+        "note": "관계절 내에서 선행사 The metaphor를 수식하는 과거분사 chosen은 '선택되어진' 수동의 의미를 나타내므로 과거분사(-ed) 형태가 문법적으로 적절하다."
+      },
+      {
+        "sent": 5,
+        "word": "we have",
+        "original": "we have",
+        "correct": true,
+        "note": "관계절에서 목적격 관계대명사가 이끄는 절의 동사 자리이므로 올바른 형태는 we have이지만, 이 자리를 주격 관계대명사절로 오인하여 삽입된 경우라면 구조가 맞지 않는다. — 실제 오류: 선행사 the emotional and aesthetic response를 받는 목적격 관계대명사절에서 'we have'는 적절하나, 이를 'having'으로 바꾸면 동사가 사라져 절 구조가 성립하지 않는다. → we have"
+      },
+      {
+        "sent": 7,
+        "word": "seeing",
+        "original": "seen",
+        "correct": true,
+        "note": "when절에서 office work가 '여겨지는' 대상이므로 수동태 was seen이 올바르며, 과거분사 seen은 be동사와 결합하여 수동의 의미를 적절히 나타낸다."
+      },
+      {
+        "sent": 9,
+        "word": "entertainment",
+        "original": "entertainment",
+        "correct": false,
+        "note": "전치사 as 뒤에서 명사 역할을 하는 자리이므로 명사 entertainment가 와야 한다. entertaining은 형용사/현재분사로, 명사 center를 수식하는 형용사로 오해될 수 있으나 'an entertaining center'는 '재미있는 센터'라는 의미가 되어 문맥상 맞지 않으며, 구조적으로도 'as + 명사(구)' 형태를 충족하지 못한다. → entertainment"
+      }
+    ],
+    "vocab_sets": [
+      {
+        "items": [
+          {
+            "sent": 0,
+            "word": "expressive",
+            "original": "expressive",
+            "alt": "vivid",
+            "correct": true
+          },
+          {
+            "sent": 4,
+            "word": "constrain",
+            "original": "constrain",
+            "alt": "restrict",
+            "correct": true
+          },
+          {
+            "sent": 2,
+            "word": "superficial",
+            "original": "fundamental",
+            "alt": "fundamental",
+            "correct": false
+          },
+          {
+            "sent": 6,
+            "word": "calls to mind",
+            "original": "calls to mind",
+            "alt": "evokes",
+            "correct": true
+          },
+          {
+            "sent": 9,
+            "word": "appropriate",
+            "original": "appropriate",
+            "alt": "suitable",
+            "correct": true
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "vocab_items": [
+      {
+        "sent": 0,
+        "word": "expressive",
+        "original": "expressive",
+        "alt": "vivid",
+        "correct": true
+      },
+      {
+        "sent": 2,
+        "word": "superficial",
+        "original": "fundamental",
+        "alt": "fundamental",
+        "correct": false
+      },
+      {
+        "sent": 4,
+        "word": "constrain",
+        "original": "constrain",
+        "alt": "restrict",
+        "correct": true
+      },
+      {
+        "sent": 6,
+        "word": "calls to mind",
+        "original": "calls to mind",
+        "alt": "evokes",
+        "correct": true
+      },
+      {
+        "sent": 9,
+        "word": "appropriate",
+        "original": "appropriate",
+        "alt": "suitable",
+        "correct": true
+      }
+    ],
+    "aGroup": [
+      "the choice of an interface metaphor",
+      "the rejection of all interface metaphors",
+      "the visual design of an interface"
+    ],
+    "bGroup": [
+      "constraints on both usability and user experience",
+      "unlimited freedom in how users interact with technology",
+      "changes in the emotional tone of an interface"
+    ],
+    "blockSummaries": [
+      {
+        "blockId": 1,
+        "summary": "While verbal {metaphors} help make language more colorful, interface metaphors play a more {fundamental} role in how we experience and interact with the {technological} world.",
+        "keywords": [
+          "metaphors",
+          "fundamental",
+          "technological"
+        ]
+      },
+      {
+        "blockId": 2,
+        "summary": "The {metaphor} chosen for an interface shapes how it can be used and influences the {feel} of the experience, including the emotional and aesthetic {response} we have to our interactions with the machine.",
+        "keywords": [
+          "metaphor",
+          "feel",
+          "response"
+        ]
+      },
+      {
+        "blockId": 3,
+        "summary": "The {desktop} metaphor was developed when office work was seen as the primary use for personal computers, making it {appropriate} for that setting but less appropriate when we use the computer as an {entertainment} center or as the locus of our social life.",
+        "keywords": [
+          "desktop",
+          "appropriate",
+          "entertainment"
+        ]
+      },
+      {
+        "blockId": 4,
+        "summary": "Interface {metaphors} need to {fit} both the feel and {function} of the application.",
+        "keywords": [
+          "metaphors",
+          "fit",
+          "function"
+        ]
+      }
+    ]
   },
   {
     "id": "27STYD_01_004",
@@ -16932,24 +17575,7 @@ const PASSAGES = [
       "topicSummary": "뉴스 프레임은 시민들이 사형제도에 대한 태도를 형성할 때 고려하는 요소에 영향을 미친다.",
       "structureType": "주제 제시→실험 사례→결론"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 3,
-          "text": "One story constructed the death penalty as an affront to moral values (the morality frame), whereas another story emphasized that the policy was fundamentally flawed because innocent people might be executed (the innocence frame).",
-          "structure": "[One story + V + O as N] whereas [another story + V + that절]",
-          "translation": "한 기사는 사형제도를 도덕적 가치에 대한 모욕으로 구성한 반면(도덕성 프레임), 다른 기사는 무고한 사람들이 처형될 수 있기 때문에 그 정책이 근본적으로 결함이 있다고 강조했다(무죄 프레임).",
-          "point": "whereas는 대조 접속사. 'construct A as B(A를 B로 구성하다)', 'affront to(~에 대한 모욕)'의 어휘가 어렵고, 두 프레임의 핵심 차이를 정확히 구분해야 함."
-        },
-        {
-          "num": 6,
-          "text": "It was found that subjects exposed to the innocence frame were more likely to mention innocence-related considerations as important factors in determining their attitudes toward the death penalty than subjects presented with the morality frame.",
-          "structure": "It was found that [주어(subjects exposed to…) + were more likely to V + than 비교대상]",
-          "translation": "무죄 프레임에 노출된 피험자들이 사형제도에 대한 태도를 결정하는 데 있어 무죄 관련 고려 사항을 중요한 요인으로 언급할 가능성이 도덕성 프레임을 접한 피험자들보다 더 높은 것으로 밝혀졌다.",
-          "point": "주어(subjects)와 동사(were) 사이에 과거분사구(exposed to the innocence frame)가 삽입되어 문장이 길어짐. 비교 구문(more likely ~ than)의 비교 대상을 정확히 파악해야 함."
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "27STYD_01_005",
@@ -17240,31 +17866,7 @@ const PASSAGES = [
       "topicSummary": "관찰되지 않은 것에 대한 예측은 결코 확실하지 않으며, 우리의 지식에는 근본적인 한계가 있다.",
       "structureType": "주제 제시 → 반박(사례 열거) → 현실 사례로 결론 강화"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 4,
-          "text": "It seems very likely, but it has also been predicted that the time will come when the Sun runs out of fuel, swells massively, and consumes the Earth.",
-          "structure": "It seems ~ but it has been predicted that ... when + 관계절(3개 동사 병렬)",
-          "translation": "그것은 매우 그럴 것 같지만, 태양이 연료를 다 소진하고 엄청나게 팽창하여 지구를 집어삼킬 때가 올 것이라고 또한 예측되어 왔다.",
-          "point": "가주어 it 구문 + that절 안의 when절 + runs out / swells / consumes 3개 동사 병렬 구조 파악이 핵심"
-        },
-        {
-          "num": 8,
-          "text": "These examples seem a bit extreme, but consider the 230,000 people who died in the tsunami in Sumatra in 2004, which resulted from an undersea megathrust earthquake that had not been anticipated.",
-          "structure": "명령문(consider) + 목적어(people) + 관계절 중첩(who ... / which ... / that ...)",
-          "translation": "이 예들은 다소 극단적으로 보이지만, 2004년 수마트라 쓰나미에서 사망한 23만 명을 생각해 보라. 그 쓰나미는 예상되지 않았던 해저 대규모 단층 지진에서 비롯된 것이다.",
-          "point": "관계절이 3중으로 중첩(who → which → that)되어 선행사 파악이 어려우며, megathrust earthquake는 전문 용어로 문맥으로 의미 추론 필요"
-        },
-        {
-          "num": 9,
-          "text": "The most reasonable prediction on that day was that it would be an average day, like so many days before it, not that a massive wave was going to destroy many thousands of lives; tragically, such was the case.",
-          "structure": "was that ~ not that ~ 대조 구문 + 세미콜론 후 such was the case(도치)",
-          "translation": "그날 가장 합리적인 예측은, 이전의 수많은 날들처럼, 평범한 날이 될 것이라는 것이었지, 거대한 파도가 수천 명의 생명을 앗아갈 것이라는 게 아니었다. 비극적으로도, 그런 일이 실제로 일어났다.",
-          "point": "'was that ... not that ...' 대조 구문과 세미콜론 뒤 'such was the case'의 도치 표현(= that was the case) 해석이 관건"
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "27STYD_01_006",
@@ -17550,31 +18152,7 @@ const PASSAGES = [
       "topicSummary": "진정한 수용은 문제를 사라지게 하려는 수단이 아니며, 경험에 맞서 싸우지 않고 주의를 거둘 때 그 영향이 자연스럽게 줄어든다.",
       "structureType": "통념 제시→반박·재정의→결론(비유)"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 5,
-          "text": "Using acceptance to make something go away is actually non-acceptance masquerading as acceptance in order to get rid of that towards which you have a negative attitude.",
-          "structure": "동명사구 주어 + is + 명사 + 현재분사구(masquerading) + 전치사구(towards which 관계절)",
-          "translation": "무언가를 사라지게 하기 위해 수용을 이용하는 것은, 사실 당신이 부정적인 태도를 가진 대상을 제거하기 위해 수용인 척 위장하는 비수용이다.",
-          "point": "'towards which you have a negative attitude'는 'that'를 수식하는 관계절로, 전치사가 관계대명사 앞으로 나온 형태. 'masquerading as acceptance'는 non-acceptance를 수식하는 현재분사구."
-        },
-        {
-          "num": 9,
-          "text": "Through true acceptance, the impact of such experiences starts to diminish and in their own time these experiences impact us less often.",
-          "structure": "전치사구 + 주어(the impact) + 동사 / and + 부사구(in their own time) + 주어(these experiences) + 동사",
-          "translation": "진정한 수용을 통해, 그러한 경험들의 영향이 줄어들기 시작하고, 자연스러운 시간이 지나면 이 경험들은 우리에게 덜 자주 영향을 미친다.",
-          "point": "'in their own time'은 '저절로, 자연스럽게'라는 숙어적 표현. 두 절이 and로 연결되며 주어가 바뀜에 주의."
-        },
-        {
-          "num": 10,
-          "text": "It's as if we've been visited by a stray dog that keeps coming back because we keep feeding it, but soon it loses interest and goes away when it is not being fed.",
-          "structure": "It's as if + 가정법(과거완료) / 관계절(that keeps ~) / 부사절(because / when)",
-          "translation": "마치 우리가 먹이를 계속 주기 때문에 계속 돌아오는 떠돌이 개의 방문을 받아온 것과 같지만, 먹이를 받지 못하면 곧 흥미를 잃고 떠난다.",
-          "point": "'It's as if'는 비유적 가정법 표현. 'keep + -ing'는 '계속 ~하다'. 'be being fed'는 수동 진행형으로 '먹이를 받고 있는 중'을 의미."
-        }
-      ]
-    },
+    "grammar": {},
     "disabled_types": [
       "order"
     ]
@@ -17882,31 +18460,7 @@ const PASSAGES = [
       "topicSummary": "생일 문제·원숭이 문제 등 수학적 도구와 '진정으로 큰 수의 법칙'은, 비록 엄밀히 증명되지 않더라도, 우연의 일치가 우리 예상보다 훨씬 자주 일어나는 이유를 이해하게 해준다.",
       "structureType": "사례 나열 → 원리 도출 → 핵심 법칙 심화 → 한계 인정 후 의의 강조"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 2,
-          "text": "One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday.",
-          "structure": "One is [명사구]: [동격 명사], which tells us that [명사절(that절 내 주어·동사·that절 중첩)]",
-          "translation": "하나는 반직관적인 난제인 '생일 문제'인데, 이것은 23명의 어떤 그룹에서든 그 그룹 안의 두 사람이 같은 생일을 가질 확률이 50%보다 높다는 것을 알려준다.",
-          "point": "'the odds are better than even'은 숙어로 '확률이 절반(50%) 이상'을 의미. that절이 두 번 중첩(tells us that … that two people …)되어 구조 파악이 까다로움."
-        },
-        {
-          "num": 4,
-          "text": "These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.",
-          "structure": "These two problems [주어], along with A, B, and C [삽입 전치사구], give us [동사+간접목적어] a reasonable understanding of [의문사절] why …",
-          "translation": "이 두 가지 문제는 큰 수의 법칙, 숨겨진 변수 이론, 진정으로 큰 수의 법칙과 함께, 우연의 일치가 우리가 예상하는 것보다 훨씬 더 자주 일어나는 이유에 대한 합리적인 이해를 제공한다.",
-          "point": "'along with' 삽입구가 길어 주어(These two problems)와 동사(give)의 수 일치를 놓치기 쉬움. 'understanding of why'에서 why절이 명사절로 쓰인 구조 주의."
-        },
-        {
-          "num": 6,
-          "text": "In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time.",
-          "structure": "it tells us that [명사절: if … (조건절), no matter how small (양보절), it's bound to happen (주절)]",
-          "translation": "간단히 말해서, 이것은 어떤 일이 일어날 가능성이, 아무리 작더라도, 조금이라도 있다면 그것은 언젠가 반드시 일어나게 되어 있다고 우리에게 알려준다.",
-          "point": "'no matter how small'은 삽입된 양보절로 likelihood를 수식. 'be bound to do'는 '반드시 ~하게 되어 있다'는 필연성 표현. that절 내부에 if절·양보절·주절이 모두 들어있어 구조가 복잡함."
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "27STYD_01_008",
@@ -18198,31 +18752,7 @@ const PASSAGES = [
       "topicSummary": "이미지 스캐닝 실험을 통해 시각적 심상 속 거리가 실제로 공간적으로 표상됨을 증명함",
       "structureType": "개념정의→실험절차→결과/결론"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 6,
-          "text": "Participants were not instructed to scan their image, but were simply told to focus on the original location until the probe was delivered, and then to focus on the named part or feature.",
-          "structure": "were not instructed to V, but were told to V until S+V, and then to V",
-          "translation": "참가자들은 심상을 스캔하라는 지시를 받지 않았고, 단지 탐침이 제시될 때까지 원래 위치에 집중하다가 이후 언급된 부위에 집중하도록 지시받았다.",
-          "point": "but 이하에 told to V 구조가 두 번(until절 포함) 병렬되어 있어 문장 구조 파악이 까다로움. 스캔 지시 없이도 스캔과 같은 결과가 나왔음을 암시하는 실험 설계의 핵심 문장."
-        },
-        {
-          "num": 8,
-          "text": "The critical finding was that response times increased linearly with increasing distances from the focus point to the named part of the object.",
-          "structure": "The critical finding was that S+V [with+명사구(분사구문 역할)]",
-          "translation": "핵심적인 발견은 집중 지점에서 물체의 언급된 부위까지의 거리가 증가함에 따라 반응 시간이 선형적으로 증가했다는 것이었다.",
-          "point": "'with increasing distances'는 '거리가 증가함에 따라'라는 부대상황 표현. 'linearly'(선형적으로)의 의미와 함께 거리-시간의 비례 관계를 정확히 독해하는 것이 중요."
-        },
-        {
-          "num": 9,
-          "text": "This finding was taken as evidence that distance, as traversed by image scanning, is genuinely represented in visual mental images.",
-          "structure": "be taken as evidence that S [삽입구: as traversed by ~] V",
-          "translation": "이 발견은 이미지 스캐닝에 의해 가로질러지는 거리가 시각적 심상 안에 실제로 표상된다는 증거로 받아들여졌다.",
-          "point": "'as traversed by image scanning'은 삽입구로 주어 distance를 수식. 'genuinely represented'가 핵심 결론어로 심상 속 공간 거리가 단순한 비유가 아닌 실제 표상임을 강조."
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "27STYD_01_009",
@@ -18480,24 +19010,7 @@ const PASSAGES = [
       "topicSummary": "소셜 미디어는 본래 개인 소통 수단이었으나, 현재는 제품 홍보·직접 판매·인플루언서 마케팅 등을 통해 기업을 위한 전자상거래 플랫폼으로 진화하였다.",
       "structureType": "통념→전환(역접)→구체예시→결론"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 6,
-          "text": "Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field.",
-          "structure": "관계대명사 who절이 those users를 수식 / are recognized as A or B 구조",
-          "translation": "인플루언서는 상당한 소셜 미디어 팔로워를 보유하고 자신의 전문 분야에서 권위자 또는 의견 선도자로 인정받는 사용자들이다.",
-          "point": "'thought leaders(의견 선도자)'라는 복합명사와 'sizable(상당한)' 등 비즈니스 어휘에 주의"
-        },
-        {
-          "num": 7,
-          "text": "Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
-          "structure": "allow+목적어+to부정사 / 계속적 용법 관계대명사 who절 / be likely to 구조",
-          "translation": "인플루언서 마케팅은 기업이 해당 사용자의 팔로워들에게 도달할 수 있게 해주는데, 그 팔로워들은 소셜 미디어에서 자신이 팔로우하는 사람들의 제안을 더 신뢰하는 경향이 있다.",
-          "point": "계속적 용법 who절이 followers를 부연 설명하며, 'people they follow'에서 목적격 관계대명사가 생략된 구조에 주의"
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "27STYD_01_010",
@@ -18778,31 +19291,7 @@ const PASSAGES = [
       "topicSummary": "상대방이 말하는 도중 응답을 준비하면 정작 중요한 내용을 듣지 못하게 된다.",
       "structureType": "주제 제시 → 구체 예시 → 역접·결과 → 결론 재진술"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 1,
-          "text": "One way we stop listening is when we start preparing a response to what the other person has just said, often immediately after they have started speaking.",
-          "structure": "주어(One way we stop listening) + 동사(is) + 보어절(when we start preparing a response to what ...)",
-          "translation": "우리가 듣기를 멈추는 한 가지 방식은, 흔히 상대방이 말을 시작한 직후부터, 상대방이 방금 말한 것에 대한 응답을 준비하기 시작할 때이다.",
-          "point": "'One way ~ is when ~' 구조에서 when절이 보어 역할을 함. 'what the other person has just said'는 전치사 to의 목적어인 관계절."
-        },
-        {
-          "num": 7,
-          "text": "Meanwhile, your manager has continued talking, laying out the rationale for the decision, and explaining why this is a good move for both you and your team.",
-          "structure": "주어(your manager) + 동사(has continued talking) + 분사구문 병렬(laying out ..., and explaining ...)",
-          "translation": "그러는 동안, 상사는 계속 말을 이어가면서, 결정에 대한 근거를 제시하고, 왜 이것이 당신과 팀 모두에게 좋은 변화인지를 설명하고 있었다.",
-          "point": "현재완료 진행(has continued)과 두 개의 분사구문(laying, explaining)이 병렬 연결. 'laying out the rationale'에서 rationale(근거/이유)의 의미 파악이 핵심."
-        },
-        {
-          "num": 5,
-          "text": "You think of how much you don't like the manager you are about to be moved under, and you prepare to tell your manager that you are incompatible with the new person.",
-          "structure": "think of + [how much절] / prepare to tell + [that절] / 'be about to + be moved under'(수동 예정)",
-          "translation": "당신은 곧 배치될 관리자를 얼마나 싫어하는지를 생각하고, 새 사람과 자신이 맞지 않는다고 상사에게 말할 준비를 한다.",
-          "point": "'the manager you are about to be moved under'에서 관계절 내 'be about to'(막 ~하려 하다) + 수동태 구조 파악 필요. 'incompatible with'는 '~와 맞지 않는'의 의미."
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "ABSO_01_011",
@@ -19545,26 +20034,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -19606,31 +20085,7 @@ const PASSAGES = [
       "topicSummary": "구매는 이익 극대화가 아닌 위험 감소 과정이므로, 성공적인 브랜드 마케팅은 구매자의 위험 인식을 이해하고 최소화하는 데 집중해야 한다.",
       "structureType": "주장→근거→결론→사례"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 1,
-          "text": "Many marketers believe that buying should be regarded as a process whereby buyers attempt to reduce the risk of a purchase decision, rather than maximising their gain.",
-          "structure": "believe [that절] / whereby 관계부사절 / rather than 대조",
-          "translation": "많은 마케터들은 구매가, 이익을 극대화하는 것이 아니라, 구매자들이 구매 결정의 위험을 줄이려 시도하는 과정으로 여겨져야 한다고 믿는다.",
-          "point": "whereby(= by which)는 관계부사로 선행사 process를 수식. rather than이 핵심 대조 구조를 형성하며 글 전체 주제를 압축."
-        },
-        {
-          "num": 3,
-          "text": "Successful brand marketing should therefore be concerned with understanding buyers' perceptions of risk, followed by developing and presenting the brand in such a way that buyers feel minimal risk.",
-          "structure": "be concerned with + 동명사 / followed by + 동명사 / in such a way that절",
-          "translation": "따라서 성공적인 브랜드 마케팅은 구매자의 위험 인식을 이해하는 것에 관심을 가져야 하고, 이어서 구매자가 최소한의 위험을 느끼도록 하는 방식으로 브랜드를 개발하고 제시해야 한다.",
-          "point": "followed by는 분사구문으로 '그 다음으로 ~하면서'의 순서를 표현. in such a way that은 결과/방식의 that절을 이끄는 관용 표현."
-        },
-        {
-          "num": 6,
-          "text": "One company launching such a product worked with a series of pain specialists in pediatric hospitals, providing clinical data and product trials, so that specialist endorsement of the brand would reassure parents and help to minimise their perception of risk.",
-          "structure": "launching(현재분사 후치수식) / providing(분사구문, 동시동작) / so that(목적절)",
-          "translation": "그러한 제품을 출시한 한 회사는 소아과 병원의 여러 통증 전문가들과 협력하여, 임상 데이터와 제품 시험을 제공했는데, 이는 브랜드에 대한 전문가 보증이 부모를 안심시키고 위험 인식을 최소화하는 데 도움이 되도록 하기 위해서였다.",
-          "point": "launching은 company를 수식하는 현재분사, providing은 부대상황 분사구문, so that은 목적을 나타내는 접속사로 문장이 3단 구조로 압축되어 있어 독해 난이도가 높음."
-        }
-      ]
-    }
+    "grammar": {}
   },
   {
     "id": "27STYD_01_012",
@@ -19852,26 +20307,16 @@ const PASSAGES = [
     ],
     "abstract": "",
     "blank_sel": 0,
-    "blank_candidates": [],
     "insert_sel": 0,
-    "insert_candidates": [],
     "summary_sel": 0,
-    "summary_candidates": [],
     "irrel_sel": 0,
-    "irrel_candidates": [],
     "irrel_insert_pos": 0,
     "irrel_confirmed": false,
     "irrel_sentence": "",
-    "grammar_sets": [],
     "grammar_sel": 0,
-    "grammar_items": [],
     "grammar_answer": 1,
-    "vocab_sets": [],
     "vocab_sel": 0,
-    "vocab_items": [],
     "vocab_answer": 1,
-    "aGroup": [],
-    "bGroup": [],
     "flow": {
       "blocks": [
         {
@@ -19916,30 +20361,6 @@ const PASSAGES = [
       "topicSummary": "벌은 실제 비행 거리가 아닌 이동 중 받는 시각적 자극의 양으로 거리를 어림잡으며, 이는 교묘한 알고리즘으로 작동하는 단순한 메커니즘이다.",
       "structureType": "원리 제시→실험 예시→결론"
     },
-    "grammar": {
-      "difficultSentences": [
-        {
-          "num": 2,
-          "text": "The bee is actually approximating distance by measuring the amount of visual stimuli it receives on the trip.",
-          "structure": "[주어 The bee] + [동사 is approximating] + [목적어 distance] + [수단 by measuring the amount of visual stimuli (it receives on the trip)]",
-          "translation": "벌은 사실 이동 중에 받는 시각적 자극의 양을 측정함으로써 거리를 어림잡는다.",
-          "point": "'visual stimuli it receives'에서 목적격 관계대명사가 생략된 구조. by -ing(수단)가 핵심 메커니즘을 설명함."
-        },
-        {
-          "num": 7,
-          "text": "If the scientists put a nectar source right at the end of the tube, the bee would fly ten inches to it, but go back and report that there is nectar a whole forest away.",
-          "structure": "[가정 If절] + [귀결 주절: would fly / go back and report] + [that절 명사절: there is nectar a whole forest away]",
-          "translation": "과학자들이 튜브 끝에 꿀 공급원을 놓으면, 벌은 10인치를 날아가지만 돌아와서 꿀이 숲 하나를 건너에 있다고 보고할 것이다.",
-          "point": "'a whole forest away'는 '숲 하나만큼 떨어진 거리에'를 의미하는 거리 표현. 가정법 현재(If+현재, would+동사원형)의 구조 파악이 중요."
-        },
-        {
-          "num": 8,
-          "text": "This was confirmed by removing the tube, then putting tiny little RPIDs on the backs of the bees that saw the dance of the tricked bee and went on to overshoot the location by a mile.",
-          "structure": "[주어 This] + [수동태 was confirmed] + [by -ing 수단구] + [관계절 that saw ... and went on to overshoot]",
-          "translation": "이것은 튜브를 제거한 뒤, 속은 벌의 춤을 보고 실제 위치를 훨씬 지나쳐 날아간 벌들의 등에 작은 RPID를 붙이는 방식으로 확인됐다.",
-          "point": "'went on to overshoot the location by a mile'에서 'by a mile'은 '엄청나게, 훨씬'이라는 관용적 표현. 관계절(that)이 'bees'를 수식하는 구조 파악 필요."
-        }
-      ]
-    }
+    "grammar": {}
   }
 ];
