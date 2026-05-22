@@ -34,7 +34,20 @@ const SYMS=['G','↔','=','S','→','+'];
 const STRUCTS=['통념→반박→결론','문제→해결책','질문→답변','실험/일화→교훈','인과 관계','비교 대조'];
 const NSTR=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
 const nStr=n=>NSTR[n-1]||'('+n+')';
-const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots',APPS_URL:'te_apps_script_url'};
+const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots',APPS_URL:'te_apps_script_url',STUDENT_OPTS:'te_student_opts'};
+
+// 학생용 출력 디폴트 옵션
+const DEFAULT_STU_OPTS={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false};
+function getStuOpts(){
+  try{
+    const s=localStorage.getItem(LS.STUDENT_OPTS);
+    if(!s)return{...DEFAULT_STU_OPTS};
+    return{...DEFAULT_STU_OPTS,...JSON.parse(s)};
+  }catch{return{...DEFAULT_STU_OPTS};}
+}
+function setStuOpts(opts){
+  localStorage.setItem(LS.STUDENT_OPTS,JSON.stringify(opts));
+}
 
 // JSONP fetch (CORS 우회 - Apps Script 호출용)
 function jsonpFetch(url, data){
@@ -281,10 +294,12 @@ function loadSlots(){
 }
 
 /* ── DOCX 학생용 (흑백 A4 1페이지) ── */
-function buildDOCXChildren(slot,mode){
+function buildDOCXChildren(slot,mode,opts){
 const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
     AlignmentType,BorderStyle,WidthType,ShadingType,VerticalAlign}=docx;
   const IS=mode==='student';
+  // 학생용 옵션 (교사용은 항상 전체 표시)
+  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false};
   const {analysis,meta}=slot;
   if(!analysis)return;
   const {sentences=[],flow={},grammar={}}=analysis;
@@ -338,6 +353,7 @@ const ch=[];
     children:[run('')]}));
 
   /* 지문 */
+  if(O.passage){
   ch.push(para('■ 지문',{bold:true,size:P8,color:'333333',sa:60}));
   const pRuns=[];
   sentences.forEach(s=>{
@@ -347,8 +363,10 @@ const ch=[];
   ch.push(new Paragraph({spacing:{before:0,after:120},
     border:{left:{style:BorderStyle.SINGLE,size:10,color:'555555',space:6}},
     indent:{left:160},children:pRuns}));
+  }
 
   /* Block Diagram */
+  if(O.structure){
   ch.push(para('■ 글의 구조',{bold:true,size:P8,color:'333333',sb:60,sa:60}));
   const nc=blocks.length-1;
   const bw=Math.floor((9200-nc*440)/blocks.length);
@@ -375,14 +393,19 @@ const ch=[];
   ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:colW,
     rows:[new TableRow({children:hCells}),...bRows]}));
   ch.push(para('',{sa:80}));
+  }
 
   /* 핵심소재/주제요약/구조 — 표 없이 텍스트 */
+  if(O.keyTopics){
   ch.push(new Paragraph({spacing:{before:0,after:50},children:[run('▸ 핵심 소재: ',{bold:true,size:P8}),IS?run('_________________________',{size:P8}):run(keyword,{size:P9})]}));
   ch.push(new Paragraph({spacing:{before:0,after:50},children:[run('▸ 주제 요약: ',{bold:true,size:P8}),IS?run('_________________________',{size:P8}):run(topicSummary,{size:P9})]}));
   ch.push(new Paragraph({spacing:{before:0,after:100},children:[run('▸ 구조 유형: ',{bold:true,size:P8}),IS?run('_________________________',{size:P8}):run(structureType,{size:P9})]}));
+  }
 
   /* 문장별 분석 */
-  const dsToShow=IS?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
+  if(O.sentences){
+  // hardOnly: 어려운 문장만 / hardOnly=false: 전체 문장
+  const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
   if(dsToShow.length){
     ch.push(para(IS?'■ 구문 분석':'■ 문장별 분석 (끊어읽기 + 구문)',{bold:true,size:P8,color:'333333',sb:60,sa:60}));
     dsToShow.forEach(s=>{
@@ -408,16 +431,17 @@ const ch=[];
       ch.push(para('',{sa:60}));
     });
   }
+  }
   return ch;
 }
 
-function buildDOCX(slot,mode){
+function buildDOCX(slot,mode,opts){
   const {Document,Packer}=docx;
   const IS=mode==='student';
   const {meta}=slot;
   if(!slot.analysis)return;
   const id=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
-  const ch=buildDOCXChildren(slot,mode);
+  const ch=buildDOCXChildren(slot,mode,opts);
   const doc=new Document({
     styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},
     sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},children:ch}]
@@ -427,13 +451,13 @@ function buildDOCX(slot,mode){
 
 
 /* ── 통합 DOCX (전체 슬롯) ── */
-function buildAllDOCX(slots,mode){
+function buildAllDOCX(slots,mode,opts){
   const {Document,Packer}=docx;
   const IS=mode==='student';
   const activeSlots=slots.filter(s=>s.analysis&&s.status==='saved');
   if(!activeSlots.length){alert('저장완료된 슬롯이 없습니다.');return;}
   const sections=activeSlots.map(slot=>{
-    const ch=buildDOCXChildren(slot,mode);
+    const ch=buildDOCXChildren(slot,mode,opts);
     return{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},children:ch};
   });
   const doc=new Document({styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},sections});
@@ -441,8 +465,9 @@ function buildAllDOCX(slots,mode){
 }
 
 /* ── HTML 출력 ── */
-function buildHTML(slot,mode){
+function buildHTML(slot,mode,opts){
   const IS=mode==='student';
+  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false};
   const {analysis,meta}=slot;
   if(!analysis)return'';
   const {sentences=[],flow={},grammar={}}=analysis;
@@ -476,7 +501,8 @@ function buildHTML(slot,mode){
     const connDiv=bi<blocks.length-1?'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex-shrink:0;padding-top:50px;min-width:32px"><div style="font-size:1.2em;font-weight:700;color:#666">'+conn(bi)+'</div><div style="font-size:.6em;color:#bbb;text-align:center">'+(SM[conn(bi)]&&SM[conn(bi)].lbl||'')+'</div></div>':'';
     return'<div style="flex:1 1 130px;min-width:0;border-radius:10px;border:2px solid '+c.bd+'"><div style="padding:8px 11px;background:'+c.hd+';border-bottom:1.5px solid '+c.bd+';border-radius:8px 8px 0 0">'+hd+'</div><div style="padding:7px;background:#fff">'+rows+'</div></div>'+connDiv;
   }).join('');
-  const dsToShow=IS?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
+  // hardOnly: 어려운 문장만 / hardOnly=false: 전체 문장
+  const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
   const analysisHTML=dsToShow.map(s=>{
     const sc=SM[s.symbol]||{};
     const ds=difficultSentences.find(d=>d.num===s.num);
@@ -502,21 +528,20 @@ function buildHTML(slot,mode){
     +'<div style="font-size:1.1em;font-weight:700">수능 영어 독해 — 흐름 분석 <span style="font-size:.62em;color:#888;font-weight:400;margin-left:6px">'+id+' '+(IS?'학생용':'교사용')+'</span></div>'
     +'<div style="font-size:.8em;color:#666;display:flex;gap:16px"><span>이름: <span style="display:inline-block;width:80px;border-bottom:1px solid #999">&nbsp;</span></span><span>날짜: <span style="display:inline-block;width:70px;border-bottom:1px solid #999">&nbsp;</span></span></div>'
     +'</div>'
-    +'<div style="border-left:4px solid #185FA5;background:#fafafa;border-radius:0 8px 8px 0;padding:12px 16px;font-size:1em;line-height:2.2;margin-bottom:14px;word-break:keep-all;overflow-wrap:break-word">'+passHTML+'</div>'
+    +(O.passage?'<div style="border-left:4px solid #185FA5;background:#fafafa;border-radius:0 8px 8px 0;padding:12px 16px;font-size:1em;line-height:2.2;margin-bottom:14px;word-break:keep-all;overflow-wrap:break-word">'+passHTML+'</div>':'')
     +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">'+SYMS.map(s=>{const sc=SM[s]||{};return'<span style="display:flex;align-items:center;gap:4px;font-size:.72em;color:#666;padding:3px 9px;border:0.5px solid #e0e0e0;border-radius:4px"><span style="width:8px;height:8px;border-radius:2px;background:'+sc.bd+';display:inline-block"></span>('+s+') '+sc.lbl+'</span>';}).join('')+'</div>'
-    +'<div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">글의 구조 — Block Diagram</div>'
-    +'<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:16px;flex-wrap:wrap">'+blockCards+'</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 2fr 1.5fr;gap:8px;margin-bottom:16px">'
+    +(O.structure?'<div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">글의 구조 — Block Diagram</div><div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:16px;flex-wrap:wrap">'+blockCards+'</div>':'')
+    +(O.keyTopics?'<div style="display:grid;grid-template-columns:1fr 2fr 1.5fr;gap:8px;margin-bottom:16px">'
     +[{lbl:'핵심 소재',val:keyword},{lbl:'주제 한 줄 요약',val:topicSummary},{lbl:'구조 유형',val:structureType}].map(({lbl,val})=>
       '<div style="padding:9px 12px;background:#f8f8f8;border-radius:8px;border:0.5px solid #e5e5e5"><div style="font-size:.68em;font-weight:700;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">'+lbl+'</div>'+(IS?'<div style="border-bottom:1.5px solid #aaa;height:22px"></div>':'<div style="font-size:.88em;word-break:keep-all">'+val+'</div>')+'</div>'
-    ).join('')+'</div>'
-    +(analysisHTML?'<div style="border-top:1.5px solid #e5e5e5;padding-top:14px"><div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">'+(IS?'구문 분석':'문장별 분석 — 끊어읽기 & 구문')+'</div>'+analysisHTML+'</div>':'')
+    ).join('')+'</div>':'')
+    +(O.sentences&&analysisHTML?'<div style="border-top:1.5px solid #e5e5e5;padding-top:14px"><div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">'+(IS?'구문 분석':'문장별 분석 — 끊어읽기 & 구문')+'</div>'+analysisHTML+'</div>':'')
     +'<div class="np" style="margin-top:20px;text-align:center;padding-top:14px;border-top:1px solid #eee"><button onclick="window.print()" style="padding:10px 28px;font-size:14px;font-weight:500;background:#185FA5;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨 인쇄 / PDF 저장</button></div>'
     +'</body></html>';
 }
 
-function dlHTML(slot,mode){
-  const html=buildHTML(slot,mode);
+function dlHTML(slot,mode,opts){
+  const html=buildHTML(slot,mode,opts);
   const id=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
   const url=URL.createObjectURL(blob);
@@ -1830,6 +1855,9 @@ function App(){
   const [sheetLoadSearch,setSheetLoadSearch]=useState('');
   const [sheetLoadSel,setSheetLoadSel]=useState({});
   const [expandedChapter,setExpandedChapter]=useState('');
+  // 학생용 출력 옵션 모달
+  const [stuModal,setStuModal]=useState(null); // null | {kind:'html'|'docx'|'all-docx', slot:slot, opts:{...}}
+  const [stuOpts,setStuOptsState]=useState(()=>getStuOpts());
   const [showSet,setShowSet]=useState(false);
   const [showLoad,setShowLoad]=useState(false);
   const [loadedPassages,setLoadedPassages]=useState([]);
@@ -2450,7 +2478,7 @@ function App(){
           <button onClick={()=>buildAllDOCX(slots,'teacher')}
             style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
               borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>📄 교사용</button>
-          <button onClick={()=>buildAllDOCX(slots,'student')}
+          <button onClick={()=>setStuModal({kind:'all-docx',slot:null,opts:{...stuOpts}})}
             style={{background:'rgba(45,138,96,.7)',color:'#fff',border:'none',
               borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>📄 학생용</button>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:12},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
@@ -2636,6 +2664,73 @@ function App(){
         </div>);
       })()}
 
+      {stuModal&&(()=>{
+        const O=stuModal.opts;
+        const setO=(patch)=>setStuModal({...stuModal,opts:{...O,...patch}});
+        const doExport=(saveAsDefault)=>{
+          if(saveAsDefault){setStuOpts(O);setStuOptsState(O);}
+          if(stuModal.kind==='html'&&stuModal.slot)dlHTML(stuModal.slot,'student',O);
+          else if(stuModal.kind==='docx'&&stuModal.slot)buildDOCX(stuModal.slot,'student',O);
+          else if(stuModal.kind==='all-docx')buildAllDOCX(slots,'student',O);
+          setStuModal(null);
+        };
+        const items=[
+          {key:'passage',label:'지문 (전체 텍스트)'},
+          {key:'structure',label:'글의 구조 (블록 다이어그램)'},
+          {key:'keyTopics',label:'핵심 소재 / 주제 요약 / 구조 유형'},
+          {key:'sentences',label:'문장별 분석 (구문)'},
+        ];
+        return(<div style={{position:'fixed',top:0,left:0,right:0,bottom:0,
+          background:'rgba(0,0,0,.5)',display:'flex',alignItems:'center',justifyContent:'center',
+          zIndex:1000,padding:20}} onClick={()=>setStuModal(null)}>
+          <div style={{background:'#fff',borderRadius:12,padding:'24px 28px',maxWidth:480,width:'100%',
+            maxHeight:'90vh',overflow:'auto',boxShadow:'0 8px 40px rgba(0,0,0,.3)'}}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:6,color:'#185FA5'}}>📄 학생용 출력 옵션</div>
+            <div style={{fontSize:12,color:'#888',marginBottom:18}}>
+              {stuModal.kind==='all-docx'?'전체 슬롯 학생용 DOCX':
+               stuModal.kind==='docx'?'단일 슬롯 학생용 DOCX':
+               '단일 슬롯 학생용 HTML'}
+            </div>
+            <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:18}}>
+              {items.map(it=>(
+                <label key={it.key} style={{display:'flex',alignItems:'center',gap:9,padding:'8px 11px',
+                  border:`0.5px solid ${O[it.key]?'#185FA5':'#ddd'}`,
+                  background:O[it.key]?'#E6F1FB':'#fff',borderRadius:7,cursor:'pointer',fontSize:13}}>
+                  <input type="checkbox" checked={!!O[it.key]} onChange={e=>setO({[it.key]:e.target.checked})}
+                    style={{width:16,height:16,cursor:'pointer'}}/>
+                  <span>{it.label}</span>
+                </label>
+              ))}
+            </div>
+            {O.sentences&&(
+              <div style={{padding:'10px 12px',background:'#fafafa',borderRadius:7,marginBottom:18,border:'0.5px solid #eee'}}>
+                <div style={{fontSize:12,fontWeight:600,marginBottom:7,color:'#555'}}>문장별 분석 범위</div>
+                <label style={{display:'flex',alignItems:'center',gap:7,marginBottom:5,cursor:'pointer',fontSize:12.5}}>
+                  <input type="radio" checked={!O.hardOnly} onChange={()=>setO({hardOnly:false})}/>
+                  <span>전체 문장 (모든 문장 포함)</span>
+                </label>
+                <label style={{display:'flex',alignItems:'center',gap:7,cursor:'pointer',fontSize:12.5}}>
+                  <input type="radio" checked={O.hardOnly} onChange={()=>setO({hardOnly:true})}/>
+                  <span>어려운 문장만 (구문 분석 있는 문장만)</span>
+                </label>
+              </div>
+            )}
+            <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}>
+              <button onClick={()=>setStuModal(null)}
+                style={{padding:'8px 14px',fontSize:13,background:'#f5f5f5',color:'#666',
+                  border:'0.5px solid #ddd',borderRadius:6,cursor:'pointer'}}>취소</button>
+              <button onClick={()=>doExport(true)}
+                style={{padding:'8px 14px',fontSize:13,fontWeight:600,background:'#fff',color:'#185FA5',
+                  border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>💾 디폴트 저장 + 출력</button>
+              <button onClick={()=>doExport(false)}
+                style={{padding:'8px 18px',fontSize:13,fontWeight:600,background:'#185FA5',color:'#fff',
+                  border:'none',borderRadius:6,cursor:'pointer'}}>📄 출력</button>
+            </div>
+          </div>
+        </div>);
+      })()}
+
       {showSet&&(
         <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
           {[{lbl:'Claude API Key',val:keyInput||(apiKey?'••••••••':''),set:setKeyInput,ph:'sk-ant-api03-...',type:'password'},
@@ -2795,6 +2890,7 @@ function App(){
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onSave={()=>upSlot(slot.id,{status:'saved'})}
             onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok){upSlot(slot.id,{status:'saved'});flash('시트 저장 ✓');}}}
+            onStuOutput={(kind)=>setStuModal({kind,slot,opts:{...stuOpts}})}
             sheetSaving={!!slotSheetSaving[slot.id]}
             onReanalyze={()=>reanalyze(slot)}
             onAnalysis={upAnalysis}
@@ -2806,7 +2902,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onReanalyze,onAnalysis,onAuthor,onGenSum}){
+function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -2859,9 +2955,9 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
         {slot.analysis&&(
           <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
             <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓교사</button>
-            <button onClick={()=>dlHTML(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
+            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
             <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
-            <button onClick={()=>buildDOCX(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
+            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
             <button onClick={onAuthor} style={{padding:'4px 9px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>✏ 출제 저작</button>
           </div>
         )}
