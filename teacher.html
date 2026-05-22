@@ -339,20 +339,13 @@ const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
 const ch=[];
 
   /* 헤더 */
-  ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:[6500,2700],
-    rows:[new TableRow({children:[
-      cell([para([run('수능 영어 독해 — 흐름 분석',{bold:true,size:P10}),
-        run('  '+(IS?'[학생용]':'[교사용]')+'  '+id,{size:P8,color:'666666'})],{sa:0})],
-        {borders:nobs,w:6500,m:{top:0,bottom:0,left:0,right:0}}),
-      cell([para([run('이름: ',{size:P8,color:'666666'}),run('____________',{size:P8}),
-        run('  날짜: ',{size:P8,color:'666666'}),run('________',{size:P8})],
-        {a:AlignmentType.RIGHT,sa:0})],
-        {borders:nobs,w:2700,m:{top:0,bottom:0,left:0,right:0}}),
-    ]})]
-  }));
-  ch.push(new Paragraph({spacing:{before:0,after:100},
-    border:{bottom:{style:BorderStyle.SINGLE,size:8,color:'1a1a1a',space:1}},
-    children:[run('')]}));
+  const now=new Date();
+  const ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  ch.push(new Paragraph({spacing:{before:0,after:80},children:[
+    run('수능 영어 독해 — 흐름 분석',{bold:true,size:P10}),
+    run('  '+(IS?'[학생용]':'[교사용]')+'  '+id+'  ',{size:P8,color:'666666'}),
+    run(ts,{size:P8,color:'999999'}),
+  ]}));
 
   /* 지문 */
   if(O.passage){
@@ -447,7 +440,7 @@ const ch=[];
           run('______________________________',{size:P8}),
         ]}));
       }
-      ch.push(para('',{sa:20}));
+      ch.push(para('',{sa:5}));
     });
   }
   }
