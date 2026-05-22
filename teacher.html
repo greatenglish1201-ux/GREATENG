@@ -427,6 +427,12 @@ const ch=[];
             IS&&r.f==='translation'?run('______________________________',{size:P8}):run(ds[r.f]||'',{size:P8}),
           ]}));
         });
+      }else if(IS){
+        // 학생용: 해설 없는 문장도 해석 빈칸은 표시
+        ch.push(new Paragraph({spacing:{before:0,after:20},indent:{left:200},children:[
+          run('[해석] ',{bold:true,size:P8,color:'555555'}),
+          run('______________________________',{size:P8}),
+        ]}));
       }
       ch.push(para('',{sa:60}));
     });
@@ -508,8 +514,8 @@ function buildHTML(slot,mode,opts){
     const ds=difficultSentences.find(d=>d.num===s.num);
     const chunks=s.chunks||[];
     const chunksDiv=!IS&&chunks.length?'<div style="padding:7px 12px;background:#fff;border-top:1px dashed #eee"><div style="font-size:.85em;font-style:italic;color:#222;line-height:1.9;word-break:keep-all">'+chunks.map(c=>c.en||'').join(' / ')+'</div><div style="font-size:.85em;color:#555;line-height:1.9;word-break:keep-all;border-top:1px dashed #e8e8e8;margin-top:3px;padding-top:3px">'+chunks.map(c=>c.ko||'').join(' / ')+'</div></div>':'';
-    const diffDiv=ds?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee">'+[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>'<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #f0f0f0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">'+r.l+'</span>'+(IS&&r.f==='translation'?'<div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div>':'<div style="font-size:.88em;color:#333;word-break:keep-all;flex:1">'+(ds[r.f]||'')+'</div>')+'</div>').join('')+'</div>':'';
-    if(!chunksDiv&&!diffDiv)return'';
+    const diffDiv=ds?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee">'+[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>'<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #f0f0f0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">'+r.l+'</span>'+(IS&&r.f==='translation'?'<div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div>':'<div style="font-size:.88em;color:#333;word-break:keep-all;flex:1">'+(ds[r.f]||'')+'</div>')+'</div>').join('')+'</div>':(IS?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee"><div style="display:flex;gap:8px;padding:3px 0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">해석</span><div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div></div></div>':'');
+    if(!chunksDiv&&!diffDiv)return IS?'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div></div>':'';
     return'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div>'+chunksDiv+diffDiv+'</div>';
   }).filter(Boolean).join('');
 
