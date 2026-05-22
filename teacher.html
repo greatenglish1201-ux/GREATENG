@@ -349,7 +349,7 @@ const ch=[];
 
   /* 지문 */
   if(O.passage){
-  ch.push(para('■ 지문',{bold:true,size:P8,color:'333333',sa:60}));
+  ch.push(para('■ 지문',{bold:true,size:P8,color:'333333',sa:20}));
   const pRuns=[];
   sentences.forEach(s=>{
     pRuns.push(run(nStr(s.num)+' ',{bold:true,size:P9}));
@@ -362,7 +362,7 @@ const ch=[];
 
   /* Block Diagram */
   if(O.structure){
-  ch.push(para('■ 글의 구조',{bold:true,size:P8,color:'333333',sb:60,sa:60}));
+  ch.push(para('■ 글의 구조',{bold:true,size:P8,color:'333333',sb:20,sa:20}));
   const nc=blocks.length-1;
   const bw=Math.floor((9200-nc*440)/blocks.length);
   const colW=[];blocks.forEach((_,bi)=>{colW.push(bw);if(bi<blocks.length-1)colW.push(440);});
@@ -387,7 +387,6 @@ const ch=[];
   });
   ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:colW,
     rows:[new TableRow({children:hCells}),...bRows]}));
-  ch.push(para('',{sa:40}));
   }
 
   /* 핵심소재/주제요약/구조 — 가로 1행 표 (지면 절약) */
@@ -405,7 +404,6 @@ const ch=[];
     ch.push(new Table({width:{size:9200,type:WidthType.DXA},
       columnWidths:ktItems.map(i=>i.w),
       rows:[new TableRow({children:ktCells})]}));
-    ch.push(para('',{sa:40}));
   }
 
   /* 문장별 분석 */
@@ -413,7 +411,7 @@ const ch=[];
   // hardOnly: 어려운 문장만 / hardOnly=false: 전체 문장
   const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
   if(dsToShow.length){
-    ch.push(para(IS?'■ 구문 분석':'■ 문장별 분석 (끊어읽기 + 구문)',{bold:true,size:P8,color:'333333',sb:60,sa:60}));
+    ch.push(para(IS?'■ 구문 분석':'■ 문장별 분석 (끊어읽기 + 구문)',{bold:true,size:P8,color:'333333',sb:20,sa:20}));
     dsToShow.forEach(s=>{
       const ds=difficultSentences.find(d=>d.num===s.num);
       const chunks=s.chunks||[];
