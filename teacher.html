@@ -1970,7 +1970,7 @@ function App(){
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
     setMainGhSaving(true);
     try{
-      const entries=slots.filter(s=>['saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
+      const entries=slots.filter(s=>['analyzed','saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
         const p=s.passageData||{};
         const metaId=s.meta.source+'_'+String(s.meta.chapter).padStart(2,'0')+'_'+String(s.meta.number).padStart(3,'0');
         const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -2137,8 +2137,8 @@ function App(){
 
   const saveAllToSheet=useCallback(async()=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
-    const targets=slots.filter(s=>['saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length));
-    if(!targets.length){alert('저장할 슬롯이 없습니다. (저장완료/흐름확정 상태만 대상)');return;}
+    const targets=slots.filter(s=>['analyzed','confirmed','saved'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length));
+    if(!targets.length){alert('저장할 슬롯이 없습니다. (분석완료/저장완료 상태만 대상)');return;}
     if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`))return;
     setSheetSaving(true);
     let ok=0,fail=0;
@@ -2285,6 +2285,7 @@ function App(){
             blockSummaries,
             open:true,
             error:'',
+            isPublic:sp.is_public==='TRUE'||sp.is_public===true,
           };
           idx++;
         }
@@ -3355,13 +3356,9 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
 
           {/* 액션 */}
           <div style={{display:'flex',gap:8,flexWrap:'wrap',paddingTop:4}}>
-            {slot.status==='analyzed'&&(
-              <button onClick={onConfirm} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
-                background:'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer'}}>✓ 흐름 확정</button>
-            )}
-            {['confirmed','saved'].includes(slot.status)&&onSheetSave&&(
-              <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 14px',fontSize:12.5,fontWeight:600,
-                background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:6,cursor:sheetSaving?'wait':'pointer'}}>
+            {['analyzed','confirmed','saved'].includes(slot.status)&&onSheetSave&&(
+              <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
+                background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:sheetSaving?'wait':'pointer'}}>
                 {sheetSaving?'저장중...':'📊 시트 저장'}
               </button>
             )}
