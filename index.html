@@ -100,13 +100,27 @@ const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAIAAAAP3aGbAA
 
 // JSONP 방식으로 CORS 우회
 function jsonpFetch(url, data) {
-  const payload = encodeURIComponent(JSON.stringify(data));
-  // redirect:follow + credentials:omit 으로 CORS/redirect 문제 해결
-  return fetch(`${url}?data=${payload}`, {
+  // GAS의 e.parameter가 받는 형식: 각 키를 개별 query parameter로 전송
+  const params = new URLSearchParams();
+  Object.keys(data || {}).forEach(k => {
+    const v = data[k];
+    params.append(k, v === null || v === undefined ? '' : String(v));
+  });
+  return fetch(`${url}?${params.toString()}`, {
     method: 'GET',
     redirect: 'follow',
     credentials: 'omit',
-  }).then(r => r.json());
+  }).then(r => r.text()).then(text => {
+    // GAS는 JSONP 형식 callback({...})으로 응답 - JSONP 껍데기 제거 후 파싱
+    const trimmed = text.trim();
+    const jsonpMatch = trimmed.match(/^[\w$]+\((.*)\)\s*;?$/s);
+    const jsonStr = jsonpMatch ? jsonpMatch[1] : trimmed;
+    try {
+      return JSON.parse(jsonStr);
+    } catch (e) {
+      throw new Error('응답 파싱 실패: ' + text.substring(0, 200));
+    }
+  });
 }
 
 
@@ -473,7 +487,7 @@ function useTimer(seconds, onExpire){
 
 /* ── App ── */
 const SCRIPT_URL_KEY='greateng_script_url';
-const HARDCODED_URL='https://script.google.com/macros/s/AKfycbxeMzNAdlqJ13WHaTuJhs6WYFG1rTiDq2AR18fZgxWZ8Ne77RD4t5Ud4OYT98FfWnK8/exec';
+const HARDCODED_URL='https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec';
 const SESSION_KEY='greateng_session';
 const STUDENTS_KEY='greateng_students';
 const ADMIN_PW_KEY2='greateng_admin_pw';
