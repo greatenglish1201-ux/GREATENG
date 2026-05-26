@@ -710,11 +710,11 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     // 서버 인증 (서버가 만료일/활성화 모두 체크)
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
-      if(result.status==='ok'){
+      if(result.ok){
         // 일반 로그인 탭에서는 학생으로만 접속 가능 (관리자는 별도 탭 사용)
         onLogin({name:result.name||name.trim(),role:'student'});
       } else {
-        setError(result.message||'로그인 실패');
+        setError(result.error||result.message||'로그인 실패');
       }
     }catch(e){
       setError('서버 연결 실패. 인터넷을 확인하세요.');
@@ -726,7 +726,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     setLoading(true);setAdminErr('');
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
-      if(result.status==='ok'&&result.role==='admin'){
+      if(result.ok&&result.role==='admin'){
         onLogin({name:'관리자',role:'admin',adminPw:adminPwInput});
       } else {
         setAdminErr('비밀번호가 틀렸습니다.');
@@ -1087,7 +1087,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
   const tryGoAdmin=async()=>{
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
-      if(result.status==='ok'&&result.role==='admin'){
+      if(result.ok&&result.role==='admin'){
         setShowAdminModal(false);setAdminPwErr('');goToAdmin(adminPwInput);setAdminPwInput('');
       } else {
         setAdminPwErr('비밀번호가 틀렸습니다.');
