@@ -723,7 +723,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       const parsedNew=JSON.parse('['+jsonText.replace(/^\/\/.*\n/gm,'').trim()+']');
       const newContent=upsertPassages(currentContent,parsedNew);
       // 3. 커밋
-      const encoded=btoa(unescape(encodeURIComponent(newContent)));
+      const encoded=btoa(String.fromCharCode(...new TextEncoder().encode(newContent)));
       const putRes=await fetch(apiBase,{
         method:'PUT',
         headers:{'Authorization':`token ${ghToken}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
