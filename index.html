@@ -193,7 +193,18 @@ function normalizePassage(p){
   // sentences: 객체배열 → 문자열배열
   let sentences = p.sentences;
   if(sentences && sentences.length > 0 && typeof sentences[0] === 'object'){
-    sentences = sentences.map(s => s.text || '');
+    sentences = sentences.map(s => {
+      // text 필드만 사용, ko(한글) 등 다른 필드 제외
+      if(typeof s === 'string') return s;
+      return (s.text || s.en || '').trim();
+    }).filter(s => s.length > 0);
+  } else if(sentences && sentences.length > 0 && typeof sentences[0] === 'string'){
+    // 이미 문자열 배열이지만 한글이 섞여있으면 제거
+    sentences = sentences.map(s => s.trim()).filter(s => {
+      // 한글 문자가 50% 이상이면 제외 (ko 필드가 잘못 섞인 경우)
+      const korean = (s.match(/[\uAC00-\uD7AF]/g)||[]).length;
+      return korean < s.length * 0.5;
+    });
   }
   // blank_answer: 없으면 options[0]이 정답인 경우 1로 설정
   let blank_answer = p.blank_answer;
