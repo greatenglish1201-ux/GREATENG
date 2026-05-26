@@ -36,47 +36,6 @@ const BOOKS = [
 ];
 const BOOK_LABELS={'27ST_E':'27수특영어','27STYD':'27영독','ABSO_TYPE':'절대유형'};
 
-function parseCSV(text){
-  const rows=[];
-  const lines=text.split('\n');
-  let cur=null;
-  for(let i=1;i<lines.length;i++){
-    const raw=lines[i];
-    if(!raw.trim())continue;
-    // CSV 파싱: 쉼표로 분리하되 따옴표 안 쉼표 무시
-    const cols=[];let c='',inQ=false;
-    for(let k=0;k<raw.length;k++){
-      const ch=raw[k];
-      if(ch==='"'){inQ=!inQ;}
-      else if(ch===','&&!inQ){cols.push(c);c='';}
-      else{c+=ch;}
-    }
-    cols.push(c);
-    const id=(cols[0]||'').trim();
-    if(id&&/^[A-Z0-9_]/.test(id)&&(cols[1]||'').trim()){
-      if(cur&&cur.sentences.length>0)rows.push(cur);
-      cur={
-        id,
-        difficulty:(cols[1]||'보통').trim(),
-        title:(cols[2]||'').trim(),
-        abstract:(cols[3]||'').trim(),
-        keyIndex:parseInt((cols[4]||'1').trim())||1,
-        sentences:[],
-        aGroup:(cols[6]||'').split('/').map(s=>s.trim()).filter(Boolean),
-        bGroup:(cols[7]||'').split('/').map(s=>s.trim()).filter(Boolean),
-        answers:(cols[8]||'').split('/').map(s=>s.trim()).filter(Boolean),
-      };
-      const logic=(cols[5]||'').trim();
-      const parts=logic.split(/(?:^|\n)\s*\d+\.\s+/).filter(Boolean);
-      parts.forEach(p=>{const t=p.trim().replace(/\n/g,' ');if(t)cur.sentences.push(t);});
-    }else if(cur){
-      const t=raw.trim().replace(/^\d+\.\s+/,'');
-      if(t)cur.sentences.push(t);
-    }
-  }
-  if(cur&&cur.sentences.length>0)rows.push(cur);
-  return rows;
-}
 
 function detectBooks(passages){
   const map={};
@@ -556,41 +515,12 @@ function App(){
   const [userAns,setUserAns]=useState({});
   const [showAns,setShowAns]=useState(false);
   const [timerKey,setTimerKey]=useState(0);
-  const [extraPassages,setExtraPassages]=useState([]);
   const [expandedLessons,setExpandedLessons]=useState(new Set());
 
-  const allPassages=useMemo(()=>{
-    const merged=[...PASSAGES];
-    extraPassages.forEach(ep=>{if(!merged.find(p=>p.id===ep.id))merged.push(ep);});
-    return merged;
-  },[extraPassages]);
+  const allPassages=useMemo(()=>[...PASSAGES],[]);
 
   const books=useMemo(()=>detectBooks(allPassages),[allPassages]);
 
-  const handleCSVUpload=(e)=>{
-    const file=e.target.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=(ev)=>{
-      const parsed=parseCSV(ev.target.result);
-      if(parsed.length>0){
-        setExtraPassages(prev=>{
-          const next=[...prev];
-          parsed.forEach(p=>{if(!next.find(x=>x.id===p.id)&&!PASSAGES.find(x=>x.id===p.id))next.push(p);});
-          return next;
-        });
-        // 새 교재 prefix 감지해서 BOOK_LABELS에 없으면 추가
-        parsed.forEach(p=>{
-          const pre=p.id.split('_')[0];
-          if(!BOOK_LABELS[pre])BOOK_LABELS[pre]=pre;
-        });
-        alert(`${parsed.length}개 지문이 추가되었습니다!`);
-      }else{
-        alert('CSV 파싱 실패: 올바른 형식인지 확인해주세요.');
-      }
-    };
-    reader.readAsText(file,'utf-8');
-    e.target.value='';
-  };
 
   const filtP=useMemo(()=>{
     let p=allPassages;
@@ -684,7 +614,7 @@ function App(){
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
   if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -1107,7 +1037,7 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
