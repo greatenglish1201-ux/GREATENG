@@ -30,11 +30,11 @@ const TYPES = [
 ];
 
 const BOOKS = [
-  { id:'27ST', label:'27수특영어', match: id => id.startsWith('27ST') },
-  { id:'ABSO', label:'절대유형', match: id => id.startsWith('ABSO') },
-  { id:'OLLE', label:'올림포스 독해1', match: id => id.startsWith('OLLE') },
+  { id:'27ST_E', label:'27수특영어', match: id => id.startsWith('27ST_E') },
+  { id:'27STYD', label:'27영독', match: id => id.startsWith('27STYD') },
+  { id:'ABSO_TYPE', label:'절대유형', match: id => id.startsWith('ABSO_TYPE') },
 ];
-const BOOK_LABELS={'27ST_E':'27수특영어','27STYD':'27영독','ABSO_TYPE':'절대유형','OLLE':'올림포스 독해1','MOGO_GO3':'모의고사 GO3','MOGO':'모의고사 GO3','ABSO':'절대유형'};
+const BOOK_LABELS={'27ST_E':'27수특영어','27STYD':'27영독','ABSO_TYPE':'절대유형'};
 
 function parseCSV(text){
   const rows=[];
@@ -1379,17 +1379,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           <button onClick={()=>printDirect('a')} disabled={selPassages.size===0} style={{flex:1,padding:12,borderRadius:12,border:'1px solid #e2e8f0',background:selPassages.size>0?'#fff':'#f1f5f9',color:selPassages.size>0?'#334155':'#b0bec5',fontSize:13,fontWeight:600,cursor:selPassages.size>0?'pointer':'default'}}>🖨️ 정답지 인쇄</button>
         </div>
 
-        <div style={{...S.card,marginTop:12}}>
-          <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 8px'}}>📎 교재 추가 (CSV 업로드)</h3>
-          <p style={{fontSize:11,color:'#94a3b8',margin:'0 0 8px',lineHeight:1.5}}>
-            기존과 같은 형식의 CSV 파일을 업로드하면 새 교재가 자동으로 추가됩니다.
-          </p>
-          <label style={{display:'inline-block',padding:'8px 18px',borderRadius:10,border:'1px dashed #94a3b8',background:'#f8fafc',fontSize:12,cursor:'pointer',color:'#475569',fontWeight:500}}>
-            📂 CSV 파일 선택
-            <input type="file" accept=".csv" onChange={handleCSVUpload} style={{display:'none'}}/>
-          </label>
-          <span style={{fontSize:10.5,color:'#94a3b8',marginLeft:8}}>현재 {allPassages.length}개 지문</span>
-        </div>
+
       </div>
     </div>
   );
