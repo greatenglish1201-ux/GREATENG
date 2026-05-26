@@ -189,7 +189,7 @@
     ],
     "topic_answer": 1,
     "blank_sentence_index": 2,
-    "blank_target": "the most pitiless of all phenomena ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ natural selection",
+    "blank_target": "the most pitiless of all phenomena — natural selection",
     "blank_options": [
       "the most pitiless of all phenomena ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ natural selection",
       "the most creative force in biological history",
@@ -1353,7 +1353,7 @@
       "It is our imagination, the complex interweaving of perception and memory that literature activates, releasing a latent creativity that pleases.",
       "The writer may provide the blueprint, but the reader builds literature's many rooms, and like any satisfying occupation, literature gratifies our imaginative and creative abilities."
     ],
-    "abstract": "Reading literature activates the imagination by reversing the direction of meaning-making ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ drawing on memory and inner imagery rather than external input ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ and in doing so releases a distinctly human creative capacity.",
+    "abstract": "Reading literature activates the imagination by reversing the direction of meaning-making — drawing on memory and inner imagery rather than external input — and in doing so releases a distinctly human creative capacity.",
     "topic_options": [
       "the way literary reading uniquely engages imagination by constructing meaning from within rather than from external reality",
       "the cognitive differences between perception and imagination as studied in experimental psychology",
@@ -2556,7 +2556,7 @@
     "order_answer": 4,
     "insert_sentence": "One's perception of Shakespeare's grand drama on aging under existential threat, King Lear, is a different experience read in one's twenties than it is in one's seventies.",
     "insert_answer": 4,
-    "summary_template": "Unlike informational texts, literature generates ________(A)________ meaning because it demands the engagement of faculties ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ analysis, imagination, and emotion ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ that ________(B)________ as a person's life experience deepens.",
+    "summary_template": "Unlike informational texts, literature generates ________(A)________ meaning because it demands the engagement of faculties — analysis, imagination, and emotion — that ________(B)________ as a person's life experience deepens.",
     "summary_A_options": [
       "fixed",
       "variable",
@@ -2596,7 +2596,7 @@
       "The sharpness of front teeth allows them to tear while the bluntness of those in the back enables them to crush food; both are useful for eating.",
       "In Aristotle's view, all natural things happen in a given way and occur for the sake of something; that is the final cause."
     ],
-    "abstract": "Aristotle argues that the regular patterns observed in nature are not coincidental but purposeful, and that understanding natural phenomena requires identifying the end or goal ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ the final cause ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ toward which they are directed.",
+    "abstract": "Aristotle argues that the regular patterns observed in nature are not coincidental but purposeful, and that understanding natural phenomena requires identifying the end or goal — the final cause — toward which they are directed.",
     "topic_options": [
       "Aristotle's argument that natural regularity reflects purposefulness and is best understood through the concept of final cause",
       "the scientific accuracy of Aristotle's account of meteorological phenomena such as the water cycle",
@@ -3317,7 +3317,7 @@
       "Conversely, a yoga instructor could use positive emotions or emotion-related states such as compassion to get her students in the proper mindset for their practice.",
       "Evidently, there are a number of ways emotions could be used to enhance performance in sport and exercise."
     ],
-    "abstract": "Exercise instructors can strategically harness a range of emotions ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ both positive and negative ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ to increase participants' adherence to programs and improve their physical performance.",
+    "abstract": "Exercise instructors can strategically harness a range of emotions — both positive and negative — to increase participants' adherence to programs and improve their physical performance.",
     "topic_options": [
       "the strategic use of diverse emotional states by exercise instructors to improve adherence and performance",
       "the physiological connection between emotional arousal and the intensity of physical effort during exercise",
@@ -3909,7 +3909,7 @@
     ],
     "summary_B_answer": 3,
     "implication_sentence_index": 6,
-    "implication_keyword": "the largest ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ perhaps the only ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ piece of land that no country wants",
+    "implication_keyword": "the largest — perhaps the only — piece of land that no country wants",
     "implication_options": [
       "a territory uniquely rendered worthless not by its inherent qualities but by the strategic logic of the competing claims surrounding it",
       "an uninhabitable region that has been formally excluded from the international system of sovereign states",
@@ -3934,7 +3934,7 @@
       "As a result, you may have a negative self-evaluation, feeling that your academic performance is not up to par.",
       "Being associated with the brilliant group, though, makes you feel proud of yourself, basking in reflected glory."
     ],
-    "abstract": "Reference groups shape self-evaluation through three distinct mechanisms ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ normative, comparative, and associative effects ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ each of which can produce different and sometimes contradictory outcomes for an individual's self-appraisal.",
+    "abstract": "Reference groups shape self-evaluation through three distinct mechanisms — normative, comparative, and associative effects — each of which can produce different and sometimes contradictory outcomes for an individual's self-appraisal.",
     "topic_options": [
       "the three distinct ways reference groups influence self-evaluation through normative, comparative, and associative effects",
       "the psychological tendency of individuals to adopt the self-esteem norms of the groups they identify with most closely",
@@ -4180,7 +4180,7 @@
     "order_answer": 5,
     "insert_sentence": "But the actual value of these services is not zero.",
     "insert_answer": 3,
-    "summary_template": "Because public goods like wetland services are provided ________(A)________ and lack a market price, their true value ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ the ________(B)________ of all individual benefits ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ is systematically ignored by market mechanisms.",
+    "summary_template": "Because public goods like wetland services are provided ________(A)________ and lack a market price, their true value — the ________(B)________ of all individual benefits — is systematically ignored by market mechanisms.",
     "summary_A_options": [
       "collectively",
       "freely",
@@ -4314,7 +4314,7 @@
       "If a person shouts Fire! in a crowded movie theater, for example, that language produces the same response in all of those who hear and understand it.",
       "How people interpret the messages they receive and the situations they encounter becomes their subjective reality and may strongly influence their behavior."
     ],
-    "abstract": "Shared symbols, especially language, are what allow individuals' subjective interpretations of social situations to align, making coordinated behavior possible ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ and their absence or misalignment is a direct source of confusion and miscommunication.",
+    "abstract": "Shared symbols, especially language, are what allow individuals' subjective interpretations of social situations to align, making coordinated behavior possible — and their absence or misalignment is a direct source of confusion and miscommunication.",
     "topic_options": [
       "the role of shared symbols and language in enabling individuals to construct aligned subjective realities that coordinate social behavior",
       "the psychological tendency of people to assume that their personal interpretation of events is universally shared by others",
@@ -4366,7 +4366,7 @@
     "order_answer": 2,
     "insert_sentence": "How people interpret the messages they receive and the situations they encounter becomes their subjective reality and may strongly influence their behavior.",
     "insert_answer": 5,
-    "summary_template": "Because each person's interpretation of a situation constitutes their ________(A)________ reality, shared symbols ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ especially language ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ are essential for aligning these individual realities and enabling ________(B)________ social interaction.",
+    "summary_template": "Because each person's interpretation of a situation constitutes their ________(A)________ reality, shared symbols — especially language — are essential for aligning these individual realities and enabling ________(B)________ social interaction.",
     "summary_A_options": [
       "constructed",
       "personal",
@@ -4748,7 +4748,7 @@
     "order_answer": 5,
     "insert_sentence": "On the other hand, these past experiences with suffering tended to reduce people's overall levels of happiness.",
     "insert_answer": 6,
-    "summary_template": "Research shows that ________(A)________ through negative experiences contributes to a sense of life's ________(B)________, even as those same experiences tend to lower overall happiness ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ revealing that meaning and happiness are distinct dimensions of a good life.",
+    "summary_template": "Research shows that ________(A)________ through negative experiences contributes to a sense of life's ________(B)________, even as those same experiences tend to lower overall happiness — revealing that meaning and happiness are distinct dimensions of a good life.",
     "summary_A_options": [
       "persisting",
       "reflecting",
@@ -4930,7 +4930,7 @@
     "order_answer": 3,
     "insert_sentence": null,
     "insert_answer": null,
-    "summary_template": "Crisis communication research shows that the ________(A)________ of a crisis determines which media people turn to, while audience ________(B)________ ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ particularly age ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ shapes how traditional and social media respectively influence behavior.",
+    "summary_template": "Crisis communication research shows that the ________(A)________ of a crisis determines which media people turn to, while audience ________(B)________ — particularly age — shapes how traditional and social media respectively influence behavior.",
     "summary_A_options": [
       "nature",
       "duration",
@@ -5023,7 +5023,7 @@
     "order_answer": 2,
     "insert_sentence": "A lively park playground can be created by a soccer practice that doesn't even take place any longer.",
     "insert_answer": 3,
-    "summary_template": "Focal points ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ small initial events that coordinate behavior ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ can lock communities into ________(A)________ equilibria that persist even after the original trigger is gone, producing outcomes that seem ________(B)________ but arise from perfectly rational individual responses.",
+    "summary_template": "Focal points — small initial events that coordinate behavior — can lock communities into ________(A)________ equilibria that persist even after the original trigger is gone, producing outcomes that seem ________(B)________ but arise from perfectly rational individual responses.",
     "summary_A_options": [
       "predictable",
       "self-sustaining",
@@ -5063,7 +5063,7 @@
       "In the culturally dated film, attitudes and ways of behaving that have altered over time and which now appear as quaint, strange, incorrect or problematic, are taken for granted by the characters in the film, and go unquestioned or are even happily endorsed in the film's narrative.",
       "This is something that is doubly evident in dated historical films that read the past in terms of their present, where the anachronisms are themselves reflective of a bygone present."
     ],
-    "abstract": "The cultural assumptions of any era are invisible to those living within them, becoming perceptible only in retrospect ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ either when old films expose the taken-for-granted attitudes of a past present, or when modern films anachronistically project today's assumptions onto historical settings.",
+    "abstract": "The cultural assumptions of any era are invisible to those living within them, becoming perceptible only in retrospect — either when old films expose the taken-for-granted attitudes of a past present, or when modern films anachronistically project today's assumptions onto historical settings.",
     "topic_options": [
       "the invisibility of cultural assumptions to those who hold them and the various ways this becomes apparent in retrospect through film",
       "the technical differences between historically accurate films and those that modernize the past for contemporary audiences",
@@ -5114,7 +5114,7 @@
     "order_answer": 1,
     "insert_sentence": null,
     "insert_answer": null,
-    "summary_template": "The cultural norms of any era are ________(A)________ to those living within them, becoming visible only in retrospect ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ whether through old films that expose past assumptions or modern films that ________(B)________ present attitudes onto historical settings.",
+    "summary_template": "The cultural norms of any era are ________(A)________ to those living within them, becoming visible only in retrospect — whether through old films that expose past assumptions or modern films that ________(B)________ present attitudes onto historical settings.",
     "summary_A_options": [
       "familiar",
       "implicit",
@@ -5514,7 +5514,7 @@
       "(A)-(C)-(B)"
     ],
     "order_answer": 3,
-    "insert_sentence": "People who hold a deterrence view ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ that demonstrations of weakness would be taken advantage of ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ are less likely to support nuclear disarmament.",
+    "insert_sentence": "People who hold a deterrence view — that demonstrations of weakness would be taken advantage of — are less likely to support nuclear disarmament.",
     "insert_answer": 4,
     "summary_template": "National leaders facing international conflict tend to rely on simplified ________(A)________ frames such as deterrence or conflict spiral thinking, but Tetlock's research shows that each is only valid in ________(B)________ circumstances rather than as a universal guide.",
     "summary_A_options": [
@@ -5840,7 +5840,7 @@
       "In other cases, passage is essentially impossible ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ cities along landscape corridors such as river valleys can effectively eliminate genetic exchange between previously connected plant and animal populations; dams can permanently halt spawning of fish by blocking travel to their breeding grounds.",
       "Thus, lack of connectivity can decrease the conservation value of remaining habitat below what its mapped area might suggest, increasing the impact of fragmentation."
     ],
-    "abstract": "Human modifications to landscapes that increase connectivity for people ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ such as road networks and urban development ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ simultaneously reduce it for other species, fragmenting habitats and diminishing the conservation value of remaining areas.",
+    "abstract": "Human modifications to landscapes that increase connectivity for people — such as road networks and urban development — simultaneously reduce it for other species, fragmenting habitats and diminishing the conservation value of remaining areas.",
     "topic_options": [
       "the paradox that human infrastructure increases landscape connectivity for people while decreasing it for other species, reducing the conservation value of remaining habitats",
       "the various methods conservation biologists use to measure and restore connectivity in landscapes fragmented by human development",
@@ -5891,7 +5891,7 @@
     "order_answer": 1,
     "insert_sentence": null,
     "insert_answer": null,
-    "summary_template": "Human landscape modifications that enhance ________(A)________ for people ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ such as roads and cities ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ act as barriers for wildlife, reducing ecological ________(B)________ and diminishing the conservation value of habitats that remain.",
+    "summary_template": "Human landscape modifications that enhance ________(A)________ for people — such as roads and cities — act as barriers for wildlife, reducing ecological ________(B)________ and diminishing the conservation value of habitats that remain.",
     "summary_A_options": [
       "connectivity",
       "accessibility",
@@ -5930,7 +5930,7 @@
       "Biopower also benefits human health as it cuts down on pollution; by replacing coal in co-firing and direct combustion, biopower reduces emissions of sulfur dioxide because plant matter, unlike coal, contains no appreciable sulfur content.",
       "In addition, biomass resources tend to be geographically spread out, so using them can help support rural economies and reduce many nations' dependence on imported fuels."
     ],
-    "abstract": "Biopower offers multiple environmental and economic benefits ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ reducing greenhouse gas emissions, cutting pollution, supporting rural economies, and decreasing reliance on imported fossil fuels ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ by converting waste biomass into usable energy.",
+    "abstract": "Biopower offers multiple environmental and economic benefits — reducing greenhouse gas emissions, cutting pollution, supporting rural economies, and decreasing reliance on imported fossil fuels — by converting waste biomass into usable energy.",
     "topic_options": [
       "the multiple environmental and economic advantages of biopower as a sustainable energy source derived from waste biomass",
       "the specific technical processes by which the forest products industry converts woody and liquid waste into usable energy",
@@ -6052,7 +6052,7 @@
     "order_answer": 4,
     "insert_sentence": "This will be harmful to other species.",
     "insert_answer": 6,
-    "summary_template": "Elephants are a ________(A)________ species whose ecological roles maintain savanna biodiversity, but human interference that disrupts their numbers ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ whether through overcrowding or ________(B)________ ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ causes serious harm to the wider ecosystem.",
+    "summary_template": "Elephants are a ________(A)________ species whose ecological roles maintain savanna biodiversity, but human interference that disrupts their numbers — whether through overcrowding or ________(B)________ — causes serious harm to the wider ecosystem.",
     "summary_A_options": [
       "dominant",
       "keystone",
@@ -6622,7 +6622,7 @@
       "exact differences between similar-looking objects"
     ],
     "irrelevant_sentence_index": 8,
-    "insert_sentence": "For most practical purposes, the differences can be neglected ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ making a daisy chain, sunbathing, and the like.",
+    "insert_sentence": "For most practical purposes, the differences can be neglected — making a daisy chain, sunbathing, and the like.",
     "insert_answer": 6,
     "blank_sentence_index": 0,
     "blank_target": "you abstract away from its particularities",
@@ -7046,7 +7046,7 @@
       "mere admittance"
     ],
     "irrelevant_sentence_index": 3,
-    "insert_sentence": "Nonetheless, for most outsiders even completely transparent practices do not lift the veil behind which such forms of knowledge are hidden ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ without the relevant training and acquisition of skills, which often take many years, one simply cannot make sense of the information that is being shared.",
+    "insert_sentence": "Nonetheless, for most outsiders even completely transparent practices do not lift the veil behind which such forms of knowledge are hidden — without the relevant training and acquisition of skills, which often take many years, one simply cannot make sense of the information that is being shared.",
     "insert_answer": 4,
     "blank_sentence_index": 4,
     "blank_target": "one simply cannot make sense of the information that is being shared",
@@ -7642,7 +7642,7 @@
       "Above all, it implies structured industry ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ study and activity that are oriented toward a goal and pursued with perseverance and method.",
       "That is, good teaching requires that teachers and students subject themselves to external and internal control so that learning can take place."
     ],
-    "abstract": "Effective teaching depends on the establishment of both external and internal order ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ clear goals, structured activity, and student self-discipline ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ as conditions without which genuine learning cannot occur.",
+    "abstract": "Effective teaching depends on the establishment of both external and internal order — clear goals, structured activity, and student self-discipline — as conditions without which genuine learning cannot occur.",
     "topic_options": [
       "the necessity of both external structure and internal discipline as preconditions for effective teaching and learning",
       "the role of clearly stated learning goals in helping students understand the purpose of their coursework",
@@ -7693,7 +7693,7 @@
     "order_answer": 1,
     "insert_sentence": null,
     "insert_answer": null,
-    "summary_template": "Good teaching requires both ________(A)________ structure ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ clear goals and organized instruction ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ and student ________(B)________ so that the conditions necessary for learning can be maintained.",
+    "summary_template": "Good teaching requires both ________(A)________ structure — clear goals and organized instruction — and student ________(B)________ so that the conditions necessary for learning can be maintained.",
     "summary_A_options": [
       "flexible",
       "external",
@@ -7920,7 +7920,7 @@
       "By contrast, artworks displayed in exhibitions feel comparatively isolated, practically clipped from the world where they originated.",
       "This could explain why aestheticians tend to treat artworks as singletons, rather than as members of some set."
     ],
-    "abstract": "The meaning of an artwork is shaped by the contextual environment surrounding it ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ studio clues, domestic objects, personal belongings ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ and artworks displayed in isolation lose the relational richness that gives them their fullest significance.",
+    "abstract": "The meaning of an artwork is shaped by the contextual environment surrounding it — studio clues, domestic objects, personal belongings — and artworks displayed in isolation lose the relational richness that gives them their fullest significance.",
     "topic_options": [
       "the way contextual surroundings enrich the meaning of artworks and how their removal into exhibitions impoverishes that meaning",
       "the role of studio visits in helping art collectors develop a deeper appreciation of an artist's creative process",
@@ -8990,7 +8990,7 @@
     "order_answer": 2,
     "insert_sentence": "For example, the body needs zinc for hundreds of chemical reactions, including those that support normal growth, development, and immune function.",
     "insert_answer": 4,
-    "summary_template": "Dietary ________(A)________ means avoiding all extremes ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ neither eliminating any food entirely nor consuming any substance excessively ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ because even ________(B)________ nutrients can become harmful when taken in large quantities.",
+    "summary_template": "Dietary ________(A)________ means avoiding all extremes — neither eliminating any food entirely nor consuming any substance excessively — because even ________(B)________ nutrients can become harmful when taken in large quantities.",
     "summary_A_options": [
       "moderation",
       "balance",
@@ -9127,7 +9127,7 @@
       "For example, expecting mothers who consume diets rich in healthy foods can help develop their child's taste preferences in a positive way because flavors from foods that the mother eats are transmitted to amniotic fluid and to mother's milk.",
       "Having healthy food experiences early in life may go a long way toward promoting healthy eating throughout a person's life span."
     ],
-    "abstract": "Children's innate preference for sweet and salty flavors makes them vulnerable to unhealthy food environments, but early sensory experiences ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ from prenatal exposure to postnatal feeding ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ can shape taste preferences in lasting ways.",
+    "abstract": "Children's innate preference for sweet and salty flavors makes them vulnerable to unhealthy food environments, but early sensory experiences — from prenatal exposure to postnatal feeding — can shape taste preferences in lasting ways.",
     "topic_options": [
       "the lasting influence of early sensory food experiences on taste preferences and the potential for both positive and negative outcomes",
       "the biological reasons why children prefer sweet and salty foods and how these preferences can be managed through parenting",
@@ -10445,7 +10445,7 @@
       "Given that most children love candy, reinforcement theory says that if you give candy to a child who has sat quietly in his or her chair for five minutes, that child will quickly learn to sit quietly all the time.",
       "Against the major principles of reinforcement, some behavioral scientists argue that the more you reinforce a person for doing a certain thing, the faster that person will lose interest in the very thing that they are being rewarded for."
     ],
-    "abstract": "While reinforcement theory predicts that rewards increase desired behavior, some behavioral scientists argue the opposite ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ that external rewards can actually undermine intrinsic motivation and reduce the likelihood of lasting behavioral change.",
+    "abstract": "While reinforcement theory predicts that rewards increase desired behavior, some behavioral scientists argue the opposite — that external rewards can actually undermine intrinsic motivation and reduce the likelihood of lasting behavioral change.",
     "topic_options": [
       "the debate between reinforcement theory and opposing views on whether rewards produce lasting behavioral change",
       "the effectiveness of different types of rewards in motivating children to perform better in academic settings",
@@ -11297,7 +11297,7 @@
       "Sometimes people's consciences do not bother them when they should ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ perhaps because they didn't think through the implications of a decision or perhaps because they failed to internalize strongly enough the appropriate moral principles.",
       "On the other hand, a person's conscience might disturb the person about something that is perfectly all right."
     ],
-    "abstract": "The common advice to follow one's conscience is unreliable because conscience is often silent in genuinely difficult situations and can also be miscalibrated ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ either failing to register genuine wrongs or raising concern about things that are not wrong at all.",
+    "abstract": "The common advice to follow one's conscience is unreliable because conscience is often silent in genuinely difficult situations and can also be miscalibrated — either failing to register genuine wrongs or raising concern about things that are not wrong at all.",
     "topic_options": [
       "the unreliability of conscience as a moral guide due to its silence in dilemmas and its susceptibility to miscalibration",
       "the philosophical debate between those who trust conscience as a moral guide and those who rely on external rules",
@@ -11672,7 +11672,7 @@
       "The telltale signs left by events are many: words of eyewitnesses who selected what aspects of any event were significant to them, plus their interpretation and valuation; fossil tracks, leaves, bones; geological records in rocks, volcanic layers, seamounts, oceanic trenches; and so on.",
       "If an event leaves no record, then it is forever irretrievable; no historian can reconstruct it, nor, for that matter, would he have reason to guess that it had ever occurred."
     ],
-    "abstract": "The past is accessible to historians only through surviving records, and any event that leaves no trace of any kind is permanently beyond reconstruction ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ a historian cannot even know to ask about what left no evidence.",
+    "abstract": "The past is accessible to historians only through surviving records, and any event that leaves no trace of any kind is permanently beyond reconstruction — a historian cannot even know to ask about what left no evidence.",
     "topic_options": [
       "the principle that historians can only reconstruct past events for which some form of surviving record exists",
       "the variety of physical and textual records that historians use to reconstruct events from the distant past",
@@ -11835,7 +11835,7 @@
       "By making things artists take images from within and give them visible form in the world.",
       "In profound ways, art making is an act of acknowledgment of the others beyond the boundaries of the self ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ the beholders, members of the audience, the community and the group."
     ],
-    "abstract": "The human drive to create art is rooted in the fundamental need for connection with others, as acts of artistic creation are essentially invitations to relate ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ expressions of the self directed outward toward a community of others.",
+    "abstract": "The human drive to create art is rooted in the fundamental need for connection with others, as acts of artistic creation are essentially invitations to relate — expressions of the self directed outward toward a community of others.",
     "topic_options": [
       "the argument that artistic creation is fundamentally motivated by the human need for connection with others",
       "the role of psychotherapy in helping people overcome the loneliness that results from a lack of interpersonal connection",
@@ -12023,7 +12023,7 @@
       "Mr. Abouali was an accountant, a profession that greatly opened up his options wherever he might go.",
       "The family had lived in Canada before moving to Kuwait; they could easily be somewhere else in five years, he said."
     ],
-    "abstract": "Professional qualifications ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ human capital ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ function as an economic passport by giving individuals the portable skills and credentials that open doors wherever they may be forced to relocate, providing security in an uncertain and mobile existence.",
+    "abstract": "Professional qualifications — human capital — function as an economic passport by giving individuals the portable skills and credentials that open doors wherever they may be forced to relocate, providing security in an uncertain and mobile existence.",
     "topic_options": [
       "the role of professional qualifications as portable human capital that provides economic security and mobility regardless of location",
       "the sacrifices required of students from displaced communities who must accelerate their education for practical reasons",
@@ -12120,7 +12120,7 @@
       "Money by any other name ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ without social agreement ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ will not be the same thing.",
       "Thus, Shakespeare's idea fits with common sense, but it is completely wrong most of the time."
     ],
-    "abstract": "Unlike physical objects whose nature is independent of what we call them, many things ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ such as money ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ exist only because of social agreement, meaning that their identity does depend on the labels and recognition a community assigns to them.",
+    "abstract": "Unlike physical objects whose nature is independent of what we call them, many things — such as money — exist only because of social agreement, meaning that their identity does depend on the labels and recognition a community assigns to them.",
     "topic_options": [
       "the argument that the identity of many things depends on social agreement rather than inherent material properties",
       "the philosophical debate between realism and constructivism about whether meaning is inherent in things or assigned to them",
@@ -12194,7 +12194,7 @@
     ],
     "summary_B_answer": 1,
     "implication_sentence_index": 8,
-    "implication_keyword": "Money by any other name ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ without social agreement ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ will not be the same thing",
+    "implication_keyword": "Money by any other name — without social agreement — will not be the same thing",
     "implication_options": [
       "the identity of money is not inherent in the object itself but depends entirely on collective social recognition",
       "renaming a currency does not affect its purchasing power as long as the underlying economic conditions remain stable",
@@ -12499,7 +12499,7 @@
       "Maximilien Robespierre, who rose to power in the French Revolution, was such a type.",
       "After all, the guillotine was never busier than under his reign."
     ],
-    "abstract": "People who project an extreme image of saintliness are often concealing the opposite ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ a deep hunger for power and control ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ which emerges once the public image has secured them the authority they sought.",
+    "abstract": "People who project an extreme image of saintliness are often concealing the opposite — a deep hunger for power and control — which emerges once the public image has secured them the authority they sought.",
     "topic_options": [
       "the pattern by which an exaggerated public image of virtue conceals an opposing hunger for power that emerges once authority is gained",
       "the historical examples of political leaders who used religious imagery to gain popular support and consolidate power",
@@ -13268,7 +13268,7 @@
       "To counter these arguments at Nuremberg, prosecutors strained to find sources in existing international law that did forbid aggressive war but they couldn't, so they moved to associate many of the other crimes of which the Nazis were accused with the start of such war.",
       "Here, too, a creative solution was found: the Nazis would be tried as part of a criminal conspiracy."
     ],
-    "abstract": "Prosecutors at the Nuremberg trials faced the fundamental legal challenge that Nazi crimes had no clear prohibition in existing law, forcing them to devise creative legal frameworks ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ including criminal conspiracy ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ to secure convictions.",
+    "abstract": "Prosecutors at the Nuremberg trials faced the fundamental legal challenge that Nazi crimes had no clear prohibition in existing law, forcing them to devise creative legal frameworks — including criminal conspiracy — to secure convictions.",
     "topic_options": [
       "the legal obstacles faced by Nuremberg prosecutors in holding defendants accountable for acts not prohibited at the time, and the creative solutions devised",
       "the philosophical debate about whether legal prohibitions must exist before an act can be punished as a crime",
@@ -13363,7 +13363,7 @@
       "Good communication is not always the easiest route to take when you're in a hurry or the kids are acting up, but it is by far the best.",
       "No matter how many whys we hear in a day from our children, we should always try to give reasonable answers."
     ],
-    "abstract": "Effective communication depends not on the quantity of words but on their quality ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ words should be fair and reasoned in all contexts, including in everyday interactions with children who deserve rational explanations.",
+    "abstract": "Effective communication depends not on the quantity of words but on their quality — words should be fair and reasoned in all contexts, including in everyday interactions with children who deserve rational explanations.",
     "topic_options": [
       "the importance of using fair and reasoned language in all communication rather than relying on authority or convenience",
       "the ways in which poor communication between parents and children leads to misunderstanding and resentment",
@@ -13985,7 +13985,7 @@
     "order_answer": 4,
     "insert_sentence": "But if anonymity is present in any significant quantity, it will poison the system.",
     "insert_answer": 7,
-    "summary_template": "Like a trace element, anonymity is ________(A)________ in tiny doses ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ enabling whistleblowers ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ but becomes ________(B)________ to the system when present in significant quantities.",
+    "summary_template": "Like a trace element, anonymity is ________(A)________ in tiny doses — enabling whistleblowers — but becomes ________(B)________ to the system when present in significant quantities.",
     "summary_A_options": [
       "necessary",
       "harmless",
@@ -14406,7 +14406,7 @@
       "And so it is with our journey through life; sometimes we must make the maps in our heads conform to the ground we're on.",
       "However, there will come times when our map seems incorrect, and that's when we have to trust what we can see when we use our own eyes and look around."
     ],
-    "abstract": "The beliefs and mental models we inherit from others ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ our internal maps ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ must sometimes be revised when direct experience contradicts them, and trusting our own firsthand judgment over inherited assumptions is the mark of genuine wisdom.",
+    "abstract": "The beliefs and mental models we inherit from others — our internal maps — must sometimes be revised when direct experience contradicts them, and trusting our own firsthand judgment over inherited assumptions is the mark of genuine wisdom.",
     "topic_options": [
       "the importance of revising inherited mental models when direct experience contradicts them rather than clinging to what we were taught",
       "the ways in which military training teaches soldiers to trust their maps over their senses in disorienting conditions",
@@ -14501,7 +14501,7 @@
       "We can overcome this feeling of control slipping out of our hands by raising our level of effort, and we will feel as if we are reborn upon its completion.",
       "We now have a heightened appreciation for life and a desire to live it more fully."
     ],
-    "abstract": "Confronting the limits of one's control through challenging ventures ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ as Hemingway did by volunteering at the front ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ produces a feeling of rebirth that restores vitality and deepens one's appreciation for life.",
+    "abstract": "Confronting the limits of one's control through challenging ventures — as Hemingway did by volunteering at the front — produces a feeling of rebirth that restores vitality and deepens one's appreciation for life.",
     "topic_options": [
       "the capacity of challenging experiences that push us to our limits to produce a sense of renewal and heightened appreciation for life",
       "the role of near-death experiences in permanently transforming the emotional depth and creative output of writers",
@@ -14596,7 +14596,7 @@
       "What makes its climate different from the Sonora, Gobi, or Sahara deserts is that South Florida is surrounded by water and warm currents that combine to provide it with a wet season and a dry season.",
       "South Florida is about 25 degrees north of the equator, so, along with its unusual tropical weather, it can get frost and even extended freezes."
     ],
-    "abstract": "Climate is determined by a complex combination of variables ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ not just latitude ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ which explains why places at the same latitude can have dramatically different climates, as illustrated by the contrast between South Florida and nearby deserts.",
+    "abstract": "Climate is determined by a complex combination of variables — not just latitude — which explains why places at the same latitude can have dramatically different climates, as illustrated by the contrast between South Florida and nearby deserts.",
     "topic_options": [
       "the complexity of climate determination, showing that multiple interacting variables rather than latitude alone explain regional differences",
       "the distinction between weather and climate and the methodological challenge of measuring long-term climatic patterns",
@@ -14693,7 +14693,7 @@
       "If everyone thought like this, there'd be no Edisons or Picassos; and not many books, films or new medicines either.",
       "If you need to play it safe, don't expect to leave your name in the history books."
     ],
-    "abstract": "The demand for certainty before acting is a form of paralysis disguised as prudence ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ it prevents people from ever beginning, ensuring that no significant achievement is possible.",
+    "abstract": "The demand for certainty before acting is a form of paralysis disguised as prudence — it prevents people from ever beginning, ensuring that no significant achievement is possible.",
     "topic_options": [
       "the paralyzing effect of demanding certainty before acting, which prevents meaningful achievement by making the threshold for starting impossibly high",
       "the psychological fear of being exposed as an impostor that causes people to delay action until they feel fully prepared",
@@ -15086,7 +15086,7 @@
       "Much more explanation is required to learn concept vocabulary.",
       "In other words, telling children to 'look it up in the dictionary' without following up by illustrating how the word is used in context often leads to miscomprehension."
     ],
-    "abstract": "Relying on dictionary definitions alone produces only a superficial understanding of words because the full meaning of language depends on connotation ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ the emotional associations and conceptual depth that dictionaries cannot capture.",
+    "abstract": "Relying on dictionary definitions alone produces only a superficial understanding of words because the full meaning of language depends on connotation — the emotional associations and conceptual depth that dictionaries cannot capture.",
     "topic_options": [
       "the inadequacy of relying solely on denotative definitions, given that connotative meaning and contextual use are essential for full understanding",
       "the distinction between denotative and connotative meaning and the specific linguistic features that each type captures",
@@ -15358,31 +15358,31 @@
         "sent": 0,
         "word": "involves",
         "correct": true,
-        "note": "ÃÂ«ÃÂÃÂ¨ÃÂ¬ÃÂÃÂ ÃÂ¬ÃÂ£ÃÂ¼ÃÂ¬ÃÂÃÂ´ 'the socialization of affect'ÃÂ¬ÃÂÃÂ ÃÂ¬ÃÂÃÂ ÃÂ¬ÃÂÃÂ¼ÃÂ¬ÃÂ¹ÃÂ"
+        "note": "단수 주어 'the socialization of affect'에 수 일치"
       },
       {
         "sent": 1,
         "word": "associated",
         "correct": true,
-        "note": "ÃÂ¬ÃÂÃÂÃÂ«ÃÂÃÂ ÃÂªÃÂ´ÃÂÃÂªÃÂ³ÃÂÃÂ¬ÃÂ ÃÂ 'that are associated with them' ÃÂ¬ÃÂÃÂ¬ÃÂ«ÃÂ°ÃÂÃÂ«ÃÂ¦ÃÂ"
+        "note": "수동 관계절 'that are associated with them' 올바름"
       },
       {
         "sent": 2,
         "word": "including",
         "correct": true,
-        "note": "ÃÂ«ÃÂ¶ÃÂÃÂ¬ÃÂÃÂ¬ÃÂªÃÂµÃÂ¬ÃÂ«ÃÂ¬ÃÂ¸ÃÂ¬ÃÂÃÂ¼ÃÂ«ÃÂ¡ÃÂ ÃÂ«ÃÂ¶ÃÂÃÂªÃÂ°ÃÂÃÂ¬ÃÂ ÃÂ ÃÂ¬ÃÂ ÃÂÃÂ«ÃÂ³ÃÂ´ ÃÂ¬ÃÂ ÃÂÃÂªÃÂ³ÃÂµ, ÃÂ«ÃÂ¬ÃÂ¸ÃÂ«ÃÂ²ÃÂÃÂ¬ÃÂ ÃÂÃÂ¬ÃÂÃÂ¼ÃÂ«ÃÂ¡ÃÂ ÃÂ¬ÃÂÃÂ¬ÃÂ«ÃÂ°ÃÂÃÂ«ÃÂ¦ÃÂ"
+        "note": "분사구문으로 부가적 정보 제공, 문법적으로 올바름"
       },
       {
         "sent": 3,
         "word": "for which",
         "correct": false,
-        "note": "ÃÂ¢ÃÂÃÂ 'for which a universal capacity exists'ÃÂ«ÃÂÃÂ ÃÂªÃÂ´ÃÂÃÂªÃÂ³ÃÂÃÂ¬ÃÂ ÃÂÃÂ«ÃÂ¡ÃÂ ÃÂ¬ÃÂÃÂ¬ÃÂ«ÃÂ°ÃÂÃÂ«ÃÂ¥ÃÂ´ÃÂ«ÃÂÃÂ, ÃÂ«ÃÂ§ÃÂÃÂ¬ÃÂÃÂ½ 'for that'ÃÂ¬ÃÂÃÂ¼ÃÂ«ÃÂ¡ÃÂ ÃÂ¬ÃÂÃÂ°ÃÂ«ÃÂ©ÃÂ´ ÃÂ¬ÃÂÃÂ¤ÃÂ«ÃÂ¥ÃÂ; ÃÂ¬ÃÂÃÂ¬ÃÂªÃÂ¸ÃÂ°ÃÂ¬ÃÂÃÂÃÂ«ÃÂÃÂ 'without exception'ÃÂ¬ÃÂÃÂ 'with exception'ÃÂ¬ÃÂÃÂ¼ÃÂ«ÃÂ¡ÃÂ ÃÂ«ÃÂ°ÃÂÃÂªÃÂ¾ÃÂ¸ÃÂ«ÃÂÃÂ ÃÂ¬ÃÂÃÂÃÂ«ÃÂ¯ÃÂ¸ ÃÂ¬ÃÂÃÂ¤ÃÂ«ÃÂ¥ÃÂÃÂ«ÃÂ¡ÃÂ ÃÂ¬ÃÂÃÂ¤ÃÂ¬ÃÂ ÃÂ"
+        "note": "→ 'for which a universal capacity exists'는 관계절로 올바르나, 만약 'for that'으로 쓰면 오류; 여기서는 'without exception'을 'with exception'으로 바꾸는 의미 오류로 설정"
       },
       {
         "sent": 5,
         "word": "transforms",
         "correct": true,
-        "note": "ÃÂ«ÃÂÃÂ¨ÃÂ¬ÃÂÃÂ ÃÂ¬ÃÂ£ÃÂ¼ÃÂ¬ÃÂÃÂ´ 'the contextual reality'ÃÂ¬ÃÂÃÂ ÃÂ¬ÃÂÃÂ ÃÂ¬ÃÂÃÂ¼ÃÂ¬ÃÂ¹ÃÂ"
+        "note": "단수 주어 'the contextual reality'에 수 일치"
       }
     ],
     "grammar_answer": 4,
