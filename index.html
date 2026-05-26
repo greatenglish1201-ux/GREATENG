@@ -646,7 +646,8 @@ function App(){
 
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
   if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -1069,7 +1070,7 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,handleCSVUpload,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -1101,6 +1102,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
               <span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>
               {session?.role==='admin'&&<span style={{fontSize:10,background:'#fef3c7',color:'#92400e',padding:'2px 7px',borderRadius:8,fontWeight:600}}>관리자</span>}
               {session?.role==='admin'&&<button onClick={()=>{setAdminPwInput('');setAdminPwErr('');setShowAdminModal(true);}} style={{fontSize:10,background:'#f1f5f9',color:'#475569',border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:600}}>⚙️ 관리자 패널</button>}
+              {goToStudy&&scriptUrl&&<button onClick={goToStudy} style={{fontSize:10,background:'#ecfdf5',color:'#0a7c42',border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:600}}>📚 자료 보기</button>}
               <button onClick={onLogout} style={{fontSize:10.5,color:'#94a3b8',background:'none',border:'none',cursor:'pointer',padding:0}}>로그아웃</button>
             </div>
           </div>
@@ -1853,6 +1855,222 @@ function PrintView({questions,mode,goBack}){
             ))}
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── 자료 보기 (StudyView) ── */
+function StudyView({scriptUrl,studentName,goBack}){
+  const [passages,setPassages]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [err,setErr]=useState('');
+  const [selected,setSelected]=useState(null);
+  const [blankMode,setBlankMode]=useState(false);
+  const [searchText,setSearchText]=useState('');
+  const [activeSource,setActiveSource]=useState('ALL');
+
+  useEffect(()=>{
+    if(!scriptUrl){setErr('서버 URL이 설정되지 않았습니다.');setLoading(false);return;}
+    jsonpFetch(scriptUrl,{action:'getPassages',public_only:'true'})
+      .then(r=>{
+        if(r.ok){setPassages(r.passages||[]);}
+        else{setErr(r.error||'불러오기 실패');}
+      })
+      .catch(e=>setErr(e.message))
+      .finally(()=>setLoading(false));
+  },[scriptUrl]);
+
+  const sources=['ALL',...Array.from(new Set(passages.map(p=>p.source))).filter(Boolean)];
+
+  const filtered=passages.filter(p=>{
+    if(activeSource!=='ALL'&&p.source!==activeSource)return false;
+    if(searchText){
+      const q=searchText.toLowerCase();
+      return (p.title||'').toLowerCase().includes(q)||(p.abstract||'').toLowerCase().includes(q)||(p.id||'').toLowerCase().includes(q);
+    }
+    return true;
+  });
+
+  // 강별 그룹화
+  const grouped=filtered.reduce((acc,p)=>{
+    const key=p.source+'_'+String(p.chapter||'').padStart(2,'0');
+    if(!acc[key])acc[key]={source:p.source,chapter:p.chapter,items:[]};
+    acc[key].items.push(p);
+    return acc;
+  },{});
+  const groups=Object.values(grouped).sort((a,b)=>{
+    if(a.source!==b.source)return (a.source||'').localeCompare(b.source||'');
+    return Number(a.chapter||0)-Number(b.chapter||0);
+  });
+
+  if(selected)return <StudyDetail passage={selected} blankMode={blankMode} setBlankMode={setBlankMode} goBack={()=>setSelected(null)}/>;
+
+  return(
+    <div style={{maxWidth:540,margin:'0 auto',padding:'0 0 80px'}}>
+      {/* 헤더 */}
+      <div style={{position:'sticky',top:0,zIndex:10,background:'#fff',borderBottom:'1px solid #f0f0f0',padding:'12px 16px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+          <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
+          <span style={{fontWeight:800,fontSize:16,color:'#1e293b'}}>📚 자료 보기</span>
+          <span style={{marginLeft:'auto',fontSize:11,color:'#94a3b8'}}>{studentName}</span>
+        </div>
+        <input value={searchText} onChange={e=>setSearchText(e.target.value)}
+          placeholder="제목·요약 검색..."
+          style={{width:'100%',padding:'9px 13px',borderRadius:10,border:'1.5px solid #e2e8f0',fontSize:13,outline:'none',boxSizing:'border-box',marginBottom:8}}/>
+        <div style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:2}}>
+          {sources.map(s=>(
+            <button key={s} onClick={()=>setActiveSource(s)}
+              style={{flexShrink:0,padding:'5px 12px',borderRadius:20,fontSize:11,fontWeight:600,
+                background:activeSource===s?'#4f7df7':'#f1f5f9',
+                color:activeSource===s?'#fff':'#555',border:'none',cursor:'pointer'}}>
+              {s==='ALL'?'전체':s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 본문 */}
+      <div style={{padding:'12px 16px'}}>
+        {loading&&<div style={{textAlign:'center',padding:40,color:'#94a3b8'}}>불러오는 중...</div>}
+        {err&&<div style={{textAlign:'center',padding:40,color:'#dc2626'}}>{err}</div>}
+        {!loading&&!err&&filtered.length===0&&(
+          <div style={{textAlign:'center',padding:40,color:'#94a3b8'}}>공개된 자료가 없습니다.</div>
+        )}
+        {groups.map(g=>(
+          <div key={g.source+'_'+g.chapter} style={{marginBottom:16}}>
+            <div style={{fontSize:11,fontWeight:700,color:'#94a3b8',marginBottom:6,letterSpacing:0.5}}>
+              {g.source} {g.chapter}강
+            </div>
+            {g.items.map(p=>(
+              <div key={p.id} onClick={()=>setSelected(p)}
+                style={{background:'#f8faff',border:'1px solid #e8eef8',borderRadius:12,padding:'12px 14px',
+                  marginBottom:8,cursor:'pointer',transition:'box-shadow .15s'}}
+                onMouseEnter={e=>e.currentTarget.style.boxShadow='0 2px 10px rgba(79,125,247,0.12)'}
+                onMouseLeave={e=>e.currentTarget.style.boxShadow='none'}>
+                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
+                  <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
+                    background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
+                    color:p.difficulty==='상'?'#991b1b':p.difficulty==='하'?'#166534':'#854d0e'}}>
+                    {p.difficulty||'중'}
+                  </span>
+                  <span style={{fontSize:12,fontWeight:700,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                    {p.title||p.id}
+                  </span>
+                  <span style={{fontSize:11,color:'#94a3b8',flexShrink:0}}>
+                    {String(p.number||'').padStart(3,'0')}번
+                  </span>
+                </div>
+                {p.abstract&&<div style={{fontSize:11,color:'#64748b',lineHeight:1.5,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{p.abstract}</div>}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── 자료 상세 보기 (StudyDetail) ── */
+function StudyDetail({passage,blankMode,setBlankMode,goBack}){
+  const sentences=React.useMemo(()=>{
+    try{return JSON.parse(passage.sentences_json||'[]');}catch{return [];}
+  },[passage]);
+  const flow=React.useMemo(()=>{
+    try{return JSON.parse(passage.flow_json||'{}');}catch{return {};}
+  },[passage]);
+
+  const [showMode,setShowMode]=useState('text'); // 'text' | 'flow'
+
+  const blocks=flow.blocks||[];
+  const blockSummaries=React.useMemo(()=>{
+    try{return JSON.parse(passage.blockSummaries_json||'null');}catch{return null;}
+  },[passage]);
+
+  // 빈칸 모드: bGroup 키워드를 ____로 치환
+  const bGroup=flow.bGroup||[];
+  const renderSentence=(sent,idx)=>{
+    let text=typeof sent==='string'?sent:(sent?.text||'');
+    if(blankMode&&bGroup.length){
+      bGroup.forEach(kw=>{
+        if(kw&&text.includes(kw)){
+          text=text.replace(new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),'_____');
+        }
+      });
+    }
+    return(
+      <span key={idx} style={{display:'inline'}}>
+        {idx>0&&<span style={{fontSize:10,fontWeight:700,color:'#4f7df7',marginRight:3}}>{idx}</span>}
+        {text}{' '}
+      </span>
+    );
+  };
+
+  return(
+    <div style={{maxWidth:540,margin:'0 auto',padding:'0 0 80px'}}>
+      {/* 헤더 */}
+      <div style={{position:'sticky',top:0,zIndex:10,background:'#fff',borderBottom:'1px solid #f0f0f0',padding:'12px 16px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+          <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
+          <span style={{fontWeight:800,fontSize:14,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{passage.title||passage.id}</span>
+          <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,flexShrink:0,
+            background:passage.difficulty==='상'?'#fee2e2':passage.difficulty==='하'?'#dcfce7':'#fef9c3',
+            color:passage.difficulty==='상'?'#991b1b':passage.difficulty==='하'?'#166534':'#854d0e'}}>
+            {passage.difficulty||'중'}
+          </span>
+        </div>
+        <div style={{display:'flex',gap:6}}>
+          {['text','flow'].map(m=>(
+            <button key={m} onClick={()=>setShowMode(m)}
+              style={{padding:'5px 14px',borderRadius:20,fontSize:11,fontWeight:600,
+                background:showMode===m?'#4f7df7':'#f1f5f9',
+                color:showMode===m?'#fff':'#555',border:'none',cursor:'pointer'}}>
+              {m==='text'?'📄 본문':'🔍 흐름분석'}
+            </button>
+          ))}
+          <button onClick={()=>setBlankMode(v=>!v)}
+            style={{padding:'5px 14px',borderRadius:20,fontSize:11,fontWeight:600,marginLeft:'auto',
+              background:blankMode?'#4f7df7':'#f1f5f9',
+              color:blankMode?'#fff':'#555',border:'none',cursor:'pointer'}}>
+            {blankMode?'🔓 정답보기':'🔒 빈칸모드'}
+          </button>
+        </div>
+      </div>
+
+      <div style={{padding:'16px 16px'}}>
+        {/* 요약 */}
+        {passage.abstract&&(
+          <div style={{background:'#f0f7ff',border:'1px solid #bfdbfe',borderRadius:10,padding:'10px 14px',marginBottom:14,fontSize:12,color:'#1e40af',lineHeight:1.6}}>
+            {passage.abstract}
+          </div>
+        )}
+
+        {showMode==='text'&&(
+          <div style={{fontSize:13.5,lineHeight:2.1,color:'#1e293b'}}>
+            {sentences.map((s,i)=>renderSentence(s,i))}
+          </div>
+        )}
+
+        {showMode==='flow'&&blocks.length>0&&(
+          <div>
+            {blocks.map((blk,bi)=>(
+              <div key={bi} style={{marginBottom:12,background:'#f8faff',borderRadius:10,border:'1px solid #e8eef8',overflow:'hidden'}}>
+                <div style={{background:'#4f7df7',color:'#fff',padding:'6px 12px',fontSize:11,fontWeight:700}}>
+                  {blk.role||`블록 ${bi+1}`}
+                  {blockSummaries&&blockSummaries[bi]&&(
+                    <span style={{fontWeight:400,opacity:0.85,marginLeft:8}}>{blockSummaries[bi]}</span>
+                  )}
+                </div>
+                <div style={{padding:'10px 12px',fontSize:13,lineHeight:2,color:'#1e293b'}}>
+                  {(blk.sentences||[]).map((si,j)=>renderSentence(sentences[si],si))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {showMode==='flow'&&blocks.length===0&&(
+          <div style={{color:'#94a3b8',fontSize:13,textAlign:'center',padding:30}}>흐름 분석 데이터가 없습니다.</div>
+        )}
       </div>
     </div>
   );

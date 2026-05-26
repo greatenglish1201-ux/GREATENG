@@ -273,12 +273,12 @@ function Highlighted({text,words}){
 const makeSlot=i=>({
   id:i,text:'',viewMode:'teacher',
   meta:{source:'ABSO',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
-  status:'idle',analysis:null,error:'',open:true,blockSummaries:null,
+  status:'idle',analysis:null,error:'',open:true,blockSummaries:null,isPublic:false,
 });
 
 function saveSlots(slots){
   try{localStorage.setItem(LS.SLOTS,JSON.stringify(
-    slots.map(s=>({id:s.id,text:s.text,meta:s.meta,status:s.status,analysis:s.analysis,passageData:s.passageData||null,blockSummaries:s.blockSummaries||null,error:'',open:s.open}))
+    slots.map(s=>({id:s.id,text:s.text,meta:s.meta,status:s.status,analysis:s.analysis,passageData:s.passageData||null,blockSummaries:s.blockSummaries||null,error:'',open:s.open,isPublic:s.isPublic||false}))
   ));}catch(e){}
 }
 function loadSlots(){
@@ -2048,6 +2048,7 @@ function App(){
       sentences_json:JSON.stringify(sentences),
       flow_json:JSON.stringify(flow),
       blockSummaries_json:blockSummaries?JSON.stringify(blockSummaries):'',
+      is_public:slot.isPublic?'TRUE':'FALSE',
     };
     // 출제DB payload — 9가지 유형 (데이터가 있는 것만 저장)
     const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -2105,6 +2106,18 @@ function App(){
     if(!id||!slot.meta.source){alert('교재/강/번호가 비어있습니다.');return false;}
     setSlotSheetSaving(prev=>({...prev,[slot.id]:true}));
     try{
+      // ★ 데이터 안전: 기존 시트의 is_public을 우선 보존
+      //   (다기기/시점차로 시트의 공개 상태가 로컬과 다를 수 있음 → 시트 상태 보존이 안전)
+      try{
+        const cur=await jsonpFetch(appsUrl,{action:'getPassages',id});
+        const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
+        if(sheetP&&sheetP.is_public){
+          // 시트의 기존 is_public을 우선 적용 (로컬 토글로 명시적 변경한 게 아니라면)
+          if(slot.isPublic===undefined||slot.isPublic===false){
+            passagePayload.is_public=sheetP.is_public;
+          }
+        }
+      }catch(e){/* 조회 실패 시 기본값으로 진행 */}
       // 1) 지문DB (POST - 큰 데이터)
       const r1=await formPostFetch(appsUrl,{action:'savePassage',...passagePayload});
       if(!r1.ok&&!r1.warning)throw new Error('지문 저장 실패: '+(r1.error||'unknown'));
@@ -2918,6 +2931,76 @@ function App(){
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onSave={()=>upSlot(slot.id,{status:'saved'})}
             onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok){upSlot(slot.id,{status:'saved'});flash('시트 저장 ✓');}}}
+            onTogglePublic={async()=>{
+              const next=!slot.isPublic;
+              if(!appsUrl){
+                upSlot(slot.id,{isPublic:next});
+                flash('Apps Script URL 미설정 - 로컬만 변경됨');
+                return;
+              }
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              // 데이터 안정성 최우선 정책 (이전 채팅에서 결정된 안 G 적용)
+              //
+              // 위험 시나리오: 다기기/시점 차이로 로컬 슬롯이 시트보다 덜 완성된 상태일 때
+              //   토글로 전체 payload를 보내면 시트의 완성 데이터를 덮어쓸 위험
+              //
+              // 해결책 (2중 방어):
+              //   ① 토글은 오직 {id, is_public}만 전송 → 다른 필드 영향 최소화
+              //   ② Apps Script가 패치된 버전이면 다른 필드는 기존값 유지
+              //      미패치 버전이면 사전 차단: 시트 데이터와 비교해서 손실 위험 시 중단
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              const pid=slot.passageData?.id
+                      ||(slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0'));
+              try{
+                // ① 시트의 현재 상태 조회 (안전 검증용)
+                const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
+                const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
+                
+                // ② 시트에 데이터가 있는데, 로컬과 다른 경우 경고
+                if(sheetP){
+                  const localTitle=slot.passageData?.title||'';
+                  const localSentLen=(slot.analysis?.sentences||slot.passageData?.sentences||[]).length;
+                  const sheetSentLen=(()=>{try{return JSON.parse(sheetP.sentences_json||'[]').length;}catch{return 0;}})();
+                  
+                  // 시트는 데이터가 있는데 로컬은 비어있음 → 절대 안 됨
+                  if(sheetSentLen>0&&localSentLen===0){
+                    alert('❌ 차단: 시트에 분석 데이터가 있지만 이 슬롯은 비어있습니다.\n\n공개 토글 시 시트 데이터가 손실될 수 있어 작업을 중단합니다.\n슬롯에 데이터를 먼저 불러온 후 다시 시도하세요.');
+                    return;
+                  }
+                  
+                  // 시트 sentences 길이와 로컬이 크게 다름 → 사용자 확인
+                  if(sheetSentLen>0&&Math.abs(sheetSentLen-localSentLen)>2){
+                    if(!window.confirm(`⚠️ 데이터 불일치 감지\n\n시트: ${sheetSentLen}개 문장\n로컬: ${localSentLen}개 문장\n\n그대로 진행하면 시트가 로컬 기준으로 덮어써집니다.\n계속하시겠습니까?`)){
+                      return;
+                    }
+                  }
+                }
+                
+                // ③ 최소 payload만 전송 (id + is_public)
+                //    Apps Script가 패치된 경우: 다른 필드는 기존값 유지
+                //    Apps Script가 미패치된 경우: 다른 필드가 ''로 덮어써짐 (위험)
+                //    → 따라서 미패치 상태면 아래 추가 안전망 동작
+                const safeMode=!sheetP||(sheetP&&JSON.parse(sheetP.sentences_json||'[]').length===0);
+                let payload;
+                if(safeMode){
+                  // 시트에 데이터가 아예 없거나 이번이 첫 저장 → 최소 payload OK
+                  payload={action:'savePassage',id:pid,is_public:next?'TRUE':'FALSE'};
+                }else{
+                  // 시트에 데이터가 있음 → Apps Script 미패치 대비 전체 payload 전송
+                  // (단, 위 검증 통과 후이므로 로컬 데이터도 충실한 상태)
+                  const {passagePayload}=buildSlotPayload({...slot,isPublic:next});
+                  payload={action:'savePassage',...passagePayload};
+                }
+                
+                const r=await formPostFetch(appsUrl,payload);
+                if(r&&(r.ok||r.warning)){
+                  upSlot(slot.id,{isPublic:next});
+                  flash(next?'🌐 공개 설정 완료':'🔒 비공개 설정 완료');
+                }else{
+                  flash('공개 설정 실패: '+(r?.error||'unknown'));
+                }
+              }catch(e){flash('공개 설정 오류: '+e.message);}
+            }}
             onStuOutput={(kind)=>setStuModal({kind,slot,opts:{...stuOpts}})}
             sheetSaving={!!slotSheetSaving[slot.id]}
             onReanalyze={()=>reanalyze(slot)}
@@ -2930,7 +3013,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum}){
+function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -3280,6 +3363,14 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
               <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 14px',fontSize:12.5,fontWeight:600,
                 background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:6,cursor:sheetSaving?'wait':'pointer'}}>
                 {sheetSaving?'저장중...':'📊 시트 저장'}
+              </button>
+            )}
+            {slot.status==='saved'&&onTogglePublic&&(
+              <button onClick={onTogglePublic} style={{padding:'7px 14px',fontSize:12.5,fontWeight:600,
+                background:slot.isPublic?'#0a7c42':'#e9ecef',
+                color:slot.isPublic?'#fff':'#555',
+                border:slot.isPublic?'none':'1px solid #ccc',borderRadius:6,cursor:'pointer'}}>
+                {slot.isPublic?'🌐 공개중':'🔒 비공개'}
               </button>
             )}
             {['analyzed','confirmed','saved'].includes(slot.status)&&(
