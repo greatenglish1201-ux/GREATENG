@@ -1873,6 +1873,50 @@ function PrintView({questions,mode,goBack}){
     </div>
   );
 }
+/* ── 자료 보기 의존성 상수 (teacher.html과 동일) ── */
+const SV_SM={
+  'G':{bg:'#E6F1FB',bd:'#185FA5',tx:'#0C447C',lbl:'주제·통념'},
+  '↔':{bg:'#FAECE7',bd:'#D85A30',tx:'#712B13',lbl:'역접'},
+  '=':{bg:'#EEEDFE',bd:'#534AB7',tx:'#3C3489',lbl:'재진술'},
+  'S':{bg:'#EAF3DE',bd:'#639922',tx:'#173404',lbl:'예시'},
+  '→':{bg:'#E1F5EE',bd:'#1D9E75',tx:'#085041',lbl:'인과·결론'},
+  '+':{bg:'#FAEEDA',bd:'#BA7517',tx:'#633806',lbl:'추가'},
+};
+const SV_BC={
+  blue:{bd:'#185FA5',tx:'#0C447C',hd:'#B5D4F4'},
+  coral:{bd:'#D85A30',tx:'#712B13',hd:'#F5C4B3'},
+  teal:{bd:'#1D9E75',tx:'#085041',hd:'#9FE1CB'},
+  purple:{bd:'#534AB7',tx:'#3C3489',hd:'#CECBF6'},
+  green:{bd:'#639922',tx:'#173404',hd:'#C0DD97'},
+  amber:{bd:'#BA7517',tx:'#633806',hd:'#FAC775'},
+  gray:{bd:'#5F5E5A',tx:'#2C2C2A',hd:'#D3D1C7'},
+};
+const SV_STATUS={
+  idle:{label:'대기',color:'#999',bg:'#f5f5f5'},
+  analyzing:{label:'분석중',color:'#185FA5',bg:'#E6F1FB'},
+  analyzed:{label:'분석완료',color:'#2d8a60',bg:'#E1F5EE'},
+  confirmed:{label:'흐름확정',color:'#6d3ab5',bg:'#EEEDFE'},
+  saved:{label:'저장완료',color:'#fff',bg:'#185FA5'},
+};
+const SV_DIFF_STYLE={
+  상:{color:'#c0392b',bg:'#FDECEA'},
+  중:{color:'#BA7517',bg:'#FFF3E0'},
+  하:{color:'#2d8a60',bg:'#E1F5EE'},
+};
+const SV_SYMS=['G','↔','=','S','→','+'];
+const SV_SOURCES=['ABSO','27STYD','MOGO'];
+const SV_NSTR=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+const SV_nStr=n=>SV_NSTR[n-1]||'('+n+')';
+
+// SlotViewer에서 사용할 전역 별칭 (teacher.html과 같은 이름)
+// React 컴포넌트 내부에서 사용되므로 window 객체에 노출
+if (typeof window !== 'undefined') {
+  window.SM=SV_SM; window.BC=SV_BC; window.STATUS=SV_STATUS;
+  window.DIFF_STYLE=SV_DIFF_STYLE; window.SYMS=SV_SYMS;
+  window.SOURCES=SV_SOURCES; window.nStr=SV_nStr;
+}
+const SM=SV_SM, BC=SV_BC, STATUS=SV_STATUS, DIFF_STYLE=SV_DIFF_STYLE;
+const SYMS=SV_SYMS, SOURCES=SV_SOURCES, nStr=SV_nStr;
 
 /* ── 자료 보기 (StudyView) ── */
 function StudyView({scriptUrl,studentName,goBack}){
@@ -1880,7 +1924,7 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [loading,setLoading]=useState(true);
   const [err,setErr]=useState('');
   const [selected,setSelected]=useState(null);
-  const [blankMode,setBlankMode]=useState(false);
+  const [viewMode,setViewMode]=useState('teacher'); // 'teacher' | 'student'
   const [searchText,setSearchText]=useState('');
   const [activeSource,setActiveSource]=useState('ALL');
 
@@ -1906,7 +1950,6 @@ function StudyView({scriptUrl,studentName,goBack}){
     return true;
   });
 
-  // 강별 그룹화
   const grouped=filtered.reduce((acc,p)=>{
     const key=p.source+'_'+String(p.chapter||'').padStart(2,'0');
     if(!acc[key])acc[key]={source:p.source,chapter:p.chapter,items:[]};
@@ -1918,11 +1961,10 @@ function StudyView({scriptUrl,studentName,goBack}){
     return Number(a.chapter||0)-Number(b.chapter||0);
   });
 
-  if(selected)return <StudyDetail passage={selected} blankMode={blankMode} setBlankMode={setBlankMode} goBack={()=>setSelected(null)}/>;
+  if(selected)return <StudyDetail passage={selected} viewMode={viewMode} setViewMode={setViewMode} goBack={()=>setSelected(null)}/>;
 
   return(
     <div style={{maxWidth:540,margin:'0 auto',padding:'0 0 80px'}}>
-      {/* 헤더 */}
       <div style={{position:'sticky',top:0,zIndex:10,background:'#fff',borderBottom:'1px solid #f0f0f0',padding:'12px 16px'}}>
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
@@ -1943,8 +1985,6 @@ function StudyView({scriptUrl,studentName,goBack}){
           ))}
         </div>
       </div>
-
-      {/* 본문 */}
       <div style={{padding:'12px 16px'}}>
         {loading&&<div style={{textAlign:'center',padding:40,color:'#94a3b8'}}>불러오는 중...</div>}
         {err&&<div style={{textAlign:'center',padding:40,color:'#dc2626'}}>{err}</div>}
@@ -1959,9 +1999,7 @@ function StudyView({scriptUrl,studentName,goBack}){
             {g.items.map(p=>(
               <div key={p.id} onClick={()=>setSelected(p)}
                 style={{background:'#f8faff',border:'1px solid #e8eef8',borderRadius:12,padding:'12px 14px',
-                  marginBottom:8,cursor:'pointer',transition:'box-shadow .15s'}}
-                onMouseEnter={e=>e.currentTarget.style.boxShadow='0 2px 10px rgba(79,125,247,0.12)'}
-                onMouseLeave={e=>e.currentTarget.style.boxShadow='none'}>
+                  marginBottom:8,cursor:'pointer',transition:'box-shadow .15s'}}>
                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
                   <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
                     background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
@@ -1985,106 +2023,409 @@ function StudyView({scriptUrl,studentName,goBack}){
   );
 }
 
-/* ── 자료 상세 보기 (StudyDetail) ── */
-function StudyDetail({passage,blankMode,setBlankMode,goBack}){
-  const sentences=React.useMemo(()=>{
-    try{return JSON.parse(passage.sentences_json||'[]');}catch{return [];}
-  },[passage]);
-  const flow=React.useMemo(()=>{
-    try{return JSON.parse(passage.flow_json||'{}');}catch{return {};}
-  },[passage]);
-
-  const [showMode,setShowMode]=useState('text'); // 'text' | 'flow'
-
-  const blocks=flow.blocks||[];
-  const blockSummaries=React.useMemo(()=>{
-    try{return JSON.parse(passage.blockSummaries_json||'null');}catch{return null;}
-  },[passage]);
-
-  // 빈칸 모드: bGroup 키워드를 ____로 치환
-  const bGroup=flow.bGroup||[];
-  const renderSentence=(sent,idx)=>{
-    let text=typeof sent==='string'?sent:(sent?.text||'');
-    if(blankMode&&bGroup.length){
-      bGroup.forEach(kw=>{
-        if(kw&&text.includes(kw)){
-          text=text.replace(new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),'_____');
-        }
-      });
-    }
-    return(
-      <span key={idx} style={{display:'inline'}}>
-        {idx>0&&<span style={{fontSize:10,fontWeight:700,color:'#4f7df7',marginRight:3}}>{idx}</span>}
-        {text}{' '}
-      </span>
-    );
-  };
+function SlotViewer({slot,viewMode}){
+  // 학생 자료보기용 - 모든 편집 콜백은 no-op
+  const iB={border:"none",outline:"none",background:"transparent",padding:"2px 4px",width:"100%"};
+  const sB={border:"none",outline:"none",background:"transparent",cursor:"pointer"};
+  const onText=()=>{},onClear=()=>{},onMeta=()=>{},onToggle=()=>{},onConfirm=()=>{},onSave=()=>{};
+  const onSheetSave=null,sheetSaving=false,onStuOutput=()=>{},onReanalyze=()=>{},onAnalysis=()=>{};
+  const onAuthor=()=>{},onGenSum=()=>{},onTogglePublic=null;
+  const IS=viewMode==='student';
+  const st=STATUS[slot.status]||STATUS.idle;
+  const {sentences=[],flow={},grammar={}}=slot.analysis||{};
+  const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
+  const {difficultSentences=[]}=grammar;
+  const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
+  const conn=i=>interBlockConnectors[i]||'→';
+  const editable=false; // 학생용: 항상 읽기전용
+  const df=DIFF_STYLE[slot.meta.difficulty]||DIFF_STYLE['중'];
 
   return(
-    <div style={{maxWidth:540,margin:'0 auto',padding:'0 0 80px'}}>
-      {/* 헤더 */}
+    <div style={{background:'#fff',borderRadius:12,border:'0.5px solid #e5e5e5',
+      marginBottom:12,overflow:'hidden',
+      boxShadow:slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
+      <div style={{padding:'11px 16px',display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',
+        borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
+        background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
+        <div style={{width:24,height:24,borderRadius:'50%',background:st.bg,color:st.color,
+          display:'flex',alignItems:'center',justifyContent:'center',
+          fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
+        <span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:4,
+          background:st.bg,color:st.color}}>{st.label}</span>
+        <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
+          style={{...sB,fontSize:12.5,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'4px 8px'}}>
+          {SOURCES.map(s=><option key={s} value={s}>{s}</option>)}
+        </select>
+        {['chapter','number'].map(f=>(
+          <div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
+            borderRadius:6,border:'0.5px solid #ddd',overflow:'hidden'}}>
+            <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;const max=f==='chapter'?30:99;
+              onMeta(slot.id,f,String(Math.max(1,cur-1)).padStart(f==='chapter'?2:3,'0'));}}
+              style={{...sB,padding:'4px 8px',fontSize:14,color:'#555',borderRight:'0.5px solid #ddd'}}>▼</button>
+            <span style={{fontSize:13,fontWeight:500,color:'#333',minWidth:f==='chapter'?26:30,
+              textAlign:'center',padding:'0 2px'}}>{parseInt(slot.meta[f]||1)}{f==='chapter'?'강':'번'}</span>
+            <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;const max=f==='chapter'?30:99;
+              onMeta(slot.id,f,String(Math.min(max,cur+1)).padStart(f==='chapter'?2:3,'0'));}}
+              style={{...sB,padding:'4px 8px',fontSize:14,color:'#555',borderLeft:'0.5px solid #ddd'}}>▲</button>
+          </div>
+        ))}
+        <select value={slot.meta.difficulty} onChange={e=>onMeta(slot.id,'difficulty',e.target.value)}
+          style={{...sB,fontSize:12.5,fontWeight:600,color:df.color,border:'0.5px solid #ddd',
+            borderRadius:5,padding:'4px 6px',background:df.bg}}>
+          {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
+        </select>
+        {slot.status==='analyzed'&&<span style={{fontSize:10,color:'#bbb'}}>AI추정</span>}
+        {slot.id===0&&slot.status==='idle'&&<span style={{fontSize:10,color:'#bbb'}}>↑ 이후 자동 연번</span>}
+        <div style={{flex:1}}/>
+        {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:200,overflow:'hidden',
+          textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
+        {slot.analysis&&(
+          <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓교사</button>
+            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
+            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
+            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
+            <button onClick={onAuthor} style={{padding:'4px 9px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>✏ 출제 저작</button>
+          </div>
+        )}
+        {(slot.text||slot.passageData||slot.analysis)&&(
+          <button onClick={onClear} title="이 슬롯 비우기 (GitHub 데이터는 유지)" style={{...sB,fontSize:13,color:'#bbb',padding:'3px 7px',border:'1px solid #eee',borderRadius:5,marginLeft:4}}>🗑</button>
+        )}
+        <button onClick={onToggle} style={{...sB,fontSize:13,color:'#ccc',padding:'3px 6px'}}>{slot.open?'▲':'▼'}</button>
+      </div>
+
+      {slot.open&&slot.status==='idle'&&(
+        <div style={{padding:16}}>
+          <textarea value={slot.text} onChange={e=>onText(e.target.value)}
+            placeholder={'지문 '+(slot.id+1)+' 붙여넣기...'}
+            style={{width:'100%',minHeight:100,padding:'10px 13px',fontSize:14,lineHeight:1.9,
+              border:'0.5px solid #e0e0e0',borderRadius:8,resize:'vertical',fontFamily:'inherit',
+              color:'#1a1a1a',background:'#fafafa'}}/>
+        </div>
+      )}
+
+      {slot.open&&slot.analysis&&(
+        <div style={{padding:16}}>
+          {/* 지문 */}
+          <div style={{borderLeft:'4px solid #185FA5',background:'#fafafa',borderRadius:'0 8px 8px 0',
+            padding:'12px 16px',fontSize:15,lineHeight:2.2,marginBottom:12,
+            wordBreak:'keep-all',overflowWrap:'break-word'}}>
+            {sentences.map(s=>{
+              const sc=SM[s.symbol]||{};
+              return<span key={s.num}>
+                <span style={{fontSize:12,fontWeight:700,color:sc.tx,marginRight:4}}>{nStr(s.num)}</span>
+                {s.text}
+                {' '}
+              </span>;
+            })}
+          </div>
+
+          {/* 범례 */}
+          <div style={{display:'flex',flexWrap:'wrap',gap:4,marginBottom:12}}>
+            {SYMS.map(sym=>{const sc=SM[sym]||{};return(
+              <span key={sym} style={{display:'flex',alignItems:'center',gap:4,fontSize:11,
+                color:'#666',padding:'3px 8px',border:'0.5px solid #e5e5e5',borderRadius:4}}>
+                <span style={{width:7,height:7,borderRadius:2,background:sc.bd,display:'inline-block'}}/>
+                ({sym}) {sc.lbl}
+              </span>);
+            })}
+          </div>
+
+          {/* Block Diagram */}
+          <div style={{fontSize:11,fontWeight:700,color:'#888',letterSpacing:'.1em',
+            textTransform:'uppercase',marginBottom:8}}>Block Diagram</div>
+          <div style={{display:'flex',alignItems:'flex-start',gap:5,marginBottom:12,flexWrap:'wrap'}}>
+            {blocks.map((blk,bi)=>{
+              const c=BC[blk.color]||BC.blue;
+              const bsents=(blk.sentenceNums||[]).map(n=>sm[n]).filter(Boolean);
+              return(
+                <React.Fragment key={blk.id}>
+                  <div style={{flex:'1 1 130px',minWidth:0,borderRadius:10,border:'2px solid '+c.bd}}>
+                    <div style={{padding:'8px 11px',background:c.hd,borderBottom:'1.5px solid '+c.bd,borderRadius:'8px 8px 0 0'}}>
+                      {IS
+                        ?<div style={{borderBottom:'2px solid '+c.bd,height:22,width:'85%',marginBottom:5}}/>
+                        :editable
+                        ?<><input value={blk.name} onChange={e=>onAnalysis(slot.id,'flow.blocks.'+bi+'.name',e.target.value)}
+                            style={{...iB,fontSize:13.5,fontWeight:600,color:c.tx,borderBottomColor:c.bd,marginBottom:2}}/>
+                           <input value={blk.nameEn} onChange={e=>onAnalysis(slot.id,'flow.blocks.'+bi+'.nameEn',e.target.value)}
+                            style={{...iB,fontSize:11,fontStyle:'italic',fontWeight:600,color:c.tx,borderBottomColor:c.bd,opacity:.85}}/></>
+                        :<><div style={{fontSize:13.5,fontWeight:600,color:c.tx,marginBottom:2,wordBreak:'keep-all'}}>{blk.name}</div>
+                           <div style={{fontSize:11,color:c.tx,fontStyle:'italic',fontWeight:600,opacity:.85}}>{blk.nameEn}</div></>
+                      }
+                    </div>
+                    <div style={{padding:'7px',background:'#fff'}}>
+                      {bsents.map((sent,si)=>{
+                        const sc=SM[sent.symbol]||{};
+                        const si2=sentences.indexOf(sent);
+                        return<div key={sent.num}>
+                          {si>0&&<div style={{fontSize:9,color:'#ccc',paddingLeft:22,margin:'1px 0'}}>↓</div>}
+                          <div style={{display:'flex',alignItems:'flex-start',gap:6,padding:'5px 6px',
+                            borderRadius:6,background:sc.bg,marginBottom:3}}>
+                            <span style={{fontSize:15,fontWeight:600,color:sc.tx,flexShrink:0,marginTop:1}}>{nStr(sent.num)}</span>
+                            <div style={{flex:1,minWidth:0}}>
+                              {editable&&!IS
+                                ?<><select value={sent.symbol}
+                                    onChange={e=>onAnalysis(slot.id,'sentences.'+si2+'.symbol',e.target.value)}
+                                    style={{...sB,fontSize:10,fontWeight:700,padding:'1px 4px',borderRadius:3,
+                                      background:sc.bg,color:sc.tx,border:'1px solid '+sc.bd,marginBottom:3,display:'block'}}>
+                                    {SYMS.map(s=><option key={s} value={s}>{s}</option>)}
+                                  </select>
+                                  <textarea value={sent.role}
+                                    onChange={e=>onAnalysis(slot.id,'sentences.'+si2+'.role',e.target.value)}
+                                    rows={3} style={{...iB,fontSize:10.5,color:'#444',borderBottomColor:'#ddd',
+                                      resize:'vertical',lineHeight:1.4,overflow:'auto',minHeight:'3em'}}/></>
+                                :<>
+                                  <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
+                                    <span style={{fontSize:10,fontWeight:700,padding:'1px 5px',borderRadius:3,
+                                      background:sc.bg,color:sc.tx,border:'1px solid '+sc.bd,letterSpacing:'.03em'}}>{sent.symbol}</span>
+                                  </div>
+                                  <div style={{fontSize:10.5,color:'#333',lineHeight:1.45,wordBreak:'keep-all'}}>{sent.role}</div>
+                                </>
+                              }
+                            </div>
+                          </div>
+                        </div>;
+                      })}
+                    </div>
+                  </div>
+                  {bi<blocks.length-1&&(
+                    <div style={{display:'flex',flexDirection:'column',alignItems:'center',
+                      justifyContent:'center',gap:2,flexShrink:0,paddingTop:52,minWidth:32}}>
+                      {editable&&!IS
+                        ?<select value={conn(bi)}
+                            onChange={e=>{const cc=[...interBlockConnectors];cc[bi]=e.target.value;
+                              onAnalysis(slot.id,'flow.interBlockConnectors',cc);}}
+                            style={{...sB,fontSize:16,fontWeight:600,color:'#555',textAlign:'center',width:'100%'}}>
+                            {SYMS.map(s=><option key={s} value={s}>{s}</option>)}
+                          </select>
+                        :<div style={{fontSize:16,fontWeight:600,color:'#555'}}>{conn(bi)}</div>
+                      }
+                      <div style={{fontSize:9,color:'#bbb',textAlign:'center',lineHeight:1.3}}>
+                        {SM[conn(bi)]&&SM[conn(bi)].lbl||''}
+                      </div>
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          {/* 메타 */}
+          <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap'}}>
+            {[{lbl:'핵심 소재',f:'keyword',val:keyword,flex:1},
+              {lbl:'주제 요약',f:'topicSummary',val:topicSummary,flex:2}].map(({lbl,f,val,flex})=>(
+              <div key={f} style={{flex,minWidth:120,background:'#f8f8f8',
+                border:'0.5px solid #e5e5e5',borderRadius:8,padding:'8px 12px'}}>
+                <div style={{fontSize:10,fontWeight:700,color:'#888',letterSpacing:'.08em',
+                  textTransform:'uppercase',marginBottom:5}}>{lbl}</div>
+                {IS?<div style={{borderBottom:'1.5px solid #bbb',height:22}}/>
+                  :<textarea value={val}
+                    onChange={e=>onAnalysis(slot.id,'flow.'+f,e.target.value)}
+                    rows={2} style={{...iB,fontSize:13,color:'#1a1a1a',resize:'none',
+                      lineHeight:1.5,overflow:'hidden',wordBreak:'keep-all'}}/>}
+              </div>
+            ))}
+            <div style={{flex:1.3,minWidth:100,background:'#f8f8f8',
+              border:'0.5px solid #e5e5e5',borderRadius:8,padding:'8px 12px'}}>
+              <div style={{fontSize:10,fontWeight:700,color:'#888',letterSpacing:'.08em',
+                textTransform:'uppercase',marginBottom:5}}>구조 유형</div>
+              {IS?<div style={{display:'flex',flexWrap:'wrap',gap:3}}>
+                {['통념→반박→결론','문제→해결책','질문→답변'].map(s=>(
+                  <span key={s} style={{fontSize:10,padding:'2px 6px',
+                    border:'0.5px solid #ddd',borderRadius:3,color:'#bbb'}}>□ {s}</span>))}
+              </div>
+              :<select value={structureType}
+                  onChange={e=>onAnalysis(slot.id,'flow.structureType',e.target.value)}
+                  style={{...sB,width:'100%',fontSize:13,color:'#1a1a1a'}}>
+                  {STRUCTS.map(s=><option key={s} value={s}>{s}</option>)}
+                </select>}
+            </div>
+          </div>
+
+          {/* 블록 요약 빈칸 섹션 */}
+          {(()=>{
+            const bs=slot.blockSummaries;
+            const hasAnalysis=blocks.length>0;
+            if(!hasAnalysis)return null;
+            const BC2={blue:{bd:'#185FA5',bg:'#E6F1FB',tx:'#0C447C'},coral:{bd:'#D85A30',bg:'#FAECE7',tx:'#712B13'},
+              teal:{bd:'#1D9E75',bg:'#E1F5EE',tx:'#085041'},purple:{bd:'#534AB7',bg:'#EEEDFE',tx:'#3C3489'},
+              green:{bd:'#639922',bg:'#EAF3DE',tx:'#173404'},amber:{bd:'#BA7517',bg:'#FAEEDA',tx:'#633806'},gray:{bd:'#5F5E5A',bg:'#F1EFE8',tx:'#2C2C2A'}};
+
+            const renderSummary=(sumText,keywords,bc)=>{
+              if(!sumText)return null;
+              const parts=sumText.split(/\{([^}]+)\}/g);
+              return parts.map((part,i)=>{
+                if(i%2===1){
+                  if(IS){
+                    return<span key={i} style={{display:'inline-block',borderBottom:'1.5px solid '+bc.bd,
+                      minWidth:60,marginRight:2}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+                  }
+                  return<span key={i} style={{display:'inline-block',background:bc.bg,color:bc.tx,
+                    border:'1px solid '+bc.bd,borderRadius:4,padding:'0 5px',fontSize:11.5,fontWeight:500}}>{part}</span>;
+                }
+                return<span key={i}>{part}</span>;
+              });
+            };
+
+            return(
+              <div style={{marginBottom:12}}>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+                  <div style={{fontSize:11,fontWeight:700,color:'#888',letterSpacing:'.08em',textTransform:'uppercase'}}>
+                    블록 요약 빈칸
+                  </div>
+                  {!IS&&<button onClick={onGenSum} disabled={bs==='loading'}
+                    style={{padding:'3px 10px',fontSize:11,background:bs==='loading'?'#ccc':'#185FA5',
+                      color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>
+                    {bs==='loading'?'생성중...':bs?'재생성 ↻':'요약 생성 ↗'}
+                  </button>}
+                </div>
+                {bs&&bs!=='loading'&&Array.isArray(bs)?
+                  bs.map((item,bi)=>{
+                    const blk=blocks.find(b=>b.id===item.blockId)||blocks[bi]||{};
+                    const bc=BC2[blk.color]||BC2.gray;
+                    return(
+                      <div key={bi} style={{border:'0.5px solid '+bc.bd,borderRadius:8,
+                        overflow:'hidden',marginBottom:8}}>
+                        <div style={{background:bc.bg,padding:'5px 10px',display:'flex',gap:8,alignItems:'center'}}>
+                          <span style={{fontSize:11,fontWeight:600,color:bc.tx}}>{blk.name||item.blockId}</span>
+                          <span style={{fontSize:10,color:bc.tx,opacity:.7}}>{blk.nameEn||''}</span>
+                        </div>
+                        <div style={{padding:'8px 12px',fontSize:12.5,fontStyle:'italic',
+                          color:'#333',lineHeight:1.8,wordBreak:'keep-all'}}>
+                          {renderSummary(item.summary,item.keywords,bc)}
+                        </div>
+                      </div>
+                    );
+                  })
+                  :<div style={{fontSize:12,color:'#bbb',padding:'10px 0',textAlign:'center'}}>
+                    {IS?'(요약 미생성)':bs==='loading'?'생성 중...':'요약 생성 버튼을 눌러주세요'}
+                  </div>
+                }
+              </div>
+            );
+          })()}
+
+          {/* 문장별 분석 */}
+          {(()=>{
+            const dsToShow=IS
+              ?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num))
+              :sentences;
+            if(!dsToShow.length)return null;
+            return(
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:11,fontWeight:700,color:'#888',letterSpacing:'.08em',
+                  textTransform:'uppercase',marginBottom:8}}>
+                  {IS?'구문 분석':'문장별 분석 — 끊어읽기 & 구문'}
+                </div>
+                {dsToShow.map(s=>{
+                  const sc=SM[s.symbol]||{};
+                  const ds=difficultSentences.find(d=>d.num===s.num);
+                  const di=difficultSentences.findIndex(d=>d.num===s.num);
+                  const chunks=s.chunks||[];
+                  return(
+                    <div key={s.num} style={{marginBottom:6,border:'0.5px solid '+sc.bd,
+                      borderRadius:8,overflow:'hidden'}}>
+                      <div style={{padding:'6px 12px',background:sc.bg,
+                        display:'flex',alignItems:'center',gap:7}}>
+                        <span style={{fontSize:15,fontWeight:700,color:sc.tx,flexShrink:0}}>{nStr(s.num)}</span>
+                        <span style={{fontSize:10,fontWeight:700,padding:'1px 5px',borderRadius:3,
+                          background:'rgba(255,255,255,.5)',color:sc.tx,border:'1px solid '+sc.bd,
+                          flexShrink:0}}>({s.symbol})</span>
+                        <span style={{fontSize:13,color:sc.tx,fontStyle:'italic',
+                          wordBreak:'keep-all',overflowWrap:'break-word',lineHeight:1.5}}>
+                          {chunks.length>0?chunks.map(c=>c.en||'').join(' / '):s.text}
+                        </span>
+                      </div>
+                      {!IS&&chunks.length>0&&(
+                        <div style={{padding:'7px 12px',background:'#fff',borderTop:'0.5px solid #eee'}}>
+                          <div style={{fontSize:13,color:'#555',lineHeight:1.9,
+                            wordBreak:'keep-all',overflowWrap:'break-word'}}>
+                            {chunks.map(c=>c.ko||'').join(' / ')}
+                          </div>
+                        </div>
+                      )}
+                      {ds&&(
+                        <div style={{padding:'7px 12px',background:'#fafafa',borderTop:'0.5px solid #eee'}}>
+                          <div style={{fontSize:10,fontWeight:700,color:'#aaa',marginBottom:4}}>구문 분석</div>
+                          {[{lbl:'구조',f:'structure'},{lbl:'해석',f:'translation'},{lbl:'포인트',f:'point'}].map(row=>(
+                            <div key={row.f} style={{display:'flex',gap:8,padding:'3px 0',
+                              borderBottom:'0.5px dashed #eee',alignItems:'flex-start'}}>
+                              <span style={{fontSize:10,fontWeight:700,color:'#888',
+                                flexShrink:0,width:34,paddingTop:2}}>{row.lbl}</span>
+                              <textarea value={ds[row.f]||''}
+                                onChange={e=>{const nd=[...difficultSentences];
+                                  nd[di]={...nd[di],[row.f]:e.target.value};
+                                  onAnalysis(slot.id,'grammar.difficultSentences',nd);}}
+                                rows={1} style={{...iB,fontSize:12.5,color:'#333',resize:'none',
+                                  lineHeight:1.5,flex:1,overflow:'hidden',wordBreak:'break-all'}}/>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── 자료 상세 보기: 시트 데이터를 slot 형태로 변환 후 SlotViewer로 렌더 ── */
+function StudyDetail({passage,viewMode,setViewMode,goBack}){
+  // 시트 row -> teacher.html slot 형태로 변환
+  const slot=React.useMemo(()=>{
+    let sentences=[],flow={},blockSummaries=null;
+    try{sentences=JSON.parse(passage.sentences_json||'[]');}catch{}
+    try{flow=JSON.parse(passage.flow_json||'{}');}catch{}
+    try{blockSummaries=JSON.parse(passage.blockSummaries_json||'null');}catch{}
+    return {
+      id:0,
+      text:'',
+      meta:{
+        source:passage.source||'',
+        chapter:passage.chapter||'',
+        number:passage.number||'',
+        difficulty:passage.difficulty||'중',
+      },
+      status:'saved',
+      analysis:{sentences,flow,grammar:{}},
+      passageData:{
+        id:passage.id,
+        title:passage.title||'',
+        abstract:passage.abstract||'',
+        sentences,
+        flow,
+      },
+      blockSummaries:blockSummaries,
+      open:true,
+      isPublic:true,
+    };
+  },[passage]);
+
+  return(
+    <div style={{maxWidth:900,margin:'0 auto',padding:'0 0 80px',background:'#fafafa',minHeight:'100vh'}}>
       <div style={{position:'sticky',top:0,zIndex:10,background:'#fff',borderBottom:'1px solid #f0f0f0',padding:'12px 16px'}}>
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
           <span style={{fontWeight:800,fontSize:14,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{passage.title||passage.id}</span>
-          <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,flexShrink:0,
-            background:passage.difficulty==='상'?'#fee2e2':passage.difficulty==='하'?'#dcfce7':'#fef9c3',
-            color:passage.difficulty==='상'?'#991b1b':passage.difficulty==='하'?'#166534':'#854d0e'}}>
-            {passage.difficulty||'중'}
-          </span>
-        </div>
-        <div style={{display:'flex',gap:6}}>
-          {['text','flow'].map(m=>(
-            <button key={m} onClick={()=>setShowMode(m)}
-              style={{padding:'5px 14px',borderRadius:20,fontSize:11,fontWeight:600,
-                background:showMode===m?'#4f7df7':'#f1f5f9',
-                color:showMode===m?'#fff':'#555',border:'none',cursor:'pointer'}}>
-              {m==='text'?'📄 본문':'🔍 흐름분석'}
-            </button>
-          ))}
-          <button onClick={()=>setBlankMode(v=>!v)}
-            style={{padding:'5px 14px',borderRadius:20,fontSize:11,fontWeight:600,marginLeft:'auto',
-              background:blankMode?'#4f7df7':'#f1f5f9',
-              color:blankMode?'#fff':'#555',border:'none',cursor:'pointer'}}>
-            {blankMode?'🔓 정답보기':'🔒 빈칸모드'}
-          </button>
-        </div>
-      </div>
-
-      <div style={{padding:'16px 16px'}}>
-        {/* 요약 */}
-        {passage.abstract&&(
-          <div style={{background:'#f0f7ff',border:'1px solid #bfdbfe',borderRadius:10,padding:'10px 14px',marginBottom:14,fontSize:12,color:'#1e40af',lineHeight:1.6}}>
-            {passage.abstract}
-          </div>
-        )}
-
-        {showMode==='text'&&(
-          <div style={{fontSize:13.5,lineHeight:2.1,color:'#1e293b'}}>
-            {sentences.map((s,i)=>renderSentence(s,i))}
-          </div>
-        )}
-
-        {showMode==='flow'&&blocks.length>0&&(
-          <div>
-            {blocks.map((blk,bi)=>(
-              <div key={bi} style={{marginBottom:12,background:'#f8faff',borderRadius:10,border:'1px solid #e8eef8',overflow:'hidden'}}>
-                <div style={{background:'#4f7df7',color:'#fff',padding:'6px 12px',fontSize:11,fontWeight:700}}>
-                  {blk.role||`블록 ${bi+1}`}
-                  {blockSummaries&&blockSummaries[bi]&&(
-                    <span style={{fontWeight:400,opacity:0.85,marginLeft:8}}>{blockSummaries[bi]}</span>
-                  )}
-                </div>
-                <div style={{padding:'10px 12px',fontSize:13,lineHeight:2,color:'#1e293b'}}>
-                  {(blk.sentences||[]).map((si,j)=>renderSentence(sentences[si],si))}
-                </div>
-              </div>
+          <div style={{display:'flex',background:'#f1f5f9',borderRadius:7,padding:2,gap:0}}>
+            {['teacher','student'].map(m=>(
+              <button key={m} onClick={()=>setViewMode(m)}
+                style={{padding:'5px 12px',fontSize:11,fontWeight:700,borderRadius:5,border:'none',cursor:'pointer',
+                  background:viewMode===m?'#185FA5':'transparent',
+                  color:viewMode===m?'#fff':'#64748b'}}>
+                {m==='teacher'?'교사용':'학생용'}
+              </button>
             ))}
           </div>
-        )}
-        {showMode==='flow'&&blocks.length===0&&(
-          <div style={{color:'#94a3b8',fontSize:13,textAlign:'center',padding:30}}>흐름 분석 데이터가 없습니다.</div>
-        )}
+        </div>
+      </div>
+      <div style={{padding:'12px'}}>
+        <SlotViewer slot={slot} viewMode={viewMode}/>
       </div>
     </div>
   );
