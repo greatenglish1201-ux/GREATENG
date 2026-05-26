@@ -1943,14 +1943,43 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [searchText,setSearchText]=useState('');
   const [activeSource,setActiveSource]=useState('ALL');
 
+  // 펼침/접힘 상태 (교재, 강 각각 별도 관리)
+  const [expandedBooks,setExpandedBooks]=useState({});
+  const [expandedChapters,setExpandedChapters]=useState({});
+
   useEffect(()=>{
     if(!scriptUrl){setErr('서버 URL이 설정되지 않았습니다.');setLoading(false);return;}
+    
+    // ★ 오프라인 캐싱: localStorage에서 즉시 로드 (있으면)
+    const CACHE_KEY='greateng_study_cache';
+    try{
+      const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+      if(cached&&Array.isArray(cached.passages)){
+        setPassages(cached.passages);
+        setLoading(false); // 캐시 표시 후 백그라운드 갱신
+      }
+    }catch(e){}
+    
+    // 백그라운드에서 최신 데이터 받기
     jsonpFetch(scriptUrl,{action:'getPassages',public_only:'true'})
       .then(r=>{
-        if(r.ok){setPassages(r.passages||[]);}
-        else{setErr(r.error||'불러오기 실패');}
+        if(r.ok){
+          setPassages(r.passages||[]);
+          // 캐시 업데이트 (오프라인 사용 위해)
+          try{
+            localStorage.setItem(CACHE_KEY,JSON.stringify({
+              passages:r.passages||[],
+              updated:Date.now()
+            }));
+          }catch(e){}
+        }else if(!passages.length){
+          setErr(r.error||'불러오기 실패');
+        }
       })
-      .catch(e=>setErr(e.message))
+      .catch(e=>{
+        // 캐시가 있으면 에러 무시 (오프라인 모드)
+        if(!passages.length)setErr('오프라인 - 저장된 자료 없음: '+e.message);
+      })
       .finally(()=>setLoading(false));
   },[scriptUrl]);
 
@@ -1965,16 +1994,45 @@ function StudyView({scriptUrl,studentName,goBack}){
     return true;
   });
 
-  const grouped=filtered.reduce((acc,p)=>{
-    const key=p.source+'_'+String(p.chapter||'').padStart(2,'0');
-    if(!acc[key])acc[key]={source:p.source,chapter:p.chapter,items:[]};
-    acc[key].items.push(p);
-    return acc;
-  },{});
-  const groups=Object.values(grouped).sort((a,b)=>{
-    if(a.source!==b.source)return (a.source||'').localeCompare(b.source||'');
-    return Number(a.chapter||0)-Number(b.chapter||0);
-  });
+  // ★ 2단계 그룹화: 교재 → 강 → 지문
+  const bookGroups=React.useMemo(()=>{
+    const byBook={};
+    filtered.forEach(p=>{
+      const book=p.source||'기타';
+      if(!byBook[book])byBook[book]={book,chapters:{},totalCount:0};
+      const ch=String(p.chapter||0).padStart(2,'0');
+      if(!byBook[book].chapters[ch])byBook[book].chapters[ch]={chapter:p.chapter,items:[]};
+      byBook[book].chapters[ch].items.push(p);
+      byBook[book].totalCount++;
+    });
+    // 정렬: 교재명 → 강 번호
+    return Object.values(byBook)
+      .sort((a,b)=>(a.book||'').localeCompare(b.book||''))
+      .map(b=>({
+        ...b,
+        chapterList:Object.values(b.chapters)
+          .sort((a,b)=>Number(a.chapter||0)-Number(b.chapter||0))
+          .map(c=>({
+            ...c,
+            items:c.items.sort((a,b)=>Number(a.number||0)-Number(b.number||0))
+          }))
+      }));
+  },[filtered]);
+
+  // 검색 시 자동 펼침 (검색어 있으면 모두 펼치기)
+  useEffect(()=>{
+    if(searchText){
+      const allBooks={},allChapters={};
+      bookGroups.forEach(b=>{
+        allBooks[b.book]=true;
+        b.chapterList.forEach(c=>{
+          allChapters[b.book+'_'+c.chapter]=true;
+        });
+      });
+      setExpandedBooks(allBooks);
+      setExpandedChapters(allChapters);
+    }
+  },[searchText,bookGroups.length]);
 
   if(selected)return <StudyDetail passage={selected} viewMode={viewMode} setViewMode={setViewMode} goBack={()=>setSelected(null)}/>;
 
@@ -2006,33 +2064,81 @@ function StudyView({scriptUrl,studentName,goBack}){
         {!loading&&!err&&filtered.length===0&&(
           <div style={{textAlign:'center',padding:40,color:'#94a3b8'}}>공개된 자료가 없습니다.</div>
         )}
-        {groups.map(g=>(
-          <div key={g.source+'_'+g.chapter} style={{marginBottom:16}}>
-            <div style={{fontSize:11,fontWeight:700,color:'#94a3b8',marginBottom:6,letterSpacing:0.5}}>
-              {g.source} {g.chapter}강
-            </div>
-            {g.items.map(p=>(
-              <div key={p.id} onClick={()=>setSelected(p)}
-                style={{background:'#f8faff',border:'1px solid #e8eef8',borderRadius:12,padding:'12px 14px',
-                  marginBottom:8,cursor:'pointer',transition:'box-shadow .15s'}}>
-                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
-                  <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
-                    background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
-                    color:p.difficulty==='상'?'#991b1b':p.difficulty==='하'?'#166534':'#854d0e'}}>
-                    {p.difficulty||'중'}
-                  </span>
-                  <span style={{fontSize:12,fontWeight:700,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
-                    {p.title||p.id}
-                  </span>
-                  <span style={{fontSize:11,color:'#94a3b8',flexShrink:0}}>
-                    {String(p.number||'').padStart(3,'0')}번
-                  </span>
-                </div>
-                {p.abstract&&<div style={{fontSize:11,color:'#64748b',lineHeight:1.5,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{p.abstract}</div>}
+        {bookGroups.map(b=>{
+          const bookOpen=!!expandedBooks[b.book];
+          return(
+            <div key={b.book} style={{marginBottom:8,borderRadius:12,overflow:'hidden',border:'1px solid #e2e8f0'}}>
+              {/* 교재 헤더 */}
+              <div onClick={()=>setExpandedBooks(prev=>({...prev,[b.book]:!prev[b.book]}))}
+                style={{display:'flex',alignItems:'center',gap:8,padding:'12px 14px',
+                  background:bookOpen?'#1e293b':'#f8fafc',
+                  color:bookOpen?'#fff':'#1e293b',
+                  cursor:'pointer',userSelect:'none'}}>
+                <span style={{fontSize:13,transition:'transform .15s',transform:bookOpen?'rotate(90deg)':'rotate(0deg)',display:'inline-block'}}>▶</span>
+                <span style={{fontWeight:800,fontSize:14,flex:1}}>{b.book}</span>
+                <span style={{fontSize:11,fontWeight:600,opacity:0.7,
+                  background:bookOpen?'rgba(255,255,255,0.15)':'#e2e8f0',
+                  padding:'2px 8px',borderRadius:10}}>
+                  {b.chapterList.length}개 강 · {b.totalCount}개 지문
+                </span>
               </div>
-            ))}
-          </div>
-        ))}
+              {/* 교재 내부 - 강 목록 */}
+              {bookOpen&&(
+                <div style={{background:'#fff'}}>
+                  {b.chapterList.map(c=>{
+                    const chKey=b.book+'_'+c.chapter;
+                    const chOpen=!!expandedChapters[chKey];
+                    return(
+                      <div key={chKey} style={{borderTop:'1px solid #f1f5f9'}}>
+                        {/* 강 헤더 */}
+                        <div onClick={()=>setExpandedChapters(prev=>({...prev,[chKey]:!prev[chKey]}))}
+                          style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px 10px 28px',
+                            background:chOpen?'#f0f7ff':'#fff',
+                            cursor:'pointer',userSelect:'none'}}>
+                          <span style={{fontSize:11,color:'#64748b',transition:'transform .15s',transform:chOpen?'rotate(90deg)':'rotate(0deg)',display:'inline-block'}}>▶</span>
+                          <span style={{fontWeight:700,fontSize:13,color:'#334155',flex:1}}>
+                            {c.chapter}강
+                          </span>
+                          <span style={{fontSize:10,fontWeight:600,color:'#64748b',
+                            background:'#f1f5f9',padding:'2px 7px',borderRadius:9}}>
+                            {c.items.length}개
+                          </span>
+                        </div>
+                        {/* 강 내부 - 지문 카드들 */}
+                        {chOpen&&(
+                          <div style={{padding:'8px 14px 12px 28px',background:'#fafbfc'}}>
+                            {c.items.map(p=>(
+                              <div key={p.id} onClick={()=>setSelected(p)}
+                                style={{background:'#fff',border:'1px solid #e8eef8',borderRadius:10,padding:'10px 12px',
+                                  marginBottom:6,cursor:'pointer',transition:'all .15s'}}
+                                onMouseEnter={e=>{e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}
+                                onMouseLeave={e=>{e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}>
+                                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:p.abstract?4:0}}>
+                                  <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
+                                    background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
+                                    color:p.difficulty==='상'?'#991b1b':p.difficulty==='하'?'#166534':'#854d0e'}}>
+                                    {p.difficulty||'중'}
+                                  </span>
+                                  <span style={{fontSize:12,fontWeight:700,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                                    {p.title||p.id}
+                                  </span>
+                                  <span style={{fontSize:11,color:'#94a3b8',flexShrink:0}}>
+                                    {String(p.number||'').padStart(3,'0')}번
+                                  </span>
+                                </div>
+                                {p.abstract&&<div style={{fontSize:11,color:'#64748b',lineHeight:1.5,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{p.abstract}</div>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
