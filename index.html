@@ -1950,10 +1950,13 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [showInstallBanner,setShowInstallBanner]=useState(()=>{
     try{return !localStorage.getItem('greateng_install_dismissed');}catch{return true;}
   });
-  // 기기 자동 감지
+  // 기기 자동 감지 (iPad iOS13+ Macintosh 위장 대응)
   const deviceType=useMemo(()=>{
     const ua=navigator.userAgent;
-    if(/iPhone|iPad|iPod/i.test(ua))return 'ios';
+    const hasTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+    // iPad iOS13+ : userAgent는 Macintosh로 나오지만 터치 지원 → iPad로 판정
+    if(/iPad|iPhone|iPod/i.test(ua))return 'ios';
+    if(/Macintosh/.test(ua)&&hasTouch)return 'ios'; // 위장된 iPad
     if(/Android/i.test(ua))return 'android';
     return 'pc';
   },[]);
