@@ -1900,6 +1900,8 @@ const SV_DIFF_STYLE={
 };
 const SV_SYMS=['G','↔','=','S','→','+'];
 const SV_SOURCES=['ABSO','27STYD','MOGO'];
+const SV_DIFFS=['상','중','하'];
+const SV_STRUCTS=['통념→반박→결론','문제→해결책','질문→답변','실험/일화→교훈','인과 관계','비교 대조'];
 const SV_NSTR=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
 const SV_nStr=n=>SV_NSTR[n-1]||'('+n+')';
 
@@ -1912,6 +1914,7 @@ if (typeof window !== 'undefined') {
 }
 const SM=SV_SM, BC=SV_BC, STATUS=SV_STATUS, DIFF_STYLE=SV_DIFF_STYLE;
 const SYMS=SV_SYMS, SOURCES=SV_SOURCES, nStr=SV_nStr;
+const DIFFS=SV_DIFFS, STRUCTS=SV_STRUCTS, NSTR=SV_NSTR;
 
 /* ── 자료 보기 (StudyView) ── */
 function StudyView({scriptUrl,studentName,goBack}){
