@@ -2155,6 +2155,69 @@ function App(){
   },[appsUrl,slots,saveSlotToSheet]);
 
   // ──────────────────────────────────────────────
+  // 일괄 공개/비공개 - saved 상태 슬롯들 한번에 토글
+  // ──────────────────────────────────────────────
+  const bulkTogglePublic=useCallback(async(makePublic)=>{
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    // saved 상태이고 변경이 필요한 슬롯만 (이미 같은 상태면 건너뜀)
+    const targets=slots.filter(s=>s.status==='saved'&&!!s.isPublic!==makePublic&&s.passageData?.id);
+    if(!targets.length){
+      alert(makePublic?'모든 저장된 슬롯이 이미 공개 상태입니다.':'모든 저장된 슬롯이 이미 비공개 상태입니다.');
+      return;
+    }
+    if(!confirm(`${targets.length}개 슬롯을 ${makePublic?'🌐 공개':'🔒 비공개'}로 변경할까요?`))return;
+    
+    setSheetSaving(true);
+    let ok=0,fail=0;
+    const okIds=[];
+    const failItems=[];
+    
+    for(const slot of targets){
+      try{
+        const pid=slot.passageData.id;
+        // 데이터 안전: 시트의 현재 상태 검증 (sentences가 비어있으면 차단)
+        const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
+        const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
+        
+        let payload;
+        if(!sheetP||(()=>{try{return JSON.parse(sheetP.sentences_json||'[]').length===0;}catch{return true;}})()){
+          // 시트에 데이터 없음 → 최소 payload
+          payload={action:'savePassage',id:pid,is_public:makePublic?'TRUE':'FALSE'};
+        }else{
+          // 시트에 데이터 있음 → 전체 payload (Apps Script 미패치 대비)
+          const {passagePayload}=buildSlotPayload({...slot,isPublic:makePublic});
+          payload={action:'savePassage',...passagePayload};
+        }
+        
+        const r=await formPostFetch(appsUrl,payload);
+        if(r&&(r.ok||r.warning)){
+          ok++;
+          okIds.push(slot.id);
+        }else{
+          fail++;
+          failItems.push(`${slot.meta.source} ${slot.meta.chapter}강 ${slot.meta.number}번: ${r?.error||'unknown'}`);
+        }
+      }catch(e){
+        fail++;
+        failItems.push(`${slot.meta.source} ${slot.meta.chapter}강 ${slot.meta.number}번: ${e.message}`);
+      }
+    }
+    
+    // 성공한 슬롯들 isPublic 업데이트
+    if(okIds.length){
+      setSlots(prev=>prev.map(s=>okIds.includes(s.id)?{...s,isPublic:makePublic}:s));
+    }
+    
+    setSheetSaving(false);
+    let msg=`✓ 일괄 ${makePublic?'공개':'비공개'} 완료\n성공 ${ok}개 / 실패 ${fail}개`;
+    if(failItems.length){
+      msg+='\n\n실패 항목:\n'+failItems.slice(0,5).join('\n');
+      if(failItems.length>5)msg+=`\n... 외 ${failItems.length-5}개`;
+    }
+    alert(msg);
+  },[appsUrl,slots,buildSlotPayload]);
+
+  // ──────────────────────────────────────────────
   // 시트 불러오기 — 지문DB + 출제DB 통합
   // ──────────────────────────────────────────────
   const loadFromSheet=useCallback(async()=>{
@@ -2483,6 +2546,18 @@ function App(){
             style={{background:sheetSaving?'rgba(0,0,0,.3)':'rgba(83,74,183,.6)',color:'#fff',border:'none',
               borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
             {sheetSaving?'저장중...':'📊 SAVE'}
+          </button>}
+          {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(true)} disabled={sheetSaving}
+            title="저장된 슬롯 모두 공개"
+            style={{background:'rgba(10,124,66,.6)',color:'#fff',border:'none',
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
+            🌐 ALL
+          </button>}
+          {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(false)} disabled={sheetSaving}
+            title="저장된 슬롯 모두 비공개"
+            style={{background:'rgba(120,120,120,.55)',color:'#fff',border:'none',
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
+            🔒 ALL
           </button>}
           {viewMode!=='authoring'&&<button onClick={fetchPassages} disabled={loadFetching}
             style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
@@ -3045,6 +3120,15 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
           fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
         <span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:4,
           background:st.bg,color:st.color}}>{st.label}</span>
+        {slot.status==='saved'&&(
+          <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
+            style={{fontSize:11,fontWeight:700,padding:'2px 7px',borderRadius:4,flexShrink:0,
+              background:slot.isPublic?'#0a7c42':'#e9ecef',
+              color:slot.isPublic?'#fff':'#888',
+              border:slot.isPublic?'none':'0.5px solid #ccc'}}>
+            {slot.isPublic?'🌐':'🔒'}
+          </span>
+        )}
         <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
           style={{...sB,fontSize:12.5,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'4px 8px'}}>
           {SOURCES.map(s=><option key={s} value={s}>{s}</option>)}
