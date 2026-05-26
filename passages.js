@@ -1,7 +1,7 @@
 ﻿const PASSAGES = [
   {
     "id": "27ST_E_03_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "인간의 미기후 조절",
     "sentences": [
       "Even outdoors, although climate (including temperature) is usually regarded as beyond the control of man, localized temperature control is sometimes effective on a microclimate scale.",
@@ -71,7 +71,7 @@
   },
   {
     "id": "27ST_E_03_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "진정한 충성심의 원천",
     "sentences": [
       "Energy can always be injected into an organization to motivate people to do things.",
@@ -170,7 +170,7 @@
   },
   {
     "id": "27ST_E_03_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "DNA와 생물학적 역사",
     "sentences": [
       "In the early 1960s the great American writer James Baldwin wrote: \"People are trapped in history, and history is trapped in them.\"",
@@ -261,7 +261,7 @@
   },
   {
     "id": "27ST_E_03_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "사고의 두려움",
     "sentences": [
       "People may not think critically for a variety of reasons, such as laziness and inability, but fear is a big one.",
@@ -364,7 +364,7 @@
   },
   {
     "id": "27ST_E_04_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "지식이 만든 식량",
     "sentences": [
       "There's a saying that 'you can't eat information.'",
@@ -455,7 +455,7 @@
   },
   {
     "id": "27ST_E_04_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "시민 저널리즘의 부상",
     "sentences": [
       "Increased community engagement by professional journalists, on their own, will not solve the problem of making the news more relevant to everyone because traditional news organizations already have abandoned many communities, leaving behind news deserts.",
@@ -544,7 +544,7 @@
   },
   {
     "id": "27ST_E_04_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "과학적 사고와 증거",
     "sentences": [
       "It is a myth that all ideas are equally valid, even those with little or no objective proof.",
@@ -643,7 +643,7 @@
   },
   {
     "id": "27ST_E_04_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "불안의 긍정적 전환",
     "sentences": [
       "If you suffer from social angst, awkwardness, or dread, know that this is a perfectly normal response.",
@@ -738,7 +738,7 @@
   },
   {
     "id": "27ST_E_05_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "위기의 분할 관리",
     "sentences": [
       "Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to completely comprehend, much less control.",
@@ -831,7 +831,7 @@
   },
   {
     "id": "27ST_E_05_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "건강정보와 신뢰성",
     "sentences": [
       "Consumer surveys indicate that the majority of Americans (91%) believe they have some control over their health, and 72% believe that food and nutrition play the greatest role.",
@@ -922,7 +922,7 @@
   },
   {
     "id": "27ST_E_05_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "서번트 리더십의 실천",
     "sentences": [
       "My business partner Charles and I embraced the servant leader's way of doing things.",
@@ -1021,7 +1021,7 @@
   },
   {
     "id": "27ST_E_05_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "호흡과 각성 조절",
     "sentences": [
       "Training and competition naturally speed the breath, which activates the sympathetic nervous system.",
@@ -1114,7 +1114,7 @@
   },
   {
     "id": "27ST_E_06_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "거주와 민주적 참정권",
     "sentences": [
       "In the United States, the practice of permitting aliens to vote could be seen as compatible with the idea of an exclusionary citizenship, but that is a hard balance to maintain.",
@@ -1183,7 +1183,7 @@
   },
   {
     "id": "27ST_E_06_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "맥락이 만드는 의미",
     "sentences": [
       "When people are asked what any painting hanging on a gallery wall means, no matter how strange it might appear, as is the case with most abstract-expressionist paintings, they tend to find meaning in it because it is located in a gallery.",
@@ -1274,7 +1274,7 @@
   },
   {
     "id": "27ST_E_06_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "컴퓨터 비유의 한계",
     "sentences": [
       "The reliance on the computer as a model for the operations of the human mind may well prove to be as limited as an earlier fascination with behaviorism.",
@@ -1344,7 +1344,7 @@
   },
   {
     "id": "27ST_E_06_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "문학과 상상력의 활성화",
     "sentences": [
       "In the escape that reading literature provides through vicarious identification and comparison with other lives, places, and times, we activate our imagination, that uniquely human ability to explore an alternative set of ideas and experiences that are outside our present environment and that may not even be real.",
@@ -1435,7 +1435,7 @@
   },
   {
     "id": "27ST_E_07_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "전문성의 다중 요인",
     "sentences": [
       "You've probably heard that it takes about ten thousand hours of practice to become an expert in anything ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ a musical instrument, a sport, chess, cooking, or a foreign language.",
@@ -1532,7 +1532,7 @@
   },
   {
     "id": "27ST_E_07_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "이념적 맥락의 협상",
     "sentences": [
       "In the old Soviet Union, a famous U.S. beverage company wanted to set up a bottling plant and distribution network.",
@@ -1627,7 +1627,7 @@
   },
   {
     "id": "27ST_E_07_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "CAD와 창의성의 상실",
     "sentences": [
       "In 2012, the Yale School of Architecture held a symposium called 'Is Drawing Dead?'",
@@ -1722,7 +1722,7 @@
   },
   {
     "id": "27ST_E_07_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "리미티드 애니메이션의 가치",
     "sentences": [
       "Limited animation is a process of making animated cartoons that does not follow a 'realistic' approach.",
@@ -1817,7 +1817,7 @@
   },
   {
     "id": "27ST_E_11_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "슈퍼마켓 비유 읽기법",
     "sentences": [
       "Here's an application of metaphors to research papers: Below-grade-level readers in my urban middle school have a great deal of difficulty doing research.",
@@ -1912,7 +1912,7 @@
   },
   {
     "id": "27ST_E_11_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "시장 논리의 한계",
     "sentences": [
       "Reformist approaches assume that markets could operate in more equitable and environmentally reasonable ways, and that a market is the most efficient option available.",
@@ -2005,7 +2005,7 @@
   },
   {
     "id": "27ST_E_11_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "인종의 사회적 구성",
     "sentences": [
       "There is no scientific basis for the term 'race.'",
@@ -2100,7 +2100,7 @@
   },
   {
     "id": "27ST_E_11_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "음식 분량과 비만",
     "sentences": [
       "Many factors contribute to Americans' growing waistlines, but one observation in particular cannot be overlooked: The incidence of obesity has increased in parallel with increasing portion sizes.",
@@ -2197,7 +2197,7 @@
   },
   {
     "id": "27ST_E_12_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "도덕적 분노의 기능",
     "sentences": [
       "Moral outrage is the psychological tool that motivates people to punish wrongdoers, even at cost or risk to themselves.",
@@ -2290,7 +2290,7 @@
   },
   {
     "id": "27ST_E_12_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "자연 제품 선호의 기원",
     "sentences": [
       "Why do humans have the counterproductive instinct to favor natural products in the absence of knowledge of their benefits or their potential for harm?",
@@ -2391,7 +2391,7 @@
   },
   {
     "id": "27ST_E_12_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "보조식품과 의약품 규제",
     "sentences": [
       "Dietary supplements are not drugs.",
@@ -2492,7 +2492,7 @@
   },
   {
     "id": "27ST_E_12_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "문학의 가변적 의미",
     "sentences": [
       "Literature is not a disposable carrier of nuggets of information.",
@@ -2587,7 +2587,7 @@
   },
   {
     "id": "27ST_E_13_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "아리스토텔레스의 목적인",
     "sentences": [
       "In the Physics, Aristotle asks whether nature acts for the sake of something.",
@@ -2678,7 +2678,7 @@
   },
   {
     "id": "27ST_E_13_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "아이디어의 양과 질",
     "sentences": [
       "AI is a prolific idea generator.",
@@ -2769,7 +2769,7 @@
   },
   {
     "id": "27ST_E_13_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "신체와 감정적 공감",
     "sentences": [
       "Becoming aware of our internal sensations can help us handle our own emotions.",
@@ -2866,7 +2866,7 @@
   },
   {
     "id": "27ST_E_13_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "기술 확장과 인간 퇴화",
     "sentences": [
       "The strongest criticisms of the overextension of technology involve claims of dehumanization, and these arguments are not new.",
@@ -2957,7 +2957,7 @@
   },
   {
     "id": "27ST_E_14_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "경험 공유와 의미 차이",
     "sentences": [
       "Sharing meanings and experiences is not a simple, automatic process: whenever two or more people observe or participate in the same ongoing event they experience it from different perspectives, with different histories, with different background knowledge.",
@@ -3047,7 +3047,7 @@
   },
   {
     "id": "27ST_E_14_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "과학적 공로와 경쟁",
     "sentences": [
       "A detailed anthropological study of daily scientific practice in the Salk Institute laboratory in La Jolla, California shows how difficult it is to assign credit and dates.",
@@ -3117,7 +3117,7 @@
   },
   {
     "id": "27ST_E_14_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "음악 지휘의 비가시성",
     "sentences": [
       "The idea of music direction, in the sense of someone shaping and leading a musical performance, goes back to the beginnings of music.",
@@ -3210,7 +3210,7 @@
   },
   {
     "id": "27ST_E_14_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "배경지식과 독해력",
     "sentences": [
       "The importance of what a reader brings to the page is highlighted in a study discussed by Hirsch in The Knowledge Deficit.",
@@ -3307,7 +3307,7 @@
   },
   {
     "id": "27ST_E_15_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "운동과 감정 활용",
     "sentences": [
       "The use of emotion may be important in exercise, particularly among exercise instructors.",
@@ -3400,7 +3400,7 @@
   },
   {
     "id": "27ST_E_15_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "측정 기기의 정밀도",
     "sentences": [
       "The most fundamental rule regarding the use of any measuring device is that the device should always be read to its optimum capability with regard to precision.",
@@ -3470,7 +3470,7 @@
   },
   {
     "id": "27ST_E_15_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "수학의 추상화 원리",
     "sentences": [
       "The standard school mathematics curriculum doesn't stress enough that mathematics is all about abstraction.",
@@ -3561,7 +3561,7 @@
   },
   {
     "id": "27ST_E_15_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "공개적 플라시보 효과",
     "sentences": [
       "Because belief is so crucial in the placebo effect, it would seem that deception is necessary in order to trigger a patient's trust in the actual drug he might be taking.",
@@ -3631,7 +3631,7 @@
   },
   {
     "id": "27ST_E_16_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "온라인 글쓰기의 역피라미드",
     "sentences": [
       "In academia, you are taught to write up your results thus: I came up with a hypothesis, then I did this experiment, and then I did another experiment, then I tested my ideas some more, and so on until ta-da! I proved this.",
@@ -3724,7 +3724,7 @@
   },
   {
     "id": "27ST_E_16_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "뇌의 대리적 기능",
     "sentences": [
       "The human perceptual system is designed to recognize objects under changing illuminations, situations, and contexts.",
@@ -3827,7 +3827,7 @@
   },
   {
     "id": "27ST_E_16_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "비르 타윌의 역설",
     "sentences": [
       "Bir Tawil is a strange place.",
@@ -3922,7 +3922,7 @@
   },
   {
     "id": "27ST_E_16_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "준거집단의 자기평가 효과",
     "sentences": [
       "An in-group can become a reference group, a group that is used as the frame of reference for evaluating one's own behavior.",
@@ -4019,7 +4019,7 @@
   },
   {
     "id": "27ST_E_16_05",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "음악에서 근접성 그룹화",
     "sentences": [
       "In music, proximity may refer to elements' being close together in pitch, time, or space.",
@@ -4116,7 +4116,7 @@
   },
   {
     "id": "27ST_E_16_06",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "공공재의 시장 과소평가",
     "sentences": [
       "Public goods are undervalued in markets, which exist for private goods but rarely for public goods.",
@@ -4211,7 +4211,7 @@
   },
   {
     "id": "27ST_E_17_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "심층 작업과 얕은 작업",
     "sentences": [
       "Deep work is when you perform an activity with deep concentration that pushes your cognitive capabilities, and by doing so create new value and improve your skills.",
@@ -4304,7 +4304,7 @@
   },
   {
     "id": "27ST_E_17_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "상징과 주관적 현실",
     "sentences": [
       "Symbols are instrumental in helping people derive meanings from social situations.",
@@ -4397,7 +4397,7 @@
   },
   {
     "id": "27ST_E_17_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "우울증의 복합적 본질",
     "sentences": [
       "Depression is terrible, and it is common.",
@@ -4492,7 +4492,7 @@
   },
   {
     "id": "27ST_E_17_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "철학에서 유추의 두 기능",
     "sentences": [
       "Analogies can serve two different functions in philosophy.",
@@ -4587,7 +4587,7 @@
   },
   {
     "id": "27ST_E_17_05",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "회복의 과정과 결과",
     "sentences": [
       "Recovery can be considered a process as well as an outcome.",
@@ -4682,7 +4682,7 @@
   },
   {
     "id": "27ST_E_17_06",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "고통과 삶의 의미",
     "sentences": [
       "The difficult times that we endure play a key role in helping us to lead more meaningful lives.",
@@ -4779,7 +4779,7 @@
   },
   {
     "id": "27ST_E_18_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "생존 편향과 트랙터",
     "sentences": [
       "There are estimated to be more than 160,000 farms spread across Northern Ireland and the Republic of Ireland combined.",
@@ -4872,7 +4872,7 @@
   },
   {
     "id": "27ST_E_18_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "위기 유형과 미디어 선택",
     "sentences": [
       "During crises that present immediate danger, people seek trusted and verified sources to ease their immediate concerns, thus turning to traditional sources such as television and radio.",
@@ -4961,7 +4961,7 @@
   },
   {
     "id": "27ST_E_18_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "초점과 다중 균형",
     "sentences": [
       "Focal points are the little things that make a big difference ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ the difference between reaching one equilibrium and reaching another.",
@@ -5054,7 +5054,7 @@
   },
   {
     "id": "27ST_E_18_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "현재의 문화적 비가시성",
     "sentences": [
       "As the set of cultural norms and categories taken for granted at any particular time, the present is normally more or less invisible to those who participate in it.",
@@ -5145,7 +5145,7 @@
   },
   {
     "id": "27ST_E_19_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "18세기 드레스의 지속가능성",
     "sentences": [
       "Women's dresses from the eighteenth century offered a great opportunity for repurposing, as they were frequently fashioned from long, uncut lengths of fabric.",
@@ -5246,7 +5246,7 @@
   },
   {
     "id": "27ST_E_19_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "인터넷 뉴스와 신뢰성",
     "sentences": [
       "The rise of internet-based technologies means that news is produced, distributed, and consumed faster than ever before.",
@@ -5349,7 +5349,7 @@
   },
   {
     "id": "27ST_E_19_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "과로의 구조적 원인",
     "sentences": [
       "Since the 1970s, a combination of forces has made the problem of overwork more widespread.",
@@ -5448,7 +5448,7 @@
   },
   {
     "id": "27ST_E_19_04",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "억제와 갈등나선 관점",
     "sentences": [
       "Political psychologist Philip Tetlock examined the speeches made by policymakers involved in international conflicts.",
@@ -5547,7 +5547,7 @@
   },
   {
     "id": "27ST_E_21_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "공간적 데이터 수집의 혁신",
     "sentences": [
       "Perhaps nothing has revolutionized the study of human-environment interactions more than the development of spatially explicit methods for collecting and analyzing data.",
@@ -5643,7 +5643,7 @@
   },
   {
     "id": "27ST_E_21_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "데카르트의 회의와 존재",
     "sentences": [
       "The idea that our senses may be deceiving us was taken up by the French philosopher and mathematician RenÃÂÃÂÃÂÃÂ© Descartes.",
@@ -5736,7 +5736,7 @@
   },
   {
     "id": "27ST_E_21_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "Ache 부족의 위험 공유",
     "sentences": [
       "Hunters in the Ache tribe, living in the Paraguayan jungle, have a lot of ups and downs in their success at the hunt.",
@@ -5831,7 +5831,7 @@
   },
   {
     "id": "27ST_E_22_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "경관 연결성과 생물 보전",
     "sentences": [
       "Connectivity, the capacity of a landscape to support movement by any given species across the landscape, is of increasing concern for conservation biologists.",
@@ -5922,7 +5922,7 @@
   },
   {
     "id": "27ST_E_22_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "바이오에너지의 환경적 이점",
     "sentences": [
       "By enhancing energy efficiency and putting waste products to use, biopower helps move utilities and industries in a sustainable direction.",
@@ -5988,7 +5988,7 @@
   },
   {
     "id": "27ST_E_22_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "코끼리와 사바나 생태계",
     "sentences": [
       "One example of human interventions modifying the character of savannas is through their effects on savanna-dwelling mammals such as elephants.",
@@ -6083,7 +6083,7 @@
   },
   {
     "id": "MOGO_GO3_03_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "과학의 객관성을 지탱하는 문화적 배태성",
     "abstract": "The fact that science is an activity embedded in cultural contexts does not undermine its truthfulness but rather serves as a necessary foundation and driving force for acquiring secure knowledge.",
     "sentences": [
@@ -6178,7 +6178,7 @@
   },
   {
     "id": "MOGO_GO3_03_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "기술적 진보에 얽매인 현대 음악 비판",
     "abstract": "As modern music becomes obsessively tied to the scientific standards of novelty and technical progress, its true essence is degraded into mere technique or a meaningless object.",
     "sentences": [
@@ -6271,7 +6271,7 @@
   },
   {
     "id": "MOGO_GO3_03_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "질문의 이면을 해결하는 진정한 대답",
     "abstract": "A truly good reply to a question is not just a factual response to the surface inquiry, but one that effectively solves the underlying problem hidden behind the question.",
     "sentences": [
@@ -6372,7 +6372,7 @@
   },
   {
     "id": "MOGO_GO3_03_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "AI 시대의 필수 생존 전략: 지속적 학습",
     "abstract": "In order to adapt to the ever-evolving work environment driven by AI, continuous learning and reskilling are essential for individuals, and organizations must foster a culture of ongoing learning.",
     "sentences": [
@@ -6467,7 +6467,7 @@
   },
   {
     "id": "MOGO_GO3_03_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "번역의 예술적 가치: 낯섦의 회복",
     "abstract": "Translation is a crucial creative act that restores the inherent strangeness of an overly familiar original work, thereby enhancing its artistic visibility.",
     "sentences": [
@@ -6537,7 +6537,7 @@
   },
   {
     "id": "MOGO_GO3_03_29",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "환경에 무관심한 유전적 특성과 생존의 한계",
     "abstract": "Because genetic inheritance is conservative and indifferent to environmental changes, organisms face inherent limitations in adaptability, meaning not all living things can survive everywhere.",
     "keyIndex": 5,
@@ -6585,7 +6585,7 @@
   },
   {
     "id": "MOGO_GO3_03_30",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "개념화의 추상성과 개체의 고유성",
     "abstract": "While categorizing objects with common nouns ignores their specific differences for practical purposes, looking closer reveals that every entity possesses its own unique individuality and distinct life history.",
     "keyIndex": 1,
@@ -6637,7 +6637,7 @@
   },
   {
     "id": "MOGO_GO3_03_31",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "자본주의적 가치로 수량화되는 현대 예술 비판",
     "abstract": "In Western culture, the essence of art is often overshadowed by commercialism, turning professional art into an inherently capitalist endeavor where success is quantified by financial gain.",
     "keyIndex": 8,
@@ -6686,7 +6686,7 @@
   },
   {
     "id": "MOGO_GO3_03_32",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "주관적 이야기를 넘어선 학문적 역사의 필요성",
     "abstract": "Because stories about the past are inevitably subjective and distorted, learning history as a disciplined academic pursuit is essential for critically analyzing and understanding those accounts.",
     "keyIndex": 5,
@@ -6735,7 +6735,7 @@
   },
   {
     "id": "MOGO_GO3_03_33",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "인간의 본능과 공명하는 성공적인 건축",
     "abstract": "Successful architecture functions as a spatial choreography that intuitively resonates with human instincts and needs, guiding behavior naturally without the need for manuals.",
     "keyIndex": 7,
@@ -6781,7 +6781,7 @@
   },
   {
     "id": "MOGO_GO3_03_34",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "상호작용 데이터가 규정하는 개인의 사회적 위치",
     "abstract": "The vast accumulation of our daily interactional data serves as a comprehensive resource that ultimately characterizes and defines our multidimensional social location.",
     "keyIndex": 8,
@@ -6827,7 +6827,7 @@
   },
   {
     "id": "MOGO_GO3_03_35",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "이성적 사고와 자유 의지: 인간 도덕성의 근원",
     "abstract": "Morality is deeply rooted in the human capacity for rational reasoning and free will, which allows individuals to make free choices and distinguishes them from animals.",
     "keyIndex": 1,
@@ -6872,7 +6872,7 @@
   },
   {
     "id": "MOGO_GO3_03_36",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "끝없는 숙고를 멈추게 하는 도덕적 판단의 효용성",
     "abstract": "Moral considerations function as useful conversation-stoppers that terminate the endless and paralyzing cycle of rational justification, allowing us to make firm decisions.",
     "keyIndex": 1,
@@ -6919,7 +6919,7 @@
   },
   {
     "id": "MOGO_GO3_03_37",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "우주 팽창의 진실: 시공간 자체의 늘어남",
     "abstract": "The expansion of the Universe is not a matter of spilling into an external void, but rather the elastic stretching of the fabric of space and time itself.",
     "keyIndex": 4,
@@ -6966,7 +6966,7 @@
   },
   {
     "id": "MOGO_GO3_03_38",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "언어와 제스처의 융합: 사고 표현의 최소 단위",
     "abstract": "Gestures are not merely redundant translations of speech, but act as a co-expressive glue that integrates with the categorical choices of language to fully express human thought.",
     "keyIndex": 1,
@@ -7015,7 +7015,7 @@
   },
   {
     "id": "MOGO_GO3_03_39",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "지식 공동체의 개방성과 실질적 접근성의 한계",
     "abstract": "Although epistemic communities have shifted towards openness, surface transparency is insufficient for true understanding, necessitating more active strategies and intensive training to make specialized knowledge genuinely accessible.",
     "keyIndex": 7,
@@ -7061,7 +7061,7 @@
   },
   {
     "id": "MOGO_GO3_03_40",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "노년기의 안녕을 이끄는 목표 선택성과 긍정적 자아",
     "abstract": "In later life, an enhanced capacity for goal selectivity and a positive self-perception lead to higher motivation, a stronger sense of purpose, and personalized self-fulfillment.",
     "keyIndex": 4,
@@ -7109,7 +7109,7 @@
   },
   {
     "id": "MOGO_GO3_03_41",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "문학이라는 불완전한 거울이 보여주는 부재의 진실",
     "abstract": "Literary works act as flawed mirrors of reality, but it is precisely through their exclusions and distortions that they allow us to perceive the hidden absences and underlying contradictions of the world.",
     "keyIndex": 4,
@@ -7160,7 +7160,7 @@
   },
   {
     "id": "27ST_E_23_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "상대 속도와 운동량",
     "sentences": [
       "There is one important thing to note about momentum.",
@@ -7259,7 +7259,7 @@
   },
   {
     "id": "27ST_E_23_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "히파르코스의 천문학적 업적",
     "sentences": [
       "Hipparchus of Nicaea was the most important astronomer of the Hellenistic Age after Aristarchus of Samos.",
@@ -7352,7 +7352,7 @@
   },
   {
     "id": "27ST_E_23_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "극한 환경의 미생물과 편향된 시각",
     "sentences": [
       "Living things are not confined to the familiar temperate realm of land, water, and sunlight inhabited by plants and plant-eating animals.",
@@ -7447,7 +7447,7 @@
   },
   {
     "id": "27ST_E_24_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "문화관광의 확장과 일상문화",
     "sentences": [
       "Today's cultural tourist is just as likely to be in search of 'popular', 'everyday' or 'street' culture as they are likely to visit a heritage site or a museum.",
@@ -7540,7 +7540,7 @@
   },
   {
     "id": "27ST_E_24_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "스포츠와 수치화의 문화",
     "sentences": [
       "Although many U.S. Americans consider mathematics boring and tedious, all forms of standardized rankings involve figures and numbers.",
@@ -7633,7 +7633,7 @@
   },
   {
     "id": "27ST_E_25_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "효과적 교육의 질서 요건",
     "sentences": [
       "Teaching reflects what society itself demands; it necessitates that disorder ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ of students and teachers alike, of mind, behavior, and environment ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ yield to its opposite.",
@@ -7724,7 +7724,7 @@
   },
   {
     "id": "27ST_E_25_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "부정어와 뇌의 스트레스 반응",
     "sentences": [
       "When we lecture, scold, yell, or criticize, when we say something positive but in a sarcastic tone, or when we try to make our kids feel guilty, it activates their amygdala, triggering their stress response and putting them into a defensive, rigid, reactive state.",
@@ -7816,7 +7816,7 @@
   },
   {
     "id": "27ST_E_25_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "자동화된 기술과 의식적 사고",
     "sentences": [
       "The experiences of learning to ride a bicycle or drive a car illustrate well how the 'what' and 'how' systems ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ those involved in object identification and practical action ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ might interact during development.",
@@ -7909,7 +7909,7 @@
   },
   {
     "id": "27ST_E_26_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "맥락이 예술 작품에 부여하는 의미",
     "sentences": [
       "In the context of a studio visit, the viewer might notice several clipped newspaper articles pinned to the wall, a wax-coated hotplate, walls with paint marks, resin-drizzled floors and several sculptures barely visible through their plastic wrap.",
@@ -8004,7 +8004,7 @@
   },
   {
     "id": "27ST_E_26_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "의사소통과 문화적 해석의 차이",
     "sentences": [
       "Linguists typically distinguish between signals that are communicative and those that are informative, depending on whether the information is conveyed intentionally or not.",
@@ -8093,7 +8093,7 @@
   },
   {
     "id": "27ST_E_26_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "서사와 공감 능력의 발달",
     "sentences": [
       "Through stories we can explore the human condition and see how other people think.",
@@ -8190,7 +8190,7 @@
   },
   {
     "id": "27ST_E_27_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "디지털 정치와 사회운동의 한계",
     "sentences": [
       "Over the past twenty years, with the arrival of digital politics, social and political protest movements have changed and become ever more prominent through what the sociologist Manuel Castells has called Networks of Outrage and Hope.",
@@ -8283,7 +8283,7 @@
   },
   {
     "id": "27ST_E_27_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "자동차와 교외화",
     "sentences": [
       "The advent of automobiles drastically altered urban landscapes by enabling the growth of suburbs.",
@@ -8378,7 +8378,7 @@
   },
   {
     "id": "27ST_E_28_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "사바나 가설과 환경 선호",
     "sentences": [
       "People like pictures of the savanna, even if they have never been there.",
@@ -8477,7 +8477,7 @@
   },
   {
     "id": "27ST_E_28_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "꿈 기억의 출처 모니터링",
     "sentences": [
       "Dreamers find it difficult to determine whether a memory is from a dream or some other source after time has passed, known as 'source monitoring.'",
@@ -8570,7 +8570,7 @@
   },
   {
     "id": "27ST_E_28_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "자기 보호적 이야기와 성공·실패",
     "sentences": [
       "Much research in social psychology has documented some of the key strategies that people rely upon in defending the belief 'I am good.'",
@@ -8668,7 +8668,7 @@
   },
   {
     "id": "27ST_E_29_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "법의 접근성과 일상적 이해",
     "sentences": [
       "Along with the mistaken notion that the law resides in the books goes the equally mistaken idea that law is secret, or at least inaccessible to the ordinary person.",
@@ -8765,7 +8765,7 @@
   },
   {
     "id": "27ST_E_29_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "인터넷과 패션 소비의 변화",
     "sentences": [
       "The internet has transformed the fashion marketplace, making it increasingly difficult to predict the demand for the selling season.",
@@ -8856,7 +8856,7 @@
   },
   {
     "id": "27ST_E_29_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "환경적 인종차별과 레드라이닝",
     "sentences": [
       "What deeply affected so many Black communities globally was not only that they could not metaphorically breathe because of the oppressive forms and limits of white supremacy, but also that so many Black communities literally cannot breathe because of environmental racism.",
@@ -8926,7 +8926,7 @@
   },
   {
     "id": "27ST_E_30_01",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "식이 절제의 원칙",
     "sentences": [
       "Not too much or too little ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ that's what moderation means.",
@@ -9021,7 +9021,7 @@
   },
   {
     "id": "27ST_E_30_02",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "식이 행동의 자동적 반응",
     "sentences": [
       "Dietary behaviors are, in large part, the consequence of automatic responses to a particular situation with food, many of which lead to increased caloric consumption and poor dietary choices.",
@@ -9118,7 +9118,7 @@
   },
   {
     "id": "27ST_E_30_03",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "초기 미각 경험과 식습관 형성",
     "sentences": [
       "Science shows that, when compared to adults, children naturally prefer higher levels of sweet and salty tastes and reject bitter tastes.",
@@ -9209,7 +9209,7 @@
   },
   {
     "id": "27ST_E_21_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "지리학의 공간적 사고",
     "sentences": [
       "One word is inextricably associated with geography: where.",
@@ -9304,7 +9304,7 @@
   },
   {
     "id": "27ST_E_22_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "소프트패스 하천 공학",
     "sentences": [
       "What is soft-path river engineering?",
@@ -9403,7 +9403,7 @@
   },
   {
     "id": "27ST_E_23_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "혼돈 시스템의 예측 불가능성",
     "sentences": [
       "A good example of chaos is the magnetic pendulum sold as an executive toy.",
@@ -9502,7 +9502,7 @@
   },
   {
     "id": "27ST_E_24_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "낚시터의 극적인 반전",
     "sentences": [
       "The shoreline was known for having the best fishing spots on the lake.",
@@ -9597,7 +9597,7 @@
   },
   {
     "id": "27ST_E_25_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "토론 중 노트 필기의 가치",
     "sentences": [
       "The purpose of class discussions is to encourage you to be an active participant in your own learning.",
@@ -9696,7 +9696,7 @@
   },
   {
     "id": "27ST_E_26_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "문학 캐릭터의 재등장과 변화",
     "sentences": [
       "In most fiction, characters' lives are limited to the individual work.",
@@ -9791,7 +9791,7 @@
   },
   {
     "id": "27ST_E_27_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "정보와 의미의 구별",
     "sentences": [
       "Information and meaning are, clearly, not the same thing.",
@@ -9882,7 +9882,7 @@
   },
   {
     "id": "27ST_E_29_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "공정한 집단 선택과 무작위성",
     "sentences": [
       "When gathering the preferences of multiple agents into one collective choice, it is easily seen that certain cases call for randomization or other means of tiebreaking.",
@@ -9973,7 +9973,7 @@
   },
   {
     "id": "27ST_E_30_GATE",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "블렌디드 허니의 특성",
     "sentences": [
       "Honey can be eaten by itself or mixed with other ingredients.",
@@ -10066,7 +10066,7 @@
   },
   {
     "id": "ABSO_TYPE_01_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "첫인상을 넘어선 다각적 성격 분석",
     "sentences": [
       "In the fast-paced world in which we live, it is tempting to notice someone's flashy car or wild hairdo and conclude right away, 'Aha, I understand him!'",
@@ -10159,7 +10159,7 @@
   },
   {
     "id": "ABSO_TYPE_01_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "잊혀진 그림 능력의 회복",
     "sentences": [
       "Drawing, for many people, is a phantom skill.",
@@ -10250,7 +10250,7 @@
   },
   {
     "id": "ABSO_TYPE_01_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "전문성과 정확한 지식의 힘",
     "sentences": [
       "There is a very old story, often told to fill time during training courses, involving a man trying to fix his broken boiler.",
@@ -10345,7 +10345,7 @@
   },
   {
     "id": "ABSO_TYPE_01_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "대량 생산의 진화와 맞춤화",
     "sentences": [
       "In 1913, when Henry Ford created the assembly line and dramatically improved the efficiency with which his company could manufacture cars, he proudly announced that customers could have his automobiles in any color they wanted as long as that color was black.",
@@ -10436,7 +10436,7 @@
   },
   {
     "id": "ABSO_TYPE_01_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "외적 보상의 역효과",
     "sentences": [
       "Do children do better at school if reinforced by gold stars, prizes or even monetary rewards?",
@@ -10527,7 +10527,7 @@
   },
   {
     "id": "ABSO_TYPE_02_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "혐오 본능 극복과 GMO 수용",
     "sentences": [
       "Humans have evolved a high disgust instinct.",
@@ -10630,7 +10630,7 @@
   },
   {
     "id": "ABSO_TYPE_02_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "역사적 객관성의 한계",
     "sentences": [
       "A century ago, historians had little difficulty with the notion that an objective account of history was possible.",
@@ -10731,7 +10731,7 @@
   },
   {
     "id": "ABSO_TYPE_02_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "내면의 가부장적 목소리",
     "sentences": [
       "You might argue that our culture has changed over many decades and that many people are allowing themselves more flexibility in their choices than a patriarchal system of the past would allow.",
@@ -10822,7 +10822,7 @@
   },
   {
     "id": "ABSO_TYPE_02_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "시각과 촉각의 역할",
     "sentences": [
       "Psychological speculation focuses on the importance of the sense of touch in perception.",
@@ -10917,7 +10917,7 @@
   },
   {
     "id": "ABSO_TYPE_02_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "자기만족과 목표의 관계",
     "sentences": [
       "William James, an American psychologist, argued that one's ability to feel satisfied with oneself does not rely on experiencing success in every area of endeavor.",
@@ -11006,7 +11006,7 @@
   },
   {
     "id": "ABSO_TYPE_03_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "지식 공유와 세상 적응",
     "sentences": [
       "When an Aboriginal mother in Australia is pregnant and feels the baby kick for the first time, she calls the shaman to identify that child's spirit guide.",
@@ -11101,7 +11101,7 @@
   },
   {
     "id": "ABSO_TYPE_03_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "멀티태스킹과 산만함의 문제",
     "sentences": [
       "Buddhist meditation instructor Kathleen Thurston says that our lives are filled with too much stress caused by our addiction to activities.",
@@ -11192,7 +11192,7 @@
   },
   {
     "id": "ABSO_TYPE_03_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "스포츠와 아동의 인정 욕구",
     "sentences": [
       "As children develop, they learn to satisfy their needs for praise in a variety of ways.",
@@ -11285,7 +11285,7 @@
   },
   {
     "id": "ABSO_TYPE_03_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "양심의 신뢰성에 대한 의문",
     "sentences": [
       "How reliable a guide is conscience?",
@@ -11383,7 +11383,7 @@
   },
   {
     "id": "ABSO_TYPE_03_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "집단 판단과 독립성의 필요",
     "sentences": [
       "Imagine that a large number of observers are shown a glass jar containing coins and are challenged to estimate the number of coins in the jar.",
@@ -11478,7 +11478,7 @@
   },
   {
     "id": "ABSO_TYPE_04_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "협상에서 파워의 본질 고려",
     "sentences": [
       "Power is an intensely practical subject for all international negotiators, who by their very natures are intensely practical persons.",
@@ -11571,7 +11571,7 @@
   },
   {
     "id": "ABSO_TYPE_04_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "기후변화 부정과 개인적 이중성",
     "sentences": [
       "As the evidence of the growing risks of climate change mounted over the last three decades, the political response nonetheless was a combination of denial and delay.",
@@ -11664,7 +11664,7 @@
   },
   {
     "id": "ABSO_TYPE_04_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "기록이 있어야 역사가 된다",
     "sentences": [
       "The nature of the past is of primary concern to the historian since 'the past' is his sole subject matter.",
@@ -11734,7 +11734,7 @@
   },
   {
     "id": "ABSO_TYPE_04_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "에코투어리즘의 장단점",
     "sentences": [
       "Ecotourism, or tourism in exotic, threatened environments to support local conservation efforts and observe wildlife, has a potentially less adverse effect on local culture than conventional mass tourism, and even a positive effect on some communities.",
@@ -11825,7 +11825,7 @@
   },
   {
     "id": "ABSO_TYPE_04_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "예술 창작과 인간의 연결 욕구",
     "sentences": [
       "Few conditions are more distressing to people than loneliness.",
@@ -11918,7 +11918,7 @@
   },
   {
     "id": "ABSO_TYPE_05_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "아동 두뇌 발달과 환경 통제",
     "sentences": [
       "In theory, the more challenges we face, the more strong neural connections we should have, and the smarter we should become.",
@@ -12013,7 +12013,7 @@
   },
   {
     "id": "ABSO_TYPE_05_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "인적 자본과 이동성",
     "sentences": [
       "Human capital is an economic passport ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ literally, in some cases.",
@@ -12106,7 +12106,7 @@
   },
   {
     "id": "ABSO_TYPE_05_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "사회적 합의와 사물의 본질",
     "sentences": [
       "William Shakespeare once wrote, 'a rose by any other name would smell as sweet.'",
@@ -12207,7 +12207,7 @@
   },
   {
     "id": "ABSO_TYPE_05_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "단기 투자 경향과 기초과학",
     "sentences": [
       "There seems to be a noticeable trend in the present-day investment strategy in basic science.",
@@ -12298,7 +12298,7 @@
   },
   {
     "id": "ABSO_TYPE_05_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "시장 확대와 혁신의 선순환",
     "sentences": [
       "If there are only five potential buyers for a new idea or a product based on it, the potential rewards are smaller than if there are 500 or 5 million potential buyers.",
@@ -12391,7 +12391,7 @@
   },
   {
     "id": "ABSO_TYPE_06_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "시간 관리와 균형 있는 목표 달성",
     "sentences": [
       "Sometimes, it seems there isn't enough time to do everything that you need to do.",
@@ -12484,7 +12484,7 @@
   },
   {
     "id": "ABSO_TYPE_06_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "성인군자의 이면과 숨겨진 욕망",
     "sentences": [
       "In the course of your life you will come upon people with overly emphatic traits, which generally rest on top of the opposite traits, concealing them from public view.",
@@ -12587,7 +12587,7 @@
   },
   {
     "id": "ABSO_TYPE_06_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "디지털 사진의 통제 불가능성",
     "sentences": [
       "Perhaps one of the most notable technologies integrated directly in our lives is the digital camera.",
@@ -12680,7 +12680,7 @@
   },
   {
     "id": "ABSO_TYPE_06_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "음악 교육과 시공간적 능력",
     "sentences": [
       "Early experiences in the arts are important because they produce intellectual as well as aesthetic gains.",
@@ -12773,7 +12773,7 @@
   },
   {
     "id": "ABSO_TYPE_06_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "기존 제품의 생존력",
     "sentences": [
       "There is a lot of exaggeration in the business press about the dangers of clinging to the past, and much of it is justified.",
@@ -12870,7 +12870,7 @@
   },
   {
     "id": "ABSO_TYPE_07_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "신뢰할 수 있는 조언과 내면의 목소리",
     "sentences": [
       "Most people love to give advice and will jump at any opportunity to do so.",
@@ -12963,7 +12963,7 @@
   },
   {
     "id": "ABSO_TYPE_07_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "시차와 비행 방향의 관계",
     "sentences": [
       "Jet lag is a temporary physical condition characterized by sleepiness, insomnia, bad moods, and physical weakness.",
@@ -13054,7 +13054,7 @@
   },
   {
     "id": "ABSO_TYPE_07_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "충동을 넘어서는 사고 능력",
     "sentences": [
       "Our emotionally driven urges to behave come from a very primitive part of the human brain.",
@@ -13155,7 +13155,7 @@
   },
   {
     "id": "ABSO_TYPE_07_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "성공하는 CEO의 성격 특성",
     "sentences": [
       "We can all think of charismatic business leaders who lead like heroes on horseback.",
@@ -13258,7 +13258,7 @@
   },
   {
     "id": "ABSO_TYPE_07_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "뉘른베르크 재판의 법적 난관",
     "sentences": [
       "A major issue of post-war trials is whether it's reasonable for prosecutors to hold defendants responsible for acts that were not prohibited at the time they were committed.",
@@ -13351,7 +13351,7 @@
   },
   {
     "id": "ABSO_TYPE_17_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "말의 질과 합리적 의사소통",
     "sentences": [
       "We have an unlimited selection of words we use daily.",
@@ -13448,7 +13448,7 @@
   },
   {
     "id": "ABSO_TYPE_17_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "타인을 기쁘게 하려는 강박의 위험",
     "sentences": [
       "The burden to please or impress others can be overwhelming.",
@@ -13543,7 +13543,7 @@
   },
   {
     "id": "ABSO_TYPE_17_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "신기술의 불확실성과 과학 발전",
     "sentences": [
       "Uncertainty about what tool or procedure to use is a problem common to all the scientific disciplines.",
@@ -13636,7 +13636,7 @@
   },
   {
     "id": "ABSO_TYPE_17_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "기후에 따른 종자 확산 방식의 차이",
     "sentences": [
       "Plants firmly rooted in place in temperate zones must disperse their offspring by various means including wind and gravity.",
@@ -13729,7 +13729,7 @@
   },
   {
     "id": "ABSO_TYPE_17_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "잘못된 믿음과 진정한 감상",
     "sentences": [
       "A good way to approach the question of whether we need some knowledge to appreciate nature is to ask whether appreciation based on false belief should be regarded as essentially flawed.",
@@ -13824,7 +13824,7 @@
   },
   {
     "id": "ABSO_TYPE_18_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "심리적 노화에 맞서는 새로움 추구",
     "sentences": [
       "The unconventional is for the young who are not comfortable with conventions and take great pleasure in going against them.",
@@ -13915,7 +13915,7 @@
   },
   {
     "id": "ABSO_TYPE_18_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "익명성의 독성과 적정량",
     "sentences": [
       "Cool technology makes the anonymity in mediated environments like online message boards more possible today than ever before.",
@@ -14016,7 +14016,7 @@
   },
   {
     "id": "ABSO_TYPE_18_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "닻 내리기 편향과 판단의 한계",
     "sentences": [
       "Often, our estimates of frequencies, probabilities, and even the desirability of consequences are vague.",
@@ -14107,7 +14107,7 @@
   },
   {
     "id": "ABSO_TYPE_18_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "신화에서 자연 법칙으로의 전환",
     "sentences": [
       "Ignorance of nature's ways led people in ancient times to invent gods for every aspect of human life.",
@@ -14202,7 +14202,7 @@
   },
   {
     "id": "ABSO_TYPE_18_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "알렉산더 신화의 재해석",
     "sentences": [
       "Alexander the Great, an ancient Macedonian ruler and one of history's greatest military minds, established the largest empire the ancient world had ever seen.",
@@ -14299,7 +14299,7 @@
   },
   {
     "id": "ABSO_TYPE_19_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "끊임없는 자기 재창조의 필요성",
     "sentences": [
       "In the 1940s, the saxophone player Charlie Parker single-handedly revolutionized the world of jazz with his invention 'bebop.'",
@@ -14396,7 +14396,7 @@
   },
   {
     "id": "ABSO_TYPE_19_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "현실에 맞게 지도를 수정하라",
     "sentences": [
       "When I was a very young soldier stationed in Alaska, my squad leader told me a profound truth that I have never forgotten.",
@@ -14489,7 +14489,7 @@
   },
   {
     "id": "ABSO_TYPE_19_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "한계 경험과 삶의 활력 회복",
     "sentences": [
       "In 1917, Ernest Hemingway volunteered as an ambulance driver in Italy, at one of the war fronts, to escape from his monotonous life.",
@@ -14586,7 +14586,7 @@
   },
   {
     "id": "ABSO_TYPE_19_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "기후를 결정하는 복합적 요인들",
     "sentences": [
       "There is a saying that 'Climate is what you expect, weather is what you get.'",
@@ -14680,7 +14680,7 @@
   },
   {
     "id": "ABSO_TYPE_19_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "불확실성을 받아들이고 시작하라",
     "sentences": [
       "Some people often say, 'I must make sure I know all about this before I start.'",
@@ -14779,7 +14779,7 @@
   },
   {
     "id": "ABSO_TYPE_20_20",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "원하는 특성을 기르는 행동 전략",
     "sentences": [
       "Something actors master is the ability to create characters.",
@@ -14880,7 +14880,7 @@
   },
   {
     "id": "ABSO_TYPE_20_21",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "공리주의와 쾌락의 지배",
     "sentences": [
       "Jeremy Bentham, an English moral philosopher and legal reformer, founded the doctrine of utilitarianism.",
@@ -14983,7 +14983,7 @@
   },
   {
     "id": "ABSO_TYPE_20_22",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "기후변화 보도의 왜곡된 균형",
     "sentences": [
       "Until recently, the media often gave equal time and space to the arguments for and against humans as the cause of global climate change.",
@@ -15074,7 +15074,7 @@
   },
   {
     "id": "ABSO_TYPE_20_23",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ­ÃÂÃÂÃÂÃÂµ",
+    "difficulty": "보통",
     "title": "외시의미의 한계와 내포의미의 중요성",
     "sentences": [
       "The denotation of a word is its explicit definition as listed in a dictionary.",
@@ -15171,7 +15171,7 @@
   },
   {
     "id": "ABSO_TYPE_20_24",
-    "difficulty": "ÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ",
+    "difficulty": "높음",
     "title": "이성적 자아와 집중의 순간",
     "sentences": [
       "Throughout history we witness continual cycles of rising and falling levels of the irrational.",
@@ -15274,7 +15274,7 @@
   },
   {
     "id": "ABSO_TYPE_08_20",
-    "difficulty": "ÃÂ«ÃÂÃÂÃÂ¬ÃÂÃÂ",
+    "difficulty": "높음",
     "title": "감정표현",
     "sentences": [
       "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species.",
