@@ -2271,12 +2271,21 @@ function App(){
         const next=[...prev];
         let idx=0;
         for(const {sp,pd,blockSummaries} of restored){
-          // 빈 슬롯 찾기
-          while(idx<next.length&&next[idx].text&&next[idx].text.trim())idx++;
-          if(idx>=next.length)break;
+          // ★ 같은 ID 슬롯이 이미 있으면 그 슬롯을 덮어쓰기 (isPublic 등 시트 상태 반영)
+          const existingIdx=next.findIndex(s=>s.passageData?.id===pd.id);
+          let targetIdx;
+          if(existingIdx>=0){
+            targetIdx=existingIdx;
+          }else{
+            // 없으면 빈 슬롯 찾기
+            while(idx<next.length&&next[idx].text&&next[idx].text.trim())idx++;
+            if(idx>=next.length)break;
+            targetIdx=idx;
+            idx++;
+          }
           const sentenceText=(pd.sentences||[]).map(s=>typeof s==='string'?s:(s.text||'')).join(' ');
-          next[idx]={
-            ...next[idx],
+          next[targetIdx]={
+            ...next[targetIdx],
             text:sentenceText,
             meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
             status:'saved',
@@ -2287,7 +2296,6 @@ function App(){
             error:'',
             isPublic:sp.is_public==='TRUE'||sp.is_public===true,
           };
-          idx++;
         }
         saveSlots(next);
         return next;
