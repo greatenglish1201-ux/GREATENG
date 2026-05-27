@@ -2615,11 +2615,11 @@ function Results({questions,userAns,score,studentName,scriptUrl,goHome,doPrint})
     }).join('||');
     const payload={
       action: 'saveResult',
-      student: studentName,
+      name: studentName,
       date: dateStr,
       score: `${score.correct}/${score.total}`,
-      pct: pct,
-      details: details
+      rate: pct,
+      detail: details
     };
       if(scriptUrl){
         // 저장 요청 후 성공으로 처리 (JSONP는 응답 확인 불필요)
