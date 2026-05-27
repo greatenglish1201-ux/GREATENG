@@ -642,7 +642,7 @@ function render(arr){
       <div class="br">${bhtml(s)}</div>
       <div class="saddr">📍 ${s.addr.replace('경상북도 포항시 ','').substring(0,30)}...</div>
       <div class="sstats">
-        <a href="https://www.schoolinfo.go.kr/search/pSchoolSearchResult.do?searchSchulNm=${encodeURIComponent(s.name)}" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미에서 상세정보 확인</a>
+        <a href="https://www.schoolinfo.go.kr/Main.do" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 📊 학교알리미에서 검색</a>
       </div>
     </div>`).join('');
 }
@@ -664,13 +664,13 @@ function sel(id){
   aid=id;const s=S.find(x=>x.id===id);filter();
   document.getElementById('pn').textContent=s.name;
   document.getElementById('pb').innerHTML=bhtml(s);
-  document.getElementById('pa').innerHTML=`📍 ${s.addr}<small style="color:var(--muted);font-size:9px"> (미확인·참고용)</small><br><a href="https://www.schoolinfo.go.kr/search/pSchoolSearchResult.do?searchSchulNm=${encodeURIComponent(s.name)}" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화번호 · 정확한 주소 → 학교알리미에서 확인 ↗</a>`;
+  document.getElementById('pa').innerHTML=`📍 ${s.addr}<small style="color:var(--muted);font-size:9px"> (미확인·참고용)</small><br><a href="https://www.schoolinfo.go.kr/Main.do" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화번호 · 정확한 주소 → 학교알리미(schoolinfo.go.kr) ↗</a>`;
   document.getElementById('pg').innerHTML=`
     <div class="ic" style="grid-column:span 2">
       <div class="il">학생수·학급수</div>
       <div class="iv sm" style="display:flex;align-items:center;gap:8px;margin-top:3px">
         <span style="color:var(--muted);font-size:11px">공식 데이터 확인</span>
-        <a href="https://www.schoolinfo.go.kr/search/pSchoolSearchResult.do?searchSchulNm=${encodeURIComponent(s.name)}" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>
+        <a href="https://www.schoolinfo.go.kr/Main.do" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 검색하기</a>
       </div>
     </div>
     <div class="ic"><div class="il">설립</div><div class="iv sm">${s.est} ${s.type}</div></div>
@@ -693,5 +693,102 @@ function closeMobileMap(){document.getElementById('right-panel').classList.remov
 
 render(S);
 </script>
+
+
+
+<!-- 대단한영어 홍보 팝업 -->
+<style>
+#ge-ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,30,0.65);z-index:99999;display:flex;align-items:center;justify-content:center;animation:geFi .3s ease}
+@keyframes geFi{from{opacity:0}to{opacity:1}}
+#ge-box{width:min(92vw,360px);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,0.25);animation:geSu .35s ease}
+@keyframes geSu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+#ge-bar{height:3px;background:linear-gradient(90deg,#e84545,#ff6b35,#f59e0b)}
+#ge-hd{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a8e 100%);padding:26px 26px 22px;position:relative;overflow:hidden}
+#ge-hd::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.05)}
+#ge-hd::after{content:'';position:absolute;bottom:-25px;left:-15px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.04)}
+#ge-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:2}
+#ge-dot{width:6px;height:6px;border-radius:50%;background:#ff8080}
+#ge-brand{font-size:10px;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,0.45)}
+#ge-badge{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#fff}
+#ge-cl{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);width:26px;height:26px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:sans-serif;line-height:1;border:none}
+#ge-cl:hover{background:rgba(255,255,255,0.22);color:#fff}
+#ge-tt{font-size:23px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:7px;position:relative;z-index:2}
+#ge-tt span{color:#ffb3b3}
+#ge-sb{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.4px;position:relative;z-index:2}
+#ge-dv{width:32px;height:2px;background:#ff8080;margin-top:16px;position:relative;z-index:2}
+#ge-bd{padding:16px 18px 0}
+#ge-prof{background:#f0f6ff;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #dbeafe}
+#ge-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2d5a8e,#1a3a5c);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+#ge-pn{font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:2px}
+#ge-pd{font-size:11px;color:#4a7ab5;line-height:1.55}
+#ge-aw{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 13px;margin-bottom:10px;display:flex;align-items:center;gap:9px}
+#ge-aw-t{font-size:11px;font-weight:700;color:#92400e;margin-bottom:1px}
+#ge-aw-d{font-size:11px;color:#b45309;line-height:1.4}
+#ge-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.ge-card{border-radius:9px;padding:8px 10px;text-align:center}
+.ge-card.r{background:#fff0f0;border:1px solid #fecaca}
+.ge-card.b{background:#f0f6ff;border:1px solid #bfdbfe}
+.ge-cn{font-size:14px;font-weight:800}
+.ge-cn.r{color:#c73838}.ge-cn.b{color:#1a3a5c}
+.ge-cs{font-size:10px;font-weight:600;margin-top:1px}
+.ge-cs.r{color:#e57373}.ge-cs.b{color:#4a7ab5}
+#ge-ft{padding:0 18px 20px;display:flex;flex-direction:column;gap:7px}
+.ge-btn{display:block;width:100%;padding:13px;border-radius:11px;font-size:14px;font-weight:700;text-align:center;text-decoration:none;box-sizing:border-box;letter-spacing:0.3px;cursor:pointer;border:none}
+.ge-btn.green{background:#03C75A;color:#fff}
+.ge-btn.blue{background:#f0f6ff;color:#1a3a5c;font-size:13px;padding:12px;border:1px solid #bfdbfe}
+#ge-sk{font-size:11px;color:#bbb;text-align:center;margin-top:2px;cursor:pointer}
+#ge-sk:hover{color:#888}
+</style>
+<div id="ge-ov" onclick="if(event.target===this)geClose()">
+  <div id="ge-box">
+    <div id="ge-bar"></div>
+    <div id="ge-hd">
+      <div id="ge-top">
+        <div style="display:flex;align-items:center;gap:7px">
+          <div id="ge-dot"></div>
+          <span id="ge-brand">GREATENG · 대단한영어</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="ge-badge">포항 No.1</div>
+          <button id="ge-cl" onclick="geClose()">✕</button>
+        </div>
+      </div>
+      <div id="ge-tt">수능 · 내신 전문<br><span>대단한 영어학원</span></div>
+      <div id="ge-sb">원장직강 · 소수정예 맞춤 관리</div>
+      <div id="ge-dv"></div>
+    </div>
+    <div id="ge-bd">
+      <div id="ge-prof">
+        <div id="ge-av">👨‍🏫</div>
+        <div>
+          <div id="ge-pn">원장 직강</div>
+          <div id="ge-pd">고려대학교 영어교육학과 학사<br>Macquarie Univ. TESOL 석사</div>
+        </div>
+      </div>
+      <div id="ge-aw">
+        <span style="font-size:16px;flex-shrink:0">🏆</span>
+        <div>
+          <div id="ge-aw-t">대구·경북 수능 수석 배출</div>
+          <div id="ge-aw-d">2017학년도 대학수학능력시험 영어영역 대구·경북 최고점</div>
+        </div>
+      </div>
+      <div id="ge-grid">
+        <div class="ge-card r"><div class="ge-cn r">수능</div><div class="ge-cs r">1등급 전략</div></div>
+        <div class="ge-card b"><div class="ge-cn b">내신</div><div class="ge-cs b">소수정예 맞춤 관리</div></div>
+      </div>
+    </div>
+    <div id="ge-ft">
+      <a class="ge-btn green" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" onclick="geClose()">📝 네이버 상담 신청하기</a>
+      <a class="ge-btn blue" href="https://blog.naver.com/pkf78" target="_blank" onclick="geClose()">📚 내신자료 확인하기</a>
+      <div id="ge-sk" onclick="geSkip()">오늘 하루 보지 않기</div>
+    </div>
+  </div>
+</div>
+<script>
+function geClose(){var el=document.getElementById('ge-ov');if(!el)return;el.style.transition='opacity .2s';el.style.opacity='0';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},220);}
+function geSkip(){try{localStorage.setItem('ge_skip',Date.now()+86400000);}catch(e){}geClose();}
+(function(){try{var v=localStorage.getItem('ge_skip');if(v&&Date.now()<parseInt(v)){var el=document.getElementById('ge-ov');if(el&&el.parentNode)el.parentNode.removeChild(el);}}catch(e){}})();
+</script>
+
 </body>
 </html>
