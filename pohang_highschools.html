@@ -283,7 +283,7 @@ body{font-size:15px}
   <button class="adm-toggle" onclick="toggleAdm(this)">
     <div class="left-g">
       <span class="adm-icon">📋</span>
-      <span>2027학년도 포항 고등학교 입시요강 &amp; 전형 안내</span>
+      <span>2026학년도 포항 평준화 일반고 입학전형 요강 <span style="font-size:11px;font-weight:400;color:#f59e0b;margin-left:8px">※ 경북교육청 공식 공문 기준</span></span>
     </div>
     <span class="adm-arrow" id="adm-arrow">▼</span>
   </button>
@@ -294,47 +294,59 @@ body{font-size:15px}
       <button class="atab" onclick="showAdmTab('일정',this)">📅 전형 일정</button>
     </div>
 
+    <!-- 면책고지 배너 -->
+    <div style="background:#fff1f2;border:1.5px solid #fca5a5;border-radius:10px;padding:11px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:18px;flex-shrink:0">⚠️</span>
+      <div style="font-size:12px;color:#991b1b;line-height:1.7">
+        <b>이 내용은 경상북도포항교육지원청이 공고한 「2026학년도 평준화지역(포항시) 일반고등학교 입학전형 요강」 공문을 기반으로 작성한 참고 요약입니다.</b><br>
+        2027학년도 전형 일정은 2026년 하반기(8~9월) 공고 예정이며 아직 미확정입니다. 입시 결정 전 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#991b1b;font-weight:700">경북 고입전형포털(hischoolgbe.kr)</a> 공식 원문을 확인하세요. 본 페이지의 오류·변경으로 인한 불이익에 대해 책임지지 않습니다.
+      </div>
+    </div>
+
     <!-- 평준화 탭 -->
     <div class="adm-section active" id="tab-평준화">
       <div class="adm-grid">
         <div class="adm-card">
-          <h4>🏫 평준화 대상 학교</h4>
+          <h4>🏫 포항 평준화 대상 (14개교)</h4>
           <ul>
-            <li>포항시 <b>북구</b> 일반고 전체 (포항고, 포항여고, 두호고, 장성고, 이동고, 중앙고, 중앙여고, 대동고, 영신고, 유성여고, 세화고 등)</li>
-            <li>거주지 기준 <b>학교군 내 배정</b></li>
-            <li>지원자 선호 반영 후 전산 추첨 배정</li>
+            <li>포항 학군 내 일반고 <b>14개교</b> 해당</li>
+            <li>경상북도 소재 중학교 졸업(예정)자 또는 경북 거주자</li>
+            <li>대구 군위군 소재 중학교 졸업예정자도 지원 가능</li>
+            <li>자사고·외고 동시 지원 가능 (불합격 시 평준화 2순위부터 배정)</li>
           </ul>
         </div>
         <div class="adm-card">
           <h4>🗺️ 비평준화 학교 (남구)</h4>
           <ul>
-            <li><b>세명고, 영일고, 포항동성고, 오천고</b></li>
-            <li>자체 전형 또는 학교 지원 방식</li>
-            <li>농어촌 특별전형: <b>영일고·동성고·오천고</b></li>
-            <li>수도권 대학 농어촌 가산 혜택 적용</li>
+            <li><b>영일고, 포항동성고, 오천고</b></li>
+            <li>각 학교 자체 원서 접수·전형</li>
+            <li>농어촌 특별전형 해당 3개교</li>
+            <li>수도권 대학 농어촌 가산점 혜택 적용 가능</li>
           </ul>
         </div>
         <div class="adm-card">
-          <h4>📋 평준화 배정 절차</h4>
+          <h4>📋 2026학년도 실제 일정</h4>
           <ul>
-            <li>① 지원서 제출 (12월 초)</li>
-            <li>② 선호 학교 2지망 기재</li>
-            <li>③ 거주 학교군 내 전산 배정</li>
-            <li>④ 합격자 발표 (12월 말)</li>
-            <li>⑤ 입학 등록 (1월 초)</li>
+            <li>원서 접수: <b>2025. 12. 8(월) ~ 12. 12(금)</b></li>
+            <li>합격자(배정예정자) 발표: <b>2026. 1. 8(목) 14:00</b></li>
+            <li>학교 배정 발표: <b>2026. 1. 14(수) 14:00</b></li>
+            <li>입학 등록: <b>2026. 1. 14(수) ~ 1. 16(금)</b></li>
+            <li>타 시도 전입자 원서: <b>2026. 2. 10 ~ 2. 13</b></li>
           </ul>
         </div>
         <div class="adm-card">
           <h4>💡 배정 핵심 포인트</h4>
           <ul>
-            <li>중학교 내신 성적 <b>배정에 미반영</b></li>
-            <li>학교 선택 불가 (추첨 배정)</li>
-            <li>전과학중점 지원 별도 절차</li>
-            <li>특기·체육 전형 일부 학교 운영</li>
+            <li>지원 방식: <b>선복수지원(1~10지망) 후추첨</b></li>
+            <li>여학생: 1~9지망, 남학생: 1~10지망</li>
+            <li>내신성적 300점으로 합격선 결정 후 <b>추첨 배정</b></li>
+            <li>원서 제출 후 <b>수정 불가</b> (오류 책임은 학생·학부모)</li>
+            <li>과학중점과정: 포항고·이동고 각 2학급 (1학년 후 선정)</li>
+            <li>형제자매 동일 학교 배정 희망 시 신청 가능</li>
           </ul>
         </div>
       </div>
-      <div class="adm-note">⚠️ 포항 평준화는 경상북도교육청 고입전형포털(hischoolgbe.kr)에서 매년 세부 일정 발표. 위 내용은 2027학년도 기준 개요이며 변경 가능성 있음.</div>
+      <div class="adm-note">📌 출처: 경상북도포항교육지원청 공고 「2026학년도 평준화지역(포항시) 일반고등학교 입학전형 요강」(2025. 9.) 원문 기준. 2027학년도 일정은 2026년 하반기 공고 예정. 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#92400e;font-weight:600">hischoolgbe.kr</a> 공식 원문 확인.</div>
     </div>
 
     <!-- 전기 전형 탭 -->
@@ -352,103 +364,162 @@ body{font-size:15px}
           <tr>
             <td><b>경북과학고</b></td>
             <td><span class="tag-special">과학고</span></td>
-            <td>서류·면접·과학소양평가</td>
-            <td>전국 단위 모집, 경북 중학생 대상</td>
+            <td>
+              1단계(서류): 학생부·자소서·교사추천서+소집면담 → 1.5배수(90명)<br>
+              2단계(면접): 융합형 과제 제시, 창의성·자기주도·인성 종합평가<br>
+              ※ 수학·과학 교사 추천서 필수(봉인 등기우편)
+            </td>
+            <td>
+              60명 3학급(일반 48+사회통합 12)<br>
+              전원 기숙사 의무(숙식비 수익자 부담)<br>
+              의·치·한의·약학 진학 시 불이익<br>
+              원서: 8. 25~8. 29<br>
+              소집면담: 10. 16~10. 23<br>
+              1단계 발표: 10. 31<br>
+              면접: 11. 14<br>
+              최종 발표: 11. 21<br>
+              입학담당관: 054-240-2629
+            </td>
           </tr>
           <tr>
             <td><b>포항제철고</b></td>
             <td><span class="tag-early">자사고</span></td>
-            <td>자기소개서·면접·추첨</td>
-            <td>전국 단위, 기숙사 필수, 포스코 장학 혜택</td>
+            <td>1단계: 교과성적(160)+출결(10) → 2배수<br>2단계: 1단계성적(170)+면접(30)</td>
+            <td>
+              총 300명 (10학급)<br>
+              ·자기주도: 포항60+전국60명<br>
+              ·포스코임직원자녀: 전국120명<br>
+              ·사회통합: 전국60명<br>
+              원서: 경북고입전형포털<br>
+              입학홍보실: 054-279-9684
+            </td>
           </tr>
           <tr>
             <td><b>포항제철공업고</b></td>
             <td><span class="tag-special">마이스터고</span></td>
-            <td>출석·봉사·면접·실기</td>
-            <td>전국 모집, 포스코 그룹 취업 연계</td>
+            <td>출결·봉사·면접·실기</td>
+            <td>전국 모집, 포스코 취업 연계</td>
           </tr>
           <tr>
             <td><b>한국해양마이스터고</b></td>
             <td><span class="tag-special">마이스터고</span></td>
-            <td>출석·봉사·면접</td>
-            <td>전국 모집, 해운·수산 분야 취업 특화</td>
+            <td>출결·봉사·면접</td>
+            <td>전국 모집, 해운·수산 특화</td>
           </tr>
           <tr>
             <td><b>포항예술고</b></td>
             <td><span class="tag-special">예술고</span></td>
-            <td>실기·면접</td>
-            <td>음악·미술·무용 계열별 실기 전형</td>
+            <td>
+              내신(음악 40%·미술 50%) + 실기(음악 60%·미술 50%)<br>
+              <b>면접 없음</b>, 실기고사 1일 집중 전형<br>
+              ※ 실기 결시 시 불합격 처리
+            </td>
+            <td>
+              음악과 46명·미술과 46명 총 92명(4학급)<br>
+              원서접수: 10. 20~10. 24<br>
+              실기고사: 10. 31(금) 09:00<br>
+              합격자 발표: 11. 7(금) 14:00<br>
+              실기전형료: 50,000원<br>
+              교무실: 054-262-5402
+            </td>
           </tr>
           <tr>
             <td><b>포항과학기술고</b></td>
             <td><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
-            <td>IT·전자 계열, 산업체 연계 현장실습</td>
+            <td>IT·전자, 현장실습 연계</td>
           </tr>
           <tr>
             <td><b>포항흥해공업고</b></td>
             <td><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
-            <td>기계·전기 계열, 흥해 소재</td>
+            <td>기계·전기, 흥해읍 소재</td>
           </tr>
           <tr>
             <td><b>포항여자전자고</b></td>
             <td><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
-            <td>전자·정보통신 계열 여고</td>
+            <td>전자·정보통신, 여고</td>
           </tr>
           <tr>
             <td><b>포항보건고</b></td>
             <td><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
-            <td>보건·간호 계열, 죽장면 소재</td>
+            <td>보건·간호, 죽장면 소재</td>
           </tr>
         </tbody>
       </table>
-      <div class="adm-note">⚠️ 전기 전형 학교는 일반 평준화 배정과 별도로 원서 접수. 전기 불합격 시 후기(평준화) 지원 가능. 정확한 원서 일정은 각 학교 홈페이지 확인 필수.</div>
+      <div class="adm-note">📌 전기고 원서는 hischoolgbe.kr 온라인 접수. 전기 불합격 시 후기(평준화/비평준화) 지원 가능. <b>각 학교 홈페이지 전형요강 반드시 개별 확인 필수.</b> 본 표는 2026학년도 기준 참고용이며, 매년 변경될 수 있습니다.</div>
     </div>
 
     <!-- 일정 탭 -->
     <div class="adm-section" id="tab-일정">
       <div class="adm-grid">
         <div class="adm-card">
-          <h4><span class="tag-special">과학고·자사고·마이스터고·예술고</span> 전기 전형</h4>
+          <h4><span class="tag-special">경북과학고</span> 실제 일정</h4>
           <ul>
-            <li>원서 접수: <b>9월 말 ~ 10월 초</b></li>
-            <li>서류 제출: <b>10월</b></li>
-            <li>면접·실기: <b>10~11월</b></li>
-            <li>합격자 발표: <b>11월 말</b></li>
-            <li>등록: <b>12월 초</b></li>
+            <li>서식 안내: <b>2025. 6. 27</b></li>
+            <li>원서접수: <b>2025. 8. 25(월) ~ 8. 29(금)</b></li>
+            <li>소집면담: <b>2025. 10. 16 ~ 10. 23</b></li>
+            <li>1단계 합격자 발표: <b>2025. 10. 31(금) 12:00</b></li>
+            <li>개별면접: <b>2025. 11. 14(금)</b></li>
+            <li>최종 합격자 발표: <b>2025. 11. 21(금) 12:00</b></li>
+            <li>합격자 등록: <b>11. 21 ~ 11. 25</b></li>
+            <li>전형료: <b>없음</b></li>
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-late">특성화고</span> 전형</h4>
+          <h4><span class="tag-special">마이스터고</span></h4>
           <ul>
-            <li>원서 접수: <b>10월 ~ 11월</b></li>
-            <li>합격자 발표: <b>11월 말</b></li>
-            <li>등록: <b>12월</b></li>
+            <li>원서 접수: <b>9월 중순 ~ 10월 초</b></li>
+            <li>전형 실시: <b>10~11월</b></li>
+            <li>합격자 발표: <b>11월 중</b></li>
+            <li>등록: <b>11월 말</b></li>
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-early">평준화 일반고</span> 후기 배정</h4>
+          <h4><span class="tag-special">포항예술고</span> 실제 일정</h4>
           <ul>
-            <li>원서 접수: <b>12월 초</b></li>
-            <li>전산 배정: <b>12월 중</b></li>
-            <li>합격자 발표: <b>12월 말</b></li>
-            <li>입학 등록: <b>1월 초</b></li>
+            <li>원서접수: <b>2025. 10. 20(월) ~ 10. 24(금)</b></li>
+            <li>실기고사: <b>2025. 10. 31(금) 09:00</b></li>
+            <li>합격자 발표: <b>2025. 11. 7(금) 14:00</b></li>
+            <li>합격자 등록: <b>11. 7 ~ 11. 11</b></li>
+            <li>추가모집 원서: <b>2026. 1. 5 ~ 1. 7</b></li>
+            <li>추가모집 실기: <b>2026. 1. 9(금)</b></li>
+            <li>실기전형료: <b>50,000원</b> (기초수급자 면제)</li>
           </ul>
         </div>
         <div class="adm-card">
-          <h4>📌 과학중점반 신청</h4>
+          <h4><span class="tag-late">특성화고</span> (협약형 포함)</h4>
           <ul>
-            <li>대상: <b>포항고, 포항이동고</b></li>
-            <li>신청: 입학 후 <b>1학년 8월 경</b></li>
-            <li>기준: 학생 잠재력, 교과 우수성, 포트폴리오</li>
-            <li>2학년부터 과학중점 교육과정 적용</li>
+            <li>원서 접수: <b>11월 24일 ~ 12월 3일</b></li>
+            <li>합격자 발표: <b>12월 중</b></li>
+            <li>등록: <b>12월 말</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4><span class="tag-early">자사고(포항제철고)</span> 전기 전형</h4>
+          <ul>
+            <li>전형요강 공고: <b>2025. 8. 28</b></li>
+            <li>원서접수: <b>2025. 12. 8(월) ~ 12. 12(금)</b></li>
+            <li>1단계 발표: <b>2025. 12. 17(수) 16:00</b></li>
+            <li>면접: <b>2025. 12. 23(화)</b></li>
+            <li>최종 합격자 발표: <b>2025. 12. 26(금) 17:00</b></li>
+            <li>추가모집 원서: <b>2026. 1. 15 ~ 1. 16</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4><span class="tag-early">포항 평준화 일반고</span> 후기</h4>
+          <ul>
+            <li>원서 접수: <b>12. 8 ~ 12. 12</b></li>
+            <li>합격자(배정예정자) 발표: <b>1. 8(목) 14:00</b></li>
+            <li>학교 배정 발표: <b>1. 14(수) 14:00</b></li>
+            <li>입학 등록: <b>1. 14 ~ 1. 16</b></li>
+            <li>타 시도 전입자 원서: <b>2. 10 ~ 2. 13</b></li>
           </ul>
         </div>
       </div>
-      <div class="adm-note">⚠️ 위 일정은 2027학년도 기준 개요. 매년 경상북도교육청이 세부 일정 공지. 반드시 hischoolgbe.kr 공식 확인 필요. 일정은 연도별 변경 가능.</div>
+      <div class="adm-note">📌 평준화 일정은 경상북도포항교육지원청 공식 공문(2025. 9.) 기준. 전기고 일정은 2026학년도 경북교육청 고입전형 기준. <b>2027학년도 일정은 2026년 8~9월 이후 공고.</b> 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#92400e;font-weight:600">hischoolgbe.kr</a> 공식 원문 확인. 본 자료의 오류로 인한 불이익에 대해 책임지지 않습니다.</div>
     </div>
   </div>
 </div>
@@ -506,27 +577,27 @@ body{font-size:15px}
 
 <script>
 const S=[
-  {id:1,name:"포항제철고등학교",type:"자사고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡동 포스코대로 333",lat:36.0112,lng:129.3301,students:1050,classes:30,phone:"054-279-6000",web:"https://school.gyo6.net/poscohs",admission:"4년제 진학률 남구 1위",review:"포스코 재단 운영 전국 최상위권 자사고. 이과 강세로 SKY·의대 합격자 다수 배출. 포항 최고 명문. 기숙사 생활로 학습 집중도 높음."},
-  {id:2,name:"경북과학고등학교",type:"과학고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0493,lng:129.3605,students:180,classes:6,phone:"054-270-5500",web:"",admission:"KAIST·포공 진학 다수",review:"경북 유일 과학고. KAIST·포항공대 진학자 다수 배출. 수학·과학 영재 특화. 전국 단위 모집, 경쟁률 매우 높음."},
-  {id:3,name:"포항고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 아호로 50 (학산동)",lat:36.0408,lng:129.3697,students:610,classes:26,phone:"054-613-4500",web:"https://school.gyo6.net/pohanghs",admission:"과학중점학교 지정",review:"포항 대표 남고, 1951년 설립. 역사 깊은 전통 명문. 이동고와 함께 과학중점 지정. 포항 인문계 남고 최상위 인지도."},
-  {id:4,name:"포항여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0380,lng:129.3710,students:480,classes:15,phone:"054-270-2321",web:"http://school.gyo6.net/poyogohs",admission:"정보 없음",review:"포항 대표 여고. 평준화 이후 포항고와 함께 배정. 일본 후쿠야마시 국제교류 연중 진행."},
-  {id:5,name:"포항중앙고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 중앙로",lat:36.0290,lng:129.3660,students:400,classes:13,phone:"054-270-7500",web:"http://school.gyo6.net/pojungang",admission:"정보 없음",review:"북구 도심권 남자 공립고. 수능 준비 중심 학업 분위기."},
+  {id:1,name:"포항제철고등학교",type:"자사고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 212번길 40 (우편 37997)",lat:36.0112,lng:129.3301,students:1050,classes:30,phone:"054-279-9684",web:"https://school.gyo6.net/pocheolhs/main.do?sysId=pocheolhs",admission:"전국단위 자사고·기숙학교",review:"포스코 재단 전국단위 자사고. 10학급 300명 모집(자기주도/포스코임직원자녀/사회통합). 이과 강세, SKY·의대 합격자 다수. 기숙사는 포항시 외 거주 학생 대상 100명 이내. 서울대 수시 합격 최근 43% 급증 보도. 입학홍보실 054-279-9684."},
+  {id:2,name:"경북과학고등학교",type:"과학고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 130 (우편 37666)",lat:36.0112,lng:129.3320,students:180,classes:3,phone:"054-240-2629",web:"https://school.gyo6.net/kbs/main.do?sysId=kbs",admission:"KAIST·포공 진학 다수",review:"경북 유일 과학고. 60명 3학급(일반 48+사회통합 12). 서류+소집면담 1.5배수 → 융합형 면접. 수학·과학 교사 추천서 필수. 전원 기숙사 의무. 의치한의약학 진학 시 수상·장학금·추천서 불이익. KAIST·포항공대 진학 다수. 입학담당관 054-240-2629."},
+  {id:3,name:"포항고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 아호로 50 (학산동)",lat:36.0408,lng:129.3697,students:610,classes:26,phone:"054-613-4500",web:"https://school.gyo6.net/pohanghs/main.do?sysId=pohanghs",admission:"과학중점학교 지정",review:"포항 대표 남고, 1951년 설립. 역사 깊은 전통 명문. 이동고와 함께 과학중점 지정. 포항 인문계 남고 최상위 인지도."},
+  {id:4,name:"포항여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0380,lng:129.3710,students:480,classes:15,phone:"054-270-2321",web:"https://school.gyo6.net/poyogohs/main.do?sysId=poyogohs",admission:"정보 없음",review:"포항 대표 여고. 평준화 이후 포항고와 함께 배정. 일본 후쿠야마시 국제교류 연중 진행."},
+  {id:5,name:"포항중앙고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 중앙로",lat:36.0290,lng:129.3660,students:400,classes:13,phone:"054-270-7500",web:"https://school.gyo6.net/pojungang/main.do?sysId=pojungang",admission:"정보 없음",review:"북구 도심권 남자 공립고. 수능 준비 중심 학업 분위기."},
   {id:6,name:"포항중앙여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0310,lng:129.3670,students:350,classes:11,phone:"054-270-7600",web:"",admission:"정보 없음",review:"북구 공립 여고. 평준화 배정 학교."},
-  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 이동",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
-  {id:8,name:"포항장성고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로 117",lat:36.0520,lng:129.3800,students:420,classes:14,phone:"054-250-0702",web:"https://school.gyo6.net/phjshs",admission:"정보 없음",review:"두호고와 자주 비교되는 북구 공립 남녀공학. 2004년 개교 신설교."},
-  {id:9,name:"두호고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학전로111번길 21 (두호동)",lat:36.0555,lng:129.3760,students:627,classes:27,phone:"054-250-7260",web:"https://school.gyo6.net/duhohs",admission:"4년제 79.4%",review:"'명문 두호고!' 구호로 유명. 장성고와 자주 비교됨. 북구 공립 남녀공학. 학급수 북구 최다급."},
-  {id:10,name:"대동고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창서길 34",lat:36.0450,lng:129.3820,students:500,classes:16,phone:"054-241-1216",web:"https://school.gyo6.net/daedonghs",admission:"정보 없음",review:"북구 사립 일반고. 1972년 설립 역사 있는 학교."},
-  {id:11,name:"포항영신고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 소티재로 107 (우현동)",lat:36.0400,lng:129.3780,students:450,classes:15,phone:"054-250-7750",web:"https://school.gyo6.net/physhs",admission:"정보 없음",review:"기독교 재단. '죽을 만큼 공부시킨다'는 평으로 포항 내 알려진 사립고. 야자 강제로 유명. 영신중 연계 진학 많음."},
-  {id:12,name:"유성여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창로 43",lat:36.0430,lng:129.3850,students:300,classes:10,phone:"054-246-2315",web:"https://school.gyo6.net/yuseong-g",admission:"정보 없음",review:"북구 사립 여고. 1975년 설립."},
+  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 이동",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong/main.do?sysId=pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
+  {id:8,name:"포항장성고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로 117",lat:36.0520,lng:129.3800,students:420,classes:14,phone:"054-250-0702",web:"https://school.gyo6.net/phjshs/main.do?sysId=phjshs",admission:"정보 없음",review:"두호고와 자주 비교되는 북구 공립 남녀공학. 2004년 개교 신설교."},
+  {id:9,name:"두호고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학전로111번길 21 (두호동)",lat:36.0555,lng:129.3760,students:627,classes:27,phone:"054-250-7260",web:"https://school.gyo6.net/duhohs/main.do?sysId=duhohs",admission:"4년제 79.4%",review:"'명문 두호고!' 구호로 유명. 장성고와 자주 비교됨. 북구 공립 남녀공학. 학급수 북구 최다급."},
+  {id:10,name:"대동고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창서길 34",lat:36.0450,lng:129.3820,students:500,classes:16,phone:"054-241-1216",web:"https://school.gyo6.net/daedonghs/main.do?sysId=daedonghs",admission:"정보 없음",review:"북구 사립 일반고. 1972년 설립 역사 있는 학교."},
+  {id:11,name:"포항영신고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 소티재로 107 (우현동)",lat:36.0400,lng:129.3780,students:450,classes:15,phone:"054-250-7750",web:"https://school.gyo6.net/physhs/main.do?sysId=physhs",admission:"정보 없음",review:"기독교 재단. '죽을 만큼 공부시킨다'는 평으로 포항 내 알려진 사립고. 야자 강제로 유명. 영신중 연계 진학 많음."},
+  {id:12,name:"유성여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창로 43",lat:36.0430,lng:129.3850,students:300,classes:10,phone:"054-246-2315",web:"https://school.gyo6.net/yuseong-g/main.do?sysId=yuseong-g",admission:"정보 없음",review:"북구 사립 여고. 1975년 설립."},
   {id:13,name:"세화고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0350,lng:129.3800,students:280,classes:9,phone:"054-250-7000",web:"",admission:"정보 없음",review:"원래 여고였다가 2006년 남녀공학 전환. 북구 사립고."},
-  {id:14,name:"포항예술고등학교",type:"예술고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0420,lng:129.3720,students:200,classes:8,phone:"054-270-6000",web:"",admission:"예대 진학 특화",review:"경북 북부 유일 예술고. 음악·미술·무용 계열별 실기 전형. 예술대 진학률 높음."},
+  {id:14,name:"포항예술고등학교",type:"예술고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍 연화길 56",lat:36.1050,lng:129.3540,students:200,classes:4,phone:"054-262-5402",web:"https://school.gyo6.net/pharts/main.do?sysId=pharts",admission:"예대 진학 특화",review:"기독교 미션스쿨(사립) 예술고, 흥해읍 소재. 음악과 46명·미술과 46명 총 92명 4학급. 면접 없이 내신+실기 단일전형. 음악 실기 60%·미술 실기 50% 반영. 여학생 기숙사만 운영. 매주 예배 1시간. 실기전형료 5만원. 교무실 054-262-5402."},
   {id:15,name:"포항과학기술고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0480,lng:129.3840,students:260,classes:9,phone:"054-260-7000",web:"",admission:"정보 없음",review:"IT·과학기술 계열 특성화고. 산업체 연계 현장실습 운영."},
   {id:16,name:"포항흥해공업고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍",lat:36.1100,lng:129.3550,students:240,classes:8,phone:"054-260-5600",web:"",admission:"정보 없음",review:"흥해읍 소재 기계·전기 계열 공업 특성화고."},
   {id:17,name:"동지고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0500,lng:129.3650,students:320,classes:11,phone:"054-247-0073",web:"",admission:"정보 없음",review:"구 동지상고. 이명박 전 대통령·단병호 등 저명인사 다수 배출. 상업고 전통 있는 북구 사립교."},
   {id:18,name:"동지여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0510,lng:129.3640,students:280,classes:9,phone:"054-247-0074",web:"",admission:"정보 없음",review:"구 동지여상. 동지고 인근 사립 여고."},
-  {id:19,name:"세명고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 새천년대로474번길 13 (대잠동)",lat:36.0130,lng:129.3520,students:400,classes:13,phone:"054-273-9696",web:"http://school.gyo6.net/sm",admission:"정보 없음",review:"영암학원 산하 남구 사립고. 신입생 학력 진단고사 운영(영어·수학). 배치고사 성적 1등이 입학식 선서 대표 전통."},
-  {id:20,name:"영일고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 연일읍 동문로 56",lat:36.0060,lng:129.3750,students:350,classes:12,phone:"054-285-5016",web:"https://school.gyo6.net/yihs",admission:"농어촌 특별전형 해당",review:"연일읍 농어촌 특별전형 대상. 남학생보다 여학생 비율 높음. 수도권 대학 농어촌 가산 혜택 적용."},
-  {id:21,name:"포항동성고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 동해면 일월로41번길 26",lat:36.0650,lng:129.4200,students:280,classes:9,phone:"054-286-3009",web:"https://school.gyo6.net/phds",admission:"농어촌 특별전형 해당",review:"동해면 소재 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
+  {id:19,name:"세명고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 새천년대로474번길 13 (대잠동)",lat:36.0130,lng:129.3520,students:400,classes:13,phone:"054-273-9696",web:"https://school.gyo6.net/sm/main.do?sysId=sm",admission:"평준화 배정 (1지망 마감)",review:"영암학원 산하 남구 사립 평준화 일반고. 포항 평준화 학교 중 매년 경쟁률 최상위(1.5~2:1). 1지망에서 정원 마감. 신입생 배치고사 운영(영어·수학), 성적 1등이 입학식 선서 전통."},
+  {id:20,name:"영일고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 연일읍 동문로 56",lat:36.0060,lng:129.3750,students:350,classes:12,phone:"054-285-5016",web:"https://school.gyo6.net/yihs/main.do?sysId=yihs",admission:"농어촌 특별전형 해당",review:"연일읍 농어촌 특별전형 대상. 남학생보다 여학생 비율 높음. 수도권 대학 농어촌 가산 혜택 적용."},
+  {id:21,name:"포항동성고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 동해면 일월로41번길 26",lat:36.0650,lng:129.4200,students:280,classes:9,phone:"054-286-3009",web:"https://school.gyo6.net/phds/main.do?sysId=phds",admission:"농어촌 특별전형 해당",review:"동해면 소재 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
   {id:22,name:"오천고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍",lat:36.0680,lng:129.4100,students:300,classes:10,phone:"054-291-2000",web:"",admission:"농어촌 특별전형 해당",review:"오천읍 유일 고등학교. 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
   {id:23,name:"포항제철공업고등학교",type:"마이스터고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡동",lat:36.0060,lng:129.3250,students:720,classes:24,phone:"054-279-8000",web:"",admission:"취업률 최상위",review:"포스코 연계 마이스터고. 제철·기계·전기 전공. 포스코 그룹사 취업 인기. 취업률·산업 현장 연계 최우수."},
   {id:24,name:"한국해양마이스터고등학교",type:"마이스터고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구",lat:36.0100,lng:129.3600,students:360,classes:12,phone:"054-290-7000",web:"",admission:"해양 취업 특화",review:"해양·선박 계열 마이스터고. 해운·수산 분야 취업 특화. 전국 단위 모집."},
@@ -571,9 +642,7 @@ function render(arr){
       <div class="br">${bhtml(s)}</div>
       <div class="saddr">📍 ${s.addr.replace('경상북도 포항시 ','').substring(0,30)}...</div>
       <div class="sstats">
-        <span>👨‍🎓 <span class="sv">${s.students.toLocaleString()}명</span></span>
-        <span>🏫 <span class="sv">${s.classes}학급</span></span>
-        <span>☎ <span class="sv">${s.phone}</span></span>
+        <a href="https://www.schoolinfo.go.kr/search/pSchoolSearchResult.do?searchSchulNm=${encodeURIComponent(s.name)}" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미에서 상세정보 확인</a>
       </div>
     </div>`).join('');
 }
@@ -595,10 +664,15 @@ function sel(id){
   aid=id;const s=S.find(x=>x.id===id);filter();
   document.getElementById('pn').textContent=s.name;
   document.getElementById('pb').innerHTML=bhtml(s);
-  document.getElementById('pa').innerHTML=`📍 ${s.addr}<br>☎️ ${s.phone}`;
+  document.getElementById('pa').innerHTML=`📍 ${s.addr}<small style="color:var(--muted);font-size:9px"> (미확인·참고용)</small><br><a href="https://www.schoolinfo.go.kr/search/pSchoolSearchResult.do?searchSchulNm=${encodeURIComponent(s.name)}" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화번호 · 정확한 주소 → 학교알리미에서 확인 ↗</a>`;
   document.getElementById('pg').innerHTML=`
-    <div class="ic"><div class="il">학생 수</div><div class="iv">${s.students.toLocaleString()}<small style="font-size:9px;font-weight:400;color:var(--muted)">명</small></div></div>
-    <div class="ic"><div class="il">학급 수</div><div class="iv">${s.classes}<small style="font-size:9px;font-weight:400;color:var(--muted)">학급</small></div></div>
+    <div class="ic" style="grid-column:span 2">
+      <div class="il">학생수·학급수</div>
+      <div class="iv sm" style="display:flex;align-items:center;gap:8px;margin-top:3px">
+        <span style="color:var(--muted);font-size:11px">공식 데이터 확인</span>
+        <a href="https://www.schoolinfo.go.kr/search/pSchoolSearchResult.do?searchSchulNm=${encodeURIComponent(s.name)}" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>
+      </div>
+    </div>
     <div class="ic"><div class="il">설립</div><div class="iv sm">${s.est} ${s.type}</div></div>
     <div class="ic"><div class="il">입시·취업</div><div class="iv sm">${s.admission}</div></div>`;
   document.getElementById('pr').textContent=s.review;
