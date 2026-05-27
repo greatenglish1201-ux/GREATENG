@@ -8,9 +8,13 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-height:100vh;}
-header{background:linear-gradient(135deg,#7b0000,#b8860b);padding:16px 24px;display:flex;align-items:center;gap:16px;}
+header{background:linear-gradient(135deg,#7b0000,#b8860b);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 header img{height:52px;border-radius:6px;}
-header h1{font-size:1.3rem;color:#ffe082;letter-spacing:1px;}
+header h1{font-size:1.3rem;color:#ffe082;letter-spacing:1px;flex:1;}
+.meta-inputs{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.meta-inputs input,.meta-inputs select{background:rgba(0,0,0,.35);border:1px solid #b8860b88;border-radius:5px;color:#ffe082;padding:4px 8px;font-size:.82rem;width:auto;}
+.meta-inputs input::placeholder{color:#b8860b99;}
+.meta-inputs label{color:#ffe08299;font-size:.78rem;}
 .tabs{display:flex;background:#16213e;border-bottom:2px solid #b8860b;}
 .tab{padding:12px 28px;cursor:pointer;color:#aaa;font-size:.95rem;transition:.2s;}
 .tab.active{color:#ffe082;border-bottom:2px solid #ffe082;margin-bottom:-2px;font-weight:bold;}
@@ -53,6 +57,29 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
 <body>
 <header>
   <img id="logo" src="" alt="대단한영어 로고">
+  <div class="meta-inputs">
+    <div><label>학교</label><br><input id="metaSchool" type="text" placeholder="예) 포항제철중" style="width:120px;"></div>
+    <div><label>학년</label><br>
+      <select id="metaGrade">
+        <option value="">학년</option>
+        <option>중1</option><option>중2</option><option>중3</option>
+        <option>고1</option><option>고2</option><option>고3</option>
+      </select>
+    </div>
+    <div><label>년도</label><br><input id="metaYear" type="text" placeholder="2025" style="width:60px;" value="2025"></div>
+    <div><label>학기</label><br>
+      <select id="metaSemester">
+        <option value="">학기</option>
+        <option>1학기</option><option>2학기</option>
+      </select>
+    </div>
+    <div><label>시험</label><br>
+      <select id="metaExam">
+        <option value="">종류</option>
+        <option>중간고사</option><option>기말고사</option><option>모의고사</option>
+      </select>
+    </div>
+  </div>
   <h1>대단한영어 · 기출분석 &amp; 예상문제 출제</h1>
 </header>
 <div class="tabs">
@@ -362,11 +389,23 @@ async function downloadDocx(){
   if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
   const {Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, BorderStyle} = docx;
 
+  const school = document.getElementById('metaSchool').value;
+  const grade  = document.getElementById('metaGrade').value;
+  const year   = document.getElementById('metaYear').value;
+  const sem    = document.getElementById('metaSemester').value;
+  const exam   = document.getElementById('metaExam').value;
+  const metaLine = [school,grade,year,sem,exam].filter(Boolean).join(' · ');
+
   const children = [
     new Paragraph({
       alignment: AlignmentType.CENTER,
-      spacing:{after:200},
+      spacing:{after:80},
       children:[new TextRun({text:'대단한영어 예상문제', bold:true, size:36, font:'맑은 고딕'})]
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing:{after:200},
+      children:[new TextRun({text: metaLine || '', size:22, color:'888888', font:'맑은 고딕'})]
     })
   ];
 
