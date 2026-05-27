@@ -277,10 +277,10 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:4p
         <input type="number" id="optYear" value="2026" min="2020" max="2099">
       </div>
       <div class="field">
-        <label>학교급</label>
-        <select id="optLevel">
-          <option value="middle">중학교</option>
-          <option value="high">고등학교</option>
+        <label>학기</label>
+        <select id="optSemester">
+          <option value="1">1학기</option>
+          <option value="2">2학기</option>
         </select>
       </div>
     </div>
@@ -383,7 +383,7 @@ function getOpts(){
     school, 
     grade: document.getElementById('optGrade').value,
     year:  document.getElementById('optYear').value,
-    level: document.getElementById('optLevel').value,
+    semester: document.getElementById('optSemester').value,
     examType: document.getElementById('optExamType').value,
     range: (document.getElementById('optRange').value||'').trim(),
     qCount: parseInt(document.getElementById('optQCount').value)
@@ -452,8 +452,9 @@ async function startAnalysis(){
   showLoading('기출 패턴 분석 중...');
 
   const opts2=getOpts();
-  const levelLabel=opts2.level==='middle'?'중학교':'고등학교';
-  const examLabel=opts2.examType==='midterm'?'중간고사':opts2.examType==='final'?'기말고사':'중간+기말고사';
+  const levelLabel=opts2.school&&['제철고','이동고','동지고'].includes(opts2.school)?'고등학교':'중학교';
+  const semesterLabel=opts2.semester==='1'?'1학기':'2학기';
+  const examLabel=`${semesterLabel} ${opts2.examType==='midterm'?'중간고사':opts2.examType==='final'?'기말고사':'중간+기말고사'}`;
 
   const system=`당신은 한국 ${levelLabel} 영어 내신 시험 전문 분석가입니다.
 기출 시험지에서 문제 형식(발문 문장, 보기 구성 방식, 선택지 스타일)을 정확히 추출합니다.
@@ -499,9 +500,13 @@ async function startAnalysis(){
 ${examText}`;
 
   try {
-    const raw=await callClaude(system, state.tab==='text'
-      ?[{type:'text',text:prompt}]
-      :[...inputContent.slice(0,-1),{type:'text',text:prompt}], 2500);
+    const userContent = state.tab==='text'
+      ? [{type:'text', text:prompt}]
+      : [
+          ...state.images.map(img=>({type:'image', source:{type:'base64', media_type:img.mimeType, data:img.base64}})),
+          {type:'text', text:prompt}
+        ];
+    const raw=await callClaude(system, userContent, 2500);
     state.pattern=JSON.parse(raw.replace(/```json|```/g,'').trim());
     renderPatternResult();
     setStep(3);
@@ -868,7 +873,9 @@ async function downloadDoc(){
   if(!qs||!qs.length){toast('문제가 없습니다','err');return;}
 
   const levelLabel=opts.level==='middle'?'중학교':'고등학교';
-  const metaParts=[opts.year&&opts.year+'년',opts.school,opts.grade&&opts.grade+'학년',levelLabel].filter(Boolean);
+  const levelLabel2=opts.school&&['제철고','이동고','동지고'].includes(opts.school)?'고등학교':'중학교';
+  const semesterLabel2=opts.semester==='1'?'1학기':'2학기';
+  const metaParts=[opts.year&&opts.year+'년',opts.school,opts.grade&&opts.grade+'학년',semesterLabel2].filter(Boolean);
   const metaStr=metaParts.join(' · ');
 
   let html=`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
