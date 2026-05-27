@@ -242,7 +242,10 @@ function getSelectedPassages(){
 // ── 탭 전환 ──
 function switchTab(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
-  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  ['tab0','tab1','tab2','tab3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active',i===n);
+  });
   if(n===1) renderTypeCheckboxes();
   if(n===3) loadSettingsUI();
 }
