@@ -281,10 +281,9 @@ async function analyzeExam(){
     if(data.error){ throw new Error(data.error.message); }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     if(!text){ throw new Error('빈 응답. 키를 확인하세요.'); }
-    // JSON 추출: 첫 { 부터 마지막 } 까지
-    const jsonMatch = text.match(/{[\s\S]*}/);
-    if(!jsonMatch) throw new Error('JSON을 찾을 수 없습니다. 응답: '+text.slice(0,100));
-    analysisData = JSON.parse(jsonMatch[0]);
+    const s1=text.indexOf('{'), e1=text.lastIndexOf('}');
+    if(s1<0||e1<0) throw new Error('JSON을 찾을 수 없습니다. 응답: '+text.slice(0,100));
+    analysisData = JSON.parse(text.slice(s1,e1+1));
     status.innerHTML='<span style="color:#4caf50">✅ 분석 완료!</span>';
     saveAnalysisToStorage();
     renderAnalysis();
@@ -387,9 +386,9 @@ async function generateQuestions(){
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     if(!text){ throw new Error('빈 응답. 키를 확인하세요.'); }
     // JSON 배열 추출: 첫 [ 부터 마지막 ] 까지
-    const arrMatch = text.match(/\[([\s\S]*?)\]/);
-    if(!arrMatch) throw new Error('JSON 배열을 찾을 수 없습니다. 응답: '+text.slice(0,100));
-    generatedQs = JSON.parse(arrMatch[0]);
+        const s2=text.indexOf('['), e2=text.lastIndexOf(']');
+    if(s2<0||e2<0) throw new Error('JSON 배열을 찾을 수 없습니다. 응답: '+text.slice(0,100));
+    generatedQs = JSON.parse(text.slice(s2,e2+1));
     status.innerHTML='<span style="color:#4caf50">✅ '+generatedQs.length+'문항 생성 완료!</span>';
     renderQuestions();
     switchTab(2);
