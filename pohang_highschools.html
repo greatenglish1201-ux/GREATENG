@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포항시 고등학교 정보 지도 | 대단한영어</title>
+<meta name="description" content="포항시 소재 고등학교 27개교 전체 정보. 입시요강, 평준화 배정, 학교별 계열·학생수·세간의 평을 지도와 함께 확인하세요.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d1b2a;--accent:#e84545;--accent2:#ff6b35;
+  --surface:#f4f6f9;--card:#fff;--border:#e2e8f0;
+  --text:#1a202c;--muted:#64748b;--gold:#f59e0b;
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--surface);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{background:var(--navy);color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;color:var(--accent)}
+.htitle{font-size:13px;font-weight:700;color:#fff}
+.hsub{font-size:10px;color:rgba(255,255,255,.45)}
+.hdiv{width:1px;height:26px;background:rgba(255,255,255,.15);margin:0 12px}
+.cbadge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+
+/* UPDATE NOTICE BAR */
+.notice-bar{background:linear-gradient(90deg,#1e3a5f,#0d2847);color:rgba(255,255,255,.85);padding:7px 20px;font-size:11px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid rgba(255,255,255,.08)}
+.notice-bar b{color:#7dd3fc}
+.notice-bar a{color:#93c5fd;text-decoration:none;font-weight:500}
+.notice-bar a:hover{text-decoration:underline}
+
+/* ADMISSIONS ACCORDION */
+.adm-wrap{background:var(--card);border-bottom:2px solid var(--border)}
+.adm-toggle{width:100%;padding:13px 20px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;color:var(--text);text-align:left}
+.adm-toggle:hover{background:#f8fafc}
+.adm-toggle .left-g{display:flex;align-items:center;gap:10px}
+.adm-icon{font-size:16px}
+.adm-arrow{font-size:12px;color:var(--muted);transition:transform .25s}
+.adm-arrow.open{transform:rotate(180deg)}
+.adm-body{display:none;padding:0 20px 16px}
+.adm-body.open{display:block}
+.adm-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.atab{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:transparent;font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;color:var(--muted);transition:all .15s}
+.atab.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.adm-section{display:none}
+.adm-section.active{display:block}
+.adm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px}
+.adm-card{background:var(--surface);border-radius:10px;padding:12px 14px;border:1px solid var(--border)}
+.adm-card h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.adm-card ul{padding-left:14px;font-size:11px;color:var(--muted);line-height:1.8}
+.adm-card ul li{margin-bottom:2px}
+.adm-card ul li b{color:var(--text);font-weight:500}
+.adm-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:4px}
+.adm-table th{background:var(--navy);color:#fff;padding:7px 10px;text-align:left;font-weight:500}
+.adm-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.adm-table tr:last-child td{border-bottom:none}
+.adm-table tr:nth-child(even) td{background:#f8fafc}
+.tag-early{background:#fee2e2;color:#991b1b;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600}
+.tag-late{background:#dbeafe;color:#1e40af;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600}
+.tag-special{background:#f3e8ff;color:#6b21a8;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600}
+.adm-note{font-size:10px;color:var(--muted);margin-top:8px;padding:8px 12px;background:#fffbeb;border-radius:7px;border-left:3px solid var(--gold);line-height:1.6}
+
+/* MAIN LAYOUT */
+.app{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 56px - 33px)}
+/* 33px = notice bar height approx */
+
+/* LEFT */
+.left{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sf{padding:12px 14px;border-bottom:1px solid var(--border)}
+.sbox{position:relative;margin-bottom:9px}
+.sbox input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:'Noto Sans KR',sans-serif;background:var(--surface);color:var(--text);outline:none;transition:border-color .2s}
+.sbox input:focus{border-color:var(--accent)}
+.si-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
+.frow{display:flex;gap:4px;flex-wrap:wrap}
+.fb{padding:4px 9px;border-radius:20px;border:1.5px solid var(--border);background:transparent;font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;font-weight:500;color:var(--muted);transition:all .15s}
+.fb:hover{border-color:var(--accent);color:var(--accent)}
+.fb.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.ri{padding:7px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);background:var(--surface)}
+.ri span{font-weight:700;color:var(--accent)}
+.slist{overflow-y:auto;flex:1;padding:9px;display:flex;flex-direction:column;gap:6px}
+.slist::-webkit-scrollbar{width:3px}
+.slist::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.sc{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:11px 12px;cursor:pointer;transition:all .15s}
+.sc:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 3px 10px rgba(232,69,69,.1)}
+.sc.active{border-color:var(--accent);background:#fff5f5;box-shadow:0 3px 12px rgba(232,69,69,.13)}
+.sn{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px}
+.br{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;color:#fff}
+.badge.일반고{background:#3b82f6}.badge.특성화고{background:#10b981}
+.badge.자사고{background:#e84545}.badge.과학고{background:#8b5cf6}
+.badge.예술고{background:#f59e0b}.badge.마이스터고{background:#0f766e}
+.badge.남고{background:#1d4ed8}.badge.여고{background:#be185d}
+.badge.남녀공학{background:#374151}.badge.공립{background:#64748b}
+.badge.사립{background:#94a3b8}.badge.북구{background:#0369a1}.badge.남구{background:#0f766e}
+.saddr{font-size:10px;color:var(--muted);margin-bottom:4px}
+.sstats{display:flex;gap:9px;font-size:10px;color:var(--muted)}
+.sv{font-weight:700;color:var(--text)}
+
+/* RIGHT */
+.right{position:relative;overflow:hidden}
+#mc{width:100%;height:100%;background:#dde4ed}
+#mc iframe{width:100%;height:100%;border:none}
+.mph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.mph p{font-size:13px;color:var(--muted);max-width:240px;text-align:center;line-height:1.6}
+.mhint{background:var(--navy);color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:500}
+
+/* DETAIL POPUP */
+.dp{position:absolute;top:14px;right:14px;width:295px;background:var(--card);border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.18);z-index:50;overflow:hidden;display:none;animation:popIn .2s ease}
+.dp.visible{display:block}
+@keyframes popIn{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.dph{background:var(--navy);padding:13px 16px;color:#fff}
+.dpn{font-size:15px;font-weight:700;margin-bottom:4px}
+.dpb{display:flex;gap:3px;flex-wrap:wrap}
+.dpbody{padding:13px 16px}
+.dpc{position:absolute;top:9px;right:11px;background:rgba(255,255,255,.15);border:none;color:#fff;cursor:pointer;border-radius:50%;width:21px;height:21px;font-size:12px;display:flex;align-items:center;justify-content:center}
+.dpc:hover{background:rgba(255,255,255,.3)}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px}
+.ic{background:var(--surface);border-radius:7px;padding:8px 10px}
+.il{font-size:9px;color:var(--muted);font-weight:500;margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px}
+.iv{font-size:13px;font-weight:700;color:var(--text)}
+.iv.sm{font-size:11px;font-weight:500}
+.daddr{font-size:11px;color:var(--muted);margin-bottom:9px;line-height:1.5}
+.rvbox{background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1px solid #fde68a;border-radius:8px;padding:9px 11px;margin-bottom:10px}
+.rvlabel{font-size:9px;font-weight:700;color:#92400e;margin-bottom:3px;letter-spacing:.4px}
+.rvtext{font-size:11px;color:#78350f;line-height:1.5}
+.dlinks{display:flex;gap:6px}
+.dlbtn{flex:1;padding:7px;border-radius:7px;border:1.5px solid var(--border);background:transparent;font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;font-weight:500;color:var(--text);text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:3px;transition:all .15s}
+.dlbtn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.dlbtn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+.dlbtn.pri:hover{background:#c73838}
+.nores{padding:32px 16px;text-align:center;color:var(--muted);display:none}
+.nores.visible{display:block}
+.dn{position:absolute;bottom:10px;left:10px;background:rgba(13,27,42,.8);color:rgba(255,255,255,.6);font-size:10px;padding:5px 9px;border-radius:7px;z-index:10}
+
+@media(max-width:768px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
+  .left{height:52vh}
+  .right{height:52vh}
+  .dp{top:8px;right:8px;left:8px;width:auto}
+  .adm-grid{grid-template-columns:1fr}
+  .notice-bar{flex-direction:column;gap:3px;padding:6px 14px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center">
+    <div><div class="logo">GREATENG</div></div>
+    <div class="hdiv"></div>
+    <div><div class="htitle">포항시 고등학교 정보 지도</div><div class="hsub">Pohang High School Directory</div></div>
+  </div>
+  <div class="cbadge" id="tbadge">전체 27개교</div>
+</header>
+
+<!-- 업데이트 고지 바 -->
+<div class="notice-bar">
+  <span>📅 데이터 최종 업데이트: <b>2025년 5월</b> &nbsp;·&nbsp; 출처: 학교알리미·경북교육청·나무위키 &nbsp;·&nbsp; 일부 미확인 정보 포함</span>
+  <span>오류·변경사항 제보: <a href="https://greatenglish1201-ux.github.io/GREATENG/" target="_blank">대단한영어 바로가기 ↗</a></span>
+</div>
+
+<!-- 입시요강 아코디언 -->
+<div class="adm-wrap">
+  <button class="adm-toggle" onclick="toggleAdm(this)">
+    <div class="left-g">
+      <span class="adm-icon">📋</span>
+      <span>2025학년도 포항 고등학교 입시요강 &amp; 전형 안내</span>
+    </div>
+    <span class="adm-arrow" id="adm-arrow">▼</span>
+  </button>
+  <div class="adm-body" id="adm-body">
+    <div class="adm-tabs">
+      <button class="atab active" onclick="showAdmTab('평준화',this)">📌 포항 평준화 배정</button>
+      <button class="atab" onclick="showAdmTab('전기',this)">🏆 전기 전형 학교</button>
+      <button class="atab" onclick="showAdmTab('일정',this)">📅 전형 일정</button>
+    </div>
+
+    <!-- 평준화 탭 -->
+    <div class="adm-section active" id="tab-평준화">
+      <div class="adm-grid">
+        <div class="adm-card">
+          <h4>🏫 평준화 대상 학교</h4>
+          <ul>
+            <li>포항시 <b>북구</b> 일반고 전체 (포항고, 포항여고, 두호고, 장성고, 이동고, 중앙고, 중앙여고, 대동고, 영신고, 유성여고, 세화고 등)</li>
+            <li>거주지 기준 <b>학교군 내 배정</b></li>
+            <li>지원자 선호 반영 후 전산 추첨 배정</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>🗺️ 비평준화 학교 (남구)</h4>
+          <ul>
+            <li><b>세명고, 영일고, 포항동성고, 오천고</b></li>
+            <li>자체 전형 또는 학교 지원 방식</li>
+            <li>농어촌 특별전형: <b>영일고·동성고·오천고</b></li>
+            <li>수도권 대학 농어촌 가산 혜택 적용</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📋 평준화 배정 절차</h4>
+          <ul>
+            <li>① 지원서 제출 (12월 초)</li>
+            <li>② 선호 학교 2지망 기재</li>
+            <li>③ 거주 학교군 내 전산 배정</li>
+            <li>④ 합격자 발표 (12월 말)</li>
+            <li>⑤ 입학 등록 (1월 초)</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>💡 배정 핵심 포인트</h4>
+          <ul>
+            <li>중학교 내신 성적 <b>배정에 미반영</b></li>
+            <li>학교 선택 불가 (추첨 배정)</li>
+            <li>전과학중점 지원 별도 절차</li>
+            <li>특기·체육 전형 일부 학교 운영</li>
+          </ul>
+        </div>
+      </div>
+      <div class="adm-note">⚠️ 포항 평준화는 경상북도교육청 고입전형포털(hischoolgbe.kr)에서 매년 세부 일정 발표. 위 내용은 2025학년도 기준 개요이며 변경 가능성 있음.</div>
+    </div>
+
+    <!-- 전기 전형 탭 -->
+    <div class="adm-section" id="tab-전기">
+      <table class="adm-table">
+        <thead>
+          <tr>
+            <th>학교</th>
+            <th>유형</th>
+            <th>전형 방법</th>
+            <th>특이사항</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>경북과학고</b></td>
+            <td><span class="tag-special">과학고</span></td>
+            <td>서류·면접·과학소양평가</td>
+            <td>전국 단위 모집, 경북 중학생 대상</td>
+          </tr>
+          <tr>
+            <td><b>포항제철고</b></td>
+            <td><span class="tag-early">자사고</span></td>
+            <td>자기소개서·면접·추첨</td>
+            <td>전국 단위, 기숙사 필수, 포스코 장학 혜택</td>
+          </tr>
+          <tr>
+            <td><b>포항제철공업고</b></td>
+            <td><span class="tag-special">마이스터고</span></td>
+            <td>출석·봉사·면접·실기</td>
+            <td>전국 모집, 포스코 그룹 취업 연계</td>
+          </tr>
+          <tr>
+            <td><b>한국해양마이스터고</b></td>
+            <td><span class="tag-special">마이스터고</span></td>
+            <td>출석·봉사·면접</td>
+            <td>전국 모집, 해운·수산 분야 취업 특화</td>
+          </tr>
+          <tr>
+            <td><b>포항예술고</b></td>
+            <td><span class="tag-special">예술고</span></td>
+            <td>실기·면접</td>
+            <td>음악·미술·무용 계열별 실기 전형</td>
+          </tr>
+          <tr>
+            <td><b>포항과학기술고</b></td>
+            <td><span class="tag-late">특성화고</span></td>
+            <td>서류·면접</td>
+            <td>IT·전자 계열, 산업체 연계 현장실습</td>
+          </tr>
+          <tr>
+            <td><b>포항흥해공업고</b></td>
+            <td><span class="tag-late">특성화고</span></td>
+            <td>서류·면접</td>
+            <td>기계·전기 계열, 흥해 소재</td>
+          </tr>
+          <tr>
+            <td><b>포항여자전자고</b></td>
+            <td><span class="tag-late">특성화고</span></td>
+            <td>서류·면접</td>
+            <td>전자·정보통신 계열 여고</td>
+          </tr>
+          <tr>
+            <td><b>포항보건고</b></td>
+            <td><span class="tag-late">특성화고</span></td>
+            <td>서류·면접</td>
+            <td>보건·간호 계열, 죽장면 소재</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="adm-note">⚠️ 전기 전형 학교는 일반 평준화 배정과 별도로 원서 접수. 전기 불합격 시 후기(평준화) 지원 가능. 정확한 원서 일정은 각 학교 홈페이지 확인 필수.</div>
+    </div>
+
+    <!-- 일정 탭 -->
+    <div class="adm-section" id="tab-일정">
+      <div class="adm-grid">
+        <div class="adm-card">
+          <h4><span class="tag-special">과학고·자사고·마이스터고·예술고</span> 전기 전형</h4>
+          <ul>
+            <li>원서 접수: <b>9월 말 ~ 10월 초</b></li>
+            <li>서류 제출: <b>10월</b></li>
+            <li>면접·실기: <b>10~11월</b></li>
+            <li>합격자 발표: <b>11월 말</b></li>
+            <li>등록: <b>12월 초</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4><span class="tag-late">특성화고</span> 전형</h4>
+          <ul>
+            <li>원서 접수: <b>10월 ~ 11월</b></li>
+            <li>합격자 발표: <b>11월 말</b></li>
+            <li>등록: <b>12월</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4><span class="tag-early">평준화 일반고</span> 후기 배정</h4>
+          <ul>
+            <li>원서 접수: <b>12월 초</b></li>
+            <li>전산 배정: <b>12월 중</b></li>
+            <li>합격자 발표: <b>12월 말</b></li>
+            <li>입학 등록: <b>1월 초</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📌 과학중점반 신청</h4>
+          <ul>
+            <li>대상: <b>포항고, 포항이동고</b></li>
+            <li>신청: 입학 후 <b>1학년 8월 경</b></li>
+            <li>기준: 학생 잠재력, 교과 우수성, 포트폴리오</li>
+            <li>2학년부터 과학중점 교육과정 적용</li>
+          </ul>
+        </div>
+      </div>
+      <div class="adm-note">⚠️ 위 일정은 2025학년도 기준 개요. 매년 경상북도교육청이 세부 일정 공지. 반드시 hischoolgbe.kr 공식 확인 필요. 일정은 연도별 변경 가능.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 메인 앱 -->
+<div class="app" id="main-app">
+  <div class="left">
+    <div class="sf">
+      <div class="sbox">
+        <span class="si-icon">🔍</span>
+        <input type="text" id="si" placeholder="학교명 검색..." oninput="filter()">
+      </div>
+      <div class="frow">
+        <button class="fb active" onclick="setF('all',this)">전체</button>
+        <button class="fb" onclick="setF('일반고',this)">일반고</button>
+        <button class="fb" onclick="setF('특성화고',this)">특성화고</button>
+        <button class="fb" onclick="setF('자사고',this)">자사고</button>
+        <button class="fb" onclick="setF('과학고',this)">과학고</button>
+        <button class="fb" onclick="setF('마이스터고',this)">마이스터고</button>
+        <button class="fb" onclick="setF('예술고',this)">예술고</button>
+        <button class="fb" onclick="setF('북구',this)">북구</button>
+        <button class="fb" onclick="setF('남구',this)">남구</button>
+      </div>
+    </div>
+    <div class="ri">총 <span id="rc">27</span>개교 표시 중</div>
+    <div class="slist" id="sl"></div>
+    <div class="nores" id="nr"><div style="font-size:30px;margin-bottom:8px">🏫</div><p>검색 결과가 없습니다.</p></div>
+  </div>
+
+  <div class="right">
+    <div id="mc">
+      <div class="mph" id="mph">
+        <div style="font-size:42px">📍</div>
+        <p>좌측 목록에서 학교를 클릭하면<br>해당 위치를 지도에서 확인할 수 있습니다.</p>
+        <div class="mhint">← 학교를 선택하세요</div>
+      </div>
+    </div>
+    <div class="dp" id="dp">
+      <button class="dpc" onclick="closeP()">✕</button>
+      <div class="dph">
+        <div class="dpn" id="pn"></div>
+        <div class="dpb" id="pb"></div>
+      </div>
+      <div class="dpbody">
+        <div class="daddr" id="pa"></div>
+        <div class="ig" id="pg"></div>
+        <div class="rvbox"><div class="rvlabel">💬 세간의 평</div><div class="rvtext" id="pr"></div></div>
+        <div class="dlinks" id="pl"></div>
+      </div>
+    </div>
+    <div class="dn">📊 학교알리미 2024 · 일부 미확인 포함</div>
+  </div>
+</div>
+
+<script>
+const S=[
+  {id:1,name:"포항제철고등학교",type:"자사고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡동 포스코대로 333",lat:36.0112,lng:129.3301,students:1050,classes:30,phone:"054-279-6000",web:"https://school.gyo6.net/poscohs",admission:"4년제 진학률 남구 1위",review:"포스코 재단 운영 전국 최상위권 자사고. 이과 강세로 SKY·의대 합격자 다수 배출. 포항 최고 명문. 기숙사 생활로 학습 집중도 높음."},
+  {id:2,name:"경북과학고등학교",type:"과학고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0493,lng:129.3605,students:180,classes:6,phone:"054-270-5500",web:"",admission:"KAIST·포공 진학 다수",review:"경북 유일 과학고. KAIST·포항공대 진학자 다수 배출. 수학·과학 영재 특화. 전국 단위 모집, 경쟁률 매우 높음."},
+  {id:3,name:"포항고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 아호로 50 (학산동)",lat:36.0408,lng:129.3697,students:610,classes:26,phone:"054-613-4500",web:"https://school.gyo6.net/pohanghs",admission:"과학중점학교 지정",review:"포항 대표 남고, 1951년 설립. 역사 깊은 전통 명문. 이동고와 함께 과학중점 지정. 포항 인문계 남고 최상위 인지도."},
+  {id:4,name:"포항여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0380,lng:129.3710,students:480,classes:15,phone:"054-270-2321",web:"http://school.gyo6.net/poyogohs",admission:"정보 없음",review:"포항 대표 여고. 평준화 이후 포항고와 함께 배정. 일본 후쿠야마시 국제교류 연중 진행."},
+  {id:5,name:"포항중앙고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 중앙로",lat:36.0290,lng:129.3660,students:400,classes:13,phone:"054-270-7500",web:"http://school.gyo6.net/pojungang",admission:"정보 없음",review:"북구 도심권 남자 공립고. 수능 준비 중심 학업 분위기."},
+  {id:6,name:"포항중앙여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0310,lng:129.3670,students:350,classes:11,phone:"054-270-7600",web:"",admission:"정보 없음",review:"북구 공립 여고. 평준화 배정 학교."},
+  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 이동",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
+  {id:8,name:"포항장성고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로 117",lat:36.0520,lng:129.3800,students:420,classes:14,phone:"054-250-0702",web:"https://school.gyo6.net/phjshs",admission:"정보 없음",review:"두호고와 자주 비교되는 북구 공립 남녀공학. 2004년 개교 신설교."},
+  {id:9,name:"두호고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학전로111번길 21 (두호동)",lat:36.0555,lng:129.3760,students:627,classes:27,phone:"054-250-7260",web:"https://school.gyo6.net/duhohs",admission:"4년제 79.4%",review:"'명문 두호고!' 구호로 유명. 장성고와 자주 비교됨. 북구 공립 남녀공학. 학급수 북구 최다급."},
+  {id:10,name:"대동고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창서길 34",lat:36.0450,lng:129.3820,students:500,classes:16,phone:"054-241-1216",web:"https://school.gyo6.net/daedonghs",admission:"정보 없음",review:"북구 사립 일반고. 1972년 설립 역사 있는 학교."},
+  {id:11,name:"포항영신고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 소티재로 107 (우현동)",lat:36.0400,lng:129.3780,students:450,classes:15,phone:"054-250-7750",web:"https://school.gyo6.net/physhs",admission:"정보 없음",review:"기독교 재단. '죽을 만큼 공부시킨다'는 평으로 포항 내 알려진 사립고. 야자 강제로 유명. 영신중 연계 진학 많음."},
+  {id:12,name:"유성여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창로 43",lat:36.0430,lng:129.3850,students:300,classes:10,phone:"054-246-2315",web:"https://school.gyo6.net/yuseong-g",admission:"정보 없음",review:"북구 사립 여고. 1975년 설립."},
+  {id:13,name:"세화고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0350,lng:129.3800,students:280,classes:9,phone:"054-250-7000",web:"",admission:"정보 없음",review:"원래 여고였다가 2006년 남녀공학 전환. 북구 사립고."},
+  {id:14,name:"포항예술고등학교",type:"예술고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0420,lng:129.3720,students:200,classes:8,phone:"054-270-6000",web:"",admission:"예대 진학 특화",review:"경북 북부 유일 예술고. 음악·미술·무용 계열별 실기 전형. 예술대 진학률 높음."},
+  {id:15,name:"포항과학기술고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0480,lng:129.3840,students:260,classes:9,phone:"054-260-7000",web:"",admission:"정보 없음",review:"IT·과학기술 계열 특성화고. 산업체 연계 현장실습 운영."},
+  {id:16,name:"포항흥해공업고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍",lat:36.1100,lng:129.3550,students:240,classes:8,phone:"054-260-5600",web:"",admission:"정보 없음",review:"흥해읍 소재 기계·전기 계열 공업 특성화고."},
+  {id:17,name:"동지고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0500,lng:129.3650,students:320,classes:11,phone:"054-247-0073",web:"",admission:"정보 없음",review:"구 동지상고. 이명박 전 대통령·단병호 등 저명인사 다수 배출. 상업고 전통 있는 북구 사립교."},
+  {id:18,name:"동지여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0510,lng:129.3640,students:280,classes:9,phone:"054-247-0074",web:"",admission:"정보 없음",review:"구 동지여상. 동지고 인근 사립 여고."},
+  {id:19,name:"세명고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 새천년대로474번길 13 (대잠동)",lat:36.0130,lng:129.3520,students:400,classes:13,phone:"054-273-9696",web:"http://school.gyo6.net/sm",admission:"정보 없음",review:"영암학원 산하 남구 사립고. 신입생 학력 진단고사 운영(영어·수학). 배치고사 성적 1등이 입학식 선서 대표 전통."},
+  {id:20,name:"영일고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 연일읍 동문로 56",lat:36.0060,lng:129.3750,students:350,classes:12,phone:"054-285-5016",web:"https://school.gyo6.net/yihs",admission:"농어촌 특별전형 해당",review:"연일읍 농어촌 특별전형 대상. 남학생보다 여학생 비율 높음. 수도권 대학 농어촌 가산 혜택 적용."},
+  {id:21,name:"포항동성고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 동해면 일월로41번길 26",lat:36.0650,lng:129.4200,students:280,classes:9,phone:"054-286-3009",web:"https://school.gyo6.net/phds",admission:"농어촌 특별전형 해당",review:"동해면 소재 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
+  {id:22,name:"오천고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍",lat:36.0680,lng:129.4100,students:300,classes:10,phone:"054-291-2000",web:"",admission:"농어촌 특별전형 해당",review:"오천읍 유일 고등학교. 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
+  {id:23,name:"포항제철공업고등학교",type:"마이스터고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡동",lat:36.0060,lng:129.3250,students:720,classes:24,phone:"054-279-8000",web:"",admission:"취업률 최상위",review:"포스코 연계 마이스터고. 제철·기계·전기 전공. 포스코 그룹사 취업 인기. 취업률·산업 현장 연계 최우수."},
+  {id:24,name:"한국해양마이스터고등학교",type:"마이스터고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구",lat:36.0100,lng:129.3600,students:360,classes:12,phone:"054-290-7000",web:"",admission:"해양 취업 특화",review:"해양·선박 계열 마이스터고. 해운·수산 분야 취업 특화. 전국 단위 모집."},
+  {id:25,name:"포항여자전자고등학교",type:"특성화고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0460,lng:129.3830,students:220,classes:7,phone:"054-261-3000",web:"",admission:"정보 없음",review:"전자·정보통신 계열 특성화 여고."},
+  {id:26,name:"포항보건고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 죽장면",lat:36.2000,lng:129.2500,students:150,classes:5,phone:"054-261-8000",web:"",admission:"정보 없음",review:"구 죽장고→서포고→경북간호고→포항보건고. 교명 수차례 변경. 죽장면 소재 보건·간호 특성화고."},
+  {id:27,name:"포항장성고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로 117",lat:36.0510,lng:129.3810,students:390,classes:13,phone:"054-250-0800",web:"",admission:"정보 없음",review:"두호고와 자주 비교되는 북구 공립 남녀공학. 2004년 개교 신설교."}
+];
+
+let cf='all', aid=null;
+
+/* 아코디언 */
+function toggleAdm(btn){
+  const body=document.getElementById('adm-body');
+  const arrow=document.getElementById('adm-arrow');
+  const open=body.classList.toggle('open');
+  arrow.classList.toggle('open',open);
+  // 앱 높이 조정
+  const app=document.getElementById('main-app');
+  app.style.height='calc(100vh - 56px - '+(document.querySelector('.notice-bar').offsetHeight+document.querySelector('.adm-wrap').offsetHeight)+'px)';
+}
+
+function showAdmTab(name,btn){
+  document.querySelectorAll('.adm-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* 학교 목록 */
+function bhtml(s){
+  return `<span class="badge ${s.type}">${s.type}</span><span class="badge ${s.gender}">${s.gender}</span><span class="badge ${s.est}">${s.est}</span><span class="badge ${s.gu}">${s.gu}</span>`;
+}
+function render(arr){
+  const sl=document.getElementById('sl');
+  const nr=document.getElementById('nr');
+  document.getElementById('rc').textContent=arr.length;
+  if(!arr.length){sl.innerHTML='';nr.classList.add('visible');return;}
+  nr.classList.remove('visible');
+  sl.innerHTML=arr.map(s=>`
+    <div class="sc${aid===s.id?' active':''}" onclick="sel(${s.id})" id="c${s.id}">
+      <div class="sn">${s.name}</div>
+      <div class="br">${bhtml(s)}</div>
+      <div class="saddr">📍 ${s.addr.replace('경상북도 포항시 ','').substring(0,30)}...</div>
+      <div class="sstats">
+        <span>👨‍🎓 <span class="sv">${s.students.toLocaleString()}명</span></span>
+        <span>🏫 <span class="sv">${s.classes}학급</span></span>
+        <span>☎ <span class="sv">${s.phone}</span></span>
+      </div>
+    </div>`).join('');
+}
+function getFilt(){
+  const q=document.getElementById('si').value.trim().toLowerCase();
+  return S.filter(s=>{
+    const mf=cf==='all'||s.type===cf||s.gu===cf;
+    const ms=s.name.toLowerCase().includes(q)||s.addr.toLowerCase().includes(q);
+    return mf&&ms;
+  });
+}
+function filter(){render(getFilt());}
+function setF(f,btn){
+  cf=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');filter();
+}
+function sel(id){
+  aid=id;const s=S.find(x=>x.id===id);filter();
+  document.getElementById('pn').textContent=s.name;
+  document.getElementById('pb').innerHTML=bhtml(s);
+  document.getElementById('pa').innerHTML=`📍 ${s.addr}<br>☎️ ${s.phone}`;
+  document.getElementById('pg').innerHTML=`
+    <div class="ic"><div class="il">학생 수</div><div class="iv">${s.students.toLocaleString()}<small style="font-size:9px;font-weight:400;color:var(--muted)">명</small></div></div>
+    <div class="ic"><div class="il">학급 수</div><div class="iv">${s.classes}<small style="font-size:9px;font-weight:400;color:var(--muted)">학급</small></div></div>
+    <div class="ic"><div class="il">설립</div><div class="iv sm">${s.est} ${s.type}</div></div>
+    <div class="ic"><div class="il">입시·취업</div><div class="iv sm">${s.admission}</div></div>`;
+  document.getElementById('pr').textContent=s.review;
+  const pl=document.getElementById('pl');pl.innerHTML='';
+  if(s.web){const a=document.createElement('a');a.href=s.web;a.target='_blank';a.className='dlbtn';a.innerHTML='🌐 홈페이지';pl.appendChild(a);}
+  const mb=document.createElement('a');
+  mb.href=`https://www.google.com/maps/search/${encodeURIComponent(s.name+' 포항')}`;
+  mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
+  const mc=document.getElementById('mc');
+  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(s.name+' '+s.addr)}&output=embed&z=16" loading="lazy" allowfullscreen title="${s.name} 지도"></iframe>`;
+  document.getElementById('dp').classList.add('visible');
+  const ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeP(){document.getElementById('dp').classList.remove('visible');aid=null;filter();}
+
+render(S);
+</script>
+</body>
+</html>
