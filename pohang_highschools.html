@@ -533,6 +533,209 @@ body{font-size:15px}
   </div>
 </div>
 
+<!-- 중학교 배정요강 아코디언 -->
+<div class="adm-wrap" id="ms-adm-wrap" style="display:none">
+  <button class="adm-toggle" onclick="toggleMsAdm(this)" style="border-bottom:2px solid var(--accent);">
+    <div class="left-g">
+      <span class="adm-icon">📋</span>
+      <span>📋 <span>2024학년도 포항시 <b style="color:var(--accent)">중학교 입학배정 요강 전체보기</b> <span style="font-size:11px;font-weight:400;color:#f59e0b;margin-left:6px">※ 포항교육지원청 공식 공문 기준</span></span></span>
+    </div>
+    <span class="adm-arrow" style="font-size:18px;color:var(--accent);font-weight:700;background:#fff0f0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">▼</span>
+  </button>
+  <div class="adm-body" id="ms-adm-body">
+
+    <!-- 면책 배너 -->
+    <div style="background:#fff1f2;border:1.5px solid #fca5a5;border-radius:10px;padding:11px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:18px;flex-shrink:0">⚠️</span>
+      <div style="font-size:12px;color:#991b1b;line-height:1.7">
+        <b>이 내용은 포항교육지원청 「2024학년도 중학교 입학업무 시행요강」 공문 기준 참고 요약입니다.</b><br>
+        2025·2026학년도 일정은 매년 포항교육지원청 홈페이지에 별도 공고됩니다. 반드시 <a href="https://www.gbe.kr/ph/main.do" target="_blank" style="color:#991b1b;font-weight:700">포항교육지원청 홈페이지</a>에서 최신 내용을 확인하세요.
+      </div>
+    </div>
+
+    <div class="adm-tabs">
+      <button class="atab active" onclick="showMsAdmTab('배정원칙',this)">📌 배정 원칙</button>
+      <button class="atab" onclick="showMsAdmTab('일정',this)">📅 배정 일정</button>
+      <button class="atab" onclick="showMsAdmTab('특별배정',this)">⭐ 특별배정</button>
+      <button class="atab" onclick="showMsAdmTab('특이사항',this)">📝 특이사항</button>
+    </div>
+
+    <!-- 배정원칙 탭 -->
+    <div class="adm-section active" id="ms-tab-배정원칙">
+      <div class="adm-grid">
+        <div class="adm-card">
+          <h4>🏫 배정 방식</h4>
+          <ul>
+            <li><b>무시험 전산 배정</b> (추첨)</li>
+            <li>학교군: 전산 추첨 배정</li>
+            <li>중학구(학교군 외 지역): 추첨 없이 해당 중학교 자동 배정</li>
+            <li>거주지 기준 학교군·중학구 소속 확인</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📋 지원 자격</h4>
+          <ul>
+            <li>해당 학교군·중학구 <b>거주자</b></li>
+            <li>초등학교 졸업(예정)자</li>
+            <li>초등학교 졸업학력 검정고시 합격자</li>
+            <li>외국 또는 이북지역에서 6년 이상 수료자</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📝 원서 접수</h4>
+          <ul>
+            <li>초등학교 졸업(예정)자: <b>출신 초등학교</b>에서 제출</li>
+            <li>검정고시 합격자: <b>포항교육지원청</b>에 직접 제출</li>
+            <li>수수료: <b>없음</b></li>
+            <li>남·여별 배정원서 색 구분 (남: 흰색, 여: 노란색)</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>🗺️ 학구도 확인</h4>
+          <ul>
+            <li>거주지별 배정 학교군·중학구 확인 필수</li>
+            <li><a href="https://schoolzone.emac.kr/gis/gis.do#" target="_blank" style="color:#1d4ed8;font-weight:700">교육부 학구도 서비스 ↗</a></li>
+            <li>포항교육지원청 홈페이지 확인 권장</li>
+            <li>위장전입 적발 시 최초 배정교로 이관</li>
+          </ul>
+        </div>
+      </div>
+      <div class="adm-note">📌 포항 학교군: 포항시 제1·2학교군, 연일학교군, 오천학교군으로 구분. 학교군 외 지역은 중학구로 해당 학교에 자동 배정. 학구도 서비스(schoolzone.emac.kr)에서 우리 집 주소로 배정 학교 확인 가능.</div>
+    </div>
+
+    <!-- 일정 탭 -->
+    <div class="adm-section" id="ms-tab-일정">
+      <div class="adm-grid">
+        <div class="adm-card">
+          <h4>📅 원서 접수</h4>
+          <ul>
+            <li>접수 기간: <b>12월 초 ~ 12월 중순</b></li>
+            <li>초등학교별 제출 기일 상이 (학교 공문 확인)</li>
+            <li>나이스(NEIS) 전산 입력 후 원서 제출</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>🎯 전산 배정</h4>
+          <ul>
+            <li>배정일: <b>1월 초~중순</b></li>
+            <li>장소: 포항교육지원청</li>
+            <li>참관인 배석 하에 전산 추첨 진행</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📢 결과 발표</h4>
+          <ul>
+            <li>발표: <b>1월 중순</b></li>
+            <li>포항교육지원청 홈페이지 게재</li>
+            <li>배정통지서: 출신 초등학교에서 배부</li>
+            <li>검정고시 합격자: 교육지원청 직접 수령</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📝 입학 등록</h4>
+          <ul>
+            <li>등록 기간: <b>1월 중순 ~ 하순</b></li>
+            <li>중학교는 의무교육 — 반드시 등록</li>
+            <li>재배정 원서: <b>1월 하순 ~ 2월 초</b></li>
+            <li>재배정은 거주지 이전 시 1회에 한함</li>
+          </ul>
+        </div>
+      </div>
+      <div class="adm-note">📌 위 일정은 2024학년도 포항교육지원청 공문 기준. 매년 일정 변경 가능. 반드시 <a href="https://www.gbe.kr/ph/main.do" target="_blank" style="color:#92400e;font-weight:600">포항교육지원청 홈페이지</a>에서 해당 연도 최신 일정 확인.</div>
+    </div>
+
+    <!-- 특별배정 탭 -->
+    <div class="adm-section" id="ms-tab-특별배정">
+      <table class="adm-table">
+        <thead>
+          <tr><th>대상</th><th>배정 방식</th><th>구비서류</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>다자녀가정</b><br><span class="tag-special" style="font-size:10px">우선배정</span></td>
+            <td>18세 미만 자녀 3명 이상 가정. 희망학교 우선 배정 (추첨 가능 학교 내)</td>
+            <td>다자녀가정 우선배정 희망원 + 주민등록등본 또는 가족관계등록부</td>
+          </tr>
+          <tr>
+            <td><b>체육특기자</b></td>
+            <td>배정 심사 결과 공문 명단 기준 별도 배정</td>
+            <td>교육지원청 지정 서류</td>
+          </tr>
+          <tr>
+            <td><b>지체부자유자</b></td>
+            <td>주거지에서 가장 가까운 학교 우선 배정</td>
+            <td>장애인등록증 사본 또는 의사진단서·소견서 + 주민등록등본</td>
+          </tr>
+          <tr>
+            <td><b>국가·독립유공자 자녀</b></td>
+            <td>증빙서류 제출 후 별도 배정</td>
+            <td>국가(독립)유공자증 사본 + 주민등록등본 + 가족관계증명서</td>
+          </tr>
+          <tr>
+            <td><b>쌍생아</b></td>
+            <td>동일 학교 배정 희망 시 신청 가능</td>
+            <td>쌍둥이 동일학교 배정 희망원 + 주민등록등본</td>
+          </tr>
+          <tr>
+            <td><b>학교폭력 분리배정</b></td>
+            <td>가해·피해학생 다른 학교 배정. 피해학생 우선 배정</td>
+            <td>별도 공문 처리 (원서 표기 없음)</td>
+          </tr>
+          <tr>
+            <td><b>작은학교 자유학구제</b></td>
+            <td>큰 학교 학구 학생이 작은 학교 지원 가능</td>
+            <td>별표3 해당 학교 확인</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="adm-note">📌 특별배정 대상자는 반드시 학부모 확인을 받아 원서 작성. 재배정은 전가족 거주지 이전 확인 후 1회에 한하며, 위장전입 적발 시 최초 배정교로 이관.</div>
+    </div>
+
+    <!-- 특이사항 탭 -->
+    <div class="adm-section" id="ms-tab-특이사항">
+      <div class="adm-grid">
+        <div class="adm-card">
+          <h4>🎨 포항항도중 미술중점반</h4>
+          <ul>
+            <li>경상북도교육청 지정 <b>예술중점학교</b></li>
+            <li>포항시 전체 학생 대상 <b>선지원 후 추첨 배정</b></li>
+            <li>배정된 학생은 일반 배정원서 제출 제외</li>
+            <li>미배정 학생은 해당 학교군·중학구 원서 제출</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>🌟 포항항도중 경북희망학교</h4>
+          <ul>
+            <li>일반과정 희망학급 별도 선지원</li>
+            <li>포항시 전체 학생 대상 추첨 배정</li>
+            <li>배정된 학생은 일반 배정원서 제출 제외</li>
+            <li>미배정 학생은 해당 학교군·중학구 원서 제출</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>🚫 배정 제외 대상</h4>
+          <ul>
+            <li>특수목적중학교 진학자 (경북체육중 등)</li>
+            <li>학력인정학교 진학자 (한동글로벌학교, 한울안중 등)</li>
+            <li>계원예술중·선화예술중·한국바둑중 진학자</li>
+            <li>이중지원 불가</li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4>📌 선배정 희망 지역</h4>
+          <ul>
+            <li><b>흥해중학구</b>: 초곡초 졸업예정자 흥해중 희망 가능</li>
+            <li><b>2학교군</b>: 청림초·인덕초 → 상도중·송도중 희망</li>
+            <li><b>연일학교군</b>: 대송초·남성초 → 대송중, 연일초·연일형산초 → 영일중 희망</li>
+          </ul>
+        </div>
+      </div>
+      <div class="adm-note">📌 출처: 포항교육지원청 「2024학년도 중학교 입학업무 시행요강」. 매년 세부사항 변경 가능. 반드시 <a href="https://www.gbe.kr/ph/main.do" target="_blank" style="color:#92400e;font-weight:600">포항교육지원청 홈페이지</a> 최신 공문 확인.</div>
+    </div>
+
+  </div>
+</div>
+
 <!-- 메인 앱 -->
 <div class="app" id="main-app">
   <div class="left">
@@ -743,6 +946,8 @@ function switchSchoolTab(tab,btn){
   btn.classList.add('active');
   var adm=document.querySelector('.adm-wrap');
   if(adm)adm.style.display=tab==='high'?'':'none';
+  var msAdm=document.getElementById('ms-adm-wrap');
+  if(msAdm)msAdm.style.display=tab==='mid'?'':'none';
   var fr=document.getElementById('filter-row');
   fr.innerHTML='';
   var fl=tab==='high'
@@ -822,6 +1027,19 @@ sel=function(id){
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
+
+
+function toggleMsAdm(btn){
+  var body=document.getElementById('ms-adm-body');
+  var open=body.classList.toggle('open');
+  btn.querySelector('.adm-arrow').classList.toggle('open',open);
+}
+function showMsAdmTab(name,btn){
+  document.querySelectorAll('#ms-adm-wrap .adm-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('#ms-adm-wrap .atab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ms-tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
 
 render(S);
 </script>
