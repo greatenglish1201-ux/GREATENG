@@ -6,18 +6,18 @@
 <title>기출분석 & 예상문제 | GREATENG</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2e3347;
-    --accent: #4f8ef7;
-    --accent2: #7c5cfc;
-    --green: #3ecf8e;
-    --orange: #f7a14f;
-    --red: #f75f5f;
-    --text: #e8eaf0;
-    --text2: #8b90a8;
-    --text3: #555a72;
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface2: #eef1f8;
+    --border: #d6dae8;
+    --accent: #2f6de0;
+    --accent2: #6b47d6;
+    --green: #1a9e6a;
+    --orange: #d97706;
+    --red: #dc3545;
+    --text: #1e2336;
+    --text2: #4a5270;
+    --text3: #8e95b0;
     --radius: 10px;
     --font: 'Noto Sans KR', sans-serif;
   }
@@ -28,7 +28,8 @@
   header {
     display: flex; align-items: center; gap: 12px;
     padding: 14px 24px; border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   }
   header .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent); }
   header .sub  { font-size: 12px; color: var(--text2); margin-top: 1px; }
@@ -50,7 +51,7 @@
   main { display: flex; height: calc(100vh - 57px); }
   .left-panel {
     width: 380px; min-width: 320px; border-right: 1px solid var(--border);
-    background: var(--surface); display: flex; flex-direction: column; overflow: hidden;
+    background: #f8faff; display: flex; flex-direction: column; overflow: hidden;
   }
   .right-panel { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
 
@@ -67,7 +68,7 @@
   /* 텍스트 입력 */
   .input-label { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
   textarea {
-    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+    width: 100%; background: #f8faff; border: 1px solid var(--border); border-radius: var(--radius);
     color: var(--text); font-family: var(--font); font-size: 13px; padding: 12px;
     resize: none; transition: border-color .2s; outline: none;
   }
@@ -77,7 +78,7 @@
   /* 이미지 업로드 */
   .upload-zone {
     border: 2px dashed var(--border); border-radius: var(--radius); padding: 28px 16px;
-    text-align: center; cursor: pointer; transition: all .2s; background: var(--bg);
+    text-align: center; cursor: pointer; transition: all .2s; background: #f8faff;
   }
   .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(79,142,247,.05); }
   .upload-zone .icon { font-size: 28px; margin-bottom: 8px; }
@@ -308,6 +309,12 @@
         <div class="input-label">기출 시험지 텍스트 붙여넣기</div>
         <textarea id="examText" rows="14" placeholder="기출 시험지 전체 내용을 붙여넣으세요.&#10;&#10;예)&#10;[1~2] 다음 글을 읽고 물음에 답하시오.&#10;&#10;지문 내용...&#10;&#10;1. 윗글의 제목으로 가장 적절한 것은?&#10;① ..."></textarea>
 
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span class="input-label">시험 범위</span>
+          <input type="text" id="optRange" placeholder="예) 1과~3과, Unit 1~5, p.12~56"
+            style="background:#f8faff;border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s;width:100%"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
         <div class="option-row">
           <span class="option-label">학교명</span>
           <input type="text" id="optSchool" placeholder="예) 포항제철중" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:5px 8px;outline:none;width:160px">
@@ -339,14 +346,17 @@
             <option value="both">중간+기말</option>
           </select>
         </div>
-        <div class="option-row">
-          <span class="option-label">예상문제 수</span>
-          <select id="optQCount">
-            <option value="5">5문제</option>
-            <option value="10" selected>10문제</option>
-            <option value="15">15문제</option>
-            <option value="20">20문제</option>
-          </select>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="option-label">예상문제 수</span>
+            <span style="font-size:14px;font-weight:800;color:var(--accent)" id="optQCountLabel">25문제</span>
+          </div>
+          <input type="range" id="optQCount" min="5" max="50" step="5" value="25"
+            oninput="document.getElementById('optQCountLabel').textContent=this.value+'문제'"
+            style="width:100%;accent-color:var(--accent);cursor:pointer">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)">
+            <span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span><span>45</span><span>50</span>
+          </div>
         </div>
       </div>
 
@@ -361,6 +371,18 @@
         <input type="file" id="fileInput" accept="image/*,.pdf" multiple style="display:none">
         <div class="upload-preview" id="uploadPreview"></div>
 
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span class="input-label">시험 범위</span>
+          <input type="text" id="optRange" placeholder="예) 1과~3과, Unit 1~5, p.12~56"
+            style="background:#f8faff;border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s;width:100%"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span class="input-label">시험 범위</span>
+          <input type="text" id="optRange2" placeholder="예) 1과~3과, Unit 1~5, p.12~56"
+            style="background:#f8faff;border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s;width:100%"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
         <div class="option-row">
           <span class="option-label">학교명</span>
           <input type="text" id="optSchool2" placeholder="예) 포항제철중" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:5px 8px;outline:none;width:160px">
@@ -392,14 +414,17 @@
             <option value="both">중간+기말</option>
           </select>
         </div>
-        <div class="option-row">
-          <span class="option-label">예상문제 수</span>
-          <select id="optQCount2">
-            <option value="5">5문제</option>
-            <option value="10" selected>10문제</option>
-            <option value="15">15문제</option>
-            <option value="20">20문제</option>
-          </select>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="option-label">예상문제 수</span>
+            <span style="font-size:14px;font-weight:800;color:var(--accent)" id="optQCountLabel2">25문제</span>
+          </div>
+          <input type="range" id="optQCount2" min="5" max="50" step="5" value="25"
+            oninput="document.getElementById('optQCountLabel2').textContent=this.value+'문제'"
+            style="width:100%;accent-color:var(--accent);cursor:pointer">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)">
+            <span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span><span>45</span><span>50</span>
+          </div>
         </div>
       </div>
 
@@ -462,6 +487,7 @@ function switchTab(t) {
 function getOptions() {
   const t = state.tab;
   return {
+    range:    (document.getElementById(t==='text' ? 'optRange'   : 'optRange2')?.value   || '').trim(),
     school:   (document.getElementById(t==='text' ? 'optSchool'  : 'optSchool2')?.value  || '').trim(),
     grade:    document.getElementById(t==='text' ? 'optGrade'   : 'optGrade2').value,
     year:     document.getElementById(t==='text' ? 'optYear'    : 'optYear2').value,
@@ -554,11 +580,12 @@ async function startAnalysis() {
 
   const levelLabel = opts.level === 'middle' ? '중학교' : '고등학교';
   const examLabel  = opts.examType === 'midterm' ? '중간고사' : opts.examType === 'final' ? '기말고사' : '중간+기말고사';
+  const rangeLabel = opts.range ? `시험범위: ${opts.range}` : '';
 
   const system = `당신은 한국 ${levelLabel} 영어 내신 시험 전문 분석가입니다.
 기출 시험지를 분석하여 반드시 JSON만 반환하세요. 마크다운 코드블록 없이 순수 JSON만.`;
 
-  const prompt = `다음 ${levelLabel} ${examLabel} 기출 시험지를 분석하세요.
+  const prompt = `다음 ${levelLabel} ${examLabel} 기출 시험지를 분석하세요.${rangeLabel ? '\n'+rangeLabel : ''}
 
 분석 결과를 아래 JSON 형식으로만 반환하세요:
 {
@@ -963,6 +990,7 @@ async function downloadDocx() {
   const opts = getOptions();
   const levelLabel = opts.level === 'middle' ? '중학교' : '고등학교';
   const metaParts = [opts.year && opts.year+'년', opts.school, opts.grade && opts.grade+'학년', levelLabel].filter(Boolean);
+  const rangeStr = opts.range ? `시험범위: ${opts.range}` : '';
   const metaStr = metaParts.join(' · ');
 
   let html = `<!DOCTYPE html><html lang="ko"><head>
@@ -988,6 +1016,7 @@ async function downloadDocx() {
   </div>
   <h1 style="font-size:16pt;margin-bottom:4px">대단한영어 예상문제</h1>
   <div class="meta">${metaStr} · ${new Date().toLocaleDateString()}</div>
+  ${rangeStr ? `<div style="text-align:center;font-size:10pt;color:#8B0000;margin-bottom:8px;font-weight:bold">${rangeStr}</div>` : ""}
   <hr style="border:none;border-top:2px solid #8B0000;margin-bottom:16px">`;
 
   html += `<div class="analysis"><h2>📊 기출 분석 요약</h2>
