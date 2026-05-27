@@ -814,8 +814,8 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   const P=()=>passages[pi]?.data;
 
 
-  const upP=(patch)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:{...p.data,...patch}}:p));
-  const upPDeep=(fn)=>setPassages(prev=>prev.map((p,i)=>i===pi?{...p,data:fn({...p.data})}:p));
+  const upP=(patch)=>setPassages(prev=>prev.map((p)=>p.id===pi?{...p,data:{...p.data,...patch}}:p));
+  const upPDeep=(fn)=>setPassages(prev=>prev.map((p)=>p.id===pi?{...p,data:fn({...p.data})}:p));
 
   const genBlankDistractors=async(sentIdx,keyword,pData)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
@@ -1784,7 +1784,7 @@ Return JSON only:
             {passages.filter(pg=>pg.data).map((pg,_,arr)=><button key={pg.id} onClick={()=>{setPi(pg.id);setAt(0);}} style={{background:pi===pg.id?'#1d1d1f':'transparent',color:pi===pg.id?'#fff':'#555',border:'0.5px solid #e5e5e5',borderRadius:7,padding:'4px 12px',fontSize:13,cursor:'pointer',fontWeight:pi===pg.id?500:400}}>{pg.data.title}</button>)}
           </div>
           <div style={{display:'flex',gap:6}}>
-            <button onClick={()=>setStep('setup')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 처음</button>
+            <button onClick={()=>{const ok=passages.filter(pg=>pg.data);if(ok.length){setPi(ok[0].id);setAt(0);}}} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 처음</button>
             {(()=>{const ok=passages.filter(pg=>pg.data);const ci=ok.findIndex(pg=>pg.id===pi);return(<>
               <button onClick={()=>{if(ci>0){setPi(ok[ci-1].id);setAt(0);}}} disabled={ci<=0} style={{padding:'5px 10px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer',opacity:ci<=0?.3:1}}>◀ 이전</button>
               <span style={{fontSize:12,color:'#888',alignSelf:'center'}}>{ci+1}/{ok.length}</span>
@@ -1808,6 +1808,24 @@ Return JSON only:
               <button title={isDisabled?'출제 활성화':'미출제 설정'} onClick={()=>{upPDeep(p=>{const dt=[...(p.disabled_types||[])];const idx=dt.indexOf(typeKey);if(idx>=0)dt.splice(idx,1);else dt.push(typeKey);return{...p,disabled_types:dt};});}} style={{fontSize:9,padding:'2px 4px',borderRadius:4,border:`0.5px solid ${isDisabled?'#E24B4A':'#ddd'}`,background:isDisabled?'#E24B4A18':'transparent',color:isDisabled?'#E24B4A':'#bbb',cursor:'pointer'}}>{isDisabled?'✕':'−'}</button>
             </div>;
           })}
+          {(()=>{
+            const regenFns=[
+              ()=>genTopicOptions(p),
+              ()=>genBlankDistractors(p?.blank_sentence_index,p?.blank_keyword,p),
+              ()=>genOrderBlocks(p),
+              ()=>genSummaryCandidates(p),
+              ()=>genImplicationOptions(p?.implication_sentence_index,p?.implication_keyword,p),
+              ()=>genIrrelCandidates(p),
+              ()=>genInsertCandidates(p),
+              ()=>genGrammarVocabSet(true,p),
+              ()=>genGrammarVocabSet(false,p),
+            ];
+            const typeLabels=['topic','blank','order','summary','implication','irrel','insert','grammar','vocab'];
+            const isLoading=genLoading===typeLabels[at];
+            return<button onClick={()=>regenFns[at]()} disabled={!!genLoading} style={{padding:'4px 12px',fontSize:12,background:genLoading?'#aaa':'#E8490F',color:'#fff',border:'none',borderRadius:6,cursor:genLoading?'wait':'pointer',fontWeight:600,whiteSpace:'nowrap'}}>
+              {isLoading?'⏳ 생성중...':'↻ 선지 재생성'}
+            </button>;
+          })()}
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
             <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>제목</span>
             <GrammarItemInput value={p?.title||''} onSave={v=>upP({title:v})}
