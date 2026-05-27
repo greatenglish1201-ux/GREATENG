@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기출분석 & 예상문제 | GREATENG</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3347;
+    --accent: #4f8ef7;
+    --accent2: #7c5cfc;
+    --green: #3ecf8e;
+    --orange: #f7a14f;
+    --red: #f75f5f;
+    --text: #e8eaf0;
+    --text2: #8b90a8;
+    --text3: #555a72;
+    --radius: 10px;
+    --font: 'Noto Sans KR', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  header .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent); }
+  header .sub  { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  header .step-bar { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+  .step-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border); color: var(--text3); background: var(--surface2);
+    transition: all .25s;
+  }
+  .step-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,.1); }
+  .step-pill.done   { border-color: var(--green);  color: var(--green);  background: rgba(62,207,142,.08); }
+  .step-pill .num   { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; background: var(--border); }
+  .step-pill.active .num { background: var(--accent); color: #fff; }
+  .step-pill.done   .num { background: var(--green);  color: #fff; }
+  .step-sep { color: var(--text3); font-size: 10px; }
+
+  /* ── LAYOUT ── */
+  main { display: flex; height: calc(100vh - 57px); }
+  .left-panel {
+    width: 380px; min-width: 320px; border-right: 1px solid var(--border);
+    background: var(--surface); display: flex; flex-direction: column; overflow: hidden;
+  }
+  .right-panel { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── LEFT PANEL ── */
+  .panel-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .panel-tab {
+    flex: 1; padding: 12px; text-align: center; font-size: 12px; font-weight: 600;
+    color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  .panel-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* 텍스트 입력 */
+  .input-label { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: var(--font); font-size: 13px; padding: 12px;
+    resize: none; transition: border-color .2s; outline: none;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text3); }
+
+  /* 이미지 업로드 */
+  .upload-zone {
+    border: 2px dashed var(--border); border-radius: var(--radius); padding: 28px 16px;
+    text-align: center; cursor: pointer; transition: all .2s; background: var(--bg);
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(79,142,247,.05); }
+  .upload-zone .icon { font-size: 28px; margin-bottom: 8px; }
+  .upload-zone p { font-size: 12px; color: var(--text2); }
+  .upload-zone span { font-size: 11px; color: var(--text3); }
+  .upload-preview { display: flex; flex-wrap: wrap; gap: 8px; }
+  .thumb {
+    position: relative; width: 80px; height: 80px;
+    border-radius: 6px; overflow: hidden; border: 1px solid var(--border);
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb .del {
+    position: absolute; top: 2px; right: 2px; width: 18px; height: 18px;
+    background: rgba(0,0,0,.7); border-radius: 50%; border: none;
+    color: #fff; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* 옵션 */
+  .option-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .option-label { font-size: 12px; color: var(--text2); }
+  select {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); font-size: 12px; padding: 5px 8px; outline: none;
+  }
+
+  /* 버튼 */
+  .btn {
+    padding: 10px 18px; border-radius: 8px; border: none; font-family: var(--font);
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s;
+    display: flex; align-items: center; gap: 6px; justify-content: center;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #3a7de8; }
+  .btn-primary:disabled { background: var(--border); color: var(--text3); cursor: not-allowed; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text2); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-green { background: var(--green); color: #0f1117; }
+  .btn-green:hover { background: #2eb87a; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-full { width: 100%; }
+
+  /* ── RIGHT PANEL CARDS ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700; color: var(--text2);
+    text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    background: rgba(79,142,247,.15); color: var(--accent);
+  }
+
+  /* 분석 결과 */
+  .type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .type-card {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .type-card .type-name { font-size: 12px; font-weight: 700; color: var(--text); }
+  .type-card .type-count { font-size: 22px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .type-card .type-pct { font-size: 11px; color: var(--text3); }
+  .type-card .bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px; }
+  .type-card .bar { height: 100%; border-radius: 2px; background: var(--accent); transition: width .5s; }
+  .type-card.top { border-color: var(--accent); background: rgba(79,142,247,.06); }
+  .type-card.top .bar { background: var(--accent2); }
+  .type-card.top .type-count { color: var(--accent2); }
+
+  /* 지문 패턴 테이블 */
+  .pattern-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .pattern-table th {
+    text-align: left; padding: 7px 10px; color: var(--text3);
+    border-bottom: 1px solid var(--border); font-weight: 600; font-size: 11px;
+  }
+  .pattern-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .pattern-table tr:last-child td { border-bottom: none; }
+  .pattern-table tr:hover td { background: var(--surface2); }
+  .type-tag {
+    display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    margin: 2px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
+  }
+  .type-tag.used { background: rgba(79,142,247,.12); border-color: var(--accent); color: var(--accent); }
+
+  /* 예상문제 카드 */
+  .q-card {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .q-card-header { display: flex; align-items: center; gap: 8px; }
+  .q-num { font-size: 11px; font-weight: 800; color: var(--text3); }
+  .q-type-badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    background: rgba(124,92,252,.15); color: var(--accent2);
+  }
+  .q-passage-ref { font-size: 11px; color: var(--text3); margin-left: auto; }
+  .q-stem { font-size: 13px; line-height: 1.7; color: var(--text); }
+  .q-options { display: flex; flex-direction: column; gap: 5px; }
+  .q-option {
+    padding: 7px 10px; border-radius: 6px; font-size: 12px;
+    background: var(--surface); border: 1px solid var(--border); color: var(--text2);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .q-option.answer { border-color: var(--green); background: rgba(62,207,142,.08); color: var(--green); }
+  .q-option .opt-num { font-weight: 700; flex-shrink: 0; }
+  .q-actions { display: flex; gap: 8px; }
+
+  /* 검증 패널 */
+  .verify-item {
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px;
+  }
+  .verify-header {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--surface2); cursor: pointer;
+  }
+  .verify-header .v-num { font-size: 12px; font-weight: 700; color: var(--text3); }
+  .verify-header .v-type { font-size: 12px; font-weight: 700; color: var(--accent2); }
+  .verify-header .v-ref  { font-size: 11px; color: var(--text3); margin-left: auto; }
+  .verify-status {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .verify-status.ok     { background: var(--green); }
+  .verify-status.warn   { background: var(--orange); }
+  .verify-status.err    { background: var(--red); }
+  .verify-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .verify-body.hidden { display: none; }
+  .edit-field { display: flex; flex-direction: column; gap: 4px; }
+  .edit-field label { font-size: 11px; color: var(--text3); font-weight: 600; }
+  .edit-field input, .edit-field textarea {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); font-family: var(--font); font-size: 13px; padding: 8px 10px; outline: none;
+  }
+  .edit-field input:focus, .edit-field textarea:focus { border-color: var(--accent); }
+  .answer-select { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ans-btn {
+    padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer;
+    transition: all .15s;
+  }
+  .ans-btn.selected { border-color: var(--green); background: rgba(62,207,142,.12); color: var(--green); }
+  .verify-footer { display: flex; gap: 8px; justify-content: flex-end; padding: 10px 14px; border-top: 1px solid var(--border); }
+
+  /* 출력 패널 */
+  .output-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .output-btn {
+    padding: 16px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface2); cursor: pointer; text-align: center; transition: all .2s;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .output-btn:hover { border-color: var(--accent); background: rgba(79,142,247,.06); }
+  .output-btn .o-icon { font-size: 24px; }
+  .output-btn .o-label { font-size: 12px; font-weight: 700; color: var(--text); }
+  .output-btn .o-sub { font-size: 11px; color: var(--text3); }
+
+  /* 로딩 */
+  .loading-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px; }
+  .spinner {
+    width: 36px; height: 36px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 13px; color: var(--text2); }
+
+  /* 빈 상태 */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text3); }
+  .empty-state .e-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-state p { font-size: 13px; }
+
+  /* toast */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 20px; font-size: 13px; color: var(--text);
+    opacity: 0; transition: all .3s; pointer-events: none; z-index: 999;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.ok   { border-color: var(--green); color: var(--green); }
+  #toast.err  { border-color: var(--red);   color: var(--red); }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* 반응형 */
+  @media (max-width: 768px) {
+    main { flex-direction: column; height: auto; }
+    .left-panel { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid var(--border); }
+    header .step-bar { display: none; }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">GREATENG</div>
+    <div class="sub">기출분석 & 예상문제 어시스트</div>
+  </div>
+  <div class="step-bar">
+    <div class="step-pill active" id="sp1"><span class="num">1</span> 입력</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="sp2"><span class="num">2</span> 분석</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="sp3"><span class="num">3</span> 생성</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="sp4"><span class="num">4</span> 검증</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="sp5"><span class="num">5</span> 출력</div>
+  </div>
+</header>
+
+<main>
+  <!-- ── LEFT PANEL ── -->
+  <div class="left-panel">
+    <div class="panel-tabs">
+      <div class="panel-tab active" onclick="switchTab('text')">✏️ 텍스트</div>
+      <div class="panel-tab" onclick="switchTab('image')">📷 이미지/PDF</div>
+    </div>
+    <div class="panel-body" id="panelBody">
+
+      <!-- 텍스트 탭 -->
+      <div id="tabText">
+        <div class="input-label">기출 시험지 텍스트 붙여넣기</div>
+        <textarea id="examText" rows="14" placeholder="기출 시험지 전체 내용을 붙여넣으세요.&#10;&#10;예)&#10;[1~2] 다음 글을 읽고 물음에 답하시오.&#10;&#10;지문 내용...&#10;&#10;1. 윗글의 제목으로 가장 적절한 것은?&#10;① ..."></textarea>
+
+        <div class="option-row">
+          <span class="option-label">학교급</span>
+          <select id="optLevel">
+            <option value="middle">중학교</option>
+            <option value="high">고등학교</option>
+          </select>
+        </div>
+        <div class="option-row">
+          <span class="option-label">시험 종류</span>
+          <select id="optExamType">
+            <option value="midterm">중간고사</option>
+            <option value="final">기말고사</option>
+            <option value="both">중간+기말</option>
+          </select>
+        </div>
+        <div class="option-row">
+          <span class="option-label">예상문제 수</span>
+          <select id="optQCount">
+            <option value="5">5문제</option>
+            <option value="10" selected>10문제</option>
+            <option value="15">15문제</option>
+            <option value="20">20문제</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 이미지 탭 -->
+      <div id="tabImage" style="display:none">
+        <div class="input-label">이미지 / PDF 업로드</div>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="icon">📄</div>
+          <p>클릭 또는 드래그하여 업로드</p>
+          <span>JPG, PNG, PDF 지원 · 최대 10MB</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/*,.pdf" multiple style="display:none">
+        <div class="upload-preview" id="uploadPreview"></div>
+
+        <div class="option-row">
+          <span class="option-label">학교급</span>
+          <select id="optLevel2">
+            <option value="middle">중학교</option>
+            <option value="high">고등학교</option>
+          </select>
+        </div>
+        <div class="option-row">
+          <span class="option-label">시험 종류</span>
+          <select id="optExamType2">
+            <option value="midterm">중간고사</option>
+            <option value="final">기말고사</option>
+            <option value="both">중간+기말</option>
+          </select>
+        </div>
+        <div class="option-row">
+          <span class="option-label">예상문제 수</span>
+          <select id="optQCount2">
+            <option value="5">5문제</option>
+            <option value="10" selected>10문제</option>
+            <option value="15">15문제</option>
+            <option value="20">20문제</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="btnAnalyze" onclick="startAnalysis()">
+        🔍 기출 분석 시작
+      </button>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel" id="rightPanel">
+    <div class="empty-state">
+      <div class="e-icon">📊</div>
+      <p>기출 시험지를 입력하고<br>분석을 시작하세요</p>
+    </div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec';
+
+// ── STATE ──
+let state = {
+  tab: 'text',
+  images: [],      // { file, base64, name }
+  analysisResult: null,
+  generatedQs: [],
+  verifiedQs: [],
+  step: 1
+};
+
+// ── UTILS ──
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  setTimeout(() => el.className = '', 2500);
+}
+
+function setStep(n) {
+  state.step = n;
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('sp' + i);
+    el.className = 'step-pill' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+}
+
+function switchTab(t) {
+  state.tab = t;
+  document.querySelectorAll('.panel-tab').forEach((el,i) => {
+    el.classList.toggle('active', (i===0 && t==='text') || (i===1 && t==='image'));
+  });
+  document.getElementById('tabText').style.display  = t === 'text'  ? '' : 'none';
+  document.getElementById('tabImage').style.display = t === 'image' ? '' : 'none';
+}
+
+function getOptions() {
+  const t = state.tab;
+  return {
+    level:    document.getElementById(t==='text' ? 'optLevel'    : 'optLevel2').value,
+    examType: document.getElementById(t==='text' ? 'optExamType' : 'optExamType2').value,
+    qCount:   parseInt(document.getElementById(t==='text' ? 'optQCount' : 'optQCount2').value),
+  };
+}
+
+// ── IMAGE UPLOAD ──
+const uploadZone = document.getElementById('uploadZone');
+const fileInput  = document.getElementById('fileInput');
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+function handleFiles(files) {
+  [...files].forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      state.images.push({ file, base64: e.target.result.split(',')[1], name: file.name, mimeType: file.type });
+      renderThumbs();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderThumbs() {
+  const prev = document.getElementById('uploadPreview');
+  prev.innerHTML = state.images.map((img, i) => `
+    <div class="thumb">
+      <img src="data:${img.mimeType};base64,${img.base64}" alt="${img.name}">
+      <button class="del" onclick="removeImage(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeImage(i) {
+  state.images.splice(i, 1);
+  renderThumbs();
+}
+
+// ── ANTHROPIC API ──
+async function callClaude(systemPrompt, userContent, maxTokens=2000) {
+  const messages = [{ role: 'user', content: userContent }];
+  const body = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: maxTokens,
+    system: systemPrompt,
+    messages
+  };
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('API 오류: ' + res.status);
+  const data = await res.json();
+  return data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+// ── STEP 1 → 2: 분석 ──
+async function startAnalysis() {
+  const opts = getOptions();
+  let inputContent;
+
+  if (state.tab === 'text') {
+    const txt = document.getElementById('examText').value.trim();
+    if (!txt) { toast('시험지 내용을 입력해주세요', 'err'); return; }
+    inputContent = [{ type: 'text', text: txt }];
+  } else {
+    if (!state.images.length) { toast('이미지를 업로드해주세요', 'err'); return; }
+    inputContent = [
+      ...state.images.map(img => ({
+        type: 'image',
+        source: { type: 'base64', media_type: img.mimeType, data: img.base64 }
+      })),
+      { type: 'text', text: '위 이미지는 영어 시험지입니다. 전체 텍스트를 읽고 아래 지시에 따라 분석해주세요.' }
+    ];
+  }
+
+  document.getElementById('btnAnalyze').disabled = true;
+  setStep(2);
+  showLoading('기출 분석 중...');
+
+  const levelLabel = opts.level === 'middle' ? '중학교' : '고등학교';
+  const examLabel  = opts.examType === 'midterm' ? '중간고사' : opts.examType === 'final' ? '기말고사' : '중간+기말고사';
+
+  const system = `당신은 한국 ${levelLabel} 영어 내신 시험 전문 분석가입니다.
+기출 시험지를 분석하여 반드시 JSON만 반환하세요. 마크다운 코드블록 없이 순수 JSON만.`;
+
+  const prompt = `다음 ${levelLabel} ${examLabel} 기출 시험지를 분석하세요.
+
+분석 결과를 아래 JSON 형식으로만 반환하세요:
+{
+  "school": "학교명 (알 수 없으면 빈 문자열)",
+  "grade": "학년",
+  "totalQuestions": 전체 문제 수(숫자),
+  "passages": [
+    {
+      "id": "P1",
+      "title": "지문 제목 또는 출처 (예: 본문 1과, 지문1)",
+      "summary": "지문 내용 한 줄 요약",
+      "types": ["어법", "어휘"]
+    }
+  ],
+  "typeFrequency": {
+    "어법": 출제횟수,
+    "어휘": 출제횟수,
+    "빈칸": 출제횟수,
+    "순서배열": 출제횟수,
+    "문장삽입": 출제횟수,
+    "주제/제목/요지": 출제횟수,
+    "서술형": 출제횟수,
+    "기타": 출제횟수
+  },
+  "patterns": "출제 패턴 분석 요약 (2-3문장)",
+  "recommendations": ["예상문제 출제 추천사항 1", "추천사항 2", "추천사항 3"]
+}
+
+시험지 내용:
+${state.tab === 'text' ? document.getElementById('examText').value : '(위 이미지 참조)'}`;
+
+  try {
+    const raw = await callClaude(system, state.tab === 'text'
+      ? [{ type: 'text', text: prompt }]
+      : [...inputContent.slice(0,-1), { type: 'text', text: prompt }]
+    );
+    const json = raw.replace(/```json|```/g, '').trim();
+    state.analysisResult = JSON.parse(json);
+    renderAnalysis();
+    setStep(3);
+  } catch(e) {
+    toast('분석 실패: ' + e.message, 'err');
+    showEmpty();
+    setStep(1);
+    document.getElementById('btnAnalyze').disabled = false;
+  }
+}
+
+function renderAnalysis() {
+  const r = state.analysisResult;
+  const total = Object.values(r.typeFrequency).reduce((a,b)=>a+b,0);
+  const maxCount = Math.max(...Object.values(r.typeFrequency));
+
+  const typeCards = Object.entries(r.typeFrequency)
+    .filter(([,v]) => v > 0)
+    .sort((a,b) => b[1]-a[1])
+    .map(([type, count], i) => {
+      const pct = Math.round(count/total*100);
+      const isTop = i < 2;
+      return `<div class="type-card ${isTop?'top':''}">
+        <div class="type-name">${type}</div>
+        <div class="type-count">${count}문제</div>
+        <div class="type-pct">${pct}% · ${isTop?'🔥 출제 많음':''}</div>
+        <div class="bar-wrap"><div class="bar" style="width:${Math.round(count/maxCount*100)}%"></div></div>
+      </div>`;
+    }).join('');
+
+  const passageRows = r.passages.map(p => {
+    const tags = p.types.map(t => `<span class="type-tag used">${t}</span>`).join('');
+    return `<tr>
+      <td style="color:var(--text3);font-weight:700">${p.id}</td>
+      <td>${p.title}</td>
+      <td style="color:var(--text2);font-size:11px">${p.summary}</td>
+      <td>${tags}</td>
+    </tr>`;
+  }).join('');
+
+  const recItems = r.recommendations.map(rec =>
+    `<li style="padding:4px 0;color:var(--text2);font-size:13px">• ${rec}</li>`
+  ).join('');
+
+  const html = `
+    <div class="card">
+      <div class="card-title">📊 문제유형별 출제 빈도 <span class="badge">총 ${r.totalQuestions}문제</span></div>
+      <div class="type-grid">${typeCards}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📄 지문별 출제 패턴</div>
+      <table class="pattern-table">
+        <thead><tr><th>ID</th><th>지문</th><th>내용</th><th>출제유형</th></tr></thead>
+        <tbody>${passageRows}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💡 출제 패턴 분석</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px">${r.patterns}</p>
+      <ul style="list-style:none">${recItems}</ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">✨ 예상문제 생성</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:14px">분석된 패턴을 기반으로 예상문제를 생성합니다.</p>
+      <button class="btn btn-primary btn-full" onclick="startGeneration()">🎯 예상문제 생성하기</button>
+    </div>
+  `;
+
+  document.getElementById('rightPanel').innerHTML = html;
+}
+
+// ── STEP 3: 예상문제 생성 ──
+async function startGeneration() {
+  const opts = getOptions();
+  const r = state.analysisResult;
+  setStep(3);
+  showLoading('예상문제 생성 중...');
+
+  // 상위 유형 추출
+  const topTypes = Object.entries(r.typeFrequency)
+    .filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t])=>t);
+
+  const system = `당신은 한국 영어 내신 시험 전문 출제 교사입니다.
+기출 패턴을 분석하여 예상문제를 출제합니다. 반드시 JSON만 반환하세요. 마크다운 없이.`;
+
+  const passageInfo = r.passages.map(p =>
+    `- ${p.id}: ${p.title} / 기출유형: ${p.types.join(', ')} / 내용: ${p.summary}`
+  ).join('\n');
+
+  const prompt = `다음 기출 분석 결과를 바탕으로 예상문제 ${opts.qCount}개를 출제하세요.
+
+[기출 패턴]
+- 자주 나온 유형: ${topTypes.join(', ')}
+- 출제 패턴: ${r.patterns}
+
+[지문 목록]
+${passageInfo}
+
+[출제 원칙]
+1. 기출에서 자주 나온 유형 위주로 출제
+2. 같은 지문이라도 기출과 다른 유형으로 출제 가능
+3. 실제 내신 스타일로 자연스럽게 출제
+4. 5지선다형 기준 (서술형은 별도)
+
+아래 JSON 형식으로만 반환:
+{
+  "questions": [
+    {
+      "id": "Q1",
+      "type": "유형명",
+      "passageRef": "P1",
+      "stem": "문제 지문 + 발문 (영어/한국어 혼용 가능)",
+      "options": ["① 보기1", "② 보기2", "③ 보기3", "④ 보기4", "⑤ 보기5"],
+      "answer": 정답번호(1~5, 서술형은 0),
+      "answerText": "정답 설명 또는 서술형 모범답안",
+      "difficulty": "상/중/하"
+    }
+  ]
+}`;
+
+  try {
+    const raw = await callClaude(system, [{ type:'text', text: prompt }], 3000);
+    const json = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(json);
+    state.generatedQs = parsed.questions;
+    renderGenerated();
+    setStep(4);
+  } catch(e) {
+    toast('생성 실패: ' + e.message, 'err');
+    renderAnalysis();
+  }
+}
+
+function renderGenerated() {
+  const qs = state.generatedQs;
+  const diffColor = { '상': 'var(--red)', '중': 'var(--orange)', '하': 'var(--green)' };
+
+  const cards = qs.map((q, i) => {
+    const opts = (q.options || []).map((o, oi) =>
+      `<div class="q-option ${oi+1===q.answer?'answer':''}">${o}</div>`
+    ).join('');
+    return `<div class="q-card">
+      <div class="q-card-header">
+        <span class="q-num">Q${i+1}</span>
+        <span class="q-type-badge">${q.type}</span>
+        <span style="font-size:11px;color:${diffColor[q.difficulty]||'var(--text3)'}">${q.difficulty}</span>
+        <span class="q-passage-ref">${q.passageRef}</span>
+      </div>
+      <div class="q-stem">${q.stem}</div>
+      <div class="q-options">${opts}</div>
+      ${q.answerText ? `<div style="font-size:11px;color:var(--text3);padding:6px 10px;background:var(--bg);border-radius:6px">💬 ${q.answerText}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const html = `
+    <div class="card">
+      <div class="card-title">✨ 생성된 예상문제 <span class="badge">${qs.length}문제</span></div>
+      ${cards}
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-ghost" onclick="startAnalysis()" style="flex:1">↩ 다시 분석</button>
+        <button class="btn btn-primary" onclick="startVerification()" style="flex:1">✅ 검증하기</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('rightPanel').innerHTML = html;
+}
+
+// ── STEP 4: 검증 ──
+function startVerification() {
+  setStep(4);
+  state.verifiedQs = state.generatedQs.map(q => ({ ...q, verified: false, edited: false }));
+  renderVerification();
+}
+
+function renderVerification() {
+  const qs = state.verifiedQs;
+  const doneCount = qs.filter(q => q.verified).length;
+
+  const items = qs.map((q, i) => {
+    const statusClass = q.verified ? 'ok' : 'warn';
+    const opts = (q.options || []).map((o, oi) =>
+      `<div class="q-option ${oi+1===q.answer?'answer':''}" style="font-size:12px">${o}</div>`
+    ).join('');
+    const ansBtns = (q.options || []).map((_, oi) =>
+      `<button class="ans-btn ${q.answer===oi+1?'selected':''}" onclick="setAnswer(${i},${oi+1})">${oi+1}</button>`
+    ).join('');
+
+    return `<div class="verify-item" id="vi${i}">
+      <div class="verify-header" onclick="toggleVerify(${i})">
+        <div class="verify-status ${statusClass}" id="vs${i}"></div>
+        <span class="v-num">Q${i+1}</span>
+        <span class="v-type">${q.type}</span>
+        <span style="font-size:11px;color:var(--text2)">${q.stem.substring(0,40)}...</span>
+        <span class="v-ref">${q.passageRef}</span>
+      </div>
+      <div class="verify-body" id="vb${i}">
+        <div class="edit-field">
+          <label>문제 (발문)</label>
+          <textarea rows="4" id="stem${i}" onchange="editField(${i},'stem',this.value)">${q.stem}</textarea>
+        </div>
+        <div class="q-options">${opts}</div>
+        <div class="edit-field">
+          <label>정답 번호</label>
+          <div class="answer-select">${ansBtns}</div>
+        </div>
+        <div class="edit-field">
+          <label>해설</label>
+          <textarea rows="2" id="ans${i}" onchange="editField(${i},'answerText',this.value)">${q.answerText||''}</textarea>
+        </div>
+        <div class="verify-footer">
+          <button class="btn btn-ghost btn-sm" onclick="regenQuestion(${i})">🔄 재생성</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="deleteQuestion(${i})">🗑 삭제</button>
+          <button class="btn btn-green btn-sm" onclick="approveQuestion(${i})">✓ 승인</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const html = `
+    <div class="card">
+      <div class="card-title">✅ 문제 검증 <span class="badge">${doneCount}/${qs.length} 승인</span></div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:16px">각 문제를 확인하고 수정 후 승인하세요.</p>
+      ${items}
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-ghost" onclick="renderGenerated()" style="flex:1">↩ 생성으로</button>
+        <button class="btn btn-primary" onclick="proceedToOutput()" style="flex:2" id="btnOutput">
+          📤 출력하기 (${doneCount}/${qs.length})
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('rightPanel').innerHTML = html;
+}
+
+function toggleVerify(i) {
+  const body = document.getElementById('vb' + i);
+  body.classList.toggle('hidden');
+}
+
+function editField(i, field, val) {
+  state.verifiedQs[i][field] = val;
+  state.verifiedQs[i].edited = true;
+}
+
+function setAnswer(i, num) {
+  state.verifiedQs[i].answer = num;
+  state.verifiedQs[i].edited = true;
+  renderVerification();
+}
+
+function approveQuestion(i) {
+  state.verifiedQs[i].verified = true;
+  document.getElementById('vs' + i).className = 'verify-status ok';
+  document.getElementById('vb' + i).classList.add('hidden');
+  const doneCount = state.verifiedQs.filter(q=>q.verified).length;
+  const total = state.verifiedQs.length;
+  document.getElementById('btnOutput').textContent = `📤 출력하기 (${doneCount}/${total})`;
+  toast('승인되었습니다', 'ok');
+}
+
+function deleteQuestion(i) {
+  if (!confirm('이 문제를 삭제하시겠습니까?')) return;
+  state.verifiedQs.splice(i, 1);
+  renderVerification();
+}
+
+async function regenQuestion(i) {
+  const q = state.verifiedQs[i];
+  const r = state.analysisResult;
+
+  document.getElementById('vi' + i).style.opacity = '0.5';
+
+  const system = `당신은 한국 영어 내신 시험 출제 교사입니다. JSON만 반환하세요.`;
+  const prompt = `다음 문제를 같은 유형(${q.type}), 같은 지문(${q.passageRef})으로 새롭게 출제해주세요.
+
+지문 정보: ${r.passages.find(p=>p.id===q.passageRef)?.summary || ''}
+
+JSON 형식:
+{
+  "id": "${q.id}",
+  "type": "${q.type}",
+  "passageRef": "${q.passageRef}",
+  "stem": "새 문제",
+  "options": ["① ", "② ", "③ ", "④ ", "⑤ "],
+  "answer": 정답번호,
+  "answerText": "해설",
+  "difficulty": "${q.difficulty}"
+}`;
+
+  try {
+    const raw = await callClaude(system, [{ type:'text', text: prompt }], 1000);
+    const json = raw.replace(/```json|```/g, '').trim();
+    const newQ = JSON.parse(json);
+    state.verifiedQs[i] = { ...newQ, verified: false, edited: false };
+    toast('재생성 완료', 'ok');
+    renderVerification();
+  } catch(e) {
+    toast('재생성 실패: ' + e.message, 'err');
+    document.getElementById('vi' + i).style.opacity = '1';
+  }
+}
+
+function proceedToOutput() {
+  const approved = state.verifiedQs.filter(q => q.verified);
+  if (approved.length === 0) { toast('승인된 문제가 없습니다', 'err'); return; }
+  setStep(5);
+  renderOutput(approved);
+}
+
+// ── STEP 5: 출력 ──
+function renderOutput(approved) {
+  const r = state.analysisResult;
+  const html = `
+    <div class="card">
+      <div class="card-title">📤 출력 <span class="badge">${approved.length}문제 승인됨</span></div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:16px">출력 형식을 선택하세요.</p>
+      <div class="output-options">
+        <div class="output-btn" onclick="downloadDocx()">
+          <span class="o-icon">📝</span>
+          <span class="o-label">DOCX 다운로드</span>
+          <span class="o-sub">Word 문서로 저장</span>
+        </div>
+        <div class="output-btn" onclick="saveToSheets()">
+          <span class="o-icon">📊</span>
+          <span class="o-label">Sheets 저장</span>
+          <span class="o-sub">Google Sheets에 기록</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 최종 예상문제 미리보기</div>
+      ${approved.map((q,i) => `
+        <div class="q-card" style="margin-bottom:10px">
+          <div class="q-card-header">
+            <span class="q-num">Q${i+1}</span>
+            <span class="q-type-badge">${q.type}</span>
+            <span class="q-passage-ref">${q.passageRef} · 정답 ${q.answer}번</span>
+          </div>
+          <div class="q-stem">${q.stem}</div>
+          <div class="q-options">
+            ${(q.options||[]).map((o,oi)=>`<div class="q-option ${oi+1===q.answer?'answer':''}">${o}</div>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('rightPanel').innerHTML = html;
+
+  // 승인된 문제를 전역에 저장
+  window._finalQs = approved;
+  window._analysisResult = r;
+}
+
+// ── DOCX 다운로드 ──
+async function downloadDocx() {
+  const qs = window._finalQs;
+  const r  = window._analysisResult;
+  if (!qs || !qs.length) { toast('문제가 없습니다', 'err'); return; }
+
+  // HTML → 인쇄용으로 새 창 오픈
+  const levelLabel = document.getElementById('optLevel') ? 
+    (document.getElementById('optLevel').value === 'middle' ? '중학교' : '고등학교') : '';
+
+  let html = `<!DOCTYPE html><html lang="ko"><head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 11pt; margin: 20mm; }
+    h1 { font-size: 14pt; text-align: center; margin-bottom: 4px; }
+    .meta { text-align: center; font-size: 10pt; color: #555; margin-bottom: 20px; }
+    .q-block { margin-bottom: 20px; page-break-inside: avoid; }
+    .q-num { font-weight: bold; font-size: 11pt; }
+    .q-type { display: inline-block; border: 1px solid #333; padding: 0 4px; font-size: 9pt; margin-left: 4px; }
+    .q-stem { margin: 6px 0 8px; line-height: 1.8; }
+    .q-opt { margin: 3px 0; }
+    .answer-line { margin-top: 10px; font-size: 10pt; color: #555; border-top: 1px solid #eee; padding-top: 6px; }
+    .analysis { border: 1px solid #ccc; padding: 12px; margin-bottom: 20px; background: #f9f9f9; }
+    .analysis h2 { font-size: 12pt; margin-bottom: 8px; }
+  </style></head><body>`;
+
+  html += `<h1>예상문제</h1>
+  <div class="meta">${r.school || ''} ${r.grade || ''} ${levelLabel} · ${new Date().toLocaleDateString()}</div>`;
+
+  html += `<div class="analysis"><h2>📊 기출 분석 요약</h2>
+  <p>${r.patterns}</p>
+  <p style="margin-top:6px"><strong>출제 빈도:</strong> ${Object.entries(r.typeFrequency).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`${t} ${c}문제`).join(' · ')}</p>
+  </div>`;
+
+  qs.forEach((q, i) => {
+    html += `<div class="q-block">
+    <span class="q-num">${i+1}.</span><span class="q-type">${q.type}</span>
+    <div class="q-stem">${q.stem}</div>
+    ${(q.options||[]).map(o=>`<div class="q-opt">${o}</div>`).join('')}
+    <div class="answer-line">정답: ${q.answer}번${q.answerText ? ` / ${q.answerText}` : ''}</div>
+    </div>`;
+  });
+
+  html += `</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `예상문제_${new Date().toLocaleDateString().replace(/\./g,'-')}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('다운로드 완료 (HTML → Word로 열기 가능)', 'ok');
+}
+
+// ── Sheets 저장 ──
+async function saveToSheets() {
+  const qs = window._finalQs;
+  const r  = window._analysisResult;
+  if (!qs || !qs.length) { toast('문제가 없습니다', 'err'); return; }
+
+  toast('Sheets에 저장 중...');
+
+  const examId = 'EXAM_' + Date.now();
+  const payload = {
+    action: 'saveExamAnalysis',
+    examId,
+    analysisJson: JSON.stringify({
+      school: r.school,
+      grade: r.grade,
+      totalQuestions: r.totalQuestions,
+      typeFrequency: r.typeFrequency,
+      patterns: r.patterns,
+      recommendations: r.recommendations,
+      createdAt: new Date().toISOString()
+    }),
+    questionsJson: JSON.stringify(qs),
+    callback: 'cb_' + Date.now()
+  };
+
+  const params = new URLSearchParams(payload);
+  const url = SCRIPT_URL + '?' + params.toString();
+
+  const script = document.createElement('script');
+  script.src = url;
+  window[payload.callback] = (res) => {
+    script.remove();
+    delete window[payload.callback];
+    if (res.ok) {
+      toast('Sheets 저장 완료!', 'ok');
+    } else {
+      // saveExamAnalysis 액션이 없으면 안내
+      toast('Sheets 저장: Apps Script에 saveExamAnalysis 액션 추가 필요', 'err');
+    }
+  };
+  document.head.appendChild(script);
+}
+
+// ── HELPERS ──
+function showLoading(msg) {
+  document.getElementById('rightPanel').innerHTML = `
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <div class="loading-text">${msg}</div>
+    </div>`;
+}
+
+function showEmpty() {
+  document.getElementById('rightPanel').innerHTML = `
+    <div class="empty-state">
+      <div class="e-icon">📊</div>
+      <p>기출 시험지를 입력하고<br>분석을 시작하세요</p>
+    </div>`;
+  document.getElementById('btnAnalyze').disabled = false;
+}
+</script>
+</body>
+</html>
