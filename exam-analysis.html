@@ -162,6 +162,7 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
     <div id="questionOutput" style="color:#888;">아직 생성된 문제가 없습니다.</div>
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-green" onclick="downloadDocx()">📥 DOCX 다운로드</button>
+      <button class="btn btn-gold" onclick="downloadAnalysisJSON()">📊 분석 JSON 저장</button>
       <button class="btn btn-red" onclick="clearAll()">🗑️ 초기화</button>
     </div>
   </div>
@@ -285,6 +286,7 @@ async function analyzeExam(){
     const jsonStr = jsonStart>=0 ? clean.slice(jsonStart) : clean;
     analysisData = JSON.parse(jsonStr);
     status.innerHTML='<span style="color:#4caf50">✅ 분석 완료!</span>';
+    saveAnalysisToStorage();
     renderAnalysis();
   } catch(e){
     status.innerHTML='<span class="error">분석 오류: '+e.message+'</span>';
@@ -444,12 +446,42 @@ async function downloadDocx(){
   URL.revokeObjectURL(url);
 }
 
+// ── 분석 데이터 저장/복원 ──
+function saveAnalysisToStorage(){
+  if(!analysisData) return;
+  localStorage.setItem('greateng_analysis', JSON.stringify(analysisData));
+}
+
+function loadAnalysisFromStorage(){
+  const saved = localStorage.getItem('greateng_analysis');
+  if(!saved) return;
+  try{
+    analysisData = JSON.parse(saved);
+    renderAnalysis();
+    document.getElementById('analyzeStatus').innerHTML='<span style="color:#90caf9">💾 이전 분석 데이터 복원됨</span>';
+  } catch(e){}
+}
+
+function downloadAnalysisJSON(){
+  if(!analysisData){ alert('분석 데이터가 없습니다.'); return; }
+  const blob = new Blob([JSON.stringify(analysisData, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const school = getSchool();
+  const grade = document.getElementById('metaGrade').value;
+  a.href=url;
+  a.download=`분석데이터_${school||'대단한영어'}_${grade||''}_${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function clearAnalysis(){
   document.getElementById('rawText').value='';
   document.getElementById('previewArea').innerHTML='';
   document.getElementById('analyzeStatus').innerHTML='';
   document.getElementById('analysisResult').style.display='none';
   uploadedImages=[]; analysisData=null;
+  localStorage.removeItem('greateng_analysis');
 }
 function clearAll(){
   clearAnalysis();
@@ -460,6 +492,7 @@ function clearAll(){
 
 loadSettingsUI();
 renderTypeCheckboxes();
+loadAnalysisFromStorage();
 </script>
 </body>
 </html>
