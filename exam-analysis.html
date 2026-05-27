@@ -95,6 +95,7 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
   <div class="tab active" onclick="switchTab(0)">① 기출 분석</div>
   <div class="tab" onclick="switchTab(1)">② 예상문제 출제</div>
   <div class="tab" onclick="switchTab(2)">③ 결과 &amp; 출력</div>
+  <div class="tab" onclick="switchTab(3)">⚙️ 설정</div>
 </div>
 
 <!-- TAB 0: 기출 분석 -->
@@ -171,6 +172,21 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
   </div>
 </div>
 
+<!-- TAB 3: 설정 -->
+<div class="panel" id="tab3">
+  <div class="step-box">
+    <div class="step-title">🔑 API 설정</div>
+    <div style="margin-bottom:16px;">
+      <label style="color:#ccc;font-size:.9rem;display:block;margin-bottom:6px;">Claude API Key</label>
+      <input type="password" id="claudeApiKey" placeholder="sk-ant-api03-..." 
+        style="width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;color:#eee;padding:10px;font-size:.9rem;">
+      <div style="color:#666;font-size:.8rem;margin-top:4px;">브라우저 localStorage에만 저장됩니다.</div>
+    </div>
+    <button class="btn btn-gold" onclick="saveSettings()">💾 저장</button>
+    <div id="settingsStatus" class="status" style="margin-top:8px;"></div>
+  </div>
+</div>
+
 <script>
 // ── 로고 인라인 삽입 ──
 (function(){
@@ -228,6 +244,7 @@ function switchTab(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
   document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n));
   if(n===1) renderTypeCheckboxes();
+  if(n===3) loadSettingsUI();
 }
 
 // ── 파일 업로드 ──
@@ -303,7 +320,7 @@ async function analyzeExam(){
   try{
     const res = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
@@ -405,7 +422,7 @@ ${passage}
   try{
     const res = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:4000,
@@ -529,6 +546,22 @@ function clearAll(){
   generatedQs=[];
 }
 
+function saveSettings(){
+  const key = document.getElementById('claudeApiKey').value.trim();
+  if(!key){ document.getElementById('settingsStatus').innerHTML='<span class="error">키를 입력하세요.</span>'; return; }
+  localStorage.setItem('greateng_claude_key', key);
+  document.getElementById('settingsStatus').innerHTML='<span style="color:#4caf50">✅ 저장됨</span>';
+}
+
+function loadSettingsUI(){
+  const saved = localStorage.getItem('greateng_claude_key')||'';
+  document.getElementById('claudeApiKey').value = saved;
+}
+
+function getApiKey(){
+  return localStorage.getItem('greateng_claude_key')||'';
+}
+
 function toggleAllPassages(checked){
   document.querySelectorAll('#passageList input[type=checkbox]').forEach(cb=>cb.checked=checked);
 }
@@ -549,7 +582,8 @@ function getSchool(){
   return sel.value;
 }
 
-// 초기 체크박스
+// 초기 로드
+loadSettingsUI();
 renderTypeCheckboxes();
 </script>
 </body>
