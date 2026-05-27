@@ -275,16 +275,16 @@ async function analyzeExam(){
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts}],generationConfig:{maxOutputTokens:1024,temperature:0.1}})
+      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:1024,temperature:0.1}})
     });
     const data = await res.json();
     if(data.error){ throw new Error(data.error.message); }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     if(!text){ throw new Error('빈 응답. 키를 확인하세요.'); }
-    const clean = text.replace(/```json|```/g,'').trim();
-    const jsonStart = clean.indexOf('{');
-    const jsonStr = jsonStart>=0 ? clean.slice(jsonStart) : clean;
-    analysisData = JSON.parse(jsonStr);
+    // JSON 추출: 첫 { 부터 마지막 } 까지
+    const jsonMatch = text.match(/{[\s\S]*}/);
+    if(!jsonMatch) throw new Error('JSON을 찾을 수 없습니다. 응답: '+text.slice(0,100));
+    analysisData = JSON.parse(jsonMatch[0]);
     status.innerHTML='<span style="color:#4caf50">✅ 분석 완료!</span>';
     saveAnalysisToStorage();
     renderAnalysis();
@@ -380,16 +380,16 @@ async function generateQuestions(){
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4096,temperature:0.3}})
+      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON array, no markdown, no code blocks, no explanation."}]},contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4096,temperature:0.3}})
     });
     const data = await res.json();
     if(data.error){ throw new Error(data.error.message); }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     if(!text){ throw new Error('빈 응답. 키를 확인하세요.'); }
-    const clean = text.replace(/```json|```/g,'').trim();
-    const arrStart = clean.indexOf('[');
-    const jsonStr = arrStart>=0 ? clean.slice(arrStart) : clean;
-    generatedQs = JSON.parse(jsonStr);
+    // JSON 배열 추출: 첫 [ 부터 마지막 ] 까지
+    const arrMatch = text.match(/\[([\s\S]*?)\]/);
+    if(!arrMatch) throw new Error('JSON 배열을 찾을 수 없습니다. 응답: '+text.slice(0,100));
+    generatedQs = JSON.parse(arrMatch[0]);
     status.innerHTML='<span style="color:#4caf50">✅ '+generatedQs.length+'문항 생성 완료!</span>';
     renderQuestions();
     switchTab(2);
