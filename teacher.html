@@ -1767,12 +1767,7 @@ Return JSON only:
             {passages.filter(pg=>pg.data).map((pg,_,arr)=><button key={pg.id} onClick={()=>{setPi(pg.id);setAt(0);}} style={{background:pi===pg.id?'#1d1d1f':'transparent',color:pi===pg.id?'#fff':'#555',border:'0.5px solid #e5e5e5',borderRadius:7,padding:'4px 12px',fontSize:13,cursor:'pointer',fontWeight:pi===pg.id?500:400}}>{pg.data.title}</button>)}
           </div>
           <div style={{display:'flex',gap:6}}>
-            <button onClick={()=>{const ok=passages.filter(pg=>pg.data);if(ok.length){setPi(ok[0].id);setAt(0);}}} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 처음</button>
-            {(()=>{const ok=passages.filter(pg=>pg.data);const ci=ok.findIndex(pg=>pg.id===pi);return(<>
-              <button onClick={()=>{if(ci>0){setPi(ok[ci-1].id);setAt(0);}}} disabled={ci<=0} style={{padding:'5px 10px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer',opacity:ci<=0?.3:1}}>◀ 이전</button>
-              <span style={{fontSize:12,color:'#888',alignSelf:'center'}}>{ci+1}/{ok.length}</span>
-              <button onClick={()=>{if(ci<ok.length-1){setPi(ok[ci+1].id);setAt(0);}}} disabled={ci>=ok.length-1} style={{padding:'5px 10px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer',opacity:ci>=ok.length-1?.3:1}}>다음 ▶</button>
-            </>);})()}
+
             <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 시트 저장'}</button>
             <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#1a5c3a',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
             <button onClick={()=>buildAllDOCX(slots,'teacher')} style={{padding:'5px 14px',fontSize:12,background:'#6B3FA0',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 교사용</button>
