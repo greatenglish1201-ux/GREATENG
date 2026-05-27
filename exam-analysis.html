@@ -58,7 +58,16 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
 <header>
   <img id="logo" src="" alt="대단한영어 로고">
   <div class="meta-inputs">
-    <div><label>학교</label><br><input id="metaSchool" type="text" placeholder="예) 포항제철중" style="width:120px;"></div>
+    <div><label>학교</label><br>
+      <select id="metaSchoolSel" onchange="handleSchoolSel(this)" style="width:100px;">
+        <option value="">학교</option>
+        <option>제철고</option><option>제철중</option>
+        <option>이동고</option><option>이동중</option>
+        <option>동지고</option><option>세명고</option>
+        <option value="__direct__">직접입력</option>
+      </select>
+      <input id="metaSchool" type="text" placeholder="학교명" style="width:80px;display:none;">
+    </div>
     <div><label>학년</label><br>
       <select id="metaGrade">
         <option value="">학년</option>
@@ -66,7 +75,7 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
         <option>고1</option><option>고2</option><option>고3</option>
       </select>
     </div>
-    <div><label>년도</label><br><input id="metaYear" type="text" placeholder="2025" style="width:60px;" value="2025"></div>
+    <div><label>년도</label><br><input id="metaYear" type="text" style="width:60px;" value="2026"></div>
     <div><label>학기</label><br>
       <select id="metaSemester">
         <option value="">학기</option>
@@ -118,19 +127,24 @@ textarea{width:100%;background:#0f0f23;border:1px solid #444;border-radius:6px;c
 <!-- TAB 1: 예상문제 출제 -->
 <div class="panel" id="tab1">
   <div class="step-box">
-    <div class="step-title">📝 시험범위 지문 입력</div>
-    <textarea id="passageText" rows="10" placeholder="예상문제를 출제할 지문(들)을 여기에 붙여넣기 하세요...&#10;&#10;여러 지문은 줄바꿈으로 구분하면 됩니다."></textarea>
-    <div style="margin-top:12px;">
-      <div class="step-title" style="margin-bottom:8px;">출제 패턴 설정</div>
-      <div id="patternConfig">
-        <div style="color:#888;font-size:.88rem;">※ 먼저 ① 기출 분석 탭에서 분석을 완료하면 패턴이 자동 적용됩니다.</div>
-        <div style="margin-top:10px;" id="manualTypes">
-          <div style="color:#ccc;margin-bottom:6px;">수동 선택:</div>
-          <div class="flex-row" id="typeCheckboxes"></div>
-        </div>
-      </div>
+    <div class="step-title">📂 시험범위 지문 선택 (구글시트)</div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+      <button class="btn btn-gold" onclick="loadPassages()">🔄 지문 불러오기</button>
+      <span id="sheetStatus" class="status"></span>
     </div>
-    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;">
+    <div style="display:flex;gap:8px;margin-bottom:6px;">
+      <button class="btn btn-gray" style="font-size:.8rem;padding:4px 12px;" onclick="toggleAllPassages(true)">전체선택</button>
+      <button class="btn btn-gray" style="font-size:.8rem;padding:4px 12px;" onclick="toggleAllPassages(false)">전체해제</button>
+    </div>
+    <div id="passageList" style="max-height:280px;overflow-y:auto;background:#0f0f23;border:1px solid #333;border-radius:6px;padding:10px;">
+      <div style="color:#666;font-size:.88rem;">지문 불러오기 버튼을 눌러주세요.</div>
+    </div>
+  </div>
+  <div class="step-box">
+    <div class="step-title">⚙️ 출제 패턴 설정</div>
+    <div style="color:#888;font-size:.88rem;margin-bottom:8px;">※ ① 기출 분석 완료 시 패턴 자동 적용</div>
+    <div class="flex-row" id="typeCheckboxes"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="generateQuestions()">⚡ 예상문제 출제</button>
       <label style="color:#aaa;font-size:.9rem;">문항 수:
         <select id="qCount" style="background:#0f0f23;color:#eee;border:1px solid #444;padding:4px 8px;border-radius:4px;margin-left:6px;">
@@ -169,7 +183,45 @@ let analysisData = null;   // {patterns:{유형:count}, total, summary}
 let generatedQs = [];      // [{type, passage, question, choices, answer}]
 let uploadedImages = [];   // [{name, b64, type}]
 
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec';
 const TYPE_LABELS = ['어법','어휘','빈칸추론','순서배열','문장삽입','주제/제목/요지','서술형'];
+
+// ── 구글시트 지문 로드 ──
+let sheetPassages = [];  // [{id, title, text, lesson, source}]
+
+function loadPassages(){
+  const status = document.getElementById('sheetStatus');
+  status.innerHTML = '<span class="spinner"></span> 지문 불러오는 중...';
+  const cbName = 'cb_' + Date.now();
+  const script = document.createElement('script');
+  window[cbName] = function(res){
+    delete window[cbName];
+    script.remove();
+    if(!res.ok){ status.innerHTML='<span class="error">불러오기 실패: '+res.error+'</span>'; return; }
+    sheetPassages = res.passages || res.data || [];
+    renderPassageList();
+    status.innerHTML = '<span style="color:#4caf50">✅ '+sheetPassages.length+'개 지문 로드됨</span>';
+  };
+  script.src = APPS_SCRIPT_URL + '?action=getPassages&callback=' + cbName;
+  document.head.appendChild(script);
+}
+
+function renderPassageList(){
+  const container = document.getElementById('passageList');
+  if(!sheetPassages.length){ container.innerHTML='<div style="color:#888">지문 없음</div>'; return; }
+  container.innerHTML = sheetPassages.map((p,i)=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #222;cursor:pointer;">
+      <input type="checkbox" value="${i}" style="accent-color:#b8860b;">
+      <span style="color:#ffe082;font-size:.82rem;min-width:30px;">${p.lesson||p.id||i+1}</span>
+      <span style="color:#ccc;font-size:.88rem;">${p.title||p.topic||p.text?.slice(0,50)||'(제목없음'}</span>
+      <span style="color:#666;font-size:.78rem;margin-left:auto;">${p.source||''}</span>
+    </label>`).join('');
+}
+
+function getSelectedPassages(){
+  return Array.from(document.querySelectorAll('#passageList input:checked'))
+    .map(cb => sheetPassages[parseInt(cb.value)]);
+}
 
 // ── 탭 전환 ──
 function switchTab(n){
@@ -306,11 +358,12 @@ function renderTypeCheckboxes(){
 // ── 예상문제 출제 ──
 async function generateQuestions(){
   const status = document.getElementById('generateStatus');
-  const passage = document.getElementById('passageText').value.trim();
-  if(!passage){
-    status.innerHTML='<span class="error">지문을 입력하세요.</span>';
+  const selectedP = getSelectedPassages();
+  if(!selectedP.length){
+    status.innerHTML='<span class="error">지문을 선택하세요.</span>';
     return;
   }
+  const passage = selectedP.map(p=>p.text||p.passage||p.content||'').filter(Boolean).join('\n\n---\n\n');
 
   const checked = Array.from(document.querySelectorAll('#typeCheckboxes input:checked')).map(i=>i.value);
   if(checked.length===0){
@@ -389,7 +442,7 @@ async function downloadDocx(){
   if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
   const {Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, BorderStyle} = docx;
 
-  const school = document.getElementById('metaSchool').value;
+  const school = getSchool();
   const grade  = document.getElementById('metaGrade').value;
   const year   = document.getElementById('metaYear').value;
   const sem    = document.getElementById('metaSemester').value;
@@ -474,6 +527,26 @@ function clearAll(){
   document.getElementById('generateStatus').innerHTML='';
   document.getElementById('questionOutput').innerHTML='아직 생성된 문제가 없습니다.';
   generatedQs=[];
+}
+
+function toggleAllPassages(checked){
+  document.querySelectorAll('#passageList input[type=checkbox]').forEach(cb=>cb.checked=checked);
+}
+
+function handleSchoolSel(sel){
+  const direct = document.getElementById('metaSchool');
+  if(sel.value === '__direct__'){
+    direct.style.display='inline-block';
+    direct.focus();
+  } else {
+    direct.style.display='none';
+    direct.value='';
+  }
+}
+function getSchool(){
+  const sel = document.getElementById('metaSchoolSel');
+  if(sel.value === '__direct__') return document.getElementById('metaSchool').value;
+  return sel.value;
 }
 
 // 초기 체크박스
