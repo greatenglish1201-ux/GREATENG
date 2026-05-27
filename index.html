@@ -669,8 +669,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
       if(result.ok){
-        // 일반 로그인 탭에서는 학생으로만 접속 가능 (관리자는 별도 탭 사용)
-        onLogin({name:result.name||name.trim(),role:'student'});
+        onLogin({name:result.name||name.trim(),role:result.role||'student',adminPw:result.role==='admin'?pw:undefined});
       } else {
         setError(result.error||result.message||'로그인 실패');
       }
@@ -725,23 +724,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
           <button onClick={doLogin} disabled={loading} style={{width:'100%',padding:14,borderRadius:12,border:'none',background:'linear-gradient(135deg,#C9A84C 0%,#e8c96a 50%,#a8873d 100%)',color:'#3d0010',fontSize:16,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 20px rgba(201,168,76,0.45)',letterSpacing:1}}>
             {loading?'확인 중...':'시작하기'}
           </button>
-          <button onClick={()=>{setAdminMode(true);setAdminPwInput('');setAdminErr('');}} style={{width:'100%',padding:11,borderRadius:12,border:'1.5px solid #e2e8f0',background:'#f8fafc',color:'#64748b',fontSize:13,fontWeight:600,cursor:'pointer',marginTop:8}}>
-            ⚙️ 관리자 모드
-          </button>
 
-          {/* 관리자 비밀번호 입력 */}
-          {adminMode&&<div style={{marginTop:14,borderTop:'1px solid #f1f5f9',paddingTop:14}}>
-            <p style={{fontSize:12,color:'#94a3b8',textAlign:'center',marginBottom:10}}>관리자 비밀번호를 입력하세요</p>
-            <input type="password" value={adminPwInput} onChange={e=>setAdminPwInput(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&doAdminLogin()}
-              placeholder="관리자 비밀번호" autoFocus
-              style={{width:'100%',padding:'11px 14px',borderRadius:10,border:'1.5px solid #e2e8f0',fontSize:14,outline:'none',boxSizing:'border-box',marginBottom:8}}/>
-            {adminErr&&<p style={{fontSize:12,color:'#dc2626',textAlign:'center',marginBottom:8}}>{adminErr}</p>}
-            <div style={{display:'flex',gap:8}}>
-              <button onClick={()=>setAdminMode(false)} style={{flex:1,padding:10,borderRadius:10,border:'1px solid #e2e8f0',background:'#fff',fontSize:13,cursor:'pointer',color:'#64748b'}}>취소</button>
-              <button onClick={doAdminLogin} style={{flex:1,padding:10,borderRadius:10,border:'none',background:'linear-gradient(135deg,#4f7df7,#3b5fe0)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>확인</button>
-            </div>
-          </div>}
           {/* 숨겨진 관리자 URL 설정 - 로고 5번 탭으로 노출 */}
           {showUrlInput&&<div style={{marginTop:14,borderTop:'1px solid #f1f5f9',paddingTop:12}}>
             <p style={{fontSize:11,color:'#94a3b8',marginBottom:6,textAlign:'center'}}>⚙️ 서버 URL 설정</p>
@@ -1139,15 +1122,19 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             <div>
               <h1 style={{fontSize:22,fontWeight:800,color:'#7a1020',margin:0}}>{APP_NAME}</h1>
               <p style={{fontSize:14,color:'#9a7040',marginTop:5,fontWeight:600}}>{APP_SUB}</p>
+              {session?.role==='admin'&&<button onClick={()=>{setAdminPwInput('');setAdminPwErr('');setShowAdminModal(true);}} style={{fontSize:11,background:'#f1f5f9',color:'#475569',border:'none',borderRadius:8,padding:'3px 10px',cursor:'pointer',fontWeight:600,marginTop:4,alignSelf:'flex-start'}}>⚙️ 관리자 패널</button>}
             </div>
             <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
-              <span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>
+              {session?.role!=='admin'&&<span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>}
               {session?.role==='admin'&&<span style={{fontSize:10,background:'#fef3c7',color:'#92400e',padding:'2px 7px',borderRadius:8,fontWeight:600}}>관리자</span>}
-              {session?.role==='admin'&&<button onClick={()=>{setAdminPwInput('');setAdminPwErr('');setShowAdminModal(true);}} style={{fontSize:10,background:'#f1f5f9',color:'#475569',border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:600}}>⚙️ 관리자 패널</button>}
-              {goToStudy&&scriptUrl&&<button onClick={goToStudy} style={{fontSize:10,background:'#ecfdf5',color:'#0a7c42',border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:600}}>📚 자료 보기</button>}
-              <button onClick={onLogout} style={{fontSize:10.5,color:'#94a3b8',background:'none',border:'none',cursor:'pointer',padding:0}}>로그아웃</button>
+              {goToStudy&&scriptUrl&&<button onClick={goToStudy} style={{fontSize:13,background:'linear-gradient(135deg,#ecfdf5,#d1fae5)',color:'#0a7c42',border:'1px solid #6ee7b7',borderRadius:10,padding:'6px 14px',cursor:'pointer',fontWeight:700}}>📚 자료 보기</button>}
             </div>
           </div>
+
+        {/* 로그아웃 우측하단 고정 */}
+        <div style={{position:'fixed',bottom:16,right:16,zIndex:100}}>
+          <button onClick={onLogout} style={{fontSize:12,color:'#94a3b8',background:'rgba(255,255,255,0.9)',border:'1px solid #e2e8f0',borderRadius:20,padding:'6px 14px',cursor:'pointer',boxShadow:'0 2px 8px rgba(0,0,0,0.08)'}}>로그아웃</button>
+        </div>
 
         {/* 관리자 비밀번호 확인 모달 */}
         {showAdminModal&&(
