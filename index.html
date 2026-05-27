@@ -767,6 +767,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
   const [editName,setEditName]=useState(null);
   // 결과 필터
   const [filterStudent,setFilterStudent]=useState('');
+  const [stats,setStats]=useState(null);
+  const [statsLoading,setStatsLoading]=useState(false);
 
   const api=async(body)=>{
     return jsonpFetch(scriptUrl, {...body, adminPw});
@@ -808,6 +810,17 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
       else setMsg(d.message||'오류');
     }catch(e){setMsg('결과 불러오기 실패');}
     setLoading(false);
+  };
+
+  const loadStats=async()=>{
+    if(!scriptUrl)return;
+    setStatsLoading(true);
+    try{
+      const d=await api({action:'getStats'});
+      if(d.ok!==false)setStats(d);
+      else setMsg(d.error||'통계 오류');
+    }catch(e){setMsg('통계 불러오기 실패');}
+    setStatsLoading(false);
   };
 
   React.useEffect(()=>{loadStudents();},[]);
@@ -887,6 +900,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         <div style={{display:'flex',gap:8,marginBottom:16}}>
           {btn(tab==='students','👥 학생 관리',()=>{setTab('students');loadStudents();})}
           {btn(tab==='results','📊 시험 결과',()=>{setTab('results');loadResults();})}
+          {btn(tab==='stats','📈 통계',()=>{setTab('stats');loadStats();})}
           {btn(tab==='settings','⚙️ 설정',()=>setTab('settings'))}
         </div>
 
@@ -961,6 +975,68 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               </div>
             ))}
           </div>
+        </div>}
+
+        {/* 통계 탭 */}
+        {tab==='stats'&&<div>
+          {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>통계 로딩 중...</p>}
+          {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>통계 없음</p>}
+          {stats&&<div>
+            {/* 학생별 */}
+            <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>👥 학생별 정답률</div>
+              {(stats.studentStats||[]).map((s,i)=>(
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.name}</span>
+                    <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항</span>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    <div style={{width:80,height:6,borderRadius:3,background:'#f1f5f9',overflow:'hidden'}}>
+                      <div style={{width:s.rate+'%',height:'100%',background:s.rate>=80?'#16a34a':s.rate>=60?'#f59e0b':'#dc2626',borderRadius:3}}/>
+                    </div>
+                    <span style={{fontSize:13,fontWeight:800,color:s.rate>=80?'#16a34a':s.rate>=60?'#f59e0b':'#dc2626',minWidth:36,textAlign:'right'}}>{s.rate}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* 유형별 */}
+            <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📝 유형별 정답률</div>
+              {(stats.typeStats||[]).map((t,i)=>(
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{t.type}</span>
+                    <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>{t.correct}/{t.total}문항</span>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    <div style={{width:80,height:6,borderRadius:3,background:'#f1f5f9',overflow:'hidden'}}>
+                      <div style={{width:t.rate+'%',height:'100%',background:t.rate>=80?'#16a34a':t.rate>=60?'#f59e0b':'#dc2626',borderRadius:3}}/>
+                    </div>
+                    <span style={{fontSize:13,fontWeight:800,color:t.rate>=80?'#16a34a':t.rate>=60?'#f59e0b':'#dc2626',minWidth:36,textAlign:'right'}}>{t.rate}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* 교재별 */}
+            <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📚 교재별 정답률</div>
+              {(stats.bookStats||[]).map((b,i)=>(
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{b.label}</span>
+                    <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>{b.correct}/{b.total}문항</span>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    <div style={{width:80,height:6,borderRadius:3,background:'#f1f5f9',overflow:'hidden'}}>
+                      <div style={{width:b.rate+'%',height:'100%',background:b.rate>=80?'#16a34a':b.rate>=60?'#f59e0b':'#dc2626',borderRadius:3}}/>
+                    </div>
+                    <span style={{fontSize:13,fontWeight:800,color:b.rate>=80?'#16a34a':b.rate>=60?'#f59e0b':'#dc2626',minWidth:36,textAlign:'right'}}>{b.rate}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>}
         </div>}
 
         {/* 설정 탭 */}
