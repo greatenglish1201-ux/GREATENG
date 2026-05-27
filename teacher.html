@@ -731,7 +731,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       });
       if(!putRes.ok)throw new Error('커밋 실패: '+putRes.status);
       alert('✓ GitHub 저장 완료! 30초 후 자동 배포됩니다.');
-      if(onSaveComplete)onSaveComplete(passages[pi]?.data);
+      if(onSaveComplete)onSaveComplete(passages.find(p=>p.id===pi)?.data);
     }catch(e){alert('저장 실패: '+e.message);}
     setGhSaving(false);
   };
@@ -739,7 +739,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   const [sheetSaving,setSheetSaving]=useState(false);
   const saveCurrentQuestionsToSheet=async()=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
-    const p=passages[pi]?.data;
+    const p=passages.find(p=>p.id===pi)?.data;
     if(!p){alert('저장할 지문 데이터가 없습니다.');return;}
     const id=p.id;
     if(!id){alert('지문 ID가 없습니다.');return;}
@@ -811,7 +811,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
     if((!pd.insert_candidates||!pd.insert_candidates.length)&&pd.insert_sentence){pd.insert_candidates=[{sentence:pd.insert_sentence,pos:pd.insert_answer||1}];pd.insert_sel=0;}
     return pd;
   };
-  const P=()=>passages[pi]?.data;
+  const P=()=>passages.find(p=>p.id===pi)?.data;
 
 
   const upP=(patch)=>setPassages(prev=>prev.map((p)=>p.id===pi?{...p,data:{...p.data,...patch}}:p));
@@ -1037,7 +1037,7 @@ Return JSON only:
       // 검증 로직 - 안전하게 처리, 에러 나도 무시
       let processedItems=parsed.items;
       try{
-        const currentP=passages[pi]?.data;
+        const currentP=passages.find(p=>p.id===pi)?.data;
         const sents=currentP?.sentences||[];
         const getSent=(i)=>{
           if(i==null||!sents[i])return'';
@@ -1197,7 +1197,7 @@ Return JSON only:
       setPassages([...upd]);
     }
     const first=upd.findIndex(p=>p.data);
-    if(first>=0){setPi(first);setAt(0);setStep('edit');}
+    if(first>=0){setPi(upd[first].id);setAt(0);setStep('edit');}
   };
 
   const getBlockLabel=(p,i)=>{
@@ -1218,7 +1218,7 @@ Return JSON only:
           const sel=window.getSelection();
           const txt=sel?.toString().trim();
           if(txt&&txt.length>1){
-            const curP=passages[pi]?.data;
+            const curP=passages.find(p=>p.id===pi)?.data;
             upPDeep(p=>({...p,blank_sentence_index:i,blank_target:txt,blank_options:[txt,...(p.blank_options||[]).slice(1)]}));
             sel.removeAllRanges();
             genBlankDistractors(i,txt,curP);
@@ -1238,7 +1238,7 @@ Return JSON only:
           const sel=window.getSelection();
           const txt=sel?.toString().trim();
           if(txt&&txt.length>1){
-            const curP=passages[pi]?.data;
+            const curP=passages.find(p=>p.id===pi)?.data;
             upP({implication_sentence_index:i,implication_keyword:txt});
             sel.removeAllRanges();
             genImplicationOptions(i,txt,curP);
@@ -1430,9 +1430,7 @@ Return JSON only:
     if(at===0)return<div>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>선지 편집 &amp; 정답 선택</div>
-        {genLoading==='topic'
-          ?<span style={{fontSize:11,color:'#185FA5'}}>⏳ AI 생성 중...</span>
-          :<button onClick={()=>genTopicOptions(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #185FA5',background:'#185FA510',color:'#185FA5',cursor:'pointer'}}>↻ 선지 재생성</button>}
+
       </div>
       {(p.topic_options||[]).map((o,i)=>{const isSel=p.topic_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
         <button onClick={()=>upP({topic_answer:i+1})} style={{minWidth:28,height:28,borderRadius:14,border:`1px solid ${isSel?'#185FA5':'#ddd'}`,background:isSel?'#185FA5':'transparent',color:isSel?'#fff':'#999',fontSize:12,cursor:'pointer',fontWeight:700}}>{i+1}</button>
@@ -1452,9 +1450,7 @@ Return JSON only:
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>② 오답 선택지</div>
-        {genLoading==='blank'
-          ?<span style={{fontSize:11,color:'#993C1D',animation:'pulse 1s infinite'}}>⏳ AI 생성 중...</span>
-          :<button onClick={()=>genBlankDistractors(p.blank_sentence_index,p.blank_target,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #993C1D',background:'#993C1D10',color:'#993C1D',cursor:'pointer'}}>↻ 오답 재생성</button>}
+
       </div>
       <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
         <span style={{fontSize:12,color:'#993C1D',fontWeight:600,whiteSpace:'nowrap'}}>정답:</span>
@@ -1488,12 +1484,7 @@ Return JSON only:
       return<div>
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
           <span style={{fontSize:11,fontWeight:600,color:'#888',flex:1}}>블록 구성 확인</span>
-          <button onClick={()=>genOrderBlocks(p)} disabled={genLoading==='order'}
-            style={{padding:'4px 10px',fontSize:11,fontWeight:600,
-              background:'transparent',color:'#534AB7',border:'0.5px solid #534AB7',
-              borderRadius:5,cursor:genLoading==='order'?'wait':'pointer'}}>
-            {genLoading==='order'?'생성 중...':'↻ 재생성'}
-          </button>
+
         </div>
         {[{label:'A',sentence_indices:[p.order_given_index]},...p.order_blocks].map(b=>{
           const c=BLK_C[b.label]||'#888';
@@ -1512,9 +1503,7 @@ Return JSON only:
     if(at===3)return<div>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 요약문 템플릿 선택</div>
-        {genLoading==='summary'
-          ?<span style={{fontSize:11,color:'#854F0B'}}>⏳ AI 생성 중...</span>
-          :<button onClick={()=>genSummaryCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #854F0B',background:'#854F0B10',color:'#854F0B',cursor:'pointer'}}>↻ 후보 재생성</button>}
+
       </div>
       {(!p.summary_candidates||p.summary_candidates.length===0)&&genLoading!=='summary'&&
         <div style={{padding:'10px 12px',background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:7,fontSize:12,color:'#856404',marginBottom:8}}>
@@ -1548,9 +1537,7 @@ Return JSON only:
       </div>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>선지 편집 &amp; 정답 선택</div>
-        {genLoading==='implication'
-          ?<span style={{fontSize:11,color:'#993556',animation:'pulse 1s infinite'}}>⏳ AI 생성 중...</span>
-          :<button onClick={()=>genImplicationOptions(p.implication_sentence_index,p.implication_keyword,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #993556',background:'#99355610',color:'#993556',cursor:'pointer'}}>↻ 선지 재생성</button>}
+
       </div>
       {(()=>{const opts=[...(p.implication_options||[])];while(opts.length<5)opts.push('');return opts;})().map((o,i)=>{const isSel=p.implication_answer===i+1;return<div key={i} style={{display:'flex',gap:6,alignItems:'center',marginBottom:6}}>
         <button onClick={()=>upP({implication_answer:i+1})} style={{minWidth:28,height:28,borderRadius:14,border:`1px solid ${isSel?'#993556':'#ddd'}`,background:isSel?'#993556':'transparent',color:isSel?'#fff':'#999',fontSize:12,cursor:'pointer',fontWeight:700}}>{i+1}</button>
@@ -1563,9 +1550,7 @@ Return JSON only:
     if(at===5)return<div>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 무관 문장 선택</div>
-        {genLoading==='irrel'
-          ?<span style={{fontSize:11,color:'#0F6E56'}}>⏳ AI 생성 중...</span>
-          :<button onClick={()=>genIrrelCandidates(p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #0F6E56',background:'#0F6E5610',color:'#0F6E56',cursor:'pointer'}}>↻ 후보 재생성</button>}
+
       </div>
       {(!p.irrel_candidates||p.irrel_candidates.length===0)&&genLoading!=='irrel'&&
         <div style={{padding:'10px 12px',background:'#F0FFF8',border:'0.5px solid #0F6E5640',borderRadius:7,fontSize:12,color:'#0F6E56',marginBottom:8}}>
@@ -1612,9 +1597,7 @@ Return JSON only:
       return<div>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
           <div style={{fontSize:11,fontWeight:600,color:'#888'}}>① 세트 선택</div>
-          {genLoading===(isG?'grammar':'vocab')
-            ?<span style={{fontSize:11,color:'#1d1d1f'}}>⏳ AI 생성 중...</span>
-            :<button onClick={()=>genGrammarVocabSet(isG,p)} style={{fontSize:11,padding:'3px 9px',borderRadius:5,border:'1px solid #555',background:'#55555510',color:'#555',cursor:'pointer'}}>↻ 세트 재생성</button>}
+
         </div>
         {(!sets||sets.length===0)&&genLoading!==(isG?'grammar':'vocab')&&
           <div style={{padding:'10px 12px',background:'#F5F5F7',border:'0.5px solid #ddd',borderRadius:7,fontSize:12,color:'#888',marginBottom:8}}>
@@ -1799,7 +1782,7 @@ Return JSON only:
         </div>
         <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center',marginBottom:12}}>
           {AUTHOR_TABS.map((t,i)=>{
-            const p=passages[pi]?.data;
+            const p=passages.find(p=>p.id===pi)?.data;
             const TYPE_KEYS=['topic','blank','order','summary','implication','irrelevant','insert','grammar','vocab'];
             const typeKey=TYPE_KEYS[i];
             const isDisabled=p?.disabled_types?.includes(typeKey);
@@ -1808,7 +1791,7 @@ Return JSON only:
               <button title={isDisabled?'출제 활성화':'미출제 설정'} onClick={()=>{upPDeep(p=>{const dt=[...(p.disabled_types||[])];const idx=dt.indexOf(typeKey);if(idx>=0)dt.splice(idx,1);else dt.push(typeKey);return{...p,disabled_types:dt};});}} style={{fontSize:9,padding:'2px 4px',borderRadius:4,border:`0.5px solid ${isDisabled?'#E24B4A':'#ddd'}`,background:isDisabled?'#E24B4A18':'transparent',color:isDisabled?'#E24B4A':'#bbb',cursor:'pointer'}}>{isDisabled?'✕':'−'}</button>
             </div>;
           })}
-          {(()=>{
+          {at!==6&&(()=>{
             const regenFns=[
               ()=>genTopicOptions(p),
               ()=>genBlankDistractors(p?.blank_sentence_index,p?.blank_keyword,p),
@@ -1816,14 +1799,15 @@ Return JSON only:
               ()=>genSummaryCandidates(p),
               ()=>genImplicationOptions(p?.implication_sentence_index,p?.implication_keyword,p),
               ()=>genIrrelCandidates(p),
-              ()=>genInsertCandidates(p),
+              null,
               ()=>genGrammarVocabSet(true,p),
               ()=>genGrammarVocabSet(false,p),
             ];
-            const typeLabels=['topic','blank','order','summary','implication','irrel','insert','grammar','vocab'];
+            const typeLabels=['topic','blank','order','summary','implication','irrel','','grammar','vocab'];
+            const btnLabels=['↻ 선지 재생성','↻ 선지 재생성','↻ 순서 재생성','↻ 후보 재생성','↻ 선지 재생성','↻ 후보 재생성','','↻ 세트 재생성','↻ 세트 재생성'];
             const isLoading=genLoading===typeLabels[at];
             return<button onClick={()=>regenFns[at]()} disabled={!!genLoading} style={{padding:'4px 12px',fontSize:12,background:genLoading?'#aaa':'#E8490F',color:'#fff',border:'none',borderRadius:6,cursor:genLoading?'wait':'pointer',fontWeight:600,whiteSpace:'nowrap'}}>
-              {isLoading?'⏳ 생성중...':'↻ 선지 재생성'}
+              {isLoading?'⏳ 생성중...':btnLabels[at]}
             </button>;
           })()}
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
