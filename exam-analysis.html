@@ -272,7 +272,7 @@ async function analyzeExam(){
   parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{"patterns":{"어법":0,"어휘":0,"빈칸추론":0,"순서배열":0,"문장삽입":0,"주제/제목/요지":0,"서술형":0},"total":0,"summary":"분석 요약 2~3문장","passages":["핵심 지문 또는 주제 키워드 목록 (최대 5개)"]}`});
 
   try{
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,{
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body: JSON.stringify({contents:[{parts}],generationConfig:{maxOutputTokens:1024,temperature:0.1}})
     });
@@ -376,7 +376,7 @@ async function generateQuestions(){
   const prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[조건]\n- 출제 유형: ${checked.join(', ')}\n- 문항 수: ${qCount}문항\n- ${patternHint}\n- 각 문제는 실제 내신 시험 형식으로 (선지 있으면 ①②③④⑤)\n- 서술형은 영작/단답 형식\n\n아래 JSON 배열로만 응답 (마크다운 없이):\n[{"num":1,"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 및 해설"}]\n서술형은 choices를 빈 배열로.`;
 
   try{
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,{
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body: JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4096,temperature:0.3}})
     });
