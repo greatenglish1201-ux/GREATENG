@@ -759,14 +759,13 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
   const [tab,setTab]=useState('students'); // students | results
   const [students,setStudents]=useState([]);
-  const [results,setResults]=useState([]);
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState('');
   // 학생 추가/편집 폼
   const [form,setForm]=useState({name:'',password:'',expiry:'',active:true});
   const [editName,setEditName]=useState(null);
   // 결과 필터
-  const [filterStudent,setFilterStudent]=useState('');
+  const [selectedStudent,setSelectedStudent]=useState(''); // '' = 전체
   const [stats,setStats]=useState(null);
   const [statsLoading,setStatsLoading]=useState(false);
 
@@ -801,22 +800,13 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     }
   };
 
-  const loadResults=async()=>{
+  const loadStats=async(student)=>{
     if(!scriptUrl){setMsg('결과 저장 URL을 설정 탭에서 입력하세요.');return;}
-    setLoading(true);
+    setStatsLoading(true);setStats(null);
     try{
-      const d=await api({action:'getResults',student:filterStudent||undefined});
-      if(d.status==='ok')setResults(d.results||[]);
-      else setMsg(d.message||'오류');
-    }catch(e){setMsg('결과 불러오기 실패');}
-    setLoading(false);
-  };
-
-  const loadStats=async()=>{
-    if(!scriptUrl)return;
-    setStatsLoading(true);
-    try{
-      const d=await api({action:'getStats'});
+      const body={action:'getStats'};
+      if(student)body.student=student;
+      const d=await api(body);
       if(d.ok!==false)setStats(d);
       else setMsg(d.error||'통계 오류');
     }catch(e){setMsg('통계 불러오기 실패');}
@@ -899,8 +889,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         {/* 탭 */}
         <div style={{display:'flex',gap:8,marginBottom:16}}>
           {btn(tab==='students','👥 학생 관리',()=>{setTab('students');loadStudents();})}
-          {btn(tab==='results','📊 시험 결과',()=>{setTab('results');loadResults();})}
-          {btn(tab==='stats','📈 통계',()=>{setTab('stats');loadStats();})}
+          {btn(tab==='results','📊 시험 결과',()=>{setTab('results');setSelectedStudent('');loadStats('');})}
           {btn(tab==='settings','⚙️ 설정',()=>setTab('settings'))}
         </div>
 
@@ -950,43 +939,24 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
 
         {/* 결과 탭 */}
         {tab==='results'&&<div>
+          {/* 학생 선택 드롭다운 */}
           <div style={{display:'flex',gap:8,marginBottom:12}}>
-            <input value={filterStudent} onChange={e=>setFilterStudent(e.target.value)} placeholder="학생 이름으로 필터"
-              style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:13,outline:'none'}}/>
-            <button onClick={loadResults} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
+            <select value={selectedStudent} onChange={e=>{setSelectedStudent(e.target.value);loadStats(e.target.value);}}
+              style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:13,outline:'none',color:'#334155',background:'#fff'}}>
+              <option value=''>전체 학생</option>
+              {students.map((s,i)=><option key={i} value={s.name}>{s.name}</option>)}
+            </select>
+            <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
           </div>
-          {sheetsUrl&&<div style={{background:'#eef3ff',borderRadius:10,padding:'12px 16px',marginBottom:12,fontSize:12.5,color:'#3b5fe0'}}>
-            📊 결과는 Google Sheets에서 직접 확인하세요.&nbsp;
-            <a href={sheetsUrl} target="_blank" style={{color:'#4f7df7',fontWeight:600}}>Sheets 열기 →</a>
-          </div>}
-          <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',overflow:'hidden'}}>
-            {loading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
-            {!loading&&results.length===0&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>결과 없음</p>}
-            {results.slice().reverse().map((r,i)=>(
-              <div key={i} style={{padding:'11px 16px',borderBottom:'1px solid #f1f5f9'}}>
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>{r.student}</span>
-                  <span style={{fontSize:13,fontWeight:800,color:'#4f7df7'}}>{r.score} ({r.pct}%)</span>
-                </div>
-                <div style={{display:'flex',justifyContent:'space-between',marginTop:2}}>
-                  <span style={{fontSize:11,color:'#94a3b8'}}>{r.date}</span>
-                </div>
-                {r.details&&<p style={{fontSize:10.5,color:'#64748b',margin:'4px 0 0',lineHeight:1.6,wordBreak:'break-all'}}>{r.details.split('||').map((d,j)=>{const[id,type,ox]=d.split('|');return <span key={j} style={{marginRight:6,color:ox==='O'?'#16a34a':'#dc2626'}}>{ox==='O'?'✓':'✗'} {type}</span>;})}</p>}
-              </div>
-            ))}
-          </div>
-        </div>}
-
-        {/* 통계 탭 */}
-        {tab==='stats'&&<div>
-          {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>통계 로딩 중...</p>}
-          {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>통계 없음</p>}
+          {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
+          {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>데이터 없음</p>}
           {stats&&<div>
-            {/* 학생별 */}
-            <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+            {/* 전체 보기: 학생별 카드 */}
+            {!selectedStudent&&(stats.studentStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>👥 학생별 정답률</div>
               {(stats.studentStats||[]).map((s,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer'}}
+                  onClick={()=>{setSelectedStudent(s.name);loadStats(s.name);}}>
                   <div>
                     <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.name}</span>
                     <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항</span>
@@ -999,9 +969,38 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                   </div>
                 </div>
               ))}
-            </div>
-            {/* 유형별 */}
-            <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+            </div>}
+            {/* 학생 선택 시: 회차별 기록 */}
+            {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
+              {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,10)}</span>
+                  <div style={{display:'flex',gap:12,alignItems:'center'}}>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.score}문항</span>
+                    <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>}
+            {/* 많이 틀린 지문 랭킹 */}
+            {(stats.wrongRanking||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>🏆 많이 틀린 지문 랭킹</div>
+              {(stats.wrongRanking||[]).map((w,i)=>(
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    <span style={{fontSize:12,fontWeight:800,color:i<3?'#C9A84C':'#94a3b8',minWidth:20}}>#{i+1}</span>
+                    <div>
+                      <span style={{fontSize:12,fontWeight:600,color:'#1e293b'}}>{w.pid}</span>
+                      <span style={{fontSize:11,color:'#94a3b8',marginLeft:6}}>{w.type}</span>
+                    </div>
+                  </div>
+                  <span style={{fontSize:13,fontWeight:800,color:'#dc2626'}}>✗ {w.wrong}회 / {w.total}회</span>
+                </div>
+              ))}
+            </div>}
+            {/* 유형별 정답률 */}
+            {(stats.typeStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📝 유형별 정답률</div>
               {(stats.typeStats||[]).map((t,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -1017,9 +1016,9 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                   </div>
                 </div>
               ))}
-            </div>
-            {/* 교재별 */}
-            <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+            </div>}
+            {/* 전체 보기: 교재별 정답률 */}
+            {!selectedStudent&&(stats.bookStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📚 교재별 정답률</div>
               {(stats.bookStats||[]).map((b,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -1035,7 +1034,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                   </div>
                 </div>
               ))}
-            </div>
+            </div>}
           </div>}
         </div>}
 
