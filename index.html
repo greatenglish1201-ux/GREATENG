@@ -148,6 +148,26 @@ function findBInSentences(passage){
 }
 
 /* ── 문제 생성 ── */
+// GAS 출제DB questions 배열을 지문 객체 필드로 변환
+function applyGasQuestions(passage, questions){
+  const p={...passage};
+  questions.forEach(q=>{
+    try{
+      const d=JSON.parse(q.data_json||'{}');
+      if(q.type==='topic'){p.topic_options=d.options;p.topic_answer=Number(q.answer)||1;}
+      else if(q.type==='blank'){p.blank_sel=d.sel||0;p.blank_candidates=d.candidates||[];p.blank_sentence_index=d.sentence_index;p.blank_target=d.target;p.blank_options=d.options;p.blank_answer=Number(q.answer)||1;}
+      else if(q.type==='order'){p.order_given_index=d.given_index;p.order_blocks=d.blocks;p.order_options=d.options;p.order_answer=Number(q.answer)||1;}
+      else if(q.type==='insert'){p.insert_sel=d.sel||0;p.insert_candidates=d.candidates||[];p.insert_sentence=d.sentence;p.insert_answer=Number(q.answer)||1;}
+      else if(q.type==='summary'){p.summary_sel=d.sel||0;p.summary_candidates=d.candidates||[];p.summary_template=d.template;p.summary_A_options=d.A_options;p.summary_A_answer=d.A_answer||1;p.summary_B_options=d.B_options;p.summary_B_answer=d.B_answer||1;}
+      else if(q.type==='implication'){p.implication_sentence_index=d.sentence_index;p.implication_keyword=d.keyword;p.implication_options=d.options;p.implication_answer=Number(q.answer)||1;}
+      else if(q.type==='irrelevant'){p.irrel_sel=d.sel||0;p.irrel_candidates=d.candidates||[];p.irrel_insert_pos=d.insert_pos||0;p.irrel_confirmed=d.confirmed||false;p.irrelevant_sentence_index=d.sentence_index;}
+      else if(q.type==='grammar'){p.grammar_sets=d.sets||[];p.grammar_sel=d.sel||0;p.grammar_items=d.items||[];p.grammar_answer=Number(q.answer)||1;}
+      else if(q.type==='vocab'){p.vocab_sets=d.sets||[];p.vocab_sel=d.sel||0;p.vocab_items=d.items||[];p.vocab_answer=Number(q.answer)||1;}
+    }catch(e){}
+  });
+  return p;
+}
+
 function normalizePassage(p){
   // sentences: 객체배열 → 문자열배열
   let sentences = p.sentences;
@@ -516,8 +536,34 @@ function App(){
   const [showAns,setShowAns]=useState(false);
   const [timerKey,setTimerKey]=useState(0);
   const [expandedLessons,setExpandedLessons]=useState(new Set());
+  const [gasPassages,setGasPassages]=useState(()=>{
+    try{
+      const cached=JSON.parse(localStorage.getItem('greateng_study_cache')||'null');
+      if(cached&&Array.isArray(cached.passages))return cached.passages;
+    }catch(e){}
+    return [];
+  });
 
-  const allPassages=useMemo(()=>[...PASSAGES],[]);
+  // GAS에서 최신 지문 로드 (백그라운드)
+  useEffect(()=>{
+    if(!scriptUrl)return;
+    jsonpFetch(scriptUrl,{action:'getPassages',public_only:'true'})
+      .then(r=>{if(r.ok&&r.passages?.length)setGasPassages(r.passages);})
+      .catch(()=>{});
+  },[scriptUrl]);
+
+  // passages.js + GAS 지문 합치기 (GAS 우선, 중복 id는 GAS 데이터로 덮어씀)
+  // 단, passages.js에서 27STYD는 GAS로만 관리하므로 제외
+  const allPassages=useMemo(()=>{
+    const map=new Map();
+    [...PASSAGES].filter(p=>!p.id.startsWith('27STYD')).forEach(p=>map.set(p.id,p));
+    gasPassages.forEach(p=>{
+      const id=p.id;
+      const sentences=p.sentences_json?JSON.parse(p.sentences_json):p.sentences||[];
+      map.set(id,{...map.get(id)||{},id,source:p.source||'',chapter:p.chapter||'',number:p.number||'',difficulty:p.difficulty||'중',title:p.title||'',abstract:p.abstract||'',sentences});
+    });
+    return [...map.values()];
+  },[gasPassages]);
 
   const books=useMemo(()=>detectBooks(allPassages),[allPassages]);
 
@@ -554,12 +600,29 @@ function App(){
     return allPassages.filter(p=>book.match(p.id)).length;
   };
 
-  const start=()=>{
+  const PASSAGE_IDS=useMemo(()=>new Set(PASSAGES.map(p=>p.id)),[]);
+
+  const start=async()=>{
     const types=[...selectedTypes];if(!types.length)return;
     if(selPassages.size===0)return;
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
+
+    // GAS 지문은 출제DB에서 출제 데이터 병합
+    const gasIds=pool.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
+    if(gasIds.length&&scriptUrl){
+      const fetched=await Promise.all(gasIds.map(pid=>
+        jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
+      ));
+      gasIds.forEach((pid,i)=>{
+        if(fetched[i]?.ok&&fetched[i].questions?.length){
+          const idx=pool.findIndex(p=>p.id===pid);
+          if(idx>=0)pool[idx]=applyGasQuestions(pool[idx],fetched[i].questions);
+        }
+      });
+    }
+
     // 가능한 모든 (지문×유형) 조합 → 지문 1개에 여러 문제 가능
     const combos=[];
     for(const p of pool){
@@ -578,12 +641,25 @@ function App(){
   const [printQs,setPrintQs]=useState([]);
   const [printMode,setPrintMode]=useState('q');
 
-  const genQuestions=()=>{
+  const genQuestions=async()=>{
     const types=[...selectedTypes];if(!types.length||selPassages.size===0)return [];
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
     pool=shuffle(pool);
-    // 가능한 모든 (지문, 유형) 조합 생성
+
+    const gasIds=pool.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
+    if(gasIds.length&&scriptUrl){
+      const fetched=await Promise.all(gasIds.map(pid=>
+        jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
+      ));
+      gasIds.forEach((pid,i)=>{
+        if(fetched[i]?.ok&&fetched[i].questions?.length){
+          const idx=pool.findIndex(p=>p.id===pid);
+          if(idx>=0)pool[idx]=applyGasQuestions(pool[idx],fetched[i].questions);
+        }
+      });
+    }
+
     const combos=[];
     for(const p of pool){
       for(const t of types){
@@ -591,14 +667,13 @@ function App(){
         if(q) combos.push(q);
       }
     }
-    // 셔플 후 target 개수만큼 추출 (같은 지문+유형 조합 없음 보장)
     const shuffled=shuffle(combos);
     const qs=shuffled.slice(0,Math.min(qCount,shuffled.length));
     return qs;
   };
 
-  const printDirect=(mode)=>{
-    const qs=genQuestions();if(!qs.length)return;
+  const printDirect=async(mode)=>{
+    const qs=await genQuestions();if(!qs.length)return;
     setPrintQs(qs);setPrintMode(mode);setScreen('print');
   };
 
