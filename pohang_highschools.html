@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>포항시 학교 정보 지도 | 대단한영어</title>
 <meta name="description" content="포항시 소재 고등학교 27개교 전체 정보. 입시요강, 평준화 배정, 학교별 계열·학생수·세간의 평을 지도와 함께 확인하세요.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -98,8 +100,8 @@ header{background:var(--navy);color:#fff;padding:0 20px;height:56px;display:flex
 
 /* RIGHT */
 .right{position:relative;overflow:hidden;height:100%}
-#mc{width:100%;height:100%;background:#dde4ed}
-#mc iframe{width:100%;height:100%;border:none}
+#mc{width:100%;height:100%;background:#e8edf2;position:relative}
+#map-leaf{width:100%;height:100%}
 .mph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .mph p{font-size:13px;color:var(--muted);max-width:240px;text-align:center;line-height:1.6}
 .mhint{background:var(--navy);color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:500}
@@ -921,8 +923,7 @@ function sel(id){
   const mb=document.createElement('a');
   mb.href=`https://www.google.com/maps/search/${encodeURIComponent(s.name+' 포항')}`;
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  const mc=document.getElementById('mc');
-  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${s.lat},${s.lng}&z=17&output=embed" loading="lazy" allowfullscreen title="${s.name} 지도"></iframe>`;
+  showLeafMap(s.lat, s.lng, s.name);
   document.getElementById('dp').classList.add('visible');
   // 모바일: right 패널 표시
   if(window.innerWidth<=768){document.getElementById('right-panel').classList.add('mobile-open');document.body.style.overflow='hidden';}
@@ -1052,7 +1053,7 @@ sel=function(id){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+s.lat+','+s.lng+'&z=17&output=embed" loading="lazy" allowfullscreen></iframe>';
+  showLeafMap(s.lat, s.lng, s.name);
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
@@ -1251,7 +1252,7 @@ sel = function(id){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+s.lat+','+s.lng+'&z=17&output=embed" loading="lazy" allowfullscreen></iframe>';
+  showLeafMap(s.lat, s.lng, s.name);
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
@@ -1267,8 +1268,51 @@ getFilt = function(){
   });
 };
 
+
+// ── Leaflet 지도 초기화 ──
+var _leafMap = null;
+var _leafMarker = null;
+
+function initLeafMap() {
+  var mc = document.getElementById('mc');
+  if (!mc) return;
+  // placeholder 유지하면서 leaflet div 준비
+  if (!document.getElementById('map-leaf')) {
+    var div = document.createElement('div');
+    div.id = 'map-leaf';
+    div.style.cssText = 'width:100%;height:100%;display:none';
+    mc.appendChild(div);
+  }
+}
+
+function showLeafMap(lat, lng, name) {
+  var ph = document.getElementById('mph') || document.querySelector('.mph');
+  var leafDiv = document.getElementById('map-leaf');
+  if (!leafDiv) { initLeafMap(); leafDiv = document.getElementById('map-leaf'); }
+
+  // placeholder 숨기기
+  if (ph) ph.style.display = 'none';
+  leafDiv.style.display = 'block';
+
+  if (!_leafMap) {
+    _leafMap = L.map('map-leaf', { zoomControl: true, attributionControl: false }).setView([lat, lng], 17);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(_leafMap);
+  } else {
+    _leafMap.setView([lat, lng], 17);
+    if (_leafMarker) _leafMap.removeLayer(_leafMarker);
+  }
+
+  _leafMarker = L.marker([lat, lng]).addTo(_leafMap).bindPopup('<b>' + name + '</b>').openPopup();
+
+  // 크기 재계산 (탭 전환 후 필요)
+  setTimeout(function(){ if(_leafMap) _leafMap.invalidateSize(); }, 100);
+}
+
 render(S);
 initFilterDisplay();
+initLeafMap();
 </script>
 
 
