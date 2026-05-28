@@ -13,7 +13,7 @@
   --surface:#f4f6f9;--card:#fff;--border:#e2e8f0;
   --text:#1a202c;--muted:#64748b;--gold:#f59e0b;
 }
-body{font-family:'Noto Sans KR',sans-serif;background:var(--surface);color:var(--text);min-height:100vh}
+html{height:100%}body{font-family:'Noto Sans KR',sans-serif;background:var(--surface);color:var(--text);height:100%;overflow:hidden}
 
 /* HEADER */
 header{background:var(--navy);color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
@@ -61,11 +61,11 @@ header{background:var(--navy);color:#fff;padding:0 20px;height:56px;display:flex
 .adm-note{font-size:10px;color:var(--muted);margin-top:8px;padding:8px 12px;background:#fffbeb;border-radius:7px;border-left:3px solid var(--gold);line-height:1.6}
 
 /* MAIN LAYOUT */
-.app{display:grid;grid-template-columns:360px 1fr;overflow:hidden}
+.app{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 140px);overflow:hidden}
 /* 33px = notice bar height approx */
 
 /* LEFT */
-.left{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;height:100%}
+.left{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .sf{padding:12px 14px;border-bottom:1px solid var(--border)}
 .sbox{position:relative;margin-bottom:9px}
 .sbox input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:'Noto Sans KR',sans-serif;background:var(--surface);color:var(--text);outline:none;transition:border-color .2s}
@@ -206,7 +206,7 @@ body{font-size:15px}
   .rvtext{font-size:15px!important}
   .dlbtn{font-size:15px!important;padding:11px!important}
   .dn{font-size:13px!important;padding:9px 14px!important}
-  .app{grid-template-columns:480px 1fr!important}
+  .app{grid-template-columns:480px 1fr!important;height:calc(100vh - 140px)!important}
   .dph{padding:18px 22px!important}
   .dpbody{padding:16px 22px!important}
   .ig{gap:10px!important}
@@ -819,26 +819,26 @@ body{font-size:15px}
 const S=[
   {id:1,name:"포항제철고등학교",type:"자사고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 212번길 40 (우편 37997)",lat:36.0112,lng:129.3301,students:1050,classes:30,phone:"054-279-9684",web:"https://school.gyo6.net/pocheolhs/main.do?sysId=pocheolhs",admission:"전국단위 자사고·기숙학교",review:"포스코 재단 전국단위 자사고. 10학급 300명 모집(자기주도/포스코임직원자녀/사회통합). 이과 강세, SKY·의대 합격자 다수. 기숙사는 포항시 외 거주 학생 대상 100명 이내. 입학홍보실 054-279-9684."},
   {id:2,name:"경북과학고등학교",type:"과학고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 130 (우편 37666)",lat:36.0112,lng:129.3320,students:180,classes:3,phone:"054-240-2629",web:"https://school.gyo6.net/kbs/main.do?sysId=kbs",admission:"KAIST·포공 진학 다수",review:"경북 유일 과학고. 60명 3학급(일반 48+사회통합 12). 서류+소집면담 1.5배수 → 융합형 면접. 수학·과학 교사 추천서 필수. 전원 기숙사 의무. 의치한의약학 진학 시 수상·장학금·추천서 불이익. KAIST·포항공대 진학 다수. 입학담당관 054-240-2629."},
-  {id:3,name:"포항고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 아호로 50 (학산동)",lat:36.0408,lng:129.3697,students:610,classes:26,phone:"054-613-4500",web:"https://school.gyo6.net/pohanghs/main.do?sysId=pohanghs",admission:"과학중점학교 지정",review:"포항 대표 남고, 1951년 설립. 역사 깊은 전통 명문. 이동고와 함께 과학중점 지정. 포항 인문계 남고 최상위 인지도."},
-  {id:4,name:"포항여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0380,lng:129.3710,students:480,classes:15,phone:"054-270-2321",web:"https://school.gyo6.net/poyogohs/main.do?sysId=poyogohs",admission:"정보 없음",review:"포항 대표 여고. 평준화 이후 포항고와 함께 배정. 일본 후쿠야마시 국제교류 연중 진행."},
-  {id:5,name:"포항중앙고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 중앙로",lat:36.0290,lng:129.3660,students:400,classes:13,phone:"054-270-7500",web:"https://school.gyo6.net/pojungang/main.do?sysId=pojungang",admission:"정보 없음",review:"북구 도심권 남자 공립고. 수능 준비 중심 학업 분위기."},
-  {id:6,name:"포항중앙여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0310,lng:129.3670,students:350,classes:11,phone:"054-270-7600",web:"",admission:"정보 없음",review:"북구 공립 여고. 평준화 배정 학교."},
-  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong/main.do?sysId=pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
+  {id:3,name:"포항고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 아호로 50",lat:36.0408,lng:129.3697,students:610,classes:26,phone:"054-613-4500",web:"https://school.gyo6.net/pohanghs/main.do?sysId=pohanghs",admission:"과학중점학교 지정",review:"포항 대표 남고, 1951년 설립. 역사 깊은 전통 명문. 이동고와 함께 과학중점 지정. 포항 인문계 남고 최상위 인지도."},
+  {id:4,name:"포항여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산로 207",lat:36.0380,lng:129.3710,students:480,classes:15,phone:"054-270-2321",web:"https://school.gyo6.net/poyogohs/main.do?sysId=poyogohs",admission:"정보 없음",review:"포항 대표 여고. 평준화 이후 포항고와 함께 배정. 일본 후쿠야마시 국제교류 연중 진행."},
+  {id:5,name:"포항중앙고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 소티재로151번길 11",lat:36.0290,lng:129.3660,students:400,classes:13,phone:"054-270-7500",web:"https://school.gyo6.net/pojungang/main.do?sysId=pojungang",admission:"정보 없음",review:"북구 도심권 남자 공립고. 수능 준비 중심 학업 분위기."},
+  {id:6,name:"포항중앙여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 소티재로151번길 7",lat:36.0310,lng:129.3670,students:350,classes:11,phone:"054-270-7600",web:"",admission:"정보 없음",review:"북구 공립 여고. 평준화 배정 학교."},
+  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 희망대로 412",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong/main.do?sysId=pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
   {id:8,name:"포항장성고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로 117",lat:36.0520,lng:129.3800,students:420,classes:14,phone:"054-250-0702",web:"https://school.gyo6.net/phjshs/main.do?sysId=phjshs",admission:"정보 없음",review:"두호고와 자주 비교되는 북구 공립 남녀공학. 2004년 개교 신설교."},
   {id:9,name:"두호고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학전로111번길 21 (두호동)",lat:36.0555,lng:129.3760,students:627,classes:27,phone:"054-250-7260",web:"https://school.gyo6.net/duhohs/main.do?sysId=duhohs",admission:"4년제 79.4%",review:"'명문 두호고!' 구호로 유명. 장성고와 자주 비교됨. 북구 공립 남녀공학. 학급수 북구 최다급."},
   {id:10,name:"대동고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창서길 34",lat:36.0450,lng:129.3820,students:500,classes:16,phone:"054-241-1216",web:"https://school.gyo6.net/daedonghs/main.do?sysId=daedonghs",admission:"정보 없음",review:"북구 사립 일반고. 1972년 설립 역사 있는 학교."},
   {id:11,name:"포항영신고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 소티재로 107 (우현동)",lat:36.0400,lng:129.3780,students:450,classes:15,phone:"054-250-7750",web:"https://school.gyo6.net/physhs/main.do?sysId=physhs",admission:"정보 없음",review:"기독교 재단. '죽을 만큼 공부시킨다'는 평으로 포항 내 알려진 사립고. 야자 강제로 유명. 영신중 연계 진학 많음."},
   {id:12,name:"유성여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창로 43",lat:36.0430,lng:129.3850,students:300,classes:10,phone:"054-246-2315",web:"https://school.gyo6.net/yuseong-g/main.do?sysId=yuseong-g",admission:"정보 없음",review:"북구 사립 여고. 1975년 설립."},
-  {id:13,name:"세화고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0350,lng:129.3800,students:280,classes:9,phone:"054-250-7000",web:"",admission:"정보 없음",review:"원래 여고였다가 2006년 남녀공학 전환. 북구 사립고."},
+  {id:13,name:"세화고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 아치로 94",lat:36.0350,lng:129.3800,students:280,classes:9,phone:"054-250-7000",web:"",admission:"정보 없음",review:"원래 여고였다가 2006년 남녀공학 전환. 북구 사립고."},
   {id:14,name:"포항예술고등학교",type:"예술고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍 연화길 56",lat:36.1050,lng:129.3540,students:200,classes:4,phone:"054-262-5402",web:"https://school.gyo6.net/pharts/main.do?sysId=pharts",admission:"예대 진학 특화",review:"기독교 미션스쿨(사립) 예술고, 흥해읍 소재. 음악과 46명·미술과 46명 총 92명 4학급. 면접 없이 내신+실기 단일전형. 음악 실기 60%·미술 실기 50% 반영. 여학생 기숙사만 운영. 매주 예배 1시간. 실기전형료 5만원. 교무실 054-262-5402."},
   {id:15,name:"포항과학기술고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0480,lng:129.3840,students:260,classes:9,phone:"054-260-7000",web:"",admission:"정보 없음",review:"IT·과학기술 계열 특성화고. 산업체 연계 현장실습 운영."},
   {id:16,name:"포항흥해공업고등학교",type:"특성화고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍",lat:36.1100,lng:129.3550,students:240,classes:8,phone:"054-260-5600",web:"",admission:"정보 없음",review:"흥해읍 소재 기계·전기 계열 공업 특성화고."},
-  {id:17,name:"동지고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0500,lng:129.3650,students:320,classes:11,phone:"054-247-0073",web:"",admission:"정보 없음",review:"구 동지상고. 이명박 전 대통령·단병호 등 저명인사 다수 배출. 상업고 전통 있는 북구 사립교."},
-  {id:18,name:"동지여자고등학교",type:"일반고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0510,lng:129.3640,students:280,classes:9,phone:"054-247-0074",web:"",admission:"정보 없음",review:"구 동지여상. 동지고 인근 사립 여고."},
+  {id:17,name:"동지고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥로 58",lat:36.0500,lng:129.3650,students:320,classes:11,phone:"054-247-0073",web:"",admission:"정보 없음",review:"구 동지상고. 이명박 전 대통령·단병호 등 저명인사 다수 배출. 상업고 전통 있는 북구 사립교."},
+  {id:18,name:"동지여자고등학교",type:"여고",gender:"여고",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥로 64",lat:36.0510,lng:129.3640,students:280,classes:9,phone:"054-247-0074",web:"",admission:"정보 없음",review:"구 동지여상. 동지고 인근 사립 여고."},
   {id:19,name:"세명고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 새천년대로474번길 13 (대잠동)",lat:36.0130,lng:129.3520,students:400,classes:13,phone:"054-273-9696",web:"https://school.gyo6.net/sm/main.do?sysId=sm",admission:"평준화 배정 (1지망 마감)",review:"영암학원 산하 남구 사립 평준화 일반고. 포항 평준화 학교 중 매년 경쟁률 최상위(1.5~2:1). 1지망에서 정원 마감. 신입생 배치고사 운영(영어·수학), 성적 1등이 입학식 선서 전통."},
   {id:20,name:"영일고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 연일읍 동문로 56",lat:36.0060,lng:129.3750,students:350,classes:12,phone:"054-285-5016",web:"https://school.gyo6.net/yihs/main.do?sysId=yihs",admission:"농어촌 특별전형 해당",review:"연일읍 농어촌 특별전형 대상. 남학생보다 여학생 비율 높음. 수도권 대학 농어촌 가산 혜택 적용."},
   {id:21,name:"포항동성고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 동해면 일월로41번길 26",lat:36.0650,lng:129.4200,students:280,classes:9,phone:"054-286-3009",web:"https://school.gyo6.net/phds/main.do?sysId=phds",admission:"농어촌 특별전형 해당",review:"동해면 소재 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
-  {id:22,name:"오천고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍",lat:36.0680,lng:129.4100,students:300,classes:10,phone:"054-291-2000",web:"",admission:"농어촌 특별전형 해당",review:"오천읍 유일 고등학교. 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
+  {id:22,name:"오천고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍 해병로 293",lat:36.0680,lng:129.4100,students:300,classes:10,phone:"054-291-2000",web:"",admission:"농어촌 특별전형 해당",review:"오천읍 유일 고등학교. 농어촌 특별전형 대상. 포항 내 농어촌 3개교 중 하나."},
   {id:23,name:"포항제철공업고등학교",type:"마이스터고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡동",lat:36.0060,lng:129.3250,students:720,classes:24,phone:"054-279-8000",web:"",admission:"취업률 최상위",review:"포스코 연계 마이스터고. 제철·기계·전기 전공. 포스코 그룹사 취업 인기. 취업률·산업 현장 연계 최우수."},
   {id:24,name:"한국해양마이스터고등학교",type:"마이스터고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구",lat:36.0100,lng:129.3600,students:360,classes:12,phone:"054-290-7000",web:"",admission:"해양 취업 특화",review:"해양·선박 계열 마이스터고. 해운·수산 분야 취업 특화. 전국 단위 모집."},
   {id:25,name:"포항여자전자고등학교",type:"특성화고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0460,lng:129.3830,students:220,classes:7,phone:"054-261-3000",web:"",admission:"정보 없음",review:"전자·정보통신 계열 특성화 여고."},
@@ -933,23 +933,23 @@ const MS=[
   {id:1,name:"포항중학교",type:"남중",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산로 45",lat:36.0390,lng:129.3700,web:"https://school.gyo6.net/pohangms/main.do?sysId=pohangms",review:"1943년 설립 포항 최고 전통 남자중학교. 포항고 진학 연계. 야구부 전통 강호."},
   {id:2,name:"포항여자중학교",type:"여중",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 장미길 49",lat:36.0370,lng:129.3680,web:"https://school.gyo6.net/ph-g/main.do?sysId=ph-g",review:"포항 대표 여자중학교. 1939년 설립. 포항여고 진학 연계."},
   {id:3,name:"포항이동중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0580,lng:129.3750,web:"https://school.gyo6.net/2dongms/main.do?sysId=2dongms",review:"북구 이동 소재 공립 남녀공학. 이동고 연계 학군."},
-  {id:4,name:"포항영신중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0410,lng:129.3790,web:"",review:"영신고 연계 사립 중학교. 영신고 진학 비율 높음."},
-  {id:5,name:"포항포은중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로",lat:36.0500,lng:129.3820,web:"",review:"북구 공립 남녀공학 중학교."},
-  {id:6,name:"포항동해중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호동",lat:36.0560,lng:129.3900,web:"",review:"두호·장성 학군 중학교. 두호고·장성고 진학 연계."},
-  {id:7,name:"포항항도중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 항구동",lat:36.0180,lng:129.3620,web:"",review:"북구 항구동 소재 공립 중학교."},
+  {id:4,name:"포항영신중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 소티재로 107",lat:36.0410,lng:129.3790,web:"",review:"영신고 연계 사립 중학교. 영신고 진학 비율 높음."},
+  {id:5,name:"포항포은중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍 원리",lat:36.0500,lng:129.3820,web:"",review:"북구 공립 남녀공학 중학교."},
+  {id:6,name:"포항동해중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 동해면 도구리",lat:36.0560,lng:129.3900,web:"",review:"두호·장성 학군 중학교. 두호고·장성고 진학 연계."},
+  {id:7,name:"포항항도중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 죽도시장1길 77",lat:36.0180,lng:129.3620,web:"",review:"북구 항구동 소재 공립 중학교."},
   {id:8,name:"창포중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 새천년대로1075번길 30",lat:36.0430,lng:129.3760,web:"https://school.gyo6.net/changpoms/main.do?sysId=changpoms",review:"북구 창포 공립 중학교."},
   {id:9,name:"환호여자중학교",type:"여중",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 삼호로 480-6",lat:36.0450,lng:129.3850,web:"https://school.gyo6.net/hwanho/main.do?sysId=hwanho",review:"북구 공립 여자중학교."},
   {id:10,name:"양학중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양학리",lat:36.0600,lng:129.3700,web:"",review:"북구 양학 공립 중학교."},
-  {id:11,name:"대동중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창동",lat:36.0460,lng:129.3820,web:"",review:"대동고 연계 사립 중학교."},
-  {id:12,name:"동지중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0510,lng:129.3660,web:"",review:"동지고 연계 사립 중학교."},
-  {id:13,name:"동지여자중학교",type:"여중",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0520,lng:129.3650,web:"",review:"동지여고 연계 사립 여자중학교."},
-  {id:14,name:"신흥중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 신흥동",lat:36.0340,lng:129.3720,web:"",review:"북구 공립 중학교."},
-  {id:15,name:"흥해중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍",lat:36.1100,lng:129.3540,web:"",review:"흥해읍 소재 공립 중학교."},
+  {id:11,name:"대동중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창서길 34",lat:36.0460,lng:129.3820,web:"",review:"대동고 연계 사립 중학교."},
+  {id:12,name:"동지중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥로 58",lat:36.0510,lng:129.3660,web:"",review:"동지고 연계 사립 중학교."},
+  {id:13,name:"동지여자중학교",type:"여중",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 용흥로 64",lat:36.0520,lng:129.3650,web:"",review:"동지여고 연계 사립 여자중학교."},
+  {id:14,name:"신흥중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 새천년대로 515",lat:36.0340,lng:129.3720,web:"",review:"북구 공립 중학교."},
+  {id:15,name:"흥해중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍 옥성리",lat:36.1100,lng:129.3540,web:"",review:"흥해읍 소재 공립 중학교."},
   {id:16,name:"양덕중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양덕동",lat:36.0480,lng:129.3780,web:"",review:"북구 양덕 공립 중학교."},
   {id:17,name:"송도중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 송도동",lat:36.0200,lng:129.3640,web:"",review:"북구 송도 공립 중학교."},
-  {id:18,name:"포항제철중학교",type:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡동",lat:36.0120,lng:129.3310,web:"",review:"포스코 재단 사립중학교. 제철고 진학 연계 강세. 남구 최상위권 학업 분위기."},
-  {id:19,name:"오천중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍",lat:36.0690,lng:129.4110,web:"",review:"오천읍 소재 공립 중학교. 농어촌 특별전형 혜택 적용."},
-  {id:20,name:"영일중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 연일읍",lat:36.0070,lng:129.3760,web:"",review:"연일읍 소재 공립 중학교. 영일고 연계 학군."},
+  {id:18,name:"포항제철중학교",type:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 200",lat:36.0120,lng:129.3310,web:"",review:"포스코 재단 사립중학교. 제철고 진학 연계 강세. 남구 최상위권 학업 분위기."},
+  {id:19,name:"오천중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍 해병로 293",lat:36.0690,lng:129.4110,web:"",review:"오천읍 소재 공립 중학교. 농어촌 특별전형 혜택 적용."},
+  {id:20,name:"영일중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 연일읍 동문로 56",lat:36.0070,lng:129.3760,web:"",review:"연일읍 소재 공립 중학교. 영일고 연계 학군."},
   {id:21,name:"상도중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 상대동",lat:36.0090,lng:129.3580,web:"",review:"남구 공립 중학교."},
   {id:22,name:"대송중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 대송면",lat:36.0800,lng:129.3800,web:"",review:"대송면 소재 공립 중학교."},
   {id:23,name:"유강중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 유강리",lat:36.0700,lng:129.4050,web:"",review:"남구 소재 공립 중학교."},
@@ -988,7 +988,7 @@ function switchSchoolTab(tab,btn){
   });
   document.getElementById('hs-cnt').textContent=S.length+'개';
   document.getElementById('ms-cnt').textContent=MS.length+'개';
-  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();setTimeout(resizeApp,50);
+  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();setTimeout(adjustAppHeight,50);
   if(window.innerWidth<=768){var sfb=document.getElementById('search-filter-body');if(sfb)sfb.style.display='none';var sfa=document.getElementById('sf-arrow');if(sfa)sfa.style.transform='rotate(0deg)';var sfBtn=document.getElementById('search-filter-toggle');if(sfBtn){sfBtn.style.background='var(--surface)';sfBtn.style.color='var(--muted)';sfBtn.style.borderColor='var(--border)';}}
 }
 
@@ -1059,6 +1059,7 @@ function toggleMsAdm(btn){
   var body=document.getElementById('ms-adm-body');
   var open=body.classList.toggle('open');
   btn.querySelector('.adm-arrow').classList.toggle('open',open);
+  adjustAppHeight();
 }
 function showMsAdmTab(name,btn){
   document.querySelectorAll('#ms-adm-wrap .adm-section').forEach(s=>s.classList.remove('active'));
@@ -1112,8 +1113,8 @@ const ES=[
   {id:6,name:"포항장원초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로63번길 10",lat:36.0521,lng:129.3793,web:"https://school.gyo6.net/phjw/main.do?sysId=phjw",review:"2005년 설립. 장성·두호 학군."},
   {id:7,name:"포항송곡초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 장량중앙로 27",lat:36.0576,lng:129.3818,web:"https://school.gyo6.net/phsges/main.do?sysId=phsges",review:"2012년 설립. 북구 장량동 신설교."},
   {id:8,name:"포항장흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양덕남로 11",lat:36.0481,lng:129.3762,web:"https://school.gyo6.net/jjangki/main.do?sysId=jjangki",review:"2005년 설립. 북구 양덕 학군."},
-  {id:9,name:"포항이동초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0282,lng:129.3201,web:"",review:"남구 이동면 소재 공립 초등학교."},
-  {id:10,name:"포항두호초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호로 123",lat:36.0556,lng:129.3892,web:"",review:"북구 두호동 공립 초등학교."},
+  {id:9,name:"포항이동초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면 이동리",lat:36.0282,lng:129.3201,web:"",review:"남구 이동면 소재 공립 초등학교."},
+  {id:10,name:"포항두호초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호남로 87",lat:36.0556,lng:129.3892,web:"",review:"북구 두호동 공립 초등학교."},
   {id:11,name:"포항학산초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0401,lng:129.3699,web:"",review:"북구 학산동 공립 초등학교."},
   {id:12,name:"포항우현초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0418,lng:129.3791,web:"",review:"북구 우현동 공립 초등학교."},
   {id:13,name:"포항용흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0508,lng:129.3658,web:"",review:"북구 용흥동 공립 초등학교."},
@@ -1129,7 +1130,7 @@ const ES=[
   {id:23,name:"효자초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 효성로 30",lat:36.0068,lng:129.3481,web:"https://school.gyo6.net/hyojacho/main.do?sysId=hyojacho",review:"1949년 설립. 남구 효자동 공립 초등학교."},
   {id:24,name:"대해초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 양학천로150번길 58",lat:36.0128,lng:129.3551,web:"https://school.gyo6.net/daehae/main.do?sysId=daehae",review:"1973년 설립. 남구 공립 초등학교."},
   {id:25,name:"대이초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 대이로46번길 35",lat:36.0091,lng:129.3568,web:"https://school.gyo6.net/daei/main.do?sysId=daei",review:"2007년 설립. 남구 대이동 공립."},
-  {id:26,name:"대도초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 상공로92번길 25-10",lat:36.0051,lng:129.3491,web:"https://school.gyo6.net/phdaedo/main.do?sysId=phdaedo",review:"1981년 설립. 남구 공립 초등학교."},
+  {id:26,name:"대도초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 상공로92번길 25",lat:36.0051,lng:129.3491,web:"https://school.gyo6.net/phdaedo/main.do?sysId=phdaedo",review:"1981년 설립. 남구 공립 초등학교."},
   {id:27,name:"포항원동초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍 냉천로340번길 64",lat:36.0681,lng:129.4098,web:"https://school.gyo6.net/ph-one/main.do?sysId=ph-one",review:"2009년 설립. 오천읍 학생수 932명 대규모 초등학교."},
   {id:28,name:"동해초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 동해면 일월로 78",lat:36.0638,lng:129.4181,web:"https://school.gyo6.net/phdonghae/main.do?sysId=phdonghae",review:"남구 동해면 소재. 1928년 설립."},
   {id:29,name:"포항남산초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 남산동",lat:36.0298,lng:129.3638,web:"",review:"북구 남산동 공립 초등학교."},
@@ -1194,7 +1195,7 @@ switchSchoolTab = function(tab, btn) {
     fr.appendChild(b);
   });
   document.getElementById('es-cnt').textContent=ES.length+'개';
-  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();setTimeout(resizeApp,50);
+  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();setTimeout(adjustAppHeight,50);
   if(window.innerWidth<=768){
     var sfb=document.getElementById('search-filter-body');
     if(sfb)sfb.style.display='none';
@@ -1267,39 +1268,15 @@ getFilt = function(){
 
 
 
-function resizeApp() {
-  var app = document.getElementById('main-app');
-  if (!app) return;
-  var used = 0;
-  // 앱 위쪽 모든 요소 높이 합산
-  var els = [
-    document.querySelector('header'),
-    document.querySelector('.school-tab-bar'),
-    document.querySelector('.adm-wrap'),
-    document.getElementById('ms-adm-wrap'),
-    document.querySelector('footer')
-  ];
-  els.forEach(function(el){
-    if (el && el.offsetParent !== null && getComputedStyle(el).display !== 'none') {
-      used += el.offsetHeight;
-    }
-  });
-  var h = Math.max(window.innerHeight - used, 300);
-  app.style.height = h + 'px';
-}
-
-window.addEventListener('resize', resizeApp);
-window.addEventListener('load', resizeApp);
-document.addEventListener('DOMContentLoaded', resizeApp);
 
 var _origToggleAdm = toggleAdm;
-toggleAdm = function(btn) { _origToggleAdm(btn); setTimeout(resizeApp, 50); };
+
 var _origToggleMsAdm = toggleMsAdm;
-toggleMsAdm = function(btn) { _origToggleMsAdm(btn); setTimeout(resizeApp, 50); };
+
 
 render(S);
 initFilterDisplay();
-setTimeout(resizeApp,200);
+setTimeout(adjustAppHeight,100);
 </script>
 
 
