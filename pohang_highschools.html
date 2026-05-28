@@ -854,9 +854,6 @@ function toggleAdm(btn){
   const arrow=document.getElementById('adm-arrow');
   const open=body.classList.toggle('open');
   arrow.classList.toggle('open',open);
-  // 앱 높이 조정
-  const app=document.getElementById('main-app');
-  app.style.height='calc(100vh - 56px - '+(document.querySelector('.notice-bar').offsetHeight+document.querySelector('.adm-wrap').offsetHeight)+'px)';
 }
 
 function showAdmTab(name,btn){
@@ -991,7 +988,7 @@ function switchSchoolTab(tab,btn){
   });
   document.getElementById('hs-cnt').textContent=S.length+'개';
   document.getElementById('ms-cnt').textContent=MS.length+'개';
-  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();
+  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();setTimeout(resizeApp,50);
   if(window.innerWidth<=768){var sfb=document.getElementById('search-filter-body');if(sfb)sfb.style.display='none';var sfa=document.getElementById('sf-arrow');if(sfa)sfa.style.transform='rotate(0deg)';var sfBtn=document.getElementById('search-filter-toggle');if(sfBtn){sfBtn.style.background='var(--surface)';sfBtn.style.color='var(--muted)';sfBtn.style.borderColor='var(--border)';}}
 }
 
@@ -1197,7 +1194,7 @@ switchSchoolTab = function(tab, btn) {
     fr.appendChild(b);
   });
   document.getElementById('es-cnt').textContent=ES.length+'개';
-  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();
+  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();setTimeout(resizeApp,50);
   if(window.innerWidth<=768){
     var sfb=document.getElementById('search-filter-body');
     if(sfb)sfb.style.display='none';
@@ -1271,23 +1268,24 @@ getFilt = function(){
 
 
 function resizeApp() {
-  var header = document.querySelector('header');
-  var tabbar = document.querySelector('.school-tab-bar');
-  var admHS = document.querySelector('.adm-wrap');
-  var admMS = document.getElementById('ms-adm-wrap');
-  var footer = document.querySelector('footer');
   var app = document.getElementById('main-app');
   if (!app) return;
-
   var used = 0;
-  if (header) used += header.offsetHeight;
-  if (tabbar) used += tabbar.offsetHeight;
-  if (admHS && admHS.style.display !== 'none') used += admHS.offsetHeight;
-  if (admMS && admMS.style.display !== 'none') used += admMS.offsetHeight;
-  if (footer) used += footer.offsetHeight;
-
-  var h = window.innerHeight - used;
-  app.style.height = Math.max(h, 300) + 'px';
+  // 앱 위쪽 모든 요소 높이 합산
+  var els = [
+    document.querySelector('header'),
+    document.querySelector('.school-tab-bar'),
+    document.querySelector('.adm-wrap'),
+    document.getElementById('ms-adm-wrap'),
+    document.querySelector('footer')
+  ];
+  els.forEach(function(el){
+    if (el && el.offsetParent !== null && getComputedStyle(el).display !== 'none') {
+      used += el.offsetHeight;
+    }
+  });
+  var h = Math.max(window.innerHeight - used, 300);
+  app.style.height = h + 'px';
 }
 
 window.addEventListener('resize', resizeApp);
