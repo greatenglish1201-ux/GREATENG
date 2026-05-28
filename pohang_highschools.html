@@ -1272,6 +1272,7 @@ getFilt = function(){
 
 function resizeApp() {
   var header = document.querySelector('header');
+  var noticebar = document.querySelector('.notice-bar');
   var tabbar = document.querySelector('.school-tab-bar');
   var admHS = document.querySelector('.adm-wrap');
   var admMS = document.getElementById('ms-adm-wrap');
@@ -1281,6 +1282,7 @@ function resizeApp() {
 
   var used = 0;
   if (header) used += header.offsetHeight;
+  if (noticebar) used += noticebar.offsetHeight;
   if (tabbar) used += tabbar.offsetHeight;
   if (admHS && admHS.style.display !== 'none') used += admHS.offsetHeight;
   if (admMS && admMS.style.display !== 'none') used += admMS.offsetHeight;
