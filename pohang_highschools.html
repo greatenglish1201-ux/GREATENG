@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>포항시 중고등학교 정보 지도 | 대단한영어</title>
+<title>포항시 학교 정보 지도 | 대단한영어</title>
 <meta name="description" content="포항시 소재 고등학교 27개교 전체 정보. 입시요강, 평준화 배정, 학교별 계열·학생수·세간의 평을 지도와 함께 확인하세요.">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
@@ -291,7 +291,7 @@ body{font-size:15px}
   <div style="display:flex;align-items:center">
     <div><a href="https://blog.naver.com/pkf78" target="_blank" style="text-decoration:none"><div class="logo">대단한영어</div></a></div>
     <div class="hdiv"></div>
-    <div><div class="htitle">포항시 중고등학교 정보 지도</div><div class="hsub">Pohang School Directory · 중학교 · 고등학교</div></div>
+    <div><div class="htitle">포항시 학교 정보 지도</div><div class="hsub">Pohang School Directory · 초·중·고</div></div>
   </div>
   <div class="cbadge" id="tbadge">전체 27개교</div>
 </header>
@@ -302,6 +302,7 @@ body{font-size:15px}
 <div class="school-tab-bar">
   <button class="school-tab-btn active" onclick="switchSchoolTab('high', this)">🏫 고등학교 <span id="hs-cnt" style="font-size:10px;opacity:.7">27개교</span></button>
   <button class="school-tab-btn" onclick="switchSchoolTab('mid', this)">🎒 중학교 <span id="ms-cnt" style="font-size:10px;opacity:.7">29개교</span></button>
+  <button class="school-tab-btn" onclick="switchSchoolTab('elem', this)">🏡 초등학교 <span id="es-cnt" style="font-size:10px;opacity:.7">63개교</span></button>
   <a class="school-tab-btn" href="https://schoolzone.emac.kr/gis/gis.do#" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:4px">🗺️ 학구도</a>
 </div>
 
@@ -814,13 +815,13 @@ body{font-size:15px}
 
 <script>
 const S=[
-  {id:1,name:"포항제철고등학교",type:"자사고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 212번길 40 (우편 37997)",lat:36.0112,lng:129.3301,students:1050,classes:30,phone:"054-279-9684",web:"https://school.gyo6.net/pocheolhs/main.do?sysId=pocheolhs",admission:"전국단위 자사고·기숙학교",review:"포스코 재단 전국단위 자사고. 10학급 300명 모집(자기주도/포스코임직원자녀/사회통합). 이과 강세, SKY·의대 합격자 다수. 기숙사는 포항시 외 거주 학생 대상 100명 이내. 서울대 수시 합격 최근 43% 급증 보도. 입학홍보실 054-279-9684."},
+  {id:1,name:"포항제철고등학교",type:"자사고",gender:"남녀공학",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 212번길 40 (우편 37997)",lat:36.0112,lng:129.3301,students:1050,classes:30,phone:"054-279-9684",web:"https://school.gyo6.net/pocheolhs/main.do?sysId=pocheolhs",admission:"전국단위 자사고·기숙학교",review:"포스코 재단 전국단위 자사고. 10학급 300명 모집(자기주도/포스코임직원자녀/사회통합). 이과 강세, SKY·의대 합격자 다수. 기숙사는 포항시 외 거주 학생 대상 100명 이내. 입학홍보실 054-279-9684."},
   {id:2,name:"경북과학고등학교",type:"과학고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 130 (우편 37666)",lat:36.0112,lng:129.3320,students:180,classes:3,phone:"054-240-2629",web:"https://school.gyo6.net/kbs/main.do?sysId=kbs",admission:"KAIST·포공 진학 다수",review:"경북 유일 과학고. 60명 3학급(일반 48+사회통합 12). 서류+소집면담 1.5배수 → 융합형 면접. 수학·과학 교사 추천서 필수. 전원 기숙사 의무. 의치한의약학 진학 시 수상·장학금·추천서 불이익. KAIST·포항공대 진학 다수. 입학담당관 054-240-2629."},
   {id:3,name:"포항고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 아호로 50 (학산동)",lat:36.0408,lng:129.3697,students:610,classes:26,phone:"054-613-4500",web:"https://school.gyo6.net/pohanghs/main.do?sysId=pohanghs",admission:"과학중점학교 지정",review:"포항 대표 남고, 1951년 설립. 역사 깊은 전통 명문. 이동고와 함께 과학중점 지정. 포항 인문계 남고 최상위 인지도."},
   {id:4,name:"포항여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0380,lng:129.3710,students:480,classes:15,phone:"054-270-2321",web:"https://school.gyo6.net/poyogohs/main.do?sysId=poyogohs",admission:"정보 없음",review:"포항 대표 여고. 평준화 이후 포항고와 함께 배정. 일본 후쿠야마시 국제교류 연중 진행."},
   {id:5,name:"포항중앙고등학교",type:"일반고",gender:"남고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 중앙로",lat:36.0290,lng:129.3660,students:400,classes:13,phone:"054-270-7500",web:"https://school.gyo6.net/pojungang/main.do?sysId=pojungang",admission:"정보 없음",review:"북구 도심권 남자 공립고. 수능 준비 중심 학업 분위기."},
   {id:6,name:"포항중앙여자고등학교",type:"일반고",gender:"여고",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0310,lng:129.3670,students:350,classes:11,phone:"054-270-7600",web:"",admission:"정보 없음",review:"북구 공립 여고. 평준화 배정 학교."},
-  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 이동",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong/main.do?sysId=pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
+  {id:7,name:"포항이동고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0580,lng:129.3750,students:350,classes:12,phone:"054-260-1700",web:"https://school.gyo6.net/pohangidong/main.do?sysId=pohangidong",admission:"과학중점학교 지정",review:"포항고와 함께 과학중점 지정. 북구 공립 남녀공학. 이과 진학 준비 학생에게 선호."},
   {id:8,name:"포항장성고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로 117",lat:36.0520,lng:129.3800,students:420,classes:14,phone:"054-250-0702",web:"https://school.gyo6.net/phjshs/main.do?sysId=phjshs",admission:"정보 없음",review:"두호고와 자주 비교되는 북구 공립 남녀공학. 2004년 개교 신설교."},
   {id:9,name:"두호고등학교",type:"일반고",gender:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학전로111번길 21 (두호동)",lat:36.0555,lng:129.3760,students:627,classes:27,phone:"054-250-7260",web:"https://school.gyo6.net/duhohs/main.do?sysId=duhohs",admission:"4년제 79.4%",review:"'명문 두호고!' 구호로 유명. 장성고와 자주 비교됨. 북구 공립 남녀공학. 학급수 북구 최다급."},
   {id:10,name:"대동고등학교",type:"일반고",gender:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창서길 34",lat:36.0450,lng:129.3820,students:500,classes:16,phone:"054-241-1216",web:"https://school.gyo6.net/daedonghs/main.do?sysId=daedonghs",admission:"정보 없음",review:"북구 사립 일반고. 1972년 설립 역사 있는 학교."},
@@ -932,7 +933,7 @@ function closeMobileMap(){document.getElementById('right-panel').classList.remov
 const MS=[
   {id:1,name:"포항중학교",type:"남중",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산로 45",lat:36.0390,lng:129.3700,web:"https://school.gyo6.net/pohangms/main.do?sysId=pohangms",review:"1943년 설립 포항 최고 전통 남자중학교. 포항고 진학 연계. 야구부 전통 강호."},
   {id:2,name:"포항여자중학교",type:"여중",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 장미길 49",lat:36.0370,lng:129.3680,web:"https://school.gyo6.net/ph-g/main.do?sysId=ph-g",review:"포항 대표 여자중학교. 1939년 설립. 포항여고 진학 연계."},
-  {id:3,name:"포항이동중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 이동",lat:36.0580,lng:129.3750,web:"https://school.gyo6.net/2dongms/main.do?sysId=2dongms",review:"북구 이동 소재 공립 남녀공학. 이동고 연계 학군."},
+  {id:3,name:"포항이동중학교",type:"남녀공학",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0580,lng:129.3750,web:"https://school.gyo6.net/2dongms/main.do?sysId=2dongms",review:"북구 이동 소재 공립 남녀공학. 이동고 연계 학군."},
   {id:4,name:"포항영신중학교",type:"남녀공학",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0410,lng:129.3790,web:"",review:"영신고 연계 사립 중학교. 영신고 진학 비율 높음."},
   {id:5,name:"포항포은중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로",lat:36.0500,lng:129.3820,web:"",review:"북구 공립 남녀공학 중학교."},
   {id:6,name:"포항동해중학교",type:"남녀공학",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호동",lat:36.0560,lng:129.3900,web:"",review:"두호·장성 학군 중학교. 두호고·장성고 진학 연계."},
@@ -1102,6 +1103,168 @@ window.addEventListener('resize',function(){
   }
 });
 
+
+const ES=[
+  {id:1,name:"포항초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 서동로47번길 23",lat:36.0310,lng:129.3630,web:"https://school.gyo6.net/pohanges/main.do?sysId=pohanges",review:"1917년 설립 포항 최고 전통 초등학교."},
+  {id:2,name:"포항중앙초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 중앙로",lat:36.0320,lng:129.3650,web:"",review:"북구 중앙 공립 초등학교."},
+  {id:3,name:"포항동부초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 삼호로 273",lat:36.0450,lng:129.3850,web:"https://school.gyo6.net/phdongbues/main.do?sysId=phdongbues",review:"1935년 설립. 북구 공립 초등학교."},
+  {id:4,name:"포항항도초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 항도길 13",lat:36.0190,lng:129.3620,web:"https://school.gyo6.net/hangdoes/main.do?sysId=hangdoes",review:"1962년 설립. 북구 항도 공립 초등학교."},
+  {id:5,name:"포항해맞이초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 환호로 37",lat:36.0460,lng:129.3820,web:"https://school.gyo6.net/haeschool/main.do?sysId=haeschool",review:"2008년 설립 신설교. 북구 공립."},
+  {id:6,name:"포항장원초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 법원로63번길 10",lat:36.0530,lng:129.3800,web:"https://school.gyo6.net/phjw/main.do?sysId=phjw",review:"2005년 설립. 장성·두호 학군."},
+  {id:7,name:"포항송곡초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 장량중앙로 27",lat:36.0570,lng:129.3820,web:"https://school.gyo6.net/phsges/main.do?sysId=phsges",review:"2012년 설립. 북구 장량 신설교."},
+  {id:8,name:"포항장흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양덕남로 11",lat:36.0480,lng:129.3780,web:"https://school.gyo6.net/jjangki/main.do?sysId=jjangki",review:"2005년 설립. 북구 양덕 학군."},
+  {id:9,name:"포항양덕초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양덕동",lat:36.0490,lng:129.3770,web:"",review:"북구 양덕 공립 초등학교."},
+  {id:10,name:"포항이동초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0570,lng:129.3760,web:"",review:"남구 이동면 소재 공립 초등학교."},
+  {id:11,name:"포항두호초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호동",lat:36.0560,lng:129.3890,web:"",review:"북구 두호 공립 초등학교."},
+  {id:12,name:"포항학산초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0400,lng:129.3700,web:"",review:"북구 학산 공립 초등학교."},
+  {id:13,name:"포항우현초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0420,lng:129.3790,web:"",review:"북구 우현 공립 초등학교."},
+  {id:14,name:"포항용흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0510,lng:129.3660,web:"",review:"북구 용흥 공립 초등학교."},
+  {id:15,name:"포항창포초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 창포동",lat:36.0430,lng:129.3760,web:"",review:"북구 창포 공립 초등학교."},
+  {id:16,name:"포항덕수초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 덕산동",lat:36.0350,lng:129.3680,web:"",review:"북구 덕산 공립 초등학교."},
+  {id:17,name:"포항영일초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구",lat:36.0380,lng:129.3710,web:"",review:"북구 공립 초등학교."},
+  {id:18,name:"포항대흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 대흥동",lat:36.0530,lng:129.3840,web:"",review:"북구 대흥 공립 초등학교."},
+  {id:19,name:"포항양학초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양학리",lat:36.0600,lng:129.3700,web:"",review:"북구 양학 공립 초등학교."},
+  {id:20,name:"포항흥해초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍",lat:36.1090,lng:129.3540,web:"",review:"흥해읍 소재 공립 초등학교."},
+  {id:21,name:"초곡초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍 초곡리",lat:36.1200,lng:129.3400,web:"",review:"흥해읍 초곡리 소재. 흥해중 선배정 희망 가능."},
+  {id:22,name:"포항영신초등학교",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0400,lng:129.3780,web:"",review:"영신학원 산하 사립 초등학교."},
+  {id:23,name:"포항제철초등학교",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 60",lat:36.0110,lng:129.3290,web:"https://school.gyo6.net/posco/main.do?sysId=posco",review:"포스코 재단 사립. 학생수 966명 남구 최대급. 제철중·제철고 진학 연계."},
+  {id:24,name:"포항제철지곡초등학교",est:"사립",gu:"남구",addr:"경상북도 포항시 남구 지곡로 295",lat:36.0150,lng:129.3340,web:"https://school.gyo6.net/posjigok/main.do?sysId=posjigok",review:"포스코 재단 사립. 학생수 1,338명 포항 최다. 지곡·효자 학군."},
+  {id:25,name:"효자초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 효성로 30",lat:36.0070,lng:129.3480,web:"https://school.gyo6.net/hyojacho/main.do?sysId=hyojacho",review:"1949년 설립. 남구 효자 공립 초등학교."},
+  {id:26,name:"대해초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 양학천로150번길 58",lat:36.0130,lng:129.3550,web:"https://school.gyo6.net/daehae/main.do?sysId=daehae",review:"1973년 설립. 남구 공립 초등학교."},
+  {id:27,name:"대이초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 대이로46번길 35",lat:36.0090,lng:129.3570,web:"https://school.gyo6.net/daei/main.do?sysId=daei",review:"2007년 설립. 남구 대이동 공립."},
+  {id:28,name:"대도초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 상공로92번길 25-10",lat:36.0050,lng:129.3490,web:"https://school.gyo6.net/phdaedo/main.do?sysId=phdaedo",review:"1981년 설립. 남구 공립 초등학교."},
+  {id:29,name:"포항원동초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍 냉천로340번길 64",lat:36.0680,lng:129.4100,web:"https://school.gyo6.net/ph-one/main.do?sysId=ph-one",review:"2009년 설립. 오천읍 학생수 932명 대규모 초등학교."},
+  {id:30,name:"동해초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 동해면 일월로 78",lat:36.0640,lng:129.4180,web:"https://school.gyo6.net/phdonghae/main.do?sysId=phdonghae",review:"남구 동해면 소재. 1928년 설립 역사 깊은 초등학교."},
+  {id:31,name:"포항남산초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 남산동",lat:36.0300,lng:129.3640,web:"",review:"북구 남산동 공립 초등학교."},
+  {id:32,name:"포항송내초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 송내동",lat:36.0280,lng:129.3680,web:"",review:"북구 공립 초등학교."},
+  {id:33,name:"연일초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 연일읍",lat:36.0060,lng:129.3750,web:"",review:"연일읍 소재 공립 초등학교. 영일중 선배정 희망 가능."},
+  {id:34,name:"연일형산초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 연일읍 형산리",lat:36.0040,lng:129.3730,web:"",review:"연일읍 형산리 소재. 영일중 선배정 희망 가능."},
+  {id:35,name:"대송초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 대송면",lat:36.0800,lng:129.3800,web:"",review:"대송면 소재 공립 초등학교. 대송중 선배정 희망 가능."},
+  {id:36,name:"남성초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 대송면",lat:36.0820,lng:129.3820,web:"",review:"대송면 소재. 대송중 선배정 희망 가능."},
+  {id:37,name:"청림초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 청림동",lat:36.0250,lng:129.3750,web:"",review:"남구 청림동 공립 초등학교. 상도중·송도중 선배정 희망 가능."},
+  {id:38,name:"인덕초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 인덕동",lat:36.0660,lng:129.3950,web:"",review:"북구 인덕동 공립. 상도중·송도중 선배정 희망 가능."},
+  {id:39,name:"포항신흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 신흥동",lat:36.0340,lng:129.3720,web:"",review:"북구 신흥 공립 초등학교."},
+  {id:40,name:"포항항구초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 항구동",lat:36.0170,lng:129.3610,web:"",review:"북구 항구동 공립 초등학교."},
+  {id:41,name:"포항동성초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 동해면",lat:36.0650,lng:129.4210,web:"",review:"남구 동해면 소재 공립 초등학교."},
+  {id:42,name:"오천초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍",lat:36.0670,lng:129.4120,web:"",review:"오천읍 소재 공립 초등학교."},
+  {id:43,name:"냉천초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 오천읍 냉천리",lat:36.0700,lng:129.4050,web:"",review:"오천읍 냉천리 소재 공립 초등학교."},
+  {id:44,name:"장기초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 장기면",lat:36.0400,lng:129.4500,web:"",review:"장기면 소재 소규모 공립 초등학교."},
+  {id:45,name:"양포초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 장기면 양포리",lat:36.0450,lng:129.4600,web:"",review:"장기면 양포리 소재 소규모 공립."},
+  {id:46,name:"구룡포초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 구룡포읍",lat:36.0020,lng:129.5500,web:"",review:"구룡포읍 소재 공립 초등학교."},
+  {id:47,name:"호미초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 호미곶면",lat:36.0750,lng:129.5600,web:"",review:"호미곶면 소재 소규모 초등학교."},
+  {id:48,name:"신광초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 신광면",lat:36.1300,lng:129.3100,web:"",review:"신광면 소재 농어촌 소규모 초등학교."},
+  {id:49,name:"청하초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 청하면",lat:36.1500,lng:129.3500,web:"",review:"청하면 소재 농어촌 초등학교."},
+  {id:50,name:"죽장초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 죽장면",lat:36.2000,lng:129.2500,web:"",review:"죽장면 소재 농어촌 소규모 초등학교."},
+  {id:51,name:"기북초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 기북면",lat:36.1800,lng:129.2800,web:"",review:"기북면 소재 농어촌 소규모 초등학교."},
+  {id:52,name:"기계초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 기계면",lat:36.1600,lng:129.2900,web:"",review:"기계면 소재 공립 초등학교."},
+  {id:53,name:"포항대동초등학교",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우창동",lat:36.0460,lng:129.3820,web:"",review:"대동학원 산하 사립 초등학교."},
+  {id:54,name:"포항창포초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 창포동",lat:36.0435,lng:129.3765,web:"",review:"북구 창포 공립 초등학교."},
+  {id:55,name:"포항양덕초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양덕동",lat:36.0492,lng:129.3772,web:"",review:"북구 양덕 공립 초등학교."},
+  {id:56,name:"포항세화초등학교",est:"사립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0355,lng:129.3802,web:"",review:"세화학원 산하 사립 초등학교."},
+  {id:57,name:"흥해남산초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍 남산리",lat:36.1050,lng:129.3520,web:"",review:"흥해읍 남산리 소재 공립 초등학교."},
+  {id:58,name:"곡강초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 흥해읍 곡강리",lat:36.1150,lng:129.3600,web:"",review:"흥해읍 곡강리 소재 공립 초등학교."},
+  {id:59,name:"달전초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 달전동",lat:36.0500,lng:129.3750,web:"",review:"북구 달전동 공립 초등학교."},
+  {id:60,name:"포항장성초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 장성동",lat:36.0515,lng:129.3810,web:"",review:"북구 장성동 공립 초등학교. 장성고 학군."},
+  {id:61,name:"포항무학초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 무학동",lat:36.0360,lng:129.3720,web:"",review:"북구 무학동 공립 초등학교."},
+  {id:62,name:"포항송라초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 송라면",lat:36.1700,lng:129.4000,web:"",review:"송라면 소재 농어촌 초등학교."},
+  {id:63,name:"포항죽도초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 죽도동",lat:36.0270,lng:129.3670,web:"",review:"북구 죽도동 공립 초등학교."}
+];
+
+// 탭에 초등 추가
+var _origSwitchTab = switchSchoolTab;
+switchSchoolTab = function(tab, btn) {
+  if(tab !== 'elem') { _origSwitchTab(tab, btn); return; }
+  currentTab = 'elem';
+  currentData = ES;
+  document.querySelectorAll('.school-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  var adm=document.querySelector('.adm-wrap');
+  if(adm)adm.style.display='none';
+  var msAdm=document.getElementById('ms-adm-wrap');
+  if(msAdm)msAdm.style.display='none';
+  // 필터버튼
+  var fr=document.getElementById('filter-row');
+  fr.innerHTML='';
+  var fl=[['all','전체'],['공립','공립'],['사립','사립'],['북구','북구'],['남구','남구']];
+  fl.forEach(function(f,i){
+    var b=document.createElement('button');
+    b.className='fb'+(i===0?' active':'');
+    b.textContent=f[1];
+    b.setAttribute('data-f',f[0]);
+    b.onclick=function(){setF(this.getAttribute('data-f'),this);};
+    fr.appendChild(b);
+  });
+  document.getElementById('es-cnt').textContent=ES.length+'개교';
+  cf='all';document.getElementById('si').value='';aid=null;closeP();filter();
+  if(window.innerWidth<=768){
+    var sfb=document.getElementById('search-filter-body');
+    if(sfb)sfb.style.display='none';
+  }
+};
+
+// render에 초등 추가
+var _renderMS = render;
+render = function(arr){
+  if(currentTab!=='elem'){_renderMS(arr);return;}
+  var sl=document.getElementById('sl'),nr=document.getElementById('nr');
+  document.getElementById('rc').textContent=arr.length;
+  if(!arr.length){sl.innerHTML='';nr.classList.add('visible');return;}
+  nr.classList.remove('visible');
+  sl.innerHTML=arr.map(function(s){
+    return '<div class="sc'+(aid===s.id?' active':'')+'" onclick="sel('+s.id+')" id="c'+s.id+'">'+
+      '<div class="sn">'+s.name+'</div>'+
+      '<div class="br">'+
+        '<span class="badge '+(s.est==='공립'?'공립':'사립')+'">'+s.est+'</span>'+
+        '<span class="badge '+s.gu+'">'+s.gu+'</span>'+
+      '</div>'+
+      '<div class="saddr">📍 '+s.addr.replace('경상북도 포항시 ','').substring(0,30)+'...</div>'+
+      '<div class="sstats"><a href="https://www.schoolinfo.go.kr/Main.do" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미</a></div>'+
+    '</div>';
+  }).join('');
+};
+
+// sel에 초등 추가
+var _selMS = sel;
+sel = function(id){
+  if(currentTab!=='elem'){_selMS(id);return;}
+  aid=id;
+  var s=ES.find(function(x){return x.id===id;});
+  filter();
+  document.getElementById('pn').textContent=s.name;
+  document.getElementById('pb').innerHTML=
+    '<span class="badge '+(s.est==='공립'?'공립':'사립')+'">'+s.est+'</span>'+
+    '<span class="badge '+s.gu+'">'+s.gu+'</span>';
+  document.getElementById('pa').innerHTML='📍 '+s.addr+'<small style="color:var(--muted);font-size:9px"> (참고용)</small><br>'+
+    '<a href="https://www.schoolinfo.go.kr/Main.do" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화·주소 → 학교알리미에서 확인 ↗</a>';
+  document.getElementById('pg').innerHTML=
+    '<div class="ic" style="grid-column:span 2"><div class="il">학생수·학급수</div>'+
+    '<div class="iv sm" style="display:flex;align-items:center;gap:8px;margin-top:3px">'+
+    '<a href="https://www.schoolinfo.go.kr/Main.do" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>'+
+    '</div></div>'+
+    '<div class="ic"><div class="il">설립</div><div class="iv sm">'+s.est+'</div></div>'+
+    '<div class="ic"><div class="il">구역</div><div class="iv sm">'+s.gu+'</div></div>';
+  document.getElementById('pr').textContent=s.review;
+  var pl=document.getElementById('pl');pl.innerHTML='';
+  if(s.web){var a=document.createElement('a');a.href=s.web;a.target='_blank';a.className='dlbtn';a.innerHTML='🌐 홈페이지';pl.appendChild(a);}
+  var mb=document.createElement('a');
+  mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
+  mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
+  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' '+s.addr)+'&output=embed&z=16" loading="lazy" allowfullscreen></iframe>';
+  document.getElementById('dp').classList.add('visible');
+  var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+// getFilt에 초등 포함 (est 필터)
+var _getFiltMS = getFilt;
+getFilt = function(){
+  var q=document.getElementById('si').value.trim().toLowerCase();
+  return currentData.filter(function(s){
+    var mf=cf==='all'||s.type===cf||s.gu===cf||s.est===cf;
+    var ms=s.name.toLowerCase().includes(q)||s.addr.toLowerCase().includes(q);
+    return mf&&ms;
+  });
+};
+
 render(S);
 initFilterDisplay();
 </script>
@@ -1136,15 +1299,15 @@ initFilterDisplay();
 #ge-sb{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.4px;position:relative;z-index:2}
 #ge-dv{width:32px;height:2px;background:#ff8080;margin-top:16px;position:relative;z-index:2}
 #ge-bd{padding:16px 18px 0}
-#ge-prof{background:#f0f6ff;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #dbeafe}
-#ge-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2d5a8e,#1a3a5c);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
-#ge-pn{font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:2px}
-#ge-pd{font-size:11px;color:#4a7ab5;line-height:1.55}
-#ge-aw{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 13px;margin-bottom:10px;display:flex;align-items:center;gap:9px}
-#ge-aw-t{font-size:11px;font-weight:700;color:#92400e;margin-bottom:1px}
-#ge-aw-d{font-size:11px;color:#b45309;line-height:1.4}
-#ge-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
-.ge-card{border-radius:9px;padding:8px 10px;text-align:center}
+#ge-prof{background:#f0f6ff;border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;border:1px solid #dbeafe}
+#ge-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2d5a8e,#1a3a5c);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px}
+#ge-pn{font-size:16px;font-weight:800;color:#1a3a5c;margin-bottom:4px}
+#ge-pd{font-size:13px;color:#4a7ab5;line-height:1.6;font-weight:500}
+#ge-aw{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin-bottom:0;display:flex;align-items:center;gap:14px}
+#ge-aw-t{font-size:15px;font-weight:800;color:#92400e;margin-bottom:5px}
+#ge-aw-d{font-size:13px;color:#b45309;line-height:1.6;font-weight:500}
+#ge-grid{display:none}
+.ge-card{display:none}
 .ge-card.r{background:#fff0f0;border:1px solid #fecaca}
 .ge-card.b{background:#f0f6ff;border:1px solid #bfdbfe}
 .ge-cn{font-size:14px;font-weight:800}
@@ -1190,15 +1353,11 @@ initFilterDisplay();
         </div>
       </div>
       <div id="ge-aw">
-        <span style="font-size:16px;flex-shrink:0">🏆</span>
+        <span style="font-size:22px;flex-shrink:0">🏆</span>
         <div>
           <div id="ge-aw-t">대구·경북 수능 수석 배출</div>
-          <div id="ge-aw-d">2017학년도 대학수학능력시험 영어영역 대구·경북 최고점</div>
+          <div id="ge-aw-d">대학수학능력시험<br>대구·경북 전체 수석 배출</div>
         </div>
-      </div>
-      <div id="ge-grid">
-        <div class="ge-card r"><div class="ge-cn r">수능</div><div class="ge-cs r">1등급 전략</div></div>
-        <div class="ge-card b"><div class="ge-cn b">내신</div><div class="ge-cs b">소수정예 맞춤 관리</div></div>
       </div>
     </div>
     <div id="ge-ft">
