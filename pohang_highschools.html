@@ -922,7 +922,7 @@ function sel(id){
   mb.href=`https://www.google.com/maps/search/${encodeURIComponent(s.name+' 포항')}`;
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
   const mc=document.getElementById('mc');
-  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(s.name+' '+s.addr)}&output=embed&z=16" loading="lazy" allowfullscreen title="${s.name} 지도"></iframe>`;
+  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${s.lat},${s.lng}&z=17&output=embed" loading="lazy" allowfullscreen title="${s.name} 지도"></iframe>`;
   document.getElementById('dp').classList.add('visible');
   // 모바일: right 패널 표시
   if(window.innerWidth<=768){document.getElementById('right-panel').classList.add('mobile-open');document.body.style.overflow='hidden';}
@@ -1052,7 +1052,7 @@ sel=function(id){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' '+s.addr)+'&output=embed&z=16" loading="lazy" allowfullscreen></iframe>';
+  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+s.lat+','+s.lng+'&z=17&output=embed" loading="lazy" allowfullscreen></iframe>';
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
@@ -1251,7 +1251,7 @@ sel = function(id){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' '+s.addr)+'&output=embed&z=16" loading="lazy" allowfullscreen></iframe>';
+  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+s.lat+','+s.lng+'&z=17&output=embed" loading="lazy" allowfullscreen></iframe>';
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
