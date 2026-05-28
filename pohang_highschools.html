@@ -879,7 +879,7 @@ function render(arr){
       <div class="br">${bhtml(s)}</div>
       <div class="saddr">📍 ${s.addr.replace('경상북도 포항시 ','').substring(0,30)}...</div>
       <div class="sstats">
-        <a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 📊 학교알리미에서 검색</a>
+        <a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 📊 학교알리미에서 검색</a>
       </div>
     </div>`).join('');
 }
@@ -901,13 +901,13 @@ function sel(id){
   aid=id;const s=S.find(x=>x.id===id);filter();
   document.getElementById('pn').textContent=s.name;
   document.getElementById('pb').innerHTML=bhtml(s);
-  document.getElementById('pa').innerHTML=`📍 ${s.addr}<small style="color:var(--muted);font-size:9px"> (미확인·참고용)</small><br><a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화번호 · 정확한 주소 → 학교알리미(schoolinfo.go.kr) ↗</a>`;
+  document.getElementById('pa').innerHTML=`📍 ${s.addr}<small style="color:var(--muted);font-size:9px"> (미확인·참고용)</small><br><a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화번호 · 정확한 주소 → 학교알리미(schoolinfo.go.kr) ↗</a>`;
   document.getElementById('pg').innerHTML=`
     <div class="ic" style="grid-column:span 2">
       <div class="il">학생수·학급수</div>
       <div class="iv sm" style="display:flex;align-items:center;gap:8px;margin-top:3px">
         <span style="color:var(--muted);font-size:11px">공식 데이터 확인</span>
-        <a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 검색하기</a>
+        <a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 검색하기</a>
       </div>
     </div>
     <div class="ic"><div class="il">설립</div><div class="iv sm">${s.est} ${s.type}</div></div>
@@ -1018,7 +1018,7 @@ render=function(arr){
         '<div class="sn">'+s.name+'</div>'+
         '<div class="br">'+_bhtmlMs(s)+'</div>'+
         '<div class="saddr">📍 '+s.addr.replace('경상북도 포항시 ','').substring(0,30)+'...</div>'+
-        '<div class="sstats"><a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미</a></div>'+
+        '<div class="sstats"><a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미</a></div>'+
       '</div>';
     }).join('');
   } else {
@@ -1035,11 +1035,11 @@ sel=function(id){
   document.getElementById('pn').textContent=s.name;
   document.getElementById('pb').innerHTML=_bhtmlMs(s);
   document.getElementById('pa').innerHTML='📍 '+s.addr+'<small style="color:var(--muted);font-size:9px"> (참고용)</small><br>'+
-    '<a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화·주소 → 학교알리미에서 확인 ↗</a>';
+    '<a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화·주소 → 학교알리미에서 확인 ↗</a>';
   document.getElementById('pg').innerHTML=
     '<div class="ic" style="grid-column:span 2"><div class="il">학생수·학급수</div>'+
     '<div class="iv sm" style="display:flex;align-items:center;gap:8px;margin-top:3px">'+
-    '<a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>'+
+    '<a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>'+
     '</div></div>'+
     '<div class="ic"><div class="il">설립</div><div class="iv sm">'+s.est+'</div></div>'+
     '<div class="ic"><div class="il">성별</div><div class="iv sm">'+s.type+'</div></div>';
@@ -1218,7 +1218,7 @@ render = function(arr){
         '<span class="badge '+s.gu+'">'+s.gu+'</span>'+
       '</div>'+
       '<div class="saddr">📍 '+s.addr.replace('경상북도 포항시 ','').substring(0,30)+'...</div>'+
-      '<div class="sstats"><a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미</a></div>'+
+      '<div class="sstats"><a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="font-size:10px;color:#3b82f6;text-decoration:none;border:1px solid #3b82f6;border-radius:10px;padding:2px 7px">📊 학교알리미</a></div>'+
     '</div>';
   }).join('');
 };
@@ -1235,11 +1235,11 @@ sel = function(id){
     '<span class="badge '+(s.est==='공립'?'공립':'사립')+'">'+s.est+'</span>'+
     '<span class="badge '+s.gu+'">'+s.gu+'</span>';
   document.getElementById('pa').innerHTML='📍 '+s.addr+'<small style="color:var(--muted);font-size:9px"> (참고용)</small><br>'+
-    '<a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화·주소 → 학교알리미에서 확인 ↗</a>';
+    '<a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="font-size:11px;color:#3b82f6">☎️ 전화·주소 → 학교알리미에서 확인 ↗</a>';
   document.getElementById('pg').innerHTML=
     '<div class="ic" style="grid-column:span 2"><div class="il">학생수·학급수</div>'+
     '<div class="iv sm" style="display:flex;align-items:center;gap:8px;margin-top:3px">'+
-    '<a href="https://search.naver.com/search.naver?query=" + s.name + "+학교알리미" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>'+
+    '<a href="https://search.naver.com/search.naver?query=${encodeURIComponent(s.name+' 학교알리미')}" target="_blank" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;text-decoration:none">📊 학교알리미 바로가기</a>'+
     '</div></div>'+
     '<div class="ic"><div class="il">설립</div><div class="iv sm">'+s.est+'</div></div>'+
     '<div class="ic"><div class="il">구역</div><div class="iv sm">'+s.gu+'</div></div>';
