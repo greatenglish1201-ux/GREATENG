@@ -222,8 +222,7 @@ body{font-size:15px}
   .hsub{display:none}
   .cbadge{font-size:11px!important;padding:3px 9px!important}
   /* 탭바 */
-  .school-tab-bar{padding:0 10px}
-  .school-tab-btn{padding:9px 14px;font-size:12px}
+  .school-tab-bar{padding:0 4px}
   /* 입시요강 아코디언 */
   .adm-wrap{position:relative;z-index:10}
   .adm-toggle{font-size:13px!important;padding:11px 14px!important}
@@ -279,10 +278,13 @@ body{font-size:15px}
   align-items:center;gap:6px
 }
 
-.school-tab-bar{display:flex;background:#fff;padding:0 20px;gap:0;border-bottom:2px solid var(--border)}
-.school-tab-btn{padding:10px 22px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;letter-spacing:0.3px}
+.school-tab-bar{display:flex;background:#fff;padding:0 8px;gap:0;border-bottom:2px solid var(--border)}
+.school-tab-btn{flex:1;padding:8px 4px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;letter-spacing:0;text-align:center}
 .school-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 .school-tab-btn:hover{color:var(--accent)}
+.tab-inner{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:18px;line-height:1}
+.tab-label{font-size:11px;font-weight:700;line-height:1.2}
+.tab-label span{font-size:10px;font-weight:400;opacity:.7}
 </style>
 </head>
 <body>
@@ -300,10 +302,10 @@ body{font-size:15px}
 
 <!-- 학교 탭 -->
 <div class="school-tab-bar">
-  <button class="school-tab-btn active" onclick="switchSchoolTab('high', this)">🏫 고등학교 <span id="hs-cnt" style="font-size:10px;opacity:.7">27개교</span></button>
-  <button class="school-tab-btn" onclick="switchSchoolTab('mid', this)">🎒 중학교 <span id="ms-cnt" style="font-size:10px;opacity:.7">29개교</span></button>
-  <button class="school-tab-btn" onclick="switchSchoolTab('elem', this)">🏡 초등학교 <span id="es-cnt" style="font-size:10px;opacity:.7">63개교</span></button>
-  <a class="school-tab-btn" href="https://schoolzone.emac.kr/gis/gis.do#" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:4px">🗺️ 학구도</a>
+  <button class="school-tab-btn active" onclick="switchSchoolTab('high', this)"><div class="tab-inner">🏫<div class="tab-label">고등 <span id="hs-cnt">27개</span></div></div></button>
+  <button class="school-tab-btn" onclick="switchSchoolTab('mid', this)"><div class="tab-inner">🎒<div class="tab-label">중학 <span id="ms-cnt">29개</span></div></div></button>
+  <button class="school-tab-btn" onclick="switchSchoolTab('elem', this)"><div class="tab-inner">🏡<div class="tab-label">초등 <span id="es-cnt">63개</span></div></div></button>
+  <a class="school-tab-btn" href="https://schoolzone.emac.kr/gis/gis.do#" target="_blank" style="text-decoration:none"><div class="tab-inner">🗺️<div class="tab-label">학구도</div></div></a>
 </div>
 
 
@@ -987,8 +989,8 @@ function switchSchoolTab(tab,btn){
     b.onclick=function(){setF(this.getAttribute('data-f'),this);};
     fr.appendChild(b);
   });
-  document.getElementById('hs-cnt').textContent=S.length+'개교';
-  document.getElementById('ms-cnt').textContent=MS.length+'개교';
+  document.getElementById('hs-cnt').textContent=S.length+'개';
+  document.getElementById('ms-cnt').textContent=MS.length+'개';
   cf='all';document.getElementById('si').value='';aid=null;closeP();filter();
   if(window.innerWidth<=768){var sfb=document.getElementById('search-filter-body');if(sfb)sfb.style.display='none';var sfa=document.getElementById('sf-arrow');if(sfa)sfa.style.transform='rotate(0deg)';var sfBtn=document.getElementById('search-filter-toggle');if(sfBtn){sfBtn.style.background='var(--surface)';sfBtn.style.color='var(--muted)';sfBtn.style.borderColor='var(--border)';}}
 }
@@ -1194,7 +1196,7 @@ switchSchoolTab = function(tab, btn) {
     b.onclick=function(){setF(this.getAttribute('data-f'),this);};
     fr.appendChild(b);
   });
-  document.getElementById('es-cnt').textContent=ES.length+'개교';
+  document.getElementById('es-cnt').textContent=ES.length+'개';
   cf='all';document.getElementById('si').value='';aid=null;closeP();filter();
   if(window.innerWidth<=768){
     var sfb=document.getElementById('search-filter-body');
@@ -1321,10 +1323,13 @@ initFilterDisplay();
 #ge-sk{font-size:11px;color:#bbb;text-align:center;margin-top:2px;cursor:pointer}
 #ge-sk:hover{color:#888}
 
-.school-tab-bar{display:flex;background:#fff;padding:0 20px;gap:0;border-bottom:2px solid var(--border)}
-.school-tab-btn{padding:10px 22px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;letter-spacing:0.3px}
+.school-tab-bar{display:flex;background:#fff;padding:0 8px;gap:0;border-bottom:2px solid var(--border)}
+.school-tab-btn{flex:1;padding:8px 4px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;letter-spacing:0;text-align:center}
 .school-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 .school-tab-btn:hover{color:var(--accent)}
+.tab-inner{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:18px;line-height:1}
+.tab-label{font-size:11px;font-weight:700;line-height:1.2}
+.tab-label span{font-size:10px;font-weight:400;opacity:.7}
 </style>
 <div id="ge-ov" onclick="if(event.target===this)geClose()">
   <div id="ge-box">
