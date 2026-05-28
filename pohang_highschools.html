@@ -99,7 +99,6 @@ header{background:var(--navy);color:#fff;padding:0 20px;height:56px;display:flex
 /* RIGHT */
 .right{position:relative;overflow:hidden;height:100%}
 #mc{width:100%;height:100%;background:#dde4ed}
-#mc iframe{width:100%;height:100%;border:none;display:block}
 
 .mph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .mph p{font-size:13px;color:var(--muted);max-width:240px;text-align:center;line-height:1.6}
@@ -923,7 +922,7 @@ function sel(id){
   mb.href=`https://www.google.com/maps/search/${encodeURIComponent(s.name+' 포항')}`;
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
   const mc=document.getElementById('mc');
-  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(s.name+' 포항')}&output=embed&z=17" loading="lazy" allowfullscreen title="${s.name} 지도"></iframe>`;
+  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(s.name+' '+s.addr)}&output=embed&z=17" loading="lazy" allowfullscreen title="${s.name} 지도"></iframe>`;
   document.getElementById('dp').classList.add('visible');
   // 모바일: right 패널 표시
   if(window.innerWidth<=768){document.getElementById('right-panel').classList.add('mobile-open');document.body.style.overflow='hidden';}
@@ -1053,7 +1052,7 @@ sel=function(id){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' 포항')+'&output=embed&z=17" loading="lazy" allowfullscreen></iframe>';
+  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' '+s.addr)+'&output=embed&z=17" loading="lazy" allowfullscreen></iframe>';
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
@@ -1117,7 +1116,7 @@ const ES=[
   {id:7,name:"포항송곡초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 장량중앙로 27",lat:36.0576,lng:129.3818,web:"https://school.gyo6.net/phsges/main.do?sysId=phsges",review:"2012년 설립. 북구 장량동 신설교."},
   {id:8,name:"포항장흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 양덕남로 11",lat:36.0481,lng:129.3762,web:"https://school.gyo6.net/jjangki/main.do?sysId=jjangki",review:"2005년 설립. 북구 양덕 학군."},
   {id:9,name:"포항이동초등학교",est:"공립",gu:"남구",addr:"경상북도 포항시 남구 이동면",lat:36.0282,lng:129.3201,web:"",review:"남구 이동면 소재 공립 초등학교."},
-  {id:10,name:"포항두호초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호동",lat:36.0556,lng:129.3892,web:"",review:"북구 두호동 공립 초등학교."},
+  {id:10,name:"포항두호초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 두호로 123",lat:36.0556,lng:129.3892,web:"",review:"북구 두호동 공립 초등학교."},
   {id:11,name:"포항학산초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 학산동",lat:36.0401,lng:129.3699,web:"",review:"북구 학산동 공립 초등학교."},
   {id:12,name:"포항우현초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 우현동",lat:36.0418,lng:129.3791,web:"",review:"북구 우현동 공립 초등학교."},
   {id:13,name:"포항용흥초등학교",est:"공립",gu:"북구",addr:"경상북도 포항시 북구 용흥동",lat:36.0508,lng:129.3658,web:"",review:"북구 용흥동 공립 초등학교."},
@@ -1252,7 +1251,7 @@ sel = function(id){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' 포항')+'&output=embed&z=17" loading="lazy" allowfullscreen></iframe>';
+  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.name+' '+s.addr)+'&output=embed&z=17" loading="lazy" allowfullscreen></iframe>';
   document.getElementById('dp').classList.add('visible');
   var ce=document.getElementById('c'+id);if(ce)ce.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
@@ -1273,7 +1272,6 @@ getFilt = function(){
 
 function resizeApp() {
   var header = document.querySelector('header');
-  var noticebar = document.querySelector('.notice-bar');
   var tabbar = document.querySelector('.school-tab-bar');
   var admHS = document.querySelector('.adm-wrap');
   var admMS = document.getElementById('ms-adm-wrap');
@@ -1283,7 +1281,6 @@ function resizeApp() {
 
   var used = 0;
   if (header) used += header.offsetHeight;
-  if (noticebar) used += noticebar.offsetHeight;
   if (tabbar) used += tabbar.offsetHeight;
   if (admHS && admHS.style.display !== 'none') used += admHS.offsetHeight;
   if (admMS && admMS.style.display !== 'none') used += admMS.offsetHeight;
