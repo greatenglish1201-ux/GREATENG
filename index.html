@@ -557,7 +557,7 @@ function App(){
   const allPassages=useMemo(()=>{
     const map=new Map();
     [...PASSAGES].filter(p=>!p.id.startsWith('27STYD')).forEach(p=>map.set(p.id,p));
-    gasPassages.forEach(p=>{
+    gasPassages.filter(p=>p.is_public==='TRUE'||p.is_public===true).forEach(p=>{
       const id=p.id;
       const sentences=p.sentences_json?JSON.parse(p.sentences_json):p.sentences||[];
       map.set(id,{...map.get(id)||{},id,source:p.source||'',chapter:p.chapter||'',number:p.number||'',difficulty:p.difficulty||'중',title:p.title||'',abstract:p.abstract||'',sentences});
@@ -838,7 +838,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     if(scriptUrl){
       try{
         const d=await api({action:'getStudents'});
-        if(d.status==='ok'){
+        if(d.ok){
           // 만료일을 YYYY-MM-DD 형식으로 정규화
           const normalized=(d.students||[]).map(s=>{
             if(!s.expiry) return s;
