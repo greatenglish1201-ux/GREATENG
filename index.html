@@ -539,7 +539,7 @@ function App(){
   const [gasPassages,setGasPassages]=useState(()=>{
     try{
       const cached=JSON.parse(localStorage.getItem('greateng_study_cache')||'null');
-      if(cached&&Array.isArray(cached.passages))return cached.passages;
+      if(cached&&Array.isArray(cached.passages))return cached.passages.filter(p=>p.is_public==='TRUE'||p.is_public===true);
     }catch(e){}
     return [];
   });
