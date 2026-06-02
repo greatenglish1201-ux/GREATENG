@@ -3169,7 +3169,6 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
       boxShadow:slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
-        {/* 1행: 메타 + 토글 */}
         <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
@@ -3207,31 +3206,28 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
               borderRadius:5,padding:'3px 5px',background:df.bg}}>
             {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
           </select>
-          {slot.status==='analyzed'&&<span style={{fontSize:10,color:'#bbb'}}>AI추정</span>}
+          {slot.analysis&&<>
+            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTML↓교사</button>
+            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTML↓학생</button>
+            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOCX↓교사</button>
+            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOCX↓학생</button>
+            <button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✏ 출제저작</button>
+          </>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
           {(slot.text||slot.passageData||slot.analysis)&&(
             <button onClick={onClear} title="슬롯 비우기"
-              style={{padding:'3px 8px',fontSize:11,color:'#fff',background:'#e74c3c',
-                border:'none',borderRadius:5,cursor:'pointer',fontWeight:600}}>🗑 삭제</button>
+              style={{width:28,height:28,padding:0,fontSize:15,color:'#fff',background:'#e74c3c',
+                border:'none',borderRadius:5,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>🗑</button>
           )}
-          <button onClick={onToggle}
-            style={{padding:'3px 10px',fontSize:12,fontWeight:700,borderRadius:5,border:'none',
-              background:slot.open?'#534AB7':'#f0f0f0',
-              color:slot.open?'#fff':'#666',cursor:'pointer'}}>
-            {slot.open?'▲ 접기':'▼ 펼치기'}
+          <button onClick={onToggle} title={slot.open?'접기':'펼치기'}
+            style={{width:28,height:28,padding:0,fontSize:15,fontWeight:700,borderRadius:5,border:'none',
+              background:slot.open?'#534AB7':'#6c757d',
+              color:'#fff',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {slot.open?'▲':'▼'}
           </button>
         </div>
-        {slot.analysis&&(
-          <div style={{padding:'0 12px 8px',display:'flex',gap:4}}>
-            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTML↓교사</button>
-            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTML↓학생</button>
-            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOCX↓교사</button>
-            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOCX↓학생</button>
-            <button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✏ 출제 저작</button>
-          </div>
-        )}
       </div>
 
       {slot.open&&slot.status==='idle'&&(
