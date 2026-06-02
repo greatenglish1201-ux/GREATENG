@@ -1759,7 +1759,7 @@ Return JSON only:
                   background:isNow?'#185FA5':'transparent',
                   color:isNow?'#fff':'#555',
                   cursor:isNow?'default':'pointer',fontWeight:isNow?600:400}}>
-                {sid}
+                {parseInt(s.meta?.chapter)||1}강 {parseInt(s.meta?.number)||1}번
               </button>;
             })}
           </>}
