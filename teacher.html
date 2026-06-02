@@ -3167,63 +3167,71 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
     <div style={{background:'#fff',borderRadius:12,border:'0.5px solid #e5e5e5',
       marginBottom:12,overflow:'hidden',
       boxShadow:slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
-      <div style={{padding:'11px 16px',display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',
-        borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
+      <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
-        <div style={{width:24,height:24,borderRadius:'50%',background:st.bg,color:st.color,
-          display:'flex',alignItems:'center',justifyContent:'center',
-          fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
-        <span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:4,
-          background:st.bg,color:st.color}}>{st.label}</span>
-        {slot.status==='saved'&&(
-          <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
-            style={{fontSize:11,fontWeight:700,padding:'2px 7px',borderRadius:4,flexShrink:0,
-              background:slot.isPublic?'#0a7c42':'#e9ecef',
-              color:slot.isPublic?'#fff':'#888',
-              border:slot.isPublic?'none':'0.5px solid #ccc'}}>
-            {slot.isPublic?'🌐':'🔒'}
-          </span>
-        )}
-        <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
-          style={{...sB,fontSize:12.5,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'4px 8px'}}>
-          {SOURCES.map(s=><option key={s} value={s}>{s}</option>)}
-        </select>
-        {['chapter','number'].map(f=>(
-          <div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
-            borderRadius:6,border:'0.5px solid #ddd',overflow:'hidden'}}>
-            <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;const max=f==='chapter'?30:99;
-              onMeta(slot.id,f,String(Math.max(1,cur-1)).padStart(f==='chapter'?2:3,'0'));}}
-              style={{...sB,padding:'4px 8px',fontSize:14,color:'#555',borderRight:'0.5px solid #ddd'}}>▼</button>
-            <span style={{fontSize:13,fontWeight:500,color:'#333',minWidth:f==='chapter'?26:30,
-              textAlign:'center',padding:'0 2px'}}>{parseInt(slot.meta[f]||1)}{f==='chapter'?'강':'번'}</span>
-            <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;const max=f==='chapter'?30:99;
-              onMeta(slot.id,f,String(Math.min(max,cur+1)).padStart(f==='chapter'?2:3,'0'));}}
-              style={{...sB,padding:'4px 8px',fontSize:14,color:'#555',borderLeft:'0.5px solid #ddd'}}>▲</button>
-          </div>
-        ))}
-        <select value={slot.meta.difficulty} onChange={e=>onMeta(slot.id,'difficulty',e.target.value)}
-          style={{...sB,fontSize:12.5,fontWeight:600,color:df.color,border:'0.5px solid #ddd',
-            borderRadius:5,padding:'4px 6px',background:df.bg}}>
-          {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
-        </select>
-        {slot.status==='analyzed'&&<span style={{fontSize:10,color:'#bbb'}}>AI추정</span>}
-        {slot.id===0&&slot.status==='idle'&&<span style={{fontSize:10,color:'#bbb'}}>↑ 이후 자동 연번</span>}
-        <div style={{flex:1}}/>
-        {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:200,overflow:'hidden',
-          textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
+        {/* 1행: 메타 + 토글 */}
+        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+          <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
+          <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:4,
+            background:st.bg,color:st.color}}>{st.label}</span>
+          {slot.status==='saved'&&(
+            <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
+              style={{fontSize:11,fontWeight:700,padding:'2px 6px',borderRadius:4,flexShrink:0,
+                background:slot.isPublic?'#0a7c42':'#e9ecef',
+                color:slot.isPublic?'#fff':'#888',
+                border:slot.isPublic?'none':'0.5px solid #ccc'}}>
+              {slot.isPublic?'🌐':'🔒'}
+            </span>
+          )}
+          <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
+            style={{...sB,fontSize:12,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px'}}>
+            {SOURCES.map(s=><option key={s} value={s}>{s}</option>)}
+          </select>
+          {['chapter','number'].map(f=>(
+            <div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
+              borderRadius:5,border:'0.5px solid #ddd',overflow:'hidden'}}>
+              <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;
+                onMeta(slot.id,f,String(Math.max(1,cur-1)).padStart(f==='chapter'?2:3,'0'));}}
+                style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderRight:'0.5px solid #ddd'}}>▼</button>
+              <span style={{fontSize:12,fontWeight:500,color:'#333',minWidth:f==='chapter'?24:28,
+                textAlign:'center',padding:'0 2px'}}>{parseInt(slot.meta[f]||1)}{f==='chapter'?'강':'번'}</span>
+              <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;const max=f==='chapter'?30:99;
+                onMeta(slot.id,f,String(Math.min(max,cur+1)).padStart(f==='chapter'?2:3,'0'));}}
+                style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderLeft:'0.5px solid #ddd'}}>▲</button>
+            </div>
+          ))}
+          <select value={slot.meta.difficulty} onChange={e=>onMeta(slot.id,'difficulty',e.target.value)}
+            style={{...sB,fontSize:12,fontWeight:600,color:df.color,border:'0.5px solid #ddd',
+              borderRadius:5,padding:'3px 5px',background:df.bg}}>
+            {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
+          </select>
+          {slot.status==='analyzed'&&<span style={{fontSize:10,color:'#bbb'}}>AI추정</span>}
+          <div style={{flex:1}}/>
+          {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
+            textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
+          {(slot.text||slot.passageData||slot.analysis)&&(
+            <button onClick={onClear} title="슬롯 비우기"
+              style={{padding:'3px 8px',fontSize:11,color:'#fff',background:'#e74c3c',
+                border:'none',borderRadius:5,cursor:'pointer',fontWeight:600}}>🗑 삭제</button>
+          )}
+          <button onClick={onToggle}
+            style={{padding:'3px 10px',fontSize:12,fontWeight:700,borderRadius:5,border:'none',
+              background:slot.open?'#534AB7':'#f0f0f0',
+              color:slot.open?'#fff':'#666',cursor:'pointer'}}>
+            {slot.open?'▲ 접기':'▼ 펼치기'}
+          </button>
+        </div>
         {slot.analysis&&(
-          <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓교사</button>
-            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>HTML↓학생</button>
-            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'4px 9px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓교사</button>
-            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'4px 9px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>DOCX↓학생</button>
-            <button onClick={onAuthor} style={{padding:'4px 9px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer'}}>✏ 출제 저작</button>
+          <div style={{padding:'0 12px 8px',display:'flex',gap:4,alignItems:'stretch'}}>
+            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 7px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',lineHeight:1.3,textAlign:'center'}}>HTML↓<br/>교사</button>
+            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'3px 7px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',lineHeight:1.3,textAlign:'center'}}>HTML↓<br/>학생</button>
+            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'3px 7px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',lineHeight:1.3,textAlign:'center'}}>DOCX↓<br/>교사</button>
+            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'3px 7px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',lineHeight:1.3,textAlign:'center'}}>DOCX↓<br/>학생</button>
+            <button onClick={onAuthor} style={{padding:'3px 7px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,lineHeight:1.3,textAlign:'center'}}>✏출제<br/>저작</button>
           </div>
         )}
-        {(slot.text||slot.passageData||slot.analysis)&&(
-          <button onClick={onClear} title="이 슬롯 비우기 (GitHub 데이터는 유지)" style={{...sB,fontSize:13,color:'#bbb',padding:'3px 7px',border:'1px solid #eee',borderRadius:5,marginLeft:4}}>🗑</button>
-        )}
-        <button onClick={onToggle} style={{...sB,fontSize:13,color:'#ccc',padding:'3px 6px'}}>{slot.open?'▲':'▼'}</button>
       </div>
 
       {slot.open&&slot.status==='idle'&&(
