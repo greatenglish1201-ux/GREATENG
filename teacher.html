@@ -1882,7 +1882,12 @@ function App(){
   const [msg,setMsg]=useState('');
   const running=useRef(false);
 
-  useEffect(()=>{saveSlots(slots);},[slots]);
+  const saveTimer=useRef(null);
+  useEffect(()=>{
+    if(saveTimer.current)clearTimeout(saveTimer.current);
+    saveTimer.current=setTimeout(()=>saveSlots(slots),300);
+    return()=>{if(saveTimer.current)clearTimeout(saveTimer.current);};
+  },[slots]);
   const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
   const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
 
