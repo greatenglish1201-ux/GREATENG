@@ -1844,6 +1844,9 @@ Return JSON only:
 
 // ========== END AUTHORING TOOL ==========
 
+const iB={border:'none',borderBottom:'1px dashed #ccc',background:'transparent',
+    outline:'none',padding:'2px 0',fontFamily:'inherit',color:'inherit',width:'100%'};
+const sB={border:'none',background:'transparent',outline:'none',cursor:'pointer',fontFamily:'inherit'};
 function App(){
   const [slots,setSlots]=useState(()=>loadSlots()||Array.from({length:12},(_,i)=>makeSlot(i)));
   const [authorInitText,setAuthorInitText]=useState('');
@@ -2503,9 +2506,7 @@ function App(){
 
   const keyOk=apiKey.startsWith('sk-ant');
   const pending=slots.filter(s=>s.text.trim()&&s.status==='idle').length;
-  const iB={border:'none',borderBottom:'1px dashed #ccc',background:'transparent',
-    outline:'none',padding:'2px 0',fontFamily:'inherit',color:'inherit',width:'100%'};
-  const sB={border:'none',background:'transparent',outline:'none',cursor:'pointer',fontFamily:'inherit'};
+
 
   return(
     <div style={{minHeight:'100vh',background:'#f2f3f7'}}>
@@ -3151,7 +3152,7 @@ function App(){
   );
 }
 
-function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic}){
+const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -3227,7 +3228,9 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
 
       {slot.open&&slot.status==='idle'&&(
         <div style={{padding:16}}>
-          <textarea value={slot.text} onChange={e=>onText(e.target.value)}
+          <textarea key={slot.id+'_'+slot.status} defaultValue={slot.text}
+            onBlur={e=>onText(e.target.value)}
+            onPaste={e=>{setTimeout(()=>onText(e.target.value),0);}}
             placeholder={'지문 '+(slot.id+1)+' 붙여넣기...'}
             style={{width:'100%',minHeight:100,padding:'10px 13px',fontSize:14,lineHeight:1.9,
               border:'0.5px solid #e0e0e0',borderRadius:8,resize:'vertical',fontFamily:'inherit',
@@ -3526,8 +3529,7 @@ function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,
       )}
     </div>
   );
-}
-
+});
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
