@@ -157,7 +157,7 @@ function applyGasQuestions(passage, questions){
       if(q.type==='topic'){p.topic_options=d.options;p.topic_answer=Number(q.answer)||1;}
       else if(q.type==='blank'){p.blank_sel=d.sel||0;p.blank_candidates=d.candidates||[];p.blank_sentence_index=d.sentence_index;p.blank_target=d.target;p.blank_options=d.options;p.blank_answer=Number(q.answer)||1;}
       else if(q.type==='order'){p.order_given_index=d.given_index;p.order_blocks=d.blocks;p.order_options=d.options;p.order_answer=Number(q.answer)||1;}
-      else if(q.type==='insert'){p.insert_sel=d.sel||0;p.insert_candidates=d.candidates||[];p.insert_sentence=d.sentence;p.insert_answer=Number(q.answer)||1;}
+      else if(q.type==='insert'){p.insert_sel=d.sel||0;p.insert_candidates=d.candidates||[];const ic0=p.insert_candidates[0]||{};p.insert_sentence=d.sentence||ic0.sentence||'';p.insert_answer=Number(q.answer)||ic0.pos||1;}
       else if(q.type==='summary'){p.summary_sel=d.sel||0;p.summary_candidates=d.candidates||[];p.summary_template=d.template;p.summary_A_options=d.A_options;p.summary_A_answer=d.A_answer||1;p.summary_B_options=d.B_options;p.summary_B_answer=d.B_answer||1;}
       else if(q.type==='implication'){p.implication_sentence_index=d.sentence_index;p.implication_keyword=d.keyword;p.implication_options=d.options;p.implication_answer=Number(q.answer)||1;}
       else if(q.type==='irrelevant'){p.irrel_sel=d.sel||0;p.irrel_candidates=d.candidates||[];p.irrel_insert_pos=d.insert_pos||0;p.irrel_confirmed=d.confirmed||false;p.irrelevant_sentence_index=d.sentence_index;}
@@ -199,7 +199,11 @@ function normalizePassage(p){
   // vocab_answer: vocab_sets에서 가져오기
   let vocab_answer = p.vocab_answer;
   if(!vocab_answer && p.vocab_sets && p.vocab_sets.length > 0) vocab_answer = p.vocab_sets[0].answer;
-  return {...p, sentences, blank_answer, grammar_items, grammar_answer, vocab_answer};
+  // insert_sentence: 없으면 insert_candidates[0].sentence fallback
+  let insert_sentence=p.insert_sentence;
+  let insert_answer=p.insert_answer;
+  if(!insert_sentence&&p.insert_candidates?.length){const ic=p.insert_candidates[0];insert_sentence=ic.sentence||'';insert_answer=ic.pos||1;}
+  return {...p, sentences, blank_answer, grammar_items, grammar_answer, vocab_answer, insert_sentence, insert_answer};
 }
 function gen(passage, type, allP){
   passage = normalizePassage(passage);
