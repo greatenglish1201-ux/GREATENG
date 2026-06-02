@@ -1741,7 +1741,7 @@ Return JSON only:
   if(step==='edit'){
     const p=P();
     const curId=p?.id||'';
-    const savedSlots=(slots||[]).filter(s=>s.status==='saved'&&s.passageData);
+    const savedSlots=(slots||[]).filter(s=>s.status==='saved');
     return(
       <div style={{padding:'14px'}}>
         {/* 교재ID/번호 + 슬롯 전환 */}
@@ -1753,13 +1753,13 @@ Return JSON only:
             {savedSlots.map((s,si)=>{
               const sid=s.passageData?.id||(s.meta?.source+'_'+String(s.meta?.chapter||1).padStart(2,'0')+'_'+String(s.meta?.number||1).padStart(3,'0'));
               const isNow=sid===curId;
-              return<button key={si} onClick={()=>{if(!isNow&&onSlotChange)onSlotChange(restorePassageData(s.passageData),s.meta);}}
+              return<button key={si} onClick={()=>{if(!isNow&&onSlotChange)onSlotChange(s.passageData?restorePassageData(s.passageData):null,s.meta);}}
                 style={{fontSize:11,padding:'3px 9px',borderRadius:6,
                   border:`1px solid ${isNow?'#185FA5':'#e5e5e5'}`,
                   background:isNow?'#185FA5':'transparent',
                   color:isNow?'#fff':'#555',
                   cursor:isNow?'default':'pointer',fontWeight:isNow?600:400}}>
-                {sid}
+                {parseInt(s.meta?.chapter)||1}강 {parseInt(s.meta?.number)||1}번
               </button>;
             })}
           </>}
@@ -2105,18 +2105,7 @@ function App(){
     if(!id||!slot.meta.source){alert('교재/강/번호가 비어있습니다.');return false;}
     setSlotSheetSaving(prev=>({...prev,[slot.id]:true}));
     try{
-      // ★ 데이터 안전: 기존 시트의 is_public을 우선 보존
-      //   (다기기/시점차로 시트의 공개 상태가 로컬과 다를 수 있음 → 시트 상태 보존이 안전)
-      try{
-        const cur=await jsonpFetch(appsUrl,{action:'getPassages',id});
-        const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
-        if(sheetP&&sheetP.is_public){
-          // 시트의 기존 is_public을 우선 적용 (로컬 토글로 명시적 변경한 게 아니라면)
-          if(slot.isPublic===undefined||slot.isPublic===false){
-            passagePayload.is_public=sheetP.is_public;
-          }
-        }
-      }catch(e){/* 조회 실패 시 기본값으로 진행 */}
+
       // 1) 지문DB (POST - 큰 데이터)
       const r1=await formPostFetch(appsUrl,{action:'savePassage',...passagePayload});
       if(!r1.ok&&!r1.warning)throw new Error('지문 저장 실패: '+(r1.error||'unknown'));
@@ -2927,7 +2916,35 @@ function App(){
         </div>
       )}
 
-      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} appsUrl={appsUrl} slots={slots} onSlotChange={(pd,meta)=>{setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);}} onSaveComplete={(pd)=>{if(!pd)return;setSlots(prev=>prev.map(s=>s.passageData?.id===pd.id?{...s,passageData:{...s.passageData,...pd}}:s));}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
+      {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} appsUrl={appsUrl} slots={slots} onSlotChange={async(pd,meta)=>{
+  if(!pd&&appsUrl&&meta){
+    const pid=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
+    try{
+      const r=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
+      const sp=(r&&r.passages&&r.passages[0])||null;
+      if(sp){
+        let d={};try{d=JSON.parse(sp.passage_json||'{}');}catch{}
+        if(!d.sentences?.length){try{d.sentences=JSON.parse(sp.sentences_json||'[]');}catch{}}
+        d.id=d.id||pid;
+        const qr=await jsonpFetch(appsUrl,{action:'getQuestions',pid});
+        (qr?.questions||[]).forEach(q=>{
+          let qd={};try{qd=q.data_json?JSON.parse(q.data_json):{};}catch{return;}
+          if(q.type==='topic'){d.topic_options=qd.options;d.topic_answer=q.answer;}
+          else if(q.type==='blank'){d.blank_sel=qd.sel||0;d.blank_candidates=(qd.candidates||[]).map(c=>{const ss=d.sentences||[];const ri=ss.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(c.keyword));return ri>=0?{...c,sentence_index:ri}:c;});const bc=d.blank_candidates[d.blank_sel]||{};d.blank_sentence_index=bc.sentence_index??qd.sentence_index;d.blank_target=qd.target??bc.keyword;d.blank_options=qd.options||(bc.keyword?[bc.keyword,...(bc.distractors||[])]:['','','','','']);d.blank_answer=q.answer;}
+          else if(q.type==='order'){d.order_given_index=qd.given_index||0;d.order_blocks=qd.blocks||[];d.order_answer=q.answer;}
+          else if(q.type==='summary'){d.summary_sel=qd.sel||0;d.summary_candidates=qd.candidates||[];if(qd.candidates?.length){const sc=qd.candidates[d.summary_sel]||{};d.summary_template=sc.template;d.summary_A_options=[sc.A_correct,...(sc.A_distractors||[])];d.summary_B_options=[sc.B_correct,...(sc.B_distractors||[])];d.summary_A_answer=q.answer;}}
+          else if(q.type==='implication'){d.implication_sentence_index=qd.sentence_index||0;d.implication_keyword=qd.keyword||'';d.implication_options=qd.options||['','','','',''];d.implication_answer=q.answer;}
+          else if(q.type==='irrelevant'){d.irrel_sel=qd.sel||0;d.irrel_candidates=qd.candidates||[];d.irrel_insert_pos=qd.insert_pos||0;d.irrel_confirmed=qd.confirmed||false;}
+          else if(q.type==='insert'){d.insert_candidates=qd.candidates||[];d.insert_sentence=qd.sentence||d.insert_candidates[0]?.sentence||'';d.insert_answer=qd.answer||q.answer;}
+          else if(q.type==='grammar'){d.grammar_sets=qd.sets||[];d.grammar_sel=qd.sel||0;d.grammar_answer=q.answer;if(!d.grammar_sets.length&&qd.items?.length)d.grammar_sets=[{items:qd.items,answer:q.answer}];}
+          else if(q.type==='vocab'){d.vocab_sets=qd.sets||[];d.vocab_sel=qd.sel||0;d.vocab_answer=q.answer;if(!d.vocab_sets.length&&qd.items?.length)d.vocab_sets=[{items:qd.items,answer:q.answer}];}
+        });
+        pd=restorePassageData(d);
+      }
+    }catch(e){console.warn('슬롯 전환 시트 조회 실패:',e);}
+  }
+  setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);
+}} onSaveComplete={(pd)=>{if(!pd)return;setSlots(prev=>prev.map(s=>s.passageData?.id===pd.id?{...s,passageData:{...s.passageData,...pd}}:s));}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
       <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -2975,6 +2992,7 @@ function App(){
                 setAuthorInitMeta(slot.meta);
                 const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
                 let passageData=slot.passageData?restorePassageData(slot.passageData):null;
+
                 if(!passageData){
                   let pool=loadedPassages.length?loadedPassages:(window.PASSAGES||[]);
                   let found=pool.find(p=>p.id===pid);
