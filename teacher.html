@@ -582,9 +582,9 @@ const AUTH_PROMPT=t=>`You are a Korean CSAT English exam expert. Extract ONLY th
 "blank":{"candidates":[{"sentence_index":2,"keyword":"key phrase that paraphrases the passage thesis","distractors":["w1","w2","w3","w4"]},{"sentence_index":0,"keyword":"another paraphrasable thesis","distractors":["w1","w2","w3","w4"]},{"sentence_index":4,"keyword":"conclusion paraphrase","distractors":["w1","w2","w3","w4"]}]},
 "order":{"possible":true,"blocks":[{"label":"B","sentence_indices":[1,2,3]},{"label":"C","sentence_indices":[4,5]},{"label":"D","sentence_indices":[6,7,8]}]},
 "summary":{"candidates":[{"template":"...________(A)________...________(B)________...","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl2","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]},{"template":"tmpl3","A_correct":"w","A_distractors":["w1","w2","w3","w4"],"B_correct":"w","B_distractors":["w1","w2","w3","w4"]}]},
-"implication":{"possible":true,"sentence_index":2,"keyword":"figurative phrase","candidates":["CORRECT meaning","w2","w3","w4","w5"]},
+"implication":{"possible":true,"sentence_index":2,"keyword":"figurative phrase"},
 "irrelevant":{"candidates":["unrelated sentence1","unrelated sentence2","unrelated sentence3"],"recommended_pos":2},
-"insert":{"candidates":[{"sentence":"insert sentence","pos":3},{"sentence":"s2","pos":5},{"sentence":"s3","pos":2}]},
+"insert":{"candidates":[{"sentence_index":3,"pos":3},{"sentence_index":5,"pos":5},{"sentence_index":2,"pos":2}]},
 "grammar":{"sets":[{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":1,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":false,"note":"→ correction"},{"sent":4,"word":"w","correct":true,"note":"이유"},{"sent":6,"word":"w","correct":true,"note":"이유"}],"answer":3},{"items":[{"sent":0,"word":"w","correct":true,"note":"이유"},{"sent":2,"word":"w","correct":true,"note":"이유"},{"sent":3,"word":"w","correct":false,"note":"→ correction"},{"sent":5,"word":"w","correct":true,"note":"이유"},{"sent":7,"word":"w","correct":true,"note":"이유"}],"answer":3}]},
 "vocab":{"sets":[{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":1,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":false},{"sent":4,"word":"orig","alt":"wrong","correct":true},{"sent":6,"word":"orig","alt":"wrong","correct":true}],"answer":3},{"items":[{"sent":0,"word":"orig","alt":"wrong","correct":true},{"sent":2,"word":"orig","alt":"wrong","correct":true},{"sent":3,"word":"orig","alt":"wrong","correct":false},{"sent":5,"word":"orig","alt":"wrong","correct":true},{"sent":7,"word":"orig","alt":"wrong","correct":true}],"answer":3}]}}
 Rules: topic.candidates[0]=correct.
@@ -631,9 +631,9 @@ function buildPassageData(a,pfx,ch,num){
     id:`${pfx}_${cs}_${ns}`,difficulty:a.difficulty||'보통',title:a.title||'제목',
     sentences:(a.sentences||[]).map((s,i)=>typeof s==='string'?{num:i+1,text:s,symbol:'G',role:'',chunks:[]}:s),abstract:a.abstract||'',
     topic_options:a.topic.candidates,topic_answer:1,
-    blank_sel:0,blank_sentence_index:a.blank.candidates[0].sentence_index,
+    blank_sel:0,blank_sentence_index:(()=>{const sents=(a.sentences||[]);const kw=a.blank.candidates[0].keyword;const ri=sents.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(kw));return ri>=0?ri:a.blank.candidates[0].sentence_index;})(),
     blank_target:a.blank.candidates[0].keyword,
-    blank_candidates:a.blank.candidates,
+    blank_candidates:a.blank.candidates.map(c=>{const sents=(a.sentences||[]);const ri=sents.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(c.keyword));return ri>=0?{...c,sentence_index:ri}:c;}),
     blank_options:[a.blank.candidates[0].keyword,...a.blank.candidates[0].distractors],blank_answer:1,
     order_given_index:0,order_blocks:a.order.possible!==false&&a.order.blocks?a.order.blocks:[],
     order_options:['(A)-(B)-(C)','(B)-(C)-(A)','(C)-(A)-(B)','(B)-(A)-(C)','(A)-(C)-(B)'],order_answer:1,
@@ -642,11 +642,11 @@ function buildPassageData(a,pfx,ch,num){
     summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1,
     implication_sentence_index:a.implication.possible!==false?a.implication.sentence_index:0,
     implication_keyword:a.implication.possible!==false?a.implication.keyword:'',
-    implication_options:a.implication.possible!==false?(()=>{const opts=a.implication.candidates||[];while(opts.length<5)opts.push('');return opts;})():['','','','',''],implication_answer:1,
+    implication_options:['','','','',''],implication_answer:1,
     irrel_sel:0,irrel_candidates:a.irrelevant.candidates,irrel_insert_pos:a.irrelevant.recommended_pos||1,irrel_confirmed:false,
     irrelevant_sentence_index:a.irrelevant.recommended_pos||1,
-    insert_sel:0,insert_candidates:a.insert.candidates,
-    insert_sentence:a.insert.candidates[0].sentence,insert_answer:a.insert.candidates[0].pos,
+    insert_sel:0,insert_candidates:(a.insert.candidates||[]).map(c=>{const sents=a.sentences||[];const s=sents[c.sentence_index];return{sentence_index:c.sentence_index,sentence:s?(typeof s==='string'?s:s.text||''):'',pos:c.pos};}).filter(c=>c.sentence),
+    insert_sentence:(()=>{const sents=a.sentences||[];const c=(a.insert.candidates||[])[0];if(!c)return'';const s=sents[c.sentence_index];return s?(typeof s==='string'?s:s.text||''):'';})(),insert_answer:(a.insert.candidates||[])[0]?.pos||1,
     grammar_sets:a.grammar.sets,grammar_sel:0,grammar_answer:a.grammar.sets[0].answer,
     vocab_sets:a.vocab.sets,vocab_sel:0,vocab_answer:a.vocab.sets[0].answer,
     aGroup:[sc.A_correct,...sc.A_distractors].slice(0,3),bGroup:[sc.B_correct,...sc.B_distractors].slice(0,3)
@@ -973,66 +973,33 @@ Return JSON only:
       const prompt=isG
         ?`You are a Korean CSAT English grammar exam expert specializing in 어법 (29번 문항).
 
-CRITICAL CSAT 평가원 grammar rules:
-- The INCORRECT item must be UNAMBIGUOUSLY wrong (명백한 어법 오류) — 평가원 NEVER uses style/preference-based errors
-- The wrong form must be substituted INTO the passage (NOT the original word marked as wrong)
-- "word" = the WRONG form that students see; "original" = the original passage word (the correct form)
-- For correct items, "word" = "original" = passage word (no substitution)
-
-Frequent CSAT grammar test points (focus on these):
-- 준동사 (participles/gerunds/infinitives): -ing vs -ed, to V vs V-ing
-- 관계사: that vs which, who vs whom, where vs which (with prep)
-- 수일치: subject-verb agreement with intervening phrases, collective nouns
-- 시제·태: active vs passive, tense consistency
-- 도치: negative inversion, "only" inversion
-- 병렬구조: parallel structure in lists or "both A and B"
-- 대명사: pronoun agreement with antecedent
-- 형용사 vs 부사: modifying verbs/adjectives vs nouns
+Select 5 words from DIFFERENT sentences that are strong grammar test candidates:
+- Focus on: 준동사(-ing/-ed/to V), 관계사(that/which/who/where), 수일치, 시제·태, 병렬구조, 대명사, 형용사 vs 부사
+- Pick words where a wrong substitution would be UNAMBIGUOUS (not style-based)
+- word = EXACT form as it appears in the passage
+- original = same as word (exact passage form)
+- note = 어법 포인트 설명 (한국어, 학생용 해설 — 출제자 관점 표현 금지)
+- correct = true for ALL items (the teacher will manually designate the incorrect one)
 
 Passage:
 ${passage}
 
-Generate exactly 5 items from DIFFERENT sentences:
-- 4 CORRECT items: word = original (the original grammatical form, no change)
-- 1 INCORRECT item: word = a grammatically WRONG substitution that produces an unambiguous error
-  Example: original "suggests" → word "suggesting" (subject-verb agreement broken)
-  Example: original "to run" → word "running" (verb pattern violation)
-  Example: original "which" → word "what" (relative pronoun misuse)
-- The wrong item must test ONE of the frequent test points above
-
-note 작성 규칙 (한국어):
-- CORRECT 항목: "왜 이 형태가 문법적으로 맞는지" 학생이 이해할 수 있게 설명 (예: "주어 X에 수일치한 동사 형태")
-- INCORRECT 항목: "어떤 어법 오류인지" + 정답 형태 (예: "주어 X에 수일치 안 됨 → suggests")
-- 절대 사용 금지: "원문 단어를 바꿔야 한다", "원문을 수정해야 한다" 같은 출제자 관점의 표현
-- 학생이 학습 자료로 보는 해설이므로, 출제 메타 정보는 포함하지 말 것
-
 Return JSON only:
-{"items":[{"sent":0,"word":"original word","original":"original word","correct":true,"note":"문법적으로 적절한 이유"},{"sent":1,"word":"original word","original":"original word","correct":true,"note":"이유"},{"sent":2,"word":"WRONG substituted form","original":"original word","correct":false,"note":"오류 유형 + → original word"},{"sent":3,"word":"original word","original":"original word","correct":true,"note":"이유"},{"sent":4,"word":"original word","original":"original word","correct":true,"note":"이유"}],"answer":3}`
+{"items":[{"sent":0,"word":"exact passage word","original":"exact passage word","correct":true,"note":"어법 포인트"},{"sent":1,"word":"exact passage word","original":"exact passage word","correct":true,"note":"어법 포인트"},{"sent":2,"word":"exact passage word","original":"exact passage word","correct":true,"note":"어법 포인트"},{"sent":3,"word":"exact passage word","original":"exact passage word","correct":true,"note":"어법 포인트"},{"sent":4,"word":"exact passage word","original":"exact passage word","correct":true,"note":"어법 포인트"}]}`
         :`You are a Korean CSAT English vocabulary exam expert specializing in 어휘 (30번 문항).
 
-CRITICAL CSAT 평가원 vocabulary rules:
-- The INCORRECT answer must be the OPPOSITE/REVERSE of the original word (반의어 원칙 — most reliable, no controversy)
-- 평가원 NEVER uses near-synonyms or nuance-based wrong answers (would cause official appeals)
-- The wrong word, when read in context, must make the sentence contradict the passage's flow
-- Word swaps based on subtle meaning differences are FORBIDDEN
-
-For each item:
-- "word" = the form AS IT APPEARS in the displayed passage (correct items = original passage word; incorrect item = the WRONG substituted word)
-- "original" = the EXACT original passage word (always, for both correct and incorrect)
-- "alt" = the correct vocabulary that should replace the wrong one (= original for incorrect; a contextual synonym for correct items)
-- "correct" = true means this word fits the context; false means this word breaks the meaning
+Select 5 semantically loaded content words (verbs/adjectives/nouns — NOT function words) from DIFFERENT sentences that are strong vocabulary test candidates:
+- Pick words where the OPPOSITE/REVERSE meaning substitution would clearly contradict the passage flow
+- word = EXACT form as it appears in the passage
+- original = same as word
+- alt = the antonym/opposite that could serve as a wrong substitution (for teacher reference)
+- correct = true for ALL items (the teacher will manually designate the incorrect one)
 
 Passage:
 ${passage}
 
-Generate exactly 5 items from DIFFERENT sentences:
-- 4 CORRECT items: word = original passage word; alt = a contextually plausible synonym
-- 1 INCORRECT item: word = OPPOSITE-meaning word substituted in place of the original; original = original word; alt = original (the correct word)
-- Pick semantically loaded content words (verbs/adjectives/nouns), not function words
-- The incorrect item's context must make the opposition CLEAR and UNAMBIGUOUS
-
 Return JSON only:
-{"items":[{"sent":0,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":1,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":2,"word":"OPPOSITE-meaning substituted","original":"original passage word","alt":"original passage word","correct":false},{"sent":3,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":4,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true}],"answer":3}`;
+{"items":[{"sent":0,"word":"exact passage word","original":"exact passage word","alt":"opposite word","correct":true},{"sent":1,"word":"exact passage word","original":"exact passage word","alt":"opposite word","correct":true},{"sent":2,"word":"exact passage word","original":"exact passage word","alt":"opposite word","correct":true},{"sent":3,"word":"exact passage word","original":"exact passage word","alt":"opposite word","correct":true},{"sent":4,"word":"exact passage word","original":"exact passage word","alt":"opposite word","correct":true}]}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.items?.length)throw new Error('항목 없음');
@@ -1405,7 +1372,7 @@ Return JSON only:
       else if(at===2){const bl2=getBlockLabel(p,i);if(bl2){const bc2=BLK_C[bl2];bg=bc2+'12';bl='3px solid '+bc2;}}
       else if(at===4&&i===p.implication_sentence_index){bg='#99355610';bl='3px solid #993556';}
       else if(at===6&&p.insert_answer===i){bg='#534AB714';bl='3px solid #534AB7';}
-      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?(p.grammar_sel||0):(p.vocab_sel||0);const item=sets?.[sel]?.items?.find(it=>Number(it.sent)===i);if(item){const c=item.correct?'#185FA5':'#E24B4A';bg=c+'08';bl='3px solid '+c;}}
+      else if((at===7||at===8)){const sets=at===7?p.grammar_sets:p.vocab_sets;const sel=at===7?(p.grammar_sel||0):(p.vocab_sel||0);const item=sets?.[sel]?.items?.find(it=>Number(it.sent)===i);if(item){const c=!item.correct?'#E24B4A':'#888';bg=c+'08';bl='3px solid '+c;}}
       const stxt=typeof s==='string'?s:(s?.text||'');
       const isInsertSel=at===6&&p.insert_answer===i;
       rows.push(<div key={i}
@@ -1444,11 +1411,16 @@ Return JSON only:
 
     if(at===1)return<div>
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 빈칸 후보 선택</div>
-      {p.blank_candidates?.map((c,ci)=><button key={ci} onClick={()=>upPDeep(p=>{const upd={...p,blank_sel:ci,blank_sentence_index:c.sentence_index,blank_target:c.keyword,blank_options:[c.keyword,...c.distractors]};return upd;})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.blank_sel===ci?'#993C1D10':'transparent',border:`1px solid ${p.blank_sel===ci?'#993C1D':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
-        {p.blank_sel===ci&&bdg('✓','#993C1D')}{ci===0&&bdg('AI 추천','#854F0B')}
-        <div style={{fontSize:11,color:'#bbb',marginBottom:2}}>문장 [{c.sentence_index}]</div>
-        <div style={{fontSize:13,fontWeight:p.blank_sel===ci?600:400,color:p.blank_sel===ci?'#993C1D':'#1d1d1f'}}>"{c.keyword}"</div>
-      </button>)}
+      {p.blank_candidates?.map((c,ci)=>{
+        const sents=p.sentences||[];
+        const realIdx=sents.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(c.keyword));
+        const dispIdx=realIdx>=0?realIdx:c.sentence_index;
+        return<button key={ci} onClick={()=>upPDeep(p=>{const upd={...p,blank_sel:ci,blank_sentence_index:dispIdx,blank_target:c.keyword,blank_options:[c.keyword,...c.distractors]};return upd;})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:7,background:p.blank_sel===ci?'#993C1D10':'transparent',border:`1px solid ${p.blank_sel===ci?'#993C1D':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
+          {p.blank_sel===ci&&bdg('✓','#993C1D')}{ci===0&&bdg('AI 추천','#854F0B')}
+          <div style={{fontSize:11,color:'#bbb',marginBottom:2}}>문장 [{dispIdx}]{realIdx>=0&&realIdx!==c.sentence_index?<span style={{color:'#E24B4A',marginLeft:4}}>(AI:{c.sentence_index}→수정)</span>:null}</div>
+          <div style={{fontSize:13,fontWeight:p.blank_sel===ci?600:400,color:p.blank_sel===ci?'#993C1D':'#1d1d1f'}}>"{c.keyword}"</div>
+        </button>;
+      })}
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>② 오답 선택지</div>
@@ -1537,6 +1509,10 @@ Return JSON only:
           {p.implication_keyword||'미선택'} <span style={{fontSize:11,color:'#bbb',fontWeight:400}}>문장[{p.implication_sentence_index}]</span>
         </div>
       </div>
+      {(!p.implication_options||p.implication_options.every(o=>!o))&&genLoading!=='implication'&&
+        <div style={{padding:'10px 12px',background:'#F9F0F4',border:'0.5px solid #99355640',borderRadius:7,fontSize:12,color:'#993556',marginBottom:8}}>
+          선지 없음. 밑줄 표현 선택 후 ↻ 버튼으로 AI 생성하세요.
+        </div>}
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:600,color:'#888'}}>선지 편집 &amp; 정답 선택</div>
 
@@ -1575,17 +1551,30 @@ Return JSON only:
     </div>;
 
     if(at===6)return<div>
-      {/* 현재 선택된 문장 */}
-      <div style={{marginBottom:12,padding:'10px 12px',background:'#534AB708',border:'1px solid #534AB733',borderRadius:8}}>
-        <div style={{fontSize:11,fontWeight:600,color:'#534AB7',marginBottom:5}}>선택된 삽입 문장</div>
-        {p.insert_sentence
-          ?<div style={{fontSize:12,color:'#534AB7',fontWeight:600,lineHeight:1.6}}>{p.insert_sentence}</div>
-          :<div style={{fontSize:12,color:'#bbb'}}>왼쪽 본문에서 문장을 클릭하세요</div>}
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>① 삽입 문장 선택 (본문 클릭)</div>
+      {(p.insert_candidates||[]).length>0&&<>
+        <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>AI 추천 후보</div>
+        {(p.insert_candidates||[]).map((c,ci)=>{
+          const isSel=p.insert_sentence===c.sentence;
+          return<button key={ci} onClick={()=>upP({insert_sentence:c.sentence,insert_answer:c.pos})}
+            style={{display:'block',width:'100%',textAlign:'left',marginBottom:6,background:isSel?'#534AB710':'transparent',border:`1px solid ${isSel?'#534AB7':'#e5e5e5'}`,borderRadius:8,padding:'8px 11px',cursor:'pointer'}}>
+            {isSel&&bdg('✓','#534AB7')}
+            <div style={{fontSize:11,color:'#bbb',marginBottom:2}}>문장[{c.sentence_index}] → 삽입위치 {c.pos}번 뒤</div>
+            <div style={{fontSize:12,fontWeight:isSel?600:400,color:isSel?'#534AB7':'#1d1d1f',lineHeight:1.5}}>{c.sentence}</div>
+          </button>;
+        })}
+        <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'8px 0'}}/>
+      </>}
+      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:5}}>현재 선택</div>
+      <div style={{marginBottom:8,padding:'8px 11px',background:'#534AB708',border:'1px solid #534AB733',borderRadius:7,fontSize:12,color:'#534AB7',fontWeight:600,minHeight:36,lineHeight:1.6}}>
+        {p.insert_sentence||<span style={{color:'#bbb',fontWeight:400}}>왼쪽 본문에서 문장을 클릭하세요</span>}
       </div>
-      {/* 직접 수정 */}
-      <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:5}}>직접 수정</div>
-      <LocalTextarea value={p.insert_sentence||''} onSave={v=>upP({insert_sentence:v})} rows={3}
-        style={{width:'100%',fontSize:12,padding:'7px',border:'1px solid #534AB733',borderRadius:7,resize:'vertical',marginBottom:10}}/>
+      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
+        <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>삽입 위치</span>
+        <input type="number" min={1} value={p.insert_answer||1} onChange={e=>upP({insert_answer:Number(e.target.value)})}
+          style={{width:60,fontSize:12,padding:'4px 8px',border:'1px solid #534AB733',borderRadius:6,textAlign:'center'}}/>
+        <span style={{fontSize:11,color:'#888'}}>번 문장 뒤</span>
+      </div>
     </div>;
 
     if(at===7||at===8){
@@ -1608,7 +1597,7 @@ Return JSON only:
         {sets?.map((set,si)=><button key={si} onClick={()=>upP({[selKey]:si,[ansKey]:set.answer})} style={{display:'block',width:'100%',textAlign:'left',marginBottom:8,background:sel===si?'#f5f5f7':'transparent',border:`1px solid ${sel===si?'#185FA5':'#e5e5e5'}`,borderRadius:9,padding:'10px 12px',cursor:'pointer'}}>
           {sel===si&&bdg('✓','#185FA5')}{si===0&&bdg('AI 추천','#854F0B')}
           <div style={{marginTop:6,display:'flex',flexWrap:'wrap',gap:4}}>
-            {set.items.map((item,ii)=>{const ic=item.correct?'#185FA5':'#E24B4A';return<span key={ii} style={{fontSize:11,padding:'2px 7px',borderRadius:5,background:ic+'18',color:ic,border:`0.5px solid ${ic}44`}}>{ii+1}. {isG?item.word:`${item.word}/${item.alt}`}</span>;})}
+            {set.items.map((item,ii)=>{const ic=!item.correct?'#E24B4A':'#888';return<span key={ii} style={{fontSize:11,padding:'2px 7px',borderRadius:5,background:ic+'18',color:ic,border:`0.5px solid ${ic}44`}}>{ii+1}. {isG?item.word:`${item.word}/${item.alt}`}</span>;})}
           </div>
         </button>)}
         <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
@@ -1627,12 +1616,9 @@ Return JSON only:
               <GrammarItemInput value={item.word}
                 onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],word:v,original:items[ii].original||items[ii].word};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
                 style={{flex:1,border:`1px solid ${isBodySel?'#F59E0B':'#ddd'}`,borderRadius:6,padding:'4px 8px',fontSize:13,fontWeight:700,background:isBodySel?'#FFFBF0':'#fff'}}/>
-              <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]={...items[ii],correct:!items[ii].correct};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
-                style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:`1px solid ${item.correct?'#185FA5':'#E24B4A'}`,background:item.correct?'#185FA518':'#E24B4A18',color:item.correct?'#185FA5':'#E24B4A',cursor:'pointer',whiteSpace:'nowrap'}}>
-                {item.correct?'✓ 올바름':'✗ 오류'}
-              </button>
-              <button onClick={()=>upP({[ansKey]:ii+1})} style={{padding:'4px 10px',fontSize:11,borderRadius:6,border:`1px solid ${isSel?'#E24B4A':'#ddd'}`,background:isSel?'#E24B4A':'transparent',color:isSel?'#fff':'#666',cursor:'pointer',whiteSpace:'nowrap'}}>
-                {isSel?'✓ 정답':'정답 지정'}
+              <button onClick={(e)=>{e.stopPropagation();upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const si=isG?p.grammar_sel:p.vocab_sel;const items=[...sets[si].items].map((it,idx)=>({...it,correct:idx!==ii}));sets[si]={...sets[si],items};return isG?{...p,grammar_sets:sets,[ansKey]:ii+1}:{...p,vocab_sets:sets,[ansKey]:ii+1};});}}
+                style={{padding:'4px 10px',fontSize:11,borderRadius:6,border:`1px solid ${!item.correct?'#E24B4A':'#ddd'}`,background:!item.correct?'#E24B4A':'transparent',color:!item.correct?'#fff':'#666',cursor:'pointer',whiteSpace:'nowrap',fontWeight:!item.correct?700:400}}>
+                {!item.correct?'✗ 오답':'오답 지정'}
               </button>
               <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=sets[isG?p.grammar_sel:p.vocab_sel].items.filter((_,i)=>i!==ii);sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets,grammar_answer:1}:{...p,vocab_sets:sets,vocab_answer:1};});}}
                 style={{padding:'4px 8px',fontSize:11,borderRadius:6,border:'1px solid #fcc',background:'#fff5f5',color:'#E24B4A',cursor:'pointer'}}>삭제</button>
@@ -2264,10 +2250,10 @@ function App(){
           }
           else if(q.type==='blank'){
             pd.blank_sel=d.sel||0;
-            pd.blank_candidates=d.candidates||[];
+            pd.blank_candidates=(d.candidates||[]).map(c=>{const sents=pd.sentences||[];const ri=sents.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(c.keyword));return ri>=0?{...c,sentence_index:ri}:c;});
             // 평탄 필드 복원: candidates[sel]로부터
             const bc=pd.blank_candidates[pd.blank_sel]||{};
-            pd.blank_sentence_index=d.sentence_index??bc.sentence_index;
+            pd.blank_sentence_index=bc.sentence_index??d.sentence_index;
             pd.blank_target=d.target??bc.target;
             pd.blank_options=d.options||(bc.options||(bc.correct?[bc.correct,...(bc.distractors||[])]:[]));
             pd.blank_answer=q.answer||bc.answer||1;
