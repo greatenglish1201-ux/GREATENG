@@ -1106,14 +1106,15 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
               {(stats.sessionStats||[]).slice().reverse().map((s,i)=>{
-                const isScore=v=>String(v).includes('/');
-                const dv=isScore(s.date)?s.score:s.date;
-                const sv=isScore(s.date)?s.date:s.score;
-                const fmtDate=v=>{const d=new Date(v);if(isNaN(d))return String(v).slice(0,10);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
+                // date/score 필드 자동 판별: '/'포함=점수, Date파싱성공=날짜
+                const isDateStr=v=>{if(String(v).includes('/'))return false;const d=new Date(v);return !isNaN(d.getTime());};
+                const fmtDate=v=>{const d=new Date(v);if(isNaN(d.getTime()))return String(v).slice(0,16);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
+                const dateVal=isDateStr(s.date)?s.date:isDateStr(s.score)?s.score:s.date;
+                const scoreVal=String(s.score).includes('/')?s.score:String(s.date).includes('/')?s.date:s.score;
                 return<div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#64748b'}}>{fmtDate(dv)}</span>
+                  <span style={{fontSize:12,color:'#64748b'}}>{fmtDate(dateVal)}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{String(sv)}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{String(scoreVal)}문항</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
                 </div>;
