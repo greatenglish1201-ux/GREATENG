@@ -922,18 +922,32 @@ async function analyzeExam(){
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:1024,temperature:0.1}})
+      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:4096,temperature:0.1}})
     });
     const data = await res.json();
     if(data.error){ throw new Error(data.error.message); }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if(!text){ throw new Error('빈 응답. 키를 확인하세요.'); }
+    if(!text){ throw new Error('빈 응답. API 키를 확인하세요.'); }
     let parsed1;
     try{ parsed1 = JSON.parse(text.trim()); }
     catch(e){
+      // { } 사이 추출 시도
       const s=text.indexOf('{'), en=text.lastIndexOf('}');
-      if(s<0) throw new Error('JSON을 찾을 수 없습니다. 응답: '+text.slice(0,100));
-      parsed1 = JSON.parse(text.slice(s,en+1));
+      if(s<0||en<0) throw new Error('응답에서 JSON을 찾을 수 없습니다. 응답: '+text.slice(0,120));
+      try{ parsed1 = JSON.parse(text.slice(s,en+1)); }
+      catch(e2){
+        // 잘린 JSON 복구: patterns만 추출 시도
+        const pm = text.match(/"patterns"\s*:\s*(\{[^}]+\})/);
+        const tm = text.match(/"total"\s*:\s*(\d+)/);
+        const sm = text.match(/"summary"\s*:\s*"([^"]+)"/);
+        if(!pm) throw new Error('JSON 파싱 실패 (응답이 잘렸습니다): '+text.slice(0,120));
+        parsed1 = {
+          patterns: JSON.parse(pm[1]),
+          total: tm ? parseInt(tm[1]) : 0,
+          summary: sm ? sm[1] : '',
+          passages: []
+        };
+      }
     }
     analysisData = parsed1;
     status.innerHTML='<span style="color:var(--green2)">✅ 분석 완료!</span>';
@@ -1444,7 +1458,7 @@ async function runHitAnalysis(){
       body: JSON.stringify({
         system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks."}]},
         contents:[{parts}],
-        generationConfig:{maxOutputTokens:1024,temperature:0.1}
+        generationConfig:{maxOutputTokens:4096,temperature:0.1}
       })
     });
     const data = await res.json();
@@ -1453,9 +1467,21 @@ async function runHitAnalysis(){
     let actual;
     try{ actual = JSON.parse(text.trim()); }
     catch(e){
-      const s=text.indexOf('{'),en=text.lastIndexOf('}');
-      if(s<0) throw new Error('JSON 파싱 실패: '+text.slice(0,80));
-      actual = JSON.parse(text.slice(s,en+1));
+      const s=text.indexOf('{'), en=text.lastIndexOf('}');
+      if(s<0||en<0) throw new Error('응답에서 JSON을 찾을 수 없습니다: '+text.slice(0,120));
+      try{ actual = JSON.parse(text.slice(s,en+1)); }
+      catch(e2){
+        const pm = text.match(/"patterns"\s*:\s*(\{[^}]+\})/);
+        const tm = text.match(/"total"\s*:\s*(\d+)/);
+        const sm = text.match(/"summary"\s*:\s*"([^"]+)"/);
+        if(!pm) throw new Error('JSON 파싱 실패 (응답이 잘렸습니다): '+text.slice(0,120));
+        actual = {
+          patterns: JSON.parse(pm[1]),
+          total: tm ? parseInt(tm[1]) : 0,
+          summary: sm ? sm[1] : '',
+          passageKeywords: []
+        };
+      }
     }
 
     status.innerHTML='<span style="color:var(--green2)">✅ 분석 완료</span>';
