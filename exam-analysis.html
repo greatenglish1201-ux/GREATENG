@@ -1198,11 +1198,10 @@ async function generateQuestions(){
   // 패턴 비율 기반 유형별 문항수 계산
   let patternHint = '';
   let typeDistrib = '';
+  let distribObj = {};
   if(analysisData && analysisData.patterns){
     const totalPat = Object.values(analysisData.patterns).reduce((s,v)=>s+v,0);
     if(totalPat>0){
-      // 각 유형별 비율로 qCount 분배
-      const distrib = {};
       let assigned = 0;
       const checkedWithCount = checked.map(t=>({
         t, ratio: (analysisData.patterns[t]||0)/totalPat
@@ -1212,22 +1211,23 @@ async function generateQuestions(){
         const n = i===checkedWithCount.length-1
           ? qCount - assigned
           : Math.round(item.ratio * qCount);
-        distrib[item.t] = Math.max(n, 1);
-        assigned += distrib[item.t];
+        distribObj[item.t] = Math.max(n, 1);
+        assigned += distribObj[item.t];
       });
       // 총합 보정
-      const total = Object.values(distrib).reduce((s,v)=>s+v,0);
+      const total = Object.values(distribObj).reduce((s,v)=>s+v,0);
       if(total !== qCount){
         const first = checkedWithCount[0].t;
-        distrib[first] = Math.max(1, distrib[first] + (qCount - total));
+        distribObj[first] = Math.max(1, distribObj[first] + (qCount - total));
       }
 
-      typeDistrib = Object.entries(distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
+      typeDistrib = Object.entries(distribObj).map(([t,n])=>`${t} ${n}문항`).join(', ');
       patternHint = `기출 패턴 기반 유형별 배분: ${typeDistrib}`;
     }
   }
   if(!patternHint){
     const perType = Math.max(1, Math.floor(qCount/checked.length));
+    checked.forEach(t=>{ distribObj[t]=perType; });
     typeDistrib = checked.map(t=>`${t} ${perType}문항`).join(', ');
     patternHint = `균등 배분: ${typeDistrib}`;
   }
@@ -1239,26 +1239,76 @@ async function generateQuestions(){
       + analysisData.rawText.slice(0, 3000)
     : '';
 
-  const prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 총 문항 수: ${qCount}문항\n- 유형별 문항수 (반드시 준수): ${typeDistrib}\n- 각 문제는 실제 내신 시험 형식으로 작성 (객관식은 ①②③④⑤ 5지선다)\n- 서술형은 영작/단답 형식\n- 문제 번호는 1부터 순서대로${rawExamText}\n\n아래 JSON 배열로만 응답 (마크다운 없이):\n[{"num":1,"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 번호 및 해설"}]\n서술형은 choices를 빈 배열로.`;
+  // 문항수가 많으면 배치 분할 (10문항씩)
+  const BATCH = 10;
+  const batches = [];
+  let remaining = { ...distribObj };
+  let batchNum = 1;
 
-  try{
+  // distribObj 생성 (typeDistrib 문자열 → 객체)
+  // 이미 위에서 distrib 객체가 있으므로 그걸 활용
+  const totalBatches = Math.ceil(qCount / BATCH);
+  status.innerHTML = `<span class="spinner"></span> 예상문제 생성 중... (${totalBatches > 1 ? `0/${totalBatches} 배치` : '생성 중'})`;
+
+  async function callGemini(batchPrompt){
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON array, no markdown, no code blocks, no explanation."}]},contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4096,temperature:0.3}})
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system_instruction:{parts:[{text:"You output only a raw JSON array, no markdown, no code blocks, no explanation. Start directly with ["}]},
+        contents:[{parts:[{text:batchPrompt}]}],
+        generationConfig:{maxOutputTokens:8192, temperature:0.3}
+      })
     });
     const data = await res.json();
-    if(data.error){ throw new Error(data.error.message); }
+    if(data.error) throw new Error(data.error.message);
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if(!text){ throw new Error('빈 응답. 키를 확인하세요.'); }
-    // JSON 배열 추출: 첫 [ 부터 마지막 ] 까지
-        let parsed2;
-    try{ parsed2 = JSON.parse(text.trim()); }
+    if(!text) throw new Error('빈 응답');
+    let parsed;
+    try{ parsed = JSON.parse(text.trim()); }
     catch(e){
       const s=text.indexOf('['), en=text.lastIndexOf(']');
-      if(s<0) throw new Error('JSON 배열을 찾을 수 없습니다. 응답: '+text.slice(0,100));
-      parsed2 = JSON.parse(text.slice(s,en+1));
+      if(s<0||en<0) throw new Error('JSON 배열을 찾을 수 없습니다: '+text.slice(0,120));
+      parsed = JSON.parse(text.slice(s,en+1));
     }
-    generatedQs = parsed2;
+    return parsed;
+  }
+
+  let allResults = [];
+  let startNum = 1;
+
+  if(qCount <= BATCH){
+    // 단일 호출
+    const prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 총 문항 수: ${qCount}문항\n- 유형별 문항수 (반드시 준수): ${typeDistrib}\n- 각 문제는 실제 내신 시험 형식으로 작성 (객관식은 ①②③④⑤ 5지선다)\n- 서술형은 영작/단답 형식\n- 문제 번호는 1부터 순서대로${rawExamText}\n\n아래 JSON 배열로만 응답 (마크다운 없이):\n[{"num":1,"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 번호 및 해설"}]\n서술형은 choices를 빈 배열로.`;
+    allResults = await callGemini(prompt);
+  } else {
+    // 배치 분할: typeDistrib을 배치별로 나눔
+    const typeEntries = Object.entries(distribObj).filter(([,n])=>n>0);
+    let remaining = typeEntries.map(([t,n])=>({t,n}));
+    let batchIdx = 0;
+
+    while(remaining.some(r=>r.n>0)){
+      batchIdx++;
+      const batchDistrib = {};
+      let batchTotal = 0;
+      remaining = remaining.map(r=>{
+        const take = Math.min(r.n, BATCH - batchTotal);
+        if(take>0){ batchDistrib[r.t]=take; batchTotal+=take; }
+        return {...r, n: r.n - take};
+      });
+      const batchTypeDistrib = Object.entries(batchDistrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
+      status.innerHTML=`<span class="spinner"></span> 예상문제 생성 중... (${batchIdx}/${totalBatches} 배치)`;
+
+      const batchPrompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 배치 문항 수: ${batchTotal}문항 (전체 ${qCount}문항 중 ${startNum}~${startNum+batchTotal-1}번)\n- 유형별 문항수: ${batchTypeDistrib}\n- 문제 번호는 ${startNum}부터 시작\n- 각 문제는 실제 내신 시험 형식 (객관식 ①②③④⑤)${rawExamText}\n\nJSON 배열로만 응답:\n[{"num":${startNum},"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 번호 및 해설"}]\n서술형은 choices를 빈 배열로.`;
+
+      const batchResult = await callGemini(batchPrompt);
+      allResults = [...allResults, ...batchResult];
+      startNum += batchTotal;
+    }
+  }
+
+  try{
+    generatedQs = allResults;
+    if(!generatedQs.length) throw new Error('생성된 문항이 없습니다.');
     status.innerHTML='<span style="color:var(--green2)">✅ '+generatedQs.length+'문항 생성 완료!</span>';
     savePredictionToStorage();
     renderQuestions();
