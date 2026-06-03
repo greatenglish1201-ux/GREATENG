@@ -1011,6 +1011,33 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               {students.map((s,i)=><option key={i} value={s.name}>{s.name}</option>)}
             </select>
             <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
+            <button onClick={()=>{
+              const win=window.open('','_blank');
+              if(!win)return;
+              const rows=(stats?.sessionStats||[]).slice().reverse();
+              const studentRows=(stats?.studentStats||[]);
+              const wrongRows=(stats?.wrongRanking||[]);
+              const title=selectedStudent?`${selectedStudent} 시험 기록`:'전체 학생 시험 결과';
+              const fmtDate=v=>{const d=new Date(v);if(isNaN(d))return String(v).slice(0,10);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
+              const isScore=v=>String(v).includes('/');
+              win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+              <style>body{font-family:'Malgun Gothic',sans-serif;padding:24px;font-size:13px;color:#222;}
+              h2{font-size:18px;margin-bottom:16px;}h3{font-size:14px;margin:16px 0 8px;color:#555;}
+              table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+              th{background:#1e293b;color:#fff;padding:8px 12px;text-align:left;font-size:12px;}
+              td{padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:12px;}
+              tr:nth-child(even){background:#f8fafc;}
+              .rate{font-weight:700;}
+              .good{color:#16a34a;}.mid{color:#f59e0b;}.bad{color:#dc2626;}
+              @media print{button{display:none;}}</style></head><body>
+              <h2>${title}</h2>
+              ${selectedStudent&&rows.length>0?`<h3>📅 회차별 기록</h3><table><thead><tr><th>날짜</th><th>점수</th><th>정답률</th></tr></thead><tbody>${rows.map(s=>{const dv=isScore(s.date)?s.score:s.date;const sv=isScore(s.date)?s.date:s.score;const r=Number(s.rate);return`<tr><td>${fmtDate(dv)}</td><td>${sv}문항</td><td class="rate ${r>=80?'good':r>=60?'mid':'bad'}">${s.rate}%</td></tr>`;}).join('')}</tbody></table>`:''}
+              ${!selectedStudent&&studentRows.length>0?`<h3>👥 학생별 정답률</h3><table><thead><tr><th>이름</th><th>응시횟수</th><th>정답/전체</th><th>정답률</th></tr></thead><tbody>${studentRows.map(s=>`<tr><td>${s.name}</td><td>${s.count}회</td><td>${s.correct}/${s.total}</td><td class="rate ${s.rate>=80?'good':s.rate>=60?'mid':'bad'}">${s.rate}%</td></tr>`).join('')}</tbody></table>`:''}
+              ${wrongRows.length>0?`<h3>🏆 많이 틀린 지문</h3><table><thead><tr><th>지문ID</th><th>유형</th><th>틀린 횟수</th><th>정답률</th></tr></thead><tbody>${wrongRows.map(w=>`<tr><td>${w.pid}</td><td>${w.type}</td><td>${w.wrong}회</td><td class="rate ${w.rate>=80?'good':w.rate>=60?'mid':'bad'}">${w.rate}%</td></tr>`).join('')}</tbody></table>`:''}
+              <button onclick="window.print()" style="padding:10px 24px;background:#1e293b;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;margin-top:8px;">🖨️ 인쇄</button>
+              </body></html>`);
+              win.document.close();
+            }} disabled={!stats} style={{padding:'9px 16px',borderRadius:10,border:'none',background:stats?'#1e293b':'#ccc',color:'#fff',fontWeight:600,fontSize:13,cursor:stats?'pointer':'default'}}>🖨️ 인쇄</button>
           </div>
           {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
           {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>데이터 없음</p>}
@@ -1034,18 +1061,63 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                 </div>
               ))}
             </div>}
+            {/* 학생 선택 시: 반 평균 대비 내 위치 */}
+            {selectedStudent&&stats.studentStats?.length>0&&(()=>{
+              const me=stats.studentStats.find(s=>s.name===selectedStudent);
+              const avg=Math.round(stats.studentStats.reduce((a,s)=>a+s.rate,0)/stats.studentStats.length);
+              const rank=stats.studentStats.slice().sort((a,b)=>b.rate-a.rate).findIndex(s=>s.name===selectedStudent)+1;
+              if(!me)return null;
+              const diff=me.rate-avg;
+              return<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,padding:'16px 20px'}}>
+                <div style={{fontWeight:700,fontSize:13,color:'#1e293b',marginBottom:12}}>📊 반 평균 대비 내 위치</div>
+                <div style={{display:'flex',gap:12,justifyContent:'space-around',textAlign:'center'}}>
+                  <div><div style={{fontSize:24,fontWeight:800,color:me.rate>=80?'#16a34a':me.rate>=60?'#f59e0b':'#dc2626'}}>{me.rate}%</div><div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>내 정답률</div></div>
+                  <div><div style={{fontSize:24,fontWeight:800,color:'#64748b'}}>{avg}%</div><div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>반 평균</div></div>
+                  <div><div style={{fontSize:24,fontWeight:800,color:diff>=0?'#16a34a':'#dc2626'}}>{diff>=0?'+':''}{diff}%</div><div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>평균 대비</div></div>
+                  <div><div style={{fontSize:24,fontWeight:800,color:'#4f7df7'}}>{rank}위</div><div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>전체 {stats.studentStats.length}명 중</div></div>
+                </div>
+              </div>;
+            })()}
+            {/* 학생 선택 시: 점수 추세 그래프 */}
+            {selectedStudent&&(stats.sessionStats||[]).length>1&&(()=>{
+              const sessions=(stats.sessionStats||[]).slice().reverse();
+              const isScore=v=>String(v).includes('/');
+              const rates=sessions.map(s=>Number(isScore(s.date)?s.rate:s.rate)||0);
+              const W=280,H=80,pad=10;
+              const max=Math.max(...rates,100),min=Math.max(0,Math.min(...rates)-10);
+              const xStep=(W-pad*2)/(Math.max(rates.length-1,1));
+              const yPos=r=>H-pad-(r-min)/(max-min||1)*(H-pad*2);
+              const pts=rates.map((r,i)=>`${pad+i*xStep},${yPos(r)}`).join(' ');
+              return<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,padding:'16px 20px'}}>
+                <div style={{fontWeight:700,fontSize:13,color:'#1e293b',marginBottom:8}}>📈 점수 추세</div>
+                <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{overflow:'visible'}}>
+                  {[60,80].map(r=><line key={r} x1={pad} y1={yPos(r)} x2={W-pad} y2={yPos(r)} stroke="#f1f5f9" strokeWidth="1"/>)}
+                  {[60,80].map(r=><text key={r} x={pad-2} y={yPos(r)+4} fontSize="8" fill="#94a3b8" textAnchor="end">{r}%</text>)}
+                  <polyline points={pts} fill="none" stroke="#4f7df7" strokeWidth="2" strokeLinejoin="round"/>
+                  {rates.map((r,i)=><circle key={i} cx={pad+i*xStep} cy={yPos(r)} r="3" fill={r>=80?'#16a34a':r>=60?'#f59e0b':'#dc2626'}/>)}
+                  {rates.map((r,i)=><text key={i} x={pad+i*xStep} y={yPos(r)-6} fontSize="8" fill="#334155" textAnchor="middle">{r}%</text>)}
+                </svg>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'#94a3b8',marginTop:2,paddingLeft:pad,paddingRight:pad}}>
+                  {sessions.map((s,i)=>{const dv=isScore(s.date)?s.score:s.date;const d=new Date(dv);return<span key={i}>{isNaN(d)?String(dv).slice(5,10):`${d.getMonth()+1}/${d.getDate()}`}</span>;})}
+                </div>
+              </div>;
+            })()}
             {/* 학생 선택 시: 회차별 기록 */}
             {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
-              {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#64748b'}}>{(()=>{const d=new Date(s.date);return isNaN(d)?String(s.date).slice(0,10):`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;})()}</span>
+              {(stats.sessionStats||[]).slice().reverse().map((s,i)=>{
+                const isScore=v=>String(v).includes('/');
+                const dv=isScore(s.date)?s.score:s.date;
+                const sv=isScore(s.date)?s.date:s.score;
+                const fmtDate=v=>{const d=new Date(v);if(isNaN(d))return String(v).slice(0,10);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
+                return<div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:12,color:'#64748b'}}>{fmtDate(dv)}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{(()=>{const sc=String(s.score||'');return sc.includes('/')?sc:(sc.match(/\d+\/\d+/)?sc.match(/\d+\/\d+/)[0]:sc);})()}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{String(sv)}문항</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
-                </div>
-              ))}
+                </div>;
+              })}
             </div>}
             {/* 많이 틀린 지문 랭킹 */}
             {(stats.wrongRanking||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
@@ -1081,8 +1153,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                 </div>
               ))}
             </div>}
-            {/* 전체 보기: 교재별 정답률 */}
-            {!selectedStudent&&(stats.bookStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+            {/* 교재별 정답률 */}
+            {(stats.bookStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📚 교재별 정답률</div>
               {(stats.bookStats||[]).map((b,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
