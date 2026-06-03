@@ -906,6 +906,21 @@ tr:hover td { background: var(--paper); }
     </div>
     <div id="manualPassageList"></div>
   </div>
+
+  <!-- 문법 포인트 (출제 시 반영) -->
+  <div class="step-box" id="grammarPointBox">
+    <div class="step-title">📐 문법 포인트
+      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 저장된 포인트 자동 로드 · 직접 수정 가능</span>
+    </div>
+    <textarea id="grammarPointInput" rows="4"
+      placeholder="예) 1. 관계대명사 what: '~하는 것' 의미의 명사절&#10;예) 2. to부정사 형용사적 용법: 명사 수식&#10;&#10;저장된 문법 포인트가 있으면 자동으로 불러옵니다."
+      style="font-size:.85rem;"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="reloadGrammarPointInput()">🔄 저장된 포인트 불러오기</button>
+      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="document.getElementById('grammarPointInput').value=''">지우기</button>
+    </div>
+  </div>
+
   <div class="step-box">
     <div class="step-title">⚙️ 출제 패턴 설정</div>
 
@@ -1115,7 +1130,7 @@ function switchTab(n){
     const el=document.getElementById(id);
     if(el) el.classList.toggle('active',i===n);
   });
-  if(n===1) renderTypeCheckboxes();
+  if(n===1){ renderTypeCheckboxes(); reloadGrammarPointInput(); }
   if(n===3) loadPredictionList();
   if(n===4) initGrammarTab();
   if(n===5) loadSettingsUI();
@@ -1588,7 +1603,30 @@ async function generateQuestions(){
 
       if(rawExamText){
         const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
-        prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.\n\n[실제 기출 시험지]\n아래 기출 시험지의 구조를 정확히 분석하세요: 지문 묶음 위치, 각 문제의 발문 스타일, 선지 구성을 파악하세요.\n---\n${rawExamText.slice(0, 4000)}\n---\n\n[예상문제에 사용할 지문 자료]\n---\n${passage}\n---\n\n[출제 지시]\n위 기출 시험지와 완전히 동일한 구조로 ${plan.startNum}번~${plan.startNum+plan.count-1}번 문제를 출제하세요.\n\n반드시 지켜야 할 규칙:\n1. 기출에서 지문을 공유하는 문제들(예: 1~5번)은 반드시 group 타입으로 묶어서 출력\n2. 지문 없이 독립 출제되는 문제(어휘, 대화완성 등)는 single 타입으로 출력\n3. 각 문제의 발문 스타일, 선지 개수, 형식을 기출과 동일하게 복제\n4. [예상문제에 사용할 지문 자료]에서 적합한 지문 선택하여 사용\n5. 객관식: ①②③④⑤ / 서술형: choices 빈 배열\n6. 문제 번호는 반드시 ${plan.startNum}번부터${grammarPoints ? '\\n7. 문법 문제는 아래 문법 포인트 반영:' + grammarPoints.replace(/\n/g,'\\n') : ''}\n\nJSON 문자열 안의 실제 줄바꿈은 반드시 \\\\n으로 이스케이프\n\nJSON 배열로만 응답 (두 가지 타입 혼용 가능):\n[\n  {"type":"group","passage":"지문 전체 텍스트","range":"${plan.startNum}~N","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":${plan.startNum},"qtype":"유형명","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},\n  {"type":"single","num":N,"qtype":"유형명","question":"문제 전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}\n]`;
+        prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.
+
+[실제 기출 시험지 - 이 구조를 정확히 학습하세요]
+${rawExamText.slice(0, 4000)}
+
+[예상문제에 사용할 지문 자료]
+${passage}
+
+[출제 지시]
+위 기출 시험지와 완전히 동일한 구조로 ${plan.startNum}번~${plan.startNum+plan.count-1}번 문제를 출제하세요.
+
+규칙:
+1. 기출에서 같은 지문 아래 여러 문제가 있으면 → group 타입, passage에 지문 한 번만 작성
+2. 독립 문제(어휘/대화/빈칸 등) → single 타입
+3. 발문 스타일·선지 형식을 기출과 동일하게 복제
+4. passage는 지문 원문 전체 그대로 (요약 금지, 지문을 question 안에 반복 금지)
+5. 객관식: ①②③④⑤ / 서술형: choices 빈 배열
+6. 번호는 반드시 ${plan.startNum}번부터${grammarPoints ? "\n7. 문법 문제에 반영:\n" + grammarPoints : ""}
+
+JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응답:
+[
+  {"type":"group","passage":"지문원문전체","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문만(지문제외)","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
+  {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
+]``;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
         prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항: ${plan.count}문항 (${batchTypeDistrib})\n- 문제 번호는 ${plan.startNum}번부터\n- 객관식 ①②③④⑤, 서술형은 빈 선지${grammarPoints ? '\n- 문법 포인트 반영:' + grammarPoints.replace(/\n/g,'\\n') : ''}\n\n같은 지문을 쓰는 문제는 group으로 묶고, 독립 문제는 single로 출력하세요.\nJSON 배열로만 응답:\n[\n  {"type":"group","passage":"지문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답","score":4}]},\n  {"type":"single","num":N,"qtype":"유형명","question":"문제","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답","score":3}\n]\n서술형은 choices를 빈 배열로.`;
@@ -1935,7 +1973,13 @@ async function loadPatternList(){
     });
   }catch(e){}
   const merged={};
-  [...sheetList,...localList].forEach(item=>{if(item.key) merged[item.key]=item;});
+  [...sheetList,...localList].forEach(item=>{
+    if(!item.key) return;
+    // rawText 정규화: \\n 리터럴 → 실제 줄바꿈
+    const rt = item.rawText || item.raw_text || '';
+    item.rawText = rt.replace(/\\n/g,'\n').replace(/\\t/g,'\t');
+    merged[item.key]=item;
+  });
   const allList=Object.values(merged).sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||''));
   const prev=sel.value;
   sel.innerHTML='<option value="">-- 패턴 선택 (또는 직접 설정) --</option>';
@@ -2414,6 +2458,30 @@ function initGrammarTab(){
   const curSchool = getSchool();
   if(curSchool) sel.value = curSchool;
   loadGrammarPoints();
+}
+
+function reloadGrammarPointInput(){
+  const school = getSchool();
+  const grade  = document.getElementById('metaGrade').value;
+  const ta = document.getElementById('grammarPointInput');
+  if(!ta) return;
+  if(!school||!grade){ ta.placeholder='헤더에서 학교·학년을 선택하세요.'; return; }
+  const key = school+'_'+grade;
+  const stored = JSON.parse(localStorage.getItem('greateng_grammar')||'{}');
+  const data = stored[key];
+  if(!data||!data.items?.length){
+    ta.value=''; ta.placeholder='저장된 문법 포인트 없음 — ⑤ 문법 포인트 탭에서 저장 후 불러오기';
+    return;
+  }
+  ta.value = data.items.map((item,i)=>`${i+1}. ${item.title}\n${item.desc}`).join('\n\n');
+}
+
+function getGrammarPointsForPrompt(){
+  // textarea에서 직접 읽기 (저장된 것 + 수동 입력 모두 포함)
+  const ta = document.getElementById('grammarPointInput');
+  const text = ta?.value.trim()||'';
+  if(!text) return '';
+  return '\n\n[이 학교 주요 문법 포인트 — 문법 문제 출제 시 반드시 반영]\n' + text;
 }
 
 function addGrammarPoint(){
