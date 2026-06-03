@@ -1389,12 +1389,32 @@ async function generateQuestions(){
     if(data.error) throw new Error(data.error.message);
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     if(!text) throw new Error('빈 응답');
+
+    // JSON 파싱 - 3단계 시도
     let parsed;
-    try{ parsed = JSON.parse(text.trim()); }
-    catch(e){
-      const s=text.indexOf('['), en=text.lastIndexOf(']');
-      if(s<0||en<0) throw new Error('JSON 파싱 실패: '+text.slice(0,120));
-      parsed = JSON.parse(text.slice(s,en+1));
+    const cleanText = text.trim();
+
+    // 1단계: 그대로 파싱
+    try{ parsed = JSON.parse(cleanText); }
+    catch(e1){
+      // 2단계: [ ] 범위 추출
+      const s=cleanText.indexOf('['), en=cleanText.lastIndexOf(']');
+      if(s<0||en<0) throw new Error('JSON 배열 없음: '+cleanText.slice(0,100));
+      const slice = cleanText.slice(s, en+1);
+      try{ parsed = JSON.parse(slice); }
+      catch(e2){
+        // 3단계: 문자열 필드 안의 줄바꿈/탭 이스케이프 처리 후 재시도
+        const fixed = slice
+          .replace(/:\s*"((?:[^"\\]|\\.)*)"/gs, (match, val) => {
+            const escaped = val
+              .replace(/\n/g, '\\n')
+              .replace(/\r/g, '\\r')
+              .replace(/\t/g, '\\t');
+            return ': "' + escaped + '"';
+          });
+        try{ parsed = JSON.parse(fixed); }
+        catch(e3){ throw new Error('JSON 파싱 실패: '+slice.slice(0,150)); }
+      }
     }
     if(!Array.isArray(parsed)) throw new Error('응답이 배열이 아닙니다');
     return parsed;
@@ -1425,7 +1445,7 @@ async function generateQuestions(){
 
       if(rawExamText){
         const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
-        prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.\n\n[실제 기출 시험지]\n아래 기출 시험지를 분석하여 각 문제 번호의 지문 유형, 발문 스타일, 선지 구성 패턴을 정확히 파악하세요.\n---\n${rawExamText.slice(0, 3500)}\n---\n\n[예상문제에 사용할 지문 자료]\n---\n${passage}\n---\n\n[출제 지시]\n위 기출 시험지와 완전히 동일한 형식으로 아래 번호의 문제를 출제하세요:\n${typeList}\n\n규칙:\n1. 각 번호의 발문·지문 제시 방식·선지 형식을 기출과 동일하게 복제\n2. 지문이 필요한 문제는 question 안에 지문 먼저, 빈 줄 후 발문\n3. [예상문제에 사용할 지문 자료]에서 적합한 지문 선택\n4. 객관식: ①②③④⑤ / 서술형: choices 빈 배열\n5. 문제 번호는 반드시 ${plan.startNum}번부터\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"지문(있으면)\\n\\n발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]`;
+        prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.\n\n[실제 기출 시험지]\n아래 기출 시험지를 분석하여 각 문제 번호의 지문 유형, 발문 스타일, 선지 구성 패턴을 정확히 파악하세요.\n---\n${rawExamText.slice(0, 3500)}\n---\n\n[예상문제에 사용할 지문 자료]\n---\n${passage}\n---\n\n[출제 지시]\n위 기출 시험지와 완전히 동일한 형식으로 아래 번호의 문제를 출제하세요:\n${typeList}\n\n규칙:\n1. 각 번호의 발문·지문 제시 방식·선지 형식을 기출과 동일하게 복제\n2. 지문이 필요한 문제는 question 안에 지문 먼저, 빈 줄 후 발문\n3. [예상문제에 사용할 지문 자료]에서 적합한 지문 선택\n4. 객관식: ①②③④⑤ / 서술형: choices 빈 배열\n5. 문제 번호는 반드시 ${plan.startNum}번부터\n\nJSON 문자열 안의 줄바꿈은 반드시 \\\\n으로 이스케이프\\n\\nJSON 배열로만 응답 (한 줄로):\n[{"num":${plan.startNum},"type":"유형명","question":"지문(있으면)\\n\\n발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]`;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
         prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항: ${plan.count}문항 (${batchTypeDistrib})\n- 문제 번호는 ${plan.startNum}번부터\n- 객관식 ①②③④⑤, 서술형은 빈 선지\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"문제 전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]\n서술형은 choices를 빈 배열로.`;
