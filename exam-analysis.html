@@ -371,32 +371,154 @@ input[type="text"]:focus, input[type="password"]:focus, select:focus {
 }
 
 /* ── 문제 블록 ── */
+/* ── 시험지 래퍼 ── */
+.exam-paper {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  padding: 36px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: '맑은 고딕', 'Noto Sans KR', sans-serif;
+}
+
+/* 시험지 헤더 */
+.exam-header {
+  text-align: center;
+  border-bottom: 3px double #222;
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+}
+.exam-header .exam-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.exam-header .exam-meta {
+  font-size: .82rem;
+  color: #444;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* 문제 블록 */
 .q-block {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--gold);
-  padding: 16px 18px;
-  margin-bottom: 14px;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  transition: box-shadow .2s;
+  margin-bottom: 28px;
+  page-break-inside: avoid;
 }
-.q-block:hover { box-shadow: var(--shadow-sm); }
-.q-num {
-  font-family: 'Noto Serif KR', serif;
-  color: var(--navy);
-  font-weight: 700;
-  margin-bottom: 8px;
-  font-size: .95rem;
+.q-block:hover { background: none; box-shadow: none; }
+
+.q-num-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
 }
-.q-body { color: var(--ink2); line-height: 1.8; white-space: pre-wrap; font-size: .9rem; }
+.q-circle {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #111;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  font-weight: 800;
+  color: #111;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.q-type-badge {
+  font-size: .72rem;
+  color: #666;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-top: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.q-score {
+  margin-left: auto;
+  font-size: .78rem;
+  color: #888;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+.q-body {
+  color: #111;
+  line-height: 1.9;
+  font-size: .92rem;
+  white-space: pre-wrap;
+  flex: 1;
+}
+
+/* 선지 */
+.q-choices {
+  margin: 10px 0 0 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px;
+}
+.q-choices.single-col { grid-template-columns: 1fr; }
+.q-choice {
+  font-size: .9rem;
+  color: #222;
+  line-height: 1.7;
+  padding: 2px 0;
+}
+
+/* 서술형 답안란 */
+.q-write-box {
+  margin: 10px 0 0 32px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  height: 70px;
+  background: #fafafa;
+}
+
+/* 정답 토글 */
+.q-answer-toggle {
+  margin: 8px 0 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.answer-btn {
+  font-size: .75rem;
+  color: var(--navy2);
+  background: none;
+  border: 1px solid var(--navy2);
+  border-radius: 4px;
+  padding: 2px 10px;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.answer-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
 .q-answer {
-  color: var(--blue2);
-  margin-top: 10px;
   font-size: .85rem;
-  padding: 8px 12px;
+  color: var(--blue2);
   background: rgba(26,74,140,.06);
-  border-radius: 6px;
   border-left: 3px solid var(--blue2);
+  padding: 6px 12px;
+  border-radius: 0 4px 4px 0;
+  display: none;
+  margin-top: 4px;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.q-answer.visible { display: block; }
+
+/* 구분선 */
+.q-divider {
+  border: none;
+  border-top: 1px dashed #ddd;
+  margin: 0 0 28px 0;
 }
 
 /* ── 스피너 ── */
@@ -970,7 +1092,7 @@ async function analyzeExam(){
 
   const parts = rawText ? [] : uploadedImages.map(img=>({inlineData:{mimeType:img.mime, data:img.b64}}));
   const textPart = rawText ? '다음은 기출문제 텍스트입니다:\n\n'+rawText : '첨부 이미지에서 기출문제를 OCR하여 분석해주세요.';
-  parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{"patterns":{"어법":0,"어휘":0,"빈칸추론":0,"순서배열":0,"문장삽입":0,"주제/제목/요지":0,"서술형":0},"total":0,"summary":"분석 요약 2~3문장","passages":["핵심 지문 또는 주제 키워드 목록 (최대 5개)"]}`});
+  parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{\n  "patterns": {"실제출제유형명":문항수, ...},\n  "total": 전체문항수,\n  "summary": "분석 요약 2~3문장",\n  "passages": ["핵심 지문 또는 주제 키워드 목록 (최대 5개)"]\n}\n\n주의사항:\n- patterns의 키는 실제 시험에 출제된 유형명을 그대로 사용하세요 (고정된 유형명 없음)\n- 예: 중학교라면 "어법", "어휘", "대화완성", "내용일치", "영작/서술형" 등\n- 고등학교라면 "어법", "어휘", "빈칸추론", "순서배열", "문장삽입", "주제/제목/요지", "서술형" 등\n- 실제 출제된 유형만 포함하고 0문항인 유형은 제외하세요`});
 
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
@@ -1163,20 +1285,31 @@ function toggleAllPassages(checked){
 // ── 체크박스 ──
 function renderTypeCheckboxes(){
   const container = document.getElementById('typeCheckboxes');
-  const selected = analysisData
-    ? Object.entries(analysisData.patterns).filter(([,v])=>v>0).map(([k])=>k)
-    : TYPE_LABELS;
-  container.innerHTML = TYPE_LABELS.map(t=>{
-    const cnt = analysisData?.patterns?.[t] || 0;
-    const badge = analysisData && cnt>0
-      ? `<span style="background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold2);
-                      border-radius:10px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:2px;">${cnt}</span>`
-      : '';
-    return `<label>
-      <input type="checkbox" value="${t}" ${selected.includes(t)?'checked':''}>
-      ${t}${badge}
-    </label>`;
-  }).join('');
+
+  if(analysisData && analysisData.patterns){
+    // 패턴 선택됨 → 해당 패턴의 유형만 표시 (문항수 내림차순)
+    const patternTypes = Object.entries(analysisData.patterns)
+      .filter(([,v])=>v>0)
+      .sort((a,b)=>b[1]-a[1]);
+
+    if(patternTypes.length){
+      container.innerHTML = patternTypes.map(([t,cnt])=>`
+        <label>
+          <input type="checkbox" value="${t}" checked>
+          ${t}
+          <span style="background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold2);
+                       border-radius:10px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:2px;">${cnt}</span>
+        </label>`).join('');
+      return;
+    }
+  }
+
+  // 패턴 없음 → 전체 유형 표시
+  container.innerHTML = TYPE_LABELS.map(t=>`
+    <label>
+      <input type="checkbox" value="${t}" checked>
+      ${t}
+    </label>`).join('');
 }
 
 // ── 예상문제 출제 ──
@@ -1233,22 +1366,20 @@ async function generateQuestions(){
   }
   status.innerHTML='<span class="spinner"></span> 예상문제 생성 중...';
 
-  // 기출 원문이 있으면 형식 예시로 포함 (최대 3000자)
-  const rawExamText = analysisData?.rawText
-    ? '\n\n[기출 문제 형식 예시 - 아래 형식을 그대로 따라 출제하세요]\n'
-      + analysisData.rawText.slice(0, 3000)
-    : '';
+  const rawExamText = analysisData?.rawText || '';
 
-  // 문항수가 많으면 배치 분할 (10문항씩)
-  const BATCH = 10;
+  // 문항수가 많으면 배치 분할 (8문항씩 - 지문 포함 시 토큰 많이 씀)
+  const BATCH = 8;
   const totalBatches = Math.ceil(qCount / BATCH);
-  status.innerHTML = `<span class="spinner"></span> 예상문제 생성 중...`;
+  status.innerHTML = rawExamText
+    ? `<span class="spinner"></span> 기출 시뮬레이션 생성 중...`
+    : `<span class="spinner"></span> 예상문제 생성 중...`;
 
   async function callGemini(batchPrompt){
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        system_instruction:{parts:[{text:"You output only a raw JSON array, no markdown, no code blocks, no explanation. Start directly with ["}]},
+        system_instruction:{parts:[{text:"You output only a raw JSON array. No markdown, no code blocks, no explanation. Start directly with ["}]},
         contents:[{parts:[{text:batchPrompt}]}],
         generationConfig:{maxOutputTokens:8192, temperature:0.3}
       })
@@ -1268,7 +1399,7 @@ async function generateQuestions(){
     return parsed;
   }
 
-  // 배치 계획: qCount를 BATCH씩 나누어 startNum 배열 생성
+  // 배치 계획 생성
   const batchPlans = [];
   let cursor = 0;
   const typeQueue = Object.entries(distribObj).flatMap(([t,n])=>Array(n).fill(t));
@@ -1276,7 +1407,7 @@ async function generateQuestions(){
     const slice = typeQueue.slice(cursor, cursor + BATCH);
     const batchDistrib = {};
     slice.forEach(t=>{ batchDistrib[t]=(batchDistrib[t]||0)+1; });
-    batchPlans.push({ startNum: cursor+1, count: slice.length, distrib: batchDistrib });
+    batchPlans.push({ startNum: cursor+1, count: slice.length, types: slice, distrib: batchDistrib });
     cursor += slice.length;
   }
 
@@ -1284,16 +1415,51 @@ async function generateQuestions(){
 
   for(let i=0; i<batchPlans.length; i++){
     const plan = batchPlans[i];
-    const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
     if(totalBatches > 1){
-      status.innerHTML=`<span class="spinner"></span> 예상문제 생성 중... (${i+1}/${totalBatches} 배치)`;
+      status.innerHTML=`<span class="spinner"></span> ${rawExamText?'시뮬레이션':'예상문제'} 생성 중... (${i+1}/${totalBatches})`;
     }
-    const batchPrompt = totalBatches === 1
-      ? `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 총 문항 수: ${qCount}문항\n- 유형별 문항수 (반드시 준수): ${batchTypeDistrib}\n- 각 문제는 실제 내신 시험 형식으로 작성 (객관식은 ①②③④⑤ 5지선다)\n- 서술형은 영작/단답 형식\n- 문제 번호는 1부터 순서대로${rawExamText}\n\nJSON 배열로만 응답:\n[{"num":1,"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 번호 및 해설"}]\n서술형은 choices를 빈 배열로.`
-      : `다음 지문을 바탕으로 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항 수: ${plan.count}문항\n- 유형별 문항수: ${batchTypeDistrib}\n- 문제 번호는 반드시 ${plan.startNum}번부터 시작\n- 각 문제는 실제 내신 시험 형식 (객관식 ①②③④⑤)${rawExamText}\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 번호 및 해설"}]\n서술형은 choices를 빈 배열로.`;
 
-    const batchResult = await callGemini(batchPrompt);
-    allResults = [...allResults, ...batchResult];
+    let prompt;
+
+    if(rawExamText){
+      // ══ 기출 시뮬레이션 모드 ══
+      // 번호별 유형 목록 (기출 원문의 해당 번호 문제 형식을 그대로 학습)
+      const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
+      prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.
+
+[실제 기출 시험지]
+아래 기출 시험지를 분석하여 각 문제 번호의 지문 유형, 발문 스타일, 선지 구성 패턴을 정확히 파악하세요.
+---
+${rawExamText.slice(0, 3500)}
+---
+
+[예상문제에 사용할 지문 자료]
+---
+${passage}
+---
+
+[출제 지시]
+위 기출 시험지와 완전히 동일한 형식으로 아래 번호의 문제를 출제하세요:
+${typeList}
+
+반드시 지켜야 할 규칙:
+1. 각 번호의 발문, 지문 제시 방식, 선지 형식을 기출과 동일하게 복제
+2. 지문이 필요한 문제는 question 필드 안에 지문을 먼저 쓰고 빈 줄 후 발문 작성
+3. 위 [예상문제에 사용할 지문 자료]에서 적합한 지문을 선택하여 사용
+4. 객관식: ①②③④⑤ 5지선다 / 서술형: choices 빈 배열
+5. 문제 번호는 반드시 ${plan.startNum}번부터 시작
+
+JSON 배열로만 응답:
+[{"num":${plan.startNum},"type":"유형명","question":"[지문]\\n지문내용...\\n\\n발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]`;
+
+    } else {
+      // ══ 기본 모드 (기출 원문 없음) ══
+      const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
+      prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항: ${plan.count}문항 (${batchTypeDistrib})\n- 문제 번호는 ${plan.startNum}번부터\n- 객관식 ①②③④⑤, 서술형은 빈 선지\n- 지문이 필요한 문제는 question에 지문 포함\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"문제 전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]\n서술형은 choices를 빈 배열로.`;
+    }
+
+    const result = await callGemini(prompt);
+    allResults = [...allResults, ...result];
   }
 
   try{
@@ -1311,13 +1477,77 @@ async function generateQuestions(){
 function renderQuestions(){
   const out = document.getElementById('questionOutput');
   if(!generatedQs.length){ out.innerHTML='<span style="color:var(--ink4)">문제 없음</span>'; return; }
-  out.innerHTML = generatedQs.map(q=>`
-    <div class="q-block">
-      <div class="q-num">${q.num}. <span class="tag tag-type">${q.type}</span></div>
-      <div class="q-body">${q.question}</div>
-      ${q.choices&&q.choices.length?'<div class="q-body" style="margin-top:8px;">'+q.choices.join('\n')+'</div>':''}
-      <div class="q-answer">▶ 정답: ${q.answer}</div>
-    </div>`).join('');
+
+  const school  = getSchool() || '○○학교';
+  const grade   = document.getElementById('metaGrade').value || '';
+  const year    = document.getElementById('metaYear').value || '';
+  const sem     = document.getElementById('metaSemester').value || '';
+  const exam    = document.getElementById('metaExam').value || '';
+  const total   = generatedQs.length;
+
+  // 선지가 길면 single-col
+  function choiceClass(choices){
+    const maxLen = Math.max(...choices.map(c=>c.length));
+    return maxLen > 25 ? 'q-choices single-col' : 'q-choices';
+  }
+
+  const questionsHtml = generatedQs.map((q, idx)=>{
+    const isWriting = !q.choices || q.choices.length === 0;
+    const choicesHtml = isWriting
+      ? `<div class="q-write-box"></div>`
+      : `<div class="${choiceClass(q.choices)}">${
+          q.choices.map(c=>`<div class="q-choice">${c}</div>`).join('')
+        }</div>`;
+
+    return `
+      <div class="q-block" id="qblock_${q.num}">
+        <div class="q-num-row">
+          <div class="q-circle">${q.num}</div>
+          <div class="q-body">${q.question}</div>
+          <span class="q-score">[${isWriting?'서술형':'3점'}]</span>
+        </div>
+        ${choicesHtml}
+        <div class="q-answer-toggle">
+          <button class="answer-btn" onclick="toggleAnswer(${q.num})">정답 보기</button>
+          <div class="q-answer" id="ans_${q.num}">✔ ${q.answer}</div>
+        </div>
+      </div>
+      ${idx < generatedQs.length-1 ? '<hr class="q-divider">' : ''}`;
+  }).join('');
+
+  out.innerHTML = `
+    <div class="exam-paper">
+      <div class="exam-header">
+        <div class="exam-title">${year}학년도 ${sem} ${exam} 영어</div>
+        <div class="exam-meta">
+          <span>${school} ${grade}</span>
+          <span>총 ${total}문항</span>
+          <span>시험 범위: 교재 전 범위</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;gap:8px;">
+        <button class="answer-btn" onclick="toggleAllAnswers(true)" style="font-size:.78rem;">전체 정답 보기</button>
+        <button class="answer-btn" onclick="toggleAllAnswers(false)" style="font-size:.78rem;">전체 정답 숨기기</button>
+      </div>
+      ${questionsHtml}
+    </div>`;
+}
+
+function toggleAnswer(num){
+  const el = document.getElementById('ans_'+num);
+  const btn = el?.previousElementSibling;
+  if(!el) return;
+  const visible = el.classList.toggle('visible');
+  if(btn) btn.textContent = visible ? '정답 숨기기' : '정답 보기';
+}
+
+function toggleAllAnswers(show){
+  document.querySelectorAll('.q-answer').forEach(el=>{
+    el.classList.toggle('visible', show);
+  });
+  document.querySelectorAll('.answer-btn:not([onclick*="toggleAll"])').forEach(btn=>{
+    btn.textContent = show ? '정답 숨기기' : '정답 보기';
+  });
 }
 
 // ── DOCX 다운로드 ──
@@ -1656,11 +1886,15 @@ async function runHitAnalysis(){
 
 위 실제 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):
 {
-  "patterns": {"어법":0,"어휘":0,"빈칸추론":0,"순서배열":0,"문장삽입":0,"주제/제목/요지":0,"서술형":0},
-  "total": 0,
+  "patterns": {"실제출제유형명": 문항수, ...},
+  "total": 전체문항수,
   "summary": "실제 시험 분석 요약",
   "passageKeywords": ["실제 출제된 지문의 핵심 단어 또는 첫 문장 (최대 10개)"]
-}`});
+}
+
+주의사항:
+- patterns의 키는 실제 시험에 출제된 유형명을 그대로 사용하세요
+- 0문항인 유형은 제외하세요`});
 
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
