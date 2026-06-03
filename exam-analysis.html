@@ -766,12 +766,10 @@ tr:hover td { background: var(--paper); }
     <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="generateQuestions()">⚡ 예상문제 출제</button>
       <label style="color:var(--ink3);font-size:.9rem;">문항 수:
-        <select id="qCount" style="background:var(--paper);color:var(--ink);border:1.5px solid var(--border);padding:6px 10px;border-radius:6px;margin-left:6px;">
-          <option value="3">3문항</option>
-          <option value="5" selected>5문항</option>
-          <option value="10">10문항</option>
-          <option value="15">15문항</option>
-        </select>
+        <input type="number" id="qCount" value="15" min="1" max="50"
+          style="width:64px;background:var(--paper);color:var(--ink);border:1.5px solid var(--border);
+                 padding:5px 10px;border-radius:6px;margin-left:6px;font-size:.88rem;
+                 font-family:'Noto Sans KR',sans-serif;text-align:center;">
       </label>
     </div>
     <div id="generateStatus" class="status"></div>
@@ -1441,14 +1439,9 @@ function applySelectedPattern(){
   let item; try{item=JSON.parse(opt.dataset.payload);}catch(e){return;}
   analysisData=item;
 
-  // qCount 자동 설정 (패턴 total 기준, 최대 15)
+  // qCount 자동 설정 (패턴 total 기준, 제한 없음)
   if(item.total){
-    const qSel = document.getElementById('qCount');
-    const target = Math.min(item.total, 15).toString();
-    // 가장 가까운 옵션 선택
-    const opts = Array.from(qSel.options).map(o=>parseInt(o.value));
-    const closest = opts.reduce((a,b)=>Math.abs(b-parseInt(target))<Math.abs(a-parseInt(target))?b:a);
-    qSel.value = closest.toString();
+    document.getElementById('qCount').value = item.total;
   }
 
   const patternStr=Object.entries(item.patterns||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1])
