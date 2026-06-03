@@ -1370,7 +1370,7 @@ async function generateQuestions(){
   const rawExamText = analysisData?.rawText || '';
 
   // 문항수가 많으면 배치 분할 (8문항씩 - 지문 포함 시 토큰 많이 씀)
-  const BATCH = 8;
+  const BATCH = 5; // 지문 포함 시 배치당 5문항으로 제한
   const totalBatches = Math.ceil(qCount / BATCH);
   status.innerHTML = rawExamText
     ? `<span class="spinner"></span> 기출 시뮬레이션 생성 중...`
@@ -1383,7 +1383,7 @@ async function generateQuestions(){
         body: JSON.stringify({
           system_instruction:{parts:[{text:"You output only a raw JSON array. No markdown, no code blocks, no explanation. Start directly with ["}]},
           contents:[{parts:[{text:batchPrompt}]}],
-          generationConfig:{maxOutputTokens:8192, temperature:0.3}
+          generationConfig:{maxOutputTokens:16384, temperature:0.3}
         })
       });
       const data = await res.json();
@@ -1405,33 +1405,54 @@ async function generateQuestions(){
       if(!text) throw new Error('빈 응답');
 
       let parsed;
-      // [ ] 범위 추출
       const s = text.indexOf('['), en = text.lastIndexOf(']');
-      if(s<0||en<0) throw new Error('JSON 배열 없음: '+text.slice(0,100));
-      let slice = text.slice(s, en+1);
+      if(s<0) throw new Error('JSON 배열 없음: '+text.slice(0,100));
+
+      // ] 가 없으면 잘린 것 → 마지막 완전한 객체까지만 복구
+      let slice = en>s ? text.slice(s, en+1) : text.slice(s);
+
+      // 문자 단위 줄바꿈 이스케이프
+      function escapeInStrings(str){
+        let out='', inStr=false, esc=false;
+        for(let i=0;i<str.length;i++){
+          const ch=str[i];
+          if(esc){out+=ch;esc=false;continue;}
+          if(ch==='\\'&&inStr){out+=ch;esc=true;continue;}
+          if(ch==='"'){inStr=!inStr;out+=ch;continue;}
+          if(inStr){
+            if(ch==='\n'){out+='\\n';continue;}
+            if(ch==='\r'){out+='\\r';continue;}
+            if(ch==='\t'){out+='\\t';continue;}
+          }
+          out+=ch;
+        }
+        return out;
+      }
+
+      const fixed = escapeInStrings(slice);
 
       // 1단계: 그대로 파싱
-      try{ parsed = JSON.parse(slice); }
+      try{ parsed = JSON.parse(fixed); }
       catch(e1){
-        // 2단계: JSON 문자열 값 안의 실제 줄바꿈을 \n으로 치환
-        // 문자열 토큰 내부만 처리 (따옴표 밖의 구조는 건드리지 않음)
-        let fixed = '';
-        let inString = false;
-        let escape = false;
-        for(let i=0; i<slice.length; i++){
-          const ch = slice[i];
-          if(escape){ fixed += ch; escape=false; continue; }
-          if(ch==='\\' && inString){ fixed += ch; escape=true; continue; }
-          if(ch==='"'){ inString=!inString; fixed+=ch; continue; }
-          if(inString){
-            if(ch==='\n'){ fixed+='\\n'; continue; }
-            if(ch==='\r'){ fixed+='\\r'; continue; }
-            if(ch==='\t'){ fixed+='\\t'; continue; }
+        // 2단계: 잘린 JSON 복구 — 마지막 완전한 } 위치까지 잘라서 배열 닫기
+        const lastBrace = fixed.lastIndexOf('}');
+        if(lastBrace > 0){
+          const recovered = fixed.slice(0, lastBrace+1) + ']';
+          try{ parsed = JSON.parse(recovered); }
+          catch(e2){
+            // 3단계: 완전한 객체들만 추출
+            const objs = [];
+            const objRegex = /\{[^{}]*(?:\{[^{}]*\}[^{}]*)?\}/g;
+            let m;
+            while((m=objRegex.exec(fixed))!==null){
+              try{ objs.push(JSON.parse(m[0])); }catch(e){}
+            }
+            if(objs.length) parsed = objs;
+            else throw new Error('JSON 복구 실패: '+fixed.slice(0,200));
           }
-          fixed += ch;
+        } else {
+          throw new Error('JSON 파싱 실패: '+fixed.slice(0,200));
         }
-        try{ parsed = JSON.parse(fixed); }
-        catch(e2){ throw new Error('JSON 파싱 실패: '+slice.slice(0,200)); }
       }
       if(!Array.isArray(parsed)) throw new Error('응답이 배열이 아닙니다');
       return parsed;
