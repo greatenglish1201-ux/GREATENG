@@ -1683,14 +1683,8 @@ async function saveAnalysisPattern(){
   localStorage.setItem('greateng_patterns', JSON.stringify(stored));
   status.innerHTML='<span class="spinner"></span> Sheets 백업 중...';
   try {
-    await new Promise((resolve,reject)=>{
-      const cbName='cb_save_'+Date.now();
-      const script=document.createElement('script');
-      const timer=setTimeout(()=>{delete window[cbName];script.remove();resolve();},5000);
-      window[cbName]=function(res){clearTimeout(timer);delete window[cbName];script.remove();res&&res.ok?resolve():reject(new Error(res?.error||'저장 실패'));};
-      script.src=APPS_SCRIPT_URL+'?action=saveAnalysis&callback='+cbName+'&data='+encodeURIComponent(JSON.stringify(payload));
-      document.head.appendChild(script);
-    });
+    // POST 방식 (rawText가 길어서 GET URL 한계 초과 방지)
+    await postToGAS({action:'saveAnalysis', data: JSON.stringify(payload)});
     status.innerHTML='<span style="color:var(--green2)">✅ 저장 완료 ['+key+']</span>';
   } catch(e){
     status.innerHTML='<span style="color:var(--amber)">⚠️ 로컬 저장 완료 (Sheets 실패: '+e.message+')</span>';
@@ -1699,6 +1693,59 @@ async function saveAnalysisPattern(){
 }
 
 // ── 패턴 목록 로드 (localStorage + Sheets 병합) ──
+// ── POST → GAS (대용량 데이터 전송용, iframe 방식) ──
+function postToGAS(params){
+  return new Promise((resolve, reject)=>{
+    const iframeId = 'gas_iframe_'+Date.now();
+    const formId   = 'gas_form_'+Date.now();
+
+    const iframe = document.createElement('iframe');
+    iframe.id = iframeId;
+    iframe.name = iframeId;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.id     = formId;
+    form.method = 'POST';
+    form.action = APPS_SCRIPT_URL;
+    form.target = iframeId;
+
+    // payload를 하나의 JSON으로 묶어서 전송
+    const input = document.createElement('input');
+    input.type  = 'hidden';
+    input.name  = 'payload';
+    input.value = JSON.stringify(params);
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    const timer = setTimeout(()=>{
+      cleanup();
+      reject(new Error('POST 타임아웃'));
+    }, 15000);
+
+    function cleanup(){
+      clearTimeout(timer);
+      try{ document.body.removeChild(iframe); } catch(e){}
+      try{ document.body.removeChild(form); } catch(e){}
+    }
+
+    iframe.onload = ()=>{
+      try{
+        const text = iframe.contentDocument?.querySelector('#__greateng_response__')?.textContent;
+        if(!text){ cleanup(); resolve({ok:true}); return; }
+        const res = JSON.parse(text
+          .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
+        cleanup();
+        if(res.ok) resolve(res);
+        else reject(new Error(res.error||'GAS 오류'));
+      } catch(e){ cleanup(); resolve({ok:true}); }
+    };
+
+    form.submit();
+  });
+}
+
 async function loadPatternList(){
   const sel=document.getElementById('patternSelector');
   const statusEl=document.getElementById('patternSelectorStatus');
