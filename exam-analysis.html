@@ -1553,37 +1553,70 @@ function toggleAllAnswers(show){
 // ── DOCX 다운로드 ──
 async function downloadDocx(){
   if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
-  const {Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle} = docx;
-  const school = getSchool();
-  const grade  = document.getElementById('metaGrade').value;
-  const year   = document.getElementById('metaYear').value;
-  const sem    = document.getElementById('metaSemester').value;
-  const exam   = document.getElementById('metaExam').value;
-  const metaLine = [school,grade,year,sem,exam].filter(Boolean).join(' · ');
-
-  const children = [
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:80},children:[new TextRun({text:'대단한영어 예상문제',bold:true,size:36,font:'맑은 고딕'})]}),
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:metaLine||'',size:22,color:'6a6a7a',font:'맑은 고딕',italics:true})]})
-  ];
-  if(analysisData){
-    children.push(new Paragraph({spacing:{after:120},children:[new TextRun({text:'[기출 분석] '+analysisData.summary,size:20,color:'6a6a7a',font:'맑은 고딕',italics:true})]}));
+  if(typeof window.docx === 'undefined'){
+    alert('docx 라이브러리가 로드되지 않았습니다. 페이지를 새로고침 후 다시 시도하세요.');
+    return;
   }
-  generatedQs.forEach(q=>{
-    children.push(new Paragraph({spacing:{before:240,after:80},children:[new TextRun({text:`${q.num}. [${q.type}]  `,bold:true,size:24,font:'맑은 고딕'})]}));
-    children.push(new Paragraph({spacing:{after:80},children:[new TextRun({text:q.question,size:22,font:'맑은 고딕'})]}));
-    if(q.choices&&q.choices.length){
-      q.choices.forEach(c=>children.push(new Paragraph({indent:{left:360},spacing:{after:40},children:[new TextRun({text:c,size:22,font:'맑은 고딕'})]})));
-    }
-    children.push(new Paragraph({spacing:{after:80},children:[new TextRun({text:'▶ '+q.answer,size:20,color:'1a5276',font:'맑은 고딕'})]}));
-    children.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:1,color:'CCCCCC'}},children:[]}));
-  });
+  try{
+    const {Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle} = window.docx;
+    const school = getSchool() || '○○학교';
+    const grade  = document.getElementById('metaGrade').value || '';
+    const year   = document.getElementById('metaYear').value || '';
+    const sem    = document.getElementById('metaSemester').value || '';
+    const exam   = document.getElementById('metaExam').value || '';
 
-  const doc = new Document({sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1080,bottom:1080,left:1080,right:1080}}},children}]});
-  const buf = await Packer.toBlob(doc);
-  const url = URL.createObjectURL(buf);
-  const a = document.createElement('a');
-  a.href=url; a.download='대단한영어_예상문제.docx'; a.click();
-  URL.revokeObjectURL(url);
+    const children = [];
+
+    // 헤더
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:60},
+      children:[new TextRun({text:`${year}학년도 ${sem} ${exam} 영어 예상문제`,bold:true,size:32,font:'맑은 고딕'})]}));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},
+      children:[new TextRun({text:`${school} ${grade}　　총 ${generatedQs.length}문항`,size:22,font:'맑은 고딕',color:'444444'})]}));
+    children.push(new Paragraph({border:{bottom:{style:BorderStyle.DOUBLE,size:4,color:'000000'}},spacing:{after:240},children:[]}));
+
+    generatedQs.forEach(q=>{
+      const isWriting = !q.choices || q.choices.length === 0;
+      // 번호+유형+문제 첫줄
+      const lines = (q.question||'').split('\n');
+      children.push(new Paragraph({spacing:{before:200,after:60},
+        children:[
+          new TextRun({text:`${q.num}. `,bold:true,size:22,font:'맑은 고딕'}),
+          new TextRun({text:`[${q.type}]  `,bold:false,size:18,color:'777777',font:'맑은 고딕'}),
+          new TextRun({text:lines[0]||'',size:22,font:'맑은 고딕'})
+        ]}));
+      lines.slice(1).forEach(line=>{
+        children.push(new Paragraph({indent:{left:240},spacing:{after:40},
+          children:[new TextRun({text:line,size:22,font:'맑은 고딕'})]}));
+      });
+      // 선지
+      if(!isWriting){
+        q.choices.forEach(c=>{
+          children.push(new Paragraph({indent:{left:480},spacing:{after:36},
+            children:[new TextRun({text:c,size:21,font:'맑은 고딕'})]}));
+        });
+      } else {
+        // 서술형 답안란
+        children.push(new Paragraph({indent:{left:240},spacing:{before:40,after:40},
+          border:{top:{style:BorderStyle.SINGLE,size:1,color:'999999'},bottom:{style:BorderStyle.SINGLE,size:1,color:'999999'},left:{style:BorderStyle.SINGLE,size:1,color:'999999'},right:{style:BorderStyle.SINGLE,size:1,color:'999999'}},
+          children:[new TextRun({text:'　'.repeat(30),size:22,font:'맑은 고딕'})]}));
+      }
+      // 정답
+      children.push(new Paragraph({indent:{left:240},spacing:{after:60},
+        children:[new TextRun({text:`▶ 정답: ${q.answer}`,size:19,color:'1a4a8c',font:'맑은 고딕',italics:true})]}));
+      children.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:1,color:'DDDDDD'}},spacing:{after:120},children:[]}));
+    });
+
+    const doc = new Document({sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1080,bottom:1080,left:1134,right:1134}}},children}]});
+    const buf = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(buf);
+    const a = document.createElement('a');
+    const fname = [school,grade,year,sem,exam].filter(Boolean).join('_')+'_예상문제.docx';
+    a.href=url; a.download=fname; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e){
+    alert('DOCX 생성 오류: '+e.message);
+    console.error(e);
+  }
 }
 
 // ── 분석 데이터 저장/복원 ──
