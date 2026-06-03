@@ -546,7 +546,51 @@ tr:hover td { background: var(--paper); }
   color: var(--navy) !important;
 }
 
-/* ── 섹션 구분 레이블 ── */
+/* ── 수동 지문 입력 ── */
+.manual-passage-item {
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.manual-passage-item:focus-within {
+  border-color: var(--navy3);
+  box-shadow: 0 0 0 3px rgba(26,58,92,.06);
+}
+.manual-passage-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.manual-passage-header input {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: .82rem;
+  color: var(--ink2);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.manual-passage-header input:focus {
+  outline: none;
+  border-color: var(--navy3);
+}
+.manual-del-btn {
+  background: none;
+  border: none;
+  color: var(--ink4);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+.manual-del-btn:hover { color: var(--red2); background: rgba(192,57,43,.08); }
 .section-label {
   font-family: 'Noto Serif KR', serif;
   font-size: .9rem;
@@ -684,6 +728,17 @@ tr:hover td { background: var(--paper); }
     <div id="passageList">
       <div style="color:var(--ink4);font-size:.88rem;">지문 불러오기 버튼을 눌러주세요.</div>
     </div>
+  </div>
+
+  <!-- 교과서 본문 직접 입력 -->
+  <div class="step-box">
+    <div class="step-title">📝 교과서 본문 직접 입력 <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 중등 교과서 등 DB 미등록 지문</span></div>
+    <div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <button class="btn btn-gray" style="font-size:.8rem;padding:5px 14px;" onclick="addManualPassage()">+ 지문 추가</button>
+      <button class="btn btn-gray" style="font-size:.8rem;padding:5px 14px;" onclick="clearManualPassages()">전체 삭제</button>
+      <span id="manualCountInfo" style="font-size:.8rem;color:var(--ink4);"></span>
+    </div>
+    <div id="manualPassageList"></div>
   </div>
   <div class="step-box">
     <div class="step-title">⚙️ 출제 패턴 설정</div>
@@ -950,6 +1005,8 @@ async function analyzeExam(){
       }
     }
     analysisData = parsed1;
+    // 기출 원문 텍스트도 함께 저장 (예상문제 출제 시 형식 참고용)
+    analysisData.rawText = rawText || '';
     status.innerHTML='<span style="color:var(--green2)">✅ 분석 완료!</span>';
     saveAnalysisToStorage();
     renderAnalysis();
@@ -1111,28 +1168,80 @@ function renderTypeCheckboxes(){
   const selected = analysisData
     ? Object.entries(analysisData.patterns).filter(([,v])=>v>0).map(([k])=>k)
     : TYPE_LABELS;
-  container.innerHTML = TYPE_LABELS.map(t=>`
-    <label style="color:var(--ink2);font-size:.88rem;display:flex;align-items:center;gap:4px;">
-      <input type="checkbox" value="${t}" ${selected.includes(t)?'checked':''} style="accent-color:#b8860b;">
-      ${t}
-    </label>`).join('');
+  container.innerHTML = TYPE_LABELS.map(t=>{
+    const cnt = analysisData?.patterns?.[t] || 0;
+    const badge = analysisData && cnt>0
+      ? `<span style="background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold2);
+                      border-radius:10px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:2px;">${cnt}</span>`
+      : '';
+    return `<label>
+      <input type="checkbox" value="${t}" ${selected.includes(t)?'checked':''}>
+      ${t}${badge}
+    </label>`;
+  }).join('');
 }
 
 // ── 예상문제 출제 ──
 async function generateQuestions(){
   const status = document.getElementById('generateStatus');
   const selectedP = getSelectedPassages();
-  if(!selectedP.length){ status.innerHTML='<span class="error">지문을 선택하세요.</span>'; return; }
+  const manualP   = getManualPassages();
+  const allPassages = [...selectedP, ...manualP];
+  if(!allPassages.length){ status.innerHTML='<span class="error">지문을 선택하거나 교과서 본문을 입력하세요.</span>'; return; }
   const apiKey = getApiKey();
   if(!apiKey){ status.innerHTML='<span class="error">⚙️ 설정 탭에서 Gemini API 키를 입력하세요.</span>'; return; }
-  const passage = selectedP.map(p=>p.text||p.passage||p.content||'').filter(Boolean).join('\n\n---\n\n');
+  const passage = allPassages.map(p=>
+    (p.title ? `[${p.title}]\n` : '') + (p.text||p.passage||p.content||'')
+  ).filter(Boolean).join('\n\n---\n\n');
   const checked = Array.from(document.querySelectorAll('#typeCheckboxes input:checked')).map(i=>i.value);
   if(checked.length===0){ status.innerHTML='<span class="error">문제 유형을 하나 이상 선택하세요.</span>'; return; }
-  const qCount = document.getElementById('qCount').value;
-  const patternHint = analysisData ? `기출 분석 결과: ${JSON.stringify(analysisData.patterns)}` : '패턴 분석 없음 - 선택 유형 균등 출제';
+  const qCount = parseInt(document.getElementById('qCount').value);
+
+  // 패턴 비율 기반 유형별 문항수 계산
+  let patternHint = '';
+  let typeDistrib = '';
+  if(analysisData && analysisData.patterns){
+    const totalPat = Object.values(analysisData.patterns).reduce((s,v)=>s+v,0);
+    if(totalPat>0){
+      // 각 유형별 비율로 qCount 분배
+      const distrib = {};
+      let assigned = 0;
+      const checkedWithCount = checked.map(t=>({
+        t, ratio: (analysisData.patterns[t]||0)/totalPat
+      })).sort((a,b)=>b.ratio-a.ratio);
+
+      checkedWithCount.forEach((item,i)=>{
+        const n = i===checkedWithCount.length-1
+          ? qCount - assigned
+          : Math.round(item.ratio * qCount);
+        distrib[item.t] = Math.max(n, 1);
+        assigned += distrib[item.t];
+      });
+      // 총합 보정
+      const total = Object.values(distrib).reduce((s,v)=>s+v,0);
+      if(total !== qCount){
+        const first = checkedWithCount[0].t;
+        distrib[first] = Math.max(1, distrib[first] + (qCount - total));
+      }
+
+      typeDistrib = Object.entries(distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
+      patternHint = `기출 패턴 기반 유형별 배분: ${typeDistrib}`;
+    }
+  }
+  if(!patternHint){
+    const perType = Math.max(1, Math.floor(qCount/checked.length));
+    typeDistrib = checked.map(t=>`${t} ${perType}문항`).join(', ');
+    patternHint = `균등 배분: ${typeDistrib}`;
+  }
   status.innerHTML='<span class="spinner"></span> 예상문제 생성 중...';
 
-  const prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[조건]\n- 출제 유형: ${checked.join(', ')}\n- 문항 수: ${qCount}문항\n- ${patternHint}\n- 각 문제는 실제 내신 시험 형식으로 (선지 있으면 ①②③④⑤)\n- 서술형은 영작/단답 형식\n\n아래 JSON 배열로만 응답 (마크다운 없이):\n[{"num":1,"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 및 해설"}]\n서술형은 choices를 빈 배열로.`;
+  // 기출 원문이 있으면 형식 예시로 포함 (최대 3000자)
+  const rawExamText = analysisData?.rawText
+    ? '\n\n[기출 문제 형식 예시 - 아래 형식을 그대로 따라 출제하세요]\n'
+      + analysisData.rawText.slice(0, 3000)
+    : '';
+
+  const prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 총 문항 수: ${qCount}문항\n- 유형별 문항수 (반드시 준수): ${typeDistrib}\n- 각 문제는 실제 내신 시험 형식으로 작성 (객관식은 ①②③④⑤ 5지선다)\n- 서술형은 영작/단답 형식\n- 문제 번호는 1부터 순서대로${rawExamText}\n\n아래 JSON 배열로만 응답 (마크다운 없이):\n[{"num":1,"type":"유형명","question":"문제 전체 텍스트","choices":["①..","②..","③..","④..","⑤.."],"answer":"정답 번호 및 해설"}]\n서술형은 choices를 빈 배열로.`;
 
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
@@ -1331,11 +1440,79 @@ function applySelectedPattern(){
   if(!opt||!opt.dataset.payload){infoEl.style.display='none';renderTypeCheckboxes();return;}
   let item; try{item=JSON.parse(opt.dataset.payload);}catch(e){return;}
   analysisData=item;
+
+  // qCount 자동 설정 (패턴 total 기준, 최대 15)
+  if(item.total){
+    const qSel = document.getElementById('qCount');
+    const target = Math.min(item.total, 15).toString();
+    // 가장 가까운 옵션 선택
+    const opts = Array.from(qSel.options).map(o=>parseInt(o.value));
+    const closest = opts.reduce((a,b)=>Math.abs(b-parseInt(target))<Math.abs(a-parseInt(target))?b:a);
+    qSel.value = closest.toString();
+  }
+
   const patternStr=Object.entries(item.patterns||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1])
-    .map(([t,c])=>`<span class="tag tag-type">${t}</span><span class="tag tag-count">${c}</span>`).join(' ');
+    .map(([t,c])=>`<span class="tag tag-type">${t}</span><span class="tag tag-count">${c}문항</span>`).join(' ');
   infoEl.style.display='block';
-  infoEl.innerHTML=`<div style="margin-bottom:6px;">📌 <b>${[item.school,item.grade,item.year,item.semester,item.exam].filter(Boolean).join(' ')}</b> · 총 ${item.total||0}문항</div><div>${patternStr}</div>${item.summary?`<div style="margin-top:6px;color:var(--ink3);font-size:.82rem;">${item.summary}</div>`:''}`;
+  infoEl.innerHTML=`
+    <div style="margin-bottom:8px;">📌 <b>${[item.school,item.grade,item.year,item.semester,item.exam].filter(Boolean).join(' ')}</b>
+    &nbsp;·&nbsp; 총 ${item.total||0}문항</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;">${patternStr}</div>
+    ${item.summary?`<div style="margin-top:8px;color:var(--ink3);font-size:.82rem;border-top:1px solid var(--border);padding-top:8px;">${item.summary}</div>`:''}
+  `;
   renderTypeCheckboxes();
+}
+
+// ════════════════════════════════════════
+// 수동 지문 입력 (중등 교과서용)
+// ════════════════════════════════════════
+let manualPassageCount = 0;
+
+function addManualPassage(){
+  manualPassageCount++;
+  const id = 'mp_' + manualPassageCount;
+  const container = document.getElementById('manualPassageList');
+  const div = document.createElement('div');
+  div.className = 'manual-passage-item';
+  div.id = id;
+  div.innerHTML = `
+    <div class="manual-passage-header">
+      <input type="text" placeholder="제목 / 과 번호 (선택)" id="${id}_title">
+      <button class="manual-del-btn" onclick="removeManualPassage('${id}')" title="삭제">✕</button>
+    </div>
+    <textarea id="${id}_text" rows="5"
+      placeholder="교과서 본문을 여기에 붙여넣으세요..."
+      oninput="updateManualCount()"
+      style="margin-bottom:0;"></textarea>`;
+  container.appendChild(div);
+  updateManualCount();
+  document.getElementById(id+'_text').focus();
+}
+
+function removeManualPassage(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+  updateManualCount();
+}
+
+function clearManualPassages(){
+  document.getElementById('manualPassageList').innerHTML = '';
+  manualPassageCount = 0;
+  updateManualCount();
+}
+
+function updateManualCount(){
+  const items = getManualPassages();
+  const info = document.getElementById('manualCountInfo');
+  if(info) info.textContent = items.length ? `${items.length}개 지문 입력됨` : '';
+}
+
+function getManualPassages(){
+  return Array.from(document.querySelectorAll('.manual-passage-item')).map(el=>{
+    const title = el.querySelector('input')?.value.trim() || '';
+    const text  = el.querySelector('textarea')?.value.trim() || '';
+    return text ? {id:'manual', title, text} : null;
+  }).filter(Boolean);
 }
 
 function savePredictionToStorage(){
