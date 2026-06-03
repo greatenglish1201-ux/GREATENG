@@ -763,8 +763,9 @@ tr:hover td { background: var(--paper); }
       <label>학년</label>
       <select id="metaGrade" style="width:68px;">
         <option value="">학년</option>
-        <option>중1</option><option>중2</option><option>중3</option>
-        <option>고1</option><option>고2</option><option>고3</option>
+        <option value="1학년">1학년</option>
+        <option value="2학년">2학년</option>
+        <option value="3학년">3학년</option>
       </select>
     </div>
     <div class="meta-sep"></div>
@@ -1413,56 +1414,27 @@ async function generateQuestions(){
 
   let allResults = [];
 
-  for(let i=0; i<batchPlans.length; i++){
-    const plan = batchPlans[i];
-    if(totalBatches > 1){
-      status.innerHTML=`<span class="spinner"></span> ${rawExamText?'시뮬레이션':'예상문제'} 생성 중... (${i+1}/${totalBatches})`;
-    }
-
-    let prompt;
-
-    if(rawExamText){
-      // ══ 기출 시뮬레이션 모드 ══
-      // 번호별 유형 목록 (기출 원문의 해당 번호 문제 형식을 그대로 학습)
-      const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
-      prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.
-
-[실제 기출 시험지]
-아래 기출 시험지를 분석하여 각 문제 번호의 지문 유형, 발문 스타일, 선지 구성 패턴을 정확히 파악하세요.
----
-${rawExamText.slice(0, 3500)}
----
-
-[예상문제에 사용할 지문 자료]
----
-${passage}
----
-
-[출제 지시]
-위 기출 시험지와 완전히 동일한 형식으로 아래 번호의 문제를 출제하세요:
-${typeList}
-
-반드시 지켜야 할 규칙:
-1. 각 번호의 발문, 지문 제시 방식, 선지 형식을 기출과 동일하게 복제
-2. 지문이 필요한 문제는 question 필드 안에 지문을 먼저 쓰고 빈 줄 후 발문 작성
-3. 위 [예상문제에 사용할 지문 자료]에서 적합한 지문을 선택하여 사용
-4. 객관식: ①②③④⑤ 5지선다 / 서술형: choices 빈 배열
-5. 문제 번호는 반드시 ${plan.startNum}번부터 시작
-
-JSON 배열로만 응답:
-[{"num":${plan.startNum},"type":"유형명","question":"[지문]\\n지문내용...\\n\\n발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]`;
-
-    } else {
-      // ══ 기본 모드 (기출 원문 없음) ══
-      const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
-      prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항: ${plan.count}문항 (${batchTypeDistrib})\n- 문제 번호는 ${plan.startNum}번부터\n- 객관식 ①②③④⑤, 서술형은 빈 선지\n- 지문이 필요한 문제는 question에 지문 포함\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"문제 전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]\n서술형은 choices를 빈 배열로.`;
-    }
-
-    const result = await callGemini(prompt);
-    allResults = [...allResults, ...result];
-  }
-
   try{
+    for(let i=0; i<batchPlans.length; i++){
+      const plan = batchPlans[i];
+      if(totalBatches > 1){
+        status.innerHTML=`<span class="spinner"></span> ${rawExamText?'시뮬레이션':'예상문제'} 생성 중... (${i+1}/${totalBatches})`;
+      }
+
+      let prompt;
+
+      if(rawExamText){
+        const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
+        prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.\n\n[실제 기출 시험지]\n아래 기출 시험지를 분석하여 각 문제 번호의 지문 유형, 발문 스타일, 선지 구성 패턴을 정확히 파악하세요.\n---\n${rawExamText.slice(0, 3500)}\n---\n\n[예상문제에 사용할 지문 자료]\n---\n${passage}\n---\n\n[출제 지시]\n위 기출 시험지와 완전히 동일한 형식으로 아래 번호의 문제를 출제하세요:\n${typeList}\n\n규칙:\n1. 각 번호의 발문·지문 제시 방식·선지 형식을 기출과 동일하게 복제\n2. 지문이 필요한 문제는 question 안에 지문 먼저, 빈 줄 후 발문\n3. [예상문제에 사용할 지문 자료]에서 적합한 지문 선택\n4. 객관식: ①②③④⑤ / 서술형: choices 빈 배열\n5. 문제 번호는 반드시 ${plan.startNum}번부터\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"지문(있으면)\\n\\n발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]`;
+      } else {
+        const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
+        prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항: ${plan.count}문항 (${batchTypeDistrib})\n- 문제 번호는 ${plan.startNum}번부터\n- 객관식 ①②③④⑤, 서술형은 빈 선지\n\nJSON 배열로만 응답:\n[{"num":${plan.startNum},"type":"유형명","question":"문제 전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호 + 해설"}]\n서술형은 choices를 빈 배열로.`;
+      }
+
+      const result = await callGemini(prompt);
+      allResults = [...allResults, ...result];
+    }
+
     generatedQs = allResults;
     if(!generatedQs.length) throw new Error('생성된 문항이 없습니다.');
     status.innerHTML='<span style="color:var(--green2)">✅ '+generatedQs.length+'문항 생성 완료!</span>';
@@ -1471,8 +1443,10 @@ JSON 배열로만 응답:
     switchTab(2);
   } catch(e){
     status.innerHTML='<span class="error">생성 오류: '+e.message+'</span>';
+    console.error('generateQuestions 오류:', e);
   }
 }
+
 
 function renderQuestions(){
   const out = document.getElementById('questionOutput');
