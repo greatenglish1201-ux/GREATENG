@@ -871,7 +871,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
       const body={action:'getStats'};
       if(student)body.student=student;
       const d=await api(body);
-      if(d.ok!==false){if(d.studentStats)d.studentStats=d.studentStats.filter(s=>s.name!=='관리자'&&s.name!=='admin');setStats(d);}
+      if(d.ok!==false)setStats(d);
       else setMsg(d.error||'통계 오류');
     }catch(e){setMsg('통계 불러오기 실패');}
     setStatsLoading(false);
@@ -1039,9 +1039,9 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
               {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,10)}</span>
+                  <span style={{fontSize:12,color:'#64748b'}}>{(()=>{const d=new Date(s.date);return isNaN(d)?String(s.date).slice(0,10):`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;})()}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.score}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{(()=>{const sc=String(s.score||'');return sc.includes('/')?sc:(sc.match(/\d+\/\d+/)?sc.match(/\d+\/\d+/)[0]:sc);})()}문항</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
                 </div>
