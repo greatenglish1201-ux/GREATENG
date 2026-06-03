@@ -900,12 +900,25 @@ tr:hover td { background: var(--paper); }
   <!-- 교과서 본문 직접 입력 -->
   <div class="step-box">
     <div class="step-title">📝 교과서 본문 직접 입력 <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 중등 교과서 등 DB 미등록 지문</span></div>
-    <div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-      <button class="btn btn-gray" style="font-size:.8rem;padding:5px 14px;" onclick="addManualPassage()">+ 지문 추가</button>
-      <button class="btn btn-gray" style="font-size:.8rem;padding:5px 14px;" onclick="clearManualPassages()">전체 삭제</button>
+
+    <!-- 기본 textarea (항상 표시) -->
+    <div id="manualPassage_default" style="margin-bottom:10px;">
+      <textarea id="manualTextDirect" rows="6"
+        placeholder="교과서 본문을 여기에 붙여넣으세요..."
+        oninput="updateManualCount()"
+        style="margin-bottom:4px;"></textarea>
+      <input type="text" id="manualTitleDirect" placeholder="제목 / 과 번호 (선택, 예: 3과 본문)"
+        style="width:100%;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+    </div>
+
+    <!-- 추가 지문 (동적) -->
+    <div id="manualPassageList"></div>
+
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="addManualPassage()">+ 지문 추가</button>
+      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="clearAllManual()">전체 삭제</button>
       <span id="manualCountInfo" style="font-size:.8rem;color:var(--ink4);"></span>
     </div>
-    <div id="manualPassageList"></div>
   </div>
 
   <!-- 문법 포인트 (출제 시 반영) -->
@@ -2065,13 +2078,28 @@ function updateManualCount(){
   const info = document.getElementById('manualCountInfo');
   if(info) info.textContent = items.length ? `${items.length}개 지문 입력됨` : '';
 }
+  const result = [];
+  // 기본 textarea
+  const directText  = document.getElementById('manualTextDirect')?.value.trim()||'';
+  const directTitle = document.getElementById('manualTitleDirect')?.value.trim()||'';
+  if(directText) result.push({id:'manual', title:directTitle, text:directText});
+  // 추가 지문들
+  Array.from(document.querySelectorAll('.manual-passage-item')).forEach(el=>{
+    const title = el.querySelector('input')?.value.trim()||'';
+    const text  = el.querySelector('textarea')?.value.trim()||'';
+    if(text) result.push({id:'manual', title, text});
+  });
+  return result;
+}
 
-function getManualPassages(){
-  return Array.from(document.querySelectorAll('.manual-passage-item')).map(el=>{
-    const title = el.querySelector('input')?.value.trim() || '';
-    const text  = el.querySelector('textarea')?.value.trim() || '';
-    return text ? {id:'manual', title, text} : null;
-  }).filter(Boolean);
+function clearAllManual(){
+  const ta = document.getElementById('manualTextDirect');
+  const ti = document.getElementById('manualTitleDirect');
+  if(ta) ta.value='';
+  if(ti) ti.value='';
+  document.getElementById('manualPassageList').innerHTML='';
+  manualPassageCount=0;
+  updateManualCount();
 }
 
 function savePredictionToStorage(){
