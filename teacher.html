@@ -28,7 +28,31 @@ input:focus,select:focus,textarea:focus{outline:none}
 <script type="text/babel">
 const {useState,useCallback,useRef,useEffect} = React;
 
-const SOURCES=['ABSO','27STYD','MOGO'];
+// ── 교재 목록 ── 새 교재 추가 시 여기에만 추가 ──────────────
+const BOOK_DEFS=[
+  {id:'27STYD',    label:'27영독',      storage:'sheet'},
+  {id:'27ST_E',    label:'27수특영어',   storage:'passages'},
+  {id:'ABSO_TYPE', label:'절대유형',    storage:'sheet'},
+  // 모의고사: MOGO_{년도2자리}_{학년}_{월2자리}
+  {id:'MOGO_25_G3_06', label:'25 고3 6월', storage:'sheet'},
+  {id:'MOGO_25_G3_09', label:'25 고3 9월', storage:'sheet'},
+  {id:'MOGO_26_G3_06', label:'26 고3 6월', storage:'sheet'},
+];
+const SOURCES=BOOK_DEFS.map(b=>b.id);
+// storage:'passages'인 교재 ID 집합 (passages.js 조회 대상)
+const PASSAGES_SOURCES=new Set(BOOK_DEFS.filter(b=>b.storage==='passages').map(b=>b.id));
+// 모의고사 select용 그룹 생성
+function getMogoGroups(){
+  const mocos=BOOK_DEFS.filter(b=>b.id.startsWith('MOGO_'));
+  const groups={};
+  mocos.forEach(b=>{
+    const parts=b.id.split('_'); // MOGO_25_G3_06
+    const yr=parts[1]||''; const gr=parts[2]||''; const key=yr+'_'+gr;
+    if(!groups[key])groups[key]={yr,gr,items:[]};
+    groups[key].items.push(b);
+  });
+  return Object.values(groups).sort((a,b)=>b.yr.localeCompare(a.yr)||a.gr.localeCompare(b.gr));
+}
 const DIFFS=['상','중','하'];
 const SYMS=['G','↔','=','S','→','+'];
 const STRUCTS=['통념→반박→결론','문제→해결책','질문→답변','실험/일화→교훈','원인→결과','비교→대조','주장→근거→재주장','일반→구체(예시)','현상→원인→결과','정의→특성→예시','정→반→합','역설→해소','관점 전환'];
@@ -1694,14 +1718,18 @@ Return JSON only:
     <div style={{maxWidth:600,margin:'0 auto',padding:'24px 14px'}}>
       <div style={card}>
         <div style={{fontWeight:600,fontSize:15,marginBottom:4}}>출제 저작 도구</div>
-        <div style={{color:'#888',fontSize:13,marginBottom:20}}>지문 붙여넣기 → AI 분석 → 9가지 유형 문제 후보 자동 생성</div>
+        <div style={{color:'#888',fontSize:13,marginBottom:20}}>지문 붙여넣기 → AI 흐름 분석 → 출제 저작</div>
         <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:10,marginBottom:14}}>
           <div><label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>교재 코드</label>
             <select value={pfx} onChange={e=>setPfx(e.target.value)} style={{width:'100%',padding:'7px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,fontSize:13,background:'#fff'}}>
-              <option value="27STYD">27STYD (수특영독)</option>
-              <option value="27ST_E">27ST_E (수특영어)</option>
-              <option value="ABSO_TYPE">ABSO_TYPE (절대유형)</option>
-              <option value="MOGO_GO3">MOGO_GO3 (모의고사)</option>
+              {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(b=>(
+                <option key={b.id} value={b.id}>{b.id} ({b.label})</option>
+              ))}
+              {getMogoGroups().map(g=>(
+                <optgroup key={g.yr+'_'+g.gr} label={`모의고사 ${g.yr} ${g.gr}`}>
+                  {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
+                </optgroup>
+              ))}
             </select>
           </div>
           <div><label style={{fontSize:12,fontWeight:500,color:'#666',display:'block',marginBottom:4}}>강 (Chapter)</label><input type="number" value={chapter} onChange={e=>setChapter(+e.target.value)} min={1} max={50} style={{width:'100%',padding:'7px 10px',border:'0.5px solid #e5e5e5',borderRadius:7,fontSize:13}}/></div>
@@ -2963,12 +2991,12 @@ function App(){
           padding:'12px 16px',marginBottom:12,display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
           <span style={{fontSize:13,fontWeight:600,color:'#555'}}>교재</span>
           <div style={{display:'flex',gap:5}}>
-            {SOURCES.map(src=>(
-              <button key={src} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src}})))}
+            {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
+              <button key={src.id} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src.id}})))}
                 style={{padding:'5px 14px',fontSize:13,fontWeight:500,
-                  background:slots.every(s=>s.meta.source===src)?'#185FA5':'#f0f0f0',
-                  color:slots.every(s=>s.meta.source===src)?'#fff':'#555',
-                  border:'none',borderRadius:6,cursor:'pointer'}}>{src}</button>
+                  background:slots.every(s=>s.meta.source===src.id)?'#185FA5':'#f0f0f0',
+                  color:slots.every(s=>s.meta.source===src.id)?'#fff':'#555',
+                  border:'none',borderRadius:6,cursor:'pointer'}}>{src.label}</button>
             ))}
           </div>
           <div style={{flex:1}}/>
@@ -2999,7 +3027,7 @@ function App(){
                 const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
                 let passageData=slot.passageData?restorePassageData(slot.passageData):null;
 
-                if(!passageData){
+                if(!passageData&&PASSAGES_SOURCES.has(slot.meta.source)){
                   let pool=loadedPassages.length?loadedPassages:(window.PASSAGES||[]);
                   let found=pool.find(p=>p.id===pid);
                   if(!found&&loadedPassages.length===0){
@@ -3046,6 +3074,10 @@ function App(){
                       passageData=restorePassageData(pd);
                     }
                   }catch(e){console.warn('시트 조회 실패:',e);}
+                }
+                if(!passageData){
+                  alert('출제 데이터를 불러오지 못했습니다.\n시트 저장 후 다시 시도해주세요.');
+                  return;
                 }
                 setAuthorInitPassageData(passageData);
                 setAuthorKey(k=>k+1);
@@ -3186,7 +3218,14 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
             style={{...sB,fontSize:12,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px'}}>
-            {SOURCES.map(s=><option key={s} value={s}>{s}</option>)}
+            {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(b=>(
+              <option key={b.id} value={b.id}>{b.id} ({b.label})</option>
+            ))}
+            {getMogoGroups().map(g=>(
+              <optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>
+                {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
+              </optgroup>
+            ))}
           </select>
           {['chapter','number'].map(f=>(
             <div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
