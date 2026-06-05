@@ -352,6 +352,17 @@ const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
   const nb={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
   const bd=(c='888888',sz=3)=>({style:BorderStyle.SINGLE,size:sz,color:c});
   const nobs={top:nb,bottom:nb,left:nb,right:nb};
+  // 블록 컬러맵 (hex # 제거)
+  const BDC={
+    blue:{hd:'B5D4F4',bd:'185FA5',tx:'0C447C',row:'E6F1FB'},
+    coral:{hd:'F5C4B3',bd:'D85A30',tx:'712B13',row:'FAECE7'},
+    teal:{hd:'9FE1CB',bd:'1D9E75',tx:'085041',row:'E1F5EE'},
+    purple:{hd:'CECBF6',bd:'534AB7',tx:'3C3489',row:'EEEDFE'},
+    green:{hd:'C0DD97',bd:'639922',tx:'173404',row:'EAF3DE'},
+    amber:{hd:'FAC775',bd:'BA7517',tx:'633806',row:'FAEEDA'},
+    gray:{hd:'E4E3DF',bd:'5F5E5A',tx:'2C2C2A',row:'F1EFE8'},
+  };
+  const bdc=c=>BDC[c]||BDC.gray;
   const CM={top:60,bottom:60,left:100,right:100};
   const cell=(children,opts={})=>new TableCell({
     borders:opts.borders||{top:bd(opts.bc||'AAAAAA'),bottom:bd(opts.bc||'AAAAAA'),
@@ -387,26 +398,27 @@ const ch=[];
 
   /* 지문 */
   if(O.passage){
-  ch.push(para('■ 지문',{bold:true,size:P8,color:'333333',sa:20}));
+  ch.push(para('■ 지문',{bold:true,size:P8,color:'185FA5',sa:20}));
   const pRuns=[];
   sentences.forEach(s=>{
     pRuns.push(run(nStr(s.num)+' ',{bold:true,size:P9}));
     pRuns.push(run(s.text+' ',{size:P9}));
   });
   ch.push(new Paragraph({spacing:{before:0,after:120},
-    border:{left:{style:BorderStyle.SINGLE,size:10,color:'555555',space:6}},
+    border:{left:{style:BorderStyle.SINGLE,size:14,color:'185FA5',space:6}},
     indent:{left:160},children:pRuns}));
   }
 
   /* Block Diagram */
   if(O.structure){
-  ch.push(para('■ 글의 구조',{bold:true,size:P8,color:'333333',sb:20,sa:20}));
+  ch.push(para('■ 글의 구조',{bold:true,size:P8,color:'185FA5',sb:20,sa:20}));
   const nc=blocks.length-1;
   const bw=Math.floor((9200-nc*440)/blocks.length);
   const colW=[];blocks.forEach((_,bi)=>{colW.push(bw);if(bi<blocks.length-1)colW.push(440);});
   const hCells=blocks.map((blk,bi)=>{
-    const hd=IS?[blank()]:[para(blk.name,{bold:true,size:P9,sa:20}),para(blk.nameEn,{size:P8,italic:true,sa:0})];
-    const c=cell(hd,{bg:'EEEEEE',bc:'666666',w:bw});
+    const _bc=bdc(blk.color);
+    const hd=IS?[blank()]:[para(blk.name,{bold:true,size:P9,color:_bc.tx,sa:20}),para(blk.nameEn,{size:P8,italic:true,color:_bc.tx,sa:0})];
+    const c=cell(hd,{bg:_bc.hd,bc:_bc.bd,w:bw});
     if(bi<blocks.length-1)return[c,cell([para(conn(bi),{bold:true,size:P10,color:'444444',a:AlignmentType.CENTER,sa:0})],{borders:nobs,w:440})];
     return[c];
   }).flat();
@@ -415,9 +427,10 @@ const ch=[];
     const rCells=blocks.map((blk,bi)=>{
       const sn=(blk.sentenceNums||[])[ri];
       const sent=sn?sm[sn]:null;
-      const c=cell(sent?[para([run(nStr(sent.num)+' ',{bold:true,size:P9}),
-        run('('+sent.symbol+')  ',{size:P8}),run(sent.role,{size:P8,color:'444444'})],{sa:0})]:[para('',{sa:0})],
-        {bc:'BBBBBB',w:bw});
+      const _bdc=bdc(blk.color);
+      const c=cell(sent?[para([run(nStr(sent.num)+' ',{bold:true,size:P9,color:_bdc.tx}),
+        run('('+sent.symbol+')  ',{size:P8,color:_bdc.bd}),run(sent.role,{size:P8,color:_bdc.tx})],{sa:0})]:[para('',{sa:0})],
+        {bc:_bdc.bd,bg:_bdc.row,w:bw});
       if(bi<blocks.length-1)return[c,cell([para('',{sa:0})],{borders:nobs,w:440})];
       return[c];
     }).flat();
@@ -435,7 +448,7 @@ const ch=[];
       {lbl:'구조 유형',val:structureType,w:2400},
     ];
     const ktCells=ktItems.map(it=>cell([new Paragraph({spacing:{before:0,after:0},children:[
-      run(it.lbl,{bold:true,size:P8,color:'666666'})
+      run(it.lbl,{bold:true,size:P8,color:'185FA5'})
     ]}),new Paragraph({spacing:{before:20,after:0},children:[
       IS?run('________________',{size:P8}):run(it.val,{size:P8})
     ]})],{bc:'CCCCCC',w:it.w,m:{top:60,bottom:60,left:120,right:120}}));
@@ -449,7 +462,7 @@ const ch=[];
   // hardOnly: 어려운 문장만 / hardOnly=false: 전체 문장
   const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
   if(dsToShow.length){
-    ch.push(para(IS?'■ 구문 분석':'■ 문장별 분석 (끊어읽기 + 구문)',{bold:true,size:P8,color:'333333',sb:20,sa:20}));
+    ch.push(para(IS?'■ 구문 분석':'■ 문장별 분석 (끊어읽기 + 구문)',{bold:true,size:P8,color:'185FA5',sb:20,sa:20}));
     dsToShow.forEach(s=>{
       const ds=difficultSentences.find(d=>d.num===s.num);
       const chunks=s.chunks||[];
@@ -514,6 +527,28 @@ function buildAllDOCX(slots,mode,opts){
   });
   const doc=new Document({styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},sections});
   Packer.toBlob(doc).then(blob=>saveAs(blob,'전체_'+(IS?'학생용':'교사용')+'.docx'));
+}
+
+/* ── 전체 HTML 출력 ── */
+function buildAllHTML(slots,mode,opts){
+  const IS=mode==='student';
+  const activeSlots=slots.filter(s=>s.analysis&&s.status==='saved');
+  if(!activeSlots.length){alert('저장완료된 슬롯이 없습니다.');return;}
+  const htmlParts=activeSlots.map(slot=>buildHTML(slot,mode,opts));
+  const combined='<!DOCTYPE html><html><head><meta charset="utf-8"><title>전체_'+(IS?'학생용':'교사용')+'</title>'
+    +'<style>body{font-family:"Malgun Gothic",sans-serif;margin:0;padding:0;}'
+    +'@media print{.no-print{display:none!important;}.np{display:none!important;}}'
+    +'</style></head><body>'
+    +htmlParts.map((h,i)=>{
+      const body=h.replace(/<!DOCTYPE[^>]*>/i,'').replace(/<html[^>]*>/i,'').replace(/<\/html>/i,'')
+        .replace(/<head[\s\S]*?<\/head>/i,'').replace(/<\/?body[^>]*>/gi,'');
+      return'<div style="page-break-after:'+(i<htmlParts.length-1?'always':'auto')+';padding:20px 28px">'+body+'</div>';
+    }).join('')
+    +'<div class="no-print" style="position:fixed;bottom:20px;right:20px;">'
+    +'<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#185FA5;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">🖨️ 인쇄 / PDF 저장</button></div>'
+    +'</body></html>';
+  const win=window.open('','_blank');
+  if(win){win.document.write(combined);win.document.close();}
 }
 
 /* ── HTML 출력 ── */
@@ -897,7 +932,14 @@ Distractor patterns (use ALL 4):
 Passage:
 ${passage}
 
-Generate 5 options. Option 1 = correct, Options 2-5 = one of each distractor type.
+Generate 5 options. First option = correct answer, Options 2-5 = one of each distractor type.
+
+CRITICAL LENGTH RULE — This is the most important rule:
+- ALL 5 options must be roughly the SAME LENGTH (±3 words from the correct answer)
+- Measure the correct answer word count, then match all distractors to that length
+- Never make the correct answer the longest option — that is a fatal test flaw
+- If a distractor concept is shorter, EXPAND it with additional modifying phrases
+- If a distractor concept is longer, TRIM it to match
 
 Return JSON only:
 {"options":["correct thesis as noun phrase","too narrow distractor","too broad distractor","partial distractor","off-focus distractor"]}`;
@@ -905,7 +947,18 @@ Return JSON only:
       const parsed=parseJSON(d.content[0].text);
       if(!parsed.options?.length)throw new Error('선지 없음');
       while(parsed.options.length<5)parsed.options.push('');
-      upP({topic_options:parsed.options.slice(0,5),topic_answer:1});
+      // 정답 위치 랜덤 shuffle
+      const opts=parsed.options.slice(0,5);
+      const correctOpt=opts[0];
+      const distractors=opts.slice(1);
+      const insertPos=Math.floor(Math.random()*5);
+      const shuffled=[];
+      let di=0;
+      for(let i=0;i<5;i++){
+        if(i===insertPos)shuffled.push(correctOpt);
+        else shuffled.push(distractors[di++]||'');
+      }
+      upP({topic_options:shuffled,topic_answer:insertPos+1});
     }catch(e){alert('주제 선지 생성 실패: '+e.message);}
     setGenLoading('');
   };
@@ -1193,23 +1246,76 @@ Return JSON only:
     try{
       const passage=sentences.map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
       const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert specializing in 순서배열 (36~37번 문항).\n\nCRITICAL CSAT 평가원 order rules:\n- given글(sentence [0]) introduces the topic\n- ALL sentences except [0] must be in exactly one block (모든 문장 포함)\n- B/C/D each = 2-4 consecutive sentences forming a logical chunk\n- Each block should START with a sentence containing a discourse cue:\n  * Demonstratives: This/These/Such/That + [noun]\n  * Connectives: However/Therefore/Moreover/For example/In contrast\n  * Pronouns: it/they/he/she referring to entity in prior block\n- The CORRECT order should have UNAMBIGUOUS cues\n- 평가원 favorite: answer is often B-C-A(2) or C-B-A(3) (NOT obvious A-B-C)\n- ALL sentence indices [1..${sentences.length-1}] must appear in exactly one block\n\nPassage:\n${passage}\n\nGenerate 3 blocks (B, C, D) and choose the correct order.\nanswer: 1=(A)-(B)-(C), 2=(B)-(C)-(A), 3=(C)-(A)-(B), 4=(B)-(A)-(C), 5=(A)-(C)-(B)\n(Note: A is always the given글, and other letters refer to your B/C/D blocks in original sequence)\n\nReturn JSON only:\n{"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4,5]},{"label":"D","sentence_indices":[6,7]}],"answer":2}`;
+      const totalSents=sentences.length-1;
+      const prompt=`You are a Korean CSAT English exam expert specializing in 순서배열 (36~37번 문항).
+
+CRITICAL CSAT 평가원 order rules:
+- given글(sentence [0]) introduces the topic — this is Block A (always first, not rearranged)
+- ALL sentences [1..${totalSents}] must appear in exactly one block — NEVER omit any index
+- Each block must use CONSECUTIVE sentence indices from the passage
+- Prefer 2-3 blocks (B/C or B/C/D). Use 2 blocks if passage is short (≤6 sentences after [0])
+- Each block should START with a clear discourse cue:
+  * Demonstratives: This/These/Such/That + [noun]
+  * Connectives: However/Therefore/Moreover/For example/In contrast
+  * Pronouns: it/they/he/she referring to entity in prior block
+- The CORRECT order should have UNAMBIGUOUS logical cues
+- 평가원 favorite: non-obvious order (B-C-A or C-B-A), NOT A-B-C
+
+Passage:
+${passage}
+
+IMPORTANT — index rule:
+- Use exactly indices 1 through ${totalSents}
+- Every index must appear in EXACTLY ONE block
+- No gaps, no duplicates
+
+If 2 blocks: answer is 1=(B)-(C) or 2=(C)-(B)
+If 3 blocks: answer is 1=(B)-(C)-(D), 2=(B)-(D)-(C), 3=(C)-(B)-(D), 4=(C)-(D)-(B), 5=(D)-(B)-(C)
+
+Return JSON only (2 blocks example):
+{"blocks":[{"label":"B","sentence_indices":[1,2,3]},{"label":"C","sentence_indices":[4,5]}],"answer":2}
+
+Return JSON only (3 blocks example):
+{"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4]},{"label":"D","sentence_indices":[5,6]}],"answer":3}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       const blocks=parsed.blocks||[];
-      const answer=parsed.answer||1;
+      let answer=parsed.answer||1;
       if(!blocks.length)throw new Error('AI가 블록을 생성하지 못했습니다');
-      // 검증: 모든 문장 인덱스 1~N-1이 정확히 1번씩 등장하는지
+
+      // ── 검증 1: 누락/중복 인덱스 자동 복구 ──
+      const expected=new Set(Array.from({length:sentences.length-1},(_,i)=>i+1));
       const used=new Set();
       blocks.forEach(b=>(b.sentence_indices||[]).forEach(i=>used.add(i)));
-      const expected=sentences.length-1;
-      if(used.size!==expected){
-        console.warn('순서 블록 인덱스 검증 실패:',used.size,'vs',expected);
+      // 누락된 인덱스 → 마지막 블록에 추가
+      const missing=[...expected].filter(i=>!used.has(i));
+      if(missing.length>0){
+        console.warn('순서 블록 누락 인덱스 복구:',missing);
+        if(blocks.length>0)blocks[blocks.length-1].sentence_indices=[...(blocks[blocks.length-1].sentence_indices||[]),...missing];
       }
+      // 중복 인덱스 → 먼저 나온 블록만 유지
+      const seen=new Set();
+      blocks.forEach(b=>{b.sentence_indices=(b.sentence_indices||[]).filter(i=>{if(seen.has(i))return false;seen.add(i);return true;});});
+
+      // ── 검증 2: options는 블록 수에 맞게 생성 ──
+      const labels=blocks.map(b=>b.label||'?');
+      // 2블록: B/C → 3개 순서, 3블록: B/C/D → 5개 순서
+      let options, answerMap;
+      if(labels.length===2){
+        const [B,C]=labels;
+        options=[`(${B})-(${C})`,`(${C})-(${B})`];
+        answerMap={1:1,2:2};
+        if(answer>options.length)answer=1;
+      } else {
+        const [B,C,D]=labels;
+        options=[`(${B})-(${C})-(${D})`,`(${B})-(${D})-(${C})`,`(${C})-(${B})-(${D})`,`(${C})-(${D})-(${B})`,`(${D})-(${B})-(${C})`];
+        if(answer>options.length)answer=1;
+      }
+
       upP({
         order_given_index:0,
         order_blocks:blocks,
-        order_options:['(A)-(B)-(C)','(B)-(C)-(A)','(C)-(A)-(B)','(B)-(A)-(C)','(A)-(C)-(B)'],
+        order_options:options,
         order_answer:answer,
       });
     }catch(e){alert('순서 생성 실패: '+e.message);}
@@ -1601,13 +1707,7 @@ Return JSON only:
       <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
       <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>② 직접 수정</div>
       <LocalTextarea value={p.irrel_candidates?.[p.irrel_sel]||''} onSave={v=>{const c=[...(p.irrel_candidates||[])];c[p.irrel_sel]=v;upP({irrel_candidates:c});}} rows={3} style={{width:'100%',fontSize:12,padding:'7px',border:'0.5px solid #e5e5e5',borderRadius:7,resize:'vertical',marginBottom:6}}/>
-      {!p.irrel_confirmed?
-        <button onClick={()=>upP({irrelevant_sentence_index:p.irrel_insert_pos||0,irrel_confirmed:true})}
-          style={{width:'100%',padding:'9px',borderRadius:8,background:'#0F6E5618',border:'1px solid #0F6E56',color:'#0F6E56',fontWeight:600,cursor:'pointer',fontSize:13}}>✓ 확정</button>
-        :<div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 10px',background:'#0F6E5610',borderRadius:7,fontSize:12,color:'#0F6E56'}}>
-          <span>✓ 확정됨 — [{p.irrel_insert_pos}] 위치, 무관문장 삽입</span>
-          <button onClick={()=>upP({irrel_confirmed:false})} style={{fontSize:11,padding:'2px 8px',borderRadius:5,border:'1px solid #0F6E56',background:'transparent',color:'#0F6E56',cursor:'pointer'}}>취소</button>
-        </div>}
+
     </div>;
 
     if(at===6)return<div>
@@ -1919,6 +2019,7 @@ function App(){
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
   const [showBookMgr,setShowBookMgr]=useState(false);
+  const [showOutputMenu,setShowOutputMenu]=useState(false);
   const [filterHot,setFilterHot]=useState(false);
   const allBooks=React.useMemo(()=>[...BOOK_DEFS,...customBooks],[customBooks]);
   const [showLoad,setShowLoad]=useState(false);
@@ -2627,12 +2728,32 @@ function App(){
             borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
             💾
           </button>}
-          <button onClick={()=>buildAllDOCX(slots,'teacher')}
-            style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>📄 교사용</button>
-          <button onClick={()=>setStuModal({kind:'all-docx',slot:null,opts:{...stuOpts}})}
-            style={{background:'rgba(45,138,96,.7)',color:'#fff',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>📄 학생용</button>
+          <div style={{position:'relative'}}>
+            <button onClick={()=>setShowOutputMenu(v=>!v)}
+              style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
+                borderRadius:6,padding:'2px 8px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
+              📤 출력▾
+            </button>
+            {showOutputMenu&&<div onMouseLeave={()=>setShowOutputMenu(false)}
+              style={{position:'absolute',top:'100%',right:0,marginTop:4,background:'#fff',
+                borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:160,zIndex:300,overflow:'hidden'}}>
+              <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0'}}>📄 HTML</div>
+              <button onClick={()=>{buildAllHTML(slots,'teacher');setShowOutputMenu(false);}}
+                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
+              <button onClick={()=>{buildAllHTML(slots,'student');setShowOutputMenu(false);}}
+                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
+              <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>📝 DOCX</div>
+              <button onClick={()=>{buildAllDOCX(slots,'teacher');setShowOutputMenu(false);}}
+                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1F3864',fontWeight:600}}>교사용</button>
+              <button onClick={()=>{setStuModal({kind:'all-docx',slot:null,opts:{...stuOpts}});setShowOutputMenu(false);}}
+                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1a5c3a',fontWeight:600}}>학생용</button>
+              <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>🖨️ PDF (인쇄)</div>
+              <button onClick={()=>{buildAllHTML(slots,'teacher');setShowOutputMenu(false);}}
+                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용 (새창→인쇄)</button>
+              <button onClick={()=>{buildAllHTML(slots,'student');setShowOutputMenu(false);}}
+                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용 (새창→인쇄)</button>
+            </div>}
+          </div>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:12},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',
               borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>🗑</button>
@@ -3139,7 +3260,7 @@ function App(){
 
         {slots.filter(s=>!filterHot||s.isHot).map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
-            onToggleHot={()=>upSlot(slot.id,{isHot:!slot.isHot})}
+            onToggleHot={()=>upSlot(slot.id,{isHot:!slot.isHot,meta:{...slot.meta,difficulty:slot.isHot?'중':'높음'}})}
             onAuthor={async()=>{
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
