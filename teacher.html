@@ -2680,26 +2680,18 @@ function App(){
 
           {viewMode!=='authoring'&&<button onClick={loadFromSheet} disabled={sheetLoading}
             style={{background:'rgba(24,95,165,.55)',color:'#fff',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-            {sheetLoading?'로딩...':'📊 LOAD'}
-          </button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetLoading?'로딩...':'📊 LOAD'}</button>}
           {viewMode!=='authoring'&&<button onClick={saveAllToSheet} disabled={sheetSaving}
             style={{background:sheetSaving?'rgba(0,0,0,.3)':'rgba(83,74,183,.6)',color:'#fff',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-            {sheetSaving?'저장중...':'📊 SAVE'}
-          </button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetSaving?'저장중...':'📊 SAVE'}</button>}
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(true)} disabled={sheetSaving}
             title="저장된 슬롯 모두 공개"
             style={{background:'rgba(10,124,66,.6)',color:'#fff',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-            🌐 ALL
-          </button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>🌐 ALL</button>}
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(false)} disabled={sheetSaving}
             title="저장된 슬롯 모두 비공개"
             style={{background:'rgba(120,120,120,.55)',color:'#fff',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-            🔒 ALL
-          </button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>🔒 ALL</button>}
           {viewMode!=='authoring'&&<button onClick={fetchPassages} disabled={loadFetching}
             style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
               borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',
@@ -2725,10 +2717,8 @@ function App(){
             URL.revokeObjectURL(a.href);
             flash('백업 다운로드 ✓');
           }} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',
-            borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-            💾
-          </button>}
-          <div style={{position:'relative'}}>
+            borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>💾</button>}
+          <div style={{position:'relative',display:'inline-flex',alignItems:'center'}}>
             <button onClick={()=>setShowOutputMenu(v=>!v)}
               style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
                 borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>📤 출력▾</button>
@@ -3208,52 +3198,52 @@ function App(){
         </div>}
 
         <div style={{background:'#fff',borderRadius:10,border:'0.5px solid #e5e5e5',
-          padding:'12px 16px',marginBottom:12,display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
-          <span style={{fontSize:13,fontWeight:600,color:'#555'}}>교재</span>
-          <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
-            {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
-              <button key={src.id} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src.id}})))}
-                style={{padding:'5px 14px',fontSize:13,fontWeight:500,
-                  background:slots.every(s=>s.meta.source===src.id)?'#185FA5':'#f0f0f0',
-                  color:slots.every(s=>s.meta.source===src.id)?'#fff':'#555',
-                  border:'none',borderRadius:6,cursor:'pointer'}}>{src.label}</button>
+          padding:'10px 14px',marginBottom:12,display:'flex',alignItems:'center',gap:7,flexWrap:'nowrap',overflowX:'auto'}}>
+          <span style={{fontSize:12,fontWeight:600,color:'#555',flexShrink:0}}>교재</span>
+          {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
+            <button key={src.id} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src.id}})))}
+              style={{padding:'4px 12px',fontSize:12,fontWeight:500,flexShrink:0,
+                background:slots.every(s=>s.meta.source===src.id)?'#185FA5':'#f0f0f0',
+                color:slots.every(s=>s.meta.source===src.id)?'#fff':'#555',
+                border:'none',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap'}}>{src.label}</button>
+          ))}
+          <select onChange={e=>{if(!e.target.value)return;setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:e.target.value}})));}}
+            value={slots.every(s=>s.meta.source===slots[0]?.meta.source)&&slots[0]?.meta.source?.startsWith('MOGO_')?slots[0].meta.source:''}
+            style={{padding:'4px 6px',fontSize:11,borderRadius:6,border:'1px solid #ddd',background:'#f0f0f0',cursor:'pointer',flexShrink:0}}>
+            <option value="">모의고사▾</option>
+            {getMogoGroups().map(g=>(
+              <optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>
+                {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
+              </optgroup>
             ))}
-            <select onChange={e=>{if(!e.target.value)return;setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:e.target.value}})));}}
-              value={slots.every(s=>s.meta.source===slots[0]?.meta.source)&&slots[0]?.meta.source?.startsWith('MOGO_')?slots[0].meta.source:''}
-              style={{padding:'4px 8px',fontSize:12,borderRadius:6,border:'1px solid #ddd',background:'#f0f0f0',cursor:'pointer'}}>
-              <option value="">모의고사▾</option>
-              {getMogoGroups().map(g=>(
-                <optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>
-                  {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
-                </optgroup>
-              ))}
-            </select>
-            <button onClick={()=>setShowBookMgr(true)} style={{padding:'4px 10px',fontSize:12,background:'#f0f0f0',border:'1px solid #ddd',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0}}>📚 교재관리</button>
-          </div>
-          <div style={{flex:1}}/>
+          </select>
+          <button onClick={()=>setShowBookMgr(true)} style={{padding:'4px 9px',fontSize:11,background:'#f0f0f0',border:'1px solid #ddd',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0}}>📚 교재관리</button>
+          <div style={{flex:1,minWidth:8}}/>
           <button onClick={()=>setFilterHot(f=>!f)}
-            style={{padding:'5px 12px',fontSize:12,fontWeight:600,borderRadius:6,border:'none',
-              background:filterHot?'#E8490F':'#f0f0f0',
-              color:filterHot?'#fff':'#555',cursor:'pointer',flexShrink:0}}>
+            style={{padding:'4px 10px',fontSize:11,fontWeight:600,borderRadius:6,border:'none',flexShrink:0,
+              background:filterHot?'#e53935':'#f0f0f0',
+              color:filterHot?'#fff':'#555',cursor:'pointer',whiteSpace:'nowrap'}}>
             ★ {filterHot?'전체보기':'출제예상만'}
           </button>
-          <span style={{fontSize:12.5,color:'#999'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
+          <span style={{fontSize:11,color:'#999',flexShrink:0,whiteSpace:'nowrap'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
           <button onClick={runAll} disabled={pending===0||!keyOk}
-            style={{padding:'8px 22px',fontSize:13.5,fontWeight:600,
+            style={{padding:'5px 14px',fontSize:12,fontWeight:600,flexShrink:0,
               background:pending>0&&keyOk?'#185FA5':'#ccc',color:'#fff',
-              border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default'}}>
+              border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default',whiteSpace:'nowrap'}}>
             🔍 전체 분석 ({pending}개)
           </button>
-          <button onClick={()=>setSlots(prev=>{const next=prev.map(s=>({...s,open:true}));saveSlots(next);return next;})}
-            style={{padding:'8px 14px',fontSize:13,fontWeight:500,
-              background:'#fff',color:'#185FA5',border:'1px solid #185FA5',borderRadius:7,cursor:'pointer'}}>
-            📂 전체 열기
-          </button>
-          <button onClick={()=>setSlots(prev=>{const next=prev.map(s=>({...s,open:false}));saveSlots(next);return next;})}
-            style={{padding:'8px 14px',fontSize:13,fontWeight:500,
-              background:'#fff',color:'#666',border:'1px solid #ccc',borderRadius:7,cursor:'pointer'}}>
-            📁 전체 닫기
-          </button>
+          <div style={{display:'flex',border:'1px solid #ddd',borderRadius:7,overflow:'hidden',flexShrink:0}}>
+            <button onClick={()=>setSlots(prev=>{const next=prev.map(s=>({...s,open:true}));saveSlots(next);return next;})}
+              style={{padding:'5px 10px',fontSize:12,background:'#fff',color:'#185FA5',border:'none',
+                borderRight:'1px solid #ddd',cursor:'pointer',whiteSpace:'nowrap',fontWeight:500}}>
+              📂 ▲
+            </button>
+            <button onClick={()=>setSlots(prev=>{const next=prev.map(s=>({...s,open:false}));saveSlots(next);return next;})}
+              style={{padding:'5px 10px',fontSize:12,background:'#fff',color:'#666',border:'none',
+                cursor:'pointer',whiteSpace:'nowrap',fontWeight:500}}>
+              📁 ▼
+            </button>
+          </div>
         </div>
 
         {slots.filter(s=>!filterHot||s.isHot).map(slot=>(
@@ -3471,6 +3461,11 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
             fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
+          <button onClick={onToggleHot} title={slot.isHot?'출제예상 해제':'출제예상 마킹'}
+            style={{width:18,height:18,padding:0,fontSize:16,border:'none',background:'transparent',
+              color:slot.isHot?'#e53935':'#ccc',cursor:'pointer',flexShrink:0,lineHeight:1,
+              display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {slot.isHot?'★':'☆'}</button>
           <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:4,
             background:st.bg,color:st.color}}>{st.label}</span>
           {slot.status==='saved'&&(
@@ -3509,11 +3504,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
-          <button onClick={onToggleHot} title={slot.isHot?'출제예상 해제':'출제예상 마킹'}
-            style={{width:22,height:22,padding:0,fontSize:18,border:'none',background:'transparent',
-              color:slot.isHot?'#e53935':'#ccc',cursor:'pointer',flexShrink:0,lineHeight:1,
-              display:'flex',alignItems:'center',justifyContent:'center'}}>
-            {slot.isHot?'★':'☆'}</button>
+
           {(slot.text||slot.passageData||slot.analysis)&&(
             <button onClick={onClear} title="슬롯 비우기"
               style={{width:28,height:28,padding:0,fontSize:15,color:'#fff',background:'#e74c3c',
