@@ -228,10 +228,7 @@ function gen(passage, type, allP){
     if(!passage.order_blocks || passage.order_blocks.length < 2) return null;
     if(s.length < 4) return null;
     const givenIdx = passage.order_given_index || 0;
-    // 순서배열은 원본 문장 전체 기준 (insert_sentence 포함 복원)
-    const sOrig = (passage.insert_sentence && passage.insert_answer)
-      ? [...s.slice(0, passage.insert_answer), passage.insert_sentence, ...s.slice(passage.insert_answer)]
-      : s;
+    const sOrig = s;
     const given = sOrig[givenIdx];
     const blockLabels = ['A','B','C'];
     // 유효한 sentence_indices만 가진 블록 필터링 후 최대 3개 사용
