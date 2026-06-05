@@ -215,8 +215,14 @@ Rules:
 
 const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. 코드블록 없이.
 기호: G=주제/통념 S=구체예시 ==재진술 ↔=역접 +=추가 →=인과/결론
+
+role 작성 규칙 (핵심):
+- 해당 문장이 지문 논리에서 하는 구체적 기능을 한국어 10자 이내로 기술
+- 절대 금지: "내용 설명", "추가 설명", "관련 내용" 같은 모호한 표현
+- 올바른 예시: "저자의 핵심 주장 제시", "반박 근거 제시", "실험 결과 수치 인용", "비교 대상 도입", "인과관계 결론 도출"
+
 {
-  "sentences":[{"num":1,"text":"원문","symbol":"G","role":"역할설명",
+  "sentences":[{"num":1,"text":"원문","symbol":"G","role":"저자의 핵심 주장 제시",
     "chunks":[{"en":"끊어읽기","ko":"해석"}]}],
   "blocks":[{"id":1,"name":"통념 제시","nameEn":"General Claim","color":"blue","sentenceNums":[1,2]}],
   "interBlockConnectors":["↔"],
@@ -3321,7 +3327,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
             style={{...sB,fontSize:11,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 5px',maxWidth:105,flexShrink:0}}>
-            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.id} ({b.label})</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
+            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
           </select>
           {['chapter','number'].map(f=>(
             <div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
@@ -3661,6 +3667,9 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {['analyzed','confirmed','saved'].includes(slot.status)&&(
               <button onClick={onReanalyze} style={{padding:'7px 14px',fontSize:12.5,background:'transparent',
                 color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
+            )}
+            {slot.analysis&&(
+              <button onClick={onAuthor} style={{padding:'7px 10px',fontSize:12.5,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontWeight:600}}>✏저작</button>
             )}
             <div style={{flex:1}}/>
             <button onClick={onToggle} title="접기"
