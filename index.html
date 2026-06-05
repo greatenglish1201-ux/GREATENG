@@ -1017,7 +1017,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             {/* 전체 보기: 학생별 카드 */}
             {!selectedStudent&&(stats.studentStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>👥 학생별 정답률</div>
-              {(stats.studentStats||[]).map((s,i)=>(
+              {(stats.studentStats||[]).filter(s=>s.name!=='관리자').map((s,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer'}}
                   onClick={()=>{setSelectedStudent(s.name);loadStats(s.name);}}>
                   <div>
@@ -1040,7 +1040,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,10)}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.score}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.correct}/{s.total}문항</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
                 </div>
