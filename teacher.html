@@ -33,10 +33,7 @@ const BOOK_DEFS=[
   {id:'27STYD',    label:'27영독',      storage:'sheet'},
   {id:'27ST_E',    label:'27수특영어',   storage:'passages'},
   {id:'ABSO_TYPE', label:'절대유형',    storage:'sheet'},
-  // 모의고사: MOGO_{년도2자리}_{학년}_{월2자리}
-  {id:'MOGO_25_G3_06', label:'25 고3 6월', storage:'sheet'},
-  {id:'MOGO_25_G3_09', label:'25 고3 9월', storage:'sheet'},
-  {id:'MOGO_26_G3_06', label:'26 고3 6월', storage:'sheet'},
+  // 모의고사: 설정 탭 > 교재 관리에서 추가 (예: MOGO_26_G3_06 / 26 고3 6월 / 시트)
 ];
 const SOURCES=BOOK_DEFS.map(b=>b.id);
 // storage:'passages'인 교재 ID 집합 (passages.js 조회 대상)
@@ -2890,7 +2887,7 @@ function App(){
       })()}
 
       {showSet&&(
-        <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10}}>
+        <div style={{background:'#1a3d6e',padding:'14px 20px',display:'flex',flexDirection:'column',gap:10,maxHeight:'80vh',overflowY:'auto'}}>
           {[{lbl:'Claude API Key',val:keyInput||(apiKey?'••••••••':''),set:setKeyInput,ph:'sk-ant-api03-...',type:'password'},
             {lbl:'GitHub Token',val:ghTokenInput||(ghToken?'••••••••':''),set:setGhTokenInput,ph:'ghp_...',type:'password'},
             {lbl:'GitHub 저장소',val:ghRepoInput||ghRepo,set:setGhRepoInput,ph:'greatenglish1201-ux/GREATENG',type:'text'},
