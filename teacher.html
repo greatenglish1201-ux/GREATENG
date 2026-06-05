@@ -2732,8 +2732,7 @@ function App(){
             <button onClick={()=>setShowOutputMenu(v=>!v)}
               style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
                 borderRadius:6,padding:'2px 8px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-              📤 출력▾
-            </button>
+              📤 출력▾</button>
             {showOutputMenu&&<div onMouseLeave={()=>setShowOutputMenu(false)}
               style={{position:'absolute',top:'100%',right:0,marginTop:4,background:'#fff',
                 borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:160,zIndex:300,overflow:'hidden'}}>
@@ -3428,9 +3427,8 @@ function SlotOutputMenu({slot,onStuOutput}){
   const [open,setOpen]=React.useState(false);
   return<div style={{position:'relative'}}>
     <button onClick={()=>setOpen(v=>!v)}
-      style={{padding:'3px 8px',fontSize:11,background:'#534AB7',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>
-      📤▾
-    </button>
+      style={{padding:'3px 8px',fontSize:11,background:'#534AB7',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2'}}>
+      📤▾</button>
     {open&&<div onMouseLeave={()=>setOpen(false)}
       style={{position:'absolute',top:'100%',left:0,marginTop:3,background:'#fff',
         borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:140,zIndex:500,overflow:'hidden'}}>
@@ -3470,7 +3468,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
       boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
-        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',overflow:'hidden'}}>
+        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',overflow:'visible'}}>
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
             fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
