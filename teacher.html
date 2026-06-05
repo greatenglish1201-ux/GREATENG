@@ -2731,8 +2731,7 @@ function App(){
           <div style={{position:'relative'}}>
             <button onClick={()=>setShowOutputMenu(v=>!v)}
               style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
-                borderRadius:6,padding:'2px 8px',fontSize:9.5,fontWeight:600,cursor:'pointer'}}>
-              📤 출력▾</button>
+                borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>📤 출력▾</button>
             {showOutputMenu&&<div onMouseLeave={()=>setShowOutputMenu(false)}
               style={{position:'absolute',top:'100%',right:0,marginTop:4,background:'#fff',
                 borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:160,zIndex:300,overflow:'hidden'}}>
@@ -3236,7 +3235,7 @@ function App(){
             style={{padding:'5px 12px',fontSize:12,fontWeight:600,borderRadius:6,border:'none',
               background:filterHot?'#E8490F':'#f0f0f0',
               color:filterHot?'#fff':'#555',cursor:'pointer',flexShrink:0}}>
-            🔥 {filterHot?'전체보기':'예상출제만'}
+            ★ {filterHot?'전체보기':'출제예상만'}
           </button>
           <span style={{fontSize:12.5,color:'#999'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
           <button onClick={runAll} disabled={pending===0||!keyOk}
@@ -3510,11 +3509,11 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
-          <button onClick={onToggleHot} title={slot.isHot?'예상출제 해제':'예상출제 마킹'}
-            style={{width:26,height:26,padding:0,fontSize:14,borderRadius:5,border:'none',
-              background:slot.isHot?'#E8490F':'#e9ecef',
-              color:slot.isHot?'#fff':'#aaa',cursor:'pointer',flexShrink:0,
-              display:'flex',alignItems:'center',justifyContent:'center'}}>🔥</button>
+          <button onClick={onToggleHot} title={slot.isHot?'출제예상 해제':'출제예상 마킹'}
+            style={{width:22,height:22,padding:0,fontSize:18,border:'none',background:'transparent',
+              color:slot.isHot?'#e53935':'#ccc',cursor:'pointer',flexShrink:0,lineHeight:1,
+              display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {slot.isHot?'★':'☆'}</button>
           {(slot.text||slot.passageData||slot.analysis)&&(
             <button onClick={onClear} title="슬롯 비우기"
               style={{width:28,height:28,padding:0,fontSize:15,color:'#fff',background:'#e74c3c',
