@@ -1911,6 +1911,7 @@ function App(){
   const [showSet,setShowSet]=useState(false);
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
+  const [showBookMgr,setShowBookMgr]=useState(false);
   const allBooks=React.useMemo(()=>[...BOOK_DEFS,...customBooks],[customBooks]);
   const [showLoad,setShowLoad]=useState(false);
   const [loadedPassages,setLoadedPassages]=useState([]);
@@ -2955,8 +2956,8 @@ function App(){
             <button onClick={()=>setShowSet(false)} style={{background:'rgba(255,255,255,.1)',
               color:'#ccc',border:'none',borderRadius:6,padding:'7px 12px',fontSize:12.5,cursor:'pointer'}}>닫기</button>
           </div>
-          {/* 교재 관리 */}
-          <div style={{borderTop:'1px solid rgba(255,255,255,.1)',paddingTop:10}}>
+          {/* 교재 관리는 📚 교재관리 버튼 모달로 이동 */}
+          <div style={{display:'none'}}>
             <div style={{color:'#a5d6f5',fontSize:12.5,fontWeight:600,marginBottom:8}}>📚 교재 관리</div>
             <div style={{display:'flex',flexDirection:'column',gap:4,marginBottom:8}}>
               {allBooks.map((b,i)=>(
@@ -2996,6 +2997,51 @@ function App(){
         </div>
       )}
 
+      {showBookMgr&&(
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,.5)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}
+          onClick={()=>setShowBookMgr(false)}>
+          <div style={{background:'#1a3d6e',borderRadius:12,padding:'20px 24px',minWidth:480,maxWidth:600,maxHeight:'80vh',overflowY:'auto'}}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{color:'#a5d6f5',fontSize:14,fontWeight:700,marginBottom:12}}>📚 교재 관리</div>
+            <div style={{display:'flex',flexDirection:'column',gap:4,marginBottom:12}}>
+              {allBooks.map((b,i)=>(
+                <div key={b.id} style={{display:'flex',gap:8,alignItems:'center',fontSize:12,padding:'4px 0',borderBottom:'1px solid rgba(255,255,255,.08)'}}>
+                  <span style={{color:'#fff',minWidth:140,fontFamily:'monospace'}}>{b.id}</span>
+                  <span style={{color:'#88aacc',flex:1}}>{b.label}</span>
+                  <span style={{color:'#666',fontSize:11,minWidth:60}}>{b.storage}</span>
+                  {!BOOK_DEFS.find(x=>x.id===b.id)
+                    ?<button onClick={()=>{const next=customBooks.filter(x=>x.id!==b.id);setCustomBooks(next);saveCustomBooks(next);}} style={{background:'#e74c3c',color:'#fff',border:'none',borderRadius:4,padding:'2px 8px',fontSize:11,cursor:'pointer'}}>🗑</button>
+                    :<span style={{fontSize:10,color:'#555',minWidth:30}}>기본</span>}
+                </div>
+              ))}
+            </div>
+            <div style={{borderTop:'1px solid rgba(255,255,255,.15)',paddingTop:12}}>
+              <div style={{color:'#a5d6f5',fontSize:12,marginBottom:8}}>새 교재 추가</div>
+              <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
+                <input value={newBook.id} onChange={e=>setNewBook(p=>({...p,id:e.target.value.toUpperCase()}))}
+                  placeholder="ID (예: MOGO_26_G3_11)" style={{padding:'6px 8px',borderRadius:5,border:'none',fontSize:12,fontFamily:'monospace',flex:2,minWidth:140}}/>
+                <input value={newBook.label} onChange={e=>setNewBook(p=>({...p,label:e.target.value}))}
+                  placeholder="이름 (예: 26 고3 11월)" style={{padding:'6px 8px',borderRadius:5,border:'none',fontSize:12,flex:1,minWidth:100}}/>
+                <select value={newBook.storage} onChange={e=>setNewBook(p=>({...p,storage:e.target.value}))}
+                  style={{padding:'6px 8px',borderRadius:5,border:'none',fontSize:12}}>
+                  <option value="sheet">시트</option>
+                  <option value="passages">passages.js</option>
+                </select>
+                <button onClick={()=>{
+                  if(!newBook.id||!newBook.label){alert('ID와 이름을 입력해주세요.');return;}
+                  if(allBooks.find(b=>b.id===newBook.id)){alert('이미 존재하는 ID입니다.');return;}
+                  const next=[...customBooks,{...newBook}];
+                  setCustomBooks(next);saveCustomBooks(next);
+                  setNewBook({id:'',label:'',storage:'sheet'});
+                }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
+              </div>
+            </div>
+            <div style={{textAlign:'right',marginTop:14}}>
+              <button onClick={()=>setShowBookMgr(false)} style={{background:'rgba(255,255,255,.1)',color:'#ccc',border:'none',borderRadius:6,padding:'7px 16px',fontSize:12.5,cursor:'pointer'}}>닫기</button>
+            </div>
+          </div>
+        </div>
+      )}
       {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} appsUrl={appsUrl} slots={slots} onSlotChange={async(pd,meta)=>{
   if(!pd&&appsUrl&&meta){
     const pid=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
@@ -3054,6 +3100,7 @@ function App(){
                 </optgroup>
               ))}
             </select>
+            <button onClick={()=>setShowBookMgr(true)} style={{padding:'4px 10px',fontSize:12,background:'#f0f0f0',border:'1px solid #ddd',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0}}>📚 교재관리</button>
           </div>
           <div style={{flex:1}}/>
           <span style={{fontSize:12.5,color:'#999'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
@@ -3257,7 +3304,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
       boxShadow:slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
-        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',overflow:'hidden'}}>
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
             fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
@@ -3273,7 +3320,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             </span>
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
-            style={{...sB,fontSize:12,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px',maxWidth:130,flexShrink:0}}>
+            style={{...sB,fontSize:11,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 5px',maxWidth:105,flexShrink:0}}>
             {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.id} ({b.label})</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
           </select>
           {['chapter','number'].map(f=>(
@@ -3295,11 +3342,11 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
           </select>
           {slot.analysis&&<>
-            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTML↓교사</button>
-            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTML↓학생</button>
-            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOCX↓교사</button>
-            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOCX↓학생</button>
-            <button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✏ 출제저작</button>
+            <button onClick={()=>dlHTML(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#185FA5',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTM↓교</button>
+            <button onClick={()=>onStuOutput?onStuOutput('html',slot):dlHTML(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>HTM↓생</button>
+            <button onClick={()=>buildDOCX(slot,'teacher')} style={{padding:'3px 8px',fontSize:11,background:'#1F3864',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOX↓교</button>
+            <button onClick={()=>onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student')} style={{padding:'3px 8px',fontSize:11,background:'#1a5c3a',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',whiteSpace:'nowrap'}}>DOX↓생</button>
+            <button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#6A0DAD',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✏저작</button>
           </>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
