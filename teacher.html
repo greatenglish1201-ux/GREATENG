@@ -2990,7 +2990,7 @@ function App(){
         <div style={{background:'#fff',borderRadius:10,border:'0.5px solid #e5e5e5',
           padding:'12px 16px',marginBottom:12,display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
           <span style={{fontSize:13,fontWeight:600,color:'#555'}}>교재</span>
-          <div style={{display:'flex',gap:5}}>
+          <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
             {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
               <button key={src.id} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src.id}})))}
                 style={{padding:'5px 14px',fontSize:13,fontWeight:500,
@@ -2998,6 +2998,16 @@ function App(){
                   color:slots.every(s=>s.meta.source===src.id)?'#fff':'#555',
                   border:'none',borderRadius:6,cursor:'pointer'}}>{src.label}</button>
             ))}
+            <select onChange={e=>{if(!e.target.value)return;setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:e.target.value}})));}}
+              value={slots.every(s=>s.meta.source===slots[0]?.meta.source)&&slots[0]?.meta.source?.startsWith('MOGO_')?slots[0].meta.source:''}
+              style={{padding:'4px 8px',fontSize:12,borderRadius:6,border:'1px solid #ddd',background:'#f0f0f0',cursor:'pointer'}}>
+              <option value="">모의고사▾</option>
+              {getMogoGroups().map(g=>(
+                <optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>
+                  {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
+                </optgroup>
+              ))}
+            </select>
           </div>
           <div style={{flex:1}}/>
           <span style={{fontSize:12.5,color:'#999'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
@@ -3217,7 +3227,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             </span>
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
-            style={{...sB,fontSize:12,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px'}}>
+            style={{...sB,fontSize:12,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px',maxWidth:130,flexShrink:0}}>
             {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(b=>(
               <option key={b.id} value={b.id}>{b.id} ({b.label})</option>
             ))}
@@ -3547,7 +3557,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           })()}
 
           {/* 액션 */}
-          <div style={{display:'flex',gap:8,flexWrap:'wrap',paddingTop:4}}>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',paddingTop:4,alignItems:'center'}}>
             {['analyzed','confirmed','saved'].includes(slot.status)&&onSheetSave&&(
               <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
                 background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:sheetSaving?'wait':'pointer'}}>
@@ -3566,7 +3576,10 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
               <button onClick={onReanalyze} style={{padding:'7px 14px',fontSize:12.5,background:'transparent',
                 color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
             )}
-
+            <div style={{flex:1}}/>
+            <button onClick={onToggle} title="접기"
+              style={{width:28,height:28,padding:0,fontSize:14,fontWeight:700,borderRadius:5,border:'none',
+                background:'#534AB7',color:'#fff',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>▲</button>
           </div>
         </div>
       )}
