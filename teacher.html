@@ -41,6 +41,14 @@ const BOOK_DEFS=[
 const SOURCES=BOOK_DEFS.map(b=>b.id);
 // storage:'passages'인 교재 ID 집합 (passages.js 조회 대상)
 const PASSAGES_SOURCES=new Set(BOOK_DEFS.filter(b=>b.storage==='passages').map(b=>b.id));
+// 사용자 추가 교재 로드 (localStorage)
+function loadCustomBooks(){
+  try{const s=localStorage.getItem('te_custom_books');return s?JSON.parse(s):[];}catch{return[];}
+}
+function saveCustomBooks(books){
+  localStorage.setItem('te_custom_books',JSON.stringify(books));
+}
+function getAllBooks(){return [...BOOK_DEFS,...loadCustomBooks()];}
 // 모의고사 select용 그룹 생성
 function getMogoGroups(){
   const mocos=BOOK_DEFS.filter(b=>b.id.startsWith('MOGO_'));
@@ -58,7 +66,7 @@ const SYMS=['G','↔','=','S','→','+'];
 const STRUCTS=['통념→반박→결론','문제→해결책','질문→답변','실험/일화→교훈','원인→결과','비교→대조','주장→근거→재주장','일반→구체(예시)','현상→원인→결과','정의→특성→예시','정→반→합','역설→해소','관점 전환'];
 const NSTR=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
 const nStr=n=>NSTR[n-1]||'('+n+')';
-const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots',APPS_URL:'te_apps_script_url',STUDENT_OPTS:'te_student_opts'};
+const LS={KEY:'te_claude_key',URL:'te_apps_url',SLOTS:'te_slots',APPS_URL:'te_apps_script_url',STUDENT_OPTS:'te_student_opts',BOOKS:'te_custom_books'};
 
 // 학생용 출력 디폴트 옵션
 const DEFAULT_STU_OPTS={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false};
@@ -1904,6 +1912,9 @@ function App(){
   const [stuModal,setStuModal]=useState(null); // null | {kind:'html'|'docx'|'all-docx', slot:slot, opts:{...}}
   const [stuOpts,setStuOptsState]=useState(()=>getStuOpts());
   const [showSet,setShowSet]=useState(false);
+  const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
+  const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
+  const allBooks=React.useMemo(()=>[...BOOK_DEFS,...customBooks],[customBooks]);
   const [showLoad,setShowLoad]=useState(false);
   const [loadedPassages,setLoadedPassages]=useState([]);
   const [loadSrc,setLoadSrc]=useState('');
@@ -2947,6 +2958,44 @@ function App(){
             <button onClick={()=>setShowSet(false)} style={{background:'rgba(255,255,255,.1)',
               color:'#ccc',border:'none',borderRadius:6,padding:'7px 12px',fontSize:12.5,cursor:'pointer'}}>닫기</button>
           </div>
+          {/* 교재 관리 */}
+          <div style={{borderTop:'1px solid rgba(255,255,255,.1)',paddingTop:10}}>
+            <div style={{color:'#a5d6f5',fontSize:12.5,fontWeight:600,marginBottom:8}}>📚 교재 관리</div>
+            <div style={{display:'flex',flexDirection:'column',gap:4,marginBottom:8}}>
+              {allBooks.map((b,i)=>(
+                <div key={b.id} style={{display:'flex',gap:6,alignItems:'center',fontSize:12}}>
+                  <span style={{color:'#fff',minWidth:120}}>{b.id}</span>
+                  <span style={{color:'#88aacc',flex:1}}>{b.label}</span>
+                  <span style={{color:'#88aacc',fontSize:11}}>{b.storage}</span>
+                  {!BOOK_DEFS.find(x=>x.id===b.id)&&(
+                    <button onClick={()=>{
+                      const next=customBooks.filter(x=>x.id!==b.id);
+                      setCustomBooks(next);saveCustomBooks(next);
+                    }} style={{background:'#e74c3c',color:'#fff',border:'none',borderRadius:4,padding:'2px 7px',fontSize:11,cursor:'pointer'}}>🗑</button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
+              <input value={newBook.id} onChange={e=>setNewBook(p=>({...p,id:e.target.value.toUpperCase()}))}
+                placeholder="교재ID (예: MOGO_26_G3_11)" style={{padding:'5px 8px',borderRadius:5,border:'none',fontSize:12,fontFamily:'monospace',flex:2,minWidth:120}}/>
+              <input value={newBook.label} onChange={e=>setNewBook(p=>({...p,label:e.target.value}))}
+                placeholder="이름 (예: 26 고3 11월)" style={{padding:'5px 8px',borderRadius:5,border:'none',fontSize:12,flex:1,minWidth:80}}/>
+              <select value={newBook.storage} onChange={e=>setNewBook(p=>({...p,storage:e.target.value}))}
+                style={{padding:'5px 8px',borderRadius:5,border:'none',fontSize:12}}>
+                <option value="sheet">시트</option>
+                <option value="passages">passages.js</option>
+              </select>
+              <button onClick={()=>{
+                if(!newBook.id||!newBook.label){alert('ID와 이름을 입력해주세요.');return;}
+                if(allBooks.find(b=>b.id===newBook.id)){alert('이미 존재하는 ID입니다.');return;}
+                const next=[...customBooks,{...newBook}];
+                setCustomBooks(next);saveCustomBooks(next);
+                setNewBook({id:'',label:'',storage:'sheet'});
+              }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
+            </div>
+          </div>
+
         </div>
       )}
 
@@ -3228,14 +3277,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
             style={{...sB,fontSize:12,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 6px',maxWidth:130,flexShrink:0}}>
-            {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(b=>(
-              <option key={b.id} value={b.id}>{b.id} ({b.label})</option>
-            ))}
-            {getMogoGroups().map(g=>(
-              <optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>
-                {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
-              </optgroup>
-            ))}
+            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.id} ({b.label})</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
           </select>
           {['chapter','number'].map(f=>(
             <div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
