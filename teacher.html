@@ -216,13 +216,14 @@ Rules:
 const FLOW_SYS=`수능 영어 독해 분석 전문가. 순수 JSON만 반환. 코드블록 없이.
 기호: G=주제/통념 S=구체예시 ==재진술 ↔=역접 +=추가 →=인과/결론
 
-role 작성 규칙 (핵심):
-- 해당 문장이 지문 논리에서 하는 구체적 기능을 한국어 10자 이내로 기술
-- 절대 금지: "내용 설명", "추가 설명", "관련 내용" 같은 모호한 표현
-- 올바른 예시: "저자의 핵심 주장 제시", "반박 근거 제시", "실험 결과 수치 인용", "비교 대상 도입", "인과관계 결론 도출"
+role 작성 규칙 (매우 엄격):
+- 반드시 "무엇을 → 어떻게" 구조로 작성. 예: "저자 주장 직접 제시", "통계로 근거 강화", "반례로 통념 반박", "인과로 결론 도출", "비교로 차이 부각", "정의로 개념 도입"
+- 블록명 반복 절대 금지. 블록이 "실험 설계"라도 role은 "실험 목적 제시", "변인 통제 방법 설명", "대조군 설정 근거" 처럼 그 문장만의 고유 기능 기술
+- "설명", "소개", "내용", "관련" 단독 사용 금지
+- 문장의 핵심 동사/논리관계를 반드시 포함할 것
 
 {
-  "sentences":[{"num":1,"text":"원문","symbol":"G","role":"저자의 핵심 주장 제시",
+  "sentences":[{"num":1,"text":"원문","symbol":"G","role":"저자 핵심 주장 직접 제시",
     "chunks":[{"en":"끊어읽기","ko":"해석"}]}],
   "blocks":[{"id":1,"name":"통념 제시","nameEn":"General Claim","color":"blue","sentenceNums":[1,2]}],
   "interBlockConnectors":["↔"],
@@ -310,12 +311,12 @@ function Highlighted({text,words}){
 const makeSlot=i=>({
   id:i,text:'',viewMode:'teacher',
   meta:{source:'ABSO',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
-  status:'idle',analysis:null,error:'',open:true,blockSummaries:null,isPublic:false,
+  status:'idle',analysis:null,error:'',open:true,blockSummaries:null,isPublic:false,isHot:false,
 });
 
 function saveSlots(slots){
   try{localStorage.setItem(LS.SLOTS,JSON.stringify(
-    slots.map(s=>({id:s.id,text:s.text,meta:s.meta,status:s.status,analysis:s.analysis,passageData:s.passageData||null,blockSummaries:s.blockSummaries||null,error:'',open:s.open,isPublic:s.isPublic||false}))
+    slots.map(s=>({id:s.id,text:s.text,meta:s.meta,status:s.status,analysis:s.analysis,passageData:s.passageData||null,blockSummaries:s.blockSummaries||null,error:'',open:s.open,isPublic:s.isPublic||false,isHot:s.isHot||false}))
   ));}catch(e){}
 }
 function loadSlots(){
@@ -1918,6 +1919,7 @@ function App(){
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
   const [showBookMgr,setShowBookMgr]=useState(false);
+  const [filterHot,setFilterHot]=useState(false);
   const allBooks=React.useMemo(()=>[...BOOK_DEFS,...customBooks],[customBooks]);
   const [showLoad,setShowLoad]=useState(false);
   const [loadedPassages,setLoadedPassages]=useState([]);
@@ -2099,6 +2101,7 @@ function App(){
       flow_json:JSON.stringify(flow),
       blockSummaries_json:blockSummaries?JSON.stringify(blockSummaries):'',
       is_public:slot.isPublic?'TRUE':'FALSE',
+      is_hot:slot.isHot?'TRUE':'FALSE',
     };
     // 출제DB payload — 9가지 유형 (데이터가 있는 것만 저장)
     const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -3109,6 +3112,12 @@ function App(){
             <button onClick={()=>setShowBookMgr(true)} style={{padding:'4px 10px',fontSize:12,background:'#f0f0f0',border:'1px solid #ddd',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0}}>📚 교재관리</button>
           </div>
           <div style={{flex:1}}/>
+          <button onClick={()=>setFilterHot(f=>!f)}
+            style={{padding:'5px 12px',fontSize:12,fontWeight:600,borderRadius:6,border:'none',
+              background:filterHot?'#E8490F':'#f0f0f0',
+              color:filterHot?'#fff':'#555',cursor:'pointer',flexShrink:0}}>
+            🔥 {filterHot?'전체보기':'예상출제만'}
+          </button>
           <span style={{fontSize:12.5,color:'#999'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
           <button onClick={runAll} disabled={pending===0||!keyOk}
             style={{padding:'8px 22px',fontSize:13.5,fontWeight:600,
@@ -3128,8 +3137,9 @@ function App(){
           </button>
         </div>
 
-        {slots.map(slot=>(
+        {slots.filter(s=>!filterHot||s.isHot).map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
+            onToggleHot={()=>upSlot(slot.id,{isHot:!slot.isHot})}
             onAuthor={async()=>{
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
@@ -3293,7 +3303,7 @@ function App(){
   );
 }
 
-const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic}){
+const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic,onToggleHot}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -3307,7 +3317,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
   return(
     <div style={{background:'#fff',borderRadius:12,border:'0.5px solid #e5e5e5',
       marginBottom:12,overflow:'hidden',
-      boxShadow:slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
+      boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #f0f0f0':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
         <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',overflow:'hidden'}}>
@@ -3357,6 +3367,11 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
+          <button onClick={onToggleHot} title={slot.isHot?'예상출제 해제':'예상출제 마킹'}
+            style={{width:26,height:26,padding:0,fontSize:14,borderRadius:5,border:'none',
+              background:slot.isHot?'#E8490F':'#e9ecef',
+              color:slot.isHot?'#fff':'#aaa',cursor:'pointer',flexShrink:0,
+              display:'flex',alignItems:'center',justifyContent:'center'}}>🔥</button>
           {(slot.text||slot.passageData||slot.analysis)&&(
             <button onClick={onClear} title="슬롯 비우기"
               style={{width:28,height:28,padding:0,fontSize:15,color:'#fff',background:'#e74c3c',
