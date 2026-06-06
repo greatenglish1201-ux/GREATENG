@@ -228,7 +228,10 @@ function gen(passage, type, allP){
     if(!passage.order_blocks || passage.order_blocks.length < 2) return null;
     if(s.length < 4) return null;
     const givenIdx = passage.order_given_index || 0;
-    const sOrig = s;
+    // 순서배열은 원본 문장 전체 기준 (insert_sentence 포함 복원)
+    const sOrig = (passage.insert_sentence && passage.insert_answer)
+      ? [...s.slice(0, passage.insert_answer), passage.insert_sentence, ...s.slice(passage.insert_answer)]
+      : s;
     const given = sOrig[givenIdx];
     const blockLabels = ['A','B','C'];
     // 유효한 sentence_indices만 가진 블록 필터링 후 최대 3개 사용
@@ -528,7 +531,6 @@ function App(){
   const [qCount,setQCount]=useState(10);
   const [ansMode,setAnsMode]=useState('immediate');
   const [diffFilter,setDiffFilter]=useState('all');
-  const [hotOnly,setHotOnly]=useState(false);
   const [searchText,setSearchText]=useState('');
   const [questions,setQuestions]=useState([]);
   const [curIdx,setCurIdx]=useState(0);
@@ -651,7 +653,6 @@ function App(){
     const types=[...selectedTypes];if(!types.length||selPassages.size===0)return [];
     let pool=allPassages.filter(p=>selPassages.has(p.id));
     if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
-    if(hotOnly)pool=pool.filter(p=>p.is_hot==='TRUE'||p.is_hot===true);
     pool=shuffle(pool);
 
     const gasIds=pool.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
@@ -696,7 +697,7 @@ function App(){
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
   if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -1019,7 +1020,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             {/* 전체 보기: 학생별 카드 */}
             {!selectedStudent&&(stats.studentStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>👥 학생별 정답률</div>
-              {(stats.studentStats||[]).filter(s=>s.name!=='관리자').map((s,i)=>(
+              {(stats.studentStats||[]).map((s,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer'}}
                   onClick={()=>{setSelectedStudent(s.name);loadStats(s.name);}}>
                   <div>
@@ -1040,9 +1041,9 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
               {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,16).replace('T',' ')}</span>
+                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,10)}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{(()=>{const sc=String(s.score||'');const valid=/^\d+\/\d+$/.test(sc);return valid?sc+'문항':'-';})()}</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.score}문항</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
                 </div>
@@ -1172,12 +1173,13 @@ function QuickSelectBar(props){
     <div style={{display:'flex',justifyContent:'flex-end',marginBottom:6,gap:5,flexWrap:'wrap'}}>
       <button onClick={function(){allSelInBook?deselectAllInBook(activeBook):selectAllInBook(activeBook);}} style={{padding:'5px 12px',borderRadius:14,border:'none',fontSize:11,fontWeight:600,cursor:'pointer',background:allSelInBook?'#fee2e2':'#dbeafe',color:allSelInBook?'#991b1b':'#1d4ed8'}}>{allSelInBook?'전체 해제':'전체 선택'}</button>
 
+      {starIds.length>0&&<button onClick={toggleStar} style={{padding:'5px 12px',borderRadius:14,fontSize:11,fontWeight:600,cursor:'pointer',background:starAllSel?'#fef2f2':'#f8fafc',color:'#dc2626',border:'1px solid #fca5a5'}}>★ 중요문항 {starAllSel?'해제':'선택'}</button>}
       {gateIds.length>0&&<button onClick={toggleGate} style={{padding:'5px 12px',borderRadius:14,fontSize:11,fontWeight:600,cursor:'pointer',background:gateAllSel?'#fef3c7':'#f8fafc',color:'#92400e',border:'1px solid #fcd34d'}}>📌 Gateway {gateAllSel?'해제':'선택'}</button>}
     </div>
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -1433,13 +1435,6 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             <div style={{display:'flex',gap:6}}>
               <button onClick={()=>setAnsMode('immediate')} style={S.pill(ansMode==='immediate')}>즉시</button>
               <button onClick={()=>setAnsMode('later')} style={S.pill(ansMode==='later')}>나중에</button>
-            </div>
-          </div>
-          <div style={{...S.card,flex:1}}>
-            <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>출제예상</h3>
-            <div style={{display:'flex',gap:6}}>
-              <button onClick={()=>setHotOnly(false)} style={S.pill(!hotOnly)}>전체</button>
-              <button onClick={()=>setHotOnly(true)} style={{...S.pill(hotOnly),background:hotOnly?'#e53935':'',borderColor:hotOnly?'#e53935':''}}>★만</button>
             </div>
           </div>
         </div>
