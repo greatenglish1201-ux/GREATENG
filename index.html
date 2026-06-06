@@ -1038,9 +1038,9 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
               {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
                 <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,16)}</span>
+                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,16).replace('T',' ')}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{(()=>{const sc=String(s.score||'');const p=sc.split('/');return sc?sc+'문항':((s.correct!=null&&s.total!=null)?s.correct+'/'+s.total+'문항':'/문항');})()}</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{(()=>{const sc=String(s.score||'');const valid=/^\d+\/\d+$/.test(sc);return valid?sc+'문항':'-';})()}</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
                 </div>
