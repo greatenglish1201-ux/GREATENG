@@ -1205,13 +1205,13 @@ async function analyzeExam(){
   status.innerHTML='<span class="spinner"></span> 기출문제 분석 중...';
 
   const parts = rawText ? [] : uploadedImages.map(img=>({inlineData:{mimeType:img.mime, data:img.b64}}));
-  const textPart = rawText ? '다음은 기출문제 텍스트입니다:\n\n'+rawText : '첨부 이미지에서 기출문제를 OCR하여 분석해주세요.';
+  const textPart = rawText ? '다음은 기출문제 텍스트입니다:\n\n'+rawText : '첨부 이미지에서 기출문제를 OCR하여 분석해주세요. 문제 번호, 발문, 선지, 지문을 최대한 그대로 추출하고 raw_text 필드에 전체 원문을 포함하세요.';
   parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{\n  "patterns": {"실제출제유형명":문항수, ...},\n  "total": 전체문항수,\n  "summary": "분석 요약 2~3문장",\n  "passages": ["핵심 지문 또는 주제 키워드 목록 (최대 5개)"]\n}\n\n주의사항:\n- patterns의 키는 실제 시험에 출제된 유형명을 그대로 사용하세요 (고정된 유형명 없음)\n- 예: 중학교라면 "어법", "어휘", "대화완성", "내용일치", "영작/서술형" 등\n- 고등학교라면 "어법", "어휘", "빈칸추론", "순서배열", "문장삽입", "주제/제목/요지", "서술형" 등\n- 실제 출제된 유형만 포함하고 0문항인 유형은 제외하세요`});
 
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:4096,temperature:0.1}})
+      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:8192,temperature:0.1}})
     });
     const data = await res.json();
     if(data.error){ throw new Error(data.error.message); }
@@ -1240,7 +1240,7 @@ async function analyzeExam(){
     }
     analysisData = parsed1;
     // 기출 원문 텍스트도 함께 저장 (예상문제 출제 시 형식 참고용)
-    analysisData.rawText = rawText || '';
+    analysisData.rawText = rawText || parsed1.raw_text || '';
     status.innerHTML='<span style="color:var(--green2)">✅ 분석 완료!</span>';
     saveAnalysisToStorage();
     renderAnalysis();
@@ -1619,7 +1619,7 @@ async function generateQuestions(){
         prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.
 
 [실제 기출 시험지 - 이 구조를 정확히 학습하세요]
-${rawExamText.slice(0, 4000)}
+${rawExamText.slice(0, 12000)}
 
 [예상문제에 사용할 지문 자료]
 ${passage}
