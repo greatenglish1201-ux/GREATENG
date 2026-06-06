@@ -3247,7 +3247,7 @@ function App(){
 
         {slots.filter(s=>!filterHot||s.isHot).map(slot=>(
           <SlotCard key={slot.id} slot={slot} viewMode={viewMode} iB={iB} sB={sB}
-            onToggleHot={()=>upSlot(slot.id,{isHot:!slot.isHot,meta:{...slot.meta,difficulty:slot.isHot?'중':'높음'}})}
+            onToggleHot={async()=>{const newHot=!slot.isHot;upSlot(slot.id,{isHot:newHot,meta:{...slot.meta,difficulty:newHot?'높음':'중'}});if(slot.status==='saved'&&appsUrl&&slot.passageData?.id){try{await formPostFetch(appsUrl,{action:'savePassage',id:slot.passageData.id,is_hot:newHot?'TRUE':'FALSE'});}catch(e){}}}}
             onAuthor={async()=>{
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
