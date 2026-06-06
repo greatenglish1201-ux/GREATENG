@@ -13,7 +13,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
-  background:#f2f3f7;color:#1a1a1a;font-size:15px;line-height:1.65;
+  background:#f2f3f7;color:#1a1a1a;font-size:16px;line-height:1.65;
   -webkit-text-size-adjust:100%}
 input,select,textarea{font-family:inherit}
 input:focus,select:focus,textarea:focus{outline:none}
@@ -310,7 +310,7 @@ function Highlighted({text,words}){
 
 const makeSlot=i=>({
   id:i,text:'',viewMode:'teacher',
-  meta:{source:'ABSO_TYPE',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
+  meta:{source:'ABSO',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
   status:'idle',analysis:null,error:'',open:true,blockSummaries:null,isPublic:false,isHot:false,
 });
 
@@ -2185,7 +2185,7 @@ function App(){
   const buildSlotPayload=useCallback((slot)=>{
     const p=slot.passageData||{};
     const metaId=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
-    const id=metaId;
+    const id=p.id||metaId;
     // 지문DB payload
     const sentences=slot.analysis?.sentences?.length?slot.analysis.sentences:(p.sentences||[]);
     const flow=slot.analysis?.flow&&Object.keys(slot.analysis.flow).length?slot.analysis.flow:(p.flow||{});
@@ -2501,6 +2501,7 @@ function App(){
             open:true,
             error:'',
             isPublic:sp.is_public==='TRUE'||sp.is_public===true,
+            isHot:sp.is_hot==='TRUE'||sp.is_hot===true,
           };
         }
         saveSlots(next);
