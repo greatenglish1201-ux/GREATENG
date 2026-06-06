@@ -19,8 +19,11 @@ input,select,textarea{font-family:inherit}
 input:focus,select:focus,textarea:focus{outline:none}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
-@media(min-width:1024px){body{font-size:16px}}
-@media(min-width:1194px){body{font-size:17px}}
+@media(max-width:430px){body{font-size:13px}}
+@media(min-width:431px) and (max-width:834px){body{font-size:14px}}
+@media(min-width:835px) and (max-width:1194px){body{font-size:15px}}
+@media(min-width:1195px) and (max-width:2559px){body{font-size:16px}}
+@media(min-width:2560px){body{font-size:18px}}
 </style>
 </head>
 <body>
@@ -2658,10 +2661,10 @@ function App(){
 
   return(
     <div style={{minHeight:'100vh',background:'#f2f3f7'}}>
-      <div style={{background:'#185FA5',padding:'0 18px',display:'flex',alignItems:'center',
+      <div style={{background:'#185FA5',padding:'0 clamp(8px,2vw,18px)',display:'flex',alignItems:'center',
         justifyContent:'space-between',height:52,position:'sticky',top:0,zIndex:100,
         boxShadow:'0 2px 8px rgba(0,0,0,.18)'}}>
-        <div style={{color:'#fff',fontWeight:700,fontSize:15}}>📘 GREATENG 분석 툴</div>
+        <div style={{color:'#fff',fontWeight:700,fontSize:'clamp(11px,1.5vw,15px)'}}>📘 GREATENG 분석 툴</div>
         <div style={{display:'flex',gap:7,alignItems:'center',height:'100%'}}>
           {msg&&<span style={{color:'#a5d6f5',fontSize:11.5}}>{msg}</span>}
           <div style={{display:'flex',gap:2,background:'rgba(0,0,0,.2)',borderRadius:7,padding:3}}>
@@ -3193,7 +3196,7 @@ function App(){
   }
   setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);
 }} onSaveComplete={(pd)=>{if(!pd)return;setSlots(prev=>prev.map(s=>s.passageData?.id===pd.id?{...s,passageData:{...s.passageData,...pd}}:s));}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
-      <div style={{maxWidth:1000,margin:'0 auto',padding:'18px 14px'}}>
+      <div style={{maxWidth:'min(1400px,100%)',margin:'0 auto',padding:'clamp(8px,2vw,24px) clamp(8px,2vw,20px)'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <span style={{fontSize:13,color:'#856404'}}>⚠ Claude API Key가 없습니다.</span>
