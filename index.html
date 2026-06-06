@@ -1440,7 +1440,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             </div>
           </div>
           <div style={{...S.card,flex:1}}>
-            <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>출제예상</h3>
+            <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>중요문항</h3>
             <div style={{display:'flex',gap:6}}>
               <button onClick={()=>setHotOnly(false)} style={S.pill(!hotOnly)}>전체</button>
               <button onClick={()=>setHotOnly(true)} style={{...S.pill(hotOnly),background:hotOnly?'#e53935':'',borderColor:hotOnly?'#e53935':''}}>★만</button>
