@@ -1204,17 +1204,14 @@ async function analyzeExam(){
   if(!apiKey){ status.innerHTML='<span class="error">⚙️ 설정 탭에서 Gemini API 키를 입력하세요.</span>'; return; }
   status.innerHTML='<span class="spinner"></span> 기출문제 분석 중...';
 
-  const isImage = !rawText && uploadedImages.length > 0;
   const parts = rawText ? [] : uploadedImages.map(img=>({inlineData:{mimeType:img.mime, data:img.b64}}));
-  const textPart = rawText
-    ? '다음은 기출문제 텍스트입니다:\n\n'+rawText
-    : '첨부 이미지에서 기출문제를 OCR하여 분석해주세요. 문제 번호, 발문, 선지, 지문을 최대한 그대로 추출하세요.';
-  parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{\n  "patterns": {"실제출제유형명":문항수, ...},\n  "total": 전체문항수,\n  "summary": "분석 요약 2~3문장",\n  "passages": ["핵심 지문 또는 주제 키워드 목록 (최대 5개)"],\n  "raw_text": "이미지 입력이면 OCR한 기출 원문 전체, 텍스트 입력이면 빈 문자열"\n}\n\n주의사항:\n- patterns의 키는 실제 시험에 출제된 유형명을 그대로 사용하세요 (고정된 유형명 없음)\n- 예: 중학교라면 "어법", "어휘", "대화완성", "내용일치", "영작/서술형" 등\n- 고등학교라면 "어법", "어휘", "빈칸추론", "순서배열", "문장삽입", "주제/제목/요지", "서술형" 등\n- 실제 출제된 유형만 포함하고 0문항인 유형은 제외하세요\n- raw_text: 이미지 입력이면 OCR한 기출 전체 원문을 넣고, 텍스트 입력이면 반드시 빈 문자열 \"\"로 두세요`});
+  const textPart = rawText ? '다음은 기출문제 텍스트입니다:\n\n'+rawText : '첨부 이미지에서 기출문제를 OCR하여 분석해주세요.';
+  parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{\n  "patterns": {"실제출제유형명":문항수, ...},\n  "total": 전체문항수,\n  "summary": "분석 요약 2~3문장",\n  "passages": ["핵심 지문 또는 주제 키워드 목록 (최대 5개)"]\n}\n\n주의사항:\n- patterns의 키는 실제 시험에 출제된 유형명을 그대로 사용하세요 (고정된 유형명 없음)\n- 예: 중학교라면 "어법", "어휘", "대화완성", "내용일치", "영작/서술형" 등\n- 고등학교라면 "어법", "어휘", "빈칸추론", "순서배열", "문장삽입", "주제/제목/요지", "서술형" 등\n- 실제 출제된 유형만 포함하고 0문항인 유형은 제외하세요`});
 
   try{
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:8192,temperature:0.1}})
+      body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:4096,temperature:0.1}})
     });
     const data = await res.json();
     if(data.error){ throw new Error(data.error.message); }
@@ -1242,15 +1239,8 @@ async function analyzeExam(){
       }
     }
     analysisData = parsed1;
-    // 기출 원문: 텍스트 입력이면 그대로, 이미지면 Gemini OCR 결과 사용
-    if(rawText){
-      analysisData.rawText = rawText;
-    } else if(parsed1.raw_text && parsed1.raw_text.trim()){
-      analysisData.rawText = parsed1.raw_text.trim();
-    } else {
-      analysisData.rawText = '';
-    }
-    delete analysisData.raw_text; // 중복 필드 제거
+    // 기출 원문 텍스트도 함께 저장 (예상문제 출제 시 형식 참고용)
+    analysisData.rawText = rawText || '';
     status.innerHTML='<span style="color:var(--green2)">✅ 분석 완료!</span>';
     saveAnalysisToStorage();
     renderAnalysis();
@@ -1626,48 +1616,29 @@ async function generateQuestions(){
 
       if(rawExamText){
         const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
-        // 기출에서 유형별 발문 패턴 추출 (few-shot용)
-        const patternTypes = plan.types;
-        const uniqueTypes = [...new Set(patternTypes)];
-        const typeExamples = uniqueTypes.map(t => {
-          // 기출 원문에서 해당 유형 문제 찾기 (번호 기반 간단 추출)
-          const lines = rawExamText.split('\n');
-          const examples = [];
-          lines.forEach((line, i) => {
-            if(examples.length >= 2) return;
-            // 문항 번호 패턴 감지
-            if(/^\d+[.．]/.test(line.trim()) || /^[①②③④⑤]/.test(line.trim())) {
-              const context = lines.slice(i, i+6).join('\n');
-              if(context.length > 10) examples.push(context.slice(0, 300));
-            }
-          });
-          return examples.length ? `[${t} 유형 기출 예시]\n${examples[0]}` : '';
-        }).filter(Boolean).join('\n\n');
-
         prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.
 
-[실제 기출 시험지 원문 - 발문·선지·배점 형식을 그대로 복제하세요]
-${rawExamText.slice(0, 12000)}
+[실제 기출 시험지 - 이 구조를 정확히 학습하세요]
+${rawExamText.slice(0, 4000)}
 
-[출제할 지문]
+[예상문제에 사용할 지문 자료]
 ${passage}
 
 [출제 지시]
-위 기출 시험지와 완전히 동일한 스타일로 ${plan.startNum}번~${plan.startNum+plan.count-1}번 문제를 만드세요.
+위 기출 시험지와 완전히 동일한 구조로 ${plan.startNum}번~${plan.startNum+plan.count-1}번 문제를 출제하세요.
 
-반드시 지켜야 할 규칙:
-1. 발문 문장을 기출과 동일한 표현으로 작성 (예: 기출이 "밑줄 친 부분 중 어법상 틀린 것은?"이면 그대로 사용)
-2. 선지 형식을 기출과 동일하게 (번호형식, 길이, 스타일 모두)
-3. 같은 지문 아래 여러 문제 → group 타입 (passage에 지문 한 번만)
-4. 독립 문제 → single 타입
-5. passage는 지문 원문 전체 그대로 (요약/생략 금지)
-6. 객관식: ①②③④⑤ / 서술형: choices 빈 배열
-7. 번호는 반드시 ${plan.startNum}번부터${grammarPoints ? "\n8. 문법 문제 반영:\n" + grammarPoints : ""}
+규칙:
+1. 기출에서 같은 지문 아래 여러 문제가 있으면 → group 타입, passage에 지문 한 번만 작성
+2. 독립 문제(어휘/대화/빈칸 등) → single 타입
+3. 발문 스타일·선지 형식을 기출과 동일하게 복제
+4. passage는 지문 원문 전체 그대로 (요약 금지, 지문을 question 안에 반복 금지)
+5. 객관식: ①②③④⑤ / 서술형: choices 빈 배열
+6. 번호는 반드시 ${plan.startNum}번부터${grammarPoints ? "\n7. 문법 문제에 반영:\n" + grammarPoints : ""}
 
 JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응답:
 [
-  {"type":"group","passage":"지문원문전체","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"기출과동일한발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호+해설","score":4}]},
-  {"type":"single","num":N,"qtype":"유형","question":"기출과동일한발문스타일","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답번호+해설","score":3}
+  {"type":"group","passage":"지문원문전체","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문만(지문제외)","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
+  {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
 ]`;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
@@ -2106,6 +2077,8 @@ function updateManualCount(){
   const info = document.getElementById('manualCountInfo');
   if(info) info.textContent = items.length ? `${items.length}개 지문 입력됨` : '';
 }
+
+function getManualPassages(){
   const result = [];
   // 기본 textarea
   const directText  = document.getElementById('manualTextDirect')?.value.trim()||'';
