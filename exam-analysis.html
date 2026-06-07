@@ -908,29 +908,39 @@ tr:hover td { background: var(--paper); }
 
   <!-- 교과서 본문 직접 입력 -->
   <div class="step-box">
-    <div class="step-title">📝 교과서 본문 직접 입력 <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 중등 교과서 등 DB 미등록 지문</span></div>
+    <div class="step-title">📝 교과서 지문 직접 입력 <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 중등 교과서 등 DB 미등록 지문</span></div>
 
-    <!-- 기본 textarea (항상 표시) -->
-    <div id="manualPassage_default" style="margin-bottom:10px;">
-      <div style="display:flex;gap:8px;margin-bottom:4px;align-items:center;">
-        <input type="text" id="manualTitleDirect" placeholder="제목 / 과 번호 (선택, 예: 3과 본문)"
-          style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-        <select id="manualTypeDirect"
-          style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);">
-          <option value="본문">📖 본문</option>
-          <option value="대화문">💬 대화문</option>
-        </select>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+      <!-- 본문 입력란 -->
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+          <span style="font-size:.85rem;font-weight:600;color:var(--gold);">📖 본문</span>
+          <input type="text" id="manualTitleBody" placeholder="제목/과 번호 (선택)"
+            style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.78rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        </div>
+        <textarea id="manualTextBody" rows="7"
+          placeholder="교과서 본문을 붙여넣으세요..."
+          oninput="updateManualCount()"
+          style="border:1.5px solid var(--border);border-radius:6px;background:var(--paper);color:var(--ink);padding:8px;font-size:.82rem;font-family:'Noto Sans KR',sans-serif;resize:vertical;"></textarea>
       </div>
-      <textarea id="manualTextDirect" rows="6"
-        placeholder="교과서 본문을 여기에 붙여넣으세요..."
-        oninput="updateManualCount()"
-        style="margin-bottom:0;"></textarea>
+      <!-- 대화문 입력란 -->
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+          <span style="font-size:.85rem;font-weight:600;color:var(--green2);">💬 대화문</span>
+          <input type="text" id="manualTitleDialog" placeholder="제목/과 번호 (선택)"
+            style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.78rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        </div>
+        <textarea id="manualTextDialog" rows="7"
+          placeholder="대화문을 붙여넣으세요...&#10;예) Ted: Shall we go shopping?&#10;Lily: Sure!"
+          oninput="updateManualCount()"
+          style="border:1.5px solid var(--green2);border-radius:6px;background:var(--paper);color:var(--ink);padding:8px;font-size:.82rem;font-family:'Noto Sans KR',sans-serif;resize:vertical;"></textarea>
+      </div>
     </div>
 
     <!-- 추가 지문 (동적) -->
     <div id="manualPassageList"></div>
 
-    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+    <div style="display:flex;gap:8px;margin-top:4px;align-items:center;">
       <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="addManualPassage()">+ 지문 추가</button>
       <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="clearAllManual()">전체 삭제</button>
       <span id="manualCountInfo" style="font-size:.8rem;color:var(--ink4);"></span>
@@ -945,6 +955,13 @@ tr:hover td { background: var(--paper); }
     <textarea id="grammarPointInput" rows="4"
       placeholder="예) 1. 관계대명사 what: '~하는 것' 의미의 명사절&#10;예) 2. to부정사 형용사적 용법: 명사 수식&#10;&#10;저장된 문법 포인트가 있으면 자동으로 불러옵니다."
       style="font-size:.85rem;"></textarea>
+    <!-- 추가 입력란 -->
+    <div style="display:flex;gap:6px;margin-top:8px;align-items:center;">
+      <input type="text" id="grammarPointAdd" placeholder="추가할 문법 포인트 입력 (예: 현재완료진행형)"
+        onkeydown="if(event.key==='Enter'){appendGrammarPoint();event.preventDefault();}"
+        style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+      <button class="btn btn-gold" style="font-size:.78rem;padding:5px 14px;white-space:nowrap;" onclick="appendGrammarPoint()">+ 추가</button>
+    </div>
     <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
       <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="reloadGrammarPointInput()">🔄 저장된 포인트 불러오기</button>
       <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="document.getElementById('grammarPointInput').value=''">지우기</button>
@@ -1878,7 +1895,7 @@ ${batchTypeList}
 3. 배점: 기출과 동일 (${scoreHint})
 4. group: 같은 지문 → passage 한 번만, question 안에 지문 반복 금지
 5. single: 독립 문제
-6. 총 문항수 반드시 ${plan.count}개 (초과/미달 금지)${passageKindHint}${grammarPoints ? '\n7. 문법 포인트:\n'+grammarPoints : ''}
+6. 총 문항수 반드시 ${plan.count}개 (초과/미달 금지)${passageKindHint}${grammarPoints ? `\n\n🔴 [어법 문제 출제 필수 규칙 - 반드시 준수]\n지문 속 아래 문법 포인트가 포함된 문장을 골라 밑줄/번호를 붙여 어법 문제를 출제하세요.\n단순 언급이 아니라 실제 그 문법 구조를 오답/정답의 핵심으로 삼아야 합니다.\n\n문법 포인트:\n`+grammarPoints : ''}
 
 JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응답:
 [
@@ -1947,7 +1964,7 @@ ${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
    - 번호형: 지문 내 ①~⑤ 밑줄 후 "①  ②  ③  ④  ⑤" 선지
 2. 배점: ${scoreHint2}
 3. group 타입: 지문 공유 문제 묶음 / single 타입: 독립 문제
-4. 총 문항수 정확히 ${plan.count}개${grammarPoints ? '\n5. 문법 포인트:\n' + grammarPoints.replace(/\n/g,'\\n') : ''}
+4. 총 문항수 정확히 ${plan.count}개${grammarPoints ? `\n\n🔴 [어법 문제 출제 필수 규칙 - 반드시 준수]\n지문 속 아래 문법 포인트가 포함된 문장을 골라 밑줄/번호를 붙여 어법 문제를 출제하세요.\n단순 언급이 아니라 실제 그 문법 구조를 오답/정답의 핵심으로 삼아야 합니다.\n\n문법 포인트:\n` + grammarPoints.replace(/\n/g,'\\n') : ''}
 
 JSON 배열로만 응답 (마크다운 금지):
 [
@@ -2587,12 +2604,15 @@ function updateManualCount(){
 
 function getManualPassages(){
   const result = [];
-  // 기본 textarea
-  const directText  = document.getElementById('manualTextDirect')?.value.trim()||'';
-  const directTitle = document.getElementById('manualTitleDirect')?.value.trim()||'';
-  const directType  = document.getElementById('manualTypeDirect')?.value || '본문';
-  if(directText) result.push({id:'manual', title:directTitle, text:directText, passageType:directType});
-  // 추가 지문들
+  // 본문 입력란
+  const bodyText  = document.getElementById('manualTextBody')?.value.trim()||'';
+  const bodyTitle = document.getElementById('manualTitleBody')?.value.trim()||'';
+  if(bodyText) result.push({id:'manual_body', title:bodyTitle||'본문', text:bodyText, passageType:'본문'});
+  // 대화문 입력란
+  const dialogText  = document.getElementById('manualTextDialog')?.value.trim()||'';
+  const dialogTitle = document.getElementById('manualTitleDialog')?.value.trim()||'';
+  if(dialogText) result.push({id:'manual_dialog', title:dialogTitle||'대화문', text:dialogText, passageType:'대화문'});
+  // 추가 지문들 (동적)
   Array.from(document.querySelectorAll('.manual-passage-item')).forEach(el=>{
     const title = el.querySelector('input')?.value.trim()||'';
     const text  = el.querySelector('textarea')?.value.trim()||'';
@@ -2603,10 +2623,10 @@ function getManualPassages(){
 }
 
 function clearAllManual(){
-  const ta = document.getElementById('manualTextDirect');
-  const ti = document.getElementById('manualTitleDirect');
-  if(ta) ta.value='';
-  if(ti) ti.value='';
+  ['manualTextBody','manualTitleBody','manualTextDialog','manualTitleDialog'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value='';
+  });
   document.getElementById('manualPassageList').innerHTML='';
   manualPassageCount=0;
   updateManualCount();
@@ -2999,6 +3019,21 @@ function initGrammarTab(){
   loadGrammarPoints();
 }
 
+function appendGrammarPoint(){
+  const input = document.getElementById('grammarPointAdd');
+  const ta = document.getElementById('grammarPointInput');
+  const val = input.value.trim();
+  if(!val) return;
+  const cur = ta.value.trim();
+  // 번호 자동 부여
+  const lines = cur ? cur.split('\n').filter(l=>l.trim()) : [];
+  const nextNum = lines.length + 1;
+  ta.value = cur ? cur + '\n' + nextNum + '. ' + val : nextNum + '. ' + val;
+  input.value = '';
+  input.focus();
+  updateManualCount && updateManualCount();
+}
+
 function reloadGrammarPointInput(){
   const school = getSchool();
   const grade  = document.getElementById('metaGrade').value;
@@ -3020,7 +3055,7 @@ function getGrammarPointsForPrompt(){
   const ta = document.getElementById('grammarPointInput');
   const text = ta?.value.trim()||'';
   if(!text) return '';
-  return '\n\n[이 학교 주요 문법 포인트 — 문법 문제 출제 시 반드시 반영]\n' + text;
+  return text;
 }
 
 function addGrammarPoint(){
