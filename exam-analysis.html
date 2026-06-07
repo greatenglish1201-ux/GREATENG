@@ -969,6 +969,8 @@ tr:hover td { background: var(--paper); }
 
     <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="generateQuestions()">⚡ 예상문제 출제</button>
+      <button class="btn btn-gray" style="font-size:.82rem;padding:5px 12px;" onclick="document.getElementById('jsonImportInput').click()">📂 JSON 불러오기</button>
+      <input type="file" id="jsonImportInput" accept=".json" style="display:none;" onchange="importQuestionsJSON(this)">
       <label style="color:var(--ink3);font-size:.9rem;">문항 수:
         <input type="number" id="qCount" value="15" min="1" max="50"
           style="width:64px;background:var(--paper);color:var(--ink);border:1.5px solid var(--border);
@@ -1464,6 +1466,31 @@ function renderTypeCheckboxes(){
 }
 
 // ── 예상문제 출제 ──
+function importQuestionsJSON(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+      // 배열이면 그대로, 객체면 questions 필드 확인
+      const questions = Array.isArray(data) ? data : (data.questions || data);
+      if(!Array.isArray(questions) || questions.length===0){
+        alert('유효한 예상문제 JSON이 아닙니다.');
+        return;
+      }
+      generatedQuestions = questions;
+      const status = document.getElementById('generateStatus');
+      if(status) status.innerHTML=`<span style="color:var(--green2)">✅ ${questions.length}문항 불러오기 완료</span>`;
+      switchTab(2);
+    } catch(err){
+      alert('JSON 파싱 오류: ' + err.message);
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
 async function generateQuestions(){
   const status = document.getElementById('generateStatus');
   const selectedP = getSelectedPassages();
