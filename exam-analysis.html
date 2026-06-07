@@ -2620,6 +2620,12 @@ function getGrammarPointsForPrompt(){
 }
 
 loadSettingsUI();
+// 탭1 모델 드롭다운 초기화
+(function(){
+  const m = localStorage.getItem('greateng_gemini_model')||'gemini-2.5-flash';
+  const sel = document.getElementById('geminiModelTab1');
+  if(sel) sel.value = m;
+})();
 renderTypeCheckboxes();
 loadAnalysisFromStorage();
 loadPatternList();
