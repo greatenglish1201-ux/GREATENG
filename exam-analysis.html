@@ -1612,11 +1612,8 @@ async function analyzeExam(){
     const range = document.getElementById('batchRange')?.value.trim()||'전체';
     analyseBatches.push({...analysisData, range});
     renderBatchList();
-    // rawText/이미지 초기화 (다음 배치 입력 준비)
-    document.getElementById('rawText').value='';
+    // 범위 입력란만 초기화 (이미지/텍스트는 유지 — 다음 배치에서 재사용)
     document.getElementById('batchRange').value='';
-    uploadedImages=[];
-    document.getElementById('previewArea').innerHTML='';
     // Sheets 자동 백업은 병합 후에만 (배치별 저장 안 함)
   } catch(e){
     status.innerHTML='<span class="error">분석 오류: '+e.message+'</span>';
