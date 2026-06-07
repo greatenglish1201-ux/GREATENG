@@ -1144,6 +1144,14 @@ tr:hover td { background: var(--paper); }
     <button class="btn btn-gold" onclick="saveSettings()">💾 저장</button>
     <div id="settingsStatus" class="status" style="margin-top:8px;"></div>
   </div>
+
+  <div class="step-box" style="margin-top:16px;">
+    <div class="step-title">📂 기출 패턴 불러오기</div>
+    <div style="color:var(--ink3);font-size:.85rem;margin-bottom:10px;">jechul3_pattern_v2.json 등 기출 패턴 JSON을 불러오면 TAB 1 드롭다운에 등록됩니다.</div>
+    <input type="file" id="patternFileInput" accept=".json" style="display:none" onchange="importPatternFromJSON(this)">
+    <button class="btn btn-gray" onclick="document.getElementById('patternFileInput').click()">📂 패턴 JSON 선택</button>
+    <div id="patternImportStatus" class="status" style="margin-top:8px;"></div>
+  </div>
 </div>
 
 <script>
@@ -1159,6 +1167,31 @@ let uploadedImages = [];
 let sheetPassages = [];
 
 // ── 설정 ──
+function importPatternFromJSON(input){
+  const file = input.files[0]; if(!file) return;
+  const statusEl = document.getElementById('patternImportStatus');
+  statusEl.innerHTML = '<span class="spinner"></span> 불러오는 중...';
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      const key = data.meta?.key ||
+        [data.meta?.school, data.meta?.grade, data.meta?.year, data.meta?.semester, data.meta?.exam]
+          .filter(Boolean).join('_');
+      if(!key){ statusEl.innerHTML='<span class="error">유효한 패턴 JSON이 아닙니다 (meta.key 없음)</span>'; return; }
+      const stored = JSON.parse(localStorage.getItem('greateng_patterns')||'{}');
+      stored[key] = {...data, key, savedAt: new Date().toISOString()};
+      localStorage.setItem('greateng_patterns', JSON.stringify(stored));
+      statusEl.innerHTML=`<span style="color:var(--green2)">✅ 패턴 저장 완료 [${key}]</span>`;
+      loadPatternList();
+    } catch(err){
+      statusEl.innerHTML='<span class="error">JSON 파싱 오류: '+err.message+'</span>';
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
 function saveSettings(){
   const key = document.getElementById('claudeApiKey').value.trim();
   if(!key){ document.getElementById('settingsStatus').innerHTML='<span class="error">키를 입력하세요.</span>'; return; }
@@ -1838,18 +1871,71 @@ JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응
 ]`;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
-        const passageSection = batchPassage ? `[지문]\n${batchPassage}\n\n` : '';
+        const passageSection = batchPassage ? `[새 시험 지문]\n${batchPassage}\n\n` : '';
         const schoolLevel2 = getSchoolLevel();
-        prompt = `당신은 한국 ${schoolLevel2==='middle'?'중학교':'고등학교'} 영어 내신 시험지 제작 전문가입니다.
-${passageSection}[출제 조건]
-- 문제 번호: ${plan.startNum}번 ~ ${plan.startNum+plan.count-1}번 (총 ${plan.count}문항)
-- 유형별 문항수 (정확히 준수): ${batchTypeDistrib}
-- 선지: ①②③④⑤ (서술형은 빈 배열)
-- 지문 문제는 group 타입, 독립 문제는 single 타입${grammarPoints ? '\n- 문법 포인트: ' + grammarPoints.replace(/\n/g,'\\n') : ''}
 
-JSON 배열로만 응답:
+        // 패턴 원문 활용: analysisData.questions에서 이번 배치 유형과 일치하는 기출 원문 추출
+        let patternExamples = '';
+        if(analysisData && analysisData.questions && analysisData.questions.length){
+          const batchTypes = plan.types || [];
+          const usedNums = new Set();
+          const examples = [];
+          batchTypes.forEach(bt => {
+            // 유형 키워드 매칭 (어법, 어휘, 빈칸, 개수, 기호, 영작, 표, 번호 등)
+            const matchQ = analysisData.questions.find(q =>
+              !usedNums.has(q.num) &&
+              q.original_q &&
+              (q.format && (
+                bt.includes('어법') && (q.format.includes('어법') || q.format.includes('개수') || q.format.includes('번호') || q.format.includes('기호')) ||
+                bt.includes('어휘') && q.format.includes('어휘') ||
+                bt.includes('빈칸') && q.qtype && q.qtype.includes('빈칸') ||
+                bt.includes('내용일치') && q.stem && q.stem.includes('일치') ||
+                bt.includes('주제') && q.stem && (q.stem.includes('주제') || q.stem.includes('제목') || q.stem.includes('요지')) ||
+                bt.includes('영작') && (q.format.includes('영작') || q.format.includes('순서')) ||
+                q.stem && q.stem.includes(bt.replace(/[문항]*/g,'').trim())
+              ) || (q.stem && q.stem.includes(bt)))
+            );
+            if(matchQ){ usedNums.add(matchQ.num); examples.push(matchQ); }
+          });
+          // 매칭 안 된 경우 형식별로 다양하게 추가
+          if(!examples.length){
+            analysisData.questions.slice(0,4).forEach(q=>{ if(q.original_q) examples.push(q); });
+          }
+          if(examples.length){
+            patternExamples = `\n\n══ 기출 원문 (발문·선지 형식 정확히 복사) ══\n` +
+              examples.map(q=>`[${q.num}번 / ${q.format||q.qtype||''}]\n${q.original_q}`).join('\n\n');
+          }
+        }
+
+        // 배점 분포
+        let scoreHint2 = '3점/4점/5점';
+        if(analysisData && analysisData.score_dist){
+          scoreHint2 = Object.entries(analysisData.score_dist).map(([s,n])=>`${s} ${n}문항`).join(', ');
+        }
+
+        prompt = `당신은 한국 ${schoolLevel2==='middle'?'중학교':'고등학교'} 영어 내신 시험지 제작 전문가입니다.
+${passageSection}${patternExamples}
+
+══ 출제 명령 ══
+문제 번호: ${plan.startNum}번 ~ ${plan.startNum+plan.count-1}번 (총 ${plan.count}문항)
+
+▶ 유형별 문항수 (정확히 준수):
+${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
+
+▶ 절대 규칙:
+1. 위 [기출 원문]의 발문·선지 형식을 정확히 복사하세요.
+   - 기호형(ⓐ~ⓔ): "① ⓐ  ② ⓑ  ③ ⓒ  ④ ⓓ  ⑤ ⓔ" 형식 그대로
+   - 개수형: "① 2개  ② 3개  ③ 4개  ④ 5개  ⑤ 6개" 형식 그대로
+   - 영작형: "<보기> 단어 제시 + = I (ⓐ)(ⓑ)(ⓒ)(ⓓ)(ⓔ)(ⓕ)" 형식 그대로
+   - 표형: ⓑ/ⓒ/ⓓ 조합 표 형식 그대로
+   - 번호형: 지문 내 ①~⑤ 밑줄 후 "①  ②  ③  ④  ⑤" 선지
+2. 배점: ${scoreHint2}
+3. group 타입: 지문 공유 문제 묶음 / single 타입: 독립 문제
+4. 총 문항수 정확히 ${plan.count}개${grammarPoints ? '\n5. 문법 포인트:\n' + grammarPoints.replace(/\n/g,'\\n') : ''}
+
+JSON 배열로만 응답 (마크다운 금지):
 [
-  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
   {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
 ]`;
       }
