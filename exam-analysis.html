@@ -6,9 +6,19 @@
 <title>대단한영어 기출분석 & 예상문제 출제</title>
 <script>
 function loadDocxFallback(){
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.umd.js';
-  document.head.appendChild(s);
+  const urls = [
+    'https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.umd.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/index.umd.min.js'
+  ];
+  let idx = 0;
+  function tryNext(){
+    if(idx >= urls.length) return;
+    const s = document.createElement('script');
+    s.src = urls[idx++];
+    s.onerror = tryNext;
+    document.head.appendChild(s);
+  }
+  tryNext();
 }
 </script>
 <script src="https://unpkg.com/docx@7.8.2/build/index.umd.js" onerror="loadDocxFallback()"></script>
