@@ -2907,6 +2907,41 @@ function applySelectedPattern(){
     ${item.summary?`<div style="margin-top:8px;color:var(--ink3);font-size:.82rem;border-top:1px solid var(--border);padding-top:8px;">${item.summary}</div>`:''}
   `;
   renderTypeCheckboxes();
+
+  // passage_groups에서 본문/대화문 자동 채우기
+  const groups = item.passage_groups || {};
+  let bodyText = '', bodyTitle = '', dialogText = '', dialogTitle = '';
+  Object.entries(groups).forEach(([pg, g])=>{
+    const t = (g.type||'').includes('대화') ? 'dialog' : 'body';
+    if(t==='dialog'){
+      if(dialogText) dialogText += '\n\n';
+      dialogText += g.text||'';
+      if(!dialogTitle) dialogTitle = pg;
+    } else {
+      if(bodyText) bodyText += '\n\n';
+      bodyText += g.text||'';
+      if(!bodyTitle) bodyTitle = pg;
+    }
+  });
+
+  const bodyEl   = document.getElementById('manualTextBody');
+  const bodyTEl  = document.getElementById('manualTitleBody');
+  const dialogEl = document.getElementById('manualTextDialog');
+  const dialogTEl= document.getElementById('manualTitleDialog');
+
+  if(bodyEl && bodyText){
+    bodyEl.value = bodyText;
+    if(bodyTEl) bodyTEl.value = bodyTitle;
+  }
+  if(dialogEl && dialogText){
+    dialogEl.value = dialogText;
+    if(dialogTEl) dialogTEl.value = dialogTitle;
+  }
+
+  if(bodyText || dialogText){
+    const st = document.getElementById('patternSelectorStatus');
+    if(st) st.innerHTML = '<span style="color:var(--green2);">✅ 지문 자동 로드 완료</span>';
+  }
 }
 
 // ════════════════════════════════════════
