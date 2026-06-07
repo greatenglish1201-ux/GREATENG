@@ -997,7 +997,10 @@ tr:hover td { background: var(--paper); }
     <div id="questionOutput" style="color:var(--ink4);">아직 생성된 문제가 없습니다.</div>
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-green" onclick="downloadDocx()">📥 DOCX 다운로드</button>
-      <button class="btn btn-gold" onclick="downloadAnalysisJSON()">📊 분석 JSON 저장</button>
+      <button class="btn btn-gray" style="font-size:.82rem;" onclick="document.getElementById('jsonImportInput2').click()">📂 JSON 불러오기</button>
+      <input type="file" id="jsonImportInput2" accept=".json" style="display:none;" onchange="importQuestionsJSON(this)">
+      <button class="btn btn-gold" onclick="downloadQuestionsJSON()">💾 예상문제 JSON 저장</button>
+      <button class="btn btn-gray" style="font-size:.82rem;" onclick="downloadAnalysisJSON()">📊 분석 JSON 저장</button>
       <button class="btn btn-red" onclick="clearAll()">🗑️ 초기화</button>
     </div>
   </div>
@@ -1474,7 +1477,7 @@ function importQuestionsJSON(input){
     try {
       const data = JSON.parse(e.target.result);
       // 배열이면 그대로, 객체면 questions 필드 확인
-      const questions = Array.isArray(data) ? data : (data.questions || data);
+      const questions = Array.isArray(data) ? data : (Array.isArray(data.questions) ? data.questions : data);
       if(!Array.isArray(questions) || questions.length===0){
         alert('유효한 예상문제 JSON이 아닙니다.');
         return;
@@ -1921,6 +1924,24 @@ function loadAnalysisFromStorage(){
     renderAnalysis();
     document.getElementById('analyzeStatus').innerHTML='<span style="color:var(--blue2)">💾 이전 분석 데이터 복원됨</span>';
   } catch(e){}
+}
+
+function downloadQuestionsJSON(){
+  if(!generatedQs.length){ alert('생성된 예상문제가 없습니다.'); return; }
+  const school = getSchool();
+  const grade = document.getElementById('metaGrade').value;
+  const data = { questions: generatedQs, school, grade,
+    year: document.getElementById('metaYear').value,
+    semester: document.getElementById('metaSemester').value,
+    exam: document.getElementById('metaExam').value,
+    savedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url;
+  a.download=`예상문제_${school||'대단한영어'}_${grade||''}_${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function downloadAnalysisJSON(){
