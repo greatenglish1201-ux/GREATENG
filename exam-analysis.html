@@ -1849,55 +1849,120 @@ async function downloadDocx(){
     return;
   }
   try{
-    const {Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle} = window.docx;
+    const {Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle, ColumnBreak, SectionType} = window.docx;
     const school = getSchool() || '○○학교';
     const grade  = document.getElementById('metaGrade').value || '';
     const year   = document.getElementById('metaYear').value || '';
     const sem    = document.getElementById('metaSemester').value || '';
     const exam   = document.getElementById('metaExam').value || '';
 
-    const children = [];
+    // 총 문항 수
+    const totalQ = generatedQs.reduce((s,item)=>
+      item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
 
-    // 헤더
-    children.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:60},
-      children:[new TextRun({text:`${year}학년도 ${sem} ${exam} 영어 예상문제`,bold:true,size:32,font:'맑은 고딕'})]}));
-    children.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},
-      children:[new TextRun({text:`${school} ${grade}　　총 ${generatedQs.length}문항`,size:22,font:'맑은 고딕',color:'444444'})]}));
-    children.push(new Paragraph({border:{bottom:{style:BorderStyle.DOUBLE,size:4,color:'000000'}},spacing:{after:240},children:[]}));
+    // ── 헤더 섹션 (1단, 전체 폭) ──
+    const headerChildren = [];
+    headerChildren.push(new Paragraph({alignment:AlignmentType.CENTER, spacing:{after:40},
+      children:[new TextRun({text:`${school}　${grade}　${year}학년도 ${sem} ${exam} 영어 예상문제`,
+        bold:true, size:28, font:'맑은 고딕'})]}));
+    headerChildren.push(new Paragraph({alignment:AlignmentType.CENTER, spacing:{after:20},
+      children:[new TextRun({text:`대단한영어　　총 ${totalQ}문항　　이름:________________　　점수:________`,
+        size:20, font:'맑은 고딕', color:'444444'})]}));
+    headerChildren.push(new Paragraph({
+      border:{bottom:{style:BorderStyle.DOUBLE, size:6, color:'000000'}},
+      spacing:{after:0}, children:[]}));
 
-    generatedQs.forEach(q=>{
-      const isWriting = !q.choices || q.choices.length === 0;
-      // 번호+유형+문제 첫줄
-      const lines = (q.question||'').split('\n');
-      children.push(new Paragraph({spacing:{before:200,after:60},
-        children:[
-          new TextRun({text:`${q.num}. `,bold:true,size:22,font:'맑은 고딕'}),
-          new TextRun({text:`[${q.type}]  `,bold:false,size:18,color:'777777',font:'맑은 고딕'}),
-          new TextRun({text:lines[0]||'',size:22,font:'맑은 고딕'})
-        ]}));
-      lines.slice(1).forEach(line=>{
-        children.push(new Paragraph({indent:{left:240},spacing:{after:40},
-          children:[new TextRun({text:line,size:22,font:'맑은 고딕'})]}));
-      });
-      // 선지
-      if(!isWriting){
-        q.choices.forEach(c=>{
-          children.push(new Paragraph({indent:{left:480},spacing:{after:36},
-            children:[new TextRun({text:c,size:21,font:'맑은 고딕'})]}));
+    // ── 문제 본문 (2단) ──
+    const bodyChildren = [];
+
+    const renderItem = (item) => {
+      if(item.type === 'group'){
+        // 지문 그룹
+        const qs = item.questions || [];
+        const range = item.range || '';
+        const header = item.header || '※ 다음 글을 읽고 물음에 답하시오.';
+        const passage = item.passage || '';
+
+        bodyChildren.push(new Paragraph({spacing:{before:160, after:40},
+          children:[new TextRun({text:`${header}　(${range})`, size:19, font:'맑은 고딕', italics:true})]}));
+
+        // 지문
+        passage.split('\n').forEach(line=>{
+          bodyChildren.push(new Paragraph({spacing:{after:30},
+            indent:{left:160},
+            children:[new TextRun({text:line, size:20, font:'맑은 고딕'})]}));
+        });
+        bodyChildren.push(new Paragraph({spacing:{after:60}, children:[]}));
+
+        // 각 문제
+        qs.forEach(q=>{
+          _renderQ(q);
         });
       } else {
-        // 서술형 답안란
-        children.push(new Paragraph({indent:{left:240},spacing:{before:40,after:40},
-          border:{top:{style:BorderStyle.SINGLE,size:1,color:'999999'},bottom:{style:BorderStyle.SINGLE,size:1,color:'999999'},left:{style:BorderStyle.SINGLE,size:1,color:'999999'},right:{style:BorderStyle.SINGLE,size:1,color:'999999'}},
-          children:[new TextRun({text:'　'.repeat(30),size:22,font:'맑은 고딕'})]}));
+        _renderQ(item);
       }
-      // 정답
-      children.push(new Paragraph({indent:{left:240},spacing:{after:60},
-        children:[new TextRun({text:`▶ 정답: ${q.answer}`,size:19,color:'1a4a8c',font:'맑은 고딕',italics:true})]}));
-      children.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:1,color:'DDDDDD'}},spacing:{after:120},children:[]}));
+    };
+
+    const _renderQ = (q) => {
+      const isWriting = !q.choices || q.choices.length === 0;
+      const lines = (q.question||'').split('\n');
+      bodyChildren.push(new Paragraph({spacing:{before:160, after:40},
+        children:[
+          new TextRun({text:`${q.num}. `, bold:true, size:22, font:'맑은 고딕'}),
+          new TextRun({text:lines[0]||'', size:21, font:'맑은 고딕'})
+        ]}));
+      lines.slice(1).forEach(line=>{
+        bodyChildren.push(new Paragraph({indent:{left:200}, spacing:{after:30},
+          children:[new TextRun({text:line, size:20, font:'맑은 고딕'})]}));
+      });
+      if(!isWriting){
+        q.choices.forEach(ch=>{
+          bodyChildren.push(new Paragraph({indent:{left:320}, spacing:{after:28},
+            children:[new TextRun({text:ch, size:20, font:'맑은 고딕'})]}));
+        });
+      } else {
+        bodyChildren.push(new Paragraph({indent:{left:200}, spacing:{before:30, after:30},
+          border:{top:{style:BorderStyle.SINGLE,size:1,color:'AAAAAA'},
+                  bottom:{style:BorderStyle.SINGLE,size:1,color:'AAAAAA'}},
+          children:[new TextRun({text:'　'.repeat(20), size:21, font:'맑은 고딕'})]}));
+      }
+      bodyChildren.push(new Paragraph({indent:{left:200}, spacing:{after:40},
+        children:[new TextRun({text:`정답: ${q.answer||''}`, size:18, color:'1a4a8c', font:'맑은 고딕', italics:true})]}));
+      bodyChildren.push(new Paragraph({
+        border:{bottom:{style:BorderStyle.SINGLE, size:1, color:'DDDDDD'}},
+        spacing:{after:80}, children:[]}));
+    };
+
+    generatedQs.forEach(item => renderItem(item));
+
+    // 푸터
+    bodyChildren.push(new Paragraph({spacing:{before:240}, alignment:AlignmentType.CENTER,
+      children:[new TextRun({text:`- ${school} 영어 예상문제 (대단한영어) -`,
+        size:18, color:'888888', font:'맑은 고딕'})]}));
+
+    const doc = new Document({
+      sections:[
+        // 1단 헤더 섹션
+        {
+          properties:{
+            type: SectionType ? SectionType.CONTINUOUS : 'continuous',
+            page:{size:{width:11906,height:16838}, margin:{top:900,bottom:900,left:1000,right:1000}},
+            column:{space:708, count:1}
+          },
+          children: headerChildren
+        },
+        // 2단 본문 섹션
+        {
+          properties:{
+            type: SectionType ? SectionType.CONTINUOUS : 'continuous',
+            page:{size:{width:11906,height:16838}, margin:{top:900,bottom:900,left:1000,right:1000}},
+            column:{space:500, count:2, equalWidth:true}
+          },
+          children: bodyChildren
+        }
+      ]
     });
 
-    const doc = new Document({sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1080,bottom:1080,left:1134,right:1134}}},children}]});
     const buf = await Packer.toBlob(doc);
     const url = URL.createObjectURL(buf);
     const a = document.createElement('a');
