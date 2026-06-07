@@ -996,7 +996,7 @@ tr:hover td { background: var(--paper); }
     <div class="step-title">📋 생성된 예상문제</div>
     <div id="questionOutput" style="color:var(--ink4);">아직 생성된 문제가 없습니다.</div>
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn btn-green" onclick="downloadDocx()">📥 DOCX 다운로드</button>
+      <button class="btn btn-green" onclick="printExam()">🖨️ 인쇄 / PDF 저장</button>
       <button class="btn btn-gray" style="font-size:.82rem;" onclick="document.getElementById('jsonImportInput2').click()">📂 JSON 불러오기</button>
       <input type="file" id="jsonImportInput2" accept=".json" style="display:none;" onchange="importQuestionsJSON(this)">
       <button class="btn btn-gold" onclick="downloadQuestionsJSON()">💾 예상문제 JSON 저장</button>
@@ -1839,6 +1839,114 @@ function toggleAllAnswers(show){
   document.querySelectorAll('.answer-btn:not([onclick*="toggleAll"])').forEach(btn=>{
     btn.textContent = show ? '정답 숨기기' : '정답 보기';
   });
+}
+
+// ── 인쇄 / PDF ──
+function printExam(){
+  if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
+
+  const school = getSchool() || '○○학교';
+  const grade  = document.getElementById('metaGrade').value || '';
+  const year   = document.getElementById('metaYear').value || '';
+  const sem    = document.getElementById('metaSemester').value || '';
+  const exam   = document.getElementById('metaExam').value || '';
+  const totalQ = generatedQs.reduce((s,item)=>
+    item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
+
+  function renderSingleQPrint(q){
+    const num = q.num || q.number || '';
+    const score = q.score || 3;
+    const isWriting = !q.choices || q.choices.length === 0;
+    const choicesHtml = isWriting
+      ? `<div class="write-box"></div>`
+      : q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('');
+    return `<div class="qblock">
+      <div class="qrow"><span class="qnum">${num}.</span><span class="qtext">${(q.question||'').replace(/\n/g,'<br>')}</span><span class="qscore">[${score}점]</span></div>
+      ${choicesHtml}
+      <div class="answer">정답: ${q.answer||''}</div>
+    </div>`;
+  }
+
+  const bodyHtml = generatedQs.map(item=>{
+    if(item.type==='group'){
+      const qs = item.questions||[];
+      const nums = qs.map(q=>q.num||q.number).filter(Boolean);
+      const range = item.range||(nums.length?`${nums[0]}~${nums[nums.length-1]}`:'');
+      const header = item.header||'※ 다음 글을 읽고 물음에 답하시오.';
+      const passage = (item.passage||'').replace(/\n/g,'<br>');
+      return `<div class="group">
+        <div class="group-header">${header} (${range})</div>
+        <div class="passage">${passage}</div>
+        ${qs.map(q=>renderSingleQPrint(q)).join('')}
+      </div>`;
+    } else {
+      return renderSingleQPrint(item);
+    }
+  }).join('');
+
+  const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<title>${school} ${grade} ${exam} 영어 예상문제</title>
+<style>
+  @page { size: A4; margin: 15mm 12mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 9.5pt; color: #111; }
+
+  /* 헤더 */
+  .hdr { text-align: center; border-bottom: 2.5px double #000; padding-bottom: 6px; margin-bottom: 8px; }
+  .hdr h1 { font-size: 13pt; font-weight: bold; margin-bottom: 3px; }
+  .hdr .meta { font-size: 8.5pt; color: #444; }
+
+  /* 2단 컬럼 */
+  .columns { column-count: 2; column-gap: 8mm; column-rule: 1px solid #ccc; }
+
+  /* 문제 블록 */
+  .qblock { break-inside: avoid; margin-bottom: 9pt; }
+  .qrow { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 3pt; }
+  .qnum { font-weight: bold; min-width: 18px; flex-shrink: 0; }
+  .qtext { flex: 1; line-height: 1.5; }
+  .qscore { font-size: 8pt; color: #666; white-space: nowrap; margin-left: 4px; }
+  .choice { padding-left: 16px; line-height: 1.45; }
+  .write-box { border: 1px solid #aaa; height: 18mm; margin: 3pt 0 3pt 16px; }
+  .answer { font-size: 8pt; color: #1a4a8c; padding-left: 16px; margin-top: 2pt; }
+
+  /* 지문 그룹 */
+  .group { break-inside: avoid; margin-bottom: 10pt; border: 1px solid #ddd; padding: 5pt; border-radius: 3px; }
+  .group-header { font-size: 8.5pt; font-style: italic; color: #555; margin-bottom: 4pt; }
+  .passage { font-size: 8.5pt; line-height: 1.6; margin-bottom: 6pt; border-left: 2px solid #b8860b; padding-left: 5pt; color: #222; }
+
+  /* 구분선 */
+  .col-divider { border: none; border-top: 1px dashed #ccc; margin: 6pt 0; }
+
+  /* 푸터 */
+  .footer { text-align: center; font-size: 7.5pt; color: #aaa; margin-top: 10pt; border-top: 1px solid #ddd; padding-top: 4pt; }
+
+  @media print {
+    .no-print { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head><body>
+<div class="no-print" style="text-align:center;padding:10px;background:#f5f5f5;margin-bottom:10px;">
+  <button onclick="window.print()" style="padding:8px 24px;background:#1a4a8c;color:#fff;border:none;border-radius:4px;font-size:11pt;cursor:pointer;">🖨️ 인쇄 / PDF 저장</button>
+  &nbsp;
+  <button onclick="window.close()" style="padding:8px 16px;background:#888;color:#fff;border:none;border-radius:4px;font-size:11pt;cursor:pointer;">✕ 닫기</button>
+</div>
+
+<div class="hdr">
+  <h1>${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h1>
+  <div class="meta">대단한영어　　총 ${totalQ}문항　　이름:_________________　　점수:__________</div>
+</div>
+
+<div class="columns">
+${bodyHtml}
+</div>
+
+<div class="footer">- ${school} 영어 예상문제 (대단한영어) -</div>
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
 }
 
 // ── DOCX 다운로드 ──
