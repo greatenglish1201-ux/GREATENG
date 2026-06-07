@@ -959,6 +959,11 @@ tr:hover td { background: var(--paper); }
 
     <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="generateQuestions()">⚡ 예상문제 출제</button>
+      <select id="geminiModelTab1" onchange="localStorage.setItem('greateng_gemini_model',this.value)"
+        style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;color:var(--ink);padding:5px 10px;font-size:.82rem;">
+        <option value="gemini-2.5-flash">Flash (기본)</option>
+        <option value="gemini-2.5-flash-lite-preview-06-17">Flash Lite (빠름)</option>
+      </select>
       <label style="color:var(--ink3);font-size:.9rem;">문항 수:
         <input type="number" id="qCount" value="15" min="1" max="50"
           style="width:64px;background:var(--paper);color:var(--ink);border:1.5px solid var(--border);
@@ -1157,7 +1162,12 @@ function switchTab(n){
     const el=document.getElementById(id);
     if(el) el.classList.toggle('active',i===n);
   });
-  if(n===1){ renderTypeCheckboxes(); reloadGrammarPointInput(); }
+  if(n===1){
+    renderTypeCheckboxes(); reloadGrammarPointInput();
+    const m=localStorage.getItem('greateng_gemini_model')||'gemini-2.5-flash';
+    const sel=document.getElementById('geminiModelTab1');
+    if(sel) sel.value=m;
+  }
   if(n===3) loadPredictionList();
   if(n===4) initGrammarTab();
   if(n===5) loadSettingsUI();
