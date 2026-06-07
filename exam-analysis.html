@@ -1479,7 +1479,8 @@ function importQuestionsJSON(input){
         alert('유효한 예상문제 JSON이 아닙니다.');
         return;
       }
-      generatedQuestions = questions;
+      generatedQs = questions;
+      renderQuestions();
       const status = document.getElementById('generateStatus');
       if(status) status.innerHTML=`<span style="color:var(--green2)">✅ ${questions.length}문항 불러오기 완료</span>`;
       switchTab(2);
