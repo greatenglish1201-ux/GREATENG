@@ -854,22 +854,51 @@ tr:hover td { background: var(--paper); }
 
 <!-- TAB 0 -->
 <div class="panel active" id="tab0">
+
+  <!-- 배치 입력 -->
   <div class="step-box">
-    <div class="step-title">📂 기출문제 입력 (이미지/PDF 업로드 또는 텍스트 직접 입력)</div>
+    <div class="step-title">📂 기출문제 배치 분석
+      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 용량이 크면 문항 범위별로 나눠서 분석 후 병합</span>
+    </div>
+
+    <!-- 문항 범위 -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+      <span style="font-size:.85rem;color:var(--ink3);white-space:nowrap;">문항 범위</span>
+      <input type="text" id="batchRange" placeholder="예) 1-10  또는  전체"
+        style="width:120px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.85rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+      <span style="font-size:.78rem;color:var(--ink4);">비워두면 전체 분석</span>
+    </div>
+
     <div class="upload-area" onclick="document.getElementById('fileInput').click()">
       <input type="file" id="fileInput" accept="image/*,.pdf" multiple onchange="handleFiles(this.files)">
       <div>🖼️ 이미지 또는 PDF 클릭하여 업로드 (여러 파일 가능)</div>
-      <div style="color:var(--ink4);font-size:.85rem;margin-top:6px;">JPG, PNG, PDF 지원</div>
+      <div style="color:var(--ink4);font-size:.85rem;margin-top:4px;">JPG, PNG, PDF 지원</div>
     </div>
     <div id="previewArea"></div>
-    <div style="text-align:center;margin:12px 0;color:var(--ink4);">— 또는 —</div>
-    <textarea id="rawText" rows="8" placeholder="기출문제 텍스트를 여기에 붙여넣기 하세요..."></textarea>
-    <div style="margin-top:12px;display:flex;gap:10px;">
-      <button class="btn btn-gold" onclick="analyzeExam()">🔍 기출 분석하기</button>
+    <div style="text-align:center;margin:10px 0;color:var(--ink4);">— 또는 —</div>
+    <textarea id="rawText" rows="7" placeholder="기출문제 텍스트를 여기에 붙여넣기 하세요..."></textarea>
+
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-gold" onclick="analyzeExam()">🔍 분석하기</button>
       <button class="btn btn-gray" onclick="clearAnalysis()">초기화</button>
+      <span id="analyzeStatus" class="status"></span>
     </div>
-    <div id="analyzeStatus" class="status"></div>
   </div>
+
+  <!-- 배치 누적 목록 -->
+  <div class="step-box" id="batchListBox" style="display:none;">
+    <div class="step-title">📋 분석된 배치 목록
+      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 모두 추가 후 병합하세요</span>
+    </div>
+    <div id="batchList" style="margin-bottom:12px;"></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <button class="btn btn-green" onclick="mergeBatches()">🔗 전체 병합 → 패턴 완성</button>
+      <button class="btn btn-gray" style="font-size:.8rem;" onclick="clearBatches()">배치 전체 삭제</button>
+      <span id="mergeStatus" class="status"></span>
+    </div>
+  </div>
+
+  <!-- 분석 결과 -->
   <div id="analysisResult" style="display:none">
     <div class="step-box">
       <div class="step-title">📊 분석 결과</div>
@@ -1328,6 +1357,92 @@ function handleFiles(files){
 }
 
 // ── 기출 분석 ──
+// ── 배치 분석 ──
+let analyseBatches = []; // 누적된 배치 분석 결과
+
+function renderBatchList(){
+  const box = document.getElementById('batchListBox');
+  const list = document.getElementById('batchList');
+  if(!analyseBatches.length){ box.style.display='none'; return; }
+  box.style.display='block';
+  list.innerHTML = analyseBatches.map((b,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border20);">
+      <span style="font-size:.85rem;color:var(--gold);font-weight:600;min-width:60px;">${b.range||'전체'}</span>
+      <span style="font-size:.82rem;color:var(--ink2);">${b.questions?.length||0}문항 · 유형: ${Object.keys(b.patterns||{}).join(', ')}</span>
+      <button onclick="removeBatch(${i})" style="margin-left:auto;background:none;border:none;color:var(--ink4);cursor:pointer;font-size:.85rem;">✕</button>
+    </div>`).join('');
+}
+
+function removeBatch(i){
+  analyseBatches.splice(i,1);
+  renderBatchList();
+}
+
+function clearBatches(){
+  analyseBatches=[];
+  renderBatchList();
+  document.getElementById('mergeStatus').innerHTML='';
+}
+
+function mergeBatches(){
+  if(!analyseBatches.length){ document.getElementById('mergeStatus').innerHTML='<span class="error">분석된 배치가 없습니다.</span>'; return; }
+  const status = document.getElementById('mergeStatus');
+  status.innerHTML='<span class="spinner"></span> 병합 중...';
+
+  // 첫 번째 배치의 meta 기준
+  const base = analyseBatches[0];
+  const merged = {
+    meta: base.meta || {},
+    passage_groups: {},
+    questions: [],
+    patterns: {},
+    score_dist: {},
+    summary: '',
+    rawText: ''
+  };
+
+  analyseBatches.forEach(b=>{
+    // passage_groups 병합
+    Object.assign(merged.passage_groups, b.passage_groups||{});
+    // questions 병합 (num 기준 중복 제거)
+    (b.questions||[]).forEach(q=>{
+      if(!merged.questions.find(x=>x.num===q.num)) merged.questions.push(q);
+    });
+    // patterns 합산
+    Object.entries(b.patterns||{}).forEach(([t,n])=>{ merged.patterns[t]=(merged.patterns[t]||0)+n; });
+    // score_dist 합산
+    Object.entries(b.score_dist||{}).forEach(([s,n])=>{ merged.score_dist[s]=(merged.score_dist[s]||0)+n; });
+    // rawText 누적
+    if(b.rawText) merged.rawText += (merged.rawText?'\n\n':'')+b.rawText;
+  });
+
+  merged.questions.sort((a,b)=>a.num-b.num);
+  merged.meta.total = merged.questions.length;
+  merged.total = merged.questions.length;
+  if(!merged.meta.key){
+    const m=merged.meta;
+    merged.meta.key=[m.school,m.grade,m.year,m.semester,m.exam].filter(Boolean).join('_');
+  }
+  merged.summary = `총 ${merged.total}문항 (${analyseBatches.length}개 배치 병합). ` +
+    Object.entries(merged.patterns).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t,n])=>`${t} ${n}문항`).join(', ');
+
+  analysisData = merged;
+  status.innerHTML=`<span style="color:var(--green2)">✅ 병합 완료 — 총 ${merged.total}문항</span>`;
+
+  // 저장
+  saveAnalysisToStorage();
+  const stored = JSON.parse(localStorage.getItem('greateng_patterns')||'{}');
+  stored[merged.meta.key] = {...merged, savedAt:new Date().toISOString()};
+  localStorage.setItem('greateng_patterns', JSON.stringify(stored));
+  loadPatternList();
+  renderAnalysis();
+
+  // Sheets 백업
+  try{
+    postToGAS({action:'saveAnalysis', data:JSON.stringify(merged)}).catch(()=>{});
+  }catch(e){}
+}
+
 async function analyzeExam(){
   const status = document.getElementById('analyzeStatus');
   const rawText = document.getElementById('rawText').value.trim();
@@ -1344,9 +1459,11 @@ async function analyzeExam(){
   const examVal   = document.getElementById('metaExam')?.value || '';
   const levelVal  = getSchoolLevel() === 'middle' ? '중학교' : '고등학교';
 
+  const batchRange = document.getElementById('batchRange')?.value.trim()||'';
+  const rangeHint = batchRange ? `\n분석 범위: ${batchRange}번 문항만 분석하세요.` : '';
   const textPart = rawText
-    ? '다음은 기출문제 텍스트입니다:\n\n'+rawText
-    : '첨부 이미지의 기출문제를 OCR로 정확히 읽어 분석하세요. 문제 번호·발문·선지·지문을 원문 그대로 추출하세요.';
+    ? '다음은 기출문제 텍스트입니다:'+rangeHint+'\n\n'+rawText
+    : '첨부 이미지의 기출문제를 OCR로 정확히 읽어 분석하세요. 문제 번호·발문·선지·지문을 원문 그대로 추출하세요.'+rangeHint;
 
   parts.push({text: textPart + `
 
@@ -1491,14 +1608,16 @@ async function analyzeExam(){
     localStorage.setItem('greateng_patterns', JSON.stringify(stored));
     loadPatternList();
     renderAnalysis();
-    // Sheets 자동 백업
-    try{
-      const payload = {...analysisData, savedAt: new Date().toISOString()};
-      postToGAS({action:'saveAnalysis', data: JSON.stringify(payload)}).then(()=>{
-        const s = document.getElementById('savePatternStatus');
-        if(s) s.innerHTML='<span style="color:var(--green2)">✅ Sheets 백업 완료</span>';
-      }).catch(()=>{});
-    } catch(e){}
+    // 배치 목록에 추가
+    const range = document.getElementById('batchRange')?.value.trim()||'전체';
+    analyseBatches.push({...analysisData, range});
+    renderBatchList();
+    // rawText/이미지 초기화 (다음 배치 입력 준비)
+    document.getElementById('rawText').value='';
+    document.getElementById('batchRange').value='';
+    uploadedImages=[];
+    document.getElementById('previewArea').innerHTML='';
+    // Sheets 자동 백업은 병합 후에만 (배치별 저장 안 함)
   } catch(e){
     status.innerHTML='<span class="error">분석 오류: '+e.message+'</span>';
   }
