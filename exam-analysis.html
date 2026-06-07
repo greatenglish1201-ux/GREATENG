@@ -1184,6 +1184,22 @@ function importPatternFromJSON(input){
       localStorage.setItem('greateng_patterns', JSON.stringify(stored));
       statusEl.innerHTML=`<span style="color:var(--green2)">✅ 패턴 저장 완료 [${key}]</span>`;
       loadPatternList();
+      // GAS Sheets 백업
+      const gasUrl = localStorage.getItem('greateng_gas_url') || APPS_SCRIPT_URL;
+      if(gasUrl){
+        const cbName = 'cb_saveAnalysis_'+Date.now();
+        const sc = document.createElement('script');
+        window[cbName] = function(res){
+          delete window[cbName]; sc.remove();
+          if(res && res.ok){
+            statusEl.innerHTML=`<span style="color:var(--green2)">✅ 패턴 저장 완료 [${key}] + Sheets 백업 완료</span>`;
+          }
+        };
+        sc.src = gasUrl+'?action=saveAnalysis&callback='+cbName
+          +'&key='+encodeURIComponent(key)
+          +'&data='+encodeURIComponent(JSON.stringify(stored[key]));
+        document.head.appendChild(sc);
+      }
     } catch(err){
       statusEl.innerHTML='<span class="error">JSON 파싱 오류: '+err.message+'</span>';
     }
