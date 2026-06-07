@@ -1104,6 +1104,13 @@ tr:hover td { background: var(--paper); }
         style="width:100%;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;color:var(--ink);padding:10px;font-size:.9rem;">
       <div style="color:var(--ink4);font-size:.8rem;margin-top:4px;">브라우저 localStorage에만 저장됩니다.</div>
     </div>
+    <div style="margin-bottom:16px;">
+      <label style="color:var(--ink2);font-size:.9rem;display:block;margin-bottom:6px;">Gemini 모델</label>
+      <select id="geminiModel" style="width:100%;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;color:var(--ink);padding:10px;font-size:.9rem;">
+        <option value="gemini-2.5-flash">gemini-2.5-flash (기본)</option>
+        <option value="gemini-2.5-flash-lite-preview-06-17">gemini-2.5-flash-lite (빠름/안정)</option>
+      </select>
+    </div>
     <button class="btn btn-gold" onclick="saveSettings()">💾 저장</button>
     <div id="settingsStatus" class="status" style="margin-top:8px;"></div>
   </div>
@@ -1126,11 +1133,18 @@ function saveSettings(){
   const key = document.getElementById('claudeApiKey').value.trim();
   if(!key){ document.getElementById('settingsStatus').innerHTML='<span class="error">키를 입력하세요.</span>'; return; }
   localStorage.setItem('greateng_gemini_key', key);
+  const model = document.getElementById('geminiModel').value;
+  localStorage.setItem('greateng_gemini_model', model);
   document.getElementById('settingsStatus').innerHTML='<span style="color:var(--green2)">✅ 저장됨</span>';
 }
 function loadSettingsUI(){
   const saved = localStorage.getItem('greateng_gemini_key')||'';
   document.getElementById('claudeApiKey').value = saved;
+  const savedModel = localStorage.getItem('greateng_gemini_model')||'gemini-2.5-flash';
+  document.getElementById('geminiModel').value = savedModel;
+}
+function getModel(){
+  return localStorage.getItem('greateng_gemini_model')||'gemini-2.5-flash';
 }
 function getApiKey(){
   return localStorage.getItem('greateng_gemini_key')||'';
@@ -1209,7 +1223,7 @@ async function analyzeExam(){
   parts.push({text: textPart + `\n\n위 기출문제를 분석하여 아래 JSON 형식으로만 응답하세요 (마크다운 없이):\n{\n  "patterns": {"실제출제유형명":문항수, ...},\n  "total": 전체문항수,\n  "summary": "분석 요약 2~3문장",\n  "passages": ["핵심 지문 또는 주제 키워드 목록 (최대 5개)"]\n}\n\n주의사항:\n- patterns의 키는 실제 시험에 출제된 유형명을 그대로 사용하세요 (고정된 유형명 없음)\n- 예: 중학교라면 "어법", "어휘", "대화완성", "내용일치", "영작/서술형" 등\n- 고등학교라면 "어법", "어휘", "빈칸추론", "순서배열", "문장삽입", "주제/제목/요지", "서술형" 등\n- 실제 출제된 유형만 포함하고 0문항인 유형은 제외하세요`});
 
   try{
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${getModel()}:generateContent?key=${apiKey}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body: JSON.stringify({system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks, no explanation."}]},contents:[{parts}],generationConfig:{maxOutputTokens:8192,temperature:0.1}})
     });
@@ -1492,7 +1506,7 @@ async function generateQuestions(){
 
   async function callGemini(batchPrompt, retry=0){
     try{
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${getModel()}:generateContent?key=${apiKey}`,{
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
           system_instruction:{parts:[{text:"You output only a raw JSON array. No markdown, no code blocks, no explanation. Start directly with ["}]},
@@ -2223,7 +2237,7 @@ async function runHitAnalysis(){
 - 0문항인 유형은 제외하세요`});
 
   try{
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,{
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${getModel()}:generateContent?key=${apiKey}`,{
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         system_instruction:{parts:[{text:"You output only raw JSON, no markdown, no code blocks."}]},
