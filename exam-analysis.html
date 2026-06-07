@@ -912,12 +912,19 @@ tr:hover td { background: var(--paper); }
 
     <!-- 기본 textarea (항상 표시) -->
     <div id="manualPassage_default" style="margin-bottom:10px;">
+      <div style="display:flex;gap:8px;margin-bottom:4px;align-items:center;">
+        <input type="text" id="manualTitleDirect" placeholder="제목 / 과 번호 (선택, 예: 3과 본문)"
+          style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        <select id="manualTypeDirect"
+          style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);">
+          <option value="본문">📖 본문</option>
+          <option value="대화문">💬 대화문</option>
+        </select>
+      </div>
       <textarea id="manualTextDirect" rows="6"
         placeholder="교과서 본문을 여기에 붙여넣으세요..."
         oninput="updateManualCount()"
-        style="margin-bottom:4px;"></textarea>
-      <input type="text" id="manualTitleDirect" placeholder="제목 / 과 번호 (선택, 예: 3과 본문)"
-        style="width:100%;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        style="margin-bottom:0;"></textarea>
     </div>
 
     <!-- 추가 지문 (동적) -->
@@ -1201,6 +1208,16 @@ function getSchool(){
   const sel = document.getElementById('metaSchoolSel');
   if(sel.value==='__direct__') return document.getElementById('metaSchool').value;
   return sel.value;
+}
+
+function getSchoolLevel(){
+  // 중학교/고등학교 판별
+  const school = getSchool() || '';
+  const grade  = document.getElementById('metaGrade')?.value || '';
+  const combined = school + grade;
+  if(combined.includes('중')) return 'middle';
+  if(combined.includes('고') || combined.includes('수능') || combined.includes('모의')) return 'high';
+  return 'middle'; // 기본값
 }
 
 // ── 파일 업로드 ──
@@ -1503,9 +1520,7 @@ async function generateQuestions(){
   if(!allPassages.length){ status.innerHTML='<span class="error">지문을 선택하거나 교과서 본문을 입력하세요.</span>'; return; }
   const apiKey = getApiKey();
   if(!apiKey){ status.innerHTML='<span class="error">⚙️ 설정 탭에서 Gemini API 키를 입력하세요.</span>'; return; }
-  const passage = allPassages.map(p=>
-    (p.title ? `[${p.title}]\n` : '') + (p.text||p.passage||p.content||'')
-  ).filter(Boolean).join('\n\n---\n\n');
+  // passage는 배치별로 plan.passageObj에서 결정 (아래 루프 참조)
   const checked = Array.from(document.querySelectorAll('#typeCheckboxes input:checked')).map(i=>i.value);
   if(checked.length===0){ status.innerHTML='<span class="error">문제 유형을 하나 이상 선택하세요.</span>'; return; }
   const qCount = parseInt(document.getElementById('qCount').value);
@@ -1522,18 +1537,22 @@ async function generateQuestions(){
         t, ratio: (analysisData.patterns[t]||0)/totalPat
       })).sort((a,b)=>b.ratio-a.ratio);
 
+      // 비율 기반 배분 - 마지막 유형에 나머지 할당
       checkedWithCount.forEach((item,i)=>{
-        const n = i===checkedWithCount.length-1
-          ? qCount - assigned
-          : Math.round(item.ratio * qCount);
-        distribObj[item.t] = Math.max(n, 1);
-        assigned += distribObj[item.t];
+        if(i === checkedWithCount.length-1){
+          distribObj[item.t] = Math.max(1, qCount - assigned);
+        } else {
+          const n = Math.max(1, Math.round(item.ratio * qCount));
+          distribObj[item.t] = n;
+          assigned += n;
+        }
       });
-      // 총합 보정
-      const total = Object.values(distribObj).reduce((s,v)=>s+v,0);
-      if(total !== qCount){
-        const first = checkedWithCount[0].t;
-        distribObj[first] = Math.max(1, distribObj[first] + (qCount - total));
+      // 최종 합산이 qCount 초과 시 가장 많은 유형에서 차감
+      let total = Object.values(distribObj).reduce((s,v)=>s+v,0);
+      while(total > qCount){
+        const maxType = Object.entries(distribObj).sort((a,b)=>b[1]-a[1])[0][0];
+        if(distribObj[maxType] > 1){ distribObj[maxType]--; total--; }
+        else break;
       }
 
       typeDistrib = Object.entries(distribObj).map(([t,n])=>`${t} ${n}문항`).join(', ');
@@ -1551,9 +1570,6 @@ async function generateQuestions(){
   const rawExamText = analysisData?.rawText || '';
   const grammarPoints = getGrammarPointsForPrompt();
 
-  // 문항수가 많으면 배치 분할 (8문항씩 - 지문 포함 시 토큰 많이 씀)
-  const BATCH = 5; // 지문 포함 시 배치당 5문항으로 제한
-  const totalBatches = Math.ceil(qCount / BATCH);
   status.innerHTML = rawExamText
     ? `<span class="spinner"></span> 기출 시뮬레이션 생성 중...`
     : `<span class="spinner"></span> 예상문제 생성 중...`;
@@ -1659,17 +1675,85 @@ async function generateQuestions(){
     }
   }
 
-  // 배치 계획 생성
-  const batchPlans = [];
-  let cursor = 0;
+  // 배치 계획 생성 - 지문별 분리 + 중학교 대화문/본문 분리
+  const READING_TYPES = ['내용일치','주제/요지','주제','요지','제목','빈칸추론','빈칸','순서배열','순서','문장삽입','삽입','분위기','심경','내용추론','지칭추론'];
+  const DIALOG_TYPES  = ['대화완성','대화'];  // 대화문 전용
+  const INDEP_TYPES   = ['어법','어휘','영작','서술형','어순배열'];
+
+  const isMiddle = getSchoolLevel() === 'middle';
   const typeQueue = Object.entries(distribObj).flatMap(([t,n])=>Array(n).fill(t));
-  while(cursor < qCount){
-    const slice = typeQueue.slice(cursor, cursor + BATCH);
-    const batchDistrib = {};
-    slice.forEach(t=>{ batchDistrib[t]=(batchDistrib[t]||0)+1; });
-    batchPlans.push({ startNum: cursor+1, count: slice.length, types: slice, distrib: batchDistrib });
+
+  // 유형 분류
+  const readingQs = typeQueue.filter(t => READING_TYPES.some(r=>t.includes(r)));
+  const dialogQs  = typeQueue.filter(t => DIALOG_TYPES.some(r=>t.includes(r)));
+  const indepQs   = typeQueue.filter(t =>
+    !READING_TYPES.some(r=>t.includes(r)) && !DIALOG_TYPES.some(r=>t.includes(r)));
+
+  // 지문 분류 (중학교만)
+  const bodyPassages   = allPassages.filter(p => !isMiddle || (p.passageType||'본문') === '본문');
+  const dialogPassages = allPassages.filter(p => isMiddle && (p.passageType||'본문') === '대화문');
+
+  const batchPlans = [];
+  let cursor = 1;
+
+  // ── 본문 독해 문제: 본문 지문별 2~3문항 ──
+  const QS_PER_BODY = Math.max(2, Math.min(3, Math.ceil(readingQs.length / Math.max(bodyPassages.length,1))));
+  let rIdx = 0;
+  bodyPassages.forEach(p => {
+    const slice = readingQs.slice(rIdx, rIdx + QS_PER_BODY);
+    if(!slice.length) return;
+    const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
+    batchPlans.push({ startNum:cursor, count:slice.length, types:slice, distrib:bd, passageObj:p, passageKind:'본문' });
+    cursor += slice.length; rIdx += slice.length;
+  });
+  if(rIdx < readingQs.length){
+    const slice = readingQs.slice(rIdx);
+    const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
+    const lastP = bodyPassages[bodyPassages.length-1] || allPassages[0];
+    batchPlans.push({ startNum:cursor, count:slice.length, types:slice, distrib:bd, passageObj:lastP, passageKind:'본문' });
     cursor += slice.length;
   }
+
+  // ── 대화문 문제: 대화문 지문별 2~3문항 (중학교만) ──
+  if(isMiddle && dialogPassages.length && dialogQs.length){
+    const QS_PER_DIALOG = Math.max(2, Math.min(3, Math.ceil(dialogQs.length / dialogPassages.length)));
+    let dIdx = 0;
+    dialogPassages.forEach(p => {
+      const slice = dialogQs.slice(dIdx, dIdx + QS_PER_DIALOG);
+      if(!slice.length) return;
+      const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
+      batchPlans.push({ startNum:cursor, count:slice.length, types:slice, distrib:bd, passageObj:p, passageKind:'대화문' });
+      cursor += slice.length; dIdx += slice.length;
+    });
+    // 남은 대화문 문항
+    if(dIdx < dialogQs.length){
+      const slice = dialogQs.slice(dIdx);
+      const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
+      batchPlans.push({ startNum:cursor, count:slice.length, types:slice, distrib:bd, passageObj:dialogPassages[dialogPassages.length-1], passageKind:'대화문' });
+      cursor += slice.length;
+    }
+  } else if(dialogQs.length){
+    // 고등학교 or 대화문 지문 없으면 독립 문제로 처리
+    const INDEP_BATCH = 4;
+    for(let i=0; i<dialogQs.length; i+=INDEP_BATCH){
+      const slice = dialogQs.slice(i, i+INDEP_BATCH);
+      const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
+      batchPlans.push({ startNum:cursor, count:slice.length, types:slice, distrib:bd, passageObj:null, passageKind:'독립' });
+      cursor += slice.length;
+    }
+  }
+
+  // ── 독립 문제 (어법/어휘/영작): 4문항씩 ──
+  const INDEP_BATCH = 4;
+  for(let i=0; i<indepQs.length; i+=INDEP_BATCH){
+    const slice = indepQs.slice(i, i+INDEP_BATCH);
+    const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
+    batchPlans.push({ startNum:cursor, count:slice.length, types:slice, distrib:bd, passageObj:null, passageKind:'독립' });
+    cursor += slice.length;
+  }
+
+  const totalBatches = batchPlans.length;
+
 
   let allResults = [];
 
@@ -1681,37 +1765,93 @@ async function generateQuestions(){
       }
 
       let prompt;
+      // 배치별 지문 결정
+      // 독립 문제(어법/어휘 등)는 지문 불필요, 독해 문제는 해당 지문만 전달
+      const batchPassage = plan.passageObj
+        ? (plan.passageObj.title ? `[${plan.passageObj.title}]\n` : '') + (plan.passageObj.text||plan.passageObj.passage||plan.passageObj.content||'')
+        : '';  // 독립 문제는 지문 없음
 
       if(rawExamText){
-        const typeList = plan.types.map((t,idx)=>`${plan.startNum+idx}번: ${t}`).join('\n');
-        prompt = `당신은 한국 중고등학교 영어 시험지를 제작하는 전문가입니다.
+        const kichulLines = rawExamText.slice(0, 12000);
+        const questionMatches = [...kichulLines.matchAll(/^(\d+)[.．]\s*(.{5,80})/gm)];
+        const kichulQuestions = questionMatches.slice(0,30).map(m=>`${m[1]}번: ${m[2].trim()}`).join('\n');
+        const batchTypeList = Object.entries(plan.distrib).map(([t,n])=>`- ${t}: 정확히 ${n}문항`).join('\n');
+        const scoreMatches = kichulLines.match(/\[([345])점\]/g)||[];
+        const scoreCount = scoreMatches.reduce((a,s)=>{a[s]=(a[s]||0)+1;return a;},{});
+        const scoreHint = Object.entries(scoreCount).map(([s,n])=>`${s} ${n}개`).join(', ')||'3점/4점/5점 혼용';
+        const schoolLevel = getSchoolLevel();
+        const passageKind = plan.passageKind || '본문';
+        const passageKindHint = passageKind === '대화문'
+          ? '\n\n⚠️ 이 지문은 대화문입니다. 대화 흐름, 빈칸 완성, 대화 내용 이해 중심으로 출제하세요.'
+          : '';
+        const levelDesc = schoolLevel === 'middle'
+          ? `[중학교 영어 시험 특성]
+- 어법: 관계사(where/when/which/that), to부정사/동명사, 현재완료 진행형, 5형식, 비교급 등 교과서 문법 중심
+- 어휘: 영영풀이, 빈칸에 알맞은 단어, 숙어 뜻풀이 (교과서 어휘 범위)
+- 내용일치: "글의 내용과 일치하지 않는 것은?" / "일치하는 것은?" 패턴
+- 대화완성: 빈칸에 알맞은 말, 대화 흐름상 어색한 것
+- 서술형: 문장 완성, 영작, 단어 배열`
+          : `[고등학교 영어 시험 특성]
+- 어법: 밑줄 친 부분 중 어법상 틀린 것, 네모 안에서 알맞은 것 선택
+- 어휘: 밑줄 친 단어와 문맥상 쓰임이 적절하지 않은 것
+- 빈칸추론: 빈칸에 들어갈 말로 가장 적절한 것
+- 순서배열: 주어진 글 다음에 이어질 글의 순서
+- 문장삽입: 주어진 문장이 들어가기에 가장 적절한 곳
+- 주제/제목/요지: 글의 주제/제목/요지로 가장 적절한 것
+- 서술형: 조건 영작, 빈칸 완성`;
 
-[실제 기출 시험지 - 이 구조를 정확히 학습하세요]
-${rawExamText.slice(0, 12000)}
+        prompt = `당신은 한국 ${schoolLevel==='middle'?'중학교':'고등학교'} 영어 내신 시험지 제작 전문가입니다.
+아래 기출 시험지를 완벽히 분석한 뒤, 새 지문으로 동일 구조의 예상문제를 출제하세요.
 
-[예상문제에 사용할 지문 자료]
-${passage}
+${levelDesc}
 
-[출제 지시]
-위 기출 시험지와 완전히 동일한 구조로 ${plan.startNum}번~${plan.startNum+plan.count-1}번 문제를 출제하세요.
+══ 기출 시험지 전문 ══
+${kichulLines}
 
-규칙:
-1. 기출에서 같은 지문 아래 여러 문제가 있으면 → group 타입, passage에 지문 한 번만 작성
-2. 독립 문제(어휘/대화/빈칸 등) → single 타입
-3. 발문 표현을 기출 원문에서 그대로 가져오세요 (예: 기출에 "다음 글의 제목으로 가장 적절한 것은?"이 있으면 그 표현 그대로 사용)
-4-1. 선지 형식도 기출과 동일하게 (번호 형식, 길이, 문장 종결 방식 모두 복제)
-4. passage는 지문 원문 전체 그대로 (요약 금지, 지문을 question 안에 반복 금지)
-5. 객관식: ①②③④⑤ / 서술형: choices 빈 배열
-6. 번호는 반드시 ${plan.startNum}번부터${grammarPoints ? "\n7. 문법 문제에 반영:\n" + grammarPoints : ""}
+══ 기출 발문 목록 (이 표현 그대로 복사해 사용) ══
+${kichulQuestions}
+
+══ 새 시험 지문 ══
+${batchPassage}
+
+══ 출제 명령 ══
+문제 번호: ${plan.startNum}번 ~ ${plan.startNum+plan.count-1}번 (총 ${plan.count}문항)
+
+▶ 유형별 문항수 (정확히 준수):
+${batchTypeList}
+
+▶ 절대 규칙:
+1. 발문은 위 [기출 발문 목록]에서 같은 유형의 것을 글자 그대로 복사 (변형 금지)
+   예) 어법 → "밑줄 친 ⓐ~ⓔ 중 어법상 옳지 않은 부분을 포함한 것은?" 그대로
+   예) 내용일치 → "글의 내용과 일치하지 않는 것은?" 그대로
+   예) 어휘 → "밑줄 친 부분의 뜻풀이가 옳지 않은 것은?" 그대로
+2. 선지: ①②③④⑤, 기출과 동일한 길이/구조
+3. 배점: 기출과 동일 (${scoreHint})
+4. group: 같은 지문 → passage 한 번만, question 안에 지문 반복 금지
+5. single: 독립 문제
+6. 총 문항수 반드시 ${plan.count}개 (초과/미달 금지)${passageKindHint}${grammarPoints ? '\n7. 문법 포인트:\n'+grammarPoints : ''}
 
 JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응답:
 [
-  {"type":"group","passage":"지문원문전체","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문만(지문제외)","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
   {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
 ]`;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
-        prompt = `다음 지문을 바탕으로 한국 중고등학교 영어 내신 예상문제를 출제하세요.\n\n[지문]\n${passage}\n\n[출제 조건]\n- 이번 문항: ${plan.count}문항 (${batchTypeDistrib})\n- 문제 번호는 ${plan.startNum}번부터\n- 객관식 ①②③④⑤, 서술형은 빈 선지${grammarPoints ? '\n- 문법 포인트 반영:' + grammarPoints.replace(/\n/g,'\\n') : ''}\n\n같은 지문을 쓰는 문제는 group으로 묶고, 독립 문제는 single로 출력하세요.\nJSON 배열로만 응답:\n[\n  {"type":"group","passage":"지문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답","score":4}]},\n  {"type":"single","num":N,"qtype":"유형명","question":"문제","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답","score":3}\n]\n서술형은 choices를 빈 배열로.`;
+        const passageSection = batchPassage ? `[지문]\n${batchPassage}\n\n` : '';
+        const schoolLevel2 = getSchoolLevel();
+        prompt = `당신은 한국 ${schoolLevel2==='middle'?'중학교':'고등학교'} 영어 내신 시험지 제작 전문가입니다.
+${passageSection}[출제 조건]
+- 문제 번호: ${plan.startNum}번 ~ ${plan.startNum+plan.count-1}번 (총 ${plan.count}문항)
+- 유형별 문항수 (정확히 준수): ${batchTypeDistrib}
+- 선지: ①②③④⑤ (서술형은 빈 배열)
+- 지문 문제는 group 타입, 독립 문제는 single 타입${grammarPoints ? '\n- 문법 포인트: ' + grammarPoints.replace(/\n/g,'\\n') : ''}
+
+JSON 배열로만 응답:
+[
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
+  {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
+]`;
       }
 
       const result = await callGemini(prompt);
@@ -1795,7 +1935,7 @@ function renderQuestions(){
           <div class="q-group-header">
             ${header} <span class="q-group-range">(${rangeStr})</span>
           </div>
-          <div class="q-group-passage">${passage}</div>
+          <div class="q-group-passage">${batchPassage}</div>
           ${qs.map(q=>renderSingleQ(q)).join('<hr class="q-divider-light">')}
         </div>
         ${divider}`;
@@ -1876,7 +2016,7 @@ function printExam(){
       const passage = (item.passage||'').replace(/\n/g,'<br>');
       return `<div class="group">
         <div class="group-header">${header} (${range})</div>
-        <div class="passage">${passage}</div>
+        <div class="passage">${batchPassage}</div>
         ${qs.map(q=>renderSingleQPrint(q)).join('')}
       </div>`;
     } else {
@@ -2309,6 +2449,11 @@ function addManualPassage(){
   div.innerHTML = `
     <div class="manual-passage-header">
       <input type="text" placeholder="제목 / 과 번호 (선택)" id="${id}_title">
+      <select id="${id}_type"
+        style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:.82rem;color:var(--ink);">
+        <option value="본문">📖 본문</option>
+        <option value="대화문">💬 대화문</option>
+      </select>
       <button class="manual-del-btn" onclick="removeManualPassage('${id}')" title="삭제">✕</button>
     </div>
     <textarea id="${id}_text" rows="5"
@@ -2343,12 +2488,14 @@ function getManualPassages(){
   // 기본 textarea
   const directText  = document.getElementById('manualTextDirect')?.value.trim()||'';
   const directTitle = document.getElementById('manualTitleDirect')?.value.trim()||'';
-  if(directText) result.push({id:'manual', title:directTitle, text:directText});
+  const directType  = document.getElementById('manualTypeDirect')?.value || '본문';
+  if(directText) result.push({id:'manual', title:directTitle, text:directText, passageType:directType});
   // 추가 지문들
   Array.from(document.querySelectorAll('.manual-passage-item')).forEach(el=>{
     const title = el.querySelector('input')?.value.trim()||'';
     const text  = el.querySelector('textarea')?.value.trim()||'';
-    if(text) result.push({id:'manual', title, text});
+    const ptype = el.querySelector('select')?.value || '본문';
+    if(text) result.push({id:'manual', title, text, passageType:ptype});
   });
   return result;
 }
