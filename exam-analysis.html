@@ -1016,6 +1016,13 @@ tr:hover td { background: var(--paper); }
 
 <!-- TAB 2 -->
 <div class="panel" id="tab2">
+
+  <!-- 기출 vs 예상문제 유사도 비교 -->
+  <div class="step-box" id="compareBox" style="display:none;">
+    <div class="step-title">🔍 기출 vs 예상문제 유사도 분석</div>
+    <div id="compareContent"></div>
+  </div>
+
   <div class="step-box">
     <div class="step-title">📋 생성된 예상문제</div>
     <div id="questionOutput" style="color:var(--ink4);">아직 생성된 문제가 없습니다.</div>
@@ -1987,6 +1994,7 @@ JSON 배열로만 응답 (마크다운 금지):
     status.innerHTML=`<span style="color:var(--green2)">✅ ${totalQ}문항 생성 완료!</span>`;
     savePredictionToStorage();
     renderQuestions();
+    renderComparison();
     switchTab(2);
   } catch(e){
     status.innerHTML='<span class="error">생성 오류: '+e.message+'</span>';
@@ -1994,6 +2002,114 @@ JSON 배열로만 응답 (마크다운 금지):
   }
 }
 
+
+function renderComparison(){
+  const box = document.getElementById('compareBox');
+  const content = document.getElementById('compareContent');
+  if(!box || !content) return;
+
+  // 기출 패턴 데이터 없으면 숨김
+  if(!analysisData || !analysisData.questions || !analysisData.questions.length){
+    box.style.display='none'; return;
+  }
+
+  // 예상문제 유형 집계
+  const predTypes = {};
+  generatedQs.forEach(item=>{
+    if(item.type==='group'){
+      (item.questions||[]).forEach(q=>{ const t=q.qtype||'기타'; predTypes[t]=(predTypes[t]||0)+1; });
+    } else {
+      const t=item.qtype||'기타'; predTypes[t]=(predTypes[t]||0)+1;
+    }
+  });
+  const predTotal = Object.values(predTypes).reduce((s,v)=>s+v,0);
+
+  // 기출 패턴 유형 집계 (questions 배열 기반)
+  const origTypes = {};
+  analysisData.questions.forEach(q=>{
+    const t = q.qtype || q.format || '기타';
+    origTypes[t] = (origTypes[t]||0)+1;
+  });
+  const origTotal = analysisData.questions.length;
+
+  // 기출 지문 목록
+  const origPassages = Object.keys(analysisData.passage_groups||{});
+
+  // 예상문제 지문 목록
+  const predPassages = [];
+  generatedQs.forEach(item=>{ if(item.type==='group' && item.passage) predPassages.push(item.passage.slice(0,40)); });
+
+  // 유형 겹침 계산
+  const allTypes = new Set([...Object.keys(origTypes), ...Object.keys(predTypes)]);
+  let matchedTypes=0, totalTypes=0;
+  const typeRows = [];
+  allTypes.forEach(t=>{
+    const o = origTypes[t]||0;
+    const p = predTypes[t]||0;
+    const match = Math.min(o,p) > 0;
+    if(match) matchedTypes++;
+    totalTypes++;
+    typeRows.push({t, o, p, match});
+  });
+  typeRows.sort((a,b)=> (b.o+b.p)-(a.o+a.p));
+
+  const typeMatchRate = totalTypes>0 ? Math.round(matchedTypes/totalTypes*100) : 0;
+
+  // 색상
+  const barColor = (pct) => pct>=80?'var(--green2)':pct>=50?'var(--gold)':'var(--red2)';
+
+  content.innerHTML = `
+    <!-- 종합 유사도 -->
+    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:140px;background:var(--paper);border:1.5px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:2rem;font-weight:bold;color:${barColor(typeMatchRate)}">${typeMatchRate}%</div>
+        <div style="font-size:.82rem;color:var(--ink3);margin-top:4px;">유형 일치율</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:var(--paper);border:1.5px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:2rem;font-weight:bold;color:var(--gold)">${origTotal}</div>
+        <div style="font-size:.82rem;color:var(--ink3);margin-top:4px;">기출 문항수</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:var(--paper);border:1.5px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:2rem;font-weight:bold;color:var(--green2)">${predTotal}</div>
+        <div style="font-size:.82rem;color:var(--ink3);margin-top:4px;">예상문제 문항수</div>
+      </div>
+    </div>
+
+    <!-- 유형별 비교 표 -->
+    <div style="font-size:.88rem;font-weight:600;color:var(--ink2);margin-bottom:8px;">📋 유형별 비교</div>
+    <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);color:var(--ink4);">
+          <th style="text-align:left;padding:6px 4px;">유형</th>
+          <th style="text-align:center;padding:6px 4px;">기출</th>
+          <th style="text-align:center;padding:6px 4px;">예상문제</th>
+          <th style="text-align:center;padding:6px 4px;">일치</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${typeRows.map(r=>`
+          <tr style="border-bottom:1px solid var(--border20);">
+            <td style="padding:6px 4px;color:var(--ink);">${r.t}</td>
+            <td style="text-align:center;padding:6px 4px;color:var(--ink3);">${r.o>0?r.o+'문항':'-'}</td>
+            <td style="text-align:center;padding:6px 4px;color:var(--ink3);">${r.p>0?r.p+'문항':'-'}</td>
+            <td style="text-align:center;padding:6px 4px;">${r.match?'<span style="color:var(--green2);font-weight:bold;">✅</span>':'<span style="color:var(--ink4);">—</span>'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+
+    <!-- 기출 지문 커버리지 -->
+    ${origPassages.length ? `
+    <div style="font-size:.88rem;font-weight:600;color:var(--ink2);margin:14px 0 8px;">📄 기출 지문 그룹 커버리지</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      ${origPassages.map(pg=>{
+        const covered = predPassages.length > 0;
+        return `<span style="padding:4px 10px;border-radius:12px;font-size:.78rem;background:${covered?'rgba(39,174,96,.15)':'var(--paper)'};border:1px solid ${covered?'var(--green2)':'var(--border)'};color:${covered?'var(--green2)':'var(--ink3)'};">${pg}번</span>`;
+      }).join('')}
+    </div>` : ''}
+  `;
+
+  box.style.display='block';
+}
 
 function renderQuestions(){
   const out = document.getElementById('questionOutput');
@@ -2353,8 +2469,9 @@ function loadAnalysisFromStorage(){
   if(!saved) return;
   try{
     analysisData = JSON.parse(saved);
-    renderAnalysis();
-    document.getElementById('analyzeStatus').innerHTML='<span style="color:var(--blue2)">💾 이전 분석 데이터 복원됨</span>';
+    // 분석결과 영역은 표시하지 않음 (패턴 선택 또는 기출 분석 시에만 표시)
+    const statusEl = document.getElementById('analyzeStatus');
+    if(statusEl) statusEl.innerHTML='<span style="color:var(--blue2)">💾 이전 분석 데이터 복원됨 (패턴 선택 드롭다운에서 확인)</span>';
   } catch(e){}
 }
 
