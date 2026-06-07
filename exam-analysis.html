@@ -2409,7 +2409,7 @@ function renderQuestions(){
           <div class="q-group-header">
             ${header} <span class="q-group-range">(${rangeStr})</span>
           </div>
-          <div class="q-group-passage">${batchPassage}</div>
+          <div class="q-group-passage">${passage}</div>
           ${qs.map(q=>renderSingleQ(q)).join('<hr class="q-divider-light">')}
         </div>
         ${divider}`;
@@ -2490,7 +2490,7 @@ function printExam(){
       const passage = (item.passage||'').replace(/\n/g,'<br>');
       return `<div class="group">
         <div class="group-header">${header} (${range})</div>
-        <div class="passage">${batchPassage}</div>
+        <div class="passage">${passage}</div>
         ${qs.map(q=>renderSingleQPrint(q)).join('')}
       </div>`;
     } else {
