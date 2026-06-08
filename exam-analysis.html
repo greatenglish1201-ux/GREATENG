@@ -3222,14 +3222,10 @@ async function saveMiddlePassages(){
   if(saveBtn) saveBtn.disabled = true;
   status.innerHTML='<span class="spinner"></span> 저장 중...';
   try{
-    // 순차 저장 (동시 호출 시 중복 방지 어려움)
-    if(bodyText) await postToGAS({
+    // 한 레슨 = 한 행 (본문+대화문 합쳐서 저장)
+    await postToGAS({
       action:'saveMiddlePassage', school, grade, publisher, author, year, semester,
-      lesson, type:'본문', title:bodyTitle||lesson||'본문', text:bodyText, grammar_points:grammarPoints
-    });
-    if(dialogText) await postToGAS({
-      action:'saveMiddlePassage', school, grade, publisher, author, year, semester,
-      lesson, type:'대화문', title:dialogTitle||lesson||'대화문', text:dialogText, grammar_points:grammarPoints
+      lesson, body_text:bodyText, dialog_text:dialogText, grammar_points:grammarPoints
     });
     status.innerHTML='<span style="color:var(--green2)">✅ 저장 완료 (지문+문법포인트)</span>';
   } catch(e){
@@ -3258,24 +3254,20 @@ async function loadMiddlePassages(){
     if(!res.list||!res.list.length){
       status.innerHTML='<span style="color:var(--ink4);">저장된 지문 없음</span>'; return;
     }
-    const bodies  = res.list.filter(r=>r.type==='본문');
-    const dialogs = res.list.filter(r=>r.type==='대화문');
-
-    if(bodies.length){
-      document.getElementById('manualTextBody').value  = bodies.map(r=>r.text).join('\n\n');
-      document.getElementById('manualTitleBody').value = bodies[0].title||'';
+    const item = res.list[0]; // 레슨당 1행
+    if(item.body_text){
+      document.getElementById('manualTextBody').value  = item.body_text;
+      document.getElementById('manualTitleBody').value = item.lesson||'';
     }
-    if(dialogs.length){
-      document.getElementById('manualTextDialog').value  = dialogs.map(r=>r.text).join('\n\n');
-      document.getElementById('manualTitleDialog').value = dialogs[0].title||'';
+    if(item.dialog_text){
+      document.getElementById('manualTextDialog').value  = item.dialog_text;
+      document.getElementById('manualTitleDialog').value = item.lesson||'';
     }
-    // 문법 포인트 복원 (첫 번째 항목 기준)
-    const gp = (bodies[0]||dialogs[0])?.grammar_points||'';
-    if(gp){
+    if(item.grammar_points){
       const gpEl = document.getElementById('grammarPointInput');
-      if(gpEl) gpEl.value = gp;
+      if(gpEl) gpEl.value = item.grammar_points;
     }
-    status.innerHTML=`<span style="color:var(--green2)">✅ ${res.list.length}개 지문 + 문법포인트 로드 완료</span>`;
+    status.innerHTML=`<span style="color:var(--green2)">✅ ${item.lesson||'지문'} 로드 완료</span>`;
   } catch(e){
     status.innerHTML='<span class="error">불러오기 실패: '+e.message+'</span>';
   }
