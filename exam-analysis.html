@@ -2940,6 +2940,13 @@ function downloadQuestionsJSON(){
   const year     = document.getElementById('metaYear')?.value||'';
   const semester = document.getElementById('metaSemester')?.value||'';
   const exam     = document.getElementById('metaExam')?.value||'';
+  // 미선택 항목 경고
+  const missing = [];
+  if(!school)   missing.push('학교');
+  if(!grade)    missing.push('학년');
+  if(!semester) missing.push('학기');
+  if(!exam)     missing.push('시험종류');
+  if(missing.length && !confirm(`다음 항목이 선택되지 않았습니다:\n${missing.map(m=>'• '+m).join('\n')}\n\n그래도 저장하시겠습니까?`)) return;
   const totalQ   = generatedQs.reduce((s,item)=>item.type==='group'?s+(item.questions?.length||0):s+1,0);
   const data = {
     meta: { school, grade, year, semester, exam,
