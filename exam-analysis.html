@@ -845,11 +845,12 @@ tr:hover td { background: var(--paper); }
 </header>
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)">① 기출 분석</div>
-  <div class="tab" onclick="switchTab(1)">② 예상문제 출제</div>
-  <div class="tab" onclick="switchTab(2)">③ 결과 &amp; 출력</div>
-  <div class="tab" onclick="switchTab(3)">④ 적중률 분석</div>
-  <div class="tab" onclick="switchTab(4)">⑤ 문법 포인트</div>
-  <div class="tab" onclick="switchTab(5)">⚙️ 설정</div>
+  <div class="tab" onclick="switchTab(1)">② 중등 출제</div>
+  <div class="tab" onclick="switchTab(3)">③ 고등 출제</div>
+  <div class="tab" onclick="switchTab(3)">④ 결과 &amp; 출력</div>
+  <div class="tab" onclick="switchTab(4)">⑤ 적중률 분석</div>
+  <div class="tab" onclick="switchTab(5)">⑥ 문법 포인트</div>
+  <div class="tab" onclick="switchTab(6)">⚙️ 설정</div>
 </div>
 
 <!-- TAB 0 -->
@@ -919,131 +920,92 @@ tr:hover td { background: var(--paper); }
   </div>
 </div>
 
-<!-- TAB 1 -->
+<!-- TAB 1: 중등 예상문제 -->
 <div class="panel" id="tab1">
-  <div class="step-box">
-    <div class="step-title">📂 시험범위 지문 선택 (구글시트)</div>
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
-      <button class="btn btn-gold" onclick="loadPassages()">🔄 지문 불러오기</button>
-      <span id="sheetStatus" class="status"></span>
-    </div>
-    <!-- 교재별 탭 -->
-    <div id="passageTabBar" style="display:none;margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-      <!-- JS로 생성 -->
-    </div>
-    <!-- 전체선택/해제 -->
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="toggleAllPassages(true)">전체선택</button>
-      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="toggleAllPassages(false)">전체해제</button>
-      <span id="passageCountInfo" style="font-size:.8rem;color:var(--ink4);line-height:2;margin-left:4px;"></span>
-    </div>
-    <div id="passageList">
-      <div style="color:var(--ink4);font-size:.88rem;">지문 불러오기 버튼을 눌러주세요.</div>
-    </div>
-  </div>
 
-  <!-- 교과서 본문 직접 입력 -->
+  <!-- 교과서 지문 관리 -->
   <div class="step-box">
-    <div class="step-title">📝 교과서 지문 직접 입력 <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 중등 교과서 등 DB 미등록 지문</span></div>
+    <div class="step-title">📚 교과서 지문 관리
+      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">저장 후 불러오면 다기기에서 사용 가능</span>
+    </div>
+    <!-- 분류 입력 -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+      <input type="text" id="passagePublisher" placeholder="출판사 (예: 비상)"
+        style="width:100px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+      <input type="text" id="passageAuthor" placeholder="저자 (예: 김진완)"
+        style="width:100px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+      <input type="text" id="passageLesson" placeholder="레슨 (예: Lesson 3)"
+        style="width:130px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+      <button class="btn btn-green" style="font-size:.78rem;padding:5px 12px;" onclick="saveMiddlePassages()">💾 저장</button>
+      <button class="btn btn-gold" style="font-size:.78rem;padding:5px 12px;" onclick="loadMiddlePassages()">📂 불러오기</button>
+      <span id="middlePassageStatus" style="font-size:.8rem;color:var(--ink4);"></span>
+    </div>
 
+    <!-- 본문 / 대화문 두 칸 -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
-      <!-- 본문 입력란 -->
       <div style="display:flex;flex-direction:column;gap:4px;">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
           <span style="font-size:.85rem;font-weight:600;color:var(--gold);">📖 본문</span>
-          <input type="text" id="manualTitleBody" placeholder="제목/과 번호 (선택)"
+          <input type="text" id="manualTitleBody" placeholder="제목 (선택)"
             style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.78rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
         </div>
-        <textarea id="manualTextBody" rows="7"
+        <textarea id="manualTextBody" rows="8"
           placeholder="교과서 본문을 붙여넣으세요..."
           oninput="updateManualCount()"
           style="border:1.5px solid var(--border);border-radius:6px;background:var(--paper);color:var(--ink);padding:8px;font-size:.82rem;font-family:'Noto Sans KR',sans-serif;resize:vertical;"></textarea>
       </div>
-      <!-- 대화문 입력란 -->
       <div style="display:flex;flex-direction:column;gap:4px;">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
           <span style="font-size:.85rem;font-weight:600;color:var(--green2);">💬 대화문</span>
-          <input type="text" id="manualTitleDialog" placeholder="제목/과 번호 (선택)"
+          <input type="text" id="manualTitleDialog" placeholder="제목 (선택)"
             style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.78rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
         </div>
-        <textarea id="manualTextDialog" rows="7"
-          placeholder="대화문을 붙여넣으세요...&#10;예) Ted: Shall we go shopping?&#10;Lily: Sure!"
+        <textarea id="manualTextDialog" rows="8"
+          placeholder="대화문을 붙여넣으세요...&#10;예) Ted: Shall we go?&#10;Lily: Sure!"
           oninput="updateManualCount()"
           style="border:1.5px solid var(--green2);border-radius:6px;background:var(--paper);color:var(--ink);padding:8px;font-size:.82rem;font-family:'Noto Sans KR',sans-serif;resize:vertical;"></textarea>
       </div>
     </div>
-
-    <!-- 추가 지문 (동적) -->
-    <div id="manualPassageList"></div>
-
-    <div style="display:flex;gap:8px;margin-top:4px;align-items:center;flex-wrap:wrap;">
-      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="addManualPassage()">+ 지문 추가</button>
+    <div style="display:flex;gap:8px;align-items:center;">
       <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="clearAllManual()">전체 삭제</button>
       <span id="manualCountInfo" style="font-size:.8rem;color:var(--ink4);"></span>
     </div>
-
-    <!-- 시험 범위 지문 저장/불러오기 -->
-    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center;">
-        <input type="text" id="passagePublisher" placeholder="출판사 (예: 비상)"
-          style="width:100px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-        <input type="text" id="passageAuthor" placeholder="저자 (예: 김진완)"
-          style="width:100px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-        <input type="text" id="passageLesson" placeholder="레슨 (예: Lesson 3)"
-          style="width:120px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <button class="btn btn-green" style="font-size:.78rem;padding:5px 12px;" onclick="saveMiddlePassages()">💾 지문+문법 저장</button>
-        <button class="btn btn-gold" style="font-size:.78rem;padding:5px 12px;" onclick="loadMiddlePassages()">📂 지문+문법 불러오기</button>
-        <span id="middlePassageStatus" style="font-size:.8rem;color:var(--ink4);"></span>
-      </div>
-    </div>
   </div>
 
-  <!-- 문법 포인트 (출제 시 반영) -->
-  <div class="step-box" id="grammarPointBox">
+  <!-- 문법 포인트 -->
+  <div class="step-box">
     <div class="step-title">📐 문법 포인트
-      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 저장된 포인트 자동 로드 · 직접 수정 가능</span>
+      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">지문과 함께 저장/불러오기 됩니다</span>
     </div>
     <textarea id="grammarPointInput" rows="4"
-      placeholder="예) 1. 관계대명사 what: '~하는 것' 의미의 명사절&#10;예) 2. to부정사 형용사적 용법: 명사 수식&#10;&#10;저장된 문법 포인트가 있으면 자동으로 불러옵니다."
+      placeholder="예) 1. 관계대명사 what: '~하는 것' 의미의 명사절&#10;예) 2. to부정사 형용사적 용법: 명사 수식"
       style="font-size:.85rem;"></textarea>
-    <!-- 추가 입력란 -->
     <div style="display:flex;gap:6px;margin-top:8px;align-items:center;">
-      <input type="text" id="grammarPointAdd" placeholder="추가할 문법 포인트 입력 (예: 현재완료진행형)"
+      <input type="text" id="grammarPointAdd" placeholder="추가할 문법 포인트 입력"
         onkeydown="if(event.key==='Enter'){appendGrammarPoint();event.preventDefault();}"
         style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-      <button class="btn btn-gold" style="font-size:.78rem;padding:5px 14px;white-space:nowrap;" onclick="appendGrammarPoint()">+ 추가</button>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
-      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="reloadGrammarPointInput()">🔄 저장된 포인트 불러오기</button>
-      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="document.getElementById('grammarPointInput').value=''">지우기</button>
+      <button class="btn btn-gold" style="font-size:.78rem;padding:5px 14px;" onclick="appendGrammarPoint()">+ 추가</button>
+      <button class="btn btn-gray" style="font-size:.78rem;padding:5px 10px;" onclick="document.getElementById('grammarPointInput').value=''">지우기</button>
     </div>
   </div>
 
+  <!-- 출제 설정 -->
   <div class="step-box">
-    <div class="step-title">⚙️ 출제 패턴 설정</div>
-
-    <!-- 저장된 패턴 드롭다운 -->
+    <div class="step-title">⚙️ 중등 출제 설정</div>
     <div style="margin-bottom:12px;">
-      <label style="color:var(--ink2);font-size:.88rem;display:block;margin-bottom:6px;">📂 저장된 기출 패턴 불러오기</label>
+      <label style="color:var(--ink2);font-size:.88rem;display:block;margin-bottom:6px;">📂 기출 패턴 선택 (중등)</label>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <select id="patternSelector" onchange="applySelectedPattern()"
           style="flex:1;min-width:200px;background:var(--paper);color:var(--ink);border:1px solid #b8860b88;border-radius:5px;padding:6px 10px;font-size:.88rem;">
-          <option value="">-- 패턴 선택 (또는 직접 설정) --</option>
+          <option value="">-- 패턴 선택 --</option>
         </select>
-        <button class="btn btn-gray" style="font-size:.8rem;padding:5px 12px;" onclick="loadPatternList()">🔄 목록 새로고침</button>
+        <button class="btn btn-gray" style="font-size:.8rem;padding:5px 12px;" onclick="loadPatternList()">🔄 새로고침</button>
       </div>
       <div id="patternSelectorStatus" class="status" style="margin-top:6px;font-size:.82rem;"></div>
     </div>
-
-    <!-- 적용된 패턴 요약 -->
     <div id="appliedPatternInfo" style="display:none;background:var(--paper);border:1px solid #b8860b55;border-radius:6px;padding:10px;margin-bottom:12px;font-size:.85rem;color:var(--gold);"></div>
-
-    <!-- 유형 체크박스 -->
     <div style="color:var(--ink4);font-size:.82rem;margin-bottom:6px;">※ 유형 직접 선택/해제 가능</div>
     <div class="flex-row" id="typeCheckboxes"></div>
-
     <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="generateQuestions()">⚡ 예상문제 출제</button>
       <label style="color:var(--ink3);font-size:.85rem;">배치 크기:
@@ -1076,8 +1038,75 @@ tr:hover td { background: var(--paper); }
   </div>
 </div>
 
-<!-- TAB 2 -->
+<!-- TAB 2: 고등 예상문제 -->
 <div class="panel" id="tab2">
+
+  <!-- 고등 지문 선택 (구글시트 DB) -->
+  <div class="step-box">
+    <div class="step-title">📂 고등 지문 선택 (구글시트 DB)</div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+      <button class="btn btn-gold" onclick="loadPassages()">🔄 지문 불러오기</button>
+      <span id="sheetStatus" class="status"></span>
+    </div>
+    <div id="passageTabBar" style="display:none;margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="toggleAllPassages(true)">전체선택</button>
+      <button class="btn btn-gray" style="font-size:.78rem;padding:4px 12px;" onclick="toggleAllPassages(false)">전체해제</button>
+      <span id="passageCountInfo" style="font-size:.8rem;color:var(--ink4);line-height:2;margin-left:4px;"></span>
+    </div>
+    <div id="passageList">
+      <div style="color:var(--ink4);font-size:.88rem;">지문 불러오기 버튼을 눌러주세요.</div>
+    </div>
+  </div>
+
+  <!-- 고등 출제 설정 -->
+  <div class="step-box">
+    <div class="step-title">⚙️ 고등 출제 설정</div>
+    <div style="margin-bottom:12px;">
+      <label style="color:var(--ink2);font-size:.88rem;display:block;margin-bottom:6px;">📂 기출 패턴 선택 (고등)</label>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="patternSelectorHigh" onchange="applySelectedPatternHigh()"
+          style="flex:1;min-width:200px;background:var(--paper);color:var(--ink);border:1px solid #b8860b88;border-radius:5px;padding:6px 10px;font-size:.88rem;">
+          <option value="">-- 패턴 선택 --</option>
+        </select>
+        <button class="btn btn-gray" style="font-size:.8rem;padding:5px 12px;" onclick="loadPatternList()">🔄 새로고침</button>
+      </div>
+    </div>
+    <div id="appliedPatternInfoHigh" style="display:none;background:var(--paper);border:1px solid #b8860b55;border-radius:6px;padding:10px;margin-bottom:12px;font-size:.85rem;color:var(--gold);"></div>
+    <div style="color:var(--ink4);font-size:.82rem;margin-bottom:6px;">※ 유형 직접 선택/해제 가능</div>
+    <div class="flex-row" id="typeCheckboxesHigh"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="generateQuestionsHigh()">⚡ 예상문제 출제</button>
+      <label style="color:var(--ink3);font-size:.85rem;">배치 크기:
+        <select id="genBatchSizeHigh"
+          style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:.82rem;color:var(--ink);margin-left:4px;">
+          <option value="2">2문항씩</option>
+          <option value="3" selected>3문항씩</option>
+          <option value="4">4문항씩</option>
+          <option value="5">5문항씩</option>
+        </select>
+      </label>
+      <label style="color:var(--ink3);font-size:.9rem;">문항 수:
+        <input type="number" id="qCountHigh" value="15" min="1" max="50"
+          style="width:64px;background:var(--paper);color:var(--ink);border:1.5px solid var(--border);
+                 padding:5px 10px;border-radius:6px;margin-left:6px;font-size:.88rem;
+                 font-family:'Noto Sans KR',sans-serif;text-align:center;">
+      </label>
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+      <span style="color:var(--ink3);font-size:.85rem;">🤖 모델:</span>
+      <select id="geminiModelTab2" onchange="localStorage.setItem('greateng_gemini_model',this.value)"
+        style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;color:var(--ink);padding:5px 12px;font-size:.85rem;">
+        <option value="gemini-2.5-flash">Flash (기본)</option>
+        <option value="gemini-2.5-flash-lite">Flash Lite (빠름/안정)</option>
+      </select>
+    </div>
+    <div id="generateStatusHigh" class="status"></div>
+  </div>
+</div>
+
+<!-- TAB 3: 결과 & 출력 -->
+<div class="panel" id="tab3">
 
   <!-- 기출 vs 예상문제 유사도 비교 -->
   <div class="step-box" id="compareBox" style="display:none;">
@@ -1099,8 +1128,8 @@ tr:hover td { background: var(--paper); }
   </div>
 </div>
 
-<!-- TAB 3: 적중률 분석 -->
-<div class="panel" id="tab3">
+<!-- TAB 4: 적중률 분석 -->
+<div class="panel" id="tab4">
   <div class="step-box">
     <div class="step-title">📊 예상문제 vs 실제 기출 적중률 분석</div>
 
@@ -1169,8 +1198,8 @@ tr:hover td { background: var(--paper); }
   </div>
 </div>
 
-<!-- TAB 4: 문법 포인트 (중등 전용) -->
-<div class="panel" id="tab4">
+<!-- TAB 5: 문법 포인트 -->
+<div class="panel" id="tab5">
   <div class="step-box">
     <div class="step-title">📐 단원별 문법 포인트 <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">※ 중등 예상문제 출제 시 자동 반영</span></div>
 
@@ -1210,8 +1239,8 @@ tr:hover td { background: var(--paper); }
   </div>
 </div>
 
-<!-- TAB 5: 설정 -->
-<div class="panel" id="tab5">
+<!-- TAB 6: 설정 -->
+<div class="panel" id="tab6">
   <div class="step-box">
     <div class="step-title">🔑 API 설정</div>
     <div style="margin-bottom:16px;">
@@ -1865,7 +1894,7 @@ function importQuestionsJSON(input){
       renderQuestions();
       const status = document.getElementById('generateStatus');
       if(status) status.innerHTML=`<span style="color:var(--green2)">✅ ${questions.length}문항 불러오기 완료</span>`;
-      switchTab(2);
+      switchTab(3);
     } catch(err){
       alert('JSON 파싱 오류: ' + err.message);
     }
@@ -2285,7 +2314,7 @@ JSON 배열로만 응답 (마크다운 금지):
     savePredictionToStorage();
     renderQuestions();
     renderComparison();
-    switchTab(2);
+    switchTab(3);
   } catch(e){
     status.innerHTML='<span class="error">생성 오류: '+e.message+'</span>';
     console.error('generateQuestions 오류:', e);
@@ -2922,11 +2951,15 @@ async function loadPatternList(){
   const allList=Object.values(merged).sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||''));
   const prev=sel.value;
   sel.innerHTML='<option value="">-- 패턴 선택 (또는 직접 설정) --</option>';
+  const selHigh = document.getElementById('patternSelectorHigh');
+  if(selHigh) selHigh.innerHTML='<option value="">-- 패턴 선택 --</option>';
+
   allList.forEach(item=>{
     const label=[item.school,item.grade,item.year,item.semester,item.exam].filter(Boolean).join(' ')+(item.total?` (${item.total}문항)`:'');
     const opt=document.createElement('option');
     opt.value=item.key; opt.textContent=label; opt.dataset.payload=JSON.stringify(item);
-    sel.appendChild(opt);
+    sel.appendChild(opt.cloneNode(true));
+    if(selHigh) selHigh.appendChild(opt);
   });
   if(prev) sel.value=prev;
   if(statusEl) statusEl.innerHTML=allList.length
@@ -2935,6 +2968,39 @@ async function loadPatternList(){
 }
 
 // ── 선택된 패턴 적용 ──
+function applySelectedPatternHigh(){
+  const sel = document.getElementById('patternSelectorHigh');
+  const infoEl = document.getElementById('appliedPatternInfoHigh');
+  const opt = sel?.options[sel.selectedIndex];
+  if(!opt||!opt.dataset.payload){ if(infoEl) infoEl.style.display='none'; renderTypeCheckboxesHigh(); return; }
+  let item; try{ item=JSON.parse(opt.dataset.payload); }catch(e){ return; }
+  analysisData = item;
+  if(item.total) document.getElementById('qCountHigh').value = item.total;
+  const patternStr = Object.entries(item.patterns||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1])
+    .map(([t,c])=>`<span class="tag tag-type">${t}</span><span class="tag tag-count">${c}문항</span>`).join(' ');
+  if(infoEl){
+    infoEl.style.display='block';
+    infoEl.innerHTML=`<div style="margin-bottom:8px;">📌 <b>${[item.meta?.school,item.meta?.grade,item.meta?.year].filter(Boolean).join(' ')}</b> · 총 ${item.total||0}문항</div><div style="display:flex;flex-wrap:wrap;gap:4px;">${patternStr}</div>`;
+  }
+  renderTypeCheckboxesHigh();
+}
+
+function renderTypeCheckboxesHigh(){
+  const container = document.getElementById('typeCheckboxesHigh');
+  if(!container) return;
+  if(!analysisData||!analysisData.patterns){ container.innerHTML=''; return; }
+  container.innerHTML = Object.entries(analysisData.patterns).filter(([,v])=>v>0)
+    .map(([t,c])=>`<label style="display:flex;align-items:center;gap:4px;font-size:.82rem;cursor:pointer;">
+      <input type="checkbox" value="${t}" checked style="accent-color:var(--gold);"> ${t} (${c})
+    </label>`).join('');
+}
+
+async function generateQuestionsHigh(){
+  // 고등 출제: generateQuestions와 동일하되 고등 모드로 강제
+  const origLevel = document.getElementById('metaGrade')?.value;
+  generateQuestions(); // 현재는 동일 함수 사용, 추후 분리
+}
+
 function applySelectedPattern(){
   const sel=document.getElementById('patternSelector');
   const infoEl=document.getElementById('appliedPatternInfo');
