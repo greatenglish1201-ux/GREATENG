@@ -3108,15 +3108,11 @@ async function loadMiddlePassages(){
     const dialogs = res.list.filter(r=>r.type==='대화문');
 
     if(bodies.length){
-      document.getElementById('manualTextBody').value  = bodies.map(r=>r.text).join('
-
-');
+      document.getElementById('manualTextBody').value  = bodies.map(r=>r.text).join('\n\n');
       document.getElementById('manualTitleBody').value = bodies[0].title||'';
     }
     if(dialogs.length){
-      document.getElementById('manualTextDialog').value  = dialogs.map(r=>r.text).join('
-
-');
+      document.getElementById('manualTextDialog').value  = dialogs.map(r=>r.text).join('\n\n');
       document.getElementById('manualTitleDialog').value = dialogs[0].title||'';
     }
     status.innerHTML=`<span style="color:var(--green2)">✅ ${res.list.length}개 지문 로드 완료</span>`;
