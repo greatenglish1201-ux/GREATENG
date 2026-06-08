@@ -1038,6 +1038,15 @@ tr:hover td { background: var(--paper); }
 
     <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="generateQuestions()">⚡ 예상문제 출제</button>
+      <label style="color:var(--ink3);font-size:.85rem;">배치 크기:
+        <select id="genBatchSize"
+          style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:.82rem;color:var(--ink);margin-left:4px;">
+          <option value="2">2문항씩</option>
+          <option value="3" selected>3문항씩</option>
+          <option value="4">4문항씩</option>
+          <option value="5">5문항씩</option>
+        </select>
+      </label>
       <button class="btn btn-gray" style="font-size:.82rem;padding:5px 12px;" onclick="document.getElementById('jsonImportInput').click()">📂 JSON 불러오기</button>
       <input type="file" id="jsonImportInput" accept=".json" style="display:none;" onchange="importQuestionsJSON(this)">
       <label style="color:var(--ink3);font-size:.9rem;">문항 수:
@@ -2041,8 +2050,9 @@ async function generateQuestions(){
   const batchPlans = [];
   let cursor = 1;
 
-  // ── 본문 독해 문제: 본문 지문별 2~3문항 ──
-  const QS_PER_BODY = Math.max(2, Math.min(3, Math.ceil(readingQs.length / Math.max(bodyPassages.length,1))));
+  // ── 본문 독해 문제: 본문 지문별 N문항 ──
+  const _batchSz = parseInt(document.getElementById('genBatchSize')?.value||'3')||3;
+  const QS_PER_BODY = _batchSz;
   let rIdx = 0;
   bodyPassages.forEach(p => {
     const slice = readingQs.slice(rIdx, rIdx + QS_PER_BODY);
@@ -2061,7 +2071,7 @@ async function generateQuestions(){
 
   // ── 대화문 문제: 대화문 지문별 2~3문항 (중학교만) ──
   if(isMiddle && dialogPassages.length && dialogQs.length){
-    const QS_PER_DIALOG = Math.max(2, Math.min(3, Math.ceil(dialogQs.length / dialogPassages.length)));
+    const QS_PER_DIALOG = _batchSz;
     let dIdx = 0;
     dialogPassages.forEach(p => {
       const slice = dialogQs.slice(dIdx, dIdx + QS_PER_DIALOG);
@@ -2079,7 +2089,7 @@ async function generateQuestions(){
     }
   } else if(dialogQs.length){
     // 고등학교 or 대화문 지문 없으면 독립 문제로 처리
-    const INDEP_BATCH = 4;
+    const INDEP_BATCH = _batchSz;
     for(let i=0; i<dialogQs.length; i+=INDEP_BATCH){
       const slice = dialogQs.slice(i, i+INDEP_BATCH);
       const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
@@ -2088,8 +2098,8 @@ async function generateQuestions(){
     }
   }
 
-  // ── 독립 문제 (어법/어휘/영작): 4문항씩 ──
-  const INDEP_BATCH = 4;
+  // ── 독립 문제 (어법/어휘/영작): 배치 크기씩 ──
+  const INDEP_BATCH = _batchSz;
   for(let i=0; i<indepQs.length; i+=INDEP_BATCH){
     const slice = indepQs.slice(i, i+INDEP_BATCH);
     const bd = {}; slice.forEach(t=>{ bd[t]=(bd[t]||0)+1; });
