@@ -2283,8 +2283,8 @@ ${batchTypeList}
 
 JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응답:
 [
-  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":4}]},
-  {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":3}
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"③ (선지번호만)","explanation":"해설: 이유 설명","score":4}]},
+  {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③ (선지번호만)","explanation":"해설: 이유 설명","score":3}
 ]`;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
@@ -2352,8 +2352,8 @@ ${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
 
 JSON 배열로만 응답 (마크다운 금지):
 [
-  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":4}]},
-  {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":3}
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③ (선지번호만)","explanation":"해설: 이유 설명","score":4}]},
+  {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③ (선지번호만)","explanation":"해설: 이유 설명","score":3}
 ]`;
       }
 
@@ -2650,15 +2650,20 @@ function printExam(){
   });
   const answerRows = allQs.map(q=>{
     const num = q.num || answerNum++;
-    // answer/explanation 분리 (신형식: 별도 필드 / 구형식: 줄바꿈)
+    // answer/explanation 분리
     let ans = '', exp = '';
     if(q.explanation !== undefined){
-      ans = q.answer||'';
-      exp = q.explanation||'';
+      // answer에서 선지번호만 추출 (①②③④⑤ 또는 숫자)
+      const rawAns = (q.answer||'').trim();
+      const numMatch = rawAns.match(/^([①②③④⑤⑥]|\d+)/);
+      ans = numMatch ? numMatch[1] : rawAns.split(' ')[0];
+      exp = (q.explanation||'').replace(/^해설[:\s]*/,'');
     } else {
       const parts = (q.answer||'').split('\n');
-      ans = parts[0];
-      exp = parts.slice(1).join(' ').replace(/^해설:\s*/,'');
+      const numMatch = parts[0].match(/^([①②③④⑤⑥]|\d+)/);
+      ans = numMatch ? numMatch[1] : parts[0].split(/\s/)[0];
+      exp = parts.slice(1).join(' ').replace(/^해설[:\s]*/,'');
+      if(!exp) exp = parts[0].replace(/^[①②③④⑤⑥\d]+\s*/,'');
     }
     return `<tr>
       <td style="text-align:center;font-weight:bold;">${num}</td>
