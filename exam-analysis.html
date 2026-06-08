@@ -190,12 +190,14 @@ header h1 span {
   letter-spacing: .1px;
   position: relative;
 }
-.tab:hover { color: var(--navy2); }
+.tab:hover { color: var(--navy2); background: var(--paper); border-radius: 6px 6px 0 0; }
 .tab.active {
   color: var(--navy);
   border-bottom-color: var(--gold);
   font-weight: 800;
   font-size: .98rem;
+  background: var(--paper);
+  border-radius: 6px 6px 0 0;
 }
 
 /* ── 패널 ── */
@@ -277,18 +279,18 @@ input[type="text"]:focus, input[type="password"]:focus, select:focus {
 
 /* ── 버튼 ── */
 .btn {
-  padding: 10px 22px;
+  padding: 13px 28px;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: .88rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   font-family: 'Noto Sans KR', sans-serif;
   transition: all .2s;
-  letter-spacing: .2px;
+  letter-spacing: .3px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 .btn:active { transform: translateY(1px); }
 
@@ -1149,9 +1151,9 @@ tr:hover td { background: var(--paper); }
 <div class="panel" id="tab3">
 
   <!-- 고정 버튼 바 -->
-  <div style="position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1.5px solid var(--border);padding:10px 0 10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;">
+  <div style="position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1.5px solid var(--border);padding:14px 0 14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;">
     <button class="btn btn-green" onclick="printExam()">🖨️ 인쇄 / PDF 저장</button>
-    <button class="btn btn-gray" style="font-size:.82rem;" onclick="document.getElementById('jsonImportInput2').click()">📂 JSON 불러오기</button>
+    <button class="btn btn-gray" onclick="document.getElementById('jsonImportInput2').click()">📂 JSON 불러오기</button>
     <input type="file" id="jsonImportInput2" accept=".json" style="display:none;" onchange="importQuestionsJSON(this)">
     <button class="btn btn-gold" onclick="downloadQuestionsJSON()">💾 예상문제 JSON 저장</button>
     <button class="btn btn-red" onclick="clearAll()">🗑️ 초기화</button>
