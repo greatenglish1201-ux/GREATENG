@@ -76,7 +76,9 @@ header {
   align-items: stretch;
   gap: 0;
   height: 64px;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 200;
   box-shadow: 0 2px 16px rgba(15,35,64,.22);
 }
 
@@ -169,7 +171,7 @@ header h1 span {
   background: var(--white);
   border-bottom: 1px solid var(--border);
   position: sticky;
-  top: 0;
+  top: 64px;
   z-index: 100;
   overflow-x: auto;
   padding: 0 24px;
@@ -1418,6 +1420,43 @@ function getSchool(){
   return sel.value;
 }
 
+// ── 메타 필드 공통 체크 ──
+function checkMeta(required = ['school','grade','semester','exam']){
+  const vals = {
+    school:   getSchool(),
+    grade:    document.getElementById('metaGrade')?.value,
+    year:     document.getElementById('metaYear')?.value,
+    semester: document.getElementById('metaSemester')?.value,
+    exam:     document.getElementById('metaExam')?.value,
+  };
+  const labels = { school:'학교', grade:'학년', year:'년도', semester:'학기', exam:'시험종류' };
+  const elIds  = { school:'metaSchoolSel', grade:'metaGrade', year:'metaYear', semester:'metaSemester', exam:'metaExam' };
+
+  const missing = required.filter(k => !vals[k]);
+  if(!missing.length) return true;
+
+  // 미설정 필드 빨간 테두리 강조 (1.5초 후 원복)
+  missing.forEach(k => {
+    const el = document.getElementById(elIds[k]);
+    if(!el) return;
+    el.style.borderColor = '#e74c3c';
+    el.style.boxShadow   = '0 0 0 2px rgba(231,76,60,.4)';
+    el.style.background  = 'rgba(231,76,60,.15)';
+    setTimeout(() => {
+      el.style.borderColor = '';
+      el.style.boxShadow   = '';
+      el.style.background  = '';
+    }, 2000);
+  });
+
+  // 헤더가 화면 밖이어도 볼 수 있도록 스크롤 맨 위로
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  alert(`다음 항목을 먼저 설정해주세요:\n${missing.map(k=>'  • ' + labels[k]).join('\n')}`);
+  return false;
+}
+
+
 function getSchoolLevel(){
   // 중학교/고등학교 판별
   const school = getSchool() || '';
@@ -1984,20 +2023,11 @@ function importQuestionsJSON(input){
 }
 
 async function generateQuestions(){
-  // 제목 필드 강제 확인
+  if(!checkMeta(['school','grade','semester','exam'])) return;
   const school = getSchool();
   const grade  = document.getElementById('metaGrade')?.value;
   const sem    = document.getElementById('metaSemester')?.value;
   const exam   = document.getElementById('metaExam')?.value;
-  if(!school || !grade || !sem || !exam){
-    const missing = [];
-    if(!school) missing.push('학교');
-    if(!grade)  missing.push('학년');
-    if(!sem)    missing.push('학기');
-    if(!exam)   missing.push('시험종류(중간/기말)');
-    alert(`출제 전 다음 항목을 선택해주세요:\n\n${missing.map(m=>'• '+m).join('\n')}\n\n(상단 헤더에서 선택)`);
-    return;
-  }
   const status = document.getElementById('generateStatus');
   const selectedP = getSelectedPassages();
   const manualP   = getManualPassages();
@@ -3010,18 +3040,12 @@ function loadAnalysisFromStorage(){
 
 function downloadQuestionsJSON(){
   if(!generatedQs.length){ alert('생성된 예상문제가 없습니다.'); return; }
+  if(!checkMeta(['school','grade','semester','exam'])) return;
   const school   = getSchool()||'';
   const grade    = document.getElementById('metaGrade')?.value||'';
   const year     = document.getElementById('metaYear')?.value||'';
   const semester = document.getElementById('metaSemester')?.value||'';
   const exam     = document.getElementById('metaExam')?.value||'';
-  // 미선택 항목 경고
-  const missing = [];
-  if(!school)   missing.push('학교');
-  if(!grade)    missing.push('학년');
-  if(!semester) missing.push('학기');
-  if(!exam)     missing.push('시험종류');
-  if(missing.length && !confirm(`다음 항목이 선택되지 않았습니다:\n${missing.map(m=>'• '+m).join('\n')}\n\n그래도 저장하시겠습니까?`)) return;
   const totalQ   = generatedQs.reduce((s,item)=>item.type==='group'?s+(item.questions?.length||0):s+1,0);
   const data = {
     meta: { school, grade, year, semester, exam,
@@ -3072,12 +3096,12 @@ function clearAll(){
 async function saveAnalysisPattern(){
   const status = document.getElementById('savePatternStatus');
   if(!analysisData){ status.innerHTML='<span class="error">분석 데이터가 없습니다.</span>'; return; }
+  if(!checkMeta(['school','grade'])) return;
   const school = getSchool();
   const grade  = document.getElementById('metaGrade').value;
   const year   = document.getElementById('metaYear').value;
   const sem    = document.getElementById('metaSemester').value;
   const exam   = document.getElementById('metaExam').value;
-  if(!school||!grade){ status.innerHTML='<span class="error">헤더에서 학교·학년을 선택하세요.</span>'; return; }
   const key = [school,grade,year,sem,exam].filter(Boolean).join('_');
   const payload = {...analysisData, school, grade, year, semester:sem, exam, key, savedAt:new Date().toISOString()};
   const stored = JSON.parse(localStorage.getItem('greateng_patterns')||'{}');
