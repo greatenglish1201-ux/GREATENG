@@ -812,6 +812,34 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   };
 
   const [sheetSaving,setSheetSaving]=useState(false);
+  const saveCurrentTabToSheet=async()=>{
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    const p=passages.find(pg=>pg.id===pi)?.data;
+    if(!p){alert('저장할 지문 데이터가 없습니다.');return;}
+    const id=p.id;
+    if(!id){alert('지문 ID가 없습니다.');return;}
+    setSheetSaving(true);
+    try{
+      const tabTypes=['topic','blank','order','summary','implication','irrelevant','insert','grammar','vocab'];
+      const type=tabTypes[at];
+      let q=null;
+      if(type==='topic'&&p.topic_options?.length)q={type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''};
+      else if(type==='blank'){let bc=p.blank_candidates;if((!bc||!bc.length)&&p.blank_target)bc=[{sentence_index:p.blank_sentence_index,keyword:p.blank_target,distractors:(p.blank_options||[]).slice(1)}];if(bc?.length)q={type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:bc,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer}),answer:p.blank_answer||''};}
+      else if(type==='order'&&(p.order_blocks||p.order_options))q={type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''};
+      else if(type==='summary'&&p.summary_candidates?.length)q={type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1}),answer:''};
+      else if(type==='implication'&&p.implication_options?.length)q={type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''};
+      else if(type==='irrelevant'&&p.irrel_candidates?.length)q={type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index}),answer:''};
+      else if(type==='insert'){let ic=p.insert_candidates;if((!ic||!ic.length)&&p.insert_sentence)ic=[{sentence:p.insert_sentence,pos:p.insert_answer||1}];if(ic?.length)q={type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:ic,sentence:p.insert_sentence,answer:p.insert_answer}),answer:p.insert_answer||''};}
+      else if(type==='grammar'){const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};if(gs.items?.length){const sorted=[...gs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);const ans=idx>=0?idx+1:(p.grammar_answer||gs.answer||1);q={type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted}),answer:ans};}}
+      else if(type==='vocab'){const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};if(vs.items?.length){const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);const ans=idx>=0?idx+1:(p.vocab_answer||vs.answer||1);q={type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted}),answer:ans};}}
+      if(!q){alert('현재 탭에 저장할 데이터가 없습니다.');setSheetSaving(false);return;}
+      const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify([q])});
+      if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
+      alert('✓ '+AUTHOR_TABS[at].lb+' 저장 완료');
+      if(onSaveComplete)onSaveComplete(p);
+    }catch(e){alert('시트 저장 실패: '+e.message);}
+    setSheetSaving(false);
+  };
   const saveCurrentQuestionsToSheet=async()=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
     const p=passages.find(p=>p.id===pi)?.data;
@@ -1899,7 +1927,8 @@ Return JSON only:
           </div>
           <div style={{display:'flex',gap:6}}>
 
-            <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 시트 저장'}</button>
+            <button onClick={saveCurrentTabToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#7B5EA7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 '+AUTHOR_TABS[at].lb+' 저장'}</button>
+            <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 전체 저장'}</button>
             <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#1a5c3a',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
             <button onClick={()=>buildAllDOCX(slots,'teacher')} style={{padding:'5px 14px',fontSize:12,background:'#6B3FA0',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 교사용</button>
             <button onClick={()=>buildAllDOCX(slots,'student')} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>📄 학생용</button>
@@ -1958,7 +1987,8 @@ Return JSON only:
         <div style={{display:'flex',gap:6}}>
           <button onClick={()=>setStep('edit')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #e5e5e5',borderRadius:7,cursor:'pointer'}}>← 편집</button>
           <button onClick={()=>{const t=buildOutput();setOutText(t);navigator.clipboard.writeText(t);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#2d8a60',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사'}</button>
-          <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 시트 저장'}</button>
+          <button onClick={saveCurrentTabToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#7B5EA7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 '+AUTHOR_TABS[at].lb+' 저장'}</button>
+          <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#888':'#534AB7',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 전체 저장'}</button>
           <button onClick={()=>saveToGitHub(buildOutput())} disabled={ghSaving} style={{padding:'5px 14px',fontSize:12,background:ghSaving?'#888':'#185FA5',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{ghSaving?'저장중...':'GitHub 저장 ↗'}</button>
         </div>
       </div>
@@ -3587,8 +3617,8 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
                                   </select>
                                   <textarea value={sent.role}
                                     onChange={e=>onAnalysis(slot.id,'sentences.'+si2+'.role',e.target.value)}
-                                    rows={3} style={{...iB,fontSize:10.5,color:'#444',borderBottomColor:'#ddd',
-                                      resize:'vertical',lineHeight:1.4,overflow:'auto',minHeight:'3em'}}/></>
+                                    style={{...iB,fontSize:10.5,color:'#444',borderBottomColor:'#ddd',
+                                      resize:'none',lineHeight:1.4,overflow:'hidden',minHeight:'2em',display:'block',width:'100%'}}/></>
                                 :<>
                                   <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
                                     <span style={{fontSize:10,fontWeight:700,padding:'1px 5px',borderRadius:3,
