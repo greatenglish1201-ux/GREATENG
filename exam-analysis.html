@@ -2283,8 +2283,8 @@ ${batchTypeList}
 
 JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응답:
 [
-  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
-  {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형","question":"발문","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":4}]},
+  {"type":"single","num":N,"qtype":"유형","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":3}
 ]`;
       } else {
         const batchTypeDistrib = Object.entries(plan.distrib).map(([t,n])=>`${t} ${n}문항`).join(', ');
@@ -2352,8 +2352,8 @@ ${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
 
 JSON 배열로만 응답 (마크다운 금지):
 [
-  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":4}]},
-  {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"정답+해설","score":3}
+  {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":4}]},
+  {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설 내용","score":3}
 ]`;
       }
 
@@ -2650,16 +2650,46 @@ function printExam(){
   });
   const answerRows = allQs.map(q=>{
     const num = q.num || answerNum++;
-    const ans = (q.answer||'').split('\n')[0]; // 첫 줄만 (정답번호)
-    const exp = (q.answer||'').split('\n').slice(1).join(' ').replace(/^해설:\s*/,'');
-    return `<tr><td>${num}</td><td class="ans-text">${ans}</td><td class="ans-text">${exp}</td></tr>`;
+    // answer/explanation 분리 (신형식: 별도 필드 / 구형식: 줄바꿈)
+    let ans = '', exp = '';
+    if(q.explanation !== undefined){
+      ans = q.answer||'';
+      exp = q.explanation||'';
+    } else {
+      const parts = (q.answer||'').split('\n');
+      ans = parts[0];
+      exp = parts.slice(1).join(' ').replace(/^해설:\s*/,'');
+    }
+    return `<tr>
+      <td style="text-align:center;font-weight:bold;">${num}</td>
+      <td style="text-align:center;font-size:10pt;font-weight:bold;color:#1a4a8c;">${ans}</td>
+      <td style="text-align:left;font-size:8pt;color:#333;">${exp}</td>
+    </tr>`;
   }).join('');
 
   const answerSheetHtml = `
   <div class="answer-sheet">
-    <h2>${school} ${grade} ${exam} 영어 예상문제 — 정답 및 해설</h2>
+    <!-- 정답지 헤더 -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:6px;">
+      <div style="min-width:90px;text-align:left;line-height:1.2;">
+        <div style="font-size:7pt;color:#888;letter-spacing:1px;">GREAT ENGLISH</div>
+        <div style="font-size:11pt;font-weight:900;color:#1a4a8c;">대단한영어</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <h2 style="font-size:12pt;font-weight:bold;">${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h2>
+        <div style="font-size:9pt;color:#444;">정답 및 해설　　총 ${totalQ}문항</div>
+      </div>
+      <div style="min-width:90px;"></div>
+    </div>
+    <div style="border-bottom:2.5px double #000;margin-bottom:10pt;"></div>
     <table class="answer-table">
-      <thead><tr><th>번호</th><th>정답</th><th>해설</th></tr></thead>
+      <thead>
+        <tr style="background:#1a4a8c;color:#fff;">
+          <th style="width:50px;">번호</th>
+          <th style="width:60px;">정답</th>
+          <th>해설</th>
+        </tr>
+      </thead>
       <tbody>${answerRows}</tbody>
     </table>
   </div>`;
@@ -2720,15 +2750,28 @@ function printExam(){
 </div>
 
 <div class="hdr">
-  <h1>${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h1>
-  <div class="meta">대단한영어　　총 ${totalQ}문항　　이름:_________________　　점수:__________</div>
+  <!-- 좌측 로고 + 중앙 제목 -->
+  <div style="display:flex;align-items:center;gap:0;margin-bottom:6px;">
+    <!-- 대단한영어 로고 (좌측) -->
+    <div style="min-width:90px;text-align:left;line-height:1.2;">
+      <div style="font-size:7pt;color:#888;letter-spacing:1px;">GREAT ENGLISH</div>
+      <div style="font-size:11pt;font-weight:900;color:#1a4a8c;letter-spacing:-0.5px;">대단한영어</div>
+    </div>
+    <!-- 제목 (중앙) -->
+    <div style="flex:1;text-align:center;">
+      <h1 style="font-size:13pt;font-weight:bold;margin-bottom:2px;">${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h1>
+      <div style="font-size:8.5pt;color:#444;">총 ${totalQ}문항　　이름:_________________　　점수:__________</div>
+    </div>
+    <div style="min-width:90px;"></div>
+  </div>
+  <div style="border-bottom:2.5px double #000;"></div>
 </div>
 
 <div class="columns">
 ${bodyHtml}
 </div>
 
-<div class="footer">- ${school} 영어 예상문제 (대단한영어) -</div>
+<div class="footer">- ${school} ${grade} ${exam} 영어 예상문제 (대단한영어 GREATENG) -</div>
 
 ${answerSheetHtml}
 
