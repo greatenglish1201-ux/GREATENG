@@ -1931,16 +1931,47 @@ function importQuestionsJSON(input){
   reader.onload = function(e){
     try {
       const data = JSON.parse(e.target.result);
-      // 배열이면 그대로, 객체면 questions 필드 확인
+      // questions 추출
       const questions = Array.isArray(data) ? data : (Array.isArray(data.questions) ? data.questions : data);
       if(!Array.isArray(questions) || questions.length===0){
         alert('유효한 예상문제 JSON이 아닙니다.');
         return;
       }
       generatedQs = questions;
+
+      // 기출 패턴 복원
+      if(data.analysisData){
+        analysisData = data.analysisData;
+        // localStorage에도 반영
+        localStorage.setItem('greateng_analysis', JSON.stringify(analysisData));
+      }
+
+      // 메타 정보 복원
+      if(data.meta){
+        const m = data.meta;
+        const schoolSel = document.getElementById('schoolSelect');
+        const gradeEl   = document.getElementById('metaGrade');
+        const yearEl    = document.getElementById('metaYear');
+        const semEl     = document.getElementById('metaSemester');
+        const examEl    = document.getElementById('metaExam');
+        if(schoolSel && m.school){
+          // 옵션에 있으면 select, 없으면 직접입력 처리
+          const opt = [...schoolSel.options].find(o=>o.value===m.school);
+          if(opt) schoolSel.value = m.school;
+        }
+        if(gradeEl && m.grade)   gradeEl.value   = m.grade;
+        if(yearEl  && m.year)    yearEl.value    = m.year;
+        if(semEl   && m.semester) semEl.value    = m.semester;
+        if(examEl  && m.exam)    examEl.value    = m.exam;
+      }
+
       renderQuestions();
+      // 기출 패턴 있으면 비교도 자동 표시
+      if(analysisData) renderComparison();
+
       const status = document.getElementById('generateStatus');
-      if(status) status.innerHTML=`<span style="color:var(--green2)">✅ ${questions.length}문항 불러오기 완료</span>`;
+      const hasAnalysis = !!data.analysisData;
+      if(status) status.innerHTML=`<span style="color:var(--green2)">✅ ${questions.length}문항 불러오기 완료${hasAnalysis ? ' (기출 패턴 포함)' : ''}</span>`;
       switchTab(3);
     } catch(err){
       alert('JSON 파싱 오류: ' + err.message);
@@ -2993,7 +3024,8 @@ function downloadQuestionsJSON(){
   const data = {
     meta: { school, grade, year, semester, exam,
             total: totalQ, savedAt: new Date().toISOString() },
-    questions: generatedQs
+    questions: generatedQs,
+    analysisData: analysisData || null   // 기출 패턴 데이터 함께 저장
   };
   const filename = [school, grade, year, semester, exam, '예상문제'].filter(Boolean).join('_')+'.json';
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
