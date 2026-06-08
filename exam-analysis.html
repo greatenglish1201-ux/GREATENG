@@ -3150,21 +3150,25 @@ async function saveMiddlePassages(){
   const year     = document.getElementById('metaYear')?.value||'2026';
   const semester = document.getElementById('metaSemester')?.value||'';
 
+  // 중복 저장 방지
+  const saveBtn = document.querySelector('[onclick="saveMiddlePassages()"]');
+  if(saveBtn) saveBtn.disabled = true;
   status.innerHTML='<span class="spinner"></span> 저장 중...';
   try{
-    const calls = [];
-    if(bodyText) calls.push(postToGAS({
+    // 순차 저장 (동시 호출 시 중복 방지 어려움)
+    if(bodyText) await postToGAS({
       action:'saveMiddlePassage', school, grade, publisher, author, year, semester,
       lesson, type:'본문', title:bodyTitle||lesson||'본문', text:bodyText, grammar_points:grammarPoints
-    }));
-    if(dialogText) calls.push(postToGAS({
+    });
+    if(dialogText) await postToGAS({
       action:'saveMiddlePassage', school, grade, publisher, author, year, semester,
       lesson, type:'대화문', title:dialogTitle||lesson||'대화문', text:dialogText, grammar_points:grammarPoints
-    }));
-    await Promise.all(calls);
+    });
     status.innerHTML='<span style="color:var(--green2)">✅ 저장 완료 (지문+문법포인트)</span>';
   } catch(e){
     status.innerHTML='<span class="error">저장 실패: '+e.message+'</span>';
+  } finally{
+    if(saveBtn) saveBtn.disabled = false;
   }
 }
 
