@@ -929,13 +929,52 @@ tr:hover td { background: var(--paper); }
       <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">저장 후 불러오면 다기기에서 사용 가능</span>
     </div>
     <!-- 분류 입력 -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
-      <input type="text" id="passagePublisher" placeholder="출판사 (예: 비상)"
-        style="width:100px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-      <input type="text" id="passageAuthor" placeholder="저자 (예: 김진완)"
-        style="width:100px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-      <input type="text" id="passageLesson" placeholder="레슨 (예: Lesson 3)"
-        style="width:130px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.82rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
+      <!-- 출판사 -->
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:.75rem;color:var(--ink4);">출판사</span>
+        <div style="display:flex;gap:4px;">
+          <select id="passagePublisherSel" onchange="syncCombo('passagePublisherSel','passagePublisher')"
+            style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
+            <option value="">선택</option>
+            <option>비상</option><option>천재</option><option>YBM</option>
+            <option>동아</option><option>미래엔</option><option>능률</option><option>직접입력</option>
+          </select>
+          <input type="text" id="passagePublisher" placeholder="직접입력"
+            style="width:70px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        </div>
+      </div>
+      <!-- 저자 -->
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:.75rem;color:var(--ink4);">저자</span>
+        <div style="display:flex;gap:4px;">
+          <select id="passageAuthorSel" onchange="syncCombo('passageAuthorSel','passageAuthor')"
+            style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
+            <option value="">선택</option>
+            <option>김진완</option><option>박준언</option><option>이재영</option>
+            <option>허명회</option><option>양현권</option><option>직접입력</option>
+          </select>
+          <input type="text" id="passageAuthor" placeholder="직접입력"
+            style="width:70px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        </div>
+      </div>
+      <!-- 레슨 -->
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:.75rem;color:var(--ink4);">레슨</span>
+        <div style="display:flex;gap:4px;">
+          <select id="passageLessonSel" onchange="syncCombo('passageLessonSel','passageLesson')"
+            style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
+            <option value="">선택</option>
+            <option>Lesson 1</option><option>Lesson 2</option><option>Lesson 3</option>
+            <option>Lesson 4</option><option>Lesson 5</option><option>Lesson 6</option>
+            <option>Lesson 7</option><option>Lesson 8</option><option>직접입력</option>
+          </select>
+          <input type="text" id="passageLesson" placeholder="직접입력"
+            style="width:70px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-green" style="font-size:.78rem;padding:5px 12px;" onclick="saveMiddlePassages()">💾 저장</button>
       <button class="btn btn-gold" style="font-size:.78rem;padding:5px 12px;" onclick="loadMiddlePassages()">📂 불러오기</button>
       <span id="middlePassageStatus" style="font-size:.8rem;color:var(--ink4);"></span>
@@ -3130,15 +3169,43 @@ function getManualPassages(){
   return result;
 }
 
+function syncCombo(selId, inputId){
+  const sel = document.getElementById(selId);
+  const inp = document.getElementById(inputId);
+  if(!sel||!inp) return;
+  if(sel.value && sel.value !== '직접입력'){
+    inp.value = sel.value;
+    inp.style.display = 'none';
+  } else if(sel.value === '직접입력'){
+    inp.value = '';
+    inp.style.display = '';
+    inp.focus();
+  } else {
+    inp.value = '';
+    inp.style.display = 'none';
+  }
+}
+
+// 초기화: 직접입력 아니면 숨기기
+function initCombos(){
+  ['passagePublisher','passageAuthor','passageLesson'].forEach(id=>{
+    const inp = document.getElementById(id);
+    if(inp) inp.style.display='none';
+  });
+}
+
 async function saveMiddlePassages(){
   const status = document.getElementById('middlePassageStatus');
   const bodyText    = document.getElementById('manualTextBody')?.value.trim()||'';
   const dialogText  = document.getElementById('manualTextDialog')?.value.trim()||'';
   const bodyTitle   = document.getElementById('manualTitleBody')?.value.trim()||'';
   const dialogTitle = document.getElementById('manualTitleDialog')?.value.trim()||'';
-  const publisher   = document.getElementById('passagePublisher')?.value.trim()||'';
-  const author      = document.getElementById('passageAuthor')?.value.trim()||'';
-  const lesson      = document.getElementById('passageLesson')?.value.trim()||'';
+  const pubSel = document.getElementById('passagePublisherSel')?.value||'';
+  const publisher = (pubSel && pubSel!=='직접입력') ? pubSel : (document.getElementById('passagePublisher')?.value.trim()||'');
+  const authSel = document.getElementById('passageAuthorSel')?.value||'';
+  const author = (authSel && authSel!=='직접입력') ? authSel : (document.getElementById('passageAuthor')?.value.trim()||'');
+  const lesSel = document.getElementById('passageLessonSel')?.value||'';
+  const lesson = (lesSel && lesSel!=='직접입력') ? lesSel : (document.getElementById('passageLesson')?.value.trim()||'');
   const grammarPoints = document.getElementById('grammarPointInput')?.value.trim()||'';
 
   if(!bodyText && !dialogText){
@@ -3178,9 +3245,12 @@ async function loadMiddlePassages(){
   const grade      = document.getElementById('metaGrade')?.value||'';
   const year       = document.getElementById('metaYear')?.value||'2026';
   const semester   = document.getElementById('metaSemester')?.value||'';
-  const publisher  = document.getElementById('passagePublisher')?.value.trim()||'';
-  const author     = document.getElementById('passageAuthor')?.value.trim()||'';
-  const lesson     = document.getElementById('passageLesson')?.value.trim()||'';
+  const pubSel2 = document.getElementById('passagePublisherSel')?.value||'';
+  const publisher = (pubSel2 && pubSel2!=='직접입력') ? pubSel2 : (document.getElementById('passagePublisher')?.value.trim()||'');
+  const authSel2 = document.getElementById('passageAuthorSel')?.value||'';
+  const author = (authSel2 && authSel2!=='직접입력') ? authSel2 : (document.getElementById('passageAuthor')?.value.trim()||'');
+  const lesSel2 = document.getElementById('passageLessonSel')?.value||'';
+  const lesson = (lesSel2 && lesSel2!=='직접입력') ? lesSel2 : (document.getElementById('passageLesson')?.value.trim()||'');
 
   status.innerHTML='<span class="spinner"></span> 불러오는 중...';
   try{
@@ -3733,6 +3803,7 @@ loadSettingsUI();
 })();
 renderTypeCheckboxes();
 loadAnalysisFromStorage();
+initCombos();
 loadPatternList();
 loadPredictionList();
 </script>
