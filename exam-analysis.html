@@ -864,9 +864,16 @@ tr:hover td { background: var(--paper); }
     <!-- 문항 범위 -->
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
       <span style="font-size:.85rem;color:var(--ink3);white-space:nowrap;">문항 범위</span>
-      <input type="text" id="batchRange" placeholder="예) 1-10  또는  전체"
-        style="width:120px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.85rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-      <span style="font-size:.78rem;color:var(--ink4);">비워두면 전체 분석</span>
+      <select id="batchRange"
+        style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.85rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        <option value="">전체</option>
+        <option value="1-10">1~10번</option>
+        <option value="11-20">11~20번</option>
+        <option value="21-30">21~30번</option>
+        <option value="31-40">31~40번</option>
+        <option value="41-50">41~50번</option>
+      </select>
+      <span style="font-size:.78rem;color:var(--ink4);">전체 선택 시 한번에 분석</span>
     </div>
 
     <div class="upload-area" onclick="document.getElementById('fileInput').click()">
@@ -1372,7 +1379,7 @@ let analyseBatches = []; // 누적된 배치 분석 결과
 function renderBatchList(){
   const box = document.getElementById('batchListBox');
   const list = document.getElementById('batchList');
-  if(!analyseBatches.length){ box.style.display='none'; return; }
+  if(!analyseBatches.length){ box.style.display='none'; updateBatchRangeSelect(); return; }
   box.style.display='block';
   list.innerHTML = analyseBatches.map((b,i)=>`
     <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border20);">
@@ -1380,6 +1387,21 @@ function renderBatchList(){
       <span style="font-size:.82rem;color:var(--ink2);">${b.questions?.length||0}문항 · 유형: ${Object.keys(b.patterns||{}).join(', ')}</span>
       <button onclick="removeBatch(${i})" style="margin-left:auto;background:none;border:none;color:var(--ink4);cursor:pointer;font-size:.85rem;">✕</button>
     </div>`).join('');
+  updateBatchRangeSelect();
+}
+
+function updateBatchRangeSelect(){
+  const sel = document.getElementById('batchRange');
+  if(!sel) return;
+  const done = new Set(analyseBatches.map(b=>b.range));
+  Array.from(sel.options).forEach(opt=>{
+    if(!opt.value){ opt.disabled=false; return; } // 전체는 항상 가능
+    opt.disabled = done.has(opt.value);
+    opt.text = done.has(opt.value) ? '✅ '+opt.value.replace('-','~')+'번 (완료)' : opt.value.replace('-','~')+'번';
+  });
+  // 완료 안된 첫 번째 옵션 자동 선택
+  const next = Array.from(sel.options).find(o=>!o.disabled && o.value);
+  if(next) sel.value = next.value;
 }
 
 function removeBatch(i){
@@ -1617,8 +1639,10 @@ async function analyzeExam(){
     localStorage.setItem('greateng_patterns', JSON.stringify(stored));
     loadPatternList();
     renderAnalysis();
-    // 배치 목록에 추가
+    // 배치 목록에 추가 (같은 범위면 덮어쓰기)
     const range = document.getElementById('batchRange')?.value.trim()||'전체';
+    const dupIdx = analyseBatches.findIndex(b=>b.range===range);
+    if(dupIdx>=0) analyseBatches.splice(dupIdx,1);
     analyseBatches.push({...analysisData, range});
     renderBatchList();
     // 범위 입력란만 초기화 (이미지/텍스트는 유지 — 다음 배치에서 재사용)
