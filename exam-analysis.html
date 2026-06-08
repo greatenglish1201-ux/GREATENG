@@ -1608,23 +1608,28 @@ async function analyzeExam(){
       "num": 문항번호,
       "stem": "발문 전체",
       "score": 배점숫자,
+      "qtype": "내용유형명 (어법/어휘/빈칸추론/문장삽입/순서배열/대화완성/영작/내용일치/주제제목 등)",
       "format": "5지선다 또는 5지선다_기호 또는 5지선다_개수 또는 5지선다_번호 또는 5지선다_영작 또는 5지선다_표 또는 서술형",
       "pg": "해당 지문 그룹 범위 또는 null",
       "original_q": "문항 원문 전체 (발문+선지 원문 그대로, 기호·번호·표·보기 포함)"
     }
   ],
-  "patterns": {"유형명": 문항수},
+  "patterns": {"내용유형명": 문항수},
   "summary": "출제 경향 2~3문장 요약"
 }
 
-[format 판단 기준]
-- 선지가 "① ⓐ ② ⓑ" 형식 → 5지선다_기호
-- 선지가 "① 2개 ② 3개" 형식 → 5지선다_개수
-- 지문 내 ①~⑤ 밑줄 후 번호만 선지 → 5지선다_번호
-- <보기> 단어 + I(ⓐ)(ⓑ)... 형식 → 5지선다_영작
-- ⓑ/ⓒ/ⓓ 조합 표 형식 → 5지선다_표
-- 나머지 일반 5지선다 → 5지선다
-- 쓰기/서술 → 서술형
+[patterns 내용 유형명 기준 — 반드시 아래 목록에서 선택]
+중학교: 어법, 어휘, 내용일치, 대화완성, 대화흐름, 영작, 순서배열, 문장삽입, 빈칸추론, 주제/제목, 요약, 서술형
+고등학교: 어법, 어휘, 빈칸추론, 순서배열, 문장삽입, 주제/제목/요지, 함의추론, 무관문장, 요약, 서술형
+- patterns는 내용 기준 유형명만 사용 (5지선다_기호 등 선지형태 사용 금지)
+- questions[].format은 선지 형태 (기존 유지):
+  선지가 "① ⓐ ② ⓑ" 형식 → 5지선다_기호
+  선지가 "① 2개 ② 3개" 형식 → 5지선다_개수
+  지문 내 ①~⑤ 밑줄 후 번호만 선지 → 5지선다_번호
+  <보기> 단어 + I(ⓐ)(ⓑ)... 형식 → 5지선다_영작
+  ⓑ/ⓒ/ⓓ 조합 표 형식 → 5지선다_표
+  나머지 일반 5지선다 → 5지선다
+  쓰기/서술 → 서술형
 
 [중요]
 - original_q는 실제 시험지 원문을 글자 그대로, 생략 없이 포함
@@ -1943,6 +1948,20 @@ function importQuestionsJSON(input){
 }
 
 async function generateQuestions(){
+  // 제목 필드 강제 확인
+  const school = getSchool();
+  const grade  = document.getElementById('metaGrade')?.value;
+  const sem    = document.getElementById('metaSemester')?.value;
+  const exam   = document.getElementById('metaExam')?.value;
+  if(!school || !grade || !sem || !exam){
+    const missing = [];
+    if(!school) missing.push('학교');
+    if(!grade)  missing.push('학년');
+    if(!sem)    missing.push('학기');
+    if(!exam)   missing.push('시험종류(중간/기말)');
+    alert(`출제 전 다음 항목을 선택해주세요:\n\n${missing.map(m=>'• '+m).join('\n')}\n\n(상단 헤더에서 선택)`);
+    return;
+  }
   const status = document.getElementById('generateStatus');
   const selectedP = getSelectedPassages();
   const manualP   = getManualPassages();
@@ -2371,7 +2390,7 @@ function renderComparison(){
     box.style.display='none'; return;
   }
 
-  // 예상문제 유형 집계
+  // 예상문제 유형 집계 (qtype 기준)
   const predTypes = {};
   generatedQs.forEach(item=>{
     if(item.type==='group'){
@@ -2382,13 +2401,18 @@ function renderComparison(){
   });
   const predTotal = Object.values(predTypes).reduce((s,v)=>s+v,0);
 
-  // 기출 패턴 유형 집계 (questions 배열 기반)
-  const origTypes = {};
-  analysisData.questions.forEach(q=>{
-    const t = q.qtype || q.format || '기타';
-    origTypes[t] = (origTypes[t]||0)+1;
-  });
-  const origTotal = analysisData.questions.length;
+  // 기출 패턴 유형 집계 (patterns 내용유형명 기준)
+  const origTypes = {...(analysisData.patterns||{})};
+  // questions[].qtype도 병합 (더 정확)
+  if(analysisData.questions?.length){
+    const fromQ = {};
+    analysisData.questions.forEach(q=>{
+      const t = q.qtype||q.format||'기타';
+      if(!t.startsWith('5지선다') && t!=='서술형') fromQ[t]=(fromQ[t]||0)+1;
+    });
+    if(Object.keys(fromQ).length) Object.assign(origTypes, fromQ);
+  }
+  const origTotal = analysisData.questions?.length || Object.values(origTypes).reduce((s,v)=>s+v,0);
 
   // 기출 지문 목록
   const origPassages = Object.keys(analysisData.passage_groups||{});
@@ -2617,6 +2641,29 @@ function printExam(){
     }
   }).join('');
 
+  // 정답지 생성
+  let answerNum = 1;
+  const allQs = [];
+  generatedQs.forEach(item=>{
+    if(item.type==='group') (item.questions||[]).forEach(q=>allQs.push(q));
+    else allQs.push(item);
+  });
+  const answerRows = allQs.map(q=>{
+    const num = q.num || answerNum++;
+    const ans = (q.answer||'').split('\n')[0]; // 첫 줄만 (정답번호)
+    const exp = (q.answer||'').split('\n').slice(1).join(' ').replace(/^해설:\s*/,'');
+    return `<tr><td>${num}</td><td class="ans-text">${ans}</td><td class="ans-text">${exp}</td></tr>`;
+  }).join('');
+
+  const answerSheetHtml = `
+  <div class="answer-sheet">
+    <h2>${school} ${grade} ${exam} 영어 예상문제 — 정답 및 해설</h2>
+    <table class="answer-table">
+      <thead><tr><th>번호</th><th>정답</th><th>해설</th></tr></thead>
+      <tbody>${answerRows}</tbody>
+    </table>
+  </div>`;
+
   const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>${school} ${grade} ${exam} 영어 예상문제</title>
 <style>
@@ -2640,7 +2687,14 @@ function printExam(){
   .qscore { font-size: 8pt; color: #666; white-space: nowrap; margin-left: 4px; }
   .choice { padding-left: 16px; line-height: 1.45; }
   .write-box { border: 1px solid #aaa; height: 18mm; margin: 3pt 0 3pt 16px; }
-  .answer { font-size: 8pt; color: #1a4a8c; padding-left: 16px; margin-top: 2pt; }
+  .answer { display: none; } /* 문제지에서 정답 숨김 */
+  /* 정답지 */
+  .answer-sheet { page-break-before: always; }
+  .answer-sheet h2 { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 10pt; border-bottom: 2px solid #000; padding-bottom: 5pt; }
+  .answer-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .answer-table th, .answer-table td { border: 1px solid #ccc; padding: 4pt 6pt; text-align: center; }
+  .answer-table th { background: #f5f5f5; font-weight: bold; }
+  .answer-table td.ans-text { text-align: left; font-size: 8pt; color: #1a4a8c; }
 
   /* 지문 그룹 */
   .group { break-inside: avoid; margin-bottom: 10pt; border: 1px solid #ddd; padding: 5pt; border-radius: 3px; }
@@ -2675,6 +2729,9 @@ ${bodyHtml}
 </div>
 
 <div class="footer">- ${school} 영어 예상문제 (대단한영어) -</div>
+
+${answerSheetHtml}
+
 </body></html>`;
 
   const w = window.open('', '_blank');
