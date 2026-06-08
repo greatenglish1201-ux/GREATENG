@@ -1255,7 +1255,7 @@ CRITICAL CSAT 평가원 order rules:
 - given글(sentence [0]) introduces the topic — this is Block A (always first, not rearranged)
 - ALL sentences [1..${totalSents}] must appear in exactly one block — NEVER omit any index
 - Each block must use CONSECUTIVE sentence indices from the passage
-- Prefer 2-3 blocks (B/C or B/C/D). Use 2 blocks if passage is short (≤6 sentences after [0])
+- Always use 3 blocks (B/C/D). NEVER use 2 blocks.
 - Each block should START with a clear discourse cue:
   * Demonstratives: This/These/Such/That + [noun]
   * Connectives: However/Therefore/Moreover/For example/In contrast
@@ -1271,13 +1271,9 @@ IMPORTANT — index rule:
 - Every index must appear in EXACTLY ONE block
 - No gaps, no duplicates
 
-If 2 blocks: answer is 1=(B)-(C) or 2=(C)-(B)
 If 3 blocks: answer is 1=(B)-(C)-(D), 2=(B)-(D)-(C), 3=(C)-(B)-(D), 4=(C)-(D)-(B), 5=(D)-(B)-(C)
 
-Return JSON only (2 blocks example):
-{"blocks":[{"label":"B","sentence_indices":[1,2,3]},{"label":"C","sentence_indices":[4,5]}],"answer":2}
-
-Return JSON only (3 blocks example):
+Return JSON only:
 {"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4]},{"label":"D","sentence_indices":[5,6]}],"answer":3}`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
@@ -1301,18 +1297,9 @@ Return JSON only (3 blocks example):
 
       // ── 검증 2: options는 블록 수에 맞게 생성 ──
       const labels=blocks.map(b=>b.label||'?');
-      // 2블록: B/C → 3개 순서, 3블록: B/C/D → 5개 순서
-      let options, answerMap;
-      if(labels.length===2){
-        const [B,C]=labels;
-        options=[`(${B})-(${C})`,`(${C})-(${B})`];
-        answerMap={1:1,2:2};
-        if(answer>options.length)answer=1;
-      } else {
-        const [B,C,D]=labels;
-        options=[`(${B})-(${C})-(${D})`,`(${B})-(${D})-(${C})`,`(${C})-(${B})-(${D})`,`(${C})-(${D})-(${B})`,`(${D})-(${B})-(${C})`];
-        if(answer>options.length)answer=1;
-      }
+      const [B,C,D]=labels;
+      const options=[`(${B})-(${C})-(${D})`,`(${B})-(${D})-(${C})`,`(${C})-(${B})-(${D})`,`(${C})-(${D})-(${B})`,`(${D})-(${B})-(${C})`];
+      if(answer>options.length)answer=1;
 
       upP({
         order_given_index:0,
