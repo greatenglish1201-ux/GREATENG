@@ -29,13 +29,35 @@ const TYPES = [
   { id:'irrelevant', name:'무관한 문장', icon:'🚫' },
 ];
 
-const BOOKS = [
-  { id:'27ST_E', label:'27수특영어', match: id => id.startsWith('27ST_E') },
-  { id:'27STYD', label:'27영독', match: id => id.startsWith('27STYD') },
-  { id:'ABSO_TYPE', label:'절대유형', match: id => id.startsWith('ABSO_TYPE') },
+// 기본 교재 정의
+const BOOK_DEFS = [
+  { id:'27STYD',    label:'27영어독해연습', storage:'sheet'    },
+  { id:'27ST_E',    label:'27수특영어',     storage:'passages' },
+  { id:'ABSO_TYPE', label:'절대유형',       storage:'sheet'    },
 ];
-const BOOK_LABELS={'27ST_E':'27수특영어','27STYD':'27영독','ABSO_TYPE':'절대유형'};
 
+// 사용자 추가 교재 (localStorage 'te_custom_books')
+function loadCustomBooks(){
+  try { return JSON.parse(localStorage.getItem('te_custom_books')) || []; }
+  catch { return []; }
+}
+function getAllBooks(){
+  return [...BOOK_DEFS, ...loadCustomBooks()];
+}
+function bookLabel(src){
+  return getAllBooks().find(b=>b.id===src)?.label || src;
+}
+
+// passage ID 생성 규칙 (MOGO_ 계열은 강 없음)
+function makePassageId(source, chapter, number){
+  const isMogo = source?.startsWith('MOGO_');
+  const ns = String(number).padStart(3,'0');
+  if (isMogo) return source + '_' + ns;
+  return source + '_' + String(chapter).padStart(2,'0') + '_' + ns;
+}
+
+// detectBooks 호환용 정적 목록(매처 포함)
+const BOOKS = getAllBooks().map(b=>({ id:b.id, label:b.label, match: id => id.startsWith(b.id) }));
 
 function detectBooks(passages){
   const STATIC_IDS=new Set(BOOKS.map(b=>b.id));
@@ -46,7 +68,7 @@ function detectBooks(passages){
   });
   const dynamic=Object.keys(map).map(pre=>({
     id:pre,
-    label:BOOK_LABELS[pre]||pre,
+    label:bookLabel(pre),
     match:id=>id.startsWith(pre)
   }));
   return [...BOOKS.filter(b=>passages.some(p=>b.match(p.id))),...dynamic];
