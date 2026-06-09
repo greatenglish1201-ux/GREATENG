@@ -2109,6 +2109,8 @@ function App(){
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
   const [mogoNew,setMogoNew]=useState({yr:'26',gr:'G1',mon:'06',org:'경기'});
+  const [bookNew,setBookNew]=useState({yr:'26',pub:'EBS',pubCustom:'',name:''});
+  const [printNew,setPrintNew]=useState({yr:'26',school:'',gr:'G3',exam:'1MID'});
   const [showBookMgr,setShowBookMgr]=useState(false);
   const [showOutputMenu,setShowOutputMenu]=useState(false);
   const [filterHot,setFilterHot]=useState(false);
@@ -3225,6 +3227,67 @@ function App(){
                 setCustomBooks(next);saveCustomBooks(next);
               }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
             </div>
+              <div style={{color:'#a5d6f5',fontSize:12,margin:'10px 0 6px'}}>일반 교재 추가</div>
+              <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
+                <select value={bookNew.yr} onChange={e=>setBookNew(p=>({...p,yr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {['23','24','25','26','27','28'].map(y=><option key={y} value={y}>{y}년</option>)}
+                </select>
+                <select value={bookNew.pub} onChange={e=>setBookNew(p=>({...p,pub:e.target.value,pubCustom:''}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {['EBS','천재','비상','미래엔','좋은책신사고','NE능률','직접입력'].map(o=><option key={o} value={o}>{o}</option>)}
+                </select>
+                {bookNew.pub==='직접입력'&&<input value={bookNew.pubCustom} onChange={e=>setBookNew(p=>({...p,pubCustom:e.target.value}))}
+                  placeholder='출판사' style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,width:70}}/>}
+                <input value={bookNew.name} onChange={e=>setBookNew(p=>({...p,name:e.target.value}))}
+                  placeholder='교재명 (예: 수능특강)' style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,minWidth:100,flex:1}}/>
+                {bookNew.name&&<span style={{fontSize:10,color:'#88aacc',fontFamily:'monospace'}}>
+                  {`BOOK_${bookNew.yr}_${bookNew.pub==='직접입력'?bookNew.pubCustom:bookNew.pub}_${bookNew.name}`}
+                </span>}
+                <button onClick={()=>{
+                  const pub=bookNew.pub==='직접입력'?bookNew.pubCustom:bookNew.pub;
+                  if(!bookNew.name||!pub){alert('교재명과 출판사를 입력해주세요.');return;}
+                  const id=`BOOK_${bookNew.yr}_${pub}_${bookNew.name}`;
+                  const label=`${bookNew.yr} ${pub} ${bookNew.name}`;
+                  if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
+                  const next=[...customBooks,{id,label,storage:'sheet'}];
+                  setCustomBooks(next);saveCustomBooks(next);
+                  setBookNew({yr:bookNew.yr,pub:bookNew.pub,pubCustom:'',name:''});
+                }} style={{background:'#185FA5',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
+              </div>
+              <div style={{color:'#a5d6f5',fontSize:12,margin:'10px 0 6px'}}>학교인쇄물 추가</div>
+              <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
+                <select value={printNew.yr} onChange={e=>setPrintNew(p=>({...p,yr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {['23','24','25','26','27','28'].map(y=><option key={y} value={y}>{y}년</option>)}
+                </select>
+                <input value={printNew.school} onChange={e=>setPrintNew(p=>({...p,school:e.target.value}))}
+                  placeholder='학교명 (예: 포항제철고)' style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,minWidth:120,flex:1}}/>
+                <select value={printNew.gr} onChange={e=>setPrintNew(p=>({...p,gr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  <option value="G1">고1</option>
+                  <option value="G2">고2</option>
+                  <option value="G3">고3</option>
+                </select>
+                <select value={printNew.exam} onChange={e=>setPrintNew(p=>({...p,exam:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {Object.entries({'1MID':'1학기중간','1FIN':'1학기기말','2MID':'2학기중간','2FIN':'2학기기말'}).map(([k,v])=><option key={k} value={k}>{v}</option>)}
+                </select>
+                {printNew.school&&<span style={{fontSize:10,color:'#88aacc',fontFamily:'monospace'}}>
+                  {`PRINT_${printNew.yr}_${printNew.school}_${printNew.gr}_${printNew.exam}`}
+                </span>}
+                <button onClick={()=>{
+                  if(!printNew.school){alert('학교명을 입력해주세요.');return;}
+                  const id=`PRINT_${printNew.yr}_${printNew.school}_${printNew.gr}_${printNew.exam}`;
+                  const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[printNew.gr]||printNew.gr;
+                  const examLabel={'1MID':'1학기중간','1FIN':'1학기기말','2MID':'2학기중간','2FIN':'2학기기말'}[printNew.exam]||printNew.exam;
+                  const label=`${printNew.yr} ${printNew.school} ${grLabel} ${examLabel}`;
+                  if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
+                  const next=[...customBooks,{id,label,storage:'sheet'}];
+                  setCustomBooks(next);saveCustomBooks(next);
+                  setPrintNew({...printNew,school:''});
+                }} style={{background:'#854F0B',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
+              </div>
           </div>
 
         </div>
@@ -3281,6 +3344,67 @@ function App(){
                   const next=[...customBooks,{id,label,storage:'sheet'}];
                   setCustomBooks(next);saveCustomBooks(next);
                 }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
+              </div>
+              <div style={{color:'#a5d6f5',fontSize:12,margin:'10px 0 6px'}}>일반 교재 추가</div>
+              <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
+                <select value={bookNew.yr} onChange={e=>setBookNew(p=>({...p,yr:e.target.value}))}
+                  style={{padding:'6px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {['23','24','25','26','27','28'].map(y=><option key={y} value={y}>{y}년</option>)}
+                </select>
+                <select value={bookNew.pub} onChange={e=>setBookNew(p=>({...p,pub:e.target.value,pubCustom:''}))}
+                  style={{padding:'6px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {['EBS','천재','비상','미래엔','좋은책신사고','NE능률','직접입력'].map(o=><option key={o} value={o}>{o}</option>)}
+                </select>
+                {bookNew.pub==='직접입력'&&<input value={bookNew.pubCustom} onChange={e=>setBookNew(p=>({...p,pubCustom:e.target.value}))}
+                  placeholder='출판사' style={{padding:'6px 7px',borderRadius:5,border:'none',fontSize:12,width:70}}/>}
+                <input value={bookNew.name} onChange={e=>setBookNew(p=>({...p,name:e.target.value}))}
+                  placeholder='교재명 (예: 수능특강)' style={{padding:'6px 7px',borderRadius:5,border:'none',fontSize:12,minWidth:100,flex:1}}/>
+                {bookNew.name&&<span style={{fontSize:10,color:'#88aacc',fontFamily:'monospace'}}>
+                  {`BOOK_${bookNew.yr}_${bookNew.pub==='직접입력'?bookNew.pubCustom:bookNew.pub}_${bookNew.name}`}
+                </span>}
+                <button onClick={()=>{
+                  const pub=bookNew.pub==='직접입력'?bookNew.pubCustom:bookNew.pub;
+                  if(!bookNew.name||!pub){alert('교재명과 출판사를 입력해주세요.');return;}
+                  const id=`BOOK_${bookNew.yr}_${pub}_${bookNew.name}`;
+                  const label=`${bookNew.yr} ${pub} ${bookNew.name}`;
+                  if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
+                  const next=[...customBooks,{id,label,storage:'sheet'}];
+                  setCustomBooks(next);saveCustomBooks(next);
+                  setBookNew({yr:bookNew.yr,pub:bookNew.pub,pubCustom:'',name:''});
+                }} style={{background:'#185FA5',color:'#fff',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
+              </div>
+              <div style={{color:'#a5d6f5',fontSize:12,margin:'10px 0 6px'}}>학교인쇄물 추가</div>
+              <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
+                <select value={printNew.yr} onChange={e=>setPrintNew(p=>({...p,yr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {['23','24','25','26','27','28'].map(y=><option key={y} value={y}>{y}년</option>)}
+                </select>
+                <input value={printNew.school} onChange={e=>setPrintNew(p=>({...p,school:e.target.value}))}
+                  placeholder='학교명 (예: 포항제철고)' style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,minWidth:120,flex:1}}/>
+                <select value={printNew.gr} onChange={e=>setPrintNew(p=>({...p,gr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  <option value="G1">고1</option>
+                  <option value="G2">고2</option>
+                  <option value="G3">고3</option>
+                </select>
+                <select value={printNew.exam} onChange={e=>setPrintNew(p=>({...p,exam:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                  {Object.entries({'1MID':'1학기중간','1FIN':'1학기기말','2MID':'2학기중간','2FIN':'2학기기말'}).map(([k,v])=><option key={k} value={k}>{v}</option>)}
+                </select>
+                {printNew.school&&<span style={{fontSize:10,color:'#88aacc',fontFamily:'monospace'}}>
+                  {`PRINT_${printNew.yr}_${printNew.school}_${printNew.gr}_${printNew.exam}`}
+                </span>}
+                <button onClick={()=>{
+                  if(!printNew.school){alert('학교명을 입력해주세요.');return;}
+                  const id=`PRINT_${printNew.yr}_${printNew.school}_${printNew.gr}_${printNew.exam}`;
+                  const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[printNew.gr]||printNew.gr;
+                  const examLabel={'1MID':'1학기중간','1FIN':'1학기기말','2MID':'2학기중간','2FIN':'2학기기말'}[printNew.exam]||printNew.exam;
+                  const label=`${printNew.yr} ${printNew.school} ${grLabel} ${examLabel}`;
+                  if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
+                  const next=[...customBooks,{id,label,storage:'sheet'}];
+                  setCustomBooks(next);saveCustomBooks(next);
+                  setPrintNew({...printNew,school:''});
+                }} style={{background:'#854F0B',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
               </div>
             </div>
             <div style={{textAlign:'right',marginTop:14}}>
