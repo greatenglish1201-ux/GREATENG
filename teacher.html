@@ -1359,11 +1359,15 @@ IMPORTANT — index rule:
 - Use exactly indices 1 through ${totalSents}
 - Every index must appear in EXACTLY ONE block
 - No gaps, no duplicates
+- Distribute sentences as evenly as possible across 3 blocks (e.g. ${totalSents} sentences → roughly ${Math.floor(totalSents/3)} or ${Math.ceil(totalSents/3)} per block)
+- VERIFY: sum of all sentence_indices lengths must equal ${totalSents}
 
 If 3 blocks: answer is 1=(B)-(C)-(D), 2=(B)-(D)-(C), 3=(C)-(B)-(D), 4=(C)-(D)-(B), 5=(D)-(B)-(C)
 
-Return JSON only:
-{"blocks":[{"label":"B","sentence_indices":[1,2]},{"label":"C","sentence_indices":[3,4]},{"label":"D","sentence_indices":[5,6]}],"answer":3}`;
+Example for ${totalSents} sentences (indices 1~${totalSents}):
+{"blocks":[{"label":"B","sentence_indices":[${Array.from({length:Math.ceil(totalSents/3)},(_,i)=>i+1).join(',')}]},{"label":"C","sentence_indices":[${Array.from({length:Math.ceil(totalSents/3)},(_,i)=>Math.ceil(totalSents/3)+i+1).join(',')}]},{"label":"D","sentence_indices":[${Array.from({length:totalSents-Math.ceil(totalSents/3)*2>0?totalSents-Math.ceil(totalSents/3)*2:Math.floor(totalSents/3)},(_,i)=>totalSents-Math.floor(totalSents/3)+i+1).join(',')}]}],"answer":3}
+
+Return JSON only:`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
       const blocks=parsed.blocks||[];
