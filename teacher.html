@@ -538,7 +538,8 @@ function buildAllDOCX(slots,mode,opts){
 }
 
 /* ── DOM 캡처 출력 ── */
-function captureSlotHTML(slotId){
+function captureSlotHTML(slotId,onOpen,onClose){
+  // 슬롯이 닫혀있으면 강제로 열고 캡처
   const el=document.getElementById('slot-card-'+slotId);
   if(!el){alert('슬롯을 찾을 수 없습니다.');return null;}
   // 현재 페이지 스타일 전체 수집
@@ -563,12 +564,14 @@ body{background:#fff;padding:16px;}
 }
 
 function captureAllSlotsHTML(slots){
-  const parts=slots.filter(s=>s.status==='saved'&&s.analysis)
-    .map(s=>{
+  const targets=slots.filter(s=>s.status==='saved'&&s.analysis);
+  const closed=targets.filter(s=>!document.getElementById('slot-card-'+s.id)?.querySelector('[class]'));
+  // 닫힌 슬롯이 있으면 먼저 열도록 안내
+  const parts=targets.map(s=>{
       const el=document.getElementById('slot-card-'+s.id);
       return el?el.outerHTML:'';
     }).filter(Boolean);
-  if(!parts.length){alert('저장완료된 슬롯이 없습니다.');return null;}
+  if(!parts.length){alert('저장완료된 슬롯이 없습니다. 슬롯을 열어주세요.');return null;}
   const styles=[...document.styleSheets].map(ss=>{
     try{return [...ss.cssRules].map(r=>r.cssText).join('\n');}catch{return '';}
   }).join('\n');
@@ -2897,9 +2900,9 @@ function App(){
               style={{position:'absolute',top:'100%',right:0,marginTop:4,background:'#fff',
                 borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:160,zIndex:300,overflow:'hidden'}}>
               <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0'}}>📄 HTML</div>
-              <button onClick={()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);setShowOutputMenu(false);}}
+              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
                 style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
-              <button onClick={()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);setShowOutputMenu(false);}}
+              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
                 style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
               <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>📝 DOCX</div>
               <button onClick={()=>{buildAllDOCX(slots,'teacher');setShowOutputMenu(false);}}
@@ -2907,9 +2910,9 @@ function App(){
               <button onClick={()=>{setStuModal({kind:'all-docx',slot:null,opts:{...stuOpts}});setShowOutputMenu(false);}}
                 style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1a5c3a',fontWeight:600}}>학생용</button>
               <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>🖨️ PDF (인쇄)</div>
-              <button onClick={()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);setShowOutputMenu(false);}}
+              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
                 style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용 (새창→인쇄)</button>
-              <button onClick={()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);setShowOutputMenu(false);}}
+              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
                 style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용 (새창→인쇄)</button>
             </div>}
           </div>
@@ -3736,9 +3739,9 @@ function SlotOutputMenu({slot,onStuOutput}){
       style={{position:'absolute',top:'100%',left:0,marginTop:3,background:'#fff',
         borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:140,zIndex:500,overflow:'hidden'}}>
       <div style={{padding:'5px 10px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0'}}>📄 HTML</div>
-      <button onClick={()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);setOpen(false);}}
+      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
         style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
-      <button onClick={()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);setOpen(false);}}
+      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
         style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
       <div style={{padding:'5px 10px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>📝 DOCX</div>
       <button onClick={()=>{buildDOCX(slot,'teacher');setOpen(false);}}
@@ -3746,9 +3749,9 @@ function SlotOutputMenu({slot,onStuOutput}){
       <button onClick={()=>{onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student');setOpen(false);}}
         style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1a5c3a',fontWeight:600}}>학생용</button>
       <div style={{padding:'5px 10px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>🖨️ PDF (인쇄)</div>
-      <button onClick={()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);setOpen(false);}}
+      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
         style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
-      <button onClick={()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);setOpen(false);}}
+      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
         style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
     </div>}
   </div>;
