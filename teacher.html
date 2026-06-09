@@ -3524,7 +3524,7 @@ function App(){
         <div style={{background:'#fff',borderRadius:10,border:'0.5px solid #e5e5e5',
           padding:'10px 14px',marginBottom:12,display:'flex',alignItems:'center',gap:7,flexWrap:'nowrap',overflowX:'auto'}}>
           <span style={{fontSize:12,fontWeight:600,color:'#555',flexShrink:0}}>교재</span>
-          {BOOK_DEFS.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
+          {allBooks.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
             <button key={src.id} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src.id}})))}
               style={{padding:'4px 12px',fontSize:12,fontWeight:500,flexShrink:0,
                 background:slots.every(s=>s.meta.source===src.id)?'#185FA5':'#f0f0f0',
@@ -3572,7 +3572,7 @@ function App(){
                 const pid=makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
                 let passageData=slot.passageData?restorePassageData(slot.passageData):null;
 
-                if(!passageData&&PASSAGES_SOURCES.has(slot.meta.source)){
+                if(!passageData&&PASSAGES_SOURCES.has(slot.meta.source)&&!isNaN(parseInt(slot.meta.chapter))){
                   let pool=loadedPassages.length?loadedPassages:(window.PASSAGES||[]);
                   let found=pool.find(p=>p.id===pid);
                   if(!found&&loadedPassages.length===0){
@@ -3819,17 +3819,16 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
               }
               return<div key={f} style={{display:'flex',alignItems:'center',background:'#f5f5f5',
                 borderRadius:5,border:'0.5px solid #ddd',overflow:'hidden'}}>
-                <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;
-                  onMeta(slot.id,f,String(Math.max(1,cur-1)).padStart(f==='chapter'?2:3,'0'));}}
-                  style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderRight:'0.5px solid #ddd'}}>▼</button>
-                <input type="number" value={parseInt(slot.meta[f]||1)}
-                  onChange={e=>{const v=parseInt(e.target.value);if(!isNaN(v)&&v>=1)onMeta(slot.id,f,String(v).padStart(f==='chapter'?2:3,'0'));}}
-                  style={{fontSize:12,fontWeight:500,color:'#333',width:f==='chapter'?32:38,
-                    textAlign:'center',border:'none',background:'transparent',padding:'0 2px',
-                    MozAppearance:'textfield'}}/>
-                <button onClick={()=>{const cur=parseInt(slot.meta[f])||1;const max=f==='chapter'?30:99;
-                  onMeta(slot.id,f,String(Math.min(max,cur+1)).padStart(f==='chapter'?2:3,'0'));}}
-                  style={{...sB,padding:'3px 7px',fontSize:13,color:'#555',borderLeft:'0.5px solid #ddd'}}>▲</button>
+                <input type="text" value={slot.meta[f]||''}
+                  onChange={e=>onMeta(slot.id,f,e.target.value)}
+                  style={{fontSize:12,fontWeight:500,color:'#333',width:f==='chapter'?44:48,
+                    textAlign:'center',border:'none',background:'transparent',padding:'0 4px'}}/>
+                <div style={{display:'flex',flexDirection:'column',borderLeft:'0.5px solid #ddd'}}>
+                  <button onClick={()=>{const cur=parseInt(slot.meta[f]||1);const max=f==='chapter'?99:999;if(!isNaN(cur))onMeta(slot.id,f,String(Math.min(max,cur+1)).padStart(f==='chapter'?2:3,'0'));}}
+                    style={{...sB,padding:'1px 5px',fontSize:9,color:'#555',lineHeight:1,borderBottom:'0.5px solid #ddd'}}>▲</button>
+                  <button onClick={()=>{const cur=parseInt(slot.meta[f]||1);if(!isNaN(cur))onMeta(slot.id,f,String(Math.max(1,cur-1)).padStart(f==='chapter'?2:3,'0'));}}
+                    style={{...sB,padding:'1px 5px',fontSize:9,color:'#555',lineHeight:1}}>▼</button>
+                </div>
               </div>;
             });
           })()}
