@@ -3924,8 +3924,9 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
                 {IS?<div style={{borderBottom:'1.5px solid #bbb',height:22}}/>
                   :<textarea value={val}
                     onChange={e=>onAnalysis(slot.id,'flow.'+f,e.target.value)}
-                    rows={2} style={{...iB,fontSize:13,color:'#1a1a1a',resize:'none',
-                      lineHeight:1.5,overflow:'hidden',wordBreak:'keep-all'}}/>}
+                    style={{...iB,fontSize:13,color:'#1a1a1a',resize:'none',
+                      lineHeight:1.5,overflow:'hidden',wordBreak:'keep-all',
+                      minHeight:'2.5em',height:'auto',display:'block',width:'100%'}}/>}
               </div>
             ))}
             <div style={{flex:1.3,minWidth:100,background:'#f8f8f8',
