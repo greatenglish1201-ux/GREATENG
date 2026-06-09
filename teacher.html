@@ -48,6 +48,12 @@ function saveCustomBooks(books){
   localStorage.setItem('te_custom_books',JSON.stringify(books));
 }
 function getAllBooks(){return [...BOOK_DEFS,...loadCustomBooks()];}
+function makePassageId(source,chapter,number){
+  const isMogo=source&&source.startsWith('MOGO_');
+  const ns=String(number).padStart(3,'0');
+  if(isMogo)return source+'_'+ns;
+  return source+'_'+String(chapter).padStart(2,'0')+'_'+ns;
+}
 // 모의고사 select용 그룹 생성
 function getMogoGroups(){
   const mocos=getAllBooks().filter(b=>b.id.startsWith('MOGO_'));
@@ -349,7 +355,7 @@ const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
   const {difficultSentences=[]}=grammar;
   const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
   const conn=i=>interBlockConnectors[i]||'→';
-  const id=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
+  const id=makePassageId(meta.source,meta.chapter,meta.number);
   const F='Malgun Gothic',P9=18,P8=16,P10=20;
   const nb={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
   const bd=(c='888888',sz=3)=>({style:BorderStyle.SINGLE,size:sz,color:c});
@@ -507,7 +513,7 @@ function buildDOCX(slot,mode,opts){
   const IS=mode==='student';
   const {meta}=slot;
   if(!slot.analysis)return;
-  const id=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
+  const id=makePassageId(meta.source,meta.chapter,meta.number);
   const ch=buildDOCXChildren(slot,mode,opts);
   const doc=new Document({
     styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},
@@ -565,7 +571,7 @@ function buildHTML(slot,mode,opts){
   const {difficultSentences=[]}=grammar;
   const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
   const conn=i=>interBlockConnectors[i]||'→';
-  const id=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
+  const id=makePassageId(meta.source,meta.chapter,meta.number);
   const esc=w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
   const hlHTML=(text,words)=>{
     if(!words||!words.length)return text;
@@ -632,7 +638,7 @@ function buildHTML(slot,mode,opts){
 
 function dlHTML(slot,mode,opts){
   const html=buildHTML(slot,mode,opts);
-  const id=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
+  const id=makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
@@ -1979,7 +1985,7 @@ Return JSON only:
             <span style={{fontSize:11,color:'#bbb'}}>|</span>
             <span style={{fontSize:11,color:'#888'}}>슬롯 전환:</span>
             {savedSlots.map((s,si)=>{
-              const sid=s.passageData?.id||(s.meta?.source+'_'+String(s.meta?.chapter||1).padStart(2,'0')+'_'+String(s.meta?.number||1).padStart(3,'0'));
+              const sid=s.passageData?.id||(makePassageId(s.meta?.source,s.meta?.chapter||1,s.meta?.number||1));
               const isNow=sid===curId;
               return<button key={si} onClick={()=>{if(!isNow&&onSlotChange)onSlotChange(s.passageData?restorePassageData(s.passageData):null,s.meta);}}
                 style={{fontSize:11,padding:'3px 9px',borderRadius:6,
@@ -2222,7 +2228,7 @@ function App(){
     try{
       const entries=slots.filter(s=>['analyzed','saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
         const p=s.passageData||{};
-        const metaId=s.meta.source+'_'+String(s.meta.chapter).padStart(2,'0')+'_'+String(s.meta.number).padStart(3,'0');
+        const metaId=makePassageId(s.meta.source,s.meta.chapter,s.meta.number);
         const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
         const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};
         const gItems=p.grammar_items?.length?p.grammar_items:gs.items;
@@ -2281,7 +2287,7 @@ function App(){
   // ──────────────────────────────────────────────
   const buildSlotPayload=useCallback((slot)=>{
     const p=slot.passageData||{};
-    const metaId=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
+    const metaId=makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
     const id=p.id||metaId;
     // 지문DB payload
     const sentences=slot.analysis?.sentences?.length?slot.analysis.sentences:(p.sentences||[]);
@@ -3415,7 +3421,7 @@ function App(){
       )}
       {viewMode==='authoring'?<AuthoringTool key={authorKey} apiKey={apiKey} ghToken={ghToken} ghRepo={ghRepo} appsUrl={appsUrl} slots={slots} onSlotChange={async(pd,meta)=>{
   if(!pd&&appsUrl&&meta){
-    const pid=meta.source+'_'+String(meta.chapter).padStart(2,'0')+'_'+String(meta.number).padStart(3,'0');
+    const pid=makePassageId(meta.source,meta.chapter,meta.number);
     try{
       const r=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
       const sp=(r&&r.passages&&r.passages[0])||null;
@@ -3498,7 +3504,7 @@ function App(){
             onAuthor={async()=>{
                 setAuthorInitText(slot.text);
                 setAuthorInitMeta(slot.meta);
-                const pid=slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0');
+                const pid=makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
                 let passageData=slot.passageData?restorePassageData(slot.passageData):null;
 
                 if(!passageData&&PASSAGES_SOURCES.has(slot.meta.source)){
@@ -3595,7 +3601,7 @@ function App(){
               //      미패치 버전이면 사전 차단: 시트 데이터와 비교해서 손실 위험 시 중단
               // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
               const pid=slot.passageData?.id
-                      ||(slot.meta.source+'_'+String(slot.meta.chapter).padStart(2,'0')+'_'+String(slot.meta.number).padStart(3,'0'));
+                      ||(makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number));
               try{
                 // ① 시트의 현재 상태 조회 (안전 검증용)
                 const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
