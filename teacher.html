@@ -266,14 +266,14 @@ function upsertPassages(currentContent,newEntries){
   return currentContent.slice(0,start)+JSON.stringify(existing,null,2)+currentContent.slice(end+1);
 }
 
-function callClaude(key,sys,user){
+function callClaude(key,sys,user,maxTokens=4096){
   if(!key) throw new Error('API 키 없음');
   return fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':key,
       'anthropic-version':'2023-06-01',
       'anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTokens,
       system:sys,messages:[{role:'user',content:user}]})
   }).then(r=>r.json());
 }
@@ -2201,11 +2201,11 @@ function App(){
   const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
   const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
 
-  const generateBlockSummaries=useCallback(async(slot)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+  const generateBlockSummaries=useCallback(async(slot,silent=false)=>{
+    if(!apiKey){if(!silent)alert('API Key가 없습니다.');return;}
     const blocks=slot.analysis?.flow?.blocks||[];
     const sentences=slot.analysis?.sentences||[];
-    if(!blocks.length){alert('블록 분석 데이터가 없습니다.');return;}
+    if(!blocks.length){if(!silent)alert('블록 분석 데이터가 없습니다.');return;}
     upSlot(slot.id,{blockSummaries:'loading'});
     try{
       const prompt=BLOCK_SUM_PROMPT(blocks,sentences);
@@ -2260,16 +2260,19 @@ function App(){
   const doAnalyze=useCallback(async(slot)=>{
     upSlot(slot.id,{status:'analyzing',error:''});
     try{
-      const d=await callClaude(apiKey,FLOW_SYS,slot.text);
+      const d=await callClaude(apiKey,FLOW_SYS,slot.text,8192);
       if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
       const p=parseJSON(d.content[0].text);
-      upSlot(slot.id,{status:'analyzed',meta:{...slot.meta,difficulty:p.difficulty||'중'},
+      const analyzedSlot={...slot,status:'analyzed',meta:{...slot.meta,difficulty:p.difficulty||'중'},
         analysis:{sentences:p.sentences||[],title:p.title||'',abstract:p.abstract||'',
           flow:{blocks:p.blocks||[],interBlockConnectors:p.interBlockConnectors||[],
             keyword:p.keyword||'',topicSummary:p.topicSummary||'',structureType:p.structureType||''},
-          grammar:{difficultSentences:p.difficultSentences||[]}},open:true});
+          grammar:{difficultSentences:p.difficultSentences||[]}},open:true};
+      upSlot(slot.id,analyzedSlot);
+      // 분석 완료 후 자동으로 블록 요약 생성
+      generateBlockSummaries(analyzedSlot,true);
     }catch(e){upSlot(slot.id,{status:'idle',error:'오류: '+e.message});}
-  },[upSlot,apiKey]);
+  },[upSlot,apiKey,generateBlockSummaries]);
 
   const runAll=useCallback(async()=>{
     if(running.current)return;
