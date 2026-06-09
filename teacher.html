@@ -3014,14 +3014,15 @@ function App(){
           }
           return true;
         });
-        // 교재별 → 강별 2단계 그룹화
+        // 교재별 → 강별 2단계 그룹화 (모의고사는 강 무시)
         const srcGroups={};
         filtered.forEach(p=>{
           const src=p.source||'?';
-          const chKey=src+'__'+String(p.chapter||'?');
-          if(!srcGroups[src])srcGroups[src]={source:src,chapters:{},passages:[]};
+          const isMogoSrc=src.startsWith('MOGO_');
+          const chKey=isMogoSrc?src+'__ALL':src+'__'+String(p.chapter||'?');
+          if(!srcGroups[src])srcGroups[src]={source:src,isMogo:isMogoSrc,chapters:{},passages:[]};
           srcGroups[src].passages.push(p);
-          if(!srcGroups[src].chapters[chKey])srcGroups[src].chapters[chKey]={key:chKey,chapter:p.chapter,passages:[]};
+          if(!srcGroups[src].chapters[chKey])srcGroups[src].chapters[chKey]={key:chKey,chapter:isMogoSrc?'ALL':p.chapter,passages:[],isMogo:isMogoSrc};
           srcGroups[src].chapters[chKey].passages.push(p);
         });
         const allBooksOrder=getAllBooks().map(b=>b.id);const srcList=Object.values(srcGroups).sort((a,b)=>{const ia=allBooksOrder.indexOf(a.source),ib=allBooksOrder.indexOf(b.source);if(ia>=0&&ib>=0)return ia-ib;if(ia>=0)return -1;if(ib>=0)return 1;return a.source.localeCompare(b.source);});
@@ -3073,9 +3074,25 @@ function App(){
                   </span>
                   <span style={{fontSize:11,color:'#aaa'}}>{isSrcExpanded?'▲':'▼'}</span>
                 </div>
-                {/* 강 목록 */}
+                {/* 강 목록 / 모의고사는 바로 문항 */}
                 {isSrcExpanded&&<div style={{padding:'8px',display:'flex',flexDirection:'column',gap:4,background:'#fff'}}>
-                  {chList.map(g=>{
+                  {sg.isMogo?(
+                    <div style={{display:'flex',flexWrap:'wrap',gap:4,padding:'4px 2px'}}>
+                      {sg.passages.sort((a,b)=>Number(a.number||0)-Number(b.number||0)).map(p=>{
+                        const sel=!!sheetLoadSel[p.id];
+                        return(<label key={p.id} style={{display:'inline-flex',alignItems:'center',gap:4,
+                          padding:'3px 8px',border:`0.5px solid ${sel?'#185FA5':'#ddd'}`,
+                          background:sel?'#185FA5':'#fff',color:sel?'#fff':'#333',
+                          borderRadius:12,cursor:'pointer',fontSize:11,fontFamily:'monospace',fontWeight:600}}>
+                          <input type="checkbox" checked={sel}
+                            onChange={e=>setSheetLoadSel(prev=>({...prev,[p.id]:e.target.checked}))}
+                            style={{margin:0,cursor:'pointer'}}/>
+                          {String(p.number||'').padStart(3,'0')}
+                          {p.title&&<span style={{fontFamily:'inherit',fontWeight:400,opacity:.85,marginLeft:3}}>· {p.title}</span>}
+                        </label>);
+                      })}
+                    </div>
+                  ):chList.map(g=>{
                     const all=isGroupAll(g.passages);
                     const some=isGroupSome(g.passages);
                     const selN=g.passages.filter(p=>sheetLoadSel[p.id]).length;
