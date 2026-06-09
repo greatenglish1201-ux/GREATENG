@@ -2241,6 +2241,10 @@ function App(){
   const handleMeta=useCallback((id,f,v)=>setSlots(prev=>{
     const next=prev.map(s=>s.id===id?{...s,meta:{...s.meta,[f]:v}}:s);
     if(id===0&&(f==='chapter'||f==='number')){
+      // chapter가 텍스트(test 등)이면 전체 슬롯에 동일하게 적용
+      if(f==='chapter'&&isNaN(parseInt(v))){
+        return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,chapter:v}});
+      }
       const bCh=parseInt(f==='chapter'?v:next[0].meta.chapter)||1;
       const bN=parseInt(f==='number'?v:next[0].meta.number)||1;
       return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,
