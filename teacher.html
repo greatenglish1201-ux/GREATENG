@@ -32,7 +32,7 @@ const {useState,useCallback,useRef,useEffect} = React;
 
 // ── 교재 목록 ── 새 교재 추가 시 여기에만 추가 ──────────────
 const BOOK_DEFS=[
-  {id:'27STYD',    label:'27영독',      storage:'sheet'},
+  {id:'27STYD',    label:'27영어독해연습', storage:'sheet'},
   {id:'27ST_E',    label:'27수특영어',   storage:'passages'},
   {id:'ABSO_TYPE', label:'절대유형',    storage:'sheet'},
   // 모의고사: 설정 탭 > 교재 관리에서 추가 (예: MOGO_26_G3_06 / 26 고3 6월 / 시트)
@@ -3024,7 +3024,7 @@ function App(){
           if(!srcGroups[src].chapters[chKey])srcGroups[src].chapters[chKey]={key:chKey,chapter:p.chapter,passages:[]};
           srcGroups[src].chapters[chKey].passages.push(p);
         });
-        const srcList=Object.values(srcGroups).sort((a,b)=>a.source.localeCompare(b.source));
+        const allBooksOrder=getAllBooks().map(b=>b.id);const srcList=Object.values(srcGroups).sort((a,b)=>{const ia=allBooksOrder.indexOf(a.source),ib=allBooksOrder.indexOf(b.source);if(ia>=0&&ib>=0)return ia-ib;if(ia>=0)return -1;if(ib>=0)return 1;return a.source.localeCompare(b.source);});
         const isGroupAll=(passages)=>passages.every(p=>sheetLoadSel[p.id]);
         const isGroupSome=(passages)=>passages.some(p=>sheetLoadSel[p.id]);
         const toggleGroup=(passages)=>{
@@ -3059,7 +3059,7 @@ function App(){
               const srcSome=isGroupSome(sg.passages);
               const srcSelN=sg.passages.filter(p=>sheetLoadSel[p.id]).length;
               const isSrcExpanded=expandedChapter===sg.source||expandedChapter?.startsWith(sg.source+'__');
-              const chList=Object.values(sg.chapters).sort((a,b)=>String(a.chapter).localeCompare(String(b.chapter)));
+              const chList=Object.values(sg.chapters).sort((a,b)=>{const na=parseInt(a.chapter),nb=parseInt(b.chapter);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a.chapter).localeCompare(String(b.chapter));});
               return(<div key={sg.source} style={{border:`1px solid ${srcSome?'#185FA5':'#e0e0e0'}`,borderRadius:8,overflow:'hidden'}}>
                 {/* 교재 헤더 */}
                 <div style={{display:'flex',alignItems:'center',gap:8,padding:'9px 12px',
