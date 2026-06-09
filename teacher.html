@@ -2177,6 +2177,9 @@ function App(){
         chapter:String(bCh).padStart(2,'0'),
         number:String(bN+s.id).padStart(3,'0')}});
     }
+    if(id===0&&f==='chapterOrg'){
+      return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,chapterOrg:v}});
+    }
     return next;
   }),[]);
 
