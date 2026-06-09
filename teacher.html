@@ -50,7 +50,7 @@ function saveCustomBooks(books){
 function getAllBooks(){return [...BOOK_DEFS,...loadCustomBooks()];}
 // 모의고사 select용 그룹 생성
 function getMogoGroups(){
-  const mocos=BOOK_DEFS.filter(b=>b.id.startsWith('MOGO_'));
+  const mocos=getAllBooks().filter(b=>b.id.startsWith('MOGO_'));
   const groups={};
   mocos.forEach(b=>{
     const parts=b.id.split('_'); // MOGO_25_G3_06
@@ -778,6 +778,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   const [at,setAt]=useState(0);
   const [selectedGrammarIdx,setSelectedGrammarIdx]=useState(null);
   const [vocabAltCandidates,setVocabAltCandidates]=useState({}); // {itemKey: {loading:bool, words:[]}}
+  const [grammarAltCandidates,setGrammarAltCandidates]=useState({}); // {itemKey: {loading:bool, words:[]}}
   const [outText,setOutText]=useState('');
   const [copied,setCopied]=useState(false);
   const [err,setErr]=useState('');
@@ -1084,6 +1085,22 @@ Return JSON only:
     setGenLoading('');
   };
 
+  const genGrammarAltCandidates=async(word,itemKey)=>{
+    if(!apiKey||!word.trim())return;
+    setGrammarAltCandidates(prev=>({...prev,[itemKey]:{loading:true,words:[]}}));
+    try{
+      const sys='Return ONLY valid JSON, no markdown.';
+      const prompt=`For the English word/phrase "${word}", suggest 4 grammatically different forms that could create unambiguous grammar errors in a CSAT context.
+Consider: tense, voice (active/passive), participle (-ing/-ed), infinitive (to V), subject-verb agreement, pronoun form, adverb/adjective confusion.
+Return JSON only:
+{"forms":["form1","form2","form3","form4"]}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      setGrammarAltCandidates(prev=>({...prev,[itemKey]:{loading:false,words:(parsed.forms||[]).map(w=>({w}))}}));
+    }catch(e){
+      setGrammarAltCandidates(prev=>({...prev,[itemKey]:{loading:false,words:[]}}));
+    }
+  };
   const genVocabAltCandidates=async(word,itemKey)=>{
     if(!apiKey||!word.trim())return;
     setVocabAltCandidates(prev=>({...prev,[itemKey]:{loading:true,words:[]}}));
@@ -1215,11 +1232,15 @@ Return JSON only:
           ?{...p,grammar_sets:sets,grammar_sel:newSel,grammar_answer:parsed.answer||1}
           :{...p,vocab_sets:sets,vocab_sel:newSel,vocab_answer:parsed.answer||1};
       });
-      // 어휘 생성 후 자동으로 각 항목 반의어/유의어 후보 생성
+      // 생성 후 자동으로 후보 생성
+      const newItems=parsed.items||[];
       if(!isG){
-        const newItems=parsed.items||[];
         newItems.forEach((item,ii)=>{
           if(item.word)genVocabAltCandidates(item.word,`${(p.vocab_sel??0)}_${ii}_${item.word}`);
+        });
+      } else {
+        newItems.forEach((item,ii)=>{
+          if(item.word)genGrammarAltCandidates(item.word,`g_${(p.grammar_sel??0)}_${ii}_${item.word}`);
         });
       }
     }catch(e){console.error('재생성 실패:',e);alert('재생성 실패: '+e.message);}
@@ -1826,6 +1847,14 @@ Return JSON only:
             {isG&&item.pos==null&&<GrammarItemInput value={item.original||''}
               onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[p.grammar_sel].items];items[ii]={...items[ii],original:v};sets[p.grammar_sel]={...sets[p.grammar_sel],items};return{...p,grammar_sets:sets};});}}
               placeholder='본문 원문 (위치 탐색용)' style={{width:'100%',border:'1px solid #185FA533',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#185FA5',boxSizing:'border-box',marginBottom:4}}/>}
+            {isG&&(()=>{const itemKey=`g_${sel}_${ii}_${item.word}`;const cand=grammarAltCandidates[itemKey];return(<div style={{marginTop:4}}>
+              {cand?.loading&&<span style={{fontSize:10,color:'#bbb'}}>오류형 후보 생성 중...</span>}
+              {!cand?.loading&&!cand?.words?.length&&item.word&&<button onClick={()=>genGrammarAltCandidates(item.word,itemKey)} style={{fontSize:10,padding:'2px 8px',border:'1px solid #ddd',borderRadius:5,background:'#f9f9f9',color:'#888',cursor:'pointer'}}>오류형 후보 ↻</button>}
+              {cand?.words?.length>0&&<div style={{display:'flex',flexWrap:'wrap',gap:4,alignItems:'center'}}>
+                <button onClick={()=>genGrammarAltCandidates(item.word,itemKey)} style={{fontSize:10,padding:'2px 6px',border:'1px solid #ddd',borderRadius:5,background:'#f9f9f9',color:'#aaa',cursor:'pointer'}}>↻</button>
+                {cand.words.map((c,ci)=><button key={ci} onClick={()=>{upPDeep(p=>{const sets=[...p.grammar_sets];const items=[...sets[p.grammar_sel].items];items[ii]={...items[ii],word:c.w};sets[p.grammar_sel]={...sets[p.grammar_sel],items};return{...p,grammar_sets:sets};});}} style={{fontSize:11,padding:'2px 8px',borderRadius:5,border:'1px solid #E24B4A44',background:'#E24B4A08',color:'#E24B4A',cursor:'pointer'}}>{c.w}</button>)}
+              </div>}
+            </div>);})()} 
             <GrammarItemInput value={isG?item.note:(item.alt||'')}
               onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:v}:{...items[ii],alt:v};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
               multiline={isG}
