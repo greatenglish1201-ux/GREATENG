@@ -1234,13 +1234,14 @@ Return JSON only:
       });
       // 생성 후 자동으로 후보 생성
       const newItems=parsed.items||[];
+      const curP=passages.find(pg=>pg.id===pi)?.data||{};
       if(!isG){
         newItems.forEach((item,ii)=>{
-          if(item.word)genVocabAltCandidates(item.word,`${(p.vocab_sel??0)}_${ii}_${item.word}`);
+          if(item.word)genVocabAltCandidates(item.word,`${(curP.vocab_sel??0)}_${ii}_${item.word}`);
         });
       } else {
         newItems.forEach((item,ii)=>{
-          if(item.word)genGrammarAltCandidates(item.word,`g_${(p.grammar_sel??0)}_${ii}_${item.word}`);
+          if(item.word)genGrammarAltCandidates(item.word,`g_${(curP.grammar_sel??0)}_${ii}_${item.word}`);
         });
       }
     }catch(e){console.error('재생성 실패:',e);alert('재생성 실패: '+e.message);}
