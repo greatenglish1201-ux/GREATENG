@@ -2187,7 +2187,7 @@ function App(){
       if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
       const p=parseJSON(d.content[0].text);
       upSlot(slot.id,{status:'analyzed',meta:{...slot.meta,difficulty:p.difficulty||'중'},
-        analysis:{sentences:p.sentences||[],
+        analysis:{sentences:p.sentences||[],title:p.title||'',abstract:p.abstract||'',
           flow:{blocks:p.blocks||[],interBlockConnectors:p.interBlockConnectors||[],
             keyword:p.keyword||'',topicSummary:p.topicSummary||'',structureType:p.structureType||''},
           grammar:{difficultSentences:p.difficultSentences||[]}},open:true});
@@ -2288,8 +2288,8 @@ function App(){
       chapter_org:slot.meta.chapterOrg||'',
       number:slot.meta.number||'',
       difficulty:p.difficulty||slot.meta.difficulty||'',
-      title:p.title||'',
-      abstract:p.abstract||'',
+      title:p.title||slot.analysis?.title||'',
+      abstract:p.abstract||slot.analysis?.abstract||'',
       sentences_json:JSON.stringify(sentences),
       flow_json:JSON.stringify(flow),
       blockSummaries_json:blockSummaries?JSON.stringify(blockSummaries):'',
