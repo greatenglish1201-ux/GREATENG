@@ -2108,6 +2108,7 @@ function App(){
   const [showSet,setShowSet]=useState(false);
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
+  const [mogoNew,setMogoNew]=useState({yr:'26',gr:'G1',mon:'06',org:'경기'});
   const [showBookMgr,setShowBookMgr]=useState(false);
   const [showOutputMenu,setShowOutputMenu]=useState(false);
   const [filterHot,setFilterHot]=useState(false);
@@ -3192,22 +3193,36 @@ function App(){
                 </div>
               ))}
             </div>
-            <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
-              <input value={newBook.id} onChange={e=>setNewBook(p=>({...p,id:e.target.value.toUpperCase()}))}
-                placeholder="교재ID (예: MOGO_26_G3_11)" style={{padding:'5px 8px',borderRadius:5,border:'none',fontSize:12,fontFamily:'monospace',flex:2,minWidth:120}}/>
-              <input value={newBook.label} onChange={e=>setNewBook(p=>({...p,label:e.target.value}))}
-                placeholder="이름 (예: 26 고3 11월)" style={{padding:'5px 8px',borderRadius:5,border:'none',fontSize:12,flex:1,minWidth:80}}/>
-              <select value={newBook.storage} onChange={e=>setNewBook(p=>({...p,storage:e.target.value}))}
-                style={{padding:'5px 8px',borderRadius:5,border:'none',fontSize:12}}>
-                <option value="sheet">시트</option>
-                <option value="passages">passages.js</option>
+            {/* 모의고사 드랍다운 추가 */}
+            <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center',marginBottom:6}}>
+              <select value={mogoNew.yr} onChange={e=>setMogoNew(p=>({...p,yr:e.target.value}))}
+                style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                {['23','24','25','26','27','28'].map(y=><option key={y} value={y}>{y}년</option>)}
+              </select>
+              <select value={mogoNew.gr} onChange={e=>setMogoNew(p=>({...p,gr:e.target.value}))}
+                style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                <option value="G1">고1</option>
+                <option value="G2">고2</option>
+                <option value="G3">고3</option>
+              </select>
+              <select value={mogoNew.mon} onChange={e=>setMogoNew(p=>({...p,mon:e.target.value}))}
+                style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                {['03','04','05','06','07','09','10','11'].map(m=><option key={m} value={m}>{parseInt(m)}월</option>)}
+              </select>
+              <span style={{fontSize:11,color:'#88aacc',fontFamily:'monospace'}}>
+                {`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`}
+              </span>
+              <select value={mogoNew.org} onChange={e=>setMogoNew(p=>({...p,org:e.target.value}))}
+                style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#1a3d6e',color:'#fff'}}>
+                {['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재'].map(o=><option key={o} value={o}>{o}</option>)}
               </select>
               <button onClick={()=>{
-                if(!newBook.id||!newBook.label){alert('ID와 이름을 입력해주세요.');return;}
-                if(allBooks.find(b=>b.id===newBook.id)){alert('이미 존재하는 ID입니다.');return;}
-                const next=[...customBooks,{...newBook}];
+                const id=`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`;
+                const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
+                const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
+                if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
+                const next=[...customBooks,{id,label,storage:'sheet'}];
                 setCustomBooks(next);saveCustomBooks(next);
-                setNewBook({id:'',label:'',storage:'sheet'});
               }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
             </div>
           </div>
@@ -3235,22 +3250,36 @@ function App(){
             </div>
             <div style={{borderTop:'1px solid rgba(255,255,255,.15)',paddingTop:12}}>
               <div style={{color:'#a5d6f5',fontSize:12,marginBottom:8}}>새 교재 추가</div>
-              <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
-                <input value={newBook.id} onChange={e=>setNewBook(p=>({...p,id:e.target.value.toUpperCase()}))}
-                  placeholder="ID (예: MOGO_26_G3_11)" style={{padding:'6px 8px',borderRadius:5,border:'none',fontSize:12,fontFamily:'monospace',flex:2,minWidth:140}}/>
-                <input value={newBook.label} onChange={e=>setNewBook(p=>({...p,label:e.target.value}))}
-                  placeholder="이름 (예: 26 고3 11월)" style={{padding:'6px 8px',borderRadius:5,border:'none',fontSize:12,flex:1,minWidth:100}}/>
-                <select value={newBook.storage} onChange={e=>setNewBook(p=>({...p,storage:e.target.value}))}
-                  style={{padding:'6px 8px',borderRadius:5,border:'none',fontSize:12}}>
-                  <option value="sheet">시트</option>
-                  <option value="passages">passages.js</option>
+              {/* 모의고사 드랍다운 추가 */}
+              <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
+                <select value={mogoNew.yr} onChange={e=>setMogoNew(p=>({...p,yr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12}}>
+                  {['23','24','25','26','27','28'].map(y=><option key={y} value={y}>{y}년</option>)}
+                </select>
+                <select value={mogoNew.gr} onChange={e=>setMogoNew(p=>({...p,gr:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12}}>
+                  <option value="G1">고1</option>
+                  <option value="G2">고2</option>
+                  <option value="G3">고3</option>
+                </select>
+                <select value={mogoNew.mon} onChange={e=>setMogoNew(p=>({...p,mon:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12}}>
+                  {['03','04','05','06','07','09','10','11'].map(m=><option key={m} value={m}>{parseInt(m)}월</option>)}
+                </select>
+                <span style={{fontSize:11,color:'#88aacc',fontFamily:'monospace'}}>
+                  {`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`}
+                </span>
+                <select value={mogoNew.org} onChange={e=>setMogoNew(p=>({...p,org:e.target.value}))}
+                  style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12}}>
+                  {['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재'].map(o=><option key={o} value={o}>{o}</option>)}
                 </select>
                 <button onClick={()=>{
-                  if(!newBook.id||!newBook.label){alert('ID와 이름을 입력해주세요.');return;}
-                  if(allBooks.find(b=>b.id===newBook.id)){alert('이미 존재하는 ID입니다.');return;}
-                  const next=[...customBooks,{...newBook}];
+                  const id=`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`;
+                  const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
+                  const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
+                  if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
+                  const next=[...customBooks,{id,label,storage:'sheet'}];
                   setCustomBooks(next);saveCustomBooks(next);
-                  setNewBook({id:'',label:'',storage:'sheet'});
                 }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
               </div>
             </div>
