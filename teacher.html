@@ -777,6 +777,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   const [pi,setPi]=useState(0);
   const [at,setAt]=useState(0);
   const [selectedGrammarIdx,setSelectedGrammarIdx]=useState(null);
+  const [vocabAltCandidates,setVocabAltCandidates]=useState({}); // {itemKey: {loading:bool, words:[]}}
   const [outText,setOutText]=useState('');
   const [copied,setCopied]=useState(false);
   const [err,setErr]=useState('');
@@ -1083,6 +1084,26 @@ Return JSON only:
     setGenLoading('');
   };
 
+  const genVocabAltCandidates=async(word,itemKey)=>{
+    if(!apiKey||!word.trim())return;
+    setVocabAltCandidates(prev=>({...prev,[itemKey]:{loading:true,words:[]}}));
+    try{
+      const sys='Return ONLY valid JSON, no markdown.';
+      const prompt=`For the English word "${word}", provide:
+- 3 antonyms (반의어, opposite meaning)
+- 3 synonyms (유의어, similar meaning)
+Return JSON only:
+{"antonyms":["w1","w2","w3"],"synonyms":["w1","w2","w3"]}`;
+      const d=await callClaude(apiKey,sys,prompt);
+      const parsed=parseJSON(d.content[0].text);
+      setVocabAltCandidates(prev=>({...prev,[itemKey]:{loading:false,words:[
+        ...((parsed.antonyms||[]).map(w=>({w,type:'반의'}))),
+        ...((parsed.synonyms||[]).map(w=>({w,type:'유의'})))
+      ]}}));
+    }catch(e){
+      setVocabAltCandidates(prev=>({...prev,[itemKey]:{loading:false,words:[]}}));
+    }
+  };
   const genGrammarVocabSet=async(isG,pData)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
     setGenLoading(isG?'grammar':'vocab');
@@ -1194,6 +1215,13 @@ Return JSON only:
           ?{...p,grammar_sets:sets,grammar_sel:newSel,grammar_answer:parsed.answer||1}
           :{...p,vocab_sets:sets,vocab_sel:newSel,vocab_answer:parsed.answer||1};
       });
+      // 어휘 생성 후 자동으로 각 항목 반의어/유의어 후보 생성
+      if(!isG){
+        const newItems=parsed.items||[];
+        newItems.forEach((item,ii)=>{
+          if(item.word)genVocabAltCandidates(item.word,`${(p.vocab_sel??0)}_${ii}_${item.word}`);
+        });
+      }
     }catch(e){console.error('재생성 실패:',e);alert('재생성 실패: '+e.message);}
     setGenLoading('');
   };
@@ -1802,6 +1830,14 @@ Return JSON only:
               onSave={v=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items];items[ii]=isG?{...items[ii],note:v}:{...items[ii],alt:v};sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
               multiline={isG}
               placeholder={isG?'어법 설명':'대체 표현'} style={{width:'100%',border:'1px solid #eee',borderRadius:6,padding:'4px 8px',fontSize:11,color:'#888',boxSizing:'border-box',lineHeight:1.5}}/>
+            {!isG&&(()=>{const itemKey=`${sel}_${ii}_${item.word}`;const cand=vocabAltCandidates[itemKey];return(<div style={{marginTop:4}}>
+              {cand?.loading&&<span style={{fontSize:10,color:'#bbb'}}>후보 생성 중...</span>}
+              {!cand?.loading&&!cand?.words?.length&&item.word&&<button onClick={()=>genVocabAltCandidates(item.word,itemKey)} style={{fontSize:10,padding:'2px 8px',border:'1px solid #ddd',borderRadius:5,background:'#f9f9f9',color:'#888',cursor:'pointer'}}>반의어/유의어 ↻</button>}
+              {cand?.words?.length>0&&<div style={{display:'flex',flexWrap:'wrap',gap:4,alignItems:'center'}}>
+                <button onClick={()=>genVocabAltCandidates(item.word,itemKey)} style={{fontSize:10,padding:'2px 6px',border:'1px solid #ddd',borderRadius:5,background:'#f9f9f9',color:'#aaa',cursor:'pointer'}}>↻</button>
+                {cand.words.map((c,ci)=><button key={ci} onClick={()=>{upPDeep(p=>{const sets=[...p.vocab_sets];const items=[...sets[p.vocab_sel].items];items[ii]={...items[ii],alt:c.w};sets[p.vocab_sel]={...sets[p.vocab_sel],items};return{...p,vocab_sets:sets};});}} style={{fontSize:11,padding:'2px 8px',borderRadius:5,border:`1px solid ${c.type==='반의'?'#E24B4A44':'#185FA544'}`,background:c.type==='반의'?'#E24B4A08':'#185FA508',color:c.type==='반의'?'#E24B4A':'#185FA5',cursor:'pointer'}}>{c.type} {c.w}</button>)}
+              </div>}
+            </div>);})()} 
           </div>;
         });})()}
         <button onClick={()=>{upPDeep(p=>{const sets=[...(isG?p.grammar_sets:p.vocab_sets)];const items=[...sets[isG?p.grammar_sel:p.vocab_sel].items,{sent:0,word:'새 항목',correct:false,note:'',alt:'',original:''}];sets[isG?p.grammar_sel:p.vocab_sel]={...sets[isG?p.grammar_sel:p.vocab_sel],items};return isG?{...p,grammar_sets:sets}:{...p,vocab_sets:sets};});}}
