@@ -682,7 +682,9 @@ function App(){
   // 시트 로드 후 현재 선택 교재가 목록에 없으면 첫 교재로 자동 보정
   useEffect(()=>{
     if(books.length&&!books.some(b=>b.id===activeBook)){
-      setActiveBook(books[0].id);
+      // 모의고사(MOGO_)보다 일반 교재를 우선 기본 선택
+      const firstNormal=books.find(b=>!b.id.startsWith('MOGO_'));
+      setActiveBook((firstNormal||books[0]).id);
     }
   },[books]);
 
@@ -1108,21 +1110,74 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
 
   const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',active:s.active});};
 
+  // ── 개별 학생 약점 분석 리포트 인쇄 ──
+  const printReport=()=>{
+    if(!selectedStudent){setMsg('인쇄할 학생을 먼저 선택하세요.');return;}
+    if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
+    const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const rateColor=r=>Number(r)>=80?'#1E6B30':Number(r)>=60?'#B7791F':'#B3261E';
+    const today=new Date();
+    const dateStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+    const sessions=(stats.sessionStats||[]).slice().reverse();
+    const types=(stats.typeStats||[]).slice().sort((a,b)=>Number(a.rate)-Number(b.rate)); // 약한 유형 먼저
+    const wrongs=(stats.wrongRanking||[]);
+    const books=(stats.bookStats||[]);
+    // 종합 정답률
+    const totCorrect=types.reduce((s,t)=>s+(Number(t.correct)||0),0);
+    const totAll=types.reduce((s,t)=>s+(Number(t.total)||0),0);
+    const overall=totAll?Math.round(totCorrect/totAll*100):0;
+    const weakTypes=types.filter(t=>Number(t.rate)<70).slice(0,5);
+
+    const bar=(r)=>`<div style="display:inline-block;width:90px;height:7px;border-radius:4px;background:#eee;overflow:hidden;vertical-align:middle;margin-right:7px"><div style="width:${Number(r)}%;height:100%;background:${rateColor(r)}"></div></div>`;
+    const row=(c1,c2,r,sub)=>`<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12.5px;color:#222">${esc(c1)}${sub?` <span style="color:#999;font-size:11px">${esc(sub)}</span>`:''}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${bar(r)}<b style="color:${rateColor(r)};font-size:12.5px">${esc(r)}%</b></td></tr>`;
+
+    const sec=(title,inner)=>inner?`<div style="margin-bottom:18px"><div style="font-size:13px;font-weight:700;color:#7a1020;border-left:4px solid #C9A84C;padding-left:8px;margin-bottom:8px">${title}</div>${inner}</div>`:'';
+
+    const sessHtml=sessions.length?`<table style="width:100%;border-collapse:collapse">${sessions.map(s=>`<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:12px;color:#555">${esc(String(s.date).slice(0,10))}</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-size:12.5px;color:#222">${esc(s.score)}문항</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(s.rate)};font-size:12.5px">${esc(s.rate)}%</td></tr>`).join('')}</table>`:'';
+    const typeHtml=types.length?`<table style="width:100%;border-collapse:collapse">${types.map(t=>row(t.type,`${t.correct}/${t.total}`,t.rate)).join('')}</table>`:'';
+    const bookHtml=books.length?`<table style="width:100%;border-collapse:collapse">${books.map(b=>row(b.label,`${b.correct}/${b.total}`,b.rate)).join('')}</table>`:'';
+    const wrongHtml=wrongs.length?`<table style="width:100%;border-collapse:collapse">${wrongs.map((w,i)=>`<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:12px;color:#222"><b style="color:${i<3?'#C9A84C':'#999'}">#${i+1}</b> ${esc(w.pid)} <span style="color:#999;font-size:11px">${esc(w.type)}</span></td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;color:#B3261E;font-weight:700;font-size:12px">✗ ${esc(w.wrong)}/${esc(w.total)}회</td></tr>`).join('')}</table>`:'';
+    const weakHtml=weakTypes.length?`<div style="background:#FBF3DE;border:1px solid #e6c97a;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#5a3a10;line-height:1.7"><b style="color:#7a1020">⚠ 집중 보완 추천 유형</b><br/>${weakTypes.map(t=>`${esc(t.type)} <b style="color:${rateColor(t.rate)}">${esc(t.rate)}%</b>`).join(' · ')}</div>`:'';
+
+    const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(selectedStudent)} 약점 분석 리포트</title>
+<style>@media print{@page{margin:14mm}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>
+<body>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px solid #7a1020;padding-bottom:10px;margin-bottom:18px">
+    <div><div style="font-size:20px;font-weight:800;color:#7a1020">${esc(selectedStudent)} <span style="font-size:14px;color:#9a8570;font-weight:600">약점 분석 리포트</span></div>
+    <div style="font-size:12px;color:#9a8570;margin-top:3px">대단한영어 · 시험 전 보완용</div></div>
+    <div style="text-align:right"><div style="font-size:12px;color:#999">${dateStr}</div>
+    <div style="font-size:13px;margin-top:4px">종합 정답률 <b style="font-size:18px;color:${rateColor(overall)}">${overall}%</b></div></div>
+  </div>
+  ${weakHtml?`<div style="margin-bottom:18px">${weakHtml}</div>`:''}
+  ${sec('📝 유형별 정답률 <span style="font-size:11px;color:#999;font-weight:400">(낮은 순)</span>',typeHtml)}
+  ${sec('🏆 많이 틀린 지문',wrongHtml)}
+  ${sec('📚 교재별 정답률',bookHtml)}
+  ${sec('📅 회차별 기록',sessHtml)}
+  <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
+</body></html>`;
+
+    const w=window.open('','_blank');
+    if(!w){setMsg('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');return;}
+    w.document.write(html);
+    w.document.close();
+    setTimeout(()=>{try{w.focus();w.print();}catch(e){}},400);
+  };
+
   const btn=(active,label,onClick)=>
-    <button onClick={onClick} style={{padding:'8px 16px',borderRadius:10,border:'none',background:active?'#1e293b':'#e2e8f0',color:active?'#fff':'#334155',fontWeight:600,fontSize:13,cursor:'pointer'}}>{label}</button>;
+    <button onClick={onClick} style={{padding:'8px 16px',borderRadius:10,border:'none',background:active?'#7a1020':'#f0e7d4',color:active?'#fff':'#7a6a55',fontWeight:600,fontSize:13,cursor:'pointer'}}>{label}</button>;
 
   return(
-    <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#f5f7fa,#e8ecf1)',fontFamily:"'Pretendard',sans-serif"}}>
+    <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#fffdf8,#f6efe0)',fontFamily:"'Pretendard',sans-serif"}}>
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
       <div style={{maxWidth:720,margin:'0 auto',padding:'24px 16px'}}>
         {/* 헤더 */}
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
           <div>
-            <h2 style={{fontSize:20,fontWeight:800,color:'#1a2332',margin:0}}>관리자 패널</h2>
-            <p style={{fontSize:12,color:'#94a3b8',margin:'3px 0 0'}}>대단한영어</p>
+            <h2 style={{fontSize:20,fontWeight:800,color:'#7a1020',margin:0}}>관리자 패널</h2>
+            <p style={{fontSize:12,color:'#9a8570',margin:'3px 0 0'}}>대단한영어</p>
           </div>
-          <button onClick={goBack} style={{padding:'8px 16px',borderRadius:10,border:'1px solid #e2e8f0',background:'#fff',fontSize:13,cursor:'pointer',color:'#64748b'}}>로그아웃</button>
-          <button onClick={goToSetup} style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#4f7df7,#3b5fe0)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기</button>
+          <button onClick={goBack} style={{padding:'8px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>로그아웃</button>
+          <button onClick={goToSetup} style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#7a1020,#9a3040)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기</button>
         </div>
 
         {/* 탭 */}
@@ -1137,16 +1192,16 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         {tab==='students'&&<div>
           {/* 추가/편집 폼 */}
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
-            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>{editName?`✏️ ${editName} 수정`:'➕ 학생 추가'}</h3>
+            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#3a2a20'}}>{editName?`✏️ ${editName} 수정`:'➕ 학생 추가'}</h3>
             <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
               <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="이름"
                 disabled={!!editName}
-                style={{flex:'1 1 120px',padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
+                style={{flex:'1 1 120px',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13.5,outline:'none'}}/>
               <input value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="비밀번호"
-                style={{flex:'1 1 120px',padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
+                style={{flex:'1 1 120px',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13.5,outline:'none'}}/>
               <input type="date" value={form.expiry} onChange={e=>setForm({...form,expiry:e.target.value})}
-                style={{flex:'1 1 130px',padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13,outline:'none'}}/>
-              <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:'#334155',cursor:'pointer'}}>
+                style={{flex:'1 1 130px',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none'}}/>
+              <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:'#3a2a20',cursor:'pointer'}}>
                 <input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 활성화
               </label>
             </div>
@@ -1154,23 +1209,23 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               <button onClick={saveStudent} disabled={loading} style={{padding:'9px 20px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>
                 {loading?'저장 중...':'저장'}
               </button>
-              {editName&&<button onClick={()=>{setEditName(null);setForm({name:'',password:'',expiry:'',active:true});}} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e2e8f0',background:'#fff',fontSize:13,cursor:'pointer',color:'#64748b'}}>취소</button>}
+              {editName&&<button onClick={()=>{setEditName(null);setForm({name:'',password:'',expiry:'',active:true});}} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>취소</button>}
             </div>
             {msg&&<p style={{fontSize:12,marginTop:8,color:msg.includes('완료')?'#16a34a':'#dc2626'}}>{msg}</p>}
           </div>
 
           {/* 학생 목록 */}
           <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',overflow:'hidden'}}>
-            {loading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
-            {!loading&&students.length===0&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>등록된 학생이 없습니다.</p>}
+            {loading&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>로딩 중...</p>}
+            {!loading&&students.length===0&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>등록된 학생이 없습니다.</p>}
             {students.map((s,i)=>(
-              <div key={i} style={{display:'flex',alignItems:'center',padding:'11px 16px',borderBottom:'1px solid #f1f5f9',gap:10}}>
+              <div key={i} style={{display:'flex',alignItems:'center',padding:'11px 16px',borderBottom:'1px solid #efe6d4',gap:10}}>
                 <div style={{flex:1}}>
-                  <span style={{fontSize:14,fontWeight:600,color:'#1e293b'}}>{s.name}</span>
-                  <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>{s.expiry||'만료없음'}</span>
+                  <span style={{fontSize:14,fontWeight:600,color:'#3a2a20'}}>{s.name}</span>
+                  <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>{s.expiry||'만료없음'}</span>
                 </div>
                 <span style={{fontSize:11,padding:'2px 8px',borderRadius:8,background:s.active?'#dcfce7':'#fee2e2',color:s.active?'#166534':'#991b1b',fontWeight:600}}>{s.active?'활성':'비활성'}</span>
-                <button onClick={()=>startEdit(s)} style={{fontSize:12,padding:'5px 10px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',cursor:'pointer',color:'#334155'}}>수정</button>
+                <button onClick={()=>startEdit(s)} style={{fontSize:12,padding:'5px 10px',borderRadius:8,border:'1px solid #e6dcc6',background:'#fff',cursor:'pointer',color:'#3a2a20'}}>수정</button>
                 <button onClick={()=>deleteStudent(s.name)} style={{fontSize:12,padding:'5px 10px',borderRadius:8,border:'none',background:'#fee2e2',cursor:'pointer',color:'#dc2626'}}>삭제</button>
               </div>
             ))}
@@ -1182,27 +1237,30 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
           {/* 학생 선택 드롭다운 */}
           <div style={{display:'flex',gap:8,marginBottom:12}}>
             <select value={selectedStudent} onChange={e=>{setSelectedStudent(e.target.value);loadStats(e.target.value);}}
-              style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:13,outline:'none',color:'#334155',background:'#fff'}}>
+              style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:13,outline:'none',color:'#3a2a20',background:'#fff'}}>
               <option value=''>전체 학생</option>
               {students.map((s,i)=><option key={i} value={s.name}>{s.name}</option>)}
             </select>
             <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
+            <button onClick={printReport} disabled={!selectedStudent||!stats}
+              title={selectedStudent?'약점 분석 리포트 인쇄':'학생을 선택하면 인쇄할 수 있습니다'}
+              style={{padding:'9px 16px',borderRadius:10,border:'1px solid #7a1020',background:(!selectedStudent||!stats)?'#f0e7d4':'#fff',color:(!selectedStudent||!stats)?'#b8a988':'#7a1020',fontWeight:700,fontSize:13,cursor:(!selectedStudent||!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖨 인쇄</button>
           </div>
-          {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>로딩 중...</p>}
-          {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#94a3b8',fontSize:13}}>데이터 없음</p>}
+          {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>로딩 중...</p>}
+          {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>데이터 없음</p>}
           {stats&&<div>
             {/* 전체 보기: 학생별 카드 */}
             {!selectedStudent&&(stats.studentStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>👥 학생별 정답률</div>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>👥 학생별 정답률</div>
               {(stats.studentStats||[]).filter(s=>s.name!=='관리자').map((s,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer'}}
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer'}}
                   onClick={()=>{setSelectedStudent(s.name);loadStats(s.name);}}>
                   <div>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.name}</span>
-                    <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{s.name}</span>
+                    <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항</span>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <div style={{width:80,height:6,borderRadius:3,background:'#f1f5f9',overflow:'hidden'}}>
+                    <div style={{width:80,height:6,borderRadius:3,background:'#f0e7d4',overflow:'hidden'}}>
                       <div style={{width:s.rate+'%',height:'100%',background:s.rate>=80?'#16a34a':s.rate>=60?'#f59e0b':'#dc2626',borderRadius:3}}/>
                     </div>
                     <span style={{fontSize:13,fontWeight:800,color:s.rate>=80?'#16a34a':s.rate>=60?'#f59e0b':'#dc2626',minWidth:36,textAlign:'right'}}>{s.rate}%</span>
@@ -1212,12 +1270,12 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             </div>}
             {/* 학생 선택 시: 회차별 기록 */}
             {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📅 회차별 기록</div>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📅 회차별 기록</div>
               {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#64748b'}}>{String(s.date).slice(0,10)}</span>
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:12,color:'#9a8570'}}>{String(s.date).slice(0,10)}</span>
                   <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{s.score}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{s.score}문항</span>
                     <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
                   </div>
                 </div>
@@ -1225,14 +1283,14 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             </div>}
             {/* 많이 틀린 지문 랭킹 */}
             {(stats.wrongRanking||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>🏆 많이 틀린 지문 랭킹</div>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>🏆 많이 틀린 지문 랭킹</div>
               {(stats.wrongRanking||[]).map((w,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <span style={{fontSize:12,fontWeight:800,color:i<3?'#C9A84C':'#94a3b8',minWidth:20}}>#{i+1}</span>
+                    <span style={{fontSize:12,fontWeight:800,color:i<3?'#C9A84C':'#9a8570',minWidth:20}}>#{i+1}</span>
                     <div>
-                      <span style={{fontSize:12,fontWeight:600,color:'#1e293b'}}>{w.pid}</span>
-                      <span style={{fontSize:11,color:'#94a3b8',marginLeft:6}}>{w.type}</span>
+                      <span style={{fontSize:12,fontWeight:600,color:'#3a2a20'}}>{w.pid}</span>
+                      <span style={{fontSize:11,color:'#9a8570',marginLeft:6}}>{w.type}</span>
                     </div>
                   </div>
                   <span style={{fontSize:13,fontWeight:800,color:'#dc2626'}}>✗ {w.wrong}회 / {w.total}회</span>
@@ -1241,15 +1299,15 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             </div>}
             {/* 유형별 정답률 */}
             {(stats.typeStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📝 유형별 정답률</div>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📝 유형별 정답률</div>
               {(stats.typeStats||[]).map((t,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{t.type}</span>
-                    <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>{t.correct}/{t.total}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{t.type}</span>
+                    <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>{t.correct}/{t.total}문항</span>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <div style={{width:80,height:6,borderRadius:3,background:'#f1f5f9',overflow:'hidden'}}>
+                    <div style={{width:80,height:6,borderRadius:3,background:'#f0e7d4',overflow:'hidden'}}>
                       <div style={{width:t.rate+'%',height:'100%',background:t.rate>=80?'#16a34a':t.rate>=60?'#f59e0b':'#dc2626',borderRadius:3}}/>
                     </div>
                     <span style={{fontSize:13,fontWeight:800,color:t.rate>=80?'#16a34a':t.rate>=60?'#f59e0b':'#dc2626',minWidth:36,textAlign:'right'}}>{t.rate}%</span>
@@ -1259,15 +1317,15 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             </div>}
             {/* 전체 보기: 교재별 정답률 */}
             {!selectedStudent&&(stats.bookStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #f1f5f9',fontWeight:700,fontSize:13,color:'#1e293b'}}>📚 교재별 정답률</div>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📚 교재별 정답률</div>
               {(stats.bookStats||[]).map((b,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f8fafc',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div>
-                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>{b.label}</span>
-                    <span style={{fontSize:11,color:'#94a3b8',marginLeft:8}}>{b.correct}/{b.total}문항</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{b.label}</span>
+                    <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>{b.correct}/{b.total}문항</span>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <div style={{width:80,height:6,borderRadius:3,background:'#f1f5f9',overflow:'hidden'}}>
+                    <div style={{width:80,height:6,borderRadius:3,background:'#f0e7d4',overflow:'hidden'}}>
                       <div style={{width:b.rate+'%',height:'100%',background:b.rate>=80?'#16a34a':b.rate>=60?'#f59e0b':'#dc2626',borderRadius:3}}/>
                     </div>
                     <span style={{fontSize:13,fontWeight:800,color:b.rate>=80?'#16a34a':b.rate>=60?'#f59e0b':'#dc2626',minWidth:36,textAlign:'right'}}>{b.rate}%</span>
@@ -1281,19 +1339,19 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         {/* 교재 관리 탭 */}
         {tab==='books'&&<div>
           <div style={{background:'#fff',borderRadius:14,padding:'16px 18px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
-            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#1e293b'}}>📚 교재 표시 / 숨김</h3>
-            <p style={{fontSize:12,color:'#94a3b8',margin:'0 0 4px',lineHeight:1.6}}>
+            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#3a2a20'}}>📚 교재 표시 / 숨김</h3>
+            <p style={{fontSize:12,color:'#9a8570',margin:'0 0 4px',lineHeight:1.6}}>
               시험이 끝난 교재를 <b>숨김</b>으로 바꾸면 학생 메인 화면에서 사라집니다.
               데이터는 그대로 보관되며, <b>표시</b>를 누르면 즉시 다시 나타납니다.
             </p>
             <button onClick={loadBooks} disabled={bookLoading}
-              style={{padding:'6px 14px',borderRadius:9,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,cursor:'pointer',color:'#64748b',marginTop:4}}>
+              style={{padding:'6px 14px',borderRadius:9,border:'1px solid #e6dcc6',background:'#f8fafc',fontSize:12,cursor:'pointer',color:'#9a8570',marginTop:4}}>
               {bookLoading?'불러오는 중...':'🔄 새로고침'}
             </button>
           </div>
 
-          {bookLoading&&<div style={{textAlign:'center',padding:30,color:'#94a3b8'}}>교재 목록을 불러오는 중...</div>}
-          {!bookLoading&&bookList.length===0&&<div style={{textAlign:'center',padding:30,color:'#94a3b8'}}>표시할 교재가 없습니다.</div>}
+          {bookLoading&&<div style={{textAlign:'center',padding:30,color:'#9a8570'}}>교재 목록을 불러오는 중...</div>}
+          {!bookLoading&&bookList.length===0&&<div style={{textAlign:'center',padding:30,color:'#9a8570'}}>표시할 교재가 없습니다.</div>}
 
           {!bookLoading&&bookList.map(b=>{
             const hidden=b.publicCount===0;            // 공개 지문이 0이면 숨김 상태로 간주
@@ -1302,20 +1360,20 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             return(
               <div key={b.source} style={{background:'#fff',borderRadius:12,padding:'14px 16px',marginBottom:10,
                 boxShadow:'0 1px 4px rgba(0,0,0,0.05)',display:'flex',alignItems:'center',gap:12,
-                opacity:busy?0.6:1,border:`1px solid ${hidden?'#fde68a':'#e2e8f0'}`}}>
+                opacity:busy?0.6:1,border:`1px solid ${hidden?'#e6c97a':'#e6dcc6'}`}}>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
+                  <div style={{fontSize:14,fontWeight:700,color:'#3a2a20'}}>
                     {hidden?'📦 ':'🌐 '}{b.label}
                   </div>
-                  <div style={{fontSize:11.5,color:'#94a3b8',marginTop:2}}>
+                  <div style={{fontSize:11.5,color:'#9a8570',marginTop:2}}>
                     전체 {b.total}개 · 공개 {b.publicCount}개
                     {hidden&&<span style={{color:'#d97706',fontWeight:600}}> · 숨김 상태</span>}
-                    {partial&&<span style={{color:'#2563eb',fontWeight:600}}> · 일부만 공개</span>}
+                    {partial&&<span style={{color:'#9a7040',fontWeight:600}}> · 일부만 공개</span>}
                   </div>
                 </div>
                 {hidden
                   ? <button onClick={()=>setBookVisible(b,true)} disabled={busy}
-                      style={{padding:'8px 16px',borderRadius:10,border:'none',background:'#dbeafe',color:'#1d4ed8',fontWeight:700,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>
+                      style={{padding:'8px 16px',borderRadius:10,border:'none',background:'#f4e4e6',color:'#7a1020',fontWeight:700,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>
                       {busy?'처리 중...':'♻ 표시'}
                     </button>
                   : <button onClick={()=>setBookVisible(b,false)} disabled={busy}
@@ -1332,23 +1390,23 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
 
         {tab==='settings'&&<div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
-            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#1e293b'}}>📊 Google Sheets URL</h3>
-            <p style={{fontSize:11.5,color:'#94a3b8',margin:'0 0 10px'}}>시험 결과 탭에서 바로 열 Sheets 주소를 입력하세요.</p>
+            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#3a2a20'}}>📊 Google Sheets URL</h3>
+            <p style={{fontSize:11.5,color:'#9a8570',margin:'0 0 10px'}}>시험 결과 탭에서 바로 열 Sheets 주소를 입력하세요.</p>
             <input value={sheetsUrl} onChange={e=>{setSheetsUrl(e.target.value);localStorage.setItem('greateng_sheets_url',e.target.value);}}
               placeholder="https://docs.google.com/spreadsheets/d/..."
-              style={{width:'100%',padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:12.5,outline:'none',boxSizing:'border-box',color:'#334155'}}/>
+              style={{width:'100%',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:12.5,outline:'none',boxSizing:'border-box',color:'#3a2a20'}}/>
           </div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
-            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>🔑 관리자 비밀번호 변경</h3>
+            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#3a2a20'}}>🔑 관리자 비밀번호 변경</h3>
             <div style={{display:'flex',flexDirection:'column',gap:8}}>
               <input value={curAdminPw} onChange={e=>setCurAdminPw(e.target.value)} placeholder="현재 비밀번호" type="password"
-                style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
+                style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13.5,outline:'none'}}/>
               <input value={newAdminPw} onChange={e=>setNewAdminPw(e.target.value)} placeholder="새 비밀번호" type="password"
-                style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:13.5,outline:'none'}}/>
+                style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13.5,outline:'none'}}/>
               <div style={{display:'flex',gap:8}}>
                 <input value={confirmNewPw} onChange={e=>setConfirmNewPw(e.target.value)} placeholder="새 비밀번호 확인" type="password"
                   onKeyDown={e=>e.key==='Enter'&&changeAdminPw()}
-                  style={{flex:1,padding:'9px 12px',borderRadius:9,border:`1.5px solid ${confirmNewPw&&newAdminPw?(confirmNewPw===newAdminPw?'#16a34a':'#dc2626'):'#e2e8f0'}`,fontSize:13.5,outline:'none'}}/>
+                  style={{flex:1,padding:'9px 12px',borderRadius:9,border:`1.5px solid ${confirmNewPw&&newAdminPw?(confirmNewPw===newAdminPw?'#16a34a':'#dc2626'):'#e6dcc6'}`,fontSize:13.5,outline:'none'}}/>
                 <button onClick={changeAdminPw} disabled={loading} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>{loading?'변경 중...':'변경'}</button>
               </div>
               {confirmNewPw&&newAdminPw&&confirmNewPw!==newAdminPw&&<p style={{fontSize:11.5,color:'#dc2626',margin:0}}>비밀번호가 일치하지 않습니다.</p>}
@@ -1356,11 +1414,11 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             {msg&&<p style={{fontSize:12,marginTop:8,color:msg.includes('완료')?'#16a34a':'#dc2626'}}>{msg}</p>}
           </div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
-            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>🔗 결과 저장 URL</h3>
+            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#3a2a20'}}>🔗 결과 저장 URL</h3>
             <input value={scriptUrl} onChange={e=>{setScriptUrl(e.target.value);localStorage.setItem('greateng_script_url',e.target.value);}}
               placeholder="Apps Script 배포 URL (선택)"
-              style={{width:'100%',padding:'9px 12px',borderRadius:9,border:'1px solid #e2e8f0',fontSize:12,outline:'none',boxSizing:'border-box',color:'#64748b'}}/>
-            <p style={{fontSize:11,color:'#94a3b8',marginTop:6}}>입력하면 시험 결과가 Google Sheets에 자동 저장됩니다.</p>
+              style={{width:'100%',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:12,outline:'none',boxSizing:'border-box',color:'#9a8570'}}/>
+            <p style={{fontSize:11,color:'#9a8570',marginTop:6}}>입력하면 시험 결과가 Google Sheets에 자동 저장됩니다.</p>
           </div>
         </div>}
       </div>
@@ -1408,6 +1466,11 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
   const [adminPwErr,setAdminPwErr]=useState('');
+  const [mogoOpen,setMogoOpen]=useState(false);
+  // 일반 교재는 탭, 모의고사(MOGO_)는 드롭다운으로 분리
+  const normalBooks=books.filter(b=>!b.id.startsWith('MOGO_'));
+  const mogoBooks=books.filter(b=>b.id.startsWith('MOGO_'));
+  const activeMogo=mogoBooks.find(b=>b.id===activeBook);
   const tryGoAdmin=async()=>{
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:'관리자',password:adminPwInput});
@@ -1477,23 +1540,56 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         </div>
 
         <div style={S.card}>
-          <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>📂 교재 · 지문 선택</h3>
+          <h3 style={{fontSize:13,fontWeight:800,color:S.c.wine,margin:'0 0 10px'}}>📂 교재 · 지문 선택</h3>
 
-          {/* 교재 탭 */}
-          <div style={{display:'flex',gap:0,marginBottom:12,borderBottom:'2px solid #e2e8f0'}}>
-            {books.map(b=>{
+          {/* 교재 탭 (일반) + 모의고사 드롭다운 */}
+          <div style={{display:'flex',alignItems:'flex-end',gap:6,marginBottom:12,borderBottom:'2px solid #ece2cf',flexWrap:'wrap'}}>
+            {normalBooks.map(b=>{
               const sel=b.id===activeBook;
               const cnt=bookSelCount(b.id);
               const tot=bookTotalCount(b.id);
               return <button key={b.id} onClick={()=>setActiveBook(b.id)} style={{
                 padding:'9px 16px',fontSize:12.5,fontWeight:sel?700:500,cursor:'pointer',
-                border:'none',borderBottom:sel?'2px solid #4f7df7':'2px solid transparent',
-                background:'transparent',color:sel?'#3b6fe0':'#94a3b8',
-                marginBottom:-2,transition:'all .15s'
+                border:'none',borderBottom:sel?`2px solid ${S.c.wine}`:'2px solid transparent',
+                background:'transparent',color:sel?S.c.wine:S.c.sub,
+                marginBottom:-2,transition:'all .15s',whiteSpace:'nowrap'
               }}>
                 {b.label} <span style={{fontSize:10,fontWeight:400,opacity:.7}}>({cnt}/{tot})</span>
               </button>;
             })}
+
+            {/* 모의고사 드롭다운 */}
+            {mogoBooks.length>0&&(
+              <div style={{position:'relative',marginBottom:-2,marginLeft:'auto'}}>
+                <button onClick={()=>setMogoOpen(o=>!o)} style={{
+                  padding:'9px 14px',fontSize:12.5,fontWeight:activeMogo?700:500,cursor:'pointer',
+                  border:'none',borderBottom:activeMogo?`2px solid ${S.c.wine}`:'2px solid transparent',
+                  background:'transparent',color:activeMogo?S.c.wine:S.c.sub,whiteSpace:'nowrap',
+                  display:'flex',alignItems:'center',gap:5
+                }}>
+                  {activeMogo?activeMogo.label:'모의고사'} <span style={{fontSize:10,transform:mogoOpen?'rotate(180deg)':'none',transition:'transform .15s'}}>▾</span>
+                </button>
+                {mogoOpen&&(
+                  <div style={{position:'absolute',top:'calc(100% + 4px)',right:0,zIndex:20,
+                    background:'#fff',border:`1px solid ${S.c.line}`,borderRadius:11,
+                    boxShadow:'0 6px 20px rgba(122,16,32,0.13)',minWidth:170,overflow:'hidden'}}>
+                    {mogoBooks.map(b=>{
+                      const sel=b.id===activeBook;
+                      const cnt=bookSelCount(b.id);
+                      const tot=bookTotalCount(b.id);
+                      return <button key={b.id} onClick={()=>{setActiveBook(b.id);setMogoOpen(false);}} style={{
+                        display:'block',width:'100%',textAlign:'left',padding:'10px 14px',
+                        border:'none',borderBottom:`1px solid #f4ede0`,cursor:'pointer',
+                        background:sel?'#FBF3DE':'#fff',color:sel?S.c.wine:S.c.ink,
+                        fontSize:12.5,fontWeight:sel?700:500,whiteSpace:'nowrap'
+                      }}>
+                        {b.label} <span style={{fontSize:10,fontWeight:400,opacity:.7}}>({cnt}/{tot})</span>
+                      </button>;
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* 검색창 */}
