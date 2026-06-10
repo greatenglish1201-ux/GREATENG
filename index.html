@@ -2206,7 +2206,7 @@ function StudyView({scriptUrl,studentName,goBack}){
               style={{flexShrink:0,padding:'5px 12px',borderRadius:20,fontSize:11,fontWeight:600,
                 background:activeSource===s?'#4f7df7':'#f1f5f9',
                 color:activeSource===s?'#fff':'#555',border:'none',cursor:'pointer'}}>
-              {s==='ALL'?'전체':s}
+              {s==='ALL'?'전체':bookLabel(s)}
             </button>
           ))}
         </div>
@@ -2253,7 +2253,7 @@ function StudyView({scriptUrl,studentName,goBack}){
                   color:bookOpen?'#fff':'#1e293b',
                   cursor:'pointer',userSelect:'none'}}>
                 <span style={{fontSize:13,transition:'transform .15s',transform:bookOpen?'rotate(90deg)':'rotate(0deg)',display:'inline-block'}}>▶</span>
-                <span style={{fontWeight:800,fontSize:14,flex:1}}>{b.book}</span>
+                <span style={{fontWeight:800,fontSize:14,flex:1}}>{bookLabel(b.book)}</span>
                 <span style={{fontSize:11,fontWeight:600,opacity:0.7,
                   background:bookOpen?'rgba(255,255,255,0.15)':'#e2e8f0',
                   padding:'2px 8px',borderRadius:10}}>
