@@ -60,11 +60,15 @@ function makePassageId(source, chapter, number){
 const BOOKS = getAllBooks().map(b=>({ id:b.id, label:b.label, match: id => id.startsWith(b.id) }));
 
 function detectBooks(passages){
-  const STATIC_IDS=new Set(BOOKS.map(b=>b.id));
+  // 정의된 교재 id를 길이 내림차순으로 정렬(긴 prefix 우선 매칭: 27ST_E가 27ST보다 먼저)
+  const DEFINED=[...getAllBooks()].sort((a,b)=>b.id.length-a.id.length);
+  const definedMatch=pid=>DEFINED.find(b=>pid.startsWith(b.id+'_')||pid===b.id);
   const map={};
   passages.forEach(p=>{
+    // 정의된 교재에 속하면 동적 추출에서 제외
+    if(definedMatch(p.id))return;
     const parts=p.id.split('_');let prefix='';for(let i=0;i<parts.length;i++){if(/^\d+$/.test(parts[i])||/^\d/.test(parts[i])&&parts[i].length<=3)break;prefix=prefix?(prefix+'_'+parts[i]):parts[i];}prefix=prefix||parts[0];
-    if(!STATIC_IDS.has(prefix)&&!map[prefix])map[prefix]=true;
+    if(!map[prefix])map[prefix]=true;
   });
   const dynamic=Object.keys(map).map(pre=>({
     id:pre,
