@@ -839,6 +839,11 @@ function App(){
 
 /* ── 스타일 ── */
 const S={
+  // 브랜드 팔레트 토큰
+  c:{wine:'#7a1020',wineSoft:'#9a3040',gold:'#C9A84C',goldDk:'#9a7040',
+     ink:'#3a2a20',sub:'#9a8570',line:'rgba(201,168,76,0.22)',
+     ok:'#1E6B30',okBg:'#EAF5EC',ng:'#B3261E',ngBg:'#FBECEA',
+     creamCard:'#fffdf8',track:'#ece2cf'},
   page:{minHeight:'100vh',background:'linear-gradient(160deg,#fdf6ec 0%,#f5ead8 100%)',fontFamily:"'Pretendard',sans-serif"},
   box:{maxWidth:740,margin:'0 auto',padding:'28px 16px'},
   card:{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:12,boxShadow:'0 2px 10px rgba(139,80,30,0.08)',border:'1px solid rgba(201,168,76,0.18)'},
@@ -1703,13 +1708,13 @@ function Timer({timerKey,onExpire,stopped}){
 
   const m=Math.floor(left/60), sec=left%60;
   const pct=left/120*100;
-  const color=left<=30?'#ef4444':left<=60?'#f59e0b':'#4f7df7';
+  const color=left<=30?'#C0392B':left<=60?'#C9A84C':S.c.wine;
   return(
     <div style={{display:'flex',alignItems:'center',gap:10}}>
-      <div style={{flex:1,background:'#e2e8f0',borderRadius:4,height:4,overflow:'hidden'}}>
-        <div style={{background:color,height:'100%',width:`${pct}%`,transition:'width 1s linear',borderRadius:4}}/>
+      <div style={{flex:1,background:S.c.track,borderRadius:5,height:6,overflow:'hidden'}}>
+        <div style={{background:color,height:'100%',width:`${pct}%`,transition:'width 1s linear',borderRadius:5}}/>
       </div>
-      <span style={{fontSize:13,fontWeight:700,color,minWidth:42,textAlign:'right',fontVariantNumeric:'tabular-nums'}}>
+      <span style={{fontSize:14,fontWeight:800,color,minWidth:46,textAlign:'right',fontVariantNumeric:'tabular-nums'}}>
         {m}:{sec.toString().padStart(2,'0')}
       </span>
     </div>
@@ -1776,30 +1781,31 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
   return(
     <div style={S.page}>
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
-      <div style={{...S.box,paddingBottom:90}}>
+      <div style={{maxWidth:760,margin:'0 auto',padding:'clamp(12px,3vw,28px) clamp(10px,3vw,16px)',paddingBottom:96}}>
 
         {/* 상단 브랜드 */}
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',marginBottom:10}}>
-          <span style={{fontSize:17,fontWeight:900,color:'#7a1020',letterSpacing:2}}>대단한영어</span>
-          <span style={{margin:'0 9px',color:'#C9A84C',fontSize:15}}>·</span>
-          <span style={{fontSize:16,fontWeight:700,color:'#7a1020',letterSpacing:1.5,fontStyle:'italic'}}>탁월함이 습관이 될 때</span>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',flexWrap:'wrap',gap:'2px 8px',marginBottom:'clamp(8px,2vw,12px)'}}>
+          <span style={{fontSize:'clamp(15px,2.4vw,18px)',fontWeight:900,color:S.c.wine,letterSpacing:1.5}}>대단한영어</span>
+          <span style={{color:S.c.gold,fontSize:14}}>·</span>
+          <span style={{fontSize:'clamp(12px,2vw,15px)',fontWeight:600,color:S.c.wineSoft,letterSpacing:0.5,fontStyle:'italic'}}>탁월함이 습관이 될 때</span>
         </div>
 
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
-          <button onClick={goHome} style={{background:'none',border:'none',color:'#9a7040',fontSize:13,cursor:'pointer',fontWeight:600}}>← 홈</button>
+        {/* 컨트롤 바 */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,marginBottom:12}}>
+          <button onClick={goHome} style={{background:'#fff',border:`1px solid ${S.c.line}`,color:S.c.goldDk,fontSize:12.5,cursor:'pointer',fontWeight:700,borderRadius:9,padding:'6px 12px',flexShrink:0}}>← 홈</button>
           <div style={{display:'flex',gap:6,alignItems:'center'}}>
-            <span style={{fontSize:11.5,color:'#9a7040',fontWeight:600}}>정답률 {score.total>0?Math.round(score.correct/score.total*100):0}%</span>
-            <button onClick={()=>doPrint('q')} style={{...S.chip(false),fontSize:10.5}}>🖨️ 문제지</button>
-            <button onClick={()=>doPrint('a')} style={{...S.chip(false),fontSize:10.5}}>🖨️ 정답지</button>
+            <span style={{fontSize:12,color:S.c.goldDk,fontWeight:700,whiteSpace:'nowrap'}}>정답률 {score.total>0?Math.round(score.correct/score.total*100):0}%</span>
+            <button onClick={()=>doPrint('q')} style={{...S.chip(false),fontSize:11,padding:'5px 11px'}}>🖨️ 문제</button>
+            <button onClick={()=>doPrint('a')} style={{...S.chip(false),fontSize:11,padding:'5px 11px'}}>🖨️ 정답</button>
           </div>
         </div>
 
-        {/* 진행바 */}
-        <div style={{background:'#e2e8f0',borderRadius:4,height:4,marginBottom:5,overflow:'hidden'}}>
-          <div style={{background:'linear-gradient(90deg,#4f7df7,#6fa0ff)',height:'100%',width:`${pct}%`,transition:'width .4s',borderRadius:4}}/>
+        {/* 진행바 + 메타 */}
+        <div style={{background:S.c.track,borderRadius:6,height:7,marginBottom:7,overflow:'hidden'}}>
+          <div style={{background:`linear-gradient(90deg,${S.c.wine},${S.c.gold})`,height:'100%',width:`${pct}%`,transition:'width .4s',borderRadius:6}}/>
         </div>
-        <div style={{display:'flex',justifyContent:'space-between',marginBottom:6,fontSize:10.5,color:'#94a3b8'}}>
-          <span>{idx+1} / {total}</span><span>맞힌 문제: {score.correct}</span>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,fontSize:11.5,color:S.c.sub,fontWeight:600}}>
+          <span>{idx+1} / {total}</span><span>맞힌 문제 {score.correct}</span>
         </div>
 
         {/* 타이머 */}
@@ -1808,36 +1814,35 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
         </div>
 
         {/* 문제 카드 */}
-        <div style={S.card}>
-          <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:12}}>
-            <span style={{fontSize:17}}>{tInfo?.icon}</span>
-            <span style={{fontSize:12,fontWeight:700,color:'#4f7df7'}}>{tInfo?.name}</span>
-            <span style={{fontSize:10,color:q.passage.difficulty==='높음'?'#e53935':'#94a3b8',fontWeight:600,marginLeft:'auto',padding:'2px 8px',borderRadius:10,background:q.passage.difficulty==='높음'?'#fef2f2':'#f8fafc'}}>{q.passage.difficulty}</span>
+        <div style={{...S.card,padding:'clamp(16px,3.5vw,22px)'}}>
+          <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:10}}>
+            <span style={{fontSize:18}}>{tInfo?.icon}</span>
+            <span style={{fontSize:'clamp(12px,1.8vw,13.5px)',fontWeight:800,color:S.c.wine}}>{tInfo?.name}</span>
+            <span style={{fontSize:10.5,color:q.passage.difficulty==='높음'?S.c.ng:S.c.goldDk,fontWeight:700,marginLeft:'auto',padding:'3px 10px',borderRadius:11,background:q.passage.difficulty==='높음'?S.c.ngBg:'#f6efe0'}}>{q.passage.difficulty}</span>
           </div>
-          {/* 출처 */}
-          <p style={{fontSize:10.5,color:'#94a3b8',margin:'0 0 10px'}}>출처: {q.passage.id}</p>
-          <p style={{fontSize:14.5,fontWeight:600,color:'#1e293b',marginBottom:16,lineHeight:1.5}}>{q.instruction}</p>
+          <p style={{fontSize:10.5,color:S.c.sub,margin:'0 0 12px'}}>출처: {q.passage.id}</p>
+          <p style={{fontSize:'clamp(14px,2.2vw,15.5px)',fontWeight:700,color:S.c.ink,marginBottom:16,lineHeight:1.55}}>{q.instruction}</p>
 
           <PassageView q={q} insertSel={insertSel} setInsertSel={userAnswer?null:setInsertSel} irrelSel={irrelSel} setIrrelSel={userAnswer?null:setIrrelSel} showAnswer={showAnswer}/>
         </div>
 
         {/* 선택지 */}
-        <div style={S.card}>
+        <div style={{...S.card,padding:'clamp(16px,3.5vw,22px)'}}>
           <OptsView q={q} selected={selected} setSelected={userAnswer?null:setSelected} sA={sA} setSA={userAnswer?null:setSA} sB={sB} setSB={userAnswer?null:setSB} showAnswer={showAnswer}/>
 
           {!userAnswer?(
-            <button onClick={submit} disabled={!canSubmit()} style={{width:'100%',padding:12,borderRadius:12,border:'none',background:canSubmit()?'#4f7df7':'#cbd5e1',color:'#fff',fontSize:14.5,fontWeight:600,cursor:'pointer',marginTop:12}}>제출</button>
+            <button onClick={submit} disabled={!canSubmit()} style={{width:'100%',padding:'clamp(13px,2.5vw,15px)',borderRadius:13,border:'none',background:canSubmit()?S.c.wine:'#d8cdb8',color:'#fff',fontSize:'clamp(14px,2.2vw,15.5px)',fontWeight:800,letterSpacing:1,cursor:canSubmit()?'pointer':'default',marginTop:14,transition:'background .2s'}}>제출</button>
           ):(
-            <div style={{marginTop:12}}>
-              {showAnswer&&<div style={{padding:13,borderRadius:12,marginBottom:10,background:userAnswer.correct?'#f0fdf4':'#fef2f2',border:`1px solid ${userAnswer.correct?'#86efac':'#fca5a5'}`}}>
-                <p style={{fontWeight:700,fontSize:14,color:userAnswer.correct?'#166534':'#991b1b',margin:0}}>
-                  {userAnswer.expired?'⏰ 시간 초과':userAnswer.correct?'🎉 정답!':'❌ 오답'}
+            <div style={{marginTop:14}}>
+              {showAnswer&&<div style={{padding:'clamp(13px,3vw,16px)',borderRadius:13,marginBottom:11,background:userAnswer.correct?S.c.okBg:S.c.ngBg,border:`1.5px solid ${userAnswer.correct?'#9ED3AC':'#E9B4AE'}`}}>
+                <p style={{fontWeight:800,fontSize:'clamp(14px,2.2vw,15.5px)',color:userAnswer.correct?S.c.ok:S.c.ng,margin:0,display:'flex',alignItems:'center',gap:7}}>
+                  {userAnswer.expired?'⏱ 시간 초과':userAnswer.correct?'✓ 정답입니다':'✕ 오답'}
                 </p>
-                <p style={{fontSize:12,color:'#475569',marginTop:7,marginBottom:0,lineHeight:1.6}}>
-                  <strong>{q.passage.title}</strong><br/>{q.passage.abstract}
+                <p style={{fontSize:'clamp(12px,1.9vw,13px)',color:S.c.ink,marginTop:8,marginBottom:0,lineHeight:1.65}}>
+                  <strong style={{color:S.c.wine}}>{q.passage.title}</strong><br/>{q.passage.abstract}
                 </p>
               </div>}
-              <button onClick={onNext} style={{width:'100%',padding:12,borderRadius:12,border:'none',background:'#1e293b',color:'#fff',fontSize:14.5,fontWeight:600,cursor:'pointer'}}>
+              <button onClick={onNext} style={{width:'100%',padding:'clamp(13px,2.5vw,15px)',borderRadius:13,border:'none',background:S.c.wine,color:'#fff',fontSize:'clamp(14px,2.2vw,15.5px)',fontWeight:800,letterSpacing:1,cursor:'pointer'}}>
                 {idx+1>=total?'결과 보기':'다음 문제 →'}
               </button>
             </div>
@@ -2075,43 +2080,45 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
 function OptsView({q,selected,setSelected,sA,setSA,sB,setSB,showAnswer}){
   const L=['①','②','③','④','⑤'];
 
-  if(q.type==='insert')return <p style={{fontSize:12.5,color:'#64748b'}}>위 지문에서 ①~⑤ 중 주어진 문장이 들어갈 위치를 클릭하세요.</p>;
-  if(q.type==='irrelevant')return <p style={{fontSize:12.5,color:'#64748b'}}>위 지문에서 전체 흐름과 관계 없는 문장의 번호를 클릭하세요.</p>;
+  if(q.type==='insert')return <p style={{fontSize:'clamp(12px,2vw,13px)',color:S.c.goldDk,fontWeight:600,lineHeight:1.6}}>위 지문에서 ①~⑤ 중 주어진 문장이 들어갈 위치를 클릭하세요.</p>;
+  if(q.type==='irrelevant')return <p style={{fontSize:'clamp(12px,2vw,13px)',color:S.c.goldDk,fontWeight:600,lineHeight:1.6}}>위 지문에서 전체 흐름과 관계 없는 문장의 번호를 클릭하세요.</p>;
 
   if(q.type==='summary'){
-    return(<table style={{width:'100%',borderCollapse:'collapse',fontSize:15}}>
+    return(<table style={{width:'100%',borderCollapse:'collapse',fontSize:'clamp(13px,2.1vw,15px)'}}>
       <thead><tr>
-        <th style={{padding:'7px 3px',textAlign:'center',color:'#64748b',borderBottom:'2px solid #e2e8f0',width:'8%'}}></th>
-        <th style={{padding:'7px',textAlign:'left',color:'#4f7df7',fontWeight:700,borderBottom:'2px solid #e2e8f0'}}>(A)</th>
-        <th style={{padding:'7px',textAlign:'left',color:'#7c3aed',fontWeight:700,borderBottom:'2px solid #e2e8f0'}}>(B)</th>
+        <th style={{padding:'7px 3px',textAlign:'center',color:S.c.sub,borderBottom:`2px solid ${S.c.track}`,width:'8%'}}></th>
+        <th style={{padding:'7px',textAlign:'left',color:S.c.wine,fontWeight:800,borderBottom:`2px solid ${S.c.track}`}}>(A)</th>
+        <th style={{padding:'7px',textAlign:'left',color:S.c.gold,fontWeight:800,borderBottom:`2px solid ${S.c.track}`}}>(B)</th>
       </tr></thead>
       <tbody>{q.aOpts.map((aO,i)=>{
         const bO=q.bOpts[i];if(!bO)return null;
         const aC=showAnswer&&aO.correct, bC=showAnswer&&bO.correct;
         const aW=showAnswer&&sA===i&&!aO.correct, bW=showAnswer&&sB===i&&!bO.correct;
         return <tr key={i} onClick={()=>{if(setSA){setSA(i);setSB(i);}}} style={{cursor:setSA?'pointer':'default'}}>
-          <td style={{padding:'9px 3px',textAlign:'center',fontWeight:700,color:'#94a3b8',borderBottom:'1px solid #f1f5f9'}}>{L[i]}</td>
-          <td style={{padding:'9px 7px',borderBottom:'1px solid #f1f5f9',background:aC?'#f0fdf4':aW?'#fef2f2':(sA===i?'#eef3ff':''),fontWeight:aC||sA===i?600:400,color:aC?'#166534':aW?'#991b1b':'#334155'}}>{aO.text}</td>
-          <td style={{padding:'9px 7px',borderBottom:'1px solid #f1f5f9',background:bC?'#f0fdf4':bW?'#fef2f2':(sB===i?'#f3f0ff':''),fontWeight:bC||sB===i?600:400,color:bC?'#166534':bW?'#991b1b':'#334155'}}>{bO.text}</td>
+          <td style={{padding:'10px 3px',textAlign:'center',fontWeight:800,color:S.c.sub,borderBottom:'1px solid #f1ece0'}}>{L[i]}</td>
+          <td style={{padding:'10px 7px',borderBottom:'1px solid #f1ece0',background:aC?S.c.okBg:aW?S.c.ngBg:(sA===i?'#FBF3DE':''),fontWeight:aC||sA===i?700:400,color:aC?S.c.ok:aW?S.c.ng:S.c.ink}}>{aO.text}</td>
+          <td style={{padding:'10px 7px',borderBottom:'1px solid #f1ece0',background:bC?S.c.okBg:bW?S.c.ngBg:(sB===i?'#FBF3DE':''),fontWeight:bC||sB===i?700:400,color:bC?S.c.ok:bW?S.c.ng:S.c.ink}}>{bO.text}</td>
         </tr>;
       })}</tbody>
     </table>);
   }
 
   if(!q.options)return null;
-  return(<div style={{display:'flex',flexDirection:'column',gap:6}}>
+  return(<div style={{display:'flex',flexDirection:'column',gap:8}}>
     {q.options.map((o,i)=>{
-      let bg='#f8fafc',bd='1px solid #e2e8f0',cl='#334155';
-      if(showAnswer&&o.correct){bg='#f0fdf4';bd='2px solid #22c55e';cl='#166534';}
-      else if(showAnswer&&selected===i&&!o.correct){bg='#fef2f2';bd='2px solid #ef4444';cl='#991b1b';}
-      else if(selected===i){bg='#eef3ff';bd='2px solid #4f7df7';cl='#1d4ed8';}
+      let bg=S.c.creamCard,bd=`1.5px solid ${S.c.line}`,cl=S.c.ink;
+      if(showAnswer&&o.correct){bg=S.c.okBg;bd='2px solid #4FA968';cl=S.c.ok;}
+      else if(showAnswer&&selected===i&&!o.correct){bg=S.c.ngBg;bd='2px solid #D77068';cl=S.c.ng;}
+      else if(selected===i){bg='#FBF3DE';bd=`2px solid ${S.c.gold}`;cl=S.c.wine;}
+      const badge=showAnswer&&o.correct?'#4FA968':showAnswer&&selected===i&&!o.correct?'#D77068':selected===i?S.c.gold:'#f0e6cf';
+      const badgeTx=(showAnswer&&o.correct)||(showAnswer&&selected===i&&!o.correct)||selected===i?'#fff':S.c.goldDk;
       return <button key={i} onClick={()=>setSelected&&setSelected(i)} style={{
-        display:'flex',alignItems:'flex-start',gap:8,padding:'10px 13px',
-        borderRadius:11,border:bd,background:bg,color:cl,fontSize:15,
-        cursor:setSelected?'pointer':'default',textAlign:'left',lineHeight:1.5,transition:'all .12s'
+        display:'flex',alignItems:'center',gap:11,padding:'clamp(11px,2.4vw,14px) clamp(12px,2.5vw,15px)',
+        borderRadius:12,border:bd,background:bg,color:cl,fontSize:'clamp(14px,2.2vw,15.5px)',
+        cursor:setSelected?'pointer':'default',textAlign:'left',lineHeight:1.55,transition:'all .12s',width:'100%'
       }}>
-        <span style={{fontWeight:700,minWidth:17,color:showAnswer&&o.correct?'#16a34a':'inherit'}}>{L[i]}</span>
-        <span>{o.text}</span>
+        <span style={{flexShrink:0,width:24,height:24,borderRadius:'50%',background:badge,color:badgeTx,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:13}}>{L[i]}</span>
+        <span style={{flex:1}}>{o.text}</span>
       </button>;
     })}
   </div>);
