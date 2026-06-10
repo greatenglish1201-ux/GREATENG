@@ -185,6 +185,17 @@ const BC={
   amber:{bd:'#BA7517',tx:'#633806',hd:'#FAC775'},
   gray:{bd:'#5F5E5A',tx:'#2C2C2A',hd:'#D3D1C7'},
 };
+// ── 방안2: 문장 박스=소속 블록 색, 기호 뱃지=기호 색 ──
+// 문장 번호로 소속 블록을 찾아 블록 색 반환 (블록 미소속/구버전 데이터는 gray 폴백)
+const BCF={
+  blue:{bd:'#185FA5',bg:'#E6F1FB',tx:'#0C447C'},coral:{bd:'#D85A30',bg:'#FAECE7',tx:'#712B13'},
+  teal:{bd:'#1D9E75',bg:'#E1F5EE',tx:'#085041'},purple:{bd:'#534AB7',bg:'#EEEDFE',tx:'#3C3489'},
+  green:{bd:'#639922',bg:'#EAF3DE',tx:'#173404'},amber:{bd:'#BA7517',bg:'#FAEEDA',tx:'#633806'},
+  gray:{bd:'#5F5E5A',bg:'#F1EFE8',tx:'#2C2C2A'}};
+const sentBlockColor=(blocks,num)=>{
+  const blk=(blocks||[]).find(b=>Array.isArray(b.sentenceNums)&&b.sentenceNums.includes(num));
+  return BCF[blk&&blk.color]||BCF.gray;
+};
 const STATUS={
   idle:{label:'대기',color:'#999',bg:'#f5f5f5'},
   analyzing:{label:'분석중',color:'#185FA5',bg:'#E6F1FB'},
@@ -475,18 +486,25 @@ const ch=[];
       const ds=difficultSentences.find(d=>d.num===s.num);
       const chunks=s.chunks||[];
       const hasChunks=SHOW_ANSWERS&&chunks.length;
+      // 방안2: 번호·하단 테두리=소속 블록 색, (기호)=기호 색
+      const _blk=blocks.find(b=>Array.isArray(b.sentenceNums)&&b.sentenceNums.includes(s.num));
+      const _bc=bdc(_blk&&_blk.color);
+      const _symc=((SM[s.symbol]&&SM[s.symbol].bd)||'#888888').replace('#','');
       // chunks 있으면: 번호+심볼+끊어읽기 영문을 한 줄에 / chunks 없으면: 원본 문장 표시
       if(hasChunks){
         ch.push(new Paragraph({spacing:{before:0,after:0},
-          border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'CCCCCC',space:1}},
-          children:[run(nStr(s.num)+' ('+s.symbol+')  ',{bold:true,size:P9}),
+          border:{bottom:{style:BorderStyle.SINGLE,size:3,color:_bc.bd,space:1}},
+          children:[run(nStr(s.num),{bold:true,size:P9,color:_bc.tx}),
+            run(' ('+s.symbol+')  ',{bold:true,size:P9,color:_symc}),
             run(chunks.map(c=>c.en||'').join(' / '),{size:P8,italic:true})]}));
         ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},
           children:[run(chunks.map(c=>c.ko||'').join(' / '),{size:P8,color:'444444'})]}));
       }else{
         ch.push(new Paragraph({spacing:{before:0,after:0},
-          border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'CCCCCC',space:1}},
-          children:[run(nStr(s.num)+' ('+s.symbol+')  ',{bold:true,size:P9}),run(s.text,{size:P8,italic:true,color:'333333'})]}));
+          border:{bottom:{style:BorderStyle.SINGLE,size:3,color:_bc.bd,space:1}},
+          children:[run(nStr(s.num),{bold:true,size:P9,color:_bc.tx}),
+            run(' ('+s.symbol+')  ',{bold:true,size:P9,color:_symc}),
+            run(s.text,{size:P8,italic:true,color:'333333'})]}));
       }
       if(ds){
         [{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].forEach(r=>{
@@ -660,12 +678,14 @@ function buildHTML(slot,mode,opts){
   const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
   const analysisHTML=dsToShow.map(s=>{
     const sc=SM[s.symbol]||{};
+    const bc=sentBlockColor(blocks,s.num);
     const ds=difficultSentences.find(d=>d.num===s.num);
     const chunks=s.chunks||[];
+    const symBadge='<span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.6);color:'+(sc.tx||'#555')+';border:1px solid '+(sc.bd||'#999')+'">'+s.symbol+'</span>';
     const chunksDiv=SHOW_ANSWERS&&chunks.length?'<div style="padding:7px 12px;background:#fff;border-top:1px dashed #eee"><div style="font-size:.85em;font-style:italic;color:#222;line-height:1.9;word-break:keep-all">'+chunks.map(c=>c.en||'').join(' / ')+'</div><div style="font-size:.85em;color:#555;line-height:1.9;word-break:keep-all;border-top:1px dashed #e8e8e8;margin-top:3px;padding-top:3px">'+chunks.map(c=>c.ko||'').join(' / ')+'</div></div>':'';
     const diffDiv=ds?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee">'+[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>'<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #f0f0f0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">'+r.l+'</span>'+((IS&&!SHOW_ANSWERS&&r.f==='translation')?'<div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div>':'<div style="font-size:.88em;color:#333;word-break:keep-all;flex:1">'+(ds[r.f]||'')+'</div>')+'</div>').join('')+'</div>':(IS&&!SHOW_ANSWERS?'<div style="padding:7px 12px;background:#fafafa;border-top:1px dashed #eee"><div style="display:flex;gap:8px;padding:3px 0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">해석</span><div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div></div></div>':'');
-    if(!chunksDiv&&!diffDiv)return IS&&!SHOW_ANSWERS?'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div></div>':'';
-    return'<div style="margin-bottom:6px;border:0.5px solid '+sc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+sc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+'">'+nStr(s.num)+'</span><span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.5);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+s.symbol+'</span><span style="font-size:.85em;color:'+sc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div>'+chunksDiv+diffDiv+'</div>';
+    if(!chunksDiv&&!diffDiv)return IS&&!SHOW_ANSWERS?'<div style="margin-bottom:6px;border:0.5px solid '+bc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+bc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+bc.tx+'">'+nStr(s.num)+'</span>'+symBadge+'<span style="font-size:.85em;color:'+bc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div></div>':'';
+    return'<div style="margin-bottom:6px;border:0.5px solid '+bc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+bc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+bc.tx+'">'+nStr(s.num)+'</span>'+symBadge+'<span style="font-size:.85em;color:'+bc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div>'+chunksDiv+diffDiv+'</div>';
   }).filter(Boolean).join('');
 
   return'<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">'
@@ -4179,19 +4199,20 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
                 </div>
                 {dsToShow.map(s=>{
                   const sc=SM[s.symbol]||{};
+                  const bc=sentBlockColor(blocks,s.num);
                   const ds=difficultSentences.find(d=>d.num===s.num);
                   const di=difficultSentences.findIndex(d=>d.num===s.num);
                   const chunks=s.chunks||[];
                   return(
-                    <div key={s.num} style={{marginBottom:6,border:'0.5px solid '+sc.bd,
+                    <div key={s.num} style={{marginBottom:6,border:'0.5px solid '+bc.bd,
                       borderRadius:8,overflow:'hidden'}}>
-                      <div style={{padding:'6px 12px',background:sc.bg,
+                      <div style={{padding:'6px 12px',background:bc.bg,
                         display:'flex',alignItems:'center',gap:7}}>
-                        <span style={{fontSize:15,fontWeight:700,color:sc.tx,flexShrink:0}}>{nStr(s.num)}</span>
+                        <span style={{fontSize:15,fontWeight:700,color:bc.tx,flexShrink:0}}>{nStr(s.num)}</span>
                         <span style={{fontSize:10,fontWeight:700,padding:'1px 5px',borderRadius:3,
-                          background:'rgba(255,255,255,.5)',color:sc.tx,border:'1px solid '+sc.bd,
+                          background:'rgba(255,255,255,.6)',color:sc.tx||'#555',border:'1px solid '+(sc.bd||'#999'),
                           flexShrink:0}}>({s.symbol})</span>
-                        <span style={{fontSize:13,color:sc.tx,fontStyle:'italic',
+                        <span style={{fontSize:13,color:bc.tx,fontStyle:'italic',
                           wordBreak:'keep-all',overflowWrap:'break-word',lineHeight:1.5}}>
                           {chunks.length>0?chunks.map(c=>c.en||'').join(' / '):s.text}
                         </span>
