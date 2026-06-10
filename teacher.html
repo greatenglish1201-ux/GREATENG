@@ -81,6 +81,76 @@ function authoredTypes(p){
   if(!p)return[];
   return AUTHORED_TYPE_DEFS.filter(d=>{try{return d.has(p);}catch{return false;}}).map(d=>d.lb);
 }
+
+// ── 순서배열 정규화기 ──────────────────────────────
+// AI 출력을 신뢰하지 않고 항상 유효한 상태로 강제:
+// 연속 3블록(B/C/D), 전체 인덱스 커버, 표준 5지, 계산된 정답
+const ORDER_OPTIONS_STD=['(B)-(C)-(D)','(B)-(D)-(C)','(C)-(B)-(D)','(C)-(D)-(B)','(D)-(B)-(C)'];
+function normalizeOrderBlocks(rawBlocks,totalSents){
+  const N=totalSents; // 유효 인덱스 1..N (0은 given)
+  if(N<3)return null;
+  // 1) 정수화·범위필터·중복제거·정렬, 빈 블록 제거
+  const seen=new Set();
+  const segs=(rawBlocks||[]).map(b=>({
+    indices:[...new Set((b.sentence_indices||[]).map(Number)
+      .filter(i=>Number.isInteger(i)&&i>=1&&i<=N&&!seen.has(i)&&(seen.add(i)||true)))].sort((a,b)=>a-b)
+  })).filter(b=>b.indices.length);
+  // 2) 블록 시작점 → 연속 3구간 경계 도출
+  let starts=[...new Set(segs.map(s=>s.indices[0]))].sort((a,b)=>a-b);
+  if(!starts.includes(1))starts=[1,...starts];
+  if(starts.length!==3){
+    // 균등 3분할 폴백
+    const per=Math.max(1,Math.ceil(N/3));
+    starts=[...new Set([1,Math.min(1+per,N),Math.min(1+2*per,N)])];
+    let next=starts[starts.length-1];
+    while(starts.length<3&&next<N){next++;if(!starts.includes(next))starts.push(next);}
+    if(starts.length<3)return null; // N<3 방어 (위에서 걸러짐)
+  }
+  starts=starts.slice(0,3).sort((a,b)=>a-b);
+  // 3) 1..N을 경계 기준 연속 3구간으로 재분할
+  const segsOrdered=[[],[],[]];
+  for(let i=1;i<=N;i++){
+    if(i>=starts[2])segsOrdered[2].push(i);
+    else if(i>=starts[1])segsOrdered[1].push(i);
+    else segsOrdered[0].push(i);
+  }
+  if(segsOrdered.some(s=>!s.length))return null;
+  // 4) 제시 순서 결정: AI 제시 순서가 구간과 1:1 매칭되면 존중, 아니면 비자명 순열
+  let presented=null;
+  if(segs.length===3){
+    const oStarts=segsOrdered.map(s=>s[0]);
+    const aStarts=segs.map(s=>s.indices[0]);
+    if(new Set(aStarts).size===3&&aStarts.every(st=>oStarts.includes(st))){
+      presented=aStarts.map(st=>segsOrdered[oStarts.indexOf(st)]);
+    }
+  }
+  // 5) 정답 계산 함수: 제시순서→라벨B/C/D→원문순 라벨 순열→5지 인덱스
+  const calcAnswer=(pres)=>{
+    const lb=['B','C','D'];
+    const withLabel=pres.map((ind,i)=>({label:lb[i],first:ind[0]}));
+    const key='('+[...withLabel].sort((a,b)=>a.first-b.first).map(b=>b.label).join(')-(')+')';
+    return ORDER_OPTIONS_STD.indexOf(key)+1; // 0이면 5지에 없음(D-C-B)
+  };
+  // AI 제시 순서가 5지 안에 들면 사용
+  if(presented&&calcAnswer(presented)>0){
+    // 그대로
+  }else{
+    // 6) 6개 순열 중 정답이 2~5인 비자명 순열 우선, 없으면 5지 내 아무거나
+    const perms=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+    let best=null,fallback=null;
+    for(const pm of perms){
+      const pres=pm.map(i=>segsOrdered[i]);
+      const a=calcAnswer(pres);
+      if(a>=2&&!best)best=pres;
+      if(a>=1&&!fallback)fallback=pres;
+    }
+    presented=best||fallback;
+    if(!presented)return null;
+  }
+  const blocks=presented.map((ind,i)=>({label:['B','C','D'][i],sentence_indices:ind}));
+  const answer=calcAnswer(presented);
+  return{blocks,options:[...ORDER_OPTIONS_STD],answer};
+}
 // 모의고사 select용 그룹 생성
 function getMogoGroups(){
   const mocos=getAllBooks().filter(b=>b.id.startsWith('MOGO_'));
@@ -829,8 +899,16 @@ function buildPassageData(a,pfx,ch,num){
     blank_target:a.blank.candidates[0].keyword,
     blank_candidates:a.blank.candidates,
     blank_options:[a.blank.candidates[0].keyword,...a.blank.candidates[0].distractors],blank_answer:1,
-    order_given_index:0,order_blocks:a.order.possible!==false&&a.order.blocks?a.order.blocks:[],
-    order_options:['(A)-(B)-(C)','(B)-(C)-(A)','(C)-(A)-(B)','(B)-(A)-(C)','(A)-(C)-(B)'],order_answer:1,
+    ...(()=>{
+      const _sn=(a.sentences||[]).length-1;
+      const _on=a.order&&a.order.possible!==false&&a.order.blocks?normalizeOrderBlocks(a.order.blocks,_sn):null;
+      return{
+        order_given_index:0,
+        order_blocks:_on?_on.blocks:[],
+        order_options:_on?_on.options:[...ORDER_OPTIONS_STD],
+        order_answer:_on?_on.answer:1,
+      };
+    })(),
     summary_sel:0,summary_candidates:a.summary.candidates,summary_template:sc.template,
     summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
     summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1,
@@ -1483,35 +1561,18 @@ If 3 blocks: answer is 1=(B)-(C)-(D), 2=(B)-(D)-(C), 3=(C)-(B)-(D), 4=(C)-(D)-(B
 Return JSON only:`;
       const d=await callClaude(apiKey,sys,prompt);
       const parsed=parseJSON(d.content[0].text);
-      const blocks=parsed.blocks||[];
-      let answer=parsed.answer||1;
-      if(!blocks.length)throw new Error('AI가 블록을 생성하지 못했습니다');
+      const rawBlocks=parsed.blocks||[];
+      if(!rawBlocks.length)throw new Error('AI가 블록을 생성하지 못했습니다');
 
-      // ── 검증 1: 누락/중복 인덱스 자동 복구 ──
-      const expected=new Set(Array.from({length:sentences.length-1},(_,i)=>i+1));
-      const used=new Set();
-      blocks.forEach(b=>(b.sentence_indices||[]).forEach(i=>used.add(i)));
-      // 누락된 인덱스 → 마지막 블록에 추가
-      const missing=[...expected].filter(i=>!used.has(i));
-      if(missing.length>0){
-        console.warn('순서 블록 누락 인덱스 복구:',missing);
-        if(blocks.length>0)blocks[blocks.length-1].sentence_indices=[...(blocks[blocks.length-1].sentence_indices||[]),...missing];
-      }
-      // 중복 인덱스 → 먼저 나온 블록만 유지
-      const seen=new Set();
-      blocks.forEach(b=>{b.sentence_indices=(b.sentence_indices||[]).filter(i=>{if(seen.has(i))return false;seen.add(i);return true;});});
-
-      // ── 검증 2: options는 블록 수에 맞게 생성 ──
-      const labels=blocks.map(b=>b.label||'?');
-      const [B,C,D]=labels;
-      const options=[`(${B})-(${C})-(${D})`,`(${B})-(${D})-(${C})`,`(${C})-(${B})-(${D})`,`(${C})-(${D})-(${B})`,`(${D})-(${B})-(${C})`];
-      if(answer>options.length)answer=1;
+      // ── 결정적 정규화: AI 출력이 어떻든 항상 유효한 3블록/5지/정답으로 강제 ──
+      const norm=normalizeOrderBlocks(rawBlocks,sentences.length-1);
+      if(!norm)throw new Error('블록 정규화 실패 (문장 수 부족 또는 구조 이상)');
 
       upP({
         order_given_index:0,
-        order_blocks:blocks,
-        order_options:options,
-        order_answer:answer,
+        order_blocks:norm.blocks,
+        order_options:norm.options,
+        order_answer:norm.answer,
       });
     }catch(e){alert('순서 생성 실패: '+e.message);}
     setGenLoading('');
