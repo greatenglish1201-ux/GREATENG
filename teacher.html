@@ -151,6 +151,57 @@ function normalizeOrderBlocks(rawBlocks,totalSents){
   const answer=calcAnswer(presented);
   return{blocks,options:[...ORDER_OPTIONS_STD],answer};
 }
+
+// ── 어법/어휘 세트 검증·교정기 ──────────────────────
+// AI 출력을 신뢰하지 않음: 불량 세트는 사유와 함께 거부, 정답은 항상 계산
+// 반환: {ok:true, items(문장순 정렬·보정됨), answer} | {ok:false, reason}
+function validateGVSet(rawItems,sentences,isG){
+  const getSent=i=>{const s=sentences[i];return typeof s==='string'?s:(s&&s.text)||'';};
+  if(!Array.isArray(rawItems)||rawItems.length!==5)
+    return{ok:false,reason:'항목 수가 5개가 아님 ('+(rawItems?rawItems.length:0)+'개)'};
+  const items=rawItems.map(it=>({...it,
+    sent:Number(it&&it.sent),
+    word:String((it&&it.word)||'').trim(),
+    original:String((it&&it.original)||'').trim(),
+  }));
+  // 1) 문장 인덱스 유효성 + 문장 중복 금지
+  const sentSet=new Set();
+  for(const it of items){
+    if(!Number.isInteger(it.sent)||it.sent<0||it.sent>=sentences.length)
+      return{ok:false,reason:'문장 인덱스 범위 밖: '+it.sent};
+    if(sentSet.has(it.sent))return{ok:false,reason:'같은 문장['+it.sent+']에서 2개 항목 선택됨'};
+    sentSet.add(it.sent);
+  }
+  // 2) 오답(correct:false) 정확히 1개
+  const wrongIdx=items.map((it,i)=>it.correct===false?i:-1).filter(i=>i>=0);
+  if(wrongIdx.length!==1)return{ok:false,reason:'오답 항목이 '+wrongIdx.length+'개 (정확히 1개여야 함)'};
+  const wi=wrongIdx[0];
+  // 3) original이 해당 문장에 단어 경계로 실재해야 밑줄 표시 가능
+  const inSent=(w,t)=>{
+    if(!w)return false;
+    try{return new RegExp('(^|[^A-Za-z])'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'($|[^A-Za-z])','i').test(t);}
+    catch{return t.toLowerCase().includes(w.toLowerCase());}
+  };
+  for(const it of items){
+    const t=getSent(it.sent);
+    if(!it.original)it.original=it.word;
+    if(!inSent(it.original,t)){
+      if(it.correct!==false&&it.word&&inSent(it.word,t)){it.original=it.word;}
+      else return{ok:false,reason:'문장['+it.sent+']에 원문 단어 "'+it.original+'" 없음'};
+    }
+  }
+  // 4) 오답은 반드시 치환(word≠original), 정답 4개는 word=original 강제
+  const w=items[wi];
+  if(!w.word||w.word.toLowerCase()===w.original.toLowerCase())
+    return{ok:false,reason:'오답 항목이 치환되지 않음 (word="'+w.word+'", original="'+w.original+'")'};
+  items.forEach((it,i)=>{if(i!==wi&&it.word!==it.original)it.word=it.original;});
+  // 5) 어휘: 오답의 alt는 항상 원문 단어
+  if(!isG&&w.alt!==w.original)w.alt=w.original;
+  // 6) 문장 순서로 정렬 후 정답 위치 계산 (AI answer 폐기)
+  const sorted=[...items].sort((a,b)=>a.sent-b.sent);
+  const answer=sorted.findIndex(it=>it.correct===false)+1;
+  return{ok:true,items:sorted,answer};
+}
 // 모의고사 select용 그룹 생성
 function getMogoGroups(){
   const mocos=getAllBooks().filter(b=>b.id.startsWith('MOGO_'));
@@ -1361,6 +1412,13 @@ Generate exactly 5 items from DIFFERENT sentences:
   Example: original "which" → word "what" (relative pronoun misuse)
 - The wrong item must test ONE of the frequent test points above
 
+UNDERLINE POSITION RULES (평가원 변별력 — 매우 중요):
+- ALL 5 underlined words (correct AND incorrect) must sit at grammar TEST POINTS from the list above — positions where a student must actively reason (준동사 선택, 관계사, 수일치, 분사 능수동, 병렬, 대동사 등)
+- NEVER underline: articles (a/the), simple prepositions (in/on/at), ordinary nouns, or words with no grammatical decision involved
+- Each correct underline should look "suspicious" at first glance — a position students commonly second-guess
+- The 5 items should cover 5 DIFFERENT test point categories (not 5 수일치 items)
+- The wrong substitution must be PLAUSIBLE-LOOKING (a form students genuinely confuse), never absurd
+
 note 작성 규칙 (한국어):
 - CORRECT 항목: "왜 이 형태가 문법적으로 맞는지" 학생이 이해할 수 있게 설명 (예: "주어 X에 수일치한 동사 형태")
 - INCORRECT 항목: "어떤 어법 오류인지" + 정답 형태 (예: "주어 X에 수일치 안 됨 → suggests")
@@ -1392,47 +1450,44 @@ Generate exactly 5 items from DIFFERENT sentences:
 - Pick semantically loaded content words (verbs/adjectives/nouns), not function words
 - The incorrect item's context must make the opposition CLEAR and UNAMBIGUOUS
 
+DIFFICULTY & SELECTION RULES (평가원 변별력 — 매우 중요):
+- FORBIDDEN: mechanical prefix antonyms using the same stem (important→unimportant, agree→disagree, like→dislike). Use a DIFFERENT lexical item with opposite meaning: scarce→abundant, undermine→reinforce, conceal→reveal, hinder→facilitate
+- The wrong word must sound natural in its own sentence read in isolation, but REVERSE the passage's logical flow when read in context (문맥 반전형) — detection must require understanding the argument, not just the sentence
+- ALL 5 underlined words must be thesis-bearing content words — words the passage's argument depends on. Never underline incidental descriptors
+- Prefer 고2~고3 수준 vocabulary for both targets and substitutions; avoid elementary words (good/bad/big)
+- The 5 underlines should spread across the passage's argumentative stages (도입/전개/결론)
+
 Return JSON only:
 {"items":[{"sent":0,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":1,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":2,"word":"OPPOSITE-meaning substituted","original":"original passage word","alt":"original passage word","correct":false},{"sent":3,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true},{"sent":4,"word":"passage word","original":"passage word","alt":"contextual synonym","correct":true}],"answer":3}`;
-      const d=await callClaude(apiKey,sys,prompt);
-      const parsed=parseJSON(d.content[0].text);
-      if(!parsed.items?.length)throw new Error('항목 없음');
-      // 검증 로직 - 안전하게 처리, 에러 나도 무시
-      let processedItems=parsed.items;
-      try{
-        const currentP=passages.find(p=>p.id===pi)?.data;
-        const sents=currentP?.sentences||[];
-        const getSent=(i)=>{
-          if(i==null||!sents[i])return'';
-          return typeof sents[i]==='string'?sents[i]:(sents[i].text||'');
-        };
-        processedItems=parsed.items.map((it,idx)=>{
-          const sent=Number(it?.sent)||0;
-          const sentText=getSent(sent);
-          let word=String(it?.word||'').trim();
-          let original=String(it?.original||'').trim();
-          if((!original||!sentText.includes(original))&&word&&sentText.includes(word)){
-            original=word;
-          }
-          return{...it,sent,word,original};
-        });
-      }catch(verifyErr){
-        console.warn('검증 로직 스킵 (원본 사용):',verifyErr);
-        processedItems=parsed.items;
+      // ── 생성 → 검증 → 불량 시 사유 첨부 1회 재시도 ──
+      const sentsForVal=pData.sentences||[];
+      let valid=null,lastReason='';
+      for(let attempt=0;attempt<2;attempt++){
+        const p2=attempt===0?prompt:prompt+`\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: ${lastReason}. Fix exactly this issue and return corrected JSON.`;
+        const d=await callClaude(apiKey,sys,p2);
+        const parsed=parseJSON(d.content[0].text);
+        if(!parsed.items?.length){lastReason='items 배열 없음';continue;}
+        const v=validateGVSet(parsed.items,sentsForVal,isG);
+        if(v.ok){valid=v;break;}
+        lastReason=v.reason;
+        console.warn((isG?'어법':'어휘')+' 세트 검증 실패 (시도 '+(attempt+1)+'/2):',v.reason);
       }
+      if(!valid)throw new Error('검증 실패: '+lastReason);
+      const processedItems=valid.items;
+      const calcAnswer=valid.answer;
       upPDeep(p=>{
         const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
         const sel=isG?p.grammar_sel:p.vocab_sel;
-        const newSet={items:processedItems,answer:parsed.answer||1};
+        const newSet={items:processedItems,answer:calcAnswer};
         if(sets.length===0){sets.push(newSet);}
         else{sets[sel<sets.length?sel:0]=newSet;}
         const newSel=sel<sets.length?sel:0;
         return isG
-          ?{...p,grammar_sets:sets,grammar_sel:newSel,grammar_answer:parsed.answer||1}
-          :{...p,vocab_sets:sets,vocab_sel:newSel,vocab_answer:parsed.answer||1};
+          ?{...p,grammar_sets:sets,grammar_sel:newSel,grammar_answer:calcAnswer}
+          :{...p,vocab_sets:sets,vocab_sel:newSel,vocab_answer:calcAnswer};
       });
       // 생성 후 자동으로 후보 생성
-      const newItems=parsed.items||[];
+      const newItems=processedItems;
       const curP=passages.find(pg=>pg.id===pi)?.data||{};
       if(!isG){
         newItems.forEach((item,ii)=>{
@@ -1558,11 +1613,18 @@ IMPORTANT — index rule:
 
 If 3 blocks: answer is 1=(B)-(C)-(D), 2=(B)-(D)-(C), 3=(C)-(B)-(D), 4=(C)-(D)-(B), 5=(D)-(B)-(C)
 
-Return JSON only:`;
+Return JSON only, EXACTLY this structure:
+{"blocks":[{"label":"B","sentence_indices":[1,2,3]},{"label":"C","sentence_indices":[4,5]},{"label":"D","sentence_indices":[6,7]}],"answer":3}`;
       const d=await callClaude(apiKey,sys,prompt);
-      const parsed=parseJSON(d.content[0].text);
-      const rawBlocks=parsed.blocks||[];
-      if(!rawBlocks.length)throw new Error('AI가 블록을 생성하지 못했습니다');
+      const raw=d.content[0].text;
+      const parsed=parseJSON(raw);
+      // blocks 키 방어: 대체 키/배열 직접 반환도 수용
+      let rawBlocks=parsed.blocks||parsed.order_blocks||(Array.isArray(parsed)?parsed:null)||[];
+      if(!Array.isArray(rawBlocks))rawBlocks=[];
+      if(!rawBlocks.length){
+        console.warn('순서 생성: blocks 키 없음. AI 원문:',raw.slice(0,500));
+        throw new Error('AI가 블록을 생성하지 못했습니다 (F12 콘솔에 AI 응답 기록됨)');
+      }
 
       // ── 결정적 정규화: AI 출력이 어떻든 항상 유효한 3블록/5지/정답으로 강제 ──
       const norm=normalizeOrderBlocks(rawBlocks,sentences.length-1);
