@@ -617,6 +617,31 @@ function App(){
       .catch(()=>{});
   },[scriptUrl]);
 
+  // 교재목록 시트 동기화 (라벨 표시용, 읽기 전용)
+  // 시트 '교재목록'의 교재를 te_custom_books(localStorage)에 병합 → bookLabel()이 라벨을 찾음
+  const [booksVer,setBooksVer]=useState(0);
+  useEffect(()=>{
+    if(!scriptUrl)return;
+    jsonpFetch(scriptUrl,{action:'getBooks'})
+      .then(r=>{
+        if(!r||!r.ok||!Array.isArray(r.books))return;
+        const local=loadCustomBooks();
+        const ids=new Set([...BOOK_DEFS.map(b=>b.id),...local.map(b=>b.id)]);
+        const merged=[...local];
+        let added=0;
+        r.books.forEach(b=>{
+          if(!b||!b.id||ids.has(b.id))return;
+          merged.push({id:b.id,label:b.label||b.id,storage:b.storage||'sheet'});
+          ids.add(b.id);added++;
+        });
+        if(added>0){
+          try{localStorage.setItem('te_custom_books',JSON.stringify(merged));}catch(e){}
+          setBooksVer(v=>v+1);
+        }
+      })
+      .catch(()=>{});
+  },[scriptUrl]);
+
   // passages.js + GAS 지문 합치기 (GAS 우선, 중복 id는 GAS 데이터로 덮어씀)
   // 단, passages.js에서 27STYD는 GAS로만 관리하므로 제외
   const allPassages=useMemo(()=>{
@@ -630,7 +655,7 @@ function App(){
     return [...map.values()];
   },[gasPassages]);
 
-  const books=useMemo(()=>detectBooks(allPassages),[allPassages]);
+  const books=useMemo(()=>detectBooks(allPassages),[allPassages,booksVer]);
 
   // 시트 로드 후 현재 선택 교재가 목록에 없으면 첫 교재로 자동 보정
   useEffect(()=>{
