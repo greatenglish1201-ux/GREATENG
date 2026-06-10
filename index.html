@@ -605,6 +605,26 @@ function App(){
     return [];
   });
 
+  // 출제DB에 문제가 존재하는 지문 pid 집합 (목록 필터용; null=미확인 → 전체 표시 폴백)
+  const [qPids,setQPids]=useState(()=>{
+    try{
+      const c=JSON.parse(localStorage.getItem('greateng_qpids_cache')||'null');
+      if(c&&Array.isArray(c))return new Set(c);
+    }catch(e){}
+    return null;
+  });
+  useEffect(()=>{
+    if(!scriptUrl)return;
+    jsonpFetch(scriptUrl,{action:'getQuestionPids'})
+      .then(r=>{
+        if(r&&r.ok&&Array.isArray(r.pids)){
+          setQPids(new Set(r.pids));
+          try{localStorage.setItem('greateng_qpids_cache',JSON.stringify(r.pids));}catch(e){}
+        }
+      })
+      .catch(()=>{}); // 구버전 GAS면 무시 → 전체 표시 폴백
+  },[scriptUrl]);
+
   // GAS에서 최신 지문 로드 (백그라운드)
   useEffect(()=>{
     if(!scriptUrl)return;
@@ -649,13 +669,13 @@ function App(){
   const allPassages=useMemo(()=>{
     const map=new Map();
     [...PASSAGES].filter(p=>!p.id.startsWith('27STYD')&&!p.id.startsWith('27ST_E_test')).forEach(p=>map.set(p.id,p)); // test1/test2는 시트 전용
-    gasPassages.filter(p=>(p.is_public==='TRUE'||p.is_public===true)&&!isArchived(p)).forEach(p=>{
+    gasPassages.filter(p=>(p.is_public==='TRUE'||p.is_public===true)&&!isArchived(p)&&(qPids===null||qPids.has(p.id))).forEach(p=>{
       const id=p.id;
       const sentences=p.sentences_json?JSON.parse(p.sentences_json):p.sentences||[];
       map.set(id,{...map.get(id)||{},id,source:p.source||'',chapter:p.chapter||'',number:p.number||'',difficulty:p.difficulty||'중',title:p.title||'',abstract:p.abstract||'',sentences});
     });
     return [...map.values()];
-  },[gasPassages]);
+  },[gasPassages,qPids]);
 
   const books=useMemo(()=>detectBooks(allPassages),[allPassages,booksVer]);
 
