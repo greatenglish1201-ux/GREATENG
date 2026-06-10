@@ -2188,7 +2188,9 @@ function extractChoiceShell(originalQ){
   const m = String(originalQ).match(/①[\s\S]*$/);
   if(!m) return null;
   const parts = m[0].split(/(?=[②③④⑤])/).map(s=>s.replace(/\s+/g,' ').trim()).filter(Boolean);
-  if(parts.length===5 && parts.every(p=>p.length<=10)) return parts;
+  // 골격 = 선지가 형식 기호일 때만 (ⓐ~ⓔ / N개 / 번호 단독). 단어·내용 선지는 재사용 금지
+  const SHELL_RE = /^[①②③④⑤]\s*([ⓐⓑⓒⓓⓔ]|\d+\s*개)?$/;
+  if(parts.length===5 && parts.every(p=>SHELL_RE.test(p))) return parts;
   return null;
 }
 
@@ -2375,6 +2377,7 @@ async function generateQuestions(){
         }
       }
       if(!Array.isArray(parsed)) throw new Error('응답이 배열이 아닙니다');
+      if(!parsed.length) console.warn('[callGemini] 빈 배열 응답. 원문:', text.slice(0,500));
       return parsed;
 
     } catch(e){
@@ -2477,8 +2480,8 @@ async function generateQuestions(){
         status.innerHTML=`<span class="spinner"></span> ${rawExamText?'시뮬레이션':'예상문제'} 생성 중... (${i+1}/${totalBatches})`;
       }
 
-      let prompt;
-      let patternAssigns = null; // C안: 문항별 기출 1:1 매핑
+      let prompt = null;
+      let patternAssigns = null, tmplAssigns = null, freeAssigns = null; // 문항별 기출 1:1 매핑 + 템플릿/자유 분리
       // 배치별 지문 결정
       // 독립 문제(어법/어휘 등)는 지문 불필요, 독해 문제는 해당 지문만 전달
       const batchPassage = plan.passageObj
@@ -2555,16 +2558,23 @@ JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응
         const passageSection = batchPassage ? `[새 시험 지문]\n${batchPassage}\n\n` : '';
         const schoolLevel2 = getSchoolLevel();
 
-        // C안: 기출 문항 1:1 매핑 (문항별 발문·선지 골격 지정)
+        // 기출 문항 1:1 매핑(번호 우선) → 골격 고정형(템플릿)과 내용 선지형(자유) 분리
         patternAssigns = assignPatternSources(plan);
+        if(patternAssigns.length){
+          tmplAssigns = patternAssigns.filter(a=>a.src && extractChoiceShell(a.src.original_q));
+          freeAssigns = patternAssigns.filter(a=>!(a.src && extractChoiceShell(a.src.original_q)));
+        }
+        const fa = freeAssigns; // 분석 없으면 null
         let patternExamples = '';
-        if(patternAssigns.some(a=>a.src)){
+        if(fa && fa.some(a=>a.src)){
           patternExamples = `\n\n══ 문항별 기출 형식 지정 (발문 글자 그대로, 선지 골격 동일, 내용만 새 지문) ══\n` +
-            patternAssigns.map(a=> a.src
+            fa.map(a=> a.src
               ? `[생성 ${a.genNum}번 ← 기출 ${a.src.num}번 / ${a.type}]\n${a.src.original_q}`
               : `[생성 ${a.genNum}번 / ${a.type}] 매칭 기출 없음 — 일반 내신 형식으로 출제`
             ).join('\n\n');
         }
+        const promptNums = fa ? fa.map(a=>a.genNum) : Array.from({length:plan.count},(_,k)=>plan.startNum+k);
+        const promptDistrib = fa ? (()=>{ const d={}; fa.forEach(a=>{ d[a.type]=(d[a.type]||0)+1; }); return d; })() : plan.distrib;
 
         // 배점 분포
         let scoreHint2 = '3점/4점/5점';
@@ -2576,10 +2586,10 @@ JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응
 ${passageSection}${patternExamples}
 
 ══ 출제 명령 ══
-문제 번호: ${plan.startNum}번 ~ ${plan.startNum+plan.count-1}번 (총 ${plan.count}문항)
+문제 번호: ${promptNums.join(', ')}번 (총 ${promptNums.length}문항)
 
 ▶ 유형별 문항수 (정확히 준수):
-${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
+${Object.entries(promptDistrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
 
 ▶ 절대 규칙:
 1. 각 생성 문항은 위에 지정된 기출 문항의 발문을 글자 그대로 복사하고, 선지 골격을 동일하게 유지하세요. 지문 근거 내용만 새 지문으로 교체.
@@ -2590,36 +2600,58 @@ ${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
    - 번호형: 지문 내 ①~⑤ 밑줄 후 "①  ②  ③  ④  ⑤" 선지
 2. 배점: ${scoreHint2}
 3. group 타입: 지문 공유 문제 묶음 / single 타입: 독립 문제
-4. 총 문항수 정확히 ${plan.count}개${grammarPoints ? `\n\n🔴 [어법 문제 출제 필수 규칙 - 반드시 준수]\n지문 속 아래 문법 포인트가 포함된 문장을 골라 밑줄/번호를 붙여 어법 문제를 출제하세요.\n단순 언급이 아니라 실제 그 문법 구조를 오답/정답의 핵심으로 삼아야 합니다.\n\n문법 포인트:\n` + grammarPoints.replace(/\n/g,'\\n') : ''}
+4. 총 문항수 정확히 ${promptNums.length}개${grammarPoints ? `\n\n🔴 [어법 문제 출제 필수 규칙 - 반드시 준수]\n지문 속 아래 문법 포인트가 포함된 문장을 골라 밑줄/번호를 붙여 어법 문제를 출제하세요.\n단순 언급이 아니라 실제 그 문법 구조를 오답/정답의 핵심으로 삼아야 합니다.\n\n문법 포인트:\n` + grammarPoints.replace(/\n/g,'\\n') : ''}
 
 JSON 배열로만 응답 (마크다운 금지):
 [
   {"type":"group","passage":"지문원문","range":"N~M","header":"※ 다음 글을 읽고 물음에 답하시오.","questions":[{"num":N,"qtype":"유형명","question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③ (선지번호만)","explanation":"해설: 이유 설명","score":4}]},
   {"type":"single","num":N,"qtype":"유형명","question":"문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③ (선지번호만)","explanation":"해설: 이유 설명","score":3}
 ]`;
+        if(fa && !fa.length) prompt = null; // 전 문항이 템플릿형이면 자유 생성 호출 생략
       }
 
-      let result = await callGemini(prompt);
-      // 출력 정규화 (type/개수/번호) — Gemini 번호 무시하고 코드가 재부여
-      result = normalizeBatchResult(result, plan);
-      // C안 후처리: 발문 강제 치환 + 배점 강제 + 선지 형식 검증 → 불일치 시 1회 재생성
-      if(patternAssigns && patternAssigns.some(a=>a.src)){
-        const rep = enforcePatternFormat(result, patternAssigns);
+      let result = [];
+      if(prompt) result = await callGemini(prompt);
+      // 출력 정규화 — 자유 생성분에 free 할당 번호(또는 연속 번호)를 코드가 재부여
+      const numList = freeAssigns ? freeAssigns.map(a=>a.genNum)
+                                  : Array.from({length:plan.count},(_,k)=>plan.startNum+k);
+      result = normalizeBatchResult(result, numList);
+      // 자유 생성분 후처리: 발문 치환/삽입 + 배점·유형명 강제 + 형식 검증 → 불일치 1회 재생성
+      if(freeAssigns && freeAssigns.some(a=>a.src)){
+        const rep = enforcePatternFormat(result, freeAssigns);
         if(rep.mismatch.length){
           status.innerHTML = `<span class="spinner"></span> 형식 불일치 ${rep.mismatch.length}문항 재생성 중... (${i+1}/${totalBatches})`;
           try{
-            await regenMismatched(result, patternAssigns, batchPassage);
-            enforcePatternFormat(result, patternAssigns); // 재생성분 발문·배점 재적용
+            await regenMismatched(result, freeAssigns, batchPassage);
+            enforcePatternFormat(result, freeAssigns);
           }catch(e){ console.warn('재생성 실패:', e); }
         }
       }
+      // 템플릿 문항: Gemini는 슬롯(body/정답/해설)만 → 발문·선지·배점은 코드가 기출에서 조립
+      if(tmplAssigns && tmplAssigns.length){
+        status.innerHTML = `<span class="spinner"></span> 형식 고정 문항 ${tmplAssigns.length}개 생성 중... (${i+1}/${totalBatches})`;
+        const slots = await callGemini(buildSlotPrompt(tmplAssigns, batchPassage, getSchoolLevel()));
+        const slotByNum = {};
+        (Array.isArray(slots)?slots:[]).forEach(s=>{ if(s && s.num!=null) slotByNum[s.num]=s; });
+        tmplAssigns.forEach((a,k)=>{
+          const s = slotByNum[a.genNum] || (Array.isArray(slots)?slots[k]:null) || {};
+          result.push(buildFromSlot(s, a));
+        });
+      }
+      // 번호순 정렬 후 병합
+      const firstNum = it => it.type==='group' ? (it.questions?.[0]?.num||0) : (it.num||0);
+      result.sort((x,y)=>firstNum(x)-firstNum(y));
+      console.log(`[배치 ${i+1}/${totalBatches}] startNum=${plan.startNum} count=${plan.count}`,
+        'free=', freeAssigns?freeAssigns.length:'(분석없음)', 'tmpl=', tmplAssigns?tmplAssigns.length:0,
+        'prompt=', !!prompt, '→ 결과', result.length, '컨테이너');
+      if(!result.length) console.warn(`[배치 ${i+1}] 결과 0건!`, {plan, prompt: prompt? prompt.slice(0,300):null});
       allResults = [...allResults, ...result];
       // 배치 사이 딜레이 (API 한도 방지)
       if(i < batchPlans.length-1) await new Promise(r=>setTimeout(r, 3000));
     }
 
     generatedQs = allResults;
-    if(!generatedQs.length) throw new Error('생성된 문항이 없습니다.');
+    if(!generatedQs.length) throw new Error(`생성된 문항이 없습니다. (배치 ${batchPlans.length}개 실행됨 — F12 콘솔에서 [배치 N] 로그를 확인해 알려주세요)`);
     // 전체 문항수 계산 (group + single 합산)
     const totalQ = generatedQs.reduce((s,item)=>
       item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
