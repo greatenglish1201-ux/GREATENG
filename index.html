@@ -1291,6 +1291,26 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                 </div>
               ))}
             </div>}
+            {/* 학생 선택 시: 종합 요약 */}
+            {selectedStudent&&(stats.typeStats||[]).length>0&&(()=>{
+              const tc=(stats.typeStats||[]).reduce((s,t)=>s+(Number(t.correct)||0),0);
+              const ta=(stats.typeStats||[]).reduce((s,t)=>s+(Number(t.total)||0),0);
+              const ov=ta?Math.round(tc/ta*100):0;
+              const col=ov>=80?'#16a34a':ov>=60?'#f59e0b':'#dc2626';
+              const cnt=(stats.sessionStats||[]).length;
+              return <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,padding:'14px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div>
+                  <span style={{fontSize:14,fontWeight:800,color:'#7a1020'}}>{selectedStudent}</span>
+                  <span style={{fontSize:11.5,color:'#9a8570',marginLeft:8}}>응시 {cnt}회 · <b style={{color:'#3a2a20'}}>{tc}/{ta}문항</b></span>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  <div style={{width:90,height:7,borderRadius:4,background:'#f0e7d4',overflow:'hidden'}}>
+                    <div style={{width:ov+'%',height:'100%',background:col,borderRadius:4}}/>
+                  </div>
+                  <span style={{fontSize:16,fontWeight:800,color:col}}>{ov}%</span>
+                </div>
+              </div>;
+            })()}
             {/* 학생 선택 시: 회차별 기록 */}
             {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📅 회차별 기록</div>
