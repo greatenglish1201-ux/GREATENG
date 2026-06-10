@@ -209,6 +209,8 @@ function normalizePassage(p){
       return korean < s.length * 0.5;
     });
   }
+  // sentences가 없거나 형식이 달라 배열이 아니면 빈 배열로 보정 (렌더 throw → 백지화면 방지)
+  if(!Array.isArray(sentences)) sentences = [];
   // blank_answer: 없으면 options[0]이 정답인 경우 1로 설정
   let blank_answer = p.blank_answer;
   if(!blank_answer && p.blank_options && p.blank_options.length > 0) blank_answer = 1;
@@ -728,14 +730,16 @@ function App(){
   const q=questions[curIdx];
   if(!q)return <div style={{padding:40,textAlign:'center'}}>문제 없음<br/><button onClick={()=>setScreen('setup')}>돌아가기</button></div>;
 
-  return <Quiz q={q} idx={curIdx} total={questions.length} userAnswer={userAns[curIdx]}
+  return <QuizErrorBoundary resetKey={curIdx} onSkip={()=>{setShowAns(false);if(curIdx+1>=questions.length){setScreen('results');}else{setCurIdx(curIdx+1);setTimerKey(Date.now());}}}>
+    <Quiz q={q} idx={curIdx} total={questions.length} userAnswer={userAns[curIdx]}
     showAnswer={showAns||(ansMode==='immediate'&&!!userAns[curIdx]&&!userAns[curIdx]?.expired)}
     onSubmit={ans=>{setUserAns(p=>({...p,[curIdx]:ans}));if(ansMode==='immediate')setShowAns(true);}}
     onNext={()=>{setShowAns(false);if(curIdx+1>=questions.length){setScreen('results');}else{setCurIdx(curIdx+1);setTimerKey(Date.now());}}}
     score={score} ansMode={ansMode} goHome={()=>setScreen('setup')}
     questions={questions} userAns={userAns} timerKey={timerKey}
     doPrint={doPrintFromQuiz}
-  />;
+  />
+  </QuizErrorBoundary>;
 }
 
 /* ── 스타일 ── */
@@ -1519,6 +1523,33 @@ function Timer({timerKey,onExpire,stopped}){
       </span>
     </div>
   );
+}
+
+/* ── 오류 경계: 한 문항 렌더가 실패해도 백지화면 대신 안내+다음 ── */
+class QuizErrorBoundary extends React.Component{
+  constructor(props){super(props);this.state={err:null};}
+  static getDerivedStateFromError(err){return {err};}
+  componentDidCatch(err,info){console.error('[Quiz 렌더 오류]',err,info);}
+  componentDidUpdate(prev){
+    // 문항이 바뀌면 오류 상태 초기화 (다음 문제는 정상 표시 시도)
+    if(prev.resetKey!==this.props.resetKey && this.state.err) this.setState({err:null});
+  }
+  render(){
+    if(this.state.err){
+      return (
+        <div style={{maxWidth:560,margin:'0 auto',padding:'40px 20px',textAlign:'center'}}>
+          <div style={{fontSize:15,fontWeight:700,color:'#e53935',marginBottom:8}}>이 문제를 표시할 수 없습니다</div>
+          <div style={{fontSize:12.5,color:'#64748b',marginBottom:20,lineHeight:1.6}}>
+            문항 데이터가 비어 있거나 형식이 올바르지 않습니다.<br/>다음 문제로 넘어가 주세요.
+          </div>
+          <button onClick={this.props.onSkip} style={{padding:'10px 22px',borderRadius:12,border:'none',background:'#1e293b',color:'#fff',fontSize:14,fontWeight:600,cursor:'pointer'}}>
+            다음 문제 →
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 /* ── 퀴즈 ── */
