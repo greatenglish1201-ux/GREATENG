@@ -36,6 +36,16 @@ const BOOK_DEFS = [
   { id:'ABSO_TYPE', label:'절대유형',       storage:'sheet'    },
 ];
 
+// ───────────────────────────────────────────────
+// 📦 메인 화면에서 숨길 교재 (시험 끝난 교재 등)
+//   - 여기에 source(교재 id)를 넣으면 학생 메인 화면 교재 목록에서 사라짐
+//   - 데이터는 시트에 그대로 보존됨 → 다시 보이게 하려면 해당 줄만 지우면 복원
+//   예) const HIDDEN_BOOKS = ['MOGO','27ST_E_test1'];
+const HIDDEN_BOOKS = [
+  // 'MOGO',
+];
+// ───────────────────────────────────────────────
+
 // 사용자 추가 교재 (localStorage 'te_custom_books')
 function loadCustomBooks(){
   try { return JSON.parse(localStorage.getItem('te_custom_books')) || []; }
@@ -46,6 +56,13 @@ function getAllBooks(){
 }
 function bookLabel(src){
   return getAllBooks().find(b=>b.id===src)?.label || src;
+}
+
+// 보관(archive) 여부 판정: 시트 archived 컬럼이 TRUE이면 학생 화면에서 숨김.
+// is_public은 건드리지 않으므로 archived만 해제하면 즉시 원상 복원됨.
+function isArchived(p){
+  const v=p&&p.archived;
+  return v==='TRUE'||v===true||v==='true'||v==='1'||v===1;
 }
 
 // passage ID 생성 규칙 (MOGO_ 계열은 강 없음)
@@ -581,7 +598,7 @@ function App(){
   const [gasPassages,setGasPassages]=useState(()=>{
     try{
       const cached=JSON.parse(localStorage.getItem('greateng_public_cache')||'null');
-      if(cached&&Array.isArray(cached.passages))return cached.passages.filter(p=>p.is_public==='TRUE'||p.is_public===true);
+      if(cached&&Array.isArray(cached.passages))return cached.passages.filter(p=>(p.is_public==='TRUE'||p.is_public===true)&&!isArchived(p));
     }catch(e){}
     return [];
   });
@@ -592,7 +609,7 @@ function App(){
     jsonpFetch(scriptUrl,{action:'getPassages',public_only:'true'})
       .then(r=>{
         if(r.ok&&r.passages?.length){
-          const pub=r.passages.filter(p=>p.is_public==='TRUE'||p.is_public===true);
+          const pub=r.passages.filter(p=>(p.is_public==='TRUE'||p.is_public===true)&&!isArchived(p));
           setGasPassages(pub);
           try{localStorage.setItem('greateng_public_cache',JSON.stringify({passages:pub}));}catch(e){}
         }
@@ -605,7 +622,7 @@ function App(){
   const allPassages=useMemo(()=>{
     const map=new Map();
     [...PASSAGES].filter(p=>!p.id.startsWith('27STYD')).forEach(p=>map.set(p.id,p));
-    gasPassages.filter(p=>p.is_public==='TRUE'||p.is_public===true).forEach(p=>{
+    gasPassages.filter(p=>(p.is_public==='TRUE'||p.is_public===true)&&!isArchived(p)).forEach(p=>{
       const id=p.id;
       const sentences=p.sentences_json?JSON.parse(p.sentences_json):p.sentences||[];
       map.set(id,{...map.get(id)||{},id,source:p.source||'',chapter:p.chapter||'',number:p.number||'',difficulty:p.difficulty||'중',title:p.title||'',abstract:p.abstract||'',sentences});
@@ -958,8 +975,53 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     loadStudents();
   };
 
-  // 관리자 비밀번호 변경
-  const [newAdminPw,setNewAdminPw]=useState('');
+  // ── 교재 관리 (공개/숨김 일괄 토글) ──
+  const [bookList,setBookList]=useState([]);      // [{source,label,total,publicCount}]
+  const [bookLoading,setBookLoading]=useState(false);
+  const [bookBusy,setBookBusy]=useState('');       // 작업 중인 교재 source
+  const loadBooks=async()=>{
+    if(!scriptUrl){setMsg('설정 탭에서 서버 URL을 먼저 입력하세요.');return;}
+    setBookLoading(true);
+    try{
+      const r=await api({action:'getPassages'}); // 전체(비공개 포함)
+      const passages=(r&&r.passages)||[];
+      const groups={};
+      passages.forEach(p=>{
+        const bid=bookIdOf(p);
+        if(!groups[bid])groups[bid]={source:bid,label:bookLabel(bid),total:0,publicCount:0};
+        groups[bid].total++;
+        if(p.is_public==='TRUE'||p.is_public===true)groups[bid].publicCount++;
+      });
+      setBookList(Object.values(groups).sort((a,b)=>a.label.localeCompare(b.label)));
+    }catch(e){setMsg('교재 목록을 불러오지 못했습니다.');}
+    setBookLoading(false);
+  };
+  // 교재 전체를 공개/비공개로 일괄 변경 (지문 데이터는 그대로, is_public만 변경)
+  const setBookVisible=async(book,makeVisible)=>{
+    if(!scriptUrl){setMsg('서버 URL이 필요합니다.');return;}
+    const action=makeVisible?'표시':'숨김';
+    if(!confirm(`'${book.label}' 교재를 ${book.total}개 지문 모두 ${makeVisible?'🌐 표시(공개)':'📦 숨김(비공개)'}로 변경할까요?`))return;
+    setBookBusy(book.source);setMsg('');
+    try{
+      const r=await api({action:'getPassages'});
+      const targets=((r&&r.passages)||[]).filter(p=>bookIdOf(p)===book.source);
+      let ok=0,fail=0;
+      for(const p of targets){
+        const want=makeVisible?'TRUE':'FALSE';
+        const cur=(p.is_public==='TRUE'||p.is_public===true)?'TRUE':'FALSE';
+        if(cur===want){ok++;continue;} // 이미 원하는 상태면 건너뜀
+        try{
+          const res=await api({action:'savePassage',id:p.id,is_public:want});
+          if(res&&(res.ok||res.warning||res.status==='ok'))ok++;else fail++;
+        }catch(e){fail++;}
+      }
+      setMsg(`✅ '${book.label}' ${action} 완료 (성공 ${ok}개${fail?` / 실패 ${fail}개`:''})`);
+      await loadBooks();
+    }catch(e){setMsg('변경 중 오류가 발생했습니다.');}
+    setBookBusy('');
+  };
+
+
   const SHEETS_URL_KEY='greateng_sheets_url';
   const [sheetsUrl,setSheetsUrl]=useState(()=>localStorage.getItem('greateng_sheets_url')||'');
   const [curAdminPw,setCurAdminPw]=useState('');
@@ -1006,6 +1068,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         <div style={{display:'flex',gap:8,marginBottom:16}}>
           {btn(tab==='students','👥 학생 관리',()=>{setTab('students');loadStudents();})}
           {btn(tab==='results','📊 시험 결과',()=>{setTab('results');setSelectedStudent('');loadStats('');})}
+          {btn(tab==='books','📚 교재 관리',()=>{setTab('books');loadBooks();})}
           {btn(tab==='settings','⚙️ 설정',()=>setTab('settings'))}
         </div>
 
@@ -1152,6 +1215,56 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
               ))}
             </div>}
           </div>}
+        </div>}
+
+        {/* 교재 관리 탭 */}
+        {tab==='books'&&<div>
+          <div style={{background:'#fff',borderRadius:14,padding:'16px 18px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
+            <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#1e293b'}}>📚 교재 표시 / 숨김</h3>
+            <p style={{fontSize:12,color:'#94a3b8',margin:'0 0 4px',lineHeight:1.6}}>
+              시험이 끝난 교재를 <b>숨김</b>으로 바꾸면 학생 메인 화면에서 사라집니다.
+              데이터는 그대로 보관되며, <b>표시</b>를 누르면 즉시 다시 나타납니다.
+            </p>
+            <button onClick={loadBooks} disabled={bookLoading}
+              style={{padding:'6px 14px',borderRadius:9,border:'1px solid #e2e8f0',background:'#f8fafc',fontSize:12,cursor:'pointer',color:'#64748b',marginTop:4}}>
+              {bookLoading?'불러오는 중...':'🔄 새로고침'}
+            </button>
+          </div>
+
+          {bookLoading&&<div style={{textAlign:'center',padding:30,color:'#94a3b8'}}>교재 목록을 불러오는 중...</div>}
+          {!bookLoading&&bookList.length===0&&<div style={{textAlign:'center',padding:30,color:'#94a3b8'}}>표시할 교재가 없습니다.</div>}
+
+          {!bookLoading&&bookList.map(b=>{
+            const hidden=b.publicCount===0;            // 공개 지문이 0이면 숨김 상태로 간주
+            const partial=b.publicCount>0&&b.publicCount<b.total;
+            const busy=bookBusy===b.source;
+            return(
+              <div key={b.source} style={{background:'#fff',borderRadius:12,padding:'14px 16px',marginBottom:10,
+                boxShadow:'0 1px 4px rgba(0,0,0,0.05)',display:'flex',alignItems:'center',gap:12,
+                opacity:busy?0.6:1,border:`1px solid ${hidden?'#fde68a':'#e2e8f0'}`}}>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
+                    {hidden?'📦 ':'🌐 '}{b.label}
+                  </div>
+                  <div style={{fontSize:11.5,color:'#94a3b8',marginTop:2}}>
+                    전체 {b.total}개 · 공개 {b.publicCount}개
+                    {hidden&&<span style={{color:'#d97706',fontWeight:600}}> · 숨김 상태</span>}
+                    {partial&&<span style={{color:'#2563eb',fontWeight:600}}> · 일부만 공개</span>}
+                  </div>
+                </div>
+                {hidden
+                  ? <button onClick={()=>setBookVisible(b,true)} disabled={busy}
+                      style={{padding:'8px 16px',borderRadius:10,border:'none',background:'#dbeafe',color:'#1d4ed8',fontWeight:700,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>
+                      {busy?'처리 중...':'♻ 표시'}
+                    </button>
+                  : <button onClick={()=>setBookVisible(b,false)} disabled={busy}
+                      style={{padding:'8px 16px',borderRadius:10,border:'none',background:'#fef3c7',color:'#b45309',fontWeight:700,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>
+                      {busy?'처리 중...':'📦 숨김'}
+                    </button>
+                }
+              </div>
+            );
+          })}
         </div>}
 
         {/* 설정 탭 */}
