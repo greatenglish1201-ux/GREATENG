@@ -3050,17 +3050,17 @@ function App(){
 
 
   return(
-    <div style={{minHeight:'100vh',background:'#F5F5F7'}}>
-      <div style={{background:'#FBFBFD',padding:'0 clamp(8px,2vw,18px)',display:'flex',alignItems:'center',
-        justifyContent:'space-between',height:52,position:'sticky',top:0,zIndex:100,
+    <div style={{minHeight:'100vh',background:'#F5F5F7',overflowX:'hidden'}}>
+      <div style={{background:'#FBFBFD',padding:'6px clamp(8px,2vw,18px)',display:'flex',alignItems:'center',
+        justifyContent:'space-between',minHeight:52,flexWrap:'wrap',rowGap:6,position:'sticky',top:0,zIndex:100,
         borderBottom:'1px solid #D2D2D7',boxShadow:'0 1px 3px rgba(0,0,0,.04)'}}>
-        <div style={{color:'#1D1D1F',fontWeight:700,fontSize:'clamp(11px,1.5vw,15px)'}}>📘 GREATENG 분석 툴</div>
-        <div style={{display:'flex',gap:7,alignItems:'center',height:'100%'}}>
+        <div style={{color:'#1D1D1F',fontWeight:700,fontSize:'clamp(11px,1.5vw,15px)',whiteSpace:'nowrap',flexShrink:0}}>📘 GREATENG 분석 툴</div>
+        <div style={{display:'flex',gap:7,alignItems:'center',flexWrap:'wrap',rowGap:6,justifyContent:'flex-end'}}>
           {msg&&<span style={{color:'#0058B0',fontSize:11.5}}>{msg}</span>}
-          <div style={{display:'flex',gap:2,background:'#E8E8ED',borderRadius:7,padding:3}}>
+          <div style={{display:'flex',gap:2,background:'#E8E8ED',borderRadius:7,padding:3,flexShrink:0}}>
             {['teacher','student','authoring'].map(m=>(
               <button key={m} onClick={()=>setViewMode(m)}
-                style={{padding:'4px 12px',fontSize:12,fontWeight:600,
+                style={{padding:'4px 12px',fontSize:12,fontWeight:600,whiteSpace:'nowrap',
                   background:viewMode===m?'#fff':'transparent',
                   color:viewMode===m?'#0058B0':'#6C6C70',
                   border:'none',borderRadius:5,cursor:'pointer'}}>
@@ -4011,7 +4011,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
       boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #E8E8ED':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
-        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',overflow:'visible'}}>
+        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'wrap',rowGap:6,overflow:'visible'}}>
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
             fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
