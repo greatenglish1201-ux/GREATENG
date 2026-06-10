@@ -3541,6 +3541,20 @@ async function saveMiddlePassages(){
   }
 }
 
+// JSONP GET 헬퍼 (읽기 작업용 — iframe POST는 크로스도메인 응답 차단으로 읽기 불가)
+function getFromGAS(params){
+  return new Promise((resolve, reject)=>{
+    const cbName = 'cb_get_'+Date.now()+'_'+Math.floor(Math.random()*1000);
+    const qs = Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v==null?'':v)).join('&');
+    const script = document.createElement('script');
+    const timer = setTimeout(()=>{ delete window[cbName]; script.remove(); reject(new Error('GET 타임아웃')); }, 15000);
+    window[cbName] = function(res){ clearTimeout(timer); delete window[cbName]; script.remove(); resolve(res||{}); };
+    script.onerror = ()=>{ clearTimeout(timer); delete window[cbName]; script.remove(); reject(new Error('GET 요청 실패')); };
+    script.src = APPS_SCRIPT_URL + '?' + qs + '&callback=' + cbName;
+    document.head.appendChild(script);
+  });
+}
+
 async function loadMiddlePassages(){
   const status = document.getElementById('middlePassageStatus');
   const school     = getSchool()||'';
@@ -3556,7 +3570,7 @@ async function loadMiddlePassages(){
 
   status.innerHTML='<span class="spinner"></span> 불러오는 중...';
   try{
-    const res = await postToGAS({action:'getMiddlePassages', school, grade, year, semester, publisher, author, lesson});
+    const res = await getFromGAS({action:'getMiddlePassages', school, grade, year, semester, publisher, author, lesson});
     if(!res.list||!res.list.length){
       status.innerHTML='<span style="color:var(--ink4);">저장된 지문 없음</span>'; return;
     }
