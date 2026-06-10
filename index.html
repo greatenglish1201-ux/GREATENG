@@ -1513,7 +1513,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             const lessonMap={};
             bookPassages.forEach(p=>{
               const parts=p.id.split('_');
-              const bookPre=books.find(b=>b.id===activeBook);let lessonKey='??';if(bookPre){const rem=p.id.slice(bookPre.id.length+1);const remParts=rem.split('_');lessonKey=remParts[0]||'??';}else{lessonKey=parts.length>=3?parts[2]:'??';}
+              const bookPre=books.find(b=>b.id===activeBook);let lessonKey='??';if(activeBook&&activeBook.startsWith('MOGO_')){lessonKey='ALL';}else if(bookPre){const rem=p.id.slice(bookPre.id.length+1);const remParts=rem.split('_');lessonKey=remParts[0]||'??';}else{lessonKey=parts.length>=3?parts[2]:'??';}
               if(!lessonMap[lessonKey])lessonMap[lessonKey]=[];
               lessonMap[lessonKey].push(p);
             });
@@ -1556,7 +1556,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
                       return n;
                     });
                   };
-                  const lessonLabel=lk==='PR'?'부록':lk==='ANALYSIS'?'분석':isNaN(parseInt(lk))?lk:`${parseInt(lk)}강`;
+                  const lessonLabel=lk==='ALL'?'전체 문항':lk==='PR'?'부록':lk==='ANALYSIS'?'분석':isNaN(parseInt(lk))?lk:`${parseInt(lk)}강`;
                   return(
                     <div key={lk}>
                       <div style={{display:'flex',alignItems:'center',gap:6}}>
@@ -1591,7 +1591,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
                             <label key={p.id} style={{display:'flex',alignItems:'center',gap:7,padding:'8px 12px',borderBottom:'1px solid #f1f5f9',cursor:'pointer',fontSize:11.5,background:selPassages.has(p.id)?'#f0f7ff':'transparent'}}>
                               <input type="checkbox" checked={selPassages.has(p.id)} onChange={()=>toggleP(p.id)} style={{accentColor:'#4f7df7',flexShrink:0}}/>
 
-                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{p.id.split('_').slice(-1)[0]}{p.title?' '+p.title:''}</span>
+                              <span style={{color:'#334155',flex:1,lineHeight:1.4}}>{(()=>{const t=p.id.split('_').slice(-1)[0];return(activeBook&&activeBook.startsWith('MOGO_')&&!isNaN(parseInt(t)))?parseInt(t)+'번':t;})()}{p.title?' '+p.title:''}</span>
                             </label>
                           ))}
                         </div>
@@ -2442,7 +2442,7 @@ function StudyView({scriptUrl,studentName,goBack}){
                             cursor:'pointer',userSelect:'none'}}>
                           <span style={{fontSize:11,color:'#64748b',transition:'transform .15s',transform:chOpen?'rotate(90deg)':'rotate(0deg)',display:'inline-block'}}>▶</span>
                           <span style={{fontWeight:700,fontSize:13,color:'#334155',flex:1}}>
-                            {c.chapter}강
+                            {String(b.book||'').startsWith('MOGO_')?'전체 문항':`${c.chapter}강`}
                           </span>
                           <span style={{fontSize:10,fontWeight:600,color:'#64748b',
                             background:'#f1f5f9',padding:'2px 7px',borderRadius:9}}>
