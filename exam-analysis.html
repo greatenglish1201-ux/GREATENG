@@ -934,33 +934,37 @@ tr:hover td { background: var(--paper); }
       <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">저장 후 불러오면 다기기에서 사용 가능</span>
     </div>
     <!-- 분류 입력 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
-      <!-- 출판사 -->
+    <div style="display:grid;grid-template-columns:0.6fr 1.4fr 1fr;gap:8px;margin-bottom:8px;">
+      <!-- 학년 -->
       <div style="display:flex;flex-direction:column;gap:3px;">
-        <span style="font-size:.75rem;color:var(--ink4);">출판사</span>
+        <span style="font-size:.75rem;color:var(--ink4);">학년</span>
+        <select id="passageGradeSel"
+          style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
+          <option value="">선택</option>
+          <option>중1</option><option>중2</option><option>중3</option>
+        </select>
+      </div>
+      <!-- 교과서 (2022 개정: 출판사(저자)) -->
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:.75rem;color:var(--ink4);">교과서</span>
         <div style="display:flex;gap:4px;">
           <select id="passagePublisherSel" onchange="syncCombo('passagePublisherSel','passagePublisher')"
             style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
             <option value="">선택</option>
-            <option>비상</option><option>천재</option><option>YBM</option>
-            <option>동아</option><option>미래엔</option><option>능률</option><option>직접입력</option>
+            <option>NE능률(김기택)</option>
+            <option>YBM(김은영)</option>
+            <option>YBM(박준언)</option>
+            <option>동아(윤정미)</option>
+            <option>동아(이병민)</option>
+            <option>미래엔(문영인)</option>
+            <option>비상(황종배)</option>
+            <option>지학사(송미정)</option>
+            <option>천재(소영순)</option>
+            <option>천재(이상기)</option>
+            <option>직접입력</option>
           </select>
-          <input type="text" id="passagePublisher" placeholder="직접입력"
-            style="width:70px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
-        </div>
-      </div>
-      <!-- 저자 -->
-      <div style="display:flex;flex-direction:column;gap:3px;">
-        <span style="font-size:.75rem;color:var(--ink4);">저자</span>
-        <div style="display:flex;gap:4px;">
-          <select id="passageAuthorSel" onchange="syncCombo('passageAuthorSel','passageAuthor')"
-            style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
-            <option value="">선택</option>
-            <option>김진완</option><option>박준언</option><option>이재영</option>
-            <option>허명회</option><option>양현권</option><option>직접입력</option>
-          </select>
-          <input type="text" id="passageAuthor" placeholder="직접입력"
-            style="width:70px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+          <input type="text" id="passagePublisher" placeholder="출판사(저자)"
+            style="width:90px;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
         </div>
       </div>
       <!-- 레슨 -->
@@ -3158,7 +3162,8 @@ function downloadQuestionsJSON(){
   if(!generatedQs.length){ alert('생성된 예상문제가 없습니다.'); return; }
   if(!checkMeta(['school','grade','semester','exam'])) return;
   const school   = getSchool()||'';
-  const grade    = document.getElementById('metaGrade')?.value||'';
+  const grade    = document.getElementById('passageGradeSel')?.value || document.getElementById('metaGrade')?.value || '';
+  if(!grade){ status.innerHTML='<span class="error">학년을 선택하세요.</span>'; return; }
   const year     = document.getElementById('metaYear')?.value||'';
   const semester = document.getElementById('metaSemester')?.value||'';
   const exam     = document.getElementById('metaExam')?.value||'';
@@ -3390,51 +3395,7 @@ function applySelectedPattern(){
   `;
   renderTypeCheckboxes();
 
-  // passage_groups에서 본문/대화문 자동 채우기
-  const groups = item.passage_groups || {};
-  let bodyText = '', bodyTitle = '', dialogText = '', dialogTitle = '';
-  Object.entries(groups).forEach(([pg, g])=>{
-    const t = (g.type||'').includes('대화') ? 'dialog' : 'body';
-    if(t==='dialog'){
-      if(dialogText) dialogText += '\n\n';
-      dialogText += g.text||'';
-      if(!dialogTitle) dialogTitle = pg;
-    } else {
-      if(bodyText) bodyText += '\n\n';
-      bodyText += g.text||'';
-      if(!bodyTitle) bodyTitle = pg;
-    }
-  });
-
-  const bodyEl   = document.getElementById('manualTextBody');
-  const bodyTEl  = document.getElementById('manualTitleBody');
-  const dialogEl = document.getElementById('manualTextDialog');
-  const dialogTEl= document.getElementById('manualTitleDialog');
-
-  // 이미 입력된 지문은 절대 덮어쓰지 않음 (비어있을 때만 기출 지문 자동 채움)
-  let filled = false, kept = false;
-  if(bodyEl && bodyText){
-    if(!bodyEl.value.trim()){
-      bodyEl.value = bodyText;
-      if(bodyTEl) bodyTEl.value = bodyTitle;
-      filled = true;
-    } else kept = true;
-  }
-  if(dialogEl && dialogText){
-    if(!dialogEl.value.trim()){
-      dialogEl.value = dialogText;
-      if(dialogTEl) dialogTEl.value = dialogTitle;
-      filled = true;
-    } else kept = true;
-  }
-
-  {
-    const st = document.getElementById('patternSelectorStatus');
-    if(st){
-      if(kept) st.innerHTML = '<span style="color:var(--blue2);">📌 패턴만 적용 — 기존 입력 지문 유지됨</span>';
-      else if(filled) st.innerHTML = '<span style="color:var(--green2);">✅ 패턴 적용 + 기출 지문 자동 로드 (빈칸이었음)</span>';
-    }
-  }
+  // (제거됨) 패턴 선택 시 기출 지문 자동 채움 — 지문은 교과서 불러오기/직접 입력만 사용
 }
 
 // ════════════════════════════════════════
@@ -3538,9 +3499,11 @@ async function saveMiddlePassages(){
   const bodyTitle   = document.getElementById('manualTitleBody')?.value.trim()||'';
   const dialogTitle = document.getElementById('manualTitleDialog')?.value.trim()||'';
   const pubSel = document.getElementById('passagePublisherSel')?.value||'';
-  const publisher = (pubSel && pubSel!=='직접입력') ? pubSel : (document.getElementById('passagePublisher')?.value.trim()||'');
-  const authSel = document.getElementById('passageAuthorSel')?.value||'';
-  const author = (authSel && authSel!=='직접입력') ? authSel : (document.getElementById('passageAuthor')?.value.trim()||'');
+  const pubRaw = (pubSel && pubSel!=='직접입력') ? pubSel : (document.getElementById('passagePublisher')?.value.trim()||'');
+  // "출판사(저자)" 통합값 파싱
+  const pm = pubRaw.match(/^(.+?)\((.+?)\)$/);
+  const publisher = pm ? pm[1].trim() : pubRaw;
+  const author    = pm ? pm[2].trim() : (document.getElementById('passageAuthor')?.value.trim()||'');
   const lesSel = document.getElementById('passageLessonSel')?.value||'';
   const lesson = (lesSel && lesSel!=='직접입력') ? lesSel : (document.getElementById('passageLesson')?.value.trim()||'');
   const grammarPoints = document.getElementById('grammarPointInput')?.value.trim()||'';
@@ -3550,7 +3513,8 @@ async function saveMiddlePassages(){
   }
 
   const school   = getSchool()||'';
-  const grade    = document.getElementById('metaGrade')?.value||'';
+  const grade    = document.getElementById('passageGradeSel')?.value || document.getElementById('metaGrade')?.value || '';
+  if(!grade){ status.innerHTML='<span class="error">학년을 선택하세요.</span>'; return; }
   const year     = document.getElementById('metaYear')?.value||'2026';
   const semester = document.getElementById('metaSemester')?.value||'';
 
@@ -3588,18 +3552,13 @@ function getFromGAS(params){
 
 async function loadMiddlePassages(){
   const status = document.getElementById('middlePassageStatus');
-  const school = getSchool()||'';
-  const grade  = document.getElementById('metaGrade')?.value||'';
-  if(!school || !grade){
-    status.innerHTML='<span class="error">학교/학년을 먼저 선택하세요</span>'; return;
-  }
   status.innerHTML='<span class="spinner"></span> 목록 불러오는 중...';
   try{
-    const res = await getFromGAS({action:'getMiddlePassages', school, grade});
+    const res = await getFromGAS({action:'getMiddlePassages'});
     if(res.ok===false) throw new Error(res.error||'GAS 오류');
     const list = res.list||[];
     if(!list.length){
-      status.innerHTML='<span style="color:var(--ink4);">저장된 지문 없음 (학교/학년 확인)</span>';
+      status.innerHTML='<span style="color:var(--ink4);">저장된 지문 없음</span>';
       renderMiddlePassageList([]); return;
     }
     status.innerHTML=`<span style="color:var(--green2)">📚 저장된 지문 ${list.length}건 — 클릭하여 적용</span>`;
@@ -3620,7 +3579,7 @@ function renderMiddlePassageList(list){
   box.innerHTML='';
   window._mpList = list;
   list.forEach((it,i)=>{
-    const label = [it.lesson||'(과 미지정)', [it.publisher,it.author].filter(Boolean).join(' '), [it.year,it.semester].filter(Boolean).join(' ')].filter(Boolean).join(' | ');
+    const label = [[it.school,it.grade].filter(Boolean).join(' '), it.lesson||'(과 미지정)', [it.publisher,it.author].filter(Boolean).join(' '), [it.year,it.semester].filter(Boolean).join(' ')].filter(Boolean).join(' | ');
     const has = [it.body_text?'본문':'', it.dialog_text?'대화문':'', it.grammar_points?'문법':''].filter(Boolean).join('·');
     const btn = document.createElement('button');
     btn.className='btn btn-gray';
@@ -3646,8 +3605,15 @@ function applyMiddlePassage(i){
     const gpEl = document.getElementById('grammarPointInput');
     if(gpEl) gpEl.value = it.grammar_points;
   }
+  const gSel = document.getElementById('passageGradeSel');
+  if(gSel && it.grade) gSel.value = it.grade;
+  const pSel = document.getElementById('passagePublisherSel');
+  if(pSel && it.publisher){
+    const combo = it.author ? `${it.publisher}(${it.author})` : it.publisher;
+    if([...pSel.options].some(o=>o.value===combo)) pSel.value = combo;
+  }
   document.getElementById('middlePassageStatus').innerHTML =
-    `<span style="color:var(--green2)">✅ ${it.lesson||'지문'} 적용 완료</span>`;
+    `<span style="color:var(--green2)">✅ ${[it.grade,it.lesson].filter(Boolean).join(' ')||'지문'} 적용 완료</span>`;
 }
 
 function clearAllManual(){
