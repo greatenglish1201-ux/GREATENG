@@ -2363,7 +2363,7 @@ function App(){
   const [showSet,setShowSet]=useState(false);
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
-  const [mogoNew,setMogoNew]=useState({yr:'26',gr:'G1',mon:'06',org:'경기'});
+  const [mogoNew,setMogoNew]=useState({yr:'26',gr:'G1',mon:'06',org:'경기',orgCustom:''});
   const [bookNew,setBookNew]=useState({yr:'26',pub:'EBS',pubCustom:'',name:''});
   const [printNew,setPrintNew]=useState({yr:'26',school:'',gr:'G3',exam:'1MID'});
   const [showBookMgr,setShowBookMgr]=useState(false);
@@ -3571,12 +3571,14 @@ function App(){
               </span>
               <select value={mogoNew.org} onChange={e=>setMogoNew(p=>({...p,org:e.target.value}))}
                 style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#3A3A3C',color:'#fff'}}>
-                {['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재'].map(o=><option key={o} value={o}>{o}</option>)}
+                {['평가원','서울','경기','인천','부산','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'].map(o=><option key={o} value={o}>{o}</option>)}
               </select>
               <button onClick={()=>{
                 const id=`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`;
                 const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
-                const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
+                const orgFinal=mogoNew.org==='직접입력'?mogoNew.orgCustom.trim():mogoNew.org;
+                if(!orgFinal){alert('출제기관명을 입력해주세요.');return;}
+                const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${orgFinal}모의고사`;
                 if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
                 addCustomBook({id,label,storage:'sheet'});
               }} style={{background:'#E4F5E9',color:'#1E6B30',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
@@ -3686,12 +3688,16 @@ function App(){
                 </span>
                 <select value={mogoNew.org} onChange={e=>setMogoNew(p=>({...p,org:e.target.value}))}
                   style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12}}>
-                  {['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재'].map(o=><option key={o} value={o}>{o}</option>)}
+                  {['평가원','서울','경기','인천','부산','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'].map(o=><option key={o} value={o}>{o}</option>)}
                 </select>
+                {mogoNew.org==='직접입력'&&<input value={mogoNew.orgCustom} onChange={e=>setMogoNew(p=>({...p,orgCustom:e.target.value}))}
+                  placeholder="기관명 입력" style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,width:110}}/>}
                 <button onClick={()=>{
                   const id=`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`;
                   const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
-                  const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
+                  const orgFinal=mogoNew.org==='직접입력'?mogoNew.orgCustom.trim():mogoNew.org;
+                  if(!orgFinal){alert('출제기관명을 입력해주세요.');return;}
+                  const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${orgFinal}모의고사`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
                   addCustomBook({id,label,storage:'sheet'});
                 }} style={{background:'#E4F5E9',color:'#1E6B30',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
@@ -4057,7 +4063,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           </select>
           {(()=>{
             const isMogo=slot.meta.source?.startsWith('MOGO_');
-            const MOGO_ORGS=['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'];
+            const MOGO_ORGS=['평가원','서울','경기','인천','부산','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'];
             return['chapter','number'].map(f=>{
               if(f==='chapter'&&isMogo){
                 const curOrg=slot.meta.chapterOrg||'';

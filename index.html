@@ -288,10 +288,17 @@ function gen(passage, type, allP){
     if(s.length < 4) return null;
     const givenIdx = passage.order_given_index || 0;
     // 순서배열은 원본 문장 전체 기준 (insert_sentence 포함 복원)
-    const sOrig = (passage.insert_sentence && passage.insert_answer)
+    // 단, sentences에 삽입문이 이미 포함된 경우(시트 지문 등) 중복 삽입 금지
+    const __insTxt = (passage.insert_sentence||'').trim().slice(0,20);
+    const __alreadyIn = __insTxt && s.some(x=>{
+      const t = typeof x==='string'?x:(x?.text||'');
+      return t.trim().startsWith(__insTxt);
+    });
+    const sOrig = (passage.insert_sentence && passage.insert_answer && !__alreadyIn)
       ? [...s.slice(0, passage.insert_answer), passage.insert_sentence, ...s.slice(passage.insert_answer)]
       : s;
     const given = sOrig[givenIdx];
+    if(typeof given!=='string' || !given.trim()) return null; // 주어진 글 없으면 출제 제외
     const blockLabels = ['A','B','C'];
     // 유효한 sentence_indices만 가진 블록 필터링 후 최대 3개 사용
     const validBlocks = passage.order_blocks.filter(b =>
@@ -473,9 +480,14 @@ function gen(passage, type, allP){
       return {type, passage, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
     }
     // 구 데이터 fallback: 다른 지문에서 외래 문장 삽입
-    const others = allP.filter(p => p.id !== passage.id);
+    // (시트 지문은 출제DB 정답과 무관한 문제가 되므로 fallback 금지 → 출제 제외)
+    if(passage.__gasOnly) return null;
+    const others = allP.filter(p => p.id !== passage.id && Array.isArray(p.sentences) && p.sentences.length > 0);
+    if(!others.length) return null;
     const rOther = others[Math.floor(Math.random() * others.length)];
-    const foreign = rOther.sentences[Math.floor(Math.random() * rOther.sentences.length)];
+    const rawF = rOther.sentences[Math.floor(Math.random() * rOther.sentences.length)];
+    const foreign = typeof rawF==='string' ? rawF : (rawF?.text || rawF?.en || '');
+    if(!foreign.trim()) return null;
     const insertAt = 1 + Math.floor(Math.random() * (s.length - 1));
     const full = [...s];
     full.splice(insertAt, 0, foreign);
@@ -649,15 +661,23 @@ function App(){
       .then(r=>{
         if(!r||!r.ok||!Array.isArray(r.books))return;
         const local=loadCustomBooks();
-        const ids=new Set([...BOOK_DEFS.map(b=>b.id),...local.map(b=>b.id)]);
+        const defIds=new Set(BOOK_DEFS.map(b=>b.id));
+        const ids=new Set([...defIds,...local.map(b=>b.id)]);
         const merged=[...local];
-        let added=0;
+        let added=0,changed=0;
         r.books.forEach(b=>{
-          if(!b||!b.id||ids.has(b.id))return;
+          if(!b||!b.id)return;
+          if(ids.has(b.id)){
+            // 기존 교재: 시트 라벨이 바뀌었으면 갱신 (BOOK_DEFS 기본 교재는 코드 고정)
+            if(defIds.has(b.id))return;
+            const ex=merged.find(m=>m.id===b.id);
+            if(ex&&b.label&&ex.label!==b.label){ex.label=b.label;changed++;}
+            return;
+          }
           merged.push({id:b.id,label:b.label||b.id,storage:b.storage||'sheet'});
           ids.add(b.id);added++;
         });
-        if(added>0){
+        if(added>0||changed>0){
           try{localStorage.setItem('te_custom_books',JSON.stringify(merged));}catch(e){}
           setBooksVer(v=>v+1);
         }
@@ -828,7 +848,7 @@ function App(){
   const q=questions[curIdx];
   if(!q)return <div style={{padding:40,textAlign:'center'}}>문제 없음<br/><button onClick={()=>setScreen('setup')}>돌아가기</button></div>;
 
-  return <QuizErrorBoundary resetKey={curIdx} onSkip={()=>{setShowAns(false);if(curIdx+1>=questions.length){setScreen('results');}else{setCurIdx(curIdx+1);setTimerKey(Date.now());}}}>
+  return <QuizErrorBoundary resetKey={curIdx} qInfo={q} onSkip={()=>{setShowAns(false);if(curIdx+1>=questions.length){setScreen('results');}else{setCurIdx(curIdx+1);setTimerKey(Date.now());}}}>
     <Quiz q={q} idx={curIdx} total={questions.length} userAnswer={userAns[curIdx]}
     showAnswer={showAns||(ansMode==='immediate'&&!!userAns[curIdx]&&!userAns[curIdx]?.expired)}
     onSubmit={ans=>{setUserAns(p=>({...p,[curIdx]:ans}));if(ansMode==='immediate')setShowAns(true);}}
@@ -1843,12 +1863,16 @@ class QuizErrorBoundary extends React.Component{
   }
   render(){
     if(this.state.err){
+      const qi=this.props.qInfo;
+      const tName=qi?(TYPES.find(t=>t.id===qi.type)?.name||qi.type):'';
       return (
         <div style={{maxWidth:560,margin:'0 auto',padding:'40px 20px',textAlign:'center'}}>
           <div style={{fontSize:15,fontWeight:700,color:'#e53935',marginBottom:8}}>이 문제를 표시할 수 없습니다</div>
-          <div style={{fontSize:12.5,color:'#64748b',marginBottom:20,lineHeight:1.6}}>
+          {qi&&<div style={{fontSize:12,fontWeight:700,color:'#7a1020',marginBottom:6}}>{qi.passage?.id} · {tName}</div>}
+          <div style={{fontSize:12.5,color:'#64748b',marginBottom:8,lineHeight:1.6}}>
             문항 데이터가 비어 있거나 형식이 올바르지 않습니다.<br/>다음 문제로 넘어가 주세요.
           </div>
+          <div style={{fontSize:10.5,color:'#9a8570',marginBottom:20,wordBreak:'break-all'}}>{String(this.state.err?.message||this.state.err).slice(0,160)}</div>
           <button onClick={this.props.onSkip} style={{padding:'10px 22px',borderRadius:12,border:'none',background:'#1e293b',color:'#fff',fontSize:14,fontWeight:600,cursor:'pointer'}}>
             다음 문제 →
           </button>
