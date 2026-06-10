@@ -2566,6 +2566,9 @@ JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응
           tmplAssigns = patternAssigns.filter(a=>a.src && extractChoiceShell(a.src.original_q));
           freeAssigns = patternAssigns.filter(a=>!(a.src && extractChoiceShell(a.src.original_q)));
         }
+        console.log(`[할당 ${i+1}/${totalBatches}] startNum=${plan.startNum}`,
+          patternAssigns.map(a=>`${a.genNum}←${a.src? '기출'+a.src.num : 'X'}${a.src&&a.src.num===a.genNum?'':'⚠️'}`).join(' '),
+          '| types:', JSON.stringify(plan.types));
         const fa = freeAssigns; // 분석 없으면 null
         let patternExamples = '';
         if(fa && fa.some(a=>a.src)){
