@@ -3411,18 +3411,29 @@ function applySelectedPattern(){
   const dialogEl = document.getElementById('manualTextDialog');
   const dialogTEl= document.getElementById('manualTitleDialog');
 
+  // 이미 입력된 지문은 절대 덮어쓰지 않음 (비어있을 때만 기출 지문 자동 채움)
+  let filled = false, kept = false;
   if(bodyEl && bodyText){
-    bodyEl.value = bodyText;
-    if(bodyTEl) bodyTEl.value = bodyTitle;
+    if(!bodyEl.value.trim()){
+      bodyEl.value = bodyText;
+      if(bodyTEl) bodyTEl.value = bodyTitle;
+      filled = true;
+    } else kept = true;
   }
   if(dialogEl && dialogText){
-    dialogEl.value = dialogText;
-    if(dialogTEl) dialogTEl.value = dialogTitle;
+    if(!dialogEl.value.trim()){
+      dialogEl.value = dialogText;
+      if(dialogTEl) dialogTEl.value = dialogTitle;
+      filled = true;
+    } else kept = true;
   }
 
-  if(bodyText || dialogText){
+  {
     const st = document.getElementById('patternSelectorStatus');
-    if(st) st.innerHTML = '<span style="color:var(--green2);">✅ 지문 자동 로드 완료</span>';
+    if(st){
+      if(kept) st.innerHTML = '<span style="color:var(--blue2);">📌 패턴만 적용 — 기존 입력 지문 유지됨</span>';
+      else if(filled) st.innerHTML = '<span style="color:var(--green2);">✅ 패턴 적용 + 기출 지문 자동 로드 (빈칸이었음)</span>';
+    }
   }
 }
 
