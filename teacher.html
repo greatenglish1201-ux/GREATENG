@@ -2423,6 +2423,8 @@ function App(){
     // 지문DB payload
     const sentences=slot.analysis?.sentences?.length?slot.analysis.sentences:(p.sentences||[]);
     const flow=slot.analysis?.flow&&Object.keys(slot.analysis.flow).length?slot.analysis.flow:(p.flow||{});
+    // 구문해설(difficultSentences)을 flow_json에 동봉 — 시트 스키마/GAS 무변경으로 보존
+    const diffSents=slot.analysis?.grammar?.difficultSentences||[];
     const blockSummaries=slot.blockSummaries&&slot.blockSummaries!=='loading'?slot.blockSummaries:null;
     const passagePayload={
       id,
@@ -2434,7 +2436,7 @@ function App(){
       title:p.title||slot.analysis?.title||'',
       abstract:p.abstract||slot.analysis?.abstract||'',
       sentences_json:JSON.stringify(sentences),
-      flow_json:JSON.stringify(flow),
+      flow_json:JSON.stringify(diffSents.length?{...flow,difficultSentences:diffSents}:flow),
       blockSummaries_json:blockSummaries?JSON.stringify(blockSummaries):'',
       is_public:slot.isPublic?'TRUE':'FALSE',
       is_hot:slot.isHot?'TRUE':'FALSE',
@@ -2737,7 +2739,7 @@ function App(){
             text:sentenceText,
             meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
             status:'saved',
-            analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{}},
+            analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{difficultSentences:(pd.flow&&pd.flow.difficultSentences)||[]}},
             passageData:pd,
             blockSummaries,
             open:true,
