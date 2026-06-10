@@ -537,7 +537,7 @@ function buildDOCX(slot,mode,opts){
     styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},
     sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},children:ch}]
   });
-  Packer.toBlob(doc).then(blob=>saveAs(blob,id+'_'+(IS?'학생용':'교사용')+'.docx'));
+  Packer.toBlob(doc).then(blob=>saveAs(blob,id+'_'+(opts?(opts.showAnswers?'교사용':'학생용'):(IS?'학생용':'교사용'))+'.docx'));
 }
 
 
@@ -552,7 +552,7 @@ function buildAllDOCX(slots,mode,opts){
     return{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},children:ch};
   });
   const doc=new Document({styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},sections});
-  Packer.toBlob(doc).then(blob=>saveAs(blob,'전체_'+(IS?'학생용':'교사용')+'.docx'));
+  Packer.toBlob(doc).then(blob=>saveAs(blob,'전체_'+(opts?(opts.showAnswers?'교사용':'학생용'):(IS?'학생용':'교사용'))+'.docx'));
 }
 
 /* ── DOM 캡처 출력 ── */
@@ -2970,28 +2970,9 @@ function App(){
               style={{background:'#185FA5',color:'#fff',border:'none',borderRadius:'50%',width:40,height:40,fontSize:16,cursor:'pointer',boxShadow:'0 2px 10px rgba(0,0,0,.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>{slots.every(s=>s.open)?'📁':'📂'}</button>
           </div>
           <div style={{position:'relative',display:'inline-flex',alignItems:'center'}}>
-            <button onClick={()=>setShowOutputMenu(v=>!v)}
+            <button onClick={()=>setStuModal({kind:'all',slot:null,opts:{...stuOpts}})}
               style={{background:'rgba(107,63,160,.7)',color:'#fff',border:'none',
-                borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>📤 출력▾</button>
-            {showOutputMenu&&<div onMouseLeave={()=>setShowOutputMenu(false)}
-              style={{position:'absolute',top:'100%',right:0,marginTop:4,background:'#fff',
-                borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:160,zIndex:300,overflow:'hidden'}}>
-              <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0'}}>📄 HTML</div>
-              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
-                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
-              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
-                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
-              <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>📝 DOCX</div>
-              <button onClick={()=>{buildAllDOCX(slots,'teacher');setShowOutputMenu(false);}}
-                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1F3864',fontWeight:600}}>교사용</button>
-              <button onClick={()=>{setStuModal({kind:'all-docx',slot:null,opts:{...stuOpts}});setShowOutputMenu(false);}}
-                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1a5c3a',fontWeight:600}}>학생용</button>
-              <div style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>🖨️ PDF (인쇄)</div>
-              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
-                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용 (새창→인쇄)</button>
-              <button onClick={()=>{slots.filter(s=>s.status==='saved'&&s.analysis&&!s.open).forEach(s=>upSlot(s.id,{open:true}));setTimeout(()=>{const h=captureAllSlotsHTML(slots);if(h)openPrintWindow(h);},400);setShowOutputMenu(false);}}
-                style={{display:'block',width:'100%',padding:'7px 16px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용 (새창→인쇄)</button>
-            </div>}
+                borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>📤 출력</button>
           </div>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:12},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'rgba(255,255,255,.1)',color:'#ffb3a7',border:'none',
@@ -3223,11 +3204,16 @@ function App(){
       {stuModal&&(()=>{
         const O=stuModal.opts;
         const setO=(patch)=>setStuModal({...stuModal,opts:{...O,...patch}});
-        const doExport=(saveAsDefault)=>{
-          if(saveAsDefault){setStuOpts(O);setStuOptsState(O);}
-          if(stuModal.kind==='html'&&stuModal.slot){const h=captureSlotHTML(stuModal.slot.id);if(h)openPrintWindow(h);}
-          else if(stuModal.kind==='docx'&&stuModal.slot)buildDOCX(stuModal.slot,'student',O);
-          else if(stuModal.kind==='all-docx')buildAllDOCX(slots,'student',O);
+        const isAll=stuModal.kind==='all'||stuModal.kind==='all-docx';
+        const TEACHER_PRESET={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+        const doPDF=()=>{
+          const html=isAll?buildAllHTML(slots,'student',O):buildHTML(stuModal.slot,'student',O);
+          if(html)openPrintWindow(html);
+          setStuModal(null);
+        };
+        const doDOCX=()=>{
+          if(isAll)buildAllDOCX(slots,'student',O);
+          else buildDOCX(stuModal.slot,'student',O);
           setStuModal(null);
         };
         const items=[
@@ -3242,11 +3228,17 @@ function App(){
           <div style={{background:'#fff',borderRadius:12,padding:'24px 28px',maxWidth:480,width:'100%',
             maxHeight:'90vh',overflow:'auto',boxShadow:'0 8px 40px rgba(0,0,0,.3)'}}
             onClick={e=>e.stopPropagation()}>
-            <div style={{fontSize:16,fontWeight:700,marginBottom:6,color:'#185FA5'}}>📄 학생용 출력 옵션</div>
-            <div style={{fontSize:12,color:'#888',marginBottom:18}}>
-              {stuModal.kind==='all-docx'?'전체 슬롯 학생용 DOCX':
-               stuModal.kind==='docx'?'단일 슬롯 학생용 DOCX':
-               '단일 슬롯 학생용 HTML'}
+            <div style={{fontSize:16,fontWeight:700,marginBottom:6,color:'#185FA5'}}>📤 출력 옵션</div>
+            <div style={{fontSize:12,color:'#888',marginBottom:12}}>
+              {isAll?'전체 슬롯':'단일 슬롯'} — 영역 선택 후 PDF 또는 DOCX로 출력
+            </div>
+            <div style={{display:'flex',gap:8,marginBottom:14}}>
+              <button onClick={()=>setStuModal({...stuModal,opts:{...TEACHER_PRESET}})}
+                style={{flex:1,padding:'7px 0',fontSize:12.5,fontWeight:600,background:'#E6F1FB',color:'#185FA5',
+                  border:'1px solid #185FA5',borderRadius:7,cursor:'pointer'}}>👨‍🏫 교사용 (전체+정답)</button>
+              <button onClick={()=>setStuModal({...stuModal,opts:{...getStuOpts()}})}
+                style={{flex:1,padding:'7px 0',fontSize:12.5,fontWeight:600,background:'#E1F5EE',color:'#1a5c3a',
+                  border:'1px solid #2d8a60',borderRadius:7,cursor:'pointer'}}>🎓 학생용 (복습 디폴트)</button>
             </div>
             <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:18}}>
               {items.map(it=>(
@@ -3289,12 +3281,15 @@ function App(){
               <button onClick={()=>setStuModal(null)}
                 style={{padding:'8px 14px',fontSize:13,background:'#f5f5f5',color:'#666',
                   border:'0.5px solid #ddd',borderRadius:6,cursor:'pointer'}}>취소</button>
-              <button onClick={()=>doExport(true)}
+              <button onClick={()=>{setStuOpts(O);setStuOptsState(O);flash('✓ 학생용 디폴트 저장됨');}}
                 style={{padding:'8px 14px',fontSize:13,fontWeight:600,background:'#fff',color:'#185FA5',
-                  border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>💾 디폴트 저장 + 출력</button>
-              <button onClick={()=>doExport(false)}
+                  border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>💾 디폴트 저장</button>
+              <button onClick={doPDF}
                 style={{padding:'8px 18px',fontSize:13,fontWeight:600,background:'#185FA5',color:'#fff',
-                  border:'none',borderRadius:6,cursor:'pointer'}}>📄 출력</button>
+                  border:'none',borderRadius:6,cursor:'pointer'}}>📄 PDF</button>
+              <button onClick={doDOCX}
+                style={{padding:'8px 18px',fontSize:13,fontWeight:600,background:'#2B579A',color:'#fff',
+                  border:'none',borderRadius:6,cursor:'pointer'}}>📝 DOCX</button>
             </div>
           </div>
         </div>);
@@ -3845,31 +3840,9 @@ function App(){
 }
 
 function SlotOutputMenu({slot,onStuOutput}){
-  const [open,setOpen]=React.useState(false);
-  return<div style={{position:'relative'}}>
-    <button onClick={()=>setOpen(v=>!v)}
-      style={{padding:'3px 8px',fontSize:11,background:'#534AB7',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2'}}>
-      📤▾</button>
-    {open&&<div onMouseLeave={()=>setOpen(false)}
-      style={{position:'absolute',top:'100%',left:0,marginTop:3,background:'#fff',
-        borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.18)',minWidth:140,zIndex:500,overflow:'hidden'}}>
-      <div style={{padding:'5px 10px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0'}}>📄 HTML</div>
-      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
-        style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
-      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
-        style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
-      <div style={{padding:'5px 10px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>📝 DOCX</div>
-      <button onClick={()=>{buildDOCX(slot,'teacher');setOpen(false);}}
-        style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1F3864',fontWeight:600}}>교사용</button>
-      <button onClick={()=>{onStuOutput?onStuOutput('docx',slot):buildDOCX(slot,'student');setOpen(false);}}
-        style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#1a5c3a',fontWeight:600}}>학생용</button>
-      <div style={{padding:'5px 10px',fontSize:10,fontWeight:700,color:'#888',borderBottom:'1px solid #f0f0f0',borderTop:'1px solid #f0f0f0'}}>🖨️ PDF (인쇄)</div>
-      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
-        style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#185FA5',fontWeight:600}}>교사용</button>
-      <button onClick={()=>{const doPrint=()=>{const h=captureSlotHTML(slot.id);if(h)openPrintWindow(h);};if(!slot.open){onToggle();setTimeout(()=>{doPrint();onToggle();},300);}else doPrint();setOpen(false);}}
-        style={{display:'block',width:'100%',padding:'6px 14px',fontSize:12,textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#2d8a60',fontWeight:600}}>학생용</button>
-    </div>}
-  </div>;
+  return<button onClick={()=>onStuOutput&&onStuOutput('single')}
+    style={{padding:'3px 8px',fontSize:11,background:'#534AB7',color:'#fff',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2'}}>
+    📤 출력</button>;
 }
 
 const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic,onToggleHot}){
