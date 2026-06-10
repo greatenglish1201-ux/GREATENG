@@ -1295,7 +1295,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
                 background:'transparent',color:sel?'#3b6fe0':'#94a3b8',
                 marginBottom:-2,transition:'all .15s'
               }}>
-                {b.label} 
+                {b.label} <span style={{fontSize:10,fontWeight:400,opacity:.7}}>({cnt}/{tot})</span>
               </button>;
             })}
           </div>
