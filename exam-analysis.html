@@ -2022,6 +2022,112 @@ function importQuestionsJSON(input){
   reader.readAsText(file);
 }
 
+// ══ C안: 기출 패턴 충실 복제 (1:1 매핑 + 발문 강제 치환 + 선지 형식 검증) ══
+function matchTypeToSource(bt, q){
+  const f = (q.format||'') + ' ' + (q.qtype||''), s = q.stem||'';
+  if(bt.includes('어법')) return /어법|문법/.test(f+s);
+  if(bt.includes('어휘')) return /어휘|낱말|단어|뜻풀이/.test(f+s);
+  if(bt.includes('빈칸')) return /빈칸/.test(f+s);
+  if(bt.includes('내용일치')||bt.includes('일치')) return /일치/.test(s);
+  if(bt.includes('주제')||bt.includes('제목')||bt.includes('요지')) return /주제|제목|요지/.test(s);
+  if(bt.includes('순서')) return /순서/.test(f+s);
+  if(bt.includes('삽입')) return /삽입|들어가/.test(f+s);
+  if(bt.includes('영작')||bt.includes('서술')) return /영작|서술|배열|쓰시오|완성/.test(f+s);
+  return s.includes(bt) || f.includes(bt);
+}
+
+// plan.types[i] = i번째 생성 문항의 유형 → 기출 문항 1:1 할당 (같은 유형 다수면 순환)
+function assignPatternSources(plan){
+  if(!analysisData || !analysisData.questions) return [];
+  const pool = analysisData.questions.filter(q=>q.original_q);
+  const useCount = {};
+  let num = plan.startNum;
+  return (plan.types||[]).map(bt=>{
+    const cands = pool.filter(q=>matchTypeToSource(bt,q));
+    let src = null;
+    if(cands.length){
+      const idx = (useCount[bt]||0) % cands.length;
+      src = cands[idx];
+      useCount[bt] = (useCount[bt]||0)+1;
+    }
+    return { genNum:num++, type:bt, src };
+  });
+}
+
+// 기출 원문에서 선지 골격 패턴 감지
+function detectChoicePattern(originalQ){
+  if(!originalQ) return null;
+  if(/①\s*[ⓐ-ⓔ]/.test(originalQ)) return 'symbol';      // 기호형 ① ⓐ
+  if(/①\s*\d+\s*개/.test(originalQ)) return 'count';      // 개수형 ① 2개
+  return null; // 일반형은 검증 생략
+}
+function choicesMatchPattern(choices, pat){
+  if(!choices || !choices.length) return false;
+  if(pat==='symbol') return choices.every(c=>/[ⓐ-ⓔ]/.test(c));
+  if(pat==='count') return choices.every(c=>/\d+\s*개/.test(c));
+  return true;
+}
+
+// 생성 결과 후처리: 발문 강제 치환 + 배점 강제 + 선지 형식 검증
+function enforcePatternFormat(results, assigns){
+  const byNum = {};
+  assigns.forEach(a=>{ if(a.src) byNum[a.genNum] = a.src; });
+  const report = { replaced:0, mismatch:[] };
+  const korRatio = t=>{ const k=(t.match(/[가-힣]/g)||[]).length; return t.length ? k/t.length : 0; };
+  const fixQ = (q)=>{
+    const src = byNum[q.num];
+    if(!src) return;
+    // 1) 발문 치환: question 첫 줄이 한국어 발문이고 기출 stem과 다르면 교체
+    if(src.stem){
+      const lines = (q.question||'').split('\n');
+      if(lines.length && korRatio(lines[0]) > 0.3 && lines[0].trim() !== src.stem.trim()){
+        const scoreTag = (lines[0].match(/\[\d점\]/)||[''])[0];
+        lines[0] = src.stem.trim() + (scoreTag && !/\[\d점\]/.test(src.stem) ? ' '+scoreTag : '');
+        q.question = lines.join('\n');
+        report.replaced++;
+      }
+    }
+    // 2) 배점 강제
+    if(src.score) q.score = src.score;
+    // 3) 선지 형식 검증
+    const pat = detectChoicePattern(src.original_q);
+    if(pat && !choicesMatchPattern(q.choices, pat)){
+      q._formatMismatch = pat;
+      report.mismatch.push(q.num);
+    }
+  };
+  results.forEach(item=>{
+    if(item.type==='group') (item.questions||[]).forEach(fixQ);
+    else fixQ(item);
+  });
+  return report;
+}
+
+// 형식 불일치 문항만 1회 재생성
+async function regenMismatched(results, assigns, passageText){
+  const byNum = {};
+  assigns.forEach(a=>{ if(a.src) byNum[a.genNum] = a.src; });
+  const targets = [];
+  const collect = q=>{ if(q._formatMismatch && byNum[q.num]) targets.push(q); };
+  results.forEach(it=> it.type==='group' ? (it.questions||[]).forEach(collect) : collect(it));
+  if(!targets.length) return 0;
+  const prompt = `한국 영어 내신 출제 전문가입니다. 아래 문항들을 지정된 기출 형식과 정확히 동일한 선지 골격으로 다시 출제하세요.
+${passageText ? '\n[지문]\n'+passageText+'\n' : ''}
+${targets.map(q=>`[${q.num}번] 기출 원문 형식 (발문·선지 골격 그대로 복사, 내용만 지문 기반):\n${byNum[q.num].original_q}`).join('\n\n')}
+
+JSON 배열로만 응답 (마크다운 금지):
+[{"num":N,"question":"발문+문제전체","choices":["①...","②...","③...","④...","⑤..."],"answer":"③","explanation":"해설","score":N}]`;
+  const fixed = await callGemini(prompt);
+  const map = {};
+  (fixed||[]).forEach(f=>{ if(f && f.num!=null) map[f.num] = f; });
+  const apply = q=>{
+    const f = map[q.num];
+    if(f){ Object.assign(q, f); delete q._formatMismatch; }
+  };
+  results.forEach(it=> it.type==='group' ? (it.questions||[]).forEach(apply) : apply(it));
+  return targets.length;
+}
+
 async function generateQuestions(){
   if(!checkMeta(['school','grade','semester','exam'])) return;
   const school = getSchool();
@@ -2281,6 +2387,7 @@ async function generateQuestions(){
       }
 
       let prompt;
+      let patternAssigns = null; // C안: 문항별 기출 1:1 매핑
       // 배치별 지문 결정
       // 독립 문제(어법/어휘 등)는 지문 불필요, 독해 문제는 해당 지문만 전달
       const batchPassage = plan.passageObj
@@ -2357,37 +2464,15 @@ JSON 문자열 안 줄바꿈은 \\n으로 이스케이프. JSON 배열로만 응
         const passageSection = batchPassage ? `[새 시험 지문]\n${batchPassage}\n\n` : '';
         const schoolLevel2 = getSchoolLevel();
 
-        // 패턴 원문 활용: analysisData.questions에서 이번 배치 유형과 일치하는 기출 원문 추출
+        // C안: 기출 문항 1:1 매핑 (문항별 발문·선지 골격 지정)
+        patternAssigns = assignPatternSources(plan);
         let patternExamples = '';
-        if(analysisData && analysisData.questions && analysisData.questions.length){
-          const batchTypes = plan.types || [];
-          const usedNums = new Set();
-          const examples = [];
-          batchTypes.forEach(bt => {
-            // 유형 키워드 매칭 (어법, 어휘, 빈칸, 개수, 기호, 영작, 표, 번호 등)
-            const matchQ = analysisData.questions.find(q =>
-              !usedNums.has(q.num) &&
-              q.original_q &&
-              (q.format && (
-                bt.includes('어법') && (q.format.includes('어법') || q.format.includes('개수') || q.format.includes('번호') || q.format.includes('기호')) ||
-                bt.includes('어휘') && q.format.includes('어휘') ||
-                bt.includes('빈칸') && q.qtype && q.qtype.includes('빈칸') ||
-                bt.includes('내용일치') && q.stem && q.stem.includes('일치') ||
-                bt.includes('주제') && q.stem && (q.stem.includes('주제') || q.stem.includes('제목') || q.stem.includes('요지')) ||
-                bt.includes('영작') && (q.format.includes('영작') || q.format.includes('순서')) ||
-                q.stem && q.stem.includes(bt.replace(/[문항]*/g,'').trim())
-              ) || (q.stem && q.stem.includes(bt)))
-            );
-            if(matchQ){ usedNums.add(matchQ.num); examples.push(matchQ); }
-          });
-          // 매칭 안 된 경우 형식별로 다양하게 추가
-          if(!examples.length){
-            analysisData.questions.slice(0,4).forEach(q=>{ if(q.original_q) examples.push(q); });
-          }
-          if(examples.length){
-            patternExamples = `\n\n══ 기출 원문 (발문·선지 형식 정확히 복사) ══\n` +
-              examples.map(q=>`[${q.num}번 / ${q.format||q.qtype||''}]\n${q.original_q}`).join('\n\n');
-          }
+        if(patternAssigns.some(a=>a.src)){
+          patternExamples = `\n\n══ 문항별 기출 형식 지정 (발문 글자 그대로, 선지 골격 동일, 내용만 새 지문) ══\n` +
+            patternAssigns.map(a=> a.src
+              ? `[생성 ${a.genNum}번 ← 기출 ${a.src.num}번 / ${a.type}]\n${a.src.original_q}`
+              : `[생성 ${a.genNum}번 / ${a.type}] 매칭 기출 없음 — 일반 내신 형식으로 출제`
+            ).join('\n\n');
         }
 
         // 배점 분포
@@ -2406,7 +2491,7 @@ ${passageSection}${patternExamples}
 ${Object.entries(plan.distrib).map(([t,n])=>`- ${t}: ${n}문항`).join('\n')}
 
 ▶ 절대 규칙:
-1. 위 [기출 원문]의 발문·선지 형식을 정확히 복사하세요.
+1. 각 생성 문항은 위에 지정된 기출 문항의 발문을 글자 그대로 복사하고, 선지 골격을 동일하게 유지하세요. 지문 근거 내용만 새 지문으로 교체.
    - 기호형(ⓐ~ⓔ): "① ⓐ  ② ⓑ  ③ ⓒ  ④ ⓓ  ⑤ ⓔ" 형식 그대로
    - 개수형: "① 2개  ② 3개  ③ 4개  ④ 5개  ⑤ 6개" 형식 그대로
    - 영작형: "<보기> 단어 제시 + = I (ⓐ)(ⓑ)(ⓒ)(ⓓ)(ⓔ)(ⓕ)" 형식 그대로
@@ -2424,6 +2509,17 @@ JSON 배열로만 응답 (마크다운 금지):
       }
 
       const result = await callGemini(prompt);
+      // C안 후처리: 발문 강제 치환 + 배점 강제 + 선지 형식 검증 → 불일치 시 1회 재생성
+      if(patternAssigns && patternAssigns.some(a=>a.src)){
+        const rep = enforcePatternFormat(result, patternAssigns);
+        if(rep.mismatch.length){
+          status.innerHTML = `<span class="spinner"></span> 형식 불일치 ${rep.mismatch.length}문항 재생성 중... (${i+1}/${totalBatches})`;
+          try{
+            await regenMismatched(result, patternAssigns, batchPassage);
+            enforcePatternFormat(result, patternAssigns); // 재생성분 발문·배점 재적용
+          }catch(e){ console.warn('재생성 실패:', e); }
+        }
+      }
       allResults = [...allResults, ...result];
       // 배치 사이 딜레이 (API 한도 방지)
       if(i < batchPlans.length-1) await new Promise(r=>setTimeout(r, 3000));
