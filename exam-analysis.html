@@ -2102,10 +2102,15 @@ function enforcePatternFormat(results, assigns){
     // 1) 발문 치환: question 첫 줄이 한국어 발문이고 기출 stem과 다르면 교체
     if(src.stem){
       const lines = (q.question||'').split('\n');
-      if(lines.length && korRatio(lines[0]) > 0.3 && lines[0].trim() !== src.stem.trim()){
-        const scoreTag = (lines[0].match(/\[\d점\]/)||[''])[0];
+      const first = lines[0]||'';
+      if(lines.length && korRatio(first) > 0.3 && first.trim() !== src.stem.trim()){
+        const scoreTag = (first.match(/\[\d점\]/)||[''])[0];
         lines[0] = src.stem.trim() + (scoreTag && !/\[\d점\]/.test(src.stem) ? ' '+scoreTag : '');
         q.question = lines.join('\n');
+        report.replaced++;
+      } else if(korRatio(first) <= 0.3){
+        // 발문이 question에 없음(첫 줄이 영어/본문) → 기출 발문 맨 앞 삽입
+        q.question = src.stem.trim() + '\n' + (q.question||'');
         report.replaced++;
       }
     }
@@ -2123,6 +2128,35 @@ function enforcePatternFormat(results, assigns){
     else fixQ(item);
   });
   return report;
+}
+
+// 출력 정규화: type 보정 → 초과 생성분 컷 → 번호 강제 재부여 (Gemini 번호 무시)
+function normalizeBatchResult(results, plan){
+  if(!Array.isArray(results)) return [];
+  // 1) type 누락 보정
+  results.forEach(it=>{ if(it && !it.type) it.type = Array.isArray(it.questions) ? 'group' : 'single'; });
+  // 2) 초과 생성분 컷 (plan.count까지만)
+  let remaining = plan.count;
+  const out = [];
+  for(const it of results){
+    if(!it || remaining <= 0) break;
+    if(it.type==='group'){
+      const qs = (it.questions||[]).slice(0, remaining);
+      if(qs.length){ it.questions = qs; out.push(it); remaining -= qs.length; }
+    } else { out.push(it); remaining--; }
+  }
+  // 3) 번호 강제 재부여 + group range 재계산
+  let num = plan.startNum;
+  out.forEach(it=>{
+    if(it.type==='group'){
+      (it.questions||[]).forEach(q=>{ q.num = num++; });
+      const qs = it.questions||[];
+      if(qs.length) it.range = qs.length>1 ? `${qs[0].num}~${qs[qs.length-1].num}` : String(qs[0].num);
+    } else {
+      it.num = num++;
+    }
+  });
+  return out;
 }
 
 // 형식 불일치 문항만 1회 재생성
@@ -2530,7 +2564,9 @@ JSON 배열로만 응답 (마크다운 금지):
 ]`;
       }
 
-      const result = await callGemini(prompt);
+      let result = await callGemini(prompt);
+      // 출력 정규화 (type/개수/번호) — Gemini 번호 무시하고 코드가 재부여
+      result = normalizeBatchResult(result, plan);
       // C안 후처리: 발문 강제 치환 + 배점 강제 + 선지 형식 검증 → 불일치 시 1회 재생성
       if(patternAssigns && patternAssigns.some(a=>a.src)){
         const rep = enforcePatternFormat(result, patternAssigns);
@@ -3162,8 +3198,7 @@ function downloadQuestionsJSON(){
   if(!generatedQs.length){ alert('생성된 예상문제가 없습니다.'); return; }
   if(!checkMeta(['school','grade','semester','exam'])) return;
   const school   = getSchool()||'';
-  const grade    = document.getElementById('passageGradeSel')?.value || document.getElementById('metaGrade')?.value || '';
-  if(!grade){ status.innerHTML='<span class="error">학년을 선택하세요.</span>'; return; }
+  const grade    = document.getElementById('metaGrade')?.value||'';
   const year     = document.getElementById('metaYear')?.value||'';
   const semester = document.getElementById('metaSemester')?.value||'';
   const exam     = document.getElementById('metaExam')?.value||'';
