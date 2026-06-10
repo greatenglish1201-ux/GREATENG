@@ -3577,40 +3577,66 @@ function getFromGAS(params){
 
 async function loadMiddlePassages(){
   const status = document.getElementById('middlePassageStatus');
-  const school     = getSchool()||'';
-  const grade      = document.getElementById('metaGrade')?.value||'';
-  const year       = document.getElementById('metaYear')?.value||'2026';
-  const semester   = document.getElementById('metaSemester')?.value||'';
-  const pubSel2 = document.getElementById('passagePublisherSel')?.value||'';
-  const publisher = (pubSel2 && pubSel2!=='직접입력') ? pubSel2 : (document.getElementById('passagePublisher')?.value.trim()||'');
-  const authSel2 = document.getElementById('passageAuthorSel')?.value||'';
-  const author = (authSel2 && authSel2!=='직접입력') ? authSel2 : (document.getElementById('passageAuthor')?.value.trim()||'');
-  const lesSel2 = document.getElementById('passageLessonSel')?.value||'';
-  const lesson = (lesSel2 && lesSel2!=='직접입력') ? lesSel2 : (document.getElementById('passageLesson')?.value.trim()||'');
-
-  status.innerHTML='<span class="spinner"></span> 불러오는 중...';
+  const school = getSchool()||'';
+  const grade  = document.getElementById('metaGrade')?.value||'';
+  if(!school || !grade){
+    status.innerHTML='<span class="error">학교/학년을 먼저 선택하세요</span>'; return;
+  }
+  status.innerHTML='<span class="spinner"></span> 목록 불러오는 중...';
   try{
-    const res = await getFromGAS({action:'getMiddlePassages', school, grade, year, semester, publisher, author, lesson});
-    if(!res.list||!res.list.length){
-      status.innerHTML='<span style="color:var(--ink4);">저장된 지문 없음</span>'; return;
+    const res = await getFromGAS({action:'getMiddlePassages', school, grade});
+    if(res.ok===false) throw new Error(res.error||'GAS 오류');
+    const list = res.list||[];
+    if(!list.length){
+      status.innerHTML='<span style="color:var(--ink4);">저장된 지문 없음 (학교/학년 확인)</span>';
+      renderMiddlePassageList([]); return;
     }
-    const item = res.list[0]; // 레슨당 1행
-    if(item.body_text){
-      document.getElementById('manualTextBody').value  = item.body_text;
-      document.getElementById('manualTitleBody').value = item.lesson||'';
-    }
-    if(item.dialog_text){
-      document.getElementById('manualTextDialog').value  = item.dialog_text;
-      document.getElementById('manualTitleDialog').value = item.lesson||'';
-    }
-    if(item.grammar_points){
-      const gpEl = document.getElementById('grammarPointInput');
-      if(gpEl) gpEl.value = item.grammar_points;
-    }
-    status.innerHTML=`<span style="color:var(--green2)">✅ ${item.lesson||'지문'} 로드 완료</span>`;
+    status.innerHTML=`<span style="color:var(--green2)">📚 저장된 지문 ${list.length}건 — 클릭하여 적용</span>`;
+    renderMiddlePassageList(list);
   } catch(e){
     status.innerHTML='<span class="error">불러오기 실패: '+e.message+'</span>';
   }
+}
+
+function renderMiddlePassageList(list){
+  let box = document.getElementById('middlePassageList');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 'middlePassageList';
+    box.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:6px;';
+    document.getElementById('middlePassageStatus').insertAdjacentElement('afterend', box);
+  }
+  box.innerHTML='';
+  window._mpList = list;
+  list.forEach((it,i)=>{
+    const label = [it.lesson||'(과 미지정)', [it.publisher,it.author].filter(Boolean).join(' '), [it.year,it.semester].filter(Boolean).join(' ')].filter(Boolean).join(' | ');
+    const has = [it.body_text?'본문':'', it.dialog_text?'대화문':'', it.grammar_points?'문법':''].filter(Boolean).join('·');
+    const btn = document.createElement('button');
+    btn.className='btn btn-gray';
+    btn.style.cssText='text-align:left;font-size:.82rem;padding:7px 12px;';
+    btn.textContent=`📖 ${label}  [${has||'내용없음'}]`;
+    btn.onclick=()=>applyMiddlePassage(i);
+    box.appendChild(btn);
+  });
+}
+
+function applyMiddlePassage(i){
+  const it = (window._mpList||[])[i];
+  if(!it) return;
+  if(it.body_text){
+    document.getElementById('manualTextBody').value  = it.body_text;
+    document.getElementById('manualTitleBody').value = it.lesson||'';
+  }
+  if(it.dialog_text){
+    document.getElementById('manualTextDialog').value  = it.dialog_text;
+    document.getElementById('manualTitleDialog').value = it.lesson||'';
+  }
+  if(it.grammar_points){
+    const gpEl = document.getElementById('grammarPointInput');
+    if(gpEl) gpEl.value = it.grammar_points;
+  }
+  document.getElementById('middlePassageStatus').innerHTML =
+    `<span style="color:var(--green2)">✅ ${it.lesson||'지문'} 적용 완료</span>`;
 }
 
 function clearAllManual(){
