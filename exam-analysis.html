@@ -851,7 +851,7 @@ tr:hover td { background: var(--paper); }
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)">① 기출 분석</div>
   <div class="tab" onclick="switchTab(1)">② 중등 출제</div>
-  <div class="tab" onclick="switchTab(3)">③ 고등 출제</div>
+  <div class="tab" onclick="switchTab(2)">③ 고등 출제</div>
   <div class="tab" onclick="switchTab(3)">④ 결과 &amp; 출력</div>
   <div class="tab" onclick="switchTab(4)">⑤ 적중률 분석</div>
   <div class="tab" onclick="switchTab(5)">⑥ 문법 포인트</div>
@@ -1393,7 +1393,7 @@ function getApiKey(){
 // ── 탭 ──
 function switchTab(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
-  ['tab0','tab1','tab2','tab3','tab4','tab5'].forEach((id,i)=>{
+  ['tab0','tab1','tab2','tab3','tab4','tab5','tab6'].forEach((id,i)=>{
     const el=document.getElementById(id);
     if(el) el.classList.toggle('active',i===n);
   });
@@ -1404,8 +1404,8 @@ function switchTab(n){
     if(sel) sel.value=m;
   }
   if(n===3) loadPredictionList();
-  if(n===4) initGrammarTab();
-  if(n===5) loadSettingsUI();
+  if(n===5) initGrammarTab();
+  if(n===6) loadSettingsUI();
 }
 
 // ── 학교 선택 ──
