@@ -2028,7 +2028,9 @@ function matchTypeToSource(bt, q){
   if(bt.includes('어법')) return /어법|문법/.test(f+s);
   if(bt.includes('어휘')) return /어휘|낱말|단어|뜻풀이/.test(f+s);
   if(bt.includes('빈칸')) return /빈칸/.test(f+s);
-  if(bt.includes('내용일치')||bt.includes('일치')) return /일치/.test(s);
+  if(bt.includes('내용일치')||bt.includes('일치')) return /일치|답할 수 (없|있)는/.test(s);
+  if(bt.includes('대화')) return /대화/.test(f+s);
+  if(bt.includes('배열')) return /배열|영작/.test(f+s);
   if(bt.includes('주제')||bt.includes('제목')||bt.includes('요지')) return /주제|제목|요지/.test(s);
   if(bt.includes('순서')) return /순서/.test(f+s);
   if(bt.includes('삽입')) return /삽입|들어가/.test(f+s);
@@ -2043,7 +2045,15 @@ function assignPatternSources(plan){
   const useCount = {};
   let num = plan.startNum;
   return (plan.types||[]).map(bt=>{
-    const cands = pool.filter(q=>matchTypeToSource(bt,q));
+    let cands = pool.filter(q=>matchTypeToSource(bt,q));
+    if(!cands.length){
+      // fallback: qtype/format 문자열 직접 비교
+      const nb = bt.replace(/[\s/]/g,'');
+      cands = pool.filter(q=>{
+        const qt = ((q.qtype||'')+(q.format||'')).replace(/[\s/]/g,'');
+        return qt && (qt.includes(nb) || nb.includes(qt));
+      });
+    }
     let src = null;
     if(cands.length){
       const idx = (useCount[bt]||0) % cands.length;
@@ -2074,9 +2084,17 @@ function enforcePatternFormat(results, assigns){
   assigns.forEach(a=>{ if(a.src) byNum[a.genNum] = a.src; });
   const report = { replaced:0, mismatch:[] };
   const korRatio = t=>{ const k=(t.match(/[가-힣]/g)||[]).length; return t.length ? k/t.length : 0; };
+  // 기출 최빈 배점 (src 미매칭 문항의 배점 누락 방지)
+  let defScore = 4;
+  if(analysisData && analysisData.questions){
+    const cnt = {};
+    analysisData.questions.forEach(q=>{ if(q.score) cnt[q.score]=(cnt[q.score]||0)+1; });
+    const best = Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+    if(best) defScore = parseFloat(best[0]);
+  }
   const fixQ = (q)=>{
     const src = byNum[q.num];
-    if(!src) return;
+    if(!src){ if(q.score==null) q.score = defScore; return; }
     // 1) 발문 치환: question 첫 줄이 한국어 발문이고 기출 stem과 다르면 교체
     if(src.stem){
       const lines = (q.question||'').split('\n');
@@ -2530,7 +2548,9 @@ JSON 배열로만 응답 (마크다운 금지):
     // 전체 문항수 계산 (group + single 합산)
     const totalQ = generatedQs.reduce((s,item)=>
       item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
-    status.innerHTML=`<span style="color:var(--green2)">✅ ${totalQ}문항 생성 완료!</span>`;
+    const totalScore = generatedQs.reduce((s,it)=>
+      it.type==='group' ? s+(it.questions||[]).reduce((a,q)=>a+(q.score||0),0) : s+(it.score||0), 0);
+    status.innerHTML=`<span style="color:var(--green2)">✅ ${totalQ}문항 생성 완료! (총점 ${Math.round(totalScore*10)/10}점)</span>`;
     savePredictionToStorage();
     renderQuestions();
     renderComparison();
