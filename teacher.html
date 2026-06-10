@@ -55,13 +55,19 @@ function makePassageId(source,chapter,number){
   return source+'_'+String(chapter).padStart(2,'0')+'_'+ns;
 }
 // 출력물 제목: 교재라벨 + 강 + 문항번호 (모의고사는 강 생략)
+function chapterLabel(ch){
+  if(ch==null||ch==='')return'';
+  const t=String(ch).trim();
+  const n=parseInt(t);
+  return (Number.isInteger(n)&&String(n)===t)?n+'강':t; // 숫자면 'N강', 'test2' 등은 그대로
+}
 function outputTitle(meta){
   const b=getAllBooks().find(x=>x.id===meta.source);
   const label=(b&&b.label)||meta.source||'';
   const n=parseInt(meta.number)||meta.number||'';
   if((meta.source||'').startsWith('MOGO_'))return label+' '+n+'번';
-  const c=parseInt(meta.chapter)||meta.chapter||'';
-  return label+' '+c+'강 '+n+'번';
+  const cl=chapterLabel(meta.chapter);
+  return label+(cl?' '+cl:'')+' '+n+'번';
 }
 const OUTPUT_FOOTER_TEXT='탁월함이 습관이 되도록';
 const OUTPUT_BRAND='대단한영어';
@@ -164,13 +170,15 @@ function validateGVSet(rawItems,sentences,isG){
     word:String((it&&it.word)||'').trim(),
     original:String((it&&it.original)||'').trim(),
   }));
-  // 1) 문장 인덱스 유효성 + 문장 중복 금지
-  const sentSet=new Set();
+  // 1) 문장 인덱스 유효성 (같은 문장 허용 — 평가원도 긴 문장엔 밑줄 2개 사용.
+  //    단, 같은 문장+같은 단어는 밑줄 위치가 모호하므로 거부)
+  const pairSet=new Set();
   for(const it of items){
     if(!Number.isInteger(it.sent)||it.sent<0||it.sent>=sentences.length)
       return{ok:false,reason:'문장 인덱스 범위 밖: '+it.sent};
-    if(sentSet.has(it.sent))return{ok:false,reason:'같은 문장['+it.sent+']에서 2개 항목 선택됨'};
-    sentSet.add(it.sent);
+    const key=it.sent+'|'+(it.original||it.word).toLowerCase();
+    if(pairSet.has(key))return{ok:false,reason:'같은 문장['+it.sent+']에서 같은 단어 "'+(it.original||it.word)+'" 중복 선택됨'};
+    pairSet.add(key);
   }
   // 2) 오답(correct:false) 정확히 1개
   const wrongIdx=items.map((it,i)=>it.correct===false?i:-1).filter(i=>i>=0);
@@ -197,8 +205,9 @@ function validateGVSet(rawItems,sentences,isG){
   items.forEach((it,i)=>{if(i!==wi&&it.word!==it.original)it.word=it.original;});
   // 5) 어휘: 오답의 alt는 항상 원문 단어
   if(!isG&&w.alt!==w.original)w.alt=w.original;
-  // 6) 문장 순서로 정렬 후 정답 위치 계산 (AI answer 폐기)
-  const sorted=[...items].sort((a,b)=>a.sent-b.sent);
+  // 6) 문장 순 → 문장 내 단어 위치 순으로 정렬 후 정답 위치 계산 (AI answer 폐기)
+  const posIn=(it)=>{const t=getSent(it.sent).toLowerCase();const i=t.indexOf(it.original.toLowerCase());return i<0?0:i;};
+  const sorted=[...items].sort((a,b)=>a.sent-b.sent||posIn(a)-posIn(b));
   const answer=sorted.findIndex(it=>it.correct===false)+1;
   return{ok:true,items:sorted,answer};
 }
@@ -1404,7 +1413,7 @@ Frequent CSAT grammar test points (focus on these):
 Passage:
 ${passage}
 
-Generate exactly 5 items from DIFFERENT sentences:
+Generate exactly 5 items, preferably each from a DIFFERENT sentence (a long sentence may carry at most 2 underlines, but never the same word twice):
 - 4 CORRECT items: word = original (the original grammatical form, no change)
 - 1 INCORRECT item: word = a grammatically WRONG substitution that produces an unambiguous error
   Example: original "suggests" → word "suggesting" (subject-verb agreement broken)
@@ -1444,7 +1453,7 @@ For each item:
 Passage:
 ${passage}
 
-Generate exactly 5 items from DIFFERENT sentences:
+Generate exactly 5 items, preferably each from a DIFFERENT sentence (a long sentence may carry at most 2 underlines, but never the same word twice):
 - 4 CORRECT items: word = original passage word; alt = a contextually plausible synonym
 - 1 INCORRECT item: word = OPPOSITE-meaning word substituted in place of the original; original = original word; alt = original (the correct word)
 - Pick semantically loaded content words (verbs/adjectives/nouns), not function words
@@ -2063,6 +2072,13 @@ Return JSON only, EXACTLY this structure:
         <hr style={{border:'none',borderTop:'0.5px solid #eee',margin:'10px 0'}}/>
         <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:8}}>② 항목 편집 &amp; 정답 선택</div>
         {(()=>{
+          const wc=(sets?.[sel]?.items||[]).filter(it=>it.correct===false).length;
+          return wc!==1?<div style={{background:'#FDEBEA',color:'#B3261E',fontSize:11.5,fontWeight:600,
+            padding:'7px 11px',borderRadius:7,marginBottom:8}}>
+            ⚠ 틀린(정답) 항목이 {wc}개입니다 — 정확히 1개여야 정답 번호가 올바르게 저장됩니다. 항목의 ✓/✗를 눌러 조정하세요.
+          </div>:null;
+        })()}
+        {(()=>{
           const items=sets?.[sel]?.items||[];
           const sorted=[...items].sort((a,b)=>a.sent-b.sent);
           const numMap=new Map(sorted.map((it,idx)=>[it,idx+1]));
@@ -2215,7 +2231,10 @@ Return JSON only, EXACTLY this structure:
       <div style={{padding:'14px'}}>
         {/* 교재ID/번호 + 슬롯 전환 */}
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,flexWrap:'wrap'}}>
-          {curId&&<span style={{fontSize:12,fontFamily:'monospace',background:'#185FA510',color:'#185FA5',border:'1px solid #185FA540',borderRadius:6,padding:'3px 10px',fontWeight:600}}>{curId}</span>}
+          {curId&&(()=>{
+            const cur=savedSlots.find(s=>(s.passageData?.id||makePassageId(s.meta?.source,s.meta?.chapter||1,s.meta?.number||1))===curId);
+            return<span style={{fontSize:12,background:'#E8F1FD',color:'#0058B0',borderRadius:6,padding:'3px 10px',fontWeight:600}}>{cur?outputTitle(cur.meta):curId}</span>;
+          })()}
           {savedSlots.length>0&&<>
             <span style={{fontSize:11,color:'#bbb'}}>|</span>
             <span style={{fontSize:11,color:'#888'}}>슬롯 전환:</span>
@@ -2228,7 +2247,7 @@ Return JSON only, EXACTLY this structure:
                   background:isNow?'#185FA5':'transparent',
                   color:isNow?'#fff':'#555',
                   cursor:isNow?'default':'pointer',fontWeight:isNow?600:400}}>
-                {parseInt(s.meta?.chapter)||1}강 {parseInt(s.meta?.number)||1}번
+                {chapterLabel(s.meta?.chapter)||'1강'} {parseInt(s.meta?.number)||s.meta?.number||1}번
               </button>;
             })}
           </>}
