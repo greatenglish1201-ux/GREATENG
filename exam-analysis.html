@@ -1328,6 +1328,8 @@ const TYPE_LABELS = ['어법','어휘','빈칸추론','순서배열','문장삽�
 
 let analysisData = null;
 let generatedQs = [];
+const BUILD_VERSION = 'v2.1-template-slot (2026-06-11)';
+let generatedAt = null; // 마지막 생성 성공 시각 (이전 세션 복원분과 구분용)
 let uploadedImages = [];
 let sheetPassages = [];
 
@@ -2657,6 +2659,7 @@ JSON 배열로만 응답 (마크다운 금지):
       item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
     const totalScore = generatedQs.reduce((s,it)=>
       it.type==='group' ? s+(it.questions||[]).reduce((a,q)=>a+(q.score||0),0) : s+(it.score||0), 0);
+    generatedAt = new Date().toLocaleString('ko-KR', {timeZone:'Asia/Seoul'});
     status.innerHTML=`<span style="color:var(--green2)">✅ ${totalQ}문항 생성 완료! (총점 ${Math.round(totalScore*10)/10}점)</span>`;
     savePredictionToStorage();
     renderQuestions();
@@ -3272,7 +3275,9 @@ function downloadQuestionsJSON(){
   const totalQ   = generatedQs.reduce((s,item)=>item.type==='group'?s+(item.questions?.length||0):s+1,0);
   const data = {
     meta: { school, grade, year, semester, exam,
-            total: totalQ, savedAt: new Date().toISOString() },
+            total: totalQ, savedAt: new Date().toISOString(),
+            generated_at: generatedAt || '(이번 세션 생성 아님 — 복원된 이전 결과)',
+            build: BUILD_VERSION },
     questions: generatedQs,
     analysisData: analysisData || null   // 기출 패턴 데이터 함께 저장
   };
@@ -3741,6 +3746,7 @@ function savePredictionToStorage(){
 
   const usedPassages = (getSelectedPassages()||[]).map(p=>({id:p.id,source:p.source,chapter:p.chapter,number:p.number}));
   const payload = {
+    generated_at: generatedAt, build: BUILD_VERSION,
     key, label, school, grade, year, semester:sem, exam,
     questions: generatedQs,
     passages: usedPassages,
