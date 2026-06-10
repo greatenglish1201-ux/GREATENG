@@ -2201,6 +2201,49 @@ function App(){
   const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
   const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
 
+  // ── 교재목록 시트 동기화 ──────────────────────────────
+  // 추가/변경된 교재를 '교재목록' 시트에 저장 (삭제는 동기화하지 않음 - 안전)
+  const syncBooksToSheet=useCallback(async(books)=>{
+    if(!appsUrl||!books||!books.length)return;
+    try{await formPostFetch(appsUrl,{action:'saveBooks',books_json:JSON.stringify(books)});}
+    catch(e){console.warn('교재목록 시트 동기화 실패:',e);}
+  },[appsUrl]);
+  // 사용자 교재 추가 헬퍼: state + localStorage + 시트 동기화 일괄 처리
+  const addCustomBook=useCallback((book)=>{
+    setCustomBooks(prev=>{
+      if(prev.find(b=>b.id===book.id)||BOOK_DEFS.find(b=>b.id===book.id))return prev;
+      const next=[...prev,book];
+      saveCustomBooks(next);
+      syncBooksToSheet([book]);
+      return next;
+    });
+  },[syncBooksToSheet]);
+  // ── 마운트 시 시트 교재목록을 localStorage에 병합 (다른 기기 동기화) ──
+  const booksLoaded=useRef(false);
+  useEffect(()=>{
+    if(booksLoaded.current||!appsUrl)return;
+    booksLoaded.current=true;
+    (async()=>{
+      try{
+        const r=await jsonpFetch(appsUrl,{action:'getBooks'});
+        if(!r||!r.ok||!Array.isArray(r.books))return;
+        const local=loadCustomBooks();
+        const localIds=new Set(local.map(b=>b.id));
+        const defIds=new Set(BOOK_DEFS.map(b=>b.id));
+        // BOOK_DEFS에 없고 localStorage에도 없는 시트 교재만 병합
+        const merged=[...local];
+        let added=0;
+        r.books.forEach(b=>{
+          if(!b||!b.id)return;
+          if(defIds.has(b.id)||localIds.has(b.id))return;
+          merged.push({id:b.id,label:b.label||b.id,storage:b.storage||'sheet'});
+          localIds.add(b.id);added++;
+        });
+        if(added>0){saveCustomBooks(merged);setCustomBooks(merged);}
+      }catch(e){console.warn('교재목록 시트 로드 실패:',e);}
+    })();
+  },[appsUrl]);
+
   const generateBlockSummaries=useCallback(async(slot,silent=false)=>{
     if(!apiKey){if(!silent)alert('API Key가 없습니다.');return;}
     const blocks=slot.analysis?.flow?.blocks||[];
@@ -2558,11 +2601,14 @@ function App(){
     setSheetLoading(true);
     const restored=[];
     try{
-      for(const id of selectedIds){
-        const sp=sheetPassages.find(p=>p.id===id);
-        if(!sp)continue;
-        // 출제DB도 함께
-        const r=await jsonpFetch(appsUrl,{action:'getQuestions',pid:id});
+      // 유효 지문 선별 후 출제DB 병렬 조회 (직렬 → 병렬: N×1~2초 → 1~2초)
+      const validSps=selectedIds.map(id=>sheetPassages.find(p=>p.id===id)).filter(Boolean);
+      const qResults=await Promise.all(validSps.map(sp=>
+        jsonpFetch(appsUrl,{action:'getQuestions',pid:sp.id}).catch(()=>({ok:false,questions:[]}))
+      ));
+      for(let vi=0;vi<validSps.length;vi++){
+        const sp=validSps[vi];
+        const r=qResults[vi];
         const qs=r.ok?(r.questions||[]):[];
         // passageData 복원
         const pd={
@@ -2669,7 +2715,7 @@ function App(){
           next[targetIdx]={
             ...next[targetIdx],
             text:sentenceText,
-            meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
+            meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
             status:'saved',
             analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{}},
             passageData:pd,
@@ -3347,8 +3393,7 @@ function App(){
                 const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
                 const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
                 if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
-                const next=[...customBooks,{id,label,storage:'sheet'}];
-                setCustomBooks(next);saveCustomBooks(next);
+                addCustomBook({id,label,storage:'sheet'});
               }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
             </div>
               <div style={{color:'#a5d6f5',fontSize:12,margin:'10px 0 6px'}}>일반 교재 추가</div>
@@ -3374,8 +3419,7 @@ function App(){
                   const id=`BOOK_${bookNew.yr}_${pub}_${bookNew.name}`;
                   const label=`${bookNew.yr} ${pub} ${bookNew.name}`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
-                  const next=[...customBooks,{id,label,storage:'sheet'}];
-                  setCustomBooks(next);saveCustomBooks(next);
+                  addCustomBook({id,label,storage:'sheet'});
                   setBookNew({yr:bookNew.yr,pub:bookNew.pub,pubCustom:'',name:''});
                 }} style={{background:'#185FA5',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
               </div>
@@ -3407,8 +3451,7 @@ function App(){
                   const examLabel={'1MID':'1학기중간','1FIN':'1학기기말','2MID':'2학기중간','2FIN':'2학기기말'}[printNew.exam]||printNew.exam;
                   const label=`${printNew.yr} ${printNew.school} ${grLabel} ${examLabel}`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
-                  const next=[...customBooks,{id,label,storage:'sheet'}];
-                  setCustomBooks(next);saveCustomBooks(next);
+                  addCustomBook({id,label,storage:'sheet'});
                   setPrintNew({...printNew,school:''});
                 }} style={{background:'#854F0B',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
               </div>
@@ -3465,8 +3508,7 @@ function App(){
                   const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
                   const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
-                  const next=[...customBooks,{id,label,storage:'sheet'}];
-                  setCustomBooks(next);saveCustomBooks(next);
+                  addCustomBook({id,label,storage:'sheet'});
                 }} style={{background:'#2d8a60',color:'#fff',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
               </div>
               <div style={{color:'#a5d6f5',fontSize:12,margin:'10px 0 6px'}}>일반 교재 추가</div>
@@ -3492,8 +3534,7 @@ function App(){
                   const id=`BOOK_${bookNew.yr}_${pub}_${bookNew.name}`;
                   const label=`${bookNew.yr} ${pub} ${bookNew.name}`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
-                  const next=[...customBooks,{id,label,storage:'sheet'}];
-                  setCustomBooks(next);saveCustomBooks(next);
+                  addCustomBook({id,label,storage:'sheet'});
                   setBookNew({yr:bookNew.yr,pub:bookNew.pub,pubCustom:'',name:''});
                 }} style={{background:'#185FA5',color:'#fff',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
               </div>
@@ -3525,8 +3566,7 @@ function App(){
                   const examLabel={'1MID':'1학기중간','1FIN':'1학기기말','2MID':'2학기중간','2FIN':'2학기기말'}[printNew.exam]||printNew.exam;
                   const label=`${printNew.yr} ${printNew.school} ${grLabel} ${examLabel}`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
-                  const next=[...customBooks,{id,label,storage:'sheet'}];
-                  setCustomBooks(next);saveCustomBooks(next);
+                  addCustomBook({id,label,storage:'sheet'});
                   setPrintNew({...printNew,school:''});
                 }} style={{background:'#854F0B',color:'#fff',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
               </div>
