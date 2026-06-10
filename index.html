@@ -1087,7 +1087,9 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
 
   const SHEETS_URL_KEY='greateng_sheets_url';
   const [sheetsUrl,setSheetsUrl]=useState(()=>localStorage.getItem('greateng_sheets_url')||'');
+  const [scriptUrlLocal,setScriptUrlLocal]=useState(()=>localStorage.getItem('greateng_script_url')||scriptUrl||'');
   const [curAdminPw,setCurAdminPw]=useState('');
+  const [newAdminPw,setNewAdminPw]=useState('');
   const [confirmNewPw,setConfirmNewPw]=useState('');
   const changeAdminPw=async()=>{
     if(!curAdminPw||!newAdminPw||!confirmNewPw){setMsg('모든 항목을 입력하세요.');return;}
@@ -1415,7 +1417,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
           </div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
             <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 12px',color:'#3a2a20'}}>🔗 결과 저장 URL</h3>
-            <input value={scriptUrl} onChange={e=>{setScriptUrl(e.target.value);localStorage.setItem('greateng_script_url',e.target.value);}}
+            <input value={scriptUrlLocal} onChange={e=>{setScriptUrlLocal(e.target.value);localStorage.setItem('greateng_script_url',e.target.value);}}
               placeholder="Apps Script 배포 URL (선택)"
               style={{width:'100%',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:12,outline:'none',boxSizing:'border-box',color:'#9a8570'}}/>
             <p style={{fontSize:11,color:'#9a8570',marginTop:6}}>입력하면 시험 결과가 Google Sheets에 자동 저장됩니다.</p>
@@ -1528,14 +1530,26 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         </div>
 
         <div style={S.card}>
-          <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>문제 유형</h3>
-          <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-            {TYPES.map(t=><button key={t.id} onClick={()=>toggleType(t.id)} style={S.pill(selectedTypes.has(t.id))}>{t.icon} {t.name}</button>)}
+          <h3 style={{fontSize:13,fontWeight:700,color:'#7a1020',margin:'0 0 10px'}}>문제 유형</h3>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(92px,1fr))',gap:8}}>
+            {TYPES.map(t=>{
+              const on=selectedTypes.has(t.id);
+              return <button key={t.id} onClick={()=>toggleType(t.id)} style={{
+                border:on?'2px solid #C9A84C':'2px solid #e8d8b8',
+                background:on?'#FBF3DE':'#fffaf2',
+                borderRadius:12,padding:'11px 6px',textAlign:'center',cursor:'pointer',
+                transition:'all .12s',display:'flex',flexDirection:'column',alignItems:'center',gap:4
+              }}>
+                <span style={{fontSize:21,lineHeight:1}}>{t.icon}</span>
+                <span style={{fontSize:11.5,fontWeight:on?700:500,color:on?'#8a6010':'#9a8060'}}>{t.name}</span>
+              </button>;
+            })}
           </div>
-          <div style={{display:'flex',gap:6,marginTop:7,flexWrap:'wrap'}}>
-            <button onClick={toggleAll} style={{...S.chip(false),fontSize:10.5}}>전체 선택/해제</button>
-            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert']))} style={{...S.chip(false),fontSize:10.5,background:'#fef3c7',color:'#92400e',border:'1px solid #fcd34d'}}>⭐ 중요 3종 (빈칸·순서·삽입)</button>
-            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert','topic','summary']))} style={{...S.chip(false),fontSize:10.5,background:'#ede9fe',color:'#5b21b6',border:'1px solid #c4b5fd'}}>📚 핵심 5종</button>
+          <div style={{display:'flex',gap:6,marginTop:10,flexWrap:'wrap',alignItems:'center'}}>
+            <span style={{fontSize:11,color:'#9a8570',marginRight:2}}>빠른 선택</span>
+            <button onClick={toggleAll} style={{...S.chip(false),fontSize:10.5}}>전체</button>
+            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert']))} style={{...S.chip(false),fontSize:10.5,background:'#FBF3DE',color:'#8a6010',border:'1px solid #C9A84C'}}>⭐ 중요 3종 (빈칸·순서·삽입)</button>
+            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert','topic','summary']))} style={{...S.chip(false),fontSize:10.5,background:'#f4ecff',color:'#6a4a9a',border:'1px solid #c9b3e8'}}>📚 핵심 5종</button>
           </div>
         </div>
 
