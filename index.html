@@ -266,6 +266,8 @@ function gen(passage, type, allP){
   // 미출제 유형 건너뜀
   const TYPE_KEYS={topic:'topic',order:'order',blank:'blank',summary:'summary',implication:'implication',irrelevant:'irrelevant',insert:'insert',grammar:'grammar',vocab:'vocab'};
   if((passage.disabled_types||[]).includes(TYPE_KEYS[type])) return null;
+  // 시트(GAS) 지문: 출제DB에 실제 저장된 유형만 출제 (passages.js 지문은 기존 방식 유지)
+  if(passage.__gasOnly && !(passage.__authored && passage.__authored.has(TYPE_KEYS[type]))) return null;
 
   switch(type){
 
@@ -714,11 +716,12 @@ function App(){
           jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
         ));
         gasIds.forEach((pid,i)=>{
-          if(fetched[i]?.ok&&fetched[i].questions?.length){
-            const idx=pool.findIndex(p=>p.id===pid);
-            if(idx>=0)pool[idx]=applyGasQuestions(pool[idx],fetched[i].questions);
-          }
-        });
+        const idx=pool.findIndex(p=>p.id===pid);
+        if(idx<0)return;
+        const qsArr=(fetched[i]?.ok&&fetched[i].questions)||[];
+        const merged=qsArr.length?applyGasQuestions(pool[idx],qsArr):pool[idx];
+        pool[idx]={...merged,__gasOnly:true,__authored:new Set(qsArr.map(q=>q.type))};
+      });
       }
 
       // 가능한 모든 (지문×유형) 조합 → 지문 1개에 여러 문제 가능
@@ -758,10 +761,11 @@ function App(){
         jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
       ));
       gasIds.forEach((pid,i)=>{
-        if(fetched[i]?.ok&&fetched[i].questions?.length){
-          const idx=pool.findIndex(p=>p.id===pid);
-          if(idx>=0)pool[idx]=applyGasQuestions(pool[idx],fetched[i].questions);
-        }
+        const idx=pool.findIndex(p=>p.id===pid);
+        if(idx<0)return;
+        const qsArr=(fetched[i]?.ok&&fetched[i].questions)||[];
+        const merged=qsArr.length?applyGasQuestions(pool[idx],qsArr):pool[idx];
+        pool[idx]={...merged,__gasOnly:true,__authored:new Set(qsArr.map(q=>q.type))};
       });
     }
 
