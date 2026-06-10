@@ -3051,16 +3051,16 @@ function App(){
 
   return(
     <div style={{minHeight:'100vh',background:'#F5F5F7',overflowX:'hidden'}}>
-      <div style={{background:'#FBFBFD',padding:'6px clamp(8px,2vw,18px)',display:'flex',alignItems:'center',
-        justifyContent:'space-between',minHeight:52,flexWrap:'wrap',rowGap:6,position:'sticky',top:0,zIndex:100,
+      <div style={{background:'#FBFBFD',padding:'0 clamp(6px,1.5vw,18px)',display:'flex',alignItems:'center',
+        justifyContent:'space-between',height:52,gap:8,position:'sticky',top:0,zIndex:100,
         borderBottom:'1px solid #D2D2D7',boxShadow:'0 1px 3px rgba(0,0,0,.04)'}}>
-        <div style={{color:'#1D1D1F',fontWeight:700,fontSize:'clamp(11px,1.5vw,15px)',whiteSpace:'nowrap',flexShrink:0}}>📘 GREATENG 분석 툴</div>
-        <div style={{display:'flex',gap:7,alignItems:'center',flexWrap:'wrap',rowGap:6,justifyContent:'flex-end'}}>
-          {msg&&<span style={{color:'#0058B0',fontSize:11.5}}>{msg}</span>}
+        <div style={{color:'#1D1D1F',fontWeight:700,fontSize:'clamp(11px,1.4vw,14px)',whiteSpace:'nowrap',flexShrink:0}}>대단한영어</div>
+        <div style={{display:'flex',gap:'clamp(3px,0.5vw,7px)',alignItems:'center',minWidth:0}}>
+          {msg&&<span style={{color:'#0058B0',fontSize:11,maxWidth:130,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{msg}</span>}
           <div style={{display:'flex',gap:2,background:'#E8E8ED',borderRadius:7,padding:3,flexShrink:0}}>
             {['teacher','student','authoring'].map(m=>(
               <button key={m} onClick={()=>setViewMode(m)}
-                style={{padding:'4px 12px',fontSize:12,fontWeight:600,whiteSpace:'nowrap',
+                style={{padding:'4px clamp(7px,1vw,12px)',fontSize:'clamp(11px,1.2vw,12px)',fontWeight:600,whiteSpace:'nowrap',
                   background:viewMode===m?'#fff':'transparent',
                   color:viewMode===m?'#0058B0':'#6C6C70',
                   border:'none',borderRadius:5,cursor:'pointer'}}>
@@ -3080,7 +3080,7 @@ function App(){
               borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetSaving?'저장중...':'📊 SAVE'}</button>}
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(true)} disabled={sheetSaving}
             title="저장된 슬롯 모두 공개"
-            style={{background:'#E4F5E9',color:'#1E6B30',border:'none',
+            style={{background:'#ECECFB',color:'#3D3CA8',border:'none',
               borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>🌐 ALL</button>}
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(false)} disabled={sheetSaving}
             title="저장된 슬롯 모두 비공개"
@@ -3094,7 +3094,7 @@ function App(){
             {ghDd&&<div style={{position:'absolute',top:'100%',right:0,marginTop:4,background:'#1e293b',borderRadius:8,boxShadow:'0 4px 16px rgba(0,0,0,.4)',zIndex:999,minWidth:130,overflow:'hidden'}} onMouseLeave={()=>setGhDd(false)}>
               <button onClick={()=>{fetchPassages();setGhDd(false);}} disabled={loadFetching}
                 style={{width:'100%',padding:'9px 14px',background:'none',color:'#fff',border:'none',borderBottom:'1px solid rgba(255,255,255,.08)',cursor:'pointer',fontSize:12,fontWeight:600,textAlign:'left',display:'flex',alignItems:'center',gap:7}}>
-                📥 {loadFetching?'로딩...':'LOAD (passages.js)'}
+                ⇣ {loadFetching?'로딩...':'LOAD (passages.js)'}
               </button>
               <button onClick={()=>{saveMainToGitHub();setGhDd(false);}} disabled={mainGhSaving}
                 style={{width:'100%',padding:'9px 14px',background:'none',color:'#4ade80',border:'none',borderBottom:'1px solid rgba(255,255,255,.08)',cursor:'pointer',fontSize:12,fontWeight:600,textAlign:'left',display:'flex',alignItems:'center',gap:7}}>
@@ -3108,7 +3108,7 @@ function App(){
                 a.download='teacher_backup_'+ts+'.json';a.click();URL.revokeObjectURL(a.href);
                 flash('백업 다운로드 ✓');setGhDd(false);
               }} style={{width:'100%',padding:'9px 14px',background:'none',color:'#93c5fd',border:'none',cursor:'pointer',fontSize:12,fontWeight:600,textAlign:'left',display:'flex',alignItems:'center',gap:7}}>
-                💾 백업 다운로드
+                ⤓ 백업 다운로드
               </button>
             </div>}
           </div>}
@@ -3121,7 +3121,7 @@ function App(){
           <div style={{position:'relative',display:'inline-flex',alignItems:'center'}}>
             <button onClick={()=>setStuModal({kind:'all',slot:null,opts:{...stuOpts}})}
               style={{background:'#F2EBFB',color:'#5E2E9E',border:'none',
-                borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>📤 출력</button>
+                borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>⎙ 출력</button>
           </div>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:12},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'#FDEBEA',color:'#B3261E',border:'none',
@@ -3177,7 +3177,7 @@ function App(){
                         <input type="checkbox" checked={!!loadSel[p.id]} onChange={()=>{}} style={{width:14,height:14,accentColor:'#185FA5',flexShrink:0}}/>
                         <span style={{fontSize:11,fontFamily:'monospace',color:'#185FA5',flex:1}}>{p.id}</span>
                         {p.title&&<span style={{fontSize:11.5,color:'#555',flex:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.title}</span>}
-                        {!hasFlow&&<span style={{fontSize:10,padding:'2px 6px',borderRadius:10,flexShrink:0,background:'#F2EBFB',color:'#5E2E9E',fontWeight:600}}>✏ 저작</span>}
+                        {!hasFlow&&<span style={{fontSize:10,padding:'2px 6px',borderRadius:10,flexShrink:0,background:'#F2EBFB',color:'#5E2E9E',fontWeight:600}}>✎ 저작</span>}
                         <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,background:diffBg,color:diffC,fontWeight:600}}>{diff}</span>
                       </div>);
                     })}
@@ -3377,7 +3377,7 @@ function App(){
           <div style={{background:'#fff',borderRadius:12,padding:'24px 28px',maxWidth:480,width:'100%',
             maxHeight:'90vh',overflow:'auto',boxShadow:'0 8px 40px rgba(0,0,0,.3)'}}
             onClick={e=>e.stopPropagation()}>
-            <div style={{fontSize:16,fontWeight:700,marginBottom:6,color:'#185FA5'}}>📤 출력 옵션</div>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:6,color:'#185FA5'}}>⎙ 출력 옵션</div>
             <div style={{fontSize:12,color:'#888',marginBottom:12}}>
               {isAll?'전체 슬롯':'단일 슬롯'} — 영역 선택 후 PDF 또는 DOCX로 출력
             </div>
@@ -3469,7 +3469,7 @@ function App(){
               URL.revokeObjectURL(a.href);
               flash('백업 다운로드 ✓');
             }} style={{background:'#E8F1FD',color:'#0058B0',border:'none',borderRadius:6,
-              padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>💾 백업 다운로드</button>
+              padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>⤓ 백업 다운로드</button>
             <label style={{background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,
               padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500,display:'inline-block'}}>
               📂 복원
@@ -3781,44 +3781,39 @@ function App(){
         </div>}
 
         <div style={{background:'#fff',borderRadius:10,border:'0.5px solid #D2D2D7',
-          padding:'10px 14px',marginBottom:12,display:'flex',alignItems:'center',gap:7,flexWrap:'nowrap',overflowX:'auto'}}>
+          padding:'8px 12px',marginBottom:12,display:'flex',alignItems:'center',gap:6,flexWrap:'nowrap'}}>
           <span style={{fontSize:12,fontWeight:600,color:'#555',flexShrink:0}}>교재</span>
-          {allBooks.filter(b=>!b.id.startsWith('MOGO_')).map(src=>(
-            <button key={src.id} onClick={()=>setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:src.id}})))}
-              style={{padding:'4px 12px',fontSize:12,fontWeight:500,flexShrink:0,
-                background:slots.every(s=>s.meta.source===src.id)?'#185FA5':'#E8E8ED',
-                color:slots.every(s=>s.meta.source===src.id)?'#fff':'#555',
-                border:'none',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap'}}>{src.label}</button>
-          ))}
           <select onChange={e=>{if(!e.target.value)return;setSlots(prev=>prev.map(s=>({...s,meta:{...s.meta,source:e.target.value}})));}}
-            value={slots.every(s=>s.meta.source===slots[0]?.meta.source)&&slots[0]?.meta.source?.startsWith('MOGO_')?slots[0].meta.source:''}
-            style={{padding:'4px 6px',fontSize:11,borderRadius:6,border:'1px solid #ddd',background:'#E8E8ED',cursor:'pointer',flexShrink:0}}>
-            <option value="">모의고사▾</option>
+            value={slots.length&&slots.every(s=>s.meta.source===slots[0].meta.source)?slots[0].meta.source:''}
+            style={{padding:'5px 8px',fontSize:12,borderRadius:7,border:'0.5px solid #D2D2D7',background:'#fff',
+              cursor:'pointer',flexShrink:1,minWidth:0,maxWidth:'46vw',fontWeight:500,color:'#1D1D1F'}}>
+            <option value="">교재 선택▾</option>
+            {allBooks.filter(b=>!b.id.startsWith('MOGO_')).map(b=>
+              <option key={b.id} value={b.id}>{b.label}</option>)}
             {getMogoGroups().map(g=>(
-              <optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>
+              <optgroup key={g.yr+'_'+g.gr} label={`모의고사 · ${g.yr} ${g.gr}`}>
                 {g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}
               </optgroup>
             ))}
           </select>
-          <button onClick={()=>setShowBookMgr(true)} style={{padding:'4px 9px',fontSize:11,background:'#E8E8ED',border:'1px solid #ddd',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0}}>📚 교재관리</button>
-          <div style={{flex:1,minWidth:8}}/>
-          <button onClick={()=>setFilterHot(f=>!f)}
-            style={{padding:'4px 10px',fontSize:11,fontWeight:600,borderRadius:6,border:'none',flexShrink:0,
-              background:filterHot?'#e53935':'#E8E8ED',
-              color:filterHot?'#fff':'#555',cursor:'pointer',whiteSpace:'nowrap'}}>
-            ★ {filterHot?'전체보기':'출제예상만'}
+          <button onClick={()=>setShowBookMgr(true)} style={{padding:'5px 9px',fontSize:11,background:'#E8E8ED',border:'none',borderRadius:7,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,color:'#3A3A3C',fontWeight:500}}>📚 교재관리</button>
+          <div style={{flex:1,minWidth:4}}/>
+          <button onClick={()=>setFilterHot(f=>!f)} title={filterHot?'전체보기':'출제예상만 보기'}
+            style={{padding:'4px 9px',fontSize:11,fontWeight:600,borderRadius:6,border:'none',flexShrink:0,
+              background:filterHot?'#FDEBEA':'#E8E8ED',
+              color:filterHot?'#B3261E':'#555',cursor:'pointer',whiteSpace:'nowrap'}}>
+            ★ 출제
           </button>
-          <span style={{fontSize:11,color:'#999',flexShrink:0,whiteSpace:'nowrap'}}>{pending>0?'대기 '+pending+'개':'대기 없음'}</span>
-          <button onClick={runAll} disabled={pending===0||!keyOk}
-            style={{padding:'5px 14px',fontSize:12,fontWeight:600,flexShrink:0,
-              background:pending>0&&keyOk?'#185FA5':'#ccc',color:'#fff',
+          <button onClick={runAll} disabled={pending===0||!keyOk} title={'대기 '+pending+'개 전체 분석'}
+            style={{padding:'5px 12px',fontSize:12,fontWeight:600,flexShrink:0,
+              background:pending>0&&keyOk?'#E8F1FD':'#E8E8ED',color:pending>0&&keyOk?'#0058B0':'#86868B',
               border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default',whiteSpace:'nowrap'}}>
-            🔍 전체 분석 ({pending}개)
+            🔍 분석 {pending}
           </button>
           <button onClick={()=>{const allOpen=slots.every(s=>s.open);setSlots(prev=>{const next=prev.map(s=>({...s,open:!allOpen}));saveSlots(next);return next;})}}
-            style={{padding:'4px 10px',fontSize:11,background:'#fff',color:'#185FA5',border:'1px solid #ddd',
+            style={{padding:'4px 10px',fontSize:11,background:'#fff',color:'#0058B0',border:'1px solid #ddd',
               borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',fontWeight:500,flexShrink:0,lineHeight:'1.4'}}>
-            {slots.every(s=>s.open)?'📁 접기':'📂 펼치기'}
+            {slots.every(s=>s.open)?'⌃ 접기':'⌄ 펼치기'}
           </button>
         </div>
 
@@ -3991,7 +3986,7 @@ function App(){
 function SlotOutputMenu({slot,onStuOutput}){
   return<button onClick={()=>onStuOutput&&onStuOutput('single')}
     style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2'}}>
-    📤 출력</button>;
+    ⎙ 출력</button>;
 }
 
 const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic,onToggleHot}){
@@ -4011,7 +4006,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
       boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 2px #185FA5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #E8E8ED':'none',
         background:slot.status==='saved'?'#EDF4FF':'#fff'}}>
-        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'wrap',rowGap:6,overflow:'visible'}}>
+        <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',minWidth:0}}>
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
             fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
@@ -4026,13 +4021,13 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             <span title={'출제 유형: '+at.join(' · ')}
               style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:10,flexShrink:0,
                 background:'#F2EBFB',color:'#5E2E9E',border:'0.5px solid #E3D3F7',cursor:'help',whiteSpace:'nowrap'}}>
-              ✏ {at.length}</span>
+              ✎ {at.length}</span>
           ):null;})()}
           {slot.status==='saved'&&(
             <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
               style={{fontSize:11,fontWeight:700,padding:'2px 6px',borderRadius:4,flexShrink:0,
-                background:slot.isPublic?'#0a7c42':'#e9ecef',
-                color:slot.isPublic?'#fff':'#888',
+                background:slot.isPublic?'#ECECFB':'#e9ecef',
+                color:slot.isPublic?'#3D3CA8':'#888',
                 border:slot.isPublic?'none':'0.5px solid #ccc'}}>
               {slot.isPublic?'🌐':'🔒'}
             </span>
@@ -4081,7 +4076,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
           </select>
           {slot.analysis&&<SlotOutputMenu slot={slot} onStuOutput={onStuOutput}/>}
-          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✏저작</button>}
+          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✎ 저작</button>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
@@ -4390,8 +4385,8 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             )}
             {slot.status==='saved'&&onTogglePublic&&(
               <button onClick={onTogglePublic} style={{padding:'7px 14px',fontSize:12.5,fontWeight:600,
-                background:slot.isPublic?'#0a7c42':'#e9ecef',
-                color:slot.isPublic?'#fff':'#555',
+                background:slot.isPublic?'#ECECFB':'#e9ecef',
+                color:slot.isPublic?'#3D3CA8':'#555',
                 border:slot.isPublic?'none':'1px solid #ccc',borderRadius:6,cursor:'pointer'}}>
                 {slot.isPublic?'🌐 공개중':'🔒 비공개'}
               </button>
@@ -4401,7 +4396,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
                 color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
             )}
             {slot.analysis&&(
-              <button onClick={onAuthor} style={{padding:'7px 10px',fontSize:12.5,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,cursor:'pointer',fontWeight:600}}>✏저작</button>
+              <button onClick={onAuthor} style={{padding:'7px 10px',fontSize:12.5,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,cursor:'pointer',fontWeight:600}}>✎ 저작</button>
             )}
             <div style={{flex:1}}/>
             <button onClick={onToggle} title="접기"
