@@ -646,7 +646,7 @@ function App(){
   // 단, passages.js에서 27STYD는 GAS로만 관리하므로 제외
   const allPassages=useMemo(()=>{
     const map=new Map();
-    [...PASSAGES].filter(p=>!p.id.startsWith('27STYD')).forEach(p=>map.set(p.id,p));
+    [...PASSAGES].filter(p=>!p.id.startsWith('27STYD')&&!p.id.startsWith('27ST_E_test')).forEach(p=>map.set(p.id,p)); // test1/test2는 시트 전용
     gasPassages.filter(p=>(p.is_public==='TRUE'||p.is_public===true)&&!isArchived(p)).forEach(p=>{
       const id=p.id;
       const sentences=p.sentences_json?JSON.parse(p.sentences_json):p.sentences||[];
