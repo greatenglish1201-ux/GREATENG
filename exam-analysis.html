@@ -719,23 +719,30 @@ header { padding: 12px 16px; }
   
 </div>
 
-<!-- ━━━ 2. 출제 (Phase 2) ━━━ -->
+<!-- ━━━ 2. 출제 ━━━ -->
 <div class="panel" id="tab2">
-  <div class="step-box"><div class="placeholder-box">
-    <div class="big">✍️</div>
-    <b>출제 탭 — Phase 2에서 열립니다</b>
-    <p style="margin-top:8px;">Claude 의뢰 패키지 생성 · 납품 JSON 자동 검증이 들어올 자리입니다.<br>
-    지금은 패턴 JSON + 지문을 Claude 대화창에 직접 업로드해 출제를 의뢰하세요.</p>
-  </div></div>
+  <div class="step-box">
+    <div class="step-title">📥 납품 예상문제 불러오기
+      <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">Claude가 출제한 표준 JSON을 등록하고 자동 검증합니다</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <label class="btn btn-gold" style="cursor:pointer;">📂 예상문제 JSON 불러오기
+        <input type="file" accept=".json" style="display:none;" onchange="loadExamJSON(this)">
+      </label>
+      <button class="btn btn-gray" onclick="clearExam()">등록 해제</button>
+    </div>
+    <div id="examCard" class="pattern-card"><span style="color:var(--ink4);">등록된 예상문제 없음</span></div>
+  </div>
 </div>
 
-<!-- ━━━ 3. 출력 (Phase 2) ━━━ -->
+<!-- ━━━ 3. 출력 ━━━ -->
 <div class="panel" id="tab3">
-  <div class="step-box"><div class="placeholder-box">
-    <div class="big">🖨️</div>
-    <b>출력 탭 — Phase 2에서 열립니다</b>
-    <p style="margin-top:8px;">인쇄 / PDF / 정답지. 그 전까지는 기존 페이지(백업본)의 결과&출력 탭을 사용하세요.</p>
-  </div></div>
+  <div class="step-box">
+    <div class="step-title">🖨️ 시험지 출력</div>
+    <div id="printExamInfo" class="pattern-card" style="margin-bottom:10px;"><span style="color:var(--ink4);">✍️ 출제 탭에서 예상문제를 먼저 등록하세요</span></div>
+    <button class="btn btn-green" onclick="printExam()">🖨️ 인쇄 / PDF 저장 (시험지+정답지)</button>
+    <p style="font-size:.78rem;color:var(--ink4);margin-top:8px;">A4 2단 레이아웃 · 새 창에서 열리며 브라우저 인쇄 대화상자에서 PDF로 저장할 수 있습니다.</p>
+  </div>
 </div>
 
 <!-- ━━━ 4. 적중률 (Phase 3) ━━━ -->
@@ -1125,14 +1132,315 @@ function renderActivePattern(){
 
 function updateDashboard(){ renderActivePattern(); }
 
+// ━━━ 예상문제 (납품 JSON) ━━━
+let generatedQs = [];
+let examMeta = {};
+const ACTIVE_EXAM_KEY = 'greateng_active_exam';
+
+function flatQs(qs){
+  const out=[];
+  (qs||[]).forEach(it=>{ if(it.type==='group') out.push(...(it.questions||[])); else out.push(it); });
+  return out;
+}
+
+// 납품 JSON 검증: 스키마 + 활성 패턴과 1:1 대조
+function validateExam(d){
+  const errs=[], warns=[], info=[];
+  if(!d.meta) errs.push('meta 누락');
+  if(!Array.isArray(d.questions) || !d.questions.length) errs.push('questions 누락');
+  if(errs.length) return {errs, warns, info, ok:false};
+  const gen = flatQs(d.questions).sort((a,b)=>(a.num||0)-(b.num||0));
+  const total = gen.reduce((s,q)=>s+(q.score||0),0);
+  info.push(`문항 ${gen.length}개 · 총점 ${Math.round(total*10)/10}점 · 빌드 ${d.meta.build||'?'} · 생성 ${d.meta.generated_at||'?'}`);
+  if(d.meta.total && gen.length!==d.meta.total) warns.push(`문항 수 ${gen.length} ≠ meta.total ${d.meta.total}`);
+  if(Math.round(total)!==100) warns.push(`총점 ${total}점 (≠100)`);
+  const nums = gen.map(q=>q.num);
+  if(new Set(nums).size !== nums.length) errs.push('문항 번호 중복');
+  // 활성 패턴 대조 (발문 1:1)
+  const pat = analysisData;
+  if(pat && pat.questions && pat.questions.length){
+    const stemBy = {};
+    pat.questions.forEach(q=>{ if(q.stem) stemBy[q.num]=q.stem.split('\n')[0].trim(); });
+    let match=0, miss=[];
+    gen.forEach(q=>{
+      const first=(q.question||'').split('\n')[0].trim();
+      if(stemBy[q.num]!=null){ if(first===stemBy[q.num]) match++; else miss.push(q.num); }
+    });
+    info.push(`기출 발문 일치: ${match}/${gen.length}` + (miss.length?` (불일치: ${miss.join(',')}번)`:''));
+    if(miss.length>3) warns.push('발문 불일치 다수 — 패턴과 다른 세트일 수 있음');
+  } else {
+    warns.push('활성 패턴이 없어 기출 대조를 건너뜀');
+  }
+  const dist={};
+  gen.forEach(q=>{ dist[q.answer]=(dist[q.answer]||0)+1; });
+  info.push('정답 분포: '+Object.entries(dist).sort().map(([k,v])=>k+''+v).join(' '));
+  return {errs, warns, info, ok:!errs.length};
+}
+
+function renderExamCard(){
+  const cardHtml = generatedQs.length
+    ? `<div style="font-weight:700;color:var(--navy);margin-bottom:6px;">📝 ${[examMeta.school,examMeta.grade,examMeta.year,examMeta.semester,examMeta.exam].filter(Boolean).join(' ')}</div>
+       <div style="font-size:.8rem;color:var(--ink2);">${(window._examV?.info||[]).map(i=>'· '+i).join('<br>')}</div>
+       ${window._examV?renderValidation(window._examV):''}`
+    : '<span style="color:var(--ink4);">등록된 예상문제 없음</span>';
+  const a=document.getElementById('examCard'); if(a){ a.innerHTML=cardHtml; a.classList.toggle('active-pattern', !!generatedQs.length); }
+  const p=document.getElementById('printExamInfo'); if(p){ p.innerHTML = generatedQs.length ? cardHtml : '<span style="color:var(--ink4);">✍️ 출제 탭에서 예상문제를 먼저 등록하세요</span>'; }
+}
+
+function loadExamJSON(input){
+  const f = input.files && input.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const d = JSON.parse(r.result);
+      const v = validateExam(d);
+      if(!v.ok){ alert('❌ 검증 실패:\n'+v.errs.join('\n')); return; }
+      generatedQs = d.questions;
+      examMeta = d.meta || {};
+      window._examV = v;
+      try{ localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify(d)); }catch(e){ console.warn('시험지 로컬 저장 실패:', e); }
+      renderExamCard();
+    }catch(e){ alert('JSON 파싱 실패: '+e.message); }
+  };
+  r.readAsText(f);
+  input.value='';
+}
+
+function clearExam(){
+  generatedQs=[]; examMeta={}; window._examV=null;
+  localStorage.removeItem(ACTIVE_EXAM_KEY);
+  renderExamCard();
+}
+
+// ━━━ 인쇄 (구버전 검증 레이아웃 이식) ━━━
+function printExam(){
+  if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
+
+  const m = examMeta || {};
+  const school = m.school || '○○학교';
+  const grade  = m.grade || '';
+  const year   = m.year || '';
+  const sem    = m.semester || '';
+  const exam   = m.exam || '';
+  const totalQ = generatedQs.reduce((s,item)=>
+    item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
+
+  function renderSingleQPrint(q){
+    const num = q.num || q.number || '';
+    const score = q.score || 3;
+    const isWriting = !q.choices || q.choices.length === 0;
+    const choicesHtml = isWriting
+      ? `<div class="write-box"></div>`
+      : q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('');
+    return `<div class="qblock">
+      <div class="qrow"><span class="qnum">${num}.</span><span class="qtext">${(q.question||'').replace(/\n/g,'<br>')}</span><span class="qscore">[${score}점]</span></div>
+      ${choicesHtml}
+      <div class="answer">정답: ${q.answer||''}</div>
+    </div>`;
+  }
+
+  const bodyHtml = generatedQs.map(item=>{
+    if(item.type==='group'){
+      const qs = item.questions||[];
+      const nums = qs.map(q=>q.num||q.number).filter(Boolean);
+      const range = item.range||(nums.length?`${nums[0]}~${nums[nums.length-1]}`:'');
+      const header = item.header||'※ 다음 글을 읽고 물음에 답하시오.';
+      const passage = (item.passage||'').replace(/\n/g,'<br>');
+      return `<div class="group">
+        <div class="group-header">${header} (${range})</div>
+        <div class="passage">${passage}</div>
+        ${qs.map(q=>renderSingleQPrint(q)).join('')}
+      </div>`;
+    } else {
+      return renderSingleQPrint(item);
+    }
+  }).join('');
+
+  // 정답지 생성
+  let answerNum = 1;
+  const allQs = [];
+  generatedQs.forEach(item=>{
+    if(item.type==='group') (item.questions||[]).forEach(q=>allQs.push(q));
+    else allQs.push(item);
+  });
+  const answerRows = allQs.map(q=>{
+    const num = q.num || answerNum++;
+    // answer/explanation 분리
+    let ans = '', exp = '';
+    if(q.explanation !== undefined){
+      // answer에서 선지번호만 추출 (①②③④⑤ 또는 숫자)
+      const rawAns = (q.answer||'').trim();
+      const numMatch = rawAns.match(/^([①②③④⑤⑥]|\d+)/);
+      ans = numMatch ? numMatch[1] : rawAns.split(' ')[0];
+      exp = (q.explanation||'').replace(/^해설[:\s]*/,'');
+    } else {
+      const parts = (q.answer||'').split('\n');
+      const numMatch = parts[0].match(/^([①②③④⑤⑥]|\d+)/);
+      ans = numMatch ? numMatch[1] : parts[0].split(/\s/)[0];
+      exp = parts.slice(1).join(' ').replace(/^해설[:\s]*/,'');
+      if(!exp) exp = parts[0].replace(/^[①②③④⑤⑥\d]+\s*/,'');
+    }
+    return `<tr>
+      <td style="text-align:center;font-weight:bold;">${num}</td>
+      <td style="text-align:center;font-size:10pt;font-weight:bold;color:#1a4a8c;">${ans}</td>
+      <td style="text-align:left;font-size:8pt;color:#333;">${exp}</td>
+    </tr>`;
+  }).join('');
+
+  const answerSheetHtml = `
+  <div class="answer-sheet">
+    <!-- 정답지 헤더 -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:6px;">
+      <div style="min-width:90px;text-align:left;line-height:1.2;">
+        <div style="font-size:7pt;color:#888;letter-spacing:1px;">GREAT ENGLISH</div>
+        <div style="font-size:11pt;font-weight:900;color:#1a4a8c;">대단한영어</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <h2 style="font-size:12pt;font-weight:bold;">${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h2>
+        <div style="font-size:9pt;color:#444;">정답 및 해설　　총 ${totalQ}문항</div>
+      </div>
+      <div style="min-width:90px;"></div>
+    </div>
+    <div style="border-bottom:2.5px double #000;margin-bottom:10pt;"></div>
+    <table class="answer-table">
+      <thead>
+        <tr style="background:#1a4a8c;color:#fff;">
+          <th style="width:50px;">번호</th>
+          <th style="width:60px;">정답</th>
+          <th>해설</th>
+        </tr>
+      </thead>
+      <tbody>${answerRows}</tbody>
+    </table>
+  </div>`;
+
+  const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<title>${school} ${grade} ${exam} 영어 예상문제</title>
+<style>
+  @page { size: A4; margin: 15mm 12mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 9.5pt; color: #111; }
+
+  /* 헤더 */
+  .hdr { text-align: center; border-bottom: 2.5px double #000; padding-bottom: 6px; margin-bottom: 8px; }
+  .hdr h1 { font-size: 13pt; font-weight: bold; margin-bottom: 3px; }
+  .hdr .meta { font-size: 8.5pt; color: #444; }
+
+  /* 2단 컬럼 */
+  .columns { column-count: 2; column-gap: 8mm; column-rule: 1px solid #ccc; }
+
+  /* 문제 블록 */
+  .qblock { break-inside: avoid; margin-bottom: 9pt; }
+  .qrow { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 3pt; }
+  .qnum { font-weight: bold; min-width: 18px; flex-shrink: 0; }
+  .qtext { flex: 1; line-height: 1.5; }
+  .qscore { font-size: 8pt; color: #666; white-space: nowrap; margin-left: 4px; }
+  .choice { padding-left: 16px; line-height: 1.45; }
+  .write-box { border: 1px solid #aaa; height: 18mm; margin: 3pt 0 3pt 16px; }
+  .answer { display: none; } /* 문제지에서 정답 숨김 */
+  /* 정답지 */
+  .answer-sheet { page-break-before: always; }
+  .answer-sheet h2 { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 10pt; border-bottom: 2px solid #000; padding-bottom: 5pt; }
+  .answer-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .answer-table th, .answer-table td { border: 1px solid #ccc; padding: 4pt 6pt; text-align: center; }
+  .answer-table th { background: #f5f5f5; font-weight: bold; }
+  .answer-table td.ans-text { text-align: left; font-size: 8pt; color: #1a4a8c; }
+
+  /* 지문 그룹 */
+  .group { break-inside: avoid; margin-bottom: 10pt; border: 1px solid #ddd; padding: 5pt; border-radius: 3px; }
+  .group-header { font-size: 8.5pt; font-style: italic; color: #555; margin-bottom: 4pt; }
+  .passage { font-size: 8.5pt; line-height: 1.6; margin-bottom: 6pt; border-left: 2px solid #b8860b; padding-left: 5pt; color: #222; }
+
+  /* 구분선 */
+  .col-divider { border: none; border-top: 1px dashed #ccc; margin: 6pt 0; }
+
+  /* 푸터 */
+  .footer { text-align: center; font-size: 7.5pt; color: #aaa; margin-top: 10pt; border-top: 1px solid #ddd; padding-top: 4pt; }
+
+  @media print {
+    .no-print { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head><body>
+<div class="no-print" style="text-align:center;padding:10px;background:#f5f5f5;margin-bottom:10px;">
+  <button onclick="window.print()" style="padding:8px 24px;background:#1a4a8c;color:#fff;border:none;border-radius:4px;font-size:11pt;cursor:pointer;">🖨️ 인쇄 / PDF 저장</button>
+  &nbsp;
+  <button onclick="window.close()" style="padding:8px 16px;background:#888;color:#fff;border:none;border-radius:4px;font-size:11pt;cursor:pointer;">✕ 닫기</button>
+</div>
+
+<div class="hdr">
+  <!-- 좌측 로고 + 중앙 제목 -->
+  <div style="display:flex;align-items:center;gap:0;margin-bottom:6px;">
+    <!-- 대단한영어 로고 (좌측) -->
+    <div style="min-width:90px;text-align:left;line-height:1.2;">
+      <div style="font-size:7pt;color:#888;letter-spacing:1px;">GREAT ENGLISH</div>
+      <div style="font-size:11pt;font-weight:900;color:#1a4a8c;letter-spacing:-0.5px;">대단한영어</div>
+    </div>
+    <!-- 제목 (중앙) -->
+    <div style="flex:1;text-align:center;">
+      <h1 style="font-size:13pt;font-weight:bold;margin-bottom:2px;">${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h1>
+      <div style="font-size:8.5pt;color:#444;">총 ${totalQ}문항　　이름:_________________　　점수:__________</div>
+    </div>
+    <div style="min-width:90px;"></div>
+  </div>
+  <div style="border-bottom:2.5px double #000;"></div>
+</div>
+
+<div class="columns">
+${bodyHtml}
+</div>
+
+<div class="footer">- ${school} ${grade} ${exam} 영어 예상문제 (대단한영어 GREATENG) -</div>
+
+${answerSheetHtml}
+
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+// ── DOCX 다운로드 ──
+async function loadDocxLib(){
+  if(typeof window.docx !== 'undefined') return true;
+  const urls = [
+    'https://unpkg.com/docx@7.8.2/build/index.umd.js',
+    'https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.umd.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/index.umd.min.js'
+  ];
+  for(const url of urls){
+    try{
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src=url; s.onload=res; s.onerror=rej;
+        document.head.appendChild(s);
+      });
+      if(typeof window.docx !== 'undefined') return true;
+    }catch(e){}
+  }
+  return false;
+}
+
+
 // ── 시작: 활성 패턴 자동 복원 ──
 (function init(){
   document.getElementById('gasInfo').textContent = APPS_SCRIPT_URL.slice(0,60)+'...';
   try{
     const saved = localStorage.getItem(ACTIVE_PATTERN_KEY);
     if(saved){ analysisData = JSON.parse(saved); console.log('[복원] 활성 패턴:', patternLabel(analysisData)); }
+    const savedExam = localStorage.getItem(ACTIVE_EXAM_KEY);
+    if(savedExam){
+      const d = JSON.parse(savedExam);
+      generatedQs = d.questions||[]; examMeta = d.meta||{};
+      window._examV = validateExam(d);
+      console.log('[복원] 예상문제:', generatedQs.length?'있음':'없음');
+    }
   }catch(e){}
   renderActivePattern();
+  renderExamCard();
 })();
 </script>
 </body>
