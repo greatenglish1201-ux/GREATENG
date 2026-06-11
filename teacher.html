@@ -2978,7 +2978,7 @@ function App(){
           next[targetIdx]={
             ...next[targetIdx],
             text:sentenceText,
-            meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
+            meta:{source:sp.source||'',chapter:(sp.chapter!=null&&sp.chapter!==''&&isNaN(Number(sp.chapter)))?String(sp.chapter):(Number(sp.chapter)||1),chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
             status:'saved',
             analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{difficultSentences:(pd.flow&&pd.flow.difficultSentences)||[]}},
             passageData:pd,
