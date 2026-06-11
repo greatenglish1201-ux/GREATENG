@@ -2823,13 +2823,13 @@ function App(){
   // ──────────────────────────────────────────────
   const bulkTogglePublic=useCallback(async(makePublic)=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
-    // saved 상태이고 변경이 필요한 슬롯만 (이미 같은 상태면 건너뜀)
-    const targets=slots.filter(s=>s.status==='saved'&&!!s.isPublic!==makePublic&&(s.passageData?.id||makePassageId(s.meta?.source,s.meta?.chapter,s.meta?.number)));
+    // saved 상태 슬롯 전체에 무조건 전송 — 로컬/시트 상태가 어긋나 있어도 시트를 목표 상태로 강제 동기화
+    const targets=slots.filter(s=>s.status==='saved'&&(s.passageData?.id||makePassageId(s.meta?.source,s.meta?.chapter,s.meta?.number)));
     if(!targets.length){
-      alert(makePublic?'모든 저장된 슬롯이 이미 공개 상태입니다.':'모든 저장된 슬롯이 이미 비공개 상태입니다.');
+      alert('저장된(saved) 슬롯이 없습니다.');
       return;
     }
-    if(!confirm(`${targets.length}개 슬롯을 ${makePublic?'🌐 공개':'🔒 비공개'}로 변경할까요?`))return;
+    if(!confirm(`${targets.length}개 슬롯을 ${makePublic?'🌐 공개':'🔒 비공개'}로 변경(동기화)할까요?`))return;
     
     setSheetSaving(true);
     let ok=0,fail=0;
@@ -2838,22 +2838,10 @@ function App(){
     
     for(const slot of targets){
       try{
-        const pid=slot.passageData.id;
-        // 데이터 안전: 시트의 현재 상태 검증 (sentences가 비어있으면 차단)
-        const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
-        const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
-        
-        let payload;
-        if(!sheetP||(()=>{try{return JSON.parse(sheetP.sentences_json||'[]').length===0;}catch{return true;}})()){
-          // 시트에 데이터 없음 → 최소 payload
-          payload={action:'savePassage',id:pid,is_public:makePublic?'TRUE':'FALSE'};
-        }else{
-          // 시트에 데이터 있음 → 전체 payload (Apps Script 미패치 대비)
-          const {passagePayload}=buildSlotPayload({...slot,isPublic:makePublic});
-          payload={action:'savePassage',...passagePayload};
-        }
-        
-        const r=await formPostFetch(appsUrl,payload);
+        // 신규 슬롯은 passageData에 id가 없을 수 있으므로 meta 기반 fallback 필수
+        const pid=slot.passageData?.id||makePassageId(slot.meta?.source,slot.meta?.chapter,slot.meta?.number);
+        // index 관리자패널과 동일한 검증된 경로: JSONP GET, id+is_public만 전송 (지문 데이터 무접촉)
+        const r=await jsonpFetch(appsUrl,{action:'savePassage',id:pid,is_public:makePublic?'TRUE':'FALSE'});
         if(r&&(r.ok||r.warning)){
           ok++;
           okIds.push(slot.id);
@@ -4058,61 +4046,11 @@ function App(){
                 flash('Apps Script URL 미설정 - 로컬만 변경됨');
                 return;
               }
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              // 데이터 안정성 최우선 정책 (이전 채팅에서 결정된 안 G 적용)
-              //
-              // 위험 시나리오: 다기기/시점 차이로 로컬 슬롯이 시트보다 덜 완성된 상태일 때
-              //   토글로 전체 payload를 보내면 시트의 완성 데이터를 덮어쓸 위험
-              //
-              // 해결책 (2중 방어):
-              //   ① 토글은 오직 {id, is_public}만 전송 → 다른 필드 영향 최소화
-              //   ② Apps Script가 패치된 버전이면 다른 필드는 기존값 유지
-              //      미패치 버전이면 사전 차단: 시트 데이터와 비교해서 손실 위험 시 중단
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              const pid=slot.passageData?.id
-                      ||(makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number));
+              // index 관리자패널과 동일한 검증된 경로: JSONP GET, id+is_public만 전송
+              // (다른 필드는 일절 건드리지 않으므로 데이터 손실 위험 없음)
+              const pid=slot.passageData?.id||makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
               try{
-                // ① 시트의 현재 상태 조회 (안전 검증용)
-                const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
-                const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
-                
-                // ② 시트에 데이터가 있는데, 로컬과 다른 경우 경고
-                if(sheetP){
-                  const localTitle=slot.passageData?.title||'';
-                  const localSentLen=(slot.analysis?.sentences||slot.passageData?.sentences||[]).length;
-                  const sheetSentLen=(()=>{try{return JSON.parse(sheetP.sentences_json||'[]').length;}catch{return 0;}})();
-                  
-                  // 시트는 데이터가 있는데 로컬은 비어있음 → 절대 안 됨
-                  if(sheetSentLen>0&&localSentLen===0){
-                    alert('❌ 차단: 시트에 분석 데이터가 있지만 이 슬롯은 비어있습니다.\n\n공개 토글 시 시트 데이터가 손실될 수 있어 작업을 중단합니다.\n슬롯에 데이터를 먼저 불러온 후 다시 시도하세요.');
-                    return;
-                  }
-                  
-                  // 시트 sentences 길이와 로컬이 크게 다름 → 사용자 확인
-                  if(sheetSentLen>0&&Math.abs(sheetSentLen-localSentLen)>2){
-                    if(!window.confirm(`⚠️ 데이터 불일치 감지\n\n시트: ${sheetSentLen}개 문장\n로컬: ${localSentLen}개 문장\n\n그대로 진행하면 시트가 로컬 기준으로 덮어써집니다.\n계속하시겠습니까?`)){
-                      return;
-                    }
-                  }
-                }
-                
-                // ③ 최소 payload만 전송 (id + is_public)
-                //    Apps Script가 패치된 경우: 다른 필드는 기존값 유지
-                //    Apps Script가 미패치된 경우: 다른 필드가 ''로 덮어써짐 (위험)
-                //    → 따라서 미패치 상태면 아래 추가 안전망 동작
-                const safeMode=!sheetP||(sheetP&&JSON.parse(sheetP.sentences_json||'[]').length===0);
-                let payload;
-                if(safeMode){
-                  // 시트에 데이터가 아예 없거나 이번이 첫 저장 → 최소 payload OK
-                  payload={action:'savePassage',id:pid,is_public:next?'TRUE':'FALSE'};
-                }else{
-                  // 시트에 데이터가 있음 → Apps Script 미패치 대비 전체 payload 전송
-                  // (단, 위 검증 통과 후이므로 로컬 데이터도 충실한 상태)
-                  const {passagePayload}=buildSlotPayload({...slot,isPublic:next});
-                  payload={action:'savePassage',...passagePayload};
-                }
-                
-                const r=await formPostFetch(appsUrl,payload);
+                const r=await jsonpFetch(appsUrl,{action:'savePassage',id:pid,is_public:next?'TRUE':'FALSE'});
                 if(r&&(r.ok||r.warning)){
                   upSlot(slot.id,{isPublic:next});
                   flash(next?'🌐 공개 설정 완료':'🔒 비공개 설정 완료');
