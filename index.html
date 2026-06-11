@@ -432,18 +432,15 @@ function gen(passage, type, allP){
 
   /* ⑦ 무관한 문장 */
   case 'irrelevant':{
-    if(s.length < 4) return null;
-    // 새 데이터: irrelevant_sentence_index 사용
-    if(passage.irrelevant_sentence_index !== null && passage.irrelevant_sentence_index !== undefined){
-      const insertAt = passage.irrelevant_sentence_index;
-      if(insertAt < 0 || insertAt > s.length) return null;
-      // 무관 문장 텍스트
+    if(s.length < 5) return null; // 본문 5문장 이상이어야 ①~⑤ 번호 5개 보장
+    // 새 데이터: 출제DB의 무관문장 사용 (삽입 위치는 출제 시 랜덤이므로 sentence_index 불필요)
+    {
       const irrelSent = passage.irrel_sentence || (passage.irrel_candidates?.[passage.irrel_sel||0]) || null;
-      if(!irrelSent) return null;
+      if(irrelSent){
       // sentences가 객체 배열이면 text 추출
       const sTexts = s.map(x=>typeof x==='string'?x:(x?.text||''));
-      // insertAt이 0이면 1로 보정 (0번 문장은 번호 표시 안 됨)
-      const safeInsertAt = Math.max(1, Math.min(insertAt, sTexts.length));
+      // ★ 출제 시마다 삽입 위치 랜덤 (첫 문장 뒤 ~ 마지막 문장 앞) — 반복 풀이 시 위치 암기 방지
+      const safeInsertAt = 1 + Math.floor(Math.random()*(sTexts.length-1));
       const fullClean = [...sTexts];
       fullClean.splice(safeInsertAt, 0, irrelSent);
       // 청크 방식으로 5개 번호 배정 (1번 이상, safeInsertAt 반드시 포함)
@@ -478,6 +475,7 @@ function gen(passage, type, allP){
       const correctNum = numberedIdxs.indexOf(safeInsertAt) + 1;
       if(correctNum===0) return null;
       return {type, passage, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
+      }
     }
     // 구 데이터 fallback: 다른 지문에서 외래 문장 삽입
     // (시트 지문은 출제DB 정답과 무관한 문제가 되므로 fallback 금지 → 출제 제외)
