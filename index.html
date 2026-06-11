@@ -443,37 +443,14 @@ function gen(passage, type, allP){
       const safeInsertAt = 1 + Math.floor(Math.random()*(sTexts.length-1));
       const fullClean = [...sTexts];
       fullClean.splice(safeInsertAt, 0, irrelSent);
-      // 청크 방식으로 5개 번호 배정 (1번 이상, safeInsertAt 반드시 포함)
+      // ★ CSAT 표준: 무관문장을 포함한 "연속 5개 문장"에 ①~⑤ 부여 (번호 사이에 비번호 문장 없음)
       const fLen = fullClean.length;
-      const chunkSize2 = (fLen - 1) / 5;
-      const picked = new Set([safeInsertAt]);
-      for(let c=0; c<5; c++){
-        const lo = 1 + Math.floor(c * chunkSize2);
-        const hi = Math.min(fLen, 1 + Math.floor((c+1) * chunkSize2));
-        const seg = [];
-        for(let k=lo; k<hi; k++) seg.push(k);
-        if(!seg.length){ picked.add(Math.min(lo, fLen-1)); continue; }
-        if(seg.includes(safeInsertAt)) picked.add(safeInsertAt);
-        else picked.add(seg[Math.floor(Math.random()*seg.length)]);
-      }
-      let numberedIdxs = [...picked].filter(x=>x>=1&&x<fLen).sort((a,b)=>a-b);
-      // 부족하면 채우기
-      for(let i=1; i<fLen && numberedIdxs.length<5; i++){
-        if(!numberedIdxs.includes(i)) numberedIdxs.push(i);
-      }
-      numberedIdxs.sort((a,b)=>a-b);
-      // 초과하면 safeInsertAt 유지하며 5개로
-      if(numberedIdxs.length>5){
-        const rest=numberedIdxs.filter(x=>x!==safeInsertAt);
-        const step=Math.max(1,Math.floor(rest.length/4));
-        const p4=[];
-        for(let k=0;k<4&&p4.length<4;k++) if(rest[k*step]!==undefined) p4.push(rest[k*step]);
-        // 부족하면 앞에서 채우기
-        for(let i=0;i<rest.length&&p4.length<4;i++) if(!p4.includes(rest[i])) p4.push(rest[i]);
-        numberedIdxs=[...p4,safeInsertAt].sort((a,b)=>a-b);
-      }
-      const correctNum = numberedIdxs.indexOf(safeInsertAt) + 1;
-      if(correctNum===0) return null;
+      const wMin = Math.max(1, safeInsertAt - 4);
+      const wMax = Math.min(safeInsertAt, fLen - 5);
+      if(wMax < wMin) return null; // 안전장치 (s.length>=5면 발생 불가)
+      const w = wMin + Math.floor(Math.random()*(wMax - wMin + 1));
+      const numberedIdxs = [w, w+1, w+2, w+3, w+4];
+      const correctNum = safeInsertAt - w + 1;
       return {type, passage, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
       }
     }
