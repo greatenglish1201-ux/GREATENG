@@ -3098,7 +3098,7 @@ function toStudySlot(passage){
       difficulty:passage.difficulty||'중',
     },
     status:'saved',
-    analysis:{sentences,flow,grammar:{}},
+    analysis:{sentences,flow,grammar:{difficultSentences:(flow&&flow.difficultSentences)||[]}},
     passageData:{
       id:passage.id,
       title:passage.title||'',
