@@ -1095,6 +1095,14 @@ function applyPattern(item){
   console.log('[패턴 적용]', item.key||'', '| 검증:', v.ok?'통과':'실패', v.warns.length?('경고 '+v.warns.length):'');
 }
 
+// 파일 종류 판별: 예상문제(meta.build/type 구조) vs 패턴(original_q 보유)
+function detectFileKind(d){
+  const qs = d.questions||[];
+  if(d.meta && (d.meta.build || qs.some(q=>q && (q.type==='group'||q.type==='single')))) return 'exam';
+  if(qs.some(q=>q && q.original_q)) return 'pattern';
+  return 'unknown';
+}
+
 function loadPatternFile(input){
   const f = input.files && input.files[0];
   if(!f) return;
@@ -1102,6 +1110,10 @@ function loadPatternFile(input){
   r.onload = ()=>{
     try{
       const item = JSON.parse(r.result);
+      if(detectFileKind(item)==='exam'){
+        alert('📝 이 파일은 예상문제 JSON입니다.\n✍️ 출제 탭의 "예상문제 JSON 불러오기"로 등록하세요.\n(활성 패턴은 변경하지 않았습니다)');
+        input.value=''; return;
+      }
       if(!item.key) item.key = (item.school||'pattern')+'__'+(item.year||'')+'__'+Date.now();
       // 로컬 패턴 저장소에도 등록
       const stored = JSON.parse(localStorage.getItem('greateng_patterns')||'{}');
@@ -1199,6 +1211,10 @@ function loadExamJSON(input){
   r.onload = ()=>{
     try{
       const d = JSON.parse(r.result);
+      if(detectFileKind(d)==='pattern'){
+        alert('📋 이 파일은 기출 패턴 JSON입니다.\n📚 자산 탭의 "패턴 JSON 파일 로드"로 등록하세요.');
+        input.value=''; return;
+      }
       const v = validateExam(d);
       if(!v.ok){ alert('❌ 검증 실패:\n'+v.errs.join('\n')); return; }
       generatedQs = d.questions;
