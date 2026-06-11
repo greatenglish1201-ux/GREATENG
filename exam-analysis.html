@@ -985,6 +985,36 @@ function clearAllManual(){
 }
 
 // ━━━ 기출 패턴 관리 ━━━
+// 표준 스키마 v2 검증 (GREATENG_SCHEMA.md)
+function validatePattern(item){
+  const errs=[], warns=[];
+  ['key','school','grade','total','patterns','questions'].forEach(f=>{
+    if(item[f]==null || (Array.isArray(item[f])&&!item[f].length)) errs.push(`필수 필드 누락: ${f}`);
+  });
+  const qs = item.questions||[];
+  if(item.total && qs.length && qs.length !== item.total) warns.push(`문항 수 불일치: total=${item.total}, questions=${qs.length}`);
+  const pkeys = Object.keys(item.patterns||{});
+  const noQtype = qs.filter(q=>!q.qtype).map(q=>q.num);
+  const badQtype = qs.filter(q=>q.qtype && pkeys.length && !pkeys.includes(q.qtype)).map(q=>q.num);
+  const noOrig = qs.filter(q=>!q.original_q).map(q=>q.num);
+  const noStem = qs.filter(q=>!q.stem).map(q=>q.num);
+  if(noQtype.length) warns.push(`qtype 비어있음: ${noQtype.join(',')}번`);
+  if(badQtype.length) warns.push(`qtype이 patterns 키에 없음: ${badQtype.join(',')}번`);
+  if(noOrig.length) errs.push(`original_q 누락: ${noOrig.join(',')}번`);
+  if(noStem.length) warns.push(`stem 누락: ${noStem.join(',')}번`);
+  const scoreSum = qs.reduce((s,q)=>s+(q.score||0),0);
+  if(qs.length && Math.round(scoreSum) !== 100) warns.push(`배점 합 ${scoreSum}점 (≠100)`);
+  return { errs, warns, ok: !errs.length };
+}
+
+function renderValidation(v){
+  if(v.ok && !v.warns.length) return '<div style="font-size:.78rem;color:var(--green2);margin-top:6px;">✅ 스키마 v2 검증 통과</div>';
+  let h='';
+  v.errs.forEach(e=> h+=`<div style="font-size:.78rem;color:var(--red);margin-top:4px;">❌ ${e}</div>`);
+  v.warns.forEach(w=> h+=`<div style="font-size:.78rem;color:var(--amber);margin-top:4px;">⚠️ ${w}</div>`);
+  return h;
+}
+
 function normalizePatternItem(item){
   // 시트 항목: questions가 question_list(JSON 문자열)로 올 수 있음 → 복원
   if((!item.questions || !item.questions.length) && item.question_list){
@@ -1042,13 +1072,15 @@ function selectPattern(i){
 
 function applyPattern(item){
   normalizePatternItem(item);
-  if(!item.questions || !item.questions.length){
-    alert('⚠️ 이 패턴에는 문항 원문(questions)이 없어 기출 복제 출제에 쓸 수 없습니다.\nClaude가 만든 패턴 JSON 파일을 직접 로드하세요.');
+  const v = validatePattern(item);
+  if(!v.ok){
+    alert('❌ 스키마 검증 실패 — 기출 복제 출제 불가:\n'+v.errs.join('\n')+'\n\nClaude가 표준 스키마로 만든 패턴 JSON을 로드하세요.');
   }
   analysisData = item;
+  analysisData._validation = v;
   try{ localStorage.setItem(ACTIVE_PATTERN_KEY, JSON.stringify(item)); }catch(e){ console.warn('패턴 로컬 저장 실패(용량?):', e); }
   renderActivePattern();
-  console.log('[패턴 적용]', item.key||'', '| questions:', item.questions?item.questions.length:'없음');
+  console.log('[패턴 적용]', item.key||'', '| 검증:', v.ok?'통과':'실패', v.warns.length?('경고 '+v.warns.length):'');
 }
 
 function loadPatternFile(input){
@@ -1084,6 +1116,7 @@ function renderActivePattern(){
          문항 원문: ${analysisData.questions?analysisData.questions.length+'개 ✓':'<span style=color:var(--red)>없음 ⚠️</span>'}
          · 총 ${analysisData.total||'?'}문항
          ${analysisData.patterns?'<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">'+Object.entries(analysisData.patterns).filter(([,v])=>v>0).map(([t,n])=>`<span class="tag tag-type">${t} ${n}</span>`).join('')+'</div>':''}
+         ${analysisData._validation?renderValidation(analysisData._validation):''}
        </div>`
     : '<span style="color:var(--ink4);">활성 패턴 없음</span>';
   const a=document.getElementById('activePatternCard'); if(a){ a.innerHTML=html; a.classList.toggle('active-pattern', !!analysisData); }
