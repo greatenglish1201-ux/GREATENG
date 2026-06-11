@@ -2435,6 +2435,35 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [searchText,setSearchText]=useState('');
   const [activeSource,setActiveSource]=useState('ALL');
 
+  // ★ 선택 인쇄 모드
+  const [selMode,setSelMode]=useState(false);
+  const [selIds,setSelIds]=useState(new Set());
+  const [printJob,setPrintJob]=useState(null); // {items:[passage], mode:'teacher'|'student'}
+  const printRef=React.useRef(null);
+  const toggleSel=(id)=>setSelIds(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});
+  React.useEffect(()=>{
+    if(!printJob||!printRef.current)return;
+    const t=setTimeout(()=>{
+      const w=window.open('','_blank');
+      if(!w){alert('팝업이 차단되었습니다. 팝업을 허용해주세요.');setPrintJob(null);return;}
+      w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>자료 인쇄</title>
+<style>
+body{font-family:'Pretendard','Malgun Gothic',sans-serif;color:#222;margin:0;padding:18px;font-size:13px;line-height:1.7}
+.prn-item{page-break-after:always}
+.prn-item:last-child{page-break-after:auto}
+.prn-hd{border-bottom:2.5px solid #7a1020;padding-bottom:8px;margin-bottom:14px}
+.prn-hd b{font-size:16px;color:#7a1020}
+.prn-hd span{font-size:11px;color:#888;margin-left:8px}
+button{display:none!important}
+*{box-shadow:none!important}
+@media print{@page{margin:14mm} body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>${printRef.current.innerHTML}</body></html>`);
+      w.document.close();
+      setTimeout(()=>{w.focus();w.print();setPrintJob(null);},400);
+    },350);
+    return ()=>clearTimeout(t);
+  },[printJob]);
+
   // 펼침/접힘 상태 (교재, 강 각각 별도 관리)
   const [expandedBooks,setExpandedBooks]=useState({});
   const [expandedChapters,setExpandedChapters]=useState({});
@@ -2548,7 +2577,12 @@ function StudyView({scriptUrl,studentName,goBack}){
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
           <span style={{fontWeight:800,fontSize:16,color:'#1e293b'}}>📚 자료 보기</span>
-          <span style={{marginLeft:'auto',fontSize:11,color:'#94a3b8'}}>{studentName}</span>
+          <button onClick={()=>{setSelMode(m=>!m);setSelIds(new Set());}}
+            style={{marginLeft:'auto',fontSize:11,fontWeight:700,padding:'5px 11px',borderRadius:7,cursor:'pointer',
+              border:selMode?'1px solid #C9A84C':'1px solid #e6dcc6',
+              background:selMode?'#FBF3DE':'#fff',color:selMode?'#8a6010':'#3a2a20'}}>
+            {selMode?'✕ 선택 취소':'🖨 선택 인쇄'}</button>
+          <span style={{fontSize:11,color:'#94a3b8'}}>{studentName}</span>
         </div>
         <input value={searchText} onChange={e=>setSearchText(e.target.value)}
           placeholder="제목·요약 검색..."
@@ -2639,11 +2673,14 @@ function StudyView({scriptUrl,studentName,goBack}){
                         {chOpen&&(
                           <div style={{padding:'8px 14px 12px 28px',background:'#fafbfc'}}>
                             {c.items.map(p=>(
-                              <div key={p.id} onClick={()=>setSelected(p)}
-                                style={{background:'#fff',border:'1px solid #e8eef8',borderRadius:10,padding:'10px 12px',
-                                  marginBottom:6,cursor:'pointer',transition:'all .15s'}}
-                                onMouseEnter={e=>{e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}
-                                onMouseLeave={e=>{e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}>
+                              <div key={p.id} onClick={()=>selMode?toggleSel(p.id):setSelected(p)}
+                                style={{background:selMode&&selIds.has(p.id)?'#FBF3DE':'#fff',
+                                  border:selMode&&selIds.has(p.id)?'1.5px solid #C9A84C':'1px solid #e8eef8',
+                                  borderRadius:10,padding:'10px 12px',
+                                  marginBottom:6,cursor:'pointer',transition:'all .15s',position:'relative'}}
+                                onMouseEnter={e=>{if(!selMode){e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}}
+                                onMouseLeave={e=>{if(!selMode){e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}}>
+                                {selMode&&<span style={{position:'absolute',top:8,right:10,fontSize:14}}>{selIds.has(p.id)?'☑️':'⬜'}</span>}
                                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:p.abstract?4:0}}>
                                   <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
                                     background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
@@ -2671,6 +2708,27 @@ function StudyView({scriptUrl,studentName,goBack}){
           );
         })}
       </div>
+      {/* 선택 인쇄 하단 바 */}
+      {selMode&&<div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:50,background:'#fff',
+        borderTop:'1px solid #e6dcc6',boxShadow:'0 -2px 12px rgba(0,0,0,0.08)',
+        padding:'10px 16px',display:'flex',alignItems:'center',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+        <span style={{fontSize:12.5,fontWeight:700,color:'#3a2a20'}}>{selIds.size}개 선택</span>
+        <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'teacher'})}
+          style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
+            background:selIds.size?'#7a1020':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 교사용 인쇄</button>
+        <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'student'})}
+          style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
+            background:selIds.size?'#C9A84C':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 학생용 인쇄</button>
+      </div>}
+      {/* 인쇄용 off-screen 렌더 */}
+      {printJob&&<div ref={printRef} style={{position:'fixed',left:-99999,top:0,width:800}}>
+        {printJob.items.map(p=>(
+          <div key={p.id} className="prn-item">
+            <div className="prn-hd"><b>{p.title||p.id}</b><span>대단한영어 · 자료</span></div>
+            <SlotViewer slot={toStudySlot(p)} viewMode={printJob.mode}/>
+          </div>
+        ))}
+      </div>}
     </div>
   );
 }
@@ -3027,36 +3085,60 @@ function SlotViewer({slot,viewMode}){
 }
 
 /* ── 자료 상세 보기: 시트 데이터를 slot 형태로 변환 후 SlotViewer로 렌더 ── */
+function toStudySlot(passage){
+  let sentences=[],flow={},blockSummaries=null;
+  try{sentences=JSON.parse(passage.sentences_json||'[]');}catch{}
+  try{flow=JSON.parse(passage.flow_json||'{}');}catch{}
+  try{blockSummaries=JSON.parse(passage.blockSummaries_json||'null');}catch{}
+  return {
+    id:0,
+    text:'',
+    meta:{
+      source:passage.source||'',
+      chapter:passage.chapter||'',
+      number:passage.number||'',
+      difficulty:passage.difficulty||'중',
+    },
+    status:'saved',
+    analysis:{sentences,flow,grammar:{}},
+    passageData:{
+      id:passage.id,
+      title:passage.title||'',
+      abstract:passage.abstract||'',
+      sentences,
+      flow,
+    },
+    blockSummaries:blockSummaries,
+    open:true,
+    isPublic:true,
+  };
+}
 function StudyDetail({passage,viewMode,setViewMode,goBack}){
   // 시트 row -> teacher.html slot 형태로 변환
-  const slot=React.useMemo(()=>{
-    let sentences=[],flow={},blockSummaries=null;
-    try{sentences=JSON.parse(passage.sentences_json||'[]');}catch{}
-    try{flow=JSON.parse(passage.flow_json||'{}');}catch{}
-    try{blockSummaries=JSON.parse(passage.blockSummaries_json||'null');}catch{}
-    return {
-      id:0,
-      text:'',
-      meta:{
-        source:passage.source||'',
-        chapter:passage.chapter||'',
-        number:passage.number||'',
-        difficulty:passage.difficulty||'중',
-      },
-      status:'saved',
-      analysis:{sentences,flow,grammar:{}},
-      passageData:{
-        id:passage.id,
-        title:passage.title||'',
-        abstract:passage.abstract||'',
-        sentences,
-        flow,
-      },
-      blockSummaries:blockSummaries,
-      open:true,
-      isPublic:true,
-    };
-  },[passage]);
+  const slot=React.useMemo(()=>toStudySlot(passage),[passage]);
+
+  const bodyRef=React.useRef(null);
+  const printStudy=()=>{
+    if(!bodyRef.current)return;
+    const w=window.open('','_blank');
+    if(!w){alert('팝업이 차단되었습니다. 팝업을 허용해주세요.');return;}
+    const title=(passage.title||passage.id||'자료').replace(/</g,'&lt;');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+<style>
+body{font-family:'Pretendard','Malgun Gothic',sans-serif;color:#222;margin:0;padding:18px;font-size:13px;line-height:1.7}
+.hd{border-bottom:2.5px solid #7a1020;padding-bottom:8px;margin-bottom:14px}
+.hd b{font-size:16px;color:#7a1020}
+.hd span{font-size:11px;color:#888;margin-left:8px}
+button{display:none!important}
+*{box-shadow:none!important}
+@media print{@page{margin:14mm} body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>
+<div class="hd"><b>${title}</b><span>대단한영어 · 자료</span></div>
+${bodyRef.current.innerHTML}
+</body></html>`);
+    w.document.close();
+    setTimeout(()=>{w.focus();w.print();},400);
+  };
 
   return(
     <div style={{maxWidth:900,margin:'0 auto',padding:'0 0 80px',background:'#fafafa',minHeight:'100vh'}}>
@@ -3064,6 +3146,7 @@ function StudyDetail({passage,viewMode,setViewMode,goBack}){
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
           <span style={{fontWeight:800,fontSize:14,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{passage.title||passage.id}</span>
+          <button onClick={printStudy} style={{fontSize:11,fontWeight:700,padding:'5px 11px',borderRadius:7,border:'1px solid #e6dcc6',background:'#fff',color:'#3a2a20',cursor:'pointer'}}>🖨 인쇄</button>
           <div style={{display:'flex',background:'#f1f5f9',borderRadius:7,padding:2,gap:0}}>
             {['teacher','student'].map(m=>(
               <button key={m} onClick={()=>setViewMode(m)}
@@ -3076,7 +3159,7 @@ function StudyDetail({passage,viewMode,setViewMode,goBack}){
           </div>
         </div>
       </div>
-      <div style={{padding:'12px'}}>
+      <div style={{padding:'12px'}} ref={bodyRef}>
         <SlotViewer slot={slot} viewMode={viewMode}/>
       </div>
     </div>
