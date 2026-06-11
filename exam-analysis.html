@@ -618,6 +618,7 @@ header { padding: 12px 16px; }
       <label class="btn btn-gold" style="cursor:pointer;">📂 패턴 JSON 파일 로드
         <input type="file" accept=".json" style="display:none;" onchange="loadPatternFile(this)">
       </label>
+      <button class="btn btn-green" onclick="savePatternToSheet()">💾 활성 패턴 → 시트 저장</button>
       <button class="btn btn-gray" onclick="clearActivePattern()">활성 패턴 해제</button>
     </div>
     <div id="patternListBox" style="display:flex;flex-direction:column;gap:6px;"></div>
@@ -729,9 +730,13 @@ header { padding: 12px 16px; }
       <label class="btn btn-gold" style="cursor:pointer;">📂 예상문제 JSON 불러오기
         <input type="file" accept=".json" style="display:none;" onchange="loadExamJSON(this)">
       </label>
+      <button class="btn btn-green" onclick="saveExamToSheet()">💾 시트에 보관</button>
+      <button class="btn btn-navy" onclick="loadExamListFromSheet()">📥 시트 보관 목록</button>
       <button class="btn btn-gray" onclick="clearExam()">등록 해제</button>
     </div>
     <div id="examCard" class="pattern-card"><span style="color:var(--ink4);">등록된 예상문제 없음</span></div>
+    <div id="examSheetList" style="display:flex;flex-direction:column;gap:6px;margin-top:10px;"></div>
+    <div id="examSheetStatus" style="font-size:.8rem;color:var(--ink4);margin-top:4px;"></div>
   </div>
 </div>
 
@@ -1424,6 +1429,60 @@ async function loadDocxLib(){
   return false;
 }
 
+
+// ━━━ 시트 영구 보관 ━━━
+async function savePatternToSheet(){
+  if(!analysisData){ alert('활성 패턴이 없습니다.'); return; }
+  analysisData.meta = analysisData.meta || {};
+  analysisData.meta.key = analysisData.key || analysisData.meta.key;
+  analysisData.savedAt = new Date().toISOString();
+  try{
+    await postToGAS({action:'saveAnalysis', data:JSON.stringify(analysisData)});
+    alert('✅ 패턴이 시트에 저장되었습니다. 어느 기기에서나 "패턴 목록 불러오기"로 복원할 수 있습니다.');
+  }catch(e){ alert('저장 실패: '+e.message); }
+}
+
+async function saveExamToSheet(){
+  if(!generatedQs.length){ alert('등록된 예상문제가 없습니다.'); return; }
+  const m = examMeta||{};
+  const key = m.pattern_key ? m.pattern_key.replace('중간','기말') : [m.school,m.grade,m.year,m.semester,m.exam].filter(Boolean).join('_');
+  // analysisData는 제외(셀 한도) — pattern_key로 연결
+  const payload = { key, meta:m, questions:generatedQs, savedAt:new Date().toISOString() };
+  try{
+    await postToGAS({action:'saveExam', data:JSON.stringify(payload)});
+    alert('✅ 예상문제가 시트에 저장되었습니다.');
+  }catch(e){ alert('저장 실패: '+e.message+'\n(GAS에 saveExam 액션이 없으면 추가가 필요합니다)'); }
+}
+
+async function loadExamListFromSheet(){
+  const box = document.getElementById('examSheetList');
+  const st  = document.getElementById('examSheetStatus');
+  st.textContent='불러오는 중...';
+  try{
+    const res = await getFromGAS({action:'getExamList'});
+    if(res.ok===false) throw new Error(res.error||'GAS 오류');
+    const list = res.list||[];
+    box.innerHTML='';
+    window._examSheetList = list;
+    list.forEach((it,i)=>{
+      const m = it.meta||{};
+      const div=document.createElement('div');
+      div.className='pattern-list-item';
+      div.innerHTML=`<span>📝 ${[m.school,m.grade,m.year,m.semester,m.exam].filter(Boolean).join(' ')||it.key} (${m.total||'?'}문항)</span>
+        <span style="font-size:.75rem;color:var(--ink4);">${(it.savedAt||'').slice(0,10)}</span>`;
+      div.onclick=()=>{
+        const d = it;
+        if(typeof d.questions==='string'){ try{ d.questions=JSON.parse(d.questions); }catch(e){} }
+        const v = validateExam(d);
+        generatedQs = d.questions||[]; examMeta = d.meta||{}; window._examV = v;
+        try{ localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify({meta:examMeta, questions:generatedQs})); }catch(e){}
+        renderExamCard();
+      };
+      box.appendChild(div);
+    });
+    st.textContent = list.length ? `${list.length}개 보관됨` : '시트에 보관된 예상문제 없음';
+  }catch(e){ st.innerHTML='<span class="error">불러오기 실패: '+e.message+'</span>'; }
+}
 
 // ── 시작: 활성 패턴 자동 복원 ──
 (function init(){
