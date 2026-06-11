@@ -928,6 +928,8 @@ tr:hover td { background: var(--paper); }
 <!-- TAB 1: 중등 예상문제 -->
 <div class="panel" id="tab1">
 
+  <div id="patternStatusBadge" style="margin-bottom:10px;padding:8px 14px;border-radius:8px;background:var(--paper);border:1.5px solid var(--border);font-size:.85rem;"></div>
+
   <!-- 교과서 지문 관리 -->
   <div class="step-box">
     <div class="step-title">📚 교과서 지문 관리
@@ -1409,6 +1411,7 @@ function switchTab(n){
     const sel=document.getElementById('geminiModelTab1');
     if(sel) sel.value=m;
   }
+  if(n===1) updatePatternBadge();
   if(n===3) loadPredictionList();
   if(n===5) initGrammarTab();
   if(n===6) loadSettingsUI();
@@ -2223,8 +2226,29 @@ function buildFromSlot(slot, a){
   };
 }
 
+function updatePatternBadge(){
+  const el = document.getElementById('patternStatusBadge');
+  if(!el) return;
+  if(analysisData && analysisData.questions && analysisData.questions.length){
+    const label = [analysisData.school, analysisData.grade, analysisData.exam].filter(Boolean).join(' ')
+               || (analysisData.meta ? [analysisData.meta.school, analysisData.meta.year, analysisData.meta.exam].filter(Boolean).join(' ') : '')
+               || '기출 패턴';
+    el.innerHTML = `<span style="color:var(--green2);font-weight:700;">📋 패턴 로드됨: ${label} (${analysisData.questions.length}문항) — 기출 복제 모드</span>`;
+  } else {
+    el.innerHTML = `<span style="color:#c0392b;font-weight:700;">❌ 기출 패턴 미로드 — 이대로 생성하면 일반 모드입니다. ⚙️ 설정 탭에서 패턴을 불러오세요.</span>`;
+  }
+}
+
 async function generateQuestions(){
   if(!checkMeta(['school','grade','semester','exam'])) return;
+  // 패턴 미로드 가드 — 조용히 일반 생성으로 빠지는 것 방지
+  if(!analysisData || !analysisData.questions || !analysisData.questions.length){
+    const st0 = document.getElementById('generateStatus');
+    if(!confirm('⚠️ 기출 패턴이 로드되지 않았습니다.\n패턴 없이 일반 생성하시겠습니까?\n\n(기출 복제를 원하면 [취소] 후 ⚙️ 설정 탭에서 패턴을 불러오세요)')){
+      if(st0) st0.innerHTML='<span class="error">생성 취소 — ⚙️ 설정 탭에서 기출 패턴을 먼저 불러오세요.</span>';
+      return;
+    }
+  }
   const school = getSchool();
   const grade  = document.getElementById('metaGrade')?.value;
   const sem    = document.getElementById('metaSemester')?.value;
@@ -3506,6 +3530,7 @@ function applySelectedPattern(){
   renderTypeCheckboxes();
 
   // (제거됨) 패턴 선택 시 기출 지문 자동 채움 — 지문은 교과서 불러오기/직접 입력만 사용
+  updatePatternBadge();
 }
 
 // ════════════════════════════════════════
