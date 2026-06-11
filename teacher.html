@@ -601,7 +601,7 @@ function Highlighted({text,words}){
 
 const makeSlot=i=>({
   id:i,text:'',viewMode:'teacher',
-  meta:{source:'ABSO_TYPE',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
+  meta:{source:'',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
   status:'idle',analysis:null,error:'',open:true,blockSummaries:null,isPublic:false,isHot:false,
 });
 
@@ -2406,6 +2406,7 @@ function App(){
   const [loadSel,setLoadSel]=useState({});
   const [msg,setMsg]=useState('');
   const running=useRef(false);
+  const sheetIdsRef=useRef(new Set()); // 시트에 존재하는 지문 id 캐시 (덮어쓰기 방지용)
 
   const saveTimer=useRef(null);
   useEffect(()=>{
@@ -2588,6 +2589,7 @@ function App(){
     alert(`⚡ 일괄 자동출제 완료 (${targets.length}개)\n\n`+report.join('\n')+'\n\n슬롯에서 확인 후 시트 저장하세요.');
   },[slots,apiKey,upSlot]);
 
+
   const reanalyze=useCallback(async(slot)=>{
     if(!confirm('흐름 분석을 다시 할까요?'))return;
     upSlot(slot.id,{status:'idle',analysis:null,error:''});
@@ -2598,7 +2600,7 @@ function App(){
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
     setMainGhSaving(true);
     try{
-      const entries=slots.filter(s=>['analyzed','saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
+      const entries=slots.filter(s=>['analyzed','saved','confirmed'].includes(s.status)&&s.meta?.source&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
         const p=s.passageData||{};
         const metaId=makePassageId(s.meta.source,s.meta.chapter,s.meta.number);
         const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -2732,10 +2734,18 @@ function App(){
     return{passagePayload,questions,id};
   },[]);
 
-  const saveSlotToSheet=useCallback(async(slot)=>{
+  const saveSlotToSheet=useCallback(async(slot,skipConfirm)=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return false;}
     const {passagePayload,questions,id}=buildSlotPayload(slot);
-    if(!id||!slot.meta.source){alert('교재/강/번호가 비어있습니다.');return false;}
+    if(!id||!slot.meta.source){alert('⚠ 교재가 선택되지 않았습니다.\n슬롯 상단에서 교재와 강·문항번호를 확인한 후 다시 저장해주세요.');return false;}
+    // 신규 슬롯 덮어쓰기 방지: 시트에 같은 id가 이미 있으면 확인
+    if(!skipConfirm&&slot.status!=='saved'){
+      if(sheetIdsRef.current.size>0&&sheetIdsRef.current.has(id)){
+        if(!confirm('⚠ 이미 시트에 존재하는 지문입니다:\n'+id+'\n\n기존 지문·출제 데이터를 덮어쓸까요?'))return false;
+      }else if(sheetIdsRef.current.size===0){
+        if(!confirm('신규 저장: '+id+'\n(시트에 같은 id가 있으면 덮어씁니다. 계속할까요?)'))return false;
+      }
+    }
     setSlotSheetSaving(prev=>({...prev,[slot.id]:true}));
     try{
 
@@ -2747,6 +2757,7 @@ function App(){
         const r2=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
         if(!r2.ok&&!r2.warning)throw new Error('출제 저장 실패: '+(r2.error||'unknown'));
       }
+      sheetIdsRef.current.add(id);
       return true;
     }catch(e){
       alert('시트 저장 오류 ('+id+'): '+e.message);
@@ -2756,16 +2767,44 @@ function App(){
     }
   },[appsUrl,buildSlotPayload]);
 
+  // 💾 일괄 문제만 저장 — 출제DB만 저장(지문DB 생략으로 빠름). 시트에 지문이 이미 저장된(saved) 슬롯 대상.
+  const [qSaveAll,setQSaveAll]=useState({run:false,done:0,total:0});
+  const saveQuestionsOnlyAll=useCallback(async()=>{
+    if(qSaveAll.run)return;
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    const targets=slots.filter(s=>{
+      if(s.status!=='saved')return false;
+      const {questions,id}=buildSlotPayload(s);
+      return !!id&&!!s.meta.source&&questions.length>0;
+    });
+    if(!targets.length){alert('저장 대상이 없습니다.\n(시트에 지문이 저장된(saved) 슬롯 중 출제 데이터가 있는 슬롯)');return;}
+    if(!confirm(`💾 ${targets.length}개 슬롯의 문제(출제DB)만 저장할까요?\n지문DB는 건너뛰어 빠르게 저장됩니다.`))return;
+    setQSaveAll({run:true,done:0,total:targets.length});
+    let ok=0;const fails=[];
+    for(const s of targets){
+      const {questions,id}=buildSlotPayload(s);
+      try{
+        const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
+        if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
+        ok++;
+      }catch(e){fails.push(`${id}: ${e.message}`);}
+      setQSaveAll(st=>({...st,done:st.done+1}));
+    }
+    setQSaveAll({run:false,done:0,total:0});
+    alert(`💾 문제만 저장 완료\n성공 ${ok}개 / 실패 ${fails.length}개`+(fails.length?'\n\n'+fails.join('\n'):''));
+  },[slots,appsUrl,buildSlotPayload,qSaveAll.run]);
+
   const saveAllToSheet=useCallback(async()=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
-    const targets=slots.filter(s=>['analyzed','confirmed','saved'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length));
+    const targets=slots.filter(s=>['analyzed','confirmed','saved'].includes(s.status)&&s.meta?.source&&(s.passageData||s.analysis?.sentences?.length));
     if(!targets.length){alert('저장할 슬롯이 없습니다. (분석완료/저장완료 상태만 대상)');return;}
-    if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`))return;
+    const dupNew=targets.filter(s=>s.status!=='saved'&&sheetIdsRef.current.size>0&&sheetIdsRef.current.has(buildSlotPayload(s).id));
+    if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`+(dupNew.length?`\n⚠ 이미 시트에 존재하는 id ${dupNew.length}개 포함 — 덮어씁니다.`:'')))return;
     setSheetSaving(true);
     let ok=0,fail=0;
     const okIds=[];
     for(const slot of targets){
-      const success=await saveSlotToSheet(slot);
+      const success=await saveSlotToSheet(slot,true);
       if(success){ok++;okIds.push(slot.id);}else fail++;
     }
     if(okIds.length){
@@ -2852,6 +2891,7 @@ function App(){
       const r=await jsonpFetch(appsUrl,{action:'getPassages'});
       if(!r.ok)throw new Error(r.error||'unknown');
       setSheetPassages(r.passages||[]);
+      sheetIdsRef.current=new Set((r.passages||[]).map(p=>p.id).filter(Boolean)); // id 캐시 갱신
       setShowSheetLoad(true);
     }catch(e){
       alert('시트 불러오기 실패: '+e.message);
@@ -3914,6 +3954,12 @@ function App(){
               border:authorAll.run?'none':'0.5px solid #C9A84C',borderRadius:7,cursor:authorAll.run||!keyOk?'default':'pointer',whiteSpace:'nowrap'}}>
             {authorAll.run?`⏳ ${authorAll.done}/${authorAll.total}`:'⚡ 출제 3종'}
           </button>
+          <button onClick={saveQuestionsOnlyAll} disabled={qSaveAll.run} title="출제DB(문제)만 일괄 저장 — 지문DB는 건너뛰어 빠름 (시트에 지문이 저장된 슬롯 대상)"
+            style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
+              background:qSaveAll.run?'#E8E8ED':'#EAF5EC',color:qSaveAll.run?'#86868B':'#1E6B30',
+              border:qSaveAll.run?'none':'0.5px solid #9CCBA5',borderRadius:7,cursor:qSaveAll.run?'default':'pointer',whiteSpace:'nowrap'}}>
+            {qSaveAll.run?`⏳ ${qSaveAll.done}/${qSaveAll.total}`:'💾 문제만'}
+          </button>
           <button onClick={()=>{const allOpen=slots.every(s=>s.open);setSlots(prev=>{const next=prev.map(s=>({...s,open:!allOpen}));saveSlots(next);return next;})}}
             style={{padding:'4px 10px',fontSize:11,background:'#fff',color:'#0058B0',border:'1px solid #ddd',
               borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',fontWeight:500,flexShrink:0,lineHeight:'1.4'}}>
@@ -4138,7 +4184,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
             style={{...sB,fontSize:11,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 5px',maxWidth:105,flexShrink:0}}>
-            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
+            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<><option value="">— 교재 선택 —</option>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
           </select>
           {(()=>{
             const isMogo=slot.meta.source?.startsWith('MOGO_');
