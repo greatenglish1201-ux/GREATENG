@@ -1078,14 +1078,31 @@ async function loadPatternList(){
   list.forEach((item,i)=>{
     normalizePatternItem(item);
     const hasQ = item.questions && item.questions.length;
+    const isStruct = item.pattern_kind==='structure';
+    const badge = isStruct
+      ? '<span style="font-size:.75rem;color:var(--blue2);">🏗️ 구조 패턴</span>'
+      : (hasQ ? `<span style="font-size:.75rem;color:var(--green2);">원문 ${item.questions.length}문항 ✓</span>`
+              : '<span style="font-size:.75rem;color:var(--red);">⚠️ 원문 없음</span>');
     const div = document.createElement('div');
     div.className='pattern-list-item';
     div.innerHTML = `<span>📋 ${patternLabel(item)} (${item.total||(hasQ?item.questions.length:'?')}문항)</span>
-      <span style="font-size:.75rem;color:${hasQ?'var(--green2)':'var(--red)'};">${hasQ?'원문 '+item.questions.length+'문항 ✓':'⚠️ 원문 없음'}</span>`;
+      <span style="display:flex;align-items:center;gap:8px;">${badge}
+        <button class="btn btn-gray" style="font-size:.72rem;padding:2px 8px;" onclick="event.stopPropagation();deletePatternLocal('${(item.key||'').replace(/'/g,"\\'")}')">🗑️</button>
+      </span>`;
     div.onclick=()=>selectPattern(i);
     box.appendChild(div);
   });
   st.textContent = list.length ? `${list.length}개 패턴` : '저장된 패턴 없음 — JSON 파일을 직접 로드하거나 Claude가 만든 패턴을 등록하세요.';
+}
+
+function deletePatternLocal(key){
+  if(!key) return;
+  if(!confirm(`"${key}" 패턴을 로컬 목록에서 삭제할까요?\n(시트에 보관된 경우 시트 데이터는 유지되며, 다음 불러오기 때 다시 나타날 수 있습니다)`)) return;
+  const stored = JSON.parse(localStorage.getItem('greateng_patterns')||'{}');
+  Object.keys(stored).forEach(k=>{ if((stored[k]||{}).key===key || k===key) delete stored[k]; });
+  try{ localStorage.setItem('greateng_patterns', JSON.stringify(stored)); }catch(e){}
+  if(analysisData && analysisData.key===key) clearActivePattern();
+  loadPatternList();
 }
 
 function selectPattern(i){
