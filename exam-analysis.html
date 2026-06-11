@@ -1058,6 +1058,13 @@ async function loadPatternList(){
       document.head.appendChild(sc);
     });
   }catch(e){}
+  // GAS getAnalysisList는 {key, data:{패턴}, savedAt}로 감싸서 반환 → 언래핑
+  sheetList = (sheetList||[]).map(it=>{
+    if(it && it.data && typeof it.data==='object'){
+      return { ...it.data, key: it.data.key || it.key, savedAt: it.savedAt || it.data.savedAt };
+    }
+    return it;
+  });
   const merged={};
   [...sheetList, ...Object.values(stored)].forEach(it=>{ if(it&&it.key) merged[it.key]=it; });
   const list = Object.values(merged).sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||''));
@@ -1453,7 +1460,8 @@ async function savePatternToSheet(){
   analysisData.meta.key = analysisData.key || analysisData.meta.key;
   analysisData.savedAt = new Date().toISOString();
   try{
-    await postToGAS({action:'saveAnalysis', data:JSON.stringify(analysisData)});
+    // GAS saveAnalysis는 p.key와 p.data(객체)를 기대 — data를 문자열로 보내면 이중 직렬화됨
+    await postToGAS({action:'saveAnalysis', key: analysisData.key || analysisData.meta?.key || '', data: analysisData});
     alert('✅ 패턴이 시트에 저장되었습니다. 어느 기기에서나 "패턴 목록 불러오기"로 복원할 수 있습니다.');
   }catch(e){ alert('저장 실패: '+e.message); }
 }
