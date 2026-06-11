@@ -88,6 +88,121 @@ function authoredTypes(p){
   return AUTHORED_TYPE_DEFS.filter(d=>{try{return d.has(p);}catch{return false;}}).map(d=>d.lb);
 }
 
+// ── 자동출제 공용: 프롬프트·결과 매핑 (출제 저작 패널 + 일괄 자동출제 공유) ──
+const AUTHOR_SYS='Return ONLY valid JSON, no markdown, no explanation.';
+function buildTopicPrompt(passage){return `You are a Korean CSAT English exam expert specializing in 주제/제목 (22~24번 문항).
+
+CRITICAL CSAT 평가원 topic rules:
+- The CORRECT topic must capture the THESIS — the central claim of the passage, not just the subject
+- Topic = noun phrase form, typically "the + 명사 + 수식어구" structure
+- The topic must be MANIFEST (명료) — avoid vague metaphors or ambiguous phrasing (24번 이의제기 사례 회피)
+- Cover the SCOPE of the entire passage — not just the introduction or one example
+
+Distractor patterns (use ALL 4):
+- TOO NARROW — covers only one example/detail from the passage
+- TOO BROAD — generalizes beyond the passage's actual claim
+- PARTIAL — half-truth using passage vocab but misses the main thrust
+- OFF-FOCUS — mentions a topic touched on but not the main one (강한 함정)
+
+Passage:
+${passage}
+
+Generate 5 options. First option = correct answer, Options 2-5 = one of each distractor type.
+
+CRITICAL LENGTH RULE — This is the most important rule:
+- ALL 5 options must be roughly the SAME LENGTH (±3 words from the correct answer)
+- Measure the correct answer word count, then match all distractors to that length
+- Never make the correct answer the longest option — that is a fatal test flaw
+- If a distractor concept is shorter, EXPAND it with additional modifying phrases
+- If a distractor concept is longer, TRIM it to match
+
+Return JSON only:
+{"options":["correct thesis as noun phrase","too narrow distractor","too broad distractor","partial distractor","off-focus distractor"]}`;}
+function buildSummaryPrompt(passage){return `You are a Korean CSAT English summary exam expert specializing in 요약문 완성 (40번 문항).
+
+CRITICAL CSAT 평가원 summary rules:
+- The summary template = ONE complete sentence that captures the THESIS of the passage
+- (A) and (B) = the TWO key concepts of the thesis (e.g., cause-effect, problem-solution, contrast pair)
+- Correct answers to (A)(B) are typically NOT verbatim from the passage — they are PARAPHRASES/ABSTRACTIONS (평가원 매우 중요 원칙)
+- The summary itself should reveal the structure of the thesis (e.g., "X leads to Y" / "Despite X, Y" / "X requires Y")
+
+Distractor rules (4 per blank):
+- 1 OPPOSITE — reverses the correct meaning (most reliable trap)
+- 1 PARTIAL — touches only part of the meaning
+- 1 BAIT — uses prominent passage vocabulary in wrong logical role
+- 1 SCOPE — too narrow (specific example) or too broad (general category)
+- NEVER use synonyms of the correct answer (would cause appeals)
+- A and B distractors should be conceptually distinct from each other
+
+Template variety (across 5 candidates):
+- Use diverse sentence structures: "X leads to Y", "Despite X, Y emerges", "X is achieved by Y", "Although X, the key is Y", "X without Y is meaningless"
+
+Passage:
+${passage}
+
+Generate 5 distinct summary candidates. Each candidate paraphrases the same thesis differently.
+
+Return JSON only:
+{"candidates":[
+  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"paraphrase of cause concept","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase of effect concept","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"Despite ________(A)________, the passage emphasizes ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"True ________(A)________ requires ________(B)________ rather than mere appearance.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"X depends on ________(A)________ while Y depends on ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"The contrast between ________(A)________ and ________(B)________ reveals the central insight.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]}
+]}`;}
+function buildIrrelPrompt(passage){return `You are a Korean CSAT English exam expert specializing in 무관 문장 고르기 (35번 문항).
+
+CRITICAL CSAT 평가원 irrelevant sentence rules:
+- The irrelevant sentence MUST share the same SUBJECT or KEY VOCABULARY as the passage (would otherwise be too easy to spot)
+- BUT the LOGIC/POSITION/CLAIM must contradict or deviate from the passage's argument flow
+- 평가원 typical patterns:
+  * Same topic, OPPOSITE claim (passage argues X, sentence supports not-X)
+  * Same vocab, DIFFERENT angle (passage focuses on cause, sentence describes unrelated effect)
+  * Surface-level topical match, but breaks the logical progression
+- AVOID:
+  * Sentences about completely different subjects (too obvious)
+  * Sentences with no shared vocabulary (too easy)
+  * Sentences that are factually wrong but logically aligned (not 평가원 style)
+
+Recommended position should be in the MIDDLE of the passage (not first/last), where breaking the flow creates genuine difficulty.
+
+Passage:
+${passage}
+
+Generate 3 distinct irrelevant sentence candidates that share vocabulary but break the argument flow.
+
+Return JSON only:
+{"candidates":["shared vocab but opposite claim","shared vocab but different angle","shared vocab but breaks logical chain"],"recommended_pos":2}`;}
+function topicFieldsFromParsed(parsed){
+  if(!parsed||!Array.isArray(parsed.options)||!parsed.options.length)throw new Error('선지 없음');
+  while(parsed.options.length<5)parsed.options.push('');
+  const opts=parsed.options.slice(0,5);
+  const correctOpt=opts[0];
+  const distractors=opts.slice(1);
+  const insertPos=Math.floor(Math.random()*5);
+  const shuffled=[];
+  let di=0;
+  for(let i=0;i<5;i++){
+    if(i===insertPos)shuffled.push(correctOpt);
+    else shuffled.push(distractors[di++]||'');
+  }
+  return {topic_options:shuffled,topic_answer:insertPos+1};
+}
+function summaryFieldsFromParsed(parsed){
+  if(!parsed?.candidates?.length)throw new Error('후보 없음');
+  const sc=parsed.candidates[0];
+  return {summary_candidates:parsed.candidates,summary_sel:0,
+    summary_template:sc.template,
+    summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
+    summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1};
+}
+function irrelFieldsFromParsed(parsed){
+  if(!parsed?.candidates?.length)throw new Error('후보 없음');
+  return {irrel_candidates:parsed.candidates,irrel_sel:0,
+    irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false,
+    irrelevant_sentence_index:parsed.recommended_pos||1};
+}
+
 // ── 순서배열 정규화기 ──────────────────────────────
 // AI 출력을 신뢰하지 않고 항상 유효한 상태로 강제:
 // 연속 3블록(B/C/D), 전체 인덱스 커버, 표준 5지, 계산된 정답
@@ -1201,146 +1316,39 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   };
 
   const genTopicOptions=async(pData,silent)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+    if(!apiKey){alert('API Key가 없습니다.');return {ok:false,err:'API Key 없음'};}
     setGenLoading('topic');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert specializing in 주제/제목 (22~24번 문항).
-
-CRITICAL CSAT 평가원 topic rules:
-- The CORRECT topic must capture the THESIS — the central claim of the passage, not just the subject
-- Topic = noun phrase form, typically "the + 명사 + 수식어구" structure
-- The topic must be MANIFEST (명료) — avoid vague metaphors or ambiguous phrasing (24번 이의제기 사례 회피)
-- Cover the SCOPE of the entire passage — not just the introduction or one example
-
-Distractor patterns (use ALL 4):
-- TOO NARROW — covers only one example/detail from the passage
-- TOO BROAD — generalizes beyond the passage's actual claim
-- PARTIAL — half-truth using passage vocab but misses the main thrust
-- OFF-FOCUS — mentions a topic touched on but not the main one (강한 함정)
-
-Passage:
-${passage}
-
-Generate 5 options. First option = correct answer, Options 2-5 = one of each distractor type.
-
-CRITICAL LENGTH RULE — This is the most important rule:
-- ALL 5 options must be roughly the SAME LENGTH (±3 words from the correct answer)
-- Measure the correct answer word count, then match all distractors to that length
-- Never make the correct answer the longest option — that is a fatal test flaw
-- If a distractor concept is shorter, EXPAND it with additional modifying phrases
-- If a distractor concept is longer, TRIM it to match
-
-Return JSON only:
-{"options":["correct thesis as noun phrase","too narrow distractor","too broad distractor","partial distractor","off-focus distractor"]}`;
-      const d=await callClaude(apiKey,sys,prompt);
+      const d=await callClaude(apiKey,AUTHOR_SYS,buildTopicPrompt(passage));
       const parsed=parseJSON(d.content[0].text);
-      if(!parsed.options?.length)throw new Error('선지 없음');
-      while(parsed.options.length<5)parsed.options.push('');
-      // 정답 위치 랜덤 shuffle
-      const opts=parsed.options.slice(0,5);
-      const correctOpt=opts[0];
-      const distractors=opts.slice(1);
-      const insertPos=Math.floor(Math.random()*5);
-      const shuffled=[];
-      let di=0;
-      for(let i=0;i<5;i++){
-        if(i===insertPos)shuffled.push(correctOpt);
-        else shuffled.push(distractors[di++]||'');
-      }
-      upP({topic_options:shuffled,topic_answer:insertPos+1});
+      upP(topicFieldsFromParsed(parsed));
       setGenLoading('');return {ok:true};
     }catch(e){if(!silent)alert('주제 선지 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
 
   const genSummaryCandidates=async(pData,silent)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+    if(!apiKey){alert('API Key가 없습니다.');return {ok:false,err:'API Key 없음'};}
     setGenLoading('summary');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English summary exam expert specializing in 요약문 완성 (40번 문항).
-
-CRITICAL CSAT 평가원 summary rules:
-- The summary template = ONE complete sentence that captures the THESIS of the passage
-- (A) and (B) = the TWO key concepts of the thesis (e.g., cause-effect, problem-solution, contrast pair)
-- Correct answers to (A)(B) are typically NOT verbatim from the passage — they are PARAPHRASES/ABSTRACTIONS (평가원 매우 중요 원칙)
-- The summary itself should reveal the structure of the thesis (e.g., "X leads to Y" / "Despite X, Y" / "X requires Y")
-
-Distractor rules (4 per blank):
-- 1 OPPOSITE — reverses the correct meaning (most reliable trap)
-- 1 PARTIAL — touches only part of the meaning
-- 1 BAIT — uses prominent passage vocabulary in wrong logical role
-- 1 SCOPE — too narrow (specific example) or too broad (general category)
-- NEVER use synonyms of the correct answer (would cause appeals)
-- A and B distractors should be conceptually distinct from each other
-
-Template variety (across 5 candidates):
-- Use diverse sentence structures: "X leads to Y", "Despite X, Y emerges", "X is achieved by Y", "Although X, the key is Y", "X without Y is meaningless"
-
-Passage:
-${passage}
-
-Generate 5 distinct summary candidates. Each candidate paraphrases the same thesis differently.
-
-Return JSON only:
-{"candidates":[
-  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"paraphrase of cause concept","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase of effect concept","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"Despite ________(A)________, the passage emphasizes ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"True ________(A)________ requires ________(B)________ rather than mere appearance.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"X depends on ________(A)________ while Y depends on ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"The contrast between ________(A)________ and ________(B)________ reveals the central insight.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]}
-]}`;
-      const d=await callClaude(apiKey,sys,prompt);
+      const d=await callClaude(apiKey,AUTHOR_SYS,buildSummaryPrompt(passage));
       const parsed=parseJSON(d.content[0].text);
-      if(!parsed.candidates?.length)throw new Error('후보 없음');
-      const sc=parsed.candidates[0];
-      upPDeep(p=>({...p,
-        summary_candidates:parsed.candidates,summary_sel:0,
-        summary_template:sc.template,
-        summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
-        summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1}));
+      const f=summaryFieldsFromParsed(parsed);
+      upPDeep(p=>({...p,...f}));
       setGenLoading('');return {ok:true};
     }catch(e){if(!silent)alert('요약문 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
 
   const genIrrelCandidates=async(pData,silent)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+    if(!apiKey){alert('API Key가 없습니다.');return {ok:false,err:'API Key 없음'};}
     setGenLoading('irrel');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert specializing in 무관 문장 고르기 (35번 문항).
-
-CRITICAL CSAT 평가원 irrelevant sentence rules:
-- The irrelevant sentence MUST share the same SUBJECT or KEY VOCABULARY as the passage (would otherwise be too easy to spot)
-- BUT the LOGIC/POSITION/CLAIM must contradict or deviate from the passage's argument flow
-- 평가원 typical patterns:
-  * Same topic, OPPOSITE claim (passage argues X, sentence supports not-X)
-  * Same vocab, DIFFERENT angle (passage focuses on cause, sentence describes unrelated effect)
-  * Surface-level topical match, but breaks the logical progression
-- AVOID:
-  * Sentences about completely different subjects (too obvious)
-  * Sentences with no shared vocabulary (too easy)
-  * Sentences that are factually wrong but logically aligned (not 평가원 style)
-
-Recommended position should be in the MIDDLE of the passage (not first/last), where breaking the flow creates genuine difficulty.
-
-Passage:
-${passage}
-
-Generate 3 distinct irrelevant sentence candidates that share vocabulary but break the argument flow.
-
-Return JSON only:
-{"candidates":["shared vocab but opposite claim","shared vocab but different angle","shared vocab but breaks logical chain"],"recommended_pos":2}`;
-      const d=await callClaude(apiKey,sys,prompt);
+      const d=await callClaude(apiKey,AUTHOR_SYS,buildIrrelPrompt(passage));
       const parsed=parseJSON(d.content[0].text);
-      if(!parsed.candidates?.length)throw new Error('후보 없음');
-      upPDeep(p=>({...p,
-        irrel_candidates:parsed.candidates,irrel_sel:0,
-        irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false,
-        irrelevant_sentence_index:parsed.recommended_pos||1}));
+      const f=irrelFieldsFromParsed(parsed);
+      upPDeep(p=>({...p,...f}));
       setGenLoading('');return {ok:true};
     }catch(e){if(!silent)alert('무관문장 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
@@ -2533,6 +2541,52 @@ function App(){
     }
     running.current=false;
   },[slots,doAnalyze,apiKey]);
+
+  // ⚡ 일괄 자동출제 — 분석 완료 슬롯 전체에 주제·요약·무관 생성 (이미 있는 유형은 건너뜀, 저장은 별도)
+  const [authorAll,setAuthorAll]=useState({run:false,done:0,total:0});
+  const autoAuthorAll=useCallback(async()=>{
+    if(running.current)return;
+    if(!apiKey){alert('API Key를 먼저 설정해주세요.');setShowSet(true);return;}
+    const isTarget=(s)=>{
+      if(!['analyzed','saved','confirmed'].includes(s.status))return false;
+      const pd=s.passageData||{};
+      const sents=pd.sentences||s.analysis?.sentences||[];
+      if(!sents.length)return false;
+      const done=(pd.topic_options?.length)&&(pd.summary_candidates?.length||pd.summary_A_options?.filter(Boolean).length)&&(pd.irrel_candidates?.length);
+      return !done;
+    };
+    const targets=slots.filter(isTarget);
+    if(!targets.length){alert('자동출제 대상이 없습니다.\n(분석 완료 + 주제·요약·무관 중 미완료가 있는 슬롯)');return;}
+    if(!confirm(`⚡ ${targets.length}개 슬롯에 자동출제(주제·요약·무관)를 실행할까요?\n이미 있는 유형은 건너뜁니다. (API 최대 ${targets.length*3}회 호출)`))return;
+    running.current=true;
+    setAuthorAll({run:true,done:0,total:targets.length});
+    const report=[];
+    for(const s of targets){
+      const pd={...(s.passageData||{...(s.analysis||{})})};
+      const sents=pd.sentences||[];
+      const passage=sents.map((x,i)=>`[${i}] ${typeof x==='string'?x:x.text||''}`).join('\n');
+      const label=`${s.meta?.source||''} ${s.meta?.chapter||''}강 ${s.meta?.number||''}번`.trim();
+      const fields={};const errs=[];
+      if(!pd.topic_options?.length){
+        try{const d=await callClaude(apiKey,AUTHOR_SYS,buildTopicPrompt(passage));Object.assign(fields,topicFieldsFromParsed(parseJSON(d.content[0].text)));}
+        catch(e){errs.push('주제');}
+      }
+      if(!(pd.summary_candidates?.length||pd.summary_A_options?.filter(Boolean).length)){
+        try{const d=await callClaude(apiKey,AUTHOR_SYS,buildSummaryPrompt(passage));Object.assign(fields,summaryFieldsFromParsed(parseJSON(d.content[0].text)));}
+        catch(e){errs.push('요약');}
+      }
+      if(!pd.irrel_candidates?.length){
+        try{const d=await callClaude(apiKey,AUTHOR_SYS,buildIrrelPrompt(passage));Object.assign(fields,irrelFieldsFromParsed(parseJSON(d.content[0].text)));}
+        catch(e){errs.push('무관');}
+      }
+      if(Object.keys(fields).length)upSlot(s.id,{passageData:{...pd,...fields}});
+      report.push(`${label||('슬롯'+(s.id+1))}: ${errs.length?'✗ '+errs.join(','):'✓'}`);
+      setAuthorAll(st=>({...st,done:st.done+1}));
+    }
+    running.current=false;
+    setAuthorAll({run:false,done:0,total:0});
+    alert(`⚡ 일괄 자동출제 완료 (${targets.length}개)\n\n`+report.join('\n')+'\n\n슬롯에서 확인 후 시트 저장하세요.');
+  },[slots,apiKey,upSlot]);
 
   const reanalyze=useCallback(async(slot)=>{
     if(!confirm('흐름 분석을 다시 할까요?'))return;
@@ -3853,6 +3907,12 @@ function App(){
               background:pending>0&&keyOk?'#E8F1FD':'#E8E8ED',color:pending>0&&keyOk?'#0058B0':'#86868B',
               border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default',whiteSpace:'nowrap'}}>
             🔍 분석 {pending}
+          </button>
+          <button onClick={autoAuthorAll} disabled={authorAll.run||!keyOk} title="분석 완료 슬롯 전체에 주제·요약·무관 자동 생성 (확인 후 시트 저장)"
+            style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
+              background:authorAll.run?'#E8E8ED':keyOk?'#FBF3DE':'#E8E8ED',color:authorAll.run?'#86868B':keyOk?'#8a6010':'#86868B',
+              border:authorAll.run?'none':'0.5px solid #C9A84C',borderRadius:7,cursor:authorAll.run||!keyOk?'default':'pointer',whiteSpace:'nowrap'}}>
+            {authorAll.run?`⏳ ${authorAll.done}/${authorAll.total}`:'⚡ 출제 3종'}
           </button>
           <button onClick={()=>{const allOpen=slots.every(s=>s.open);setSlots(prev=>{const next=prev.map(s=>({...s,open:!allOpen}));saveSlots(next);return next;})}}
             style={{padding:'4px 10px',fontSize:11,background:'#fff',color:'#0058B0',border:'1px solid #ddd',
