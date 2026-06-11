@@ -1200,7 +1200,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
     setGenLoading('');
   };
 
-  const genTopicOptions=async(pData)=>{
+  const genTopicOptions=async(pData,silent)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
     setGenLoading('topic');
     try{
@@ -1250,11 +1250,11 @@ Return JSON only:
         else shuffled.push(distractors[di++]||'');
       }
       upP({topic_options:shuffled,topic_answer:insertPos+1});
-    }catch(e){alert('주제 선지 생성 실패: '+e.message);}
-    setGenLoading('');
+      setGenLoading('');return {ok:true};
+    }catch(e){if(!silent)alert('주제 선지 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
 
-  const genSummaryCandidates=async(pData)=>{
+  const genSummaryCandidates=async(pData,silent)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
     setGenLoading('summary');
     try{
@@ -1301,11 +1301,11 @@ Return JSON only:
         summary_template:sc.template,
         summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
         summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1}));
-    }catch(e){alert('요약문 생성 실패: '+e.message);}
-    setGenLoading('');
+      setGenLoading('');return {ok:true};
+    }catch(e){if(!silent)alert('요약문 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
 
-  const genIrrelCandidates=async(pData)=>{
+  const genIrrelCandidates=async(pData,silent)=>{
     if(!apiKey){alert('API Key가 없습니다.');return;}
     setGenLoading('irrel');
     try{
@@ -1339,9 +1339,23 @@ Return JSON only:
       if(!parsed.candidates?.length)throw new Error('후보 없음');
       upPDeep(p=>({...p,
         irrel_candidates:parsed.candidates,irrel_sel:0,
-        irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false}));
-    }catch(e){alert('무관문장 생성 실패: '+e.message);}
-    setGenLoading('');
+        irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false,
+        irrelevant_sentence_index:parsed.recommended_pos||1}));
+      setGenLoading('');return {ok:true};
+    }catch(e){if(!silent)alert('무관문장 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
+  };
+
+  // ⚡ 자동 출제 — 안정 유형(주제·요약·무관) 순차 생성, 결과는 화면에 채움(저장은 시트 저장 버튼으로)
+  const autoAuthor=async(pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    if(!(pData?.sentences||[]).length){alert('분석된 문장이 없습니다. 먼저 지문 분석을 완료해주세요.');return;}
+    const jobs=[['주제',genTopicOptions],['요약',genSummaryCandidates],['무관문장',genIrrelCandidates]];
+    const res=[];
+    for(const [nm,fn] of jobs){
+      const r=await fn(pData,true);
+      res.push(r&&r.ok?`✓ ${nm}`:`✗ ${nm}${r&&r.err?' — '+String(r.err).slice(0,60):''}`);
+    }
+    alert('⚡ 자동 출제 결과\n\n'+res.join('\n')+'\n\n각 탭에서 확인 후 시트 저장하세요.');
   };
 
   const genGrammarAltCandidates=async(word,itemKey)=>{
@@ -2292,6 +2306,11 @@ Return JSON only, EXACTLY this structure:
               {isLoading?'⏳ 생성중...':btnLabels[at]}
             </button>;
           })()}
+          <button onClick={()=>autoAuthor(p)} disabled={!!genLoading} title="주제·요약·무관문장 3종 자동 생성 (확인 후 시트 저장)"
+            style={{padding:'4px 12px',fontSize:12,background:genLoading?'#E8E8ED':'#FBF3DE',color:genLoading?'#86868B':'#8a6010',
+              border:'0.5px solid #C9A84C',borderRadius:6,cursor:genLoading?'wait':'pointer',fontWeight:700,whiteSpace:'nowrap'}}>
+            {genLoading?'⏳ 생성중...':'⚡ 자동출제 3종'}
+          </button>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
             <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>제목</span>
             <GrammarItemInput value={p?.title||''} onSave={v=>upP({title:v})}
