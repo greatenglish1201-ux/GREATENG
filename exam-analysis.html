@@ -1012,7 +1012,12 @@ function validatePattern(item){
   const noStem = qs.filter(q=>!q.stem).map(q=>q.num);
   if(noQtype.length) warns.push(`qtype 비어있음: ${noQtype.join(',')}번`);
   if(badQtype.length) warns.push(`qtype이 patterns 키에 없음: ${badQtype.join(',')}번`);
-  if(noOrig.length) errs.push(`original_q 누락: ${noOrig.join(',')}번`);
+  if(item.pattern_kind==='structure'){
+    // 구조 패턴: 기출 원문 없이 분포·배치·표준 발문으로 구성 — 정상
+    if(noOrig.length) warns.push(`구조 패턴 — 기출 원문 미보유 (출제 의뢰 가능, 발문은 수능 정형)`);
+  } else {
+    if(noOrig.length) errs.push(`original_q 누락: ${noOrig.join(',')}번`);
+  }
   if(noStem.length) warns.push(`stem 누락: ${noStem.join(',')}번`);
   const scoreSum = qs.reduce((s,q)=>s+(q.score||0),0);
   if(qs.length && Math.round(scoreSum) !== 100) warns.push(`배점 합 ${scoreSum}점 (≠100)`);
