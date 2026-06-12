@@ -1290,9 +1290,18 @@ function printExam(){
   function renderSingleQPrint(q){
     const num = q.num || q.number || '';
     const score = (q.score!=null) ? (''+q.score).replace(/\.0$/,'') : 3;
-    const choicesHtml = isWritingType(q)
-      ? `<div class="write-box"></div>`
-      : (q.choices && q.choices.length ? q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('') : '');
+    // 순서배열 등 짧은 선지: 2열 배치로 세로 공간 절약 (모든 선지가 짧을 때만)
+    const shortChoices = q.choices && q.choices.length>=4 &&
+      q.choices.every(c => (''+c).replace(/<[^>]+>/g,'').length <= 22);
+    let choicesHtml;
+    if(isWritingType(q)){
+      choicesHtml = `<div class="write-box"></div>`;
+    } else if(q.choices && q.choices.length){
+      const cls = shortChoices ? 'choices-2col' : '';
+      choicesHtml = `<div class="${cls}">` + q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('') + `</div>`;
+    } else {
+      choicesHtml = '';
+    }
     return `<div class="qblock">
       <div class="qrow"><span class="qnum">${num}.</span><span class="qtext">${(q.question||'').replace(/\n/g,'<br>')}</span><span class="qscore">[${score}점]</span></div>
       ${choicesHtml}
@@ -1399,12 +1408,14 @@ function printExam(){
   .columns { column-count: 2; column-gap: 7mm; column-rule: 1px solid #888; }
 
   /* 문제 블록 */
-  .qblock { break-inside: avoid; margin-bottom: 10pt; }
+  .qblock { break-inside: avoid; margin-bottom: 13pt; }
   .qrow { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 3pt; }
   .qnum { font-weight: bold; min-width: 18px; flex-shrink: 0; }
   .qtext { flex: 1; line-height: 1.5; text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto; word-spacing: -0.3px; }
   .qscore { font-size: 8pt; color: #666; white-space: nowrap; margin-left: 4px; }
-  .choice { line-height: 1.45; text-align: left; }
+  .choice { line-height: 1.45; text-align: left; margin-left: 22px; }
+  .choices-2col { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; margin-left: 22px; }
+  .choices-2col .choice { margin-left: 0; }
   .write-box { border: 1px solid #aaa; height: 18mm; margin: 3pt 0 3pt 16px; }
   .answer { display: none; } /* 문제지에서 정답 숨김 */
   /* 정답지 */
