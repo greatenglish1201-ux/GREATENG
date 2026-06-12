@@ -1268,21 +1268,31 @@ function printExam(){
   if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
 
   const m = examMeta || {};
-  const school = m.school || '○○학교';
+  const SCHOOL_FULL = {'이동고':'포항이동고등학교','제철고':'포항제철고등학교','동지고':'포항동지고등학교','제철중':'포항제철중학교','이동중':'포항이동중학교','두호고':'포항두호고등학교','대동고':'포항대동고등학교'};
+  const schoolRaw = m.school || '○○학교';
+  const school = SCHOOL_FULL[schoolRaw] || schoolRaw;
   const grade  = m.grade || '';
+  const subject = m.subject || '영어';
   const year   = m.year || '';
   const sem    = m.semester || '';
   const exam   = m.exam || '';
+  const examLabel = [year && year+'학년도', sem, exam, '대비'].filter(Boolean).join(' ');
+  const totalScore = m.total_score ? Math.round(m.total_score) : 100;
   const totalQ = generatedQs.reduce((s,item)=>
     item.type==='group' ? s+(item.questions?.length||0) : s+1, 0);
 
+  // 서술형 판별: qtype에 '서술'이 있을 때만. 어법·무관·어휘·삽입은 choices 없어도 본문 밑줄형이므로 write-box 금지
+  function isWritingType(q){
+    const qt = q.qtype||'';
+    return /서술|영작.*쓰|단답/.test(qt) && (!q.choices || !q.choices.length);
+  }
+
   function renderSingleQPrint(q){
     const num = q.num || q.number || '';
-    const score = q.score || 3;
-    const isWriting = !q.choices || q.choices.length === 0;
-    const choicesHtml = isWriting
+    const score = (q.score!=null) ? (''+q.score).replace(/\.0$/,'') : 3;
+    const choicesHtml = isWritingType(q)
       ? `<div class="write-box"></div>`
-      : q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('');
+      : (q.choices && q.choices.length ? q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('') : '');
     return `<div class="qblock">
       <div class="qrow"><span class="qnum">${num}.</span><span class="qtext">${(q.question||'').replace(/\n/g,'<br>')}</span><span class="qscore">[${score}점]</span></div>
       ${choicesHtml}
@@ -1368,25 +1378,33 @@ function printExam(){
   const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>${school} ${grade} ${exam} 영어 예상문제</title>
 <style>
-  @page { size: A4; margin: 15mm 12mm; }
+  @page { size: A4; margin: 11mm 9mm 12mm 9mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 9.5pt; color: #111; }
+  body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 9pt; color: #111; text-align: left; }
 
-  /* 헤더 */
-  .hdr { text-align: center; border-bottom: 2.5px double #000; padding-bottom: 6px; margin-bottom: 8px; }
-  .hdr h1 { font-size: 13pt; font-weight: bold; margin-bottom: 3px; }
-  .hdr .meta { font-size: 8.5pt; color: #444; }
+  /* 헤더 — GREATENG 박스형 */
+  .hdr-box { border: 2px solid #000; margin-bottom: 7px; }
+  .hdr-top { display: flex; align-items: baseline; justify-content: center; gap: 12px; padding: 8px 0; border-bottom: 1.5px solid #000; }
+  .hdr-academy { font-size: 16pt; font-weight: 800; letter-spacing: 4px; }
+  .hdr-slogan { font-size: 9pt; font-weight: 500; }
+  .hdr-tab { width: 100%; border-collapse: collapse; }
+  .hdr-tab td { border-top: 1px solid #000; padding: 4px 9px; font-size: 9pt; }
+  .hdr-tab .lbl { background: #f2f2f2; font-weight: 700; text-align: center; width: 72px; border-right: 1px solid #000; white-space: nowrap; }
+  .hdr-tab .lbl2 { border-left: 1px solid #000; }
+  .examinee { display: flex; gap: 22px; justify-content: flex-end; align-items: center; margin: 5px 3px 8px; font-size: 9pt; font-weight: 700; }
+  .examinee .blank { display: inline-block; border-bottom: 1px solid #000; width: 88px; margin-left: 5px; }
+  .examinee .blank.sm { width: 52px; }
 
   /* 2단 컬럼 */
-  .columns { column-count: 2; column-gap: 8mm; column-rule: 1px solid #ccc; }
+  .columns { column-count: 2; column-gap: 7mm; column-rule: 1px solid #888; }
 
   /* 문제 블록 */
-  .qblock { break-inside: avoid; margin-bottom: 9pt; }
+  .qblock { break-inside: avoid; margin-bottom: 10pt; }
   .qrow { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 3pt; }
   .qnum { font-weight: bold; min-width: 18px; flex-shrink: 0; }
-  .qtext { flex: 1; line-height: 1.5; }
+  .qtext { flex: 1; line-height: 1.5; text-align: left; }
   .qscore { font-size: 8pt; color: #666; white-space: nowrap; margin-left: 4px; }
-  .choice { padding-left: 16px; line-height: 1.45; }
+  .choice { padding-left: 14px; line-height: 1.45; text-indent: -13px; padding-left: 13px; }
   .write-box { border: 1px solid #aaa; height: 18mm; margin: 3pt 0 3pt 16px; }
   .answer { display: none; } /* 문제지에서 정답 숨김 */
   /* 정답지 */
@@ -1420,22 +1438,25 @@ function printExam(){
   <button onclick="window.close()" style="padding:8px 16px;background:#888;color:#fff;border:none;border-radius:4px;font-size:11pt;cursor:pointer;">✕ 닫기</button>
 </div>
 
-<div class="hdr">
-  <!-- 좌측 로고 + 중앙 제목 -->
-  <div style="display:flex;align-items:center;gap:0;margin-bottom:6px;">
-    <!-- 대단한영어 로고 (좌측) -->
-    <div style="min-width:90px;text-align:left;line-height:1.2;">
-      <div style="font-size:7pt;color:#888;letter-spacing:1px;">GREAT ENGLISH</div>
-      <div style="font-size:11pt;font-weight:900;color:#1a4a8c;letter-spacing:-0.5px;">대단한영어</div>
-    </div>
-    <!-- 제목 (중앙) -->
-    <div style="flex:1;text-align:center;">
-      <h1 style="font-size:13pt;font-weight:bold;margin-bottom:2px;">${school} ${grade} ${year}학년도 ${sem} ${exam} 영어 예상문제</h1>
-      <div style="font-size:8.5pt;color:#444;">총 ${totalQ}문항　　이름:_________________　　점수:__________</div>
-    </div>
-    <div style="min-width:90px;"></div>
+<div class="hdr-box">
+  <div class="hdr-top">
+    <span class="hdr-academy">대단한영어</span>
+    <span class="hdr-slogan">: 탁월함이 습관이 되는 곳</span>
   </div>
-  <div style="border-bottom:2.5px double #000;"></div>
+  <table class="hdr-tab">
+    <tr>
+      <td class="lbl">학교</td><td>${school}</td>
+      <td class="lbl lbl2">학년 / 과목</td><td>${grade} · ${subject}</td>
+    </tr>
+    <tr>
+      <td class="lbl">시험</td><td>${examLabel}</td>
+      <td class="lbl lbl2">문항 / 배점</td><td>${totalQ}문항 · ${totalScore}점 · 50분</td>
+    </tr>
+  </table>
+</div>
+<div class="examinee">
+  <span>응시자 <span class="blank"></span></span>
+  <span>점수 <span class="blank sm"></span></span>
 </div>
 
 <div class="columns">
