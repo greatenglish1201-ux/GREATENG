@@ -992,9 +992,11 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     }
   };
 
+  const [expandedSession,setExpandedSession]=useState(null);
+  const [wrongSort,setWrongSort]=useState('count'); // 'count'=틀린 횟수순, 'ratio'=틀린 비율순
   const loadStats=async(student)=>{
     if(!scriptUrl){setMsg('결과 저장 URL을 설정 탭에서 입력하세요.');return;}
-    setStatsLoading(true);setStats(null);
+    setStatsLoading(true);setStats(null);setExpandedSession(null);
     try{
       const body={action:'getStats'};
       if(student)body.student=student;
@@ -1289,21 +1291,75 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             {/* 학생 선택 시: 회차별 기록 */}
             {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📅 회차별 기록</div>
-              {(stats.sessionStats||[]).slice().reverse().map((s,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span style={{fontSize:12,color:'#9a8570'}}>{String(s.date).slice(0,10)}</span>
-                  <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{s.score}문항</span>
-                    <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
+              {(stats.sessionStats||[]).slice().reverse().map((s,i)=>{
+                const open=expandedSession===i;
+                const items=(s.detail||'').split('||').filter(Boolean).map(line=>{
+                  const parts=line.split('|');
+                  return {pid:parts[0]||'',tname:parts[1]||'',ok:parts[2]==='O'};
+                });
+                const byType={};
+                items.forEach(it=>{if(!byType[it.tname])byType[it.tname]={c:0,t:0};byType[it.tname].t++;if(it.ok)byType[it.tname].c++;});
+                return <div key={i} style={{borderBottom:'1px solid #f6efe0'}}>
+                  <div onClick={()=>setExpandedSession(open?null:i)}
+                    style={{padding:'10px 16px',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',background:open?'#fdfaf2':'#fff'}}>
+                    <span style={{fontSize:12,color:'#9a8570'}}><span style={{display:'inline-block',width:14,color:'#C9A84C'}}>{open?'▾':'▸'}</span>{String(s.date).slice(0,10)}</span>
+                    <div style={{display:'flex',gap:12,alignItems:'center'}}>
+                      <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{s.score}문항</span>
+                      <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                  {open&&<div style={{padding:'4px 16px 12px',background:'#fdfaf2'}}>
+                    {items.length===0
+                      ?<div style={{fontSize:11.5,color:'#9a8570',padding:'6px 0'}}>이 회차의 문항별 상세 데이터가 없습니다.</div>
+                      :<>
+                        <div style={{display:'flex',flexDirection:'column',gap:5,margin:'6px 0 10px'}}>
+                          {Object.entries(byType).map(([nm,v])=>{
+                            const r=Math.round(v.c/v.t*100);
+                            const col=r>=80?'#16a34a':r>=60?'#f59e0b':'#dc2626';
+                            return <div key={nm} style={{display:'flex',alignItems:'center',gap:8}}>
+                              <span style={{fontSize:11,color:'#3a2a20',width:70,flexShrink:0}}>{nm}</span>
+                              <div style={{flex:1,height:6,borderRadius:4,background:'#f0e7d4',overflow:'hidden'}}>
+                                <div style={{width:r+'%',height:'100%',background:col,borderRadius:4}}/>
+                              </div>
+                              <span style={{fontSize:11,fontWeight:700,color:col,width:64,textAlign:'right',flexShrink:0}}>{v.c}/{v.t} ({r}%)</span>
+                            </div>;
+                          })}
+                        </div>
+                        <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                          {items.map((it,k)=>(
+                            <span key={k} title={it.tname} style={{fontSize:10,padding:'3px 7px',borderRadius:6,
+                              background:it.ok?'#EAF5EC':'#FBECEA',color:it.ok?'#1E6B30':'#B3261E',fontWeight:600}}>
+                              {it.ok?'✓':'✗'} {it.pid}
+                            </span>
+                          ))}
+                        </div>
+                      </>}
+                  </div>}
+                </div>;
+              })}
             </div>}
             {/* 많이 틀린 지문 랭킹 */}
             {(stats.wrongRanking||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>🏆 많이 틀린 지문 랭킹</div>
-              {(stats.wrongRanking||[]).map((w,i)=>(
-                <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
+                <span style={{fontWeight:700,fontSize:13,color:'#3a2a20'}}>🏆 많이 틀린 지문 랭킹</span>
+                <div style={{display:'flex',gap:4}}>
+                  {[['count','틀린 횟수순'],['ratio','틀린 비율순']].map(([k,lb])=>(
+                    <button key={k} onClick={()=>setWrongSort(k)} style={{padding:'4px 10px',borderRadius:7,fontSize:11,fontWeight:700,cursor:'pointer',
+                      border:wrongSort===k?'1px solid #C9A84C':'1px solid #e6dcc6',
+                      background:wrongSort===k?'#FBF3DE':'#fff',color:wrongSort===k?'#8a6010':'#9a8570'}}>{lb}</button>
+                  ))}
+                </div>
+              </div>
+              {(stats.wrongRanking||[]).slice().sort((a,b)=>{
+                if(wrongSort==='ratio'){
+                  const ra=Number(a.total)?Number(a.wrong)/Number(a.total):0;
+                  const rb=Number(b.total)?Number(b.wrong)/Number(b.total):0;
+                  return (rb-ra)||(Number(b.wrong)-Number(a.wrong));
+                }
+                return (Number(b.wrong)-Number(a.wrong))||((Number(b.total)?Number(b.wrong)/Number(b.total):0)-(Number(a.total)?Number(a.wrong)/Number(a.total):0));
+              }).map((w,i)=>{
+                const ratio=Number(w.total)?Math.round(Number(w.wrong)/Number(w.total)*100):0;
+                return <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
                     <span style={{fontSize:12,fontWeight:800,color:i<3?'#C9A84C':'#9a8570',minWidth:20}}>#{i+1}</span>
                     <div>
@@ -1311,9 +1367,12 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                       <span style={{fontSize:11,color:'#9a8570',marginLeft:6}}>{w.type}</span>
                     </div>
                   </div>
-                  <span style={{fontSize:13,fontWeight:800,color:'#dc2626'}}>✗ {w.wrong}회 / {w.total}회</span>
-                </div>
-              ))}
+                  <div style={{display:'flex',gap:10,alignItems:'center'}}>
+                    <span style={{fontSize:13,fontWeight:800,color:'#dc2626'}}>✗ {w.wrong}회 / {w.total}회</span>
+                    <span style={{fontSize:12,fontWeight:800,color:ratio>=50?'#B3261E':'#9a7040',minWidth:38,textAlign:'right'}}>{ratio}%</span>
+                  </div>
+                </div>;
+              })}
             </div>}
             {/* 유형별 정답률 */}
             {(stats.typeStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
