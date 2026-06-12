@@ -88,6 +88,121 @@ function authoredTypes(p){
   return AUTHORED_TYPE_DEFS.filter(d=>{try{return d.has(p);}catch{return false;}}).map(d=>d.lb);
 }
 
+// ── 자동출제 공용: 프롬프트·결과 매핑 (출제 저작 패널 + 일괄 자동출제 공유) ──
+const AUTHOR_SYS='Return ONLY valid JSON, no markdown, no explanation.';
+function buildTopicPrompt(passage){return `You are a Korean CSAT English exam expert specializing in 주제/제목 (22~24번 문항).
+
+CRITICAL CSAT 평가원 topic rules:
+- The CORRECT topic must capture the THESIS — the central claim of the passage, not just the subject
+- Topic = noun phrase form, typically "the + 명사 + 수식어구" structure
+- The topic must be MANIFEST (명료) — avoid vague metaphors or ambiguous phrasing (24번 이의제기 사례 회피)
+- Cover the SCOPE of the entire passage — not just the introduction or one example
+
+Distractor patterns (use ALL 4):
+- TOO NARROW — covers only one example/detail from the passage
+- TOO BROAD — generalizes beyond the passage's actual claim
+- PARTIAL — half-truth using passage vocab but misses the main thrust
+- OFF-FOCUS — mentions a topic touched on but not the main one (강한 함정)
+
+Passage:
+${passage}
+
+Generate 5 options. First option = correct answer, Options 2-5 = one of each distractor type.
+
+CRITICAL LENGTH RULE — This is the most important rule:
+- ALL 5 options must be roughly the SAME LENGTH (±3 words from the correct answer)
+- Measure the correct answer word count, then match all distractors to that length
+- Never make the correct answer the longest option — that is a fatal test flaw
+- If a distractor concept is shorter, EXPAND it with additional modifying phrases
+- If a distractor concept is longer, TRIM it to match
+
+Return JSON only:
+{"options":["correct thesis as noun phrase","too narrow distractor","too broad distractor","partial distractor","off-focus distractor"]}`;}
+function buildSummaryPrompt(passage){return `You are a Korean CSAT English summary exam expert specializing in 요약문 완성 (40번 문항).
+
+CRITICAL CSAT 평가원 summary rules:
+- The summary template = ONE complete sentence that captures the THESIS of the passage
+- (A) and (B) = the TWO key concepts of the thesis (e.g., cause-effect, problem-solution, contrast pair)
+- Correct answers to (A)(B) are typically NOT verbatim from the passage — they are PARAPHRASES/ABSTRACTIONS (평가원 매우 중요 원칙)
+- The summary itself should reveal the structure of the thesis (e.g., "X leads to Y" / "Despite X, Y" / "X requires Y")
+
+Distractor rules (4 per blank):
+- 1 OPPOSITE — reverses the correct meaning (most reliable trap)
+- 1 PARTIAL — touches only part of the meaning
+- 1 BAIT — uses prominent passage vocabulary in wrong logical role
+- 1 SCOPE — too narrow (specific example) or too broad (general category)
+- NEVER use synonyms of the correct answer (would cause appeals)
+- A and B distractors should be conceptually distinct from each other
+
+Template variety (across 5 candidates):
+- Use diverse sentence structures: "X leads to Y", "Despite X, Y emerges", "X is achieved by Y", "Although X, the key is Y", "X without Y is meaningless"
+
+Passage:
+${passage}
+
+Generate 5 distinct summary candidates. Each candidate paraphrases the same thesis differently.
+
+Return JSON only:
+{"candidates":[
+  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"paraphrase of cause concept","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase of effect concept","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"Despite ________(A)________, the passage emphasizes ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"True ________(A)________ requires ________(B)________ rather than mere appearance.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"X depends on ________(A)________ while Y depends on ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
+  {"template":"The contrast between ________(A)________ and ________(B)________ reveals the central insight.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]}
+]}`;}
+function buildIrrelPrompt(passage){return `You are a Korean CSAT English exam expert specializing in 무관 문장 고르기 (35번 문항).
+
+CRITICAL CSAT 평가원 irrelevant sentence rules:
+- The irrelevant sentence MUST share the same SUBJECT or KEY VOCABULARY as the passage (would otherwise be too easy to spot)
+- BUT the LOGIC/POSITION/CLAIM must contradict or deviate from the passage's argument flow
+- 평가원 typical patterns:
+  * Same topic, OPPOSITE claim (passage argues X, sentence supports not-X)
+  * Same vocab, DIFFERENT angle (passage focuses on cause, sentence describes unrelated effect)
+  * Surface-level topical match, but breaks the logical progression
+- AVOID:
+  * Sentences about completely different subjects (too obvious)
+  * Sentences with no shared vocabulary (too easy)
+  * Sentences that are factually wrong but logically aligned (not 평가원 style)
+
+Recommended position should be in the MIDDLE of the passage (not first/last), where breaking the flow creates genuine difficulty.
+
+Passage:
+${passage}
+
+Generate 3 distinct irrelevant sentence candidates that share vocabulary but break the argument flow.
+
+Return JSON only:
+{"candidates":["shared vocab but opposite claim","shared vocab but different angle","shared vocab but breaks logical chain"],"recommended_pos":2}`;}
+function topicFieldsFromParsed(parsed){
+  if(!parsed||!Array.isArray(parsed.options)||!parsed.options.length)throw new Error('선지 없음');
+  while(parsed.options.length<5)parsed.options.push('');
+  const opts=parsed.options.slice(0,5);
+  const correctOpt=opts[0];
+  const distractors=opts.slice(1);
+  const insertPos=Math.floor(Math.random()*5);
+  const shuffled=[];
+  let di=0;
+  for(let i=0;i<5;i++){
+    if(i===insertPos)shuffled.push(correctOpt);
+    else shuffled.push(distractors[di++]||'');
+  }
+  return {topic_options:shuffled,topic_answer:insertPos+1};
+}
+function summaryFieldsFromParsed(parsed){
+  if(!parsed?.candidates?.length)throw new Error('후보 없음');
+  const sc=parsed.candidates[0];
+  return {summary_candidates:parsed.candidates,summary_sel:0,
+    summary_template:sc.template,
+    summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
+    summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1};
+}
+function irrelFieldsFromParsed(parsed){
+  if(!parsed?.candidates?.length)throw new Error('후보 없음');
+  return {irrel_candidates:parsed.candidates,irrel_sel:0,
+    irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false,
+    irrelevant_sentence_index:parsed.recommended_pos||1};
+}
+
 // ── 순서배열 정규화기 ──────────────────────────────
 // AI 출력을 신뢰하지 않고 항상 유효한 상태로 강제:
 // 연속 3블록(B/C/D), 전체 인덱스 커버, 표준 5지, 계산된 정답
@@ -486,7 +601,7 @@ function Highlighted({text,words}){
 
 const makeSlot=i=>({
   id:i,text:'',viewMode:'teacher',
-  meta:{source:'ABSO_TYPE',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
+  meta:{source:'',chapter:'01',number:String(i+1).padStart(3,'0'),difficulty:'중'},
   status:'idle',analysis:null,error:'',open:true,blockSummaries:null,isPublic:false,isHot:false,
 });
 
@@ -1200,148 +1315,55 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
     setGenLoading('');
   };
 
-  const genTopicOptions=async(pData)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+  const genTopicOptions=async(pData,silent)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return {ok:false,err:'API Key 없음'};}
     setGenLoading('topic');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert specializing in 주제/제목 (22~24번 문항).
-
-CRITICAL CSAT 평가원 topic rules:
-- The CORRECT topic must capture the THESIS — the central claim of the passage, not just the subject
-- Topic = noun phrase form, typically "the + 명사 + 수식어구" structure
-- The topic must be MANIFEST (명료) — avoid vague metaphors or ambiguous phrasing (24번 이의제기 사례 회피)
-- Cover the SCOPE of the entire passage — not just the introduction or one example
-
-Distractor patterns (use ALL 4):
-- TOO NARROW — covers only one example/detail from the passage
-- TOO BROAD — generalizes beyond the passage's actual claim
-- PARTIAL — half-truth using passage vocab but misses the main thrust
-- OFF-FOCUS — mentions a topic touched on but not the main one (강한 함정)
-
-Passage:
-${passage}
-
-Generate 5 options. First option = correct answer, Options 2-5 = one of each distractor type.
-
-CRITICAL LENGTH RULE — This is the most important rule:
-- ALL 5 options must be roughly the SAME LENGTH (±3 words from the correct answer)
-- Measure the correct answer word count, then match all distractors to that length
-- Never make the correct answer the longest option — that is a fatal test flaw
-- If a distractor concept is shorter, EXPAND it with additional modifying phrases
-- If a distractor concept is longer, TRIM it to match
-
-Return JSON only:
-{"options":["correct thesis as noun phrase","too narrow distractor","too broad distractor","partial distractor","off-focus distractor"]}`;
-      const d=await callClaude(apiKey,sys,prompt);
+      const d=await callClaude(apiKey,AUTHOR_SYS,buildTopicPrompt(passage));
       const parsed=parseJSON(d.content[0].text);
-      if(!parsed.options?.length)throw new Error('선지 없음');
-      while(parsed.options.length<5)parsed.options.push('');
-      // 정답 위치 랜덤 shuffle
-      const opts=parsed.options.slice(0,5);
-      const correctOpt=opts[0];
-      const distractors=opts.slice(1);
-      const insertPos=Math.floor(Math.random()*5);
-      const shuffled=[];
-      let di=0;
-      for(let i=0;i<5;i++){
-        if(i===insertPos)shuffled.push(correctOpt);
-        else shuffled.push(distractors[di++]||'');
-      }
-      upP({topic_options:shuffled,topic_answer:insertPos+1});
-    }catch(e){alert('주제 선지 생성 실패: '+e.message);}
-    setGenLoading('');
+      upP(topicFieldsFromParsed(parsed));
+      setGenLoading('');return {ok:true};
+    }catch(e){if(!silent)alert('주제 선지 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
 
-  const genSummaryCandidates=async(pData)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+  const genSummaryCandidates=async(pData,silent)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return {ok:false,err:'API Key 없음'};}
     setGenLoading('summary');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English summary exam expert specializing in 요약문 완성 (40번 문항).
-
-CRITICAL CSAT 평가원 summary rules:
-- The summary template = ONE complete sentence that captures the THESIS of the passage
-- (A) and (B) = the TWO key concepts of the thesis (e.g., cause-effect, problem-solution, contrast pair)
-- Correct answers to (A)(B) are typically NOT verbatim from the passage — they are PARAPHRASES/ABSTRACTIONS (평가원 매우 중요 원칙)
-- The summary itself should reveal the structure of the thesis (e.g., "X leads to Y" / "Despite X, Y" / "X requires Y")
-
-Distractor rules (4 per blank):
-- 1 OPPOSITE — reverses the correct meaning (most reliable trap)
-- 1 PARTIAL — touches only part of the meaning
-- 1 BAIT — uses prominent passage vocabulary in wrong logical role
-- 1 SCOPE — too narrow (specific example) or too broad (general category)
-- NEVER use synonyms of the correct answer (would cause appeals)
-- A and B distractors should be conceptually distinct from each other
-
-Template variety (across 5 candidates):
-- Use diverse sentence structures: "X leads to Y", "Despite X, Y emerges", "X is achieved by Y", "Although X, the key is Y", "X without Y is meaningless"
-
-Passage:
-${passage}
-
-Generate 5 distinct summary candidates. Each candidate paraphrases the same thesis differently.
-
-Return JSON only:
-{"candidates":[
-  {"template":"The passage argues that ________(A)________ leads to ________(B)________.","A_correct":"paraphrase of cause concept","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase of effect concept","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"Despite ________(A)________, the passage emphasizes ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"True ________(A)________ requires ________(B)________ rather than mere appearance.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"X depends on ________(A)________ while Y depends on ________(B)________.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]},
-  {"template":"The contrast between ________(A)________ and ________(B)________ reveals the central insight.","A_correct":"paraphrase","A_distractors":["opposite","partial","bait","scope"],"B_correct":"paraphrase","B_distractors":["opposite","partial","bait","scope"]}
-]}`;
-      const d=await callClaude(apiKey,sys,prompt);
+      const d=await callClaude(apiKey,AUTHOR_SYS,buildSummaryPrompt(passage));
       const parsed=parseJSON(d.content[0].text);
-      if(!parsed.candidates?.length)throw new Error('후보 없음');
-      const sc=parsed.candidates[0];
-      upPDeep(p=>({...p,
-        summary_candidates:parsed.candidates,summary_sel:0,
-        summary_template:sc.template,
-        summary_A_options:[sc.A_correct,...sc.A_distractors],summary_A_answer:1,
-        summary_B_options:[sc.B_correct,...sc.B_distractors],summary_B_answer:1}));
-    }catch(e){alert('요약문 생성 실패: '+e.message);}
-    setGenLoading('');
+      const f=summaryFieldsFromParsed(parsed);
+      upPDeep(p=>({...p,...f}));
+      setGenLoading('');return {ok:true};
+    }catch(e){if(!silent)alert('요약문 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
   };
 
-  const genIrrelCandidates=async(pData)=>{
-    if(!apiKey){alert('API Key가 없습니다.');return;}
+  const genIrrelCandidates=async(pData,silent)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return {ok:false,err:'API Key 없음'};}
     setGenLoading('irrel');
     try{
       const passage=(pData.sentences||[]).map((s,i)=>`[${i}] ${typeof s==='string'?s:s.text||''}`).join('\n');
-      const sys='Return ONLY valid JSON, no markdown, no explanation.';
-      const prompt=`You are a Korean CSAT English exam expert specializing in 무관 문장 고르기 (35번 문항).
-
-CRITICAL CSAT 평가원 irrelevant sentence rules:
-- The irrelevant sentence MUST share the same SUBJECT or KEY VOCABULARY as the passage (would otherwise be too easy to spot)
-- BUT the LOGIC/POSITION/CLAIM must contradict or deviate from the passage's argument flow
-- 평가원 typical patterns:
-  * Same topic, OPPOSITE claim (passage argues X, sentence supports not-X)
-  * Same vocab, DIFFERENT angle (passage focuses on cause, sentence describes unrelated effect)
-  * Surface-level topical match, but breaks the logical progression
-- AVOID:
-  * Sentences about completely different subjects (too obvious)
-  * Sentences with no shared vocabulary (too easy)
-  * Sentences that are factually wrong but logically aligned (not 평가원 style)
-
-Recommended position should be in the MIDDLE of the passage (not first/last), where breaking the flow creates genuine difficulty.
-
-Passage:
-${passage}
-
-Generate 3 distinct irrelevant sentence candidates that share vocabulary but break the argument flow.
-
-Return JSON only:
-{"candidates":["shared vocab but opposite claim","shared vocab but different angle","shared vocab but breaks logical chain"],"recommended_pos":2}`;
-      const d=await callClaude(apiKey,sys,prompt);
+      const d=await callClaude(apiKey,AUTHOR_SYS,buildIrrelPrompt(passage));
       const parsed=parseJSON(d.content[0].text);
-      if(!parsed.candidates?.length)throw new Error('후보 없음');
-      upPDeep(p=>({...p,
-        irrel_candidates:parsed.candidates,irrel_sel:0,
-        irrel_insert_pos:parsed.recommended_pos||1,irrel_confirmed:false}));
-    }catch(e){alert('무관문장 생성 실패: '+e.message);}
-    setGenLoading('');
+      const f=irrelFieldsFromParsed(parsed);
+      upPDeep(p=>({...p,...f}));
+      setGenLoading('');return {ok:true};
+    }catch(e){if(!silent)alert('무관문장 생성 실패: '+e.message);setGenLoading('');return {ok:false,err:e.message};}
+  };
+
+  // ⚡ 자동 출제 — 안정 유형(주제·요약·무관) 순차 생성, 결과는 화면에 채움(저장은 시트 저장 버튼으로)
+  const autoAuthor=async(pData)=>{
+    if(!apiKey){alert('API Key가 없습니다.');return;}
+    if(!(pData?.sentences||[]).length){alert('분석된 문장이 없습니다. 먼저 지문 분석을 완료해주세요.');return;}
+    const jobs=[['주제',genTopicOptions],['요약',genSummaryCandidates],['무관문장',genIrrelCandidates]];
+    const res=[];
+    for(const [nm,fn] of jobs){
+      const r=await fn(pData,true);
+      res.push(r&&r.ok?`✓ ${nm}`:`✗ ${nm}${r&&r.err?' — '+String(r.err).slice(0,60):''}`);
+    }
+    alert('⚡ 자동 출제 결과\n\n'+res.join('\n')+'\n\n각 탭에서 확인 후 시트 저장하세요.');
   };
 
   const genGrammarAltCandidates=async(word,itemKey)=>{
@@ -1485,7 +1507,7 @@ Return JSON only:
       const processedItems=valid.items;
       const calcAnswer=valid.answer;
       upPDeep(p=>{
-        const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+        const sets=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
         const sel=isG?p.grammar_sel:p.vocab_sel;
         const newSet={items:processedItems,answer:calcAnswer};
         if(sets.length===0){sets.push(newSet);}
@@ -1742,7 +1764,7 @@ Return JSON only, EXACTLY this structure:
             onClick={()=>{
               if(w.trim().length<2)return;
               upPDeep(p=>{
-                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+                const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])ss[si]={items:[],answer:1};
                 ss[si]={...ss[si],items:[...ss[si].items,{sent:i,word:w,pos:wPos,correct:true,note:'',alt:''}]};
@@ -1794,7 +1816,7 @@ Return JSON only, EXACTLY this structure:
             const c2=it.correct?'#185FA5':'#E24B4A';
             const num2=numMap.get(it);
             return<span key={k} style={{display:'inline-flex',alignItems:'center',marginRight:4,padding:'0 6px',borderRadius:12,background:c2+'18',border:`1px solid ${c2}44`,color:c2,fontWeight:700,fontSize:11,cursor:'pointer'}}
-              onClick={()=>{upPDeep(p=>{const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
+              onClick={()=>{upPDeep(p=>{const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
               {num2?`${num2}. `:''}{it.word} ✕
             </span>;
           })}
@@ -1806,7 +1828,7 @@ Return JSON only, EXACTLY this structure:
         if(idx>offset)parts.push(<span key={offset}
           onClick={()=>{
             upPDeep(p=>{
-              const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+              const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
               const si=isG?p.grammar_sel:p.vocab_sel;
               if(!ss[si])return p;
               // 클릭한 위치의 단어를 새 항목으로 추가 (빈 영역 클릭 시)
@@ -1825,7 +1847,7 @@ Return JSON only, EXACTLY this structure:
             // shift+클릭: 항목 삭제, 일반 클릭: 항목 선택
             if(e.shiftKey){
               upPDeep(p=>{
-                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+                const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])return p;
                 ss[si]={...ss[si],items:ss[si].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};
@@ -2292,6 +2314,11 @@ Return JSON only, EXACTLY this structure:
               {isLoading?'⏳ 생성중...':btnLabels[at]}
             </button>;
           })()}
+          <button onClick={()=>autoAuthor(p)} disabled={!!genLoading} title="주제·요약·무관문장 3종 자동 생성 (확인 후 시트 저장)"
+            style={{padding:'4px 12px',fontSize:12,background:genLoading?'#E8E8ED':'#FBF3DE',color:genLoading?'#86868B':'#8a6010',
+              border:'0.5px solid #C9A84C',borderRadius:6,cursor:genLoading?'wait':'pointer',fontWeight:700,whiteSpace:'nowrap'}}>
+            {genLoading?'⏳ 생성중...':'⚡ 자동출제 3종'}
+          </button>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
             <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>제목</span>
             <GrammarItemInput value={p?.title||''} onSave={v=>upP({title:v})}
@@ -2363,7 +2390,7 @@ function App(){
   const [showSet,setShowSet]=useState(false);
   const [customBooks,setCustomBooks]=useState(()=>loadCustomBooks());
   const [newBook,setNewBook]=useState({id:'',label:'',storage:'sheet'});
-  const [mogoNew,setMogoNew]=useState({yr:'26',gr:'G1',mon:'06',org:'경기'});
+  const [mogoNew,setMogoNew]=useState({yr:'26',gr:'G1',mon:'06',org:'경기',orgCustom:''});
   const [bookNew,setBookNew]=useState({yr:'26',pub:'EBS',pubCustom:'',name:''});
   const [printNew,setPrintNew]=useState({yr:'26',school:'',gr:'G3',exam:'1MID'});
   const [showBookMgr,setShowBookMgr]=useState(false);
@@ -2379,6 +2406,7 @@ function App(){
   const [loadSel,setLoadSel]=useState({});
   const [msg,setMsg]=useState('');
   const running=useRef(false);
+  const sheetIdsRef=useRef(new Set()); // 시트에 존재하는 지문 id 캐시 (덮어쓰기 방지용)
 
   const saveTimer=useRef(null);
   useEffect(()=>{
@@ -2515,6 +2543,53 @@ function App(){
     running.current=false;
   },[slots,doAnalyze,apiKey]);
 
+  // ⚡ 일괄 자동출제 — 분석 완료 슬롯 전체에 주제·요약·무관 생성 (이미 있는 유형은 건너뜀, 저장은 별도)
+  const [authorAll,setAuthorAll]=useState({run:false,done:0,total:0});
+  const autoAuthorAll=useCallback(async()=>{
+    if(running.current)return;
+    if(!apiKey){alert('API Key를 먼저 설정해주세요.');setShowSet(true);return;}
+    const isTarget=(s)=>{
+      if(!['analyzed','saved','confirmed'].includes(s.status))return false;
+      const pd=s.passageData||{};
+      const sents=pd.sentences||s.analysis?.sentences||[];
+      if(!sents.length)return false;
+      const done=(pd.topic_options?.length)&&(pd.summary_candidates?.length||pd.summary_A_options?.filter(Boolean).length)&&(pd.irrel_candidates?.length);
+      return !done;
+    };
+    const targets=slots.filter(isTarget);
+    if(!targets.length){alert('자동출제 대상이 없습니다.\n(분석 완료 + 주제·요약·무관 중 미완료가 있는 슬롯)');return;}
+    if(!confirm(`⚡ ${targets.length}개 슬롯에 자동출제(주제·요약·무관)를 실행할까요?\n이미 있는 유형은 건너뜁니다. (API 최대 ${targets.length*3}회 호출)`))return;
+    running.current=true;
+    setAuthorAll({run:true,done:0,total:targets.length});
+    const report=[];
+    for(const s of targets){
+      const pd={...(s.passageData||{...(s.analysis||{})})};
+      const sents=pd.sentences||[];
+      const passage=sents.map((x,i)=>`[${i}] ${typeof x==='string'?x:x.text||''}`).join('\n');
+      const label=`${s.meta?.source||''} ${s.meta?.chapter||''}강 ${s.meta?.number||''}번`.trim();
+      const fields={};const errs=[];
+      if(!pd.topic_options?.length){
+        try{const d=await callClaude(apiKey,AUTHOR_SYS,buildTopicPrompt(passage));Object.assign(fields,topicFieldsFromParsed(parseJSON(d.content[0].text)));}
+        catch(e){errs.push('주제');}
+      }
+      if(!(pd.summary_candidates?.length||pd.summary_A_options?.filter(Boolean).length)){
+        try{const d=await callClaude(apiKey,AUTHOR_SYS,buildSummaryPrompt(passage));Object.assign(fields,summaryFieldsFromParsed(parseJSON(d.content[0].text)));}
+        catch(e){errs.push('요약');}
+      }
+      if(!pd.irrel_candidates?.length){
+        try{const d=await callClaude(apiKey,AUTHOR_SYS,buildIrrelPrompt(passage));Object.assign(fields,irrelFieldsFromParsed(parseJSON(d.content[0].text)));}
+        catch(e){errs.push('무관');}
+      }
+      if(Object.keys(fields).length)upSlot(s.id,{passageData:{...pd,...fields}});
+      report.push(`${label||('슬롯'+(s.id+1))}: ${errs.length?'✗ '+errs.join(','):'✓'}`);
+      setAuthorAll(st=>({...st,done:st.done+1}));
+    }
+    running.current=false;
+    setAuthorAll({run:false,done:0,total:0});
+    alert(`⚡ 일괄 자동출제 완료 (${targets.length}개)\n\n`+report.join('\n')+'\n\n슬롯에서 확인 후 시트 저장하세요.');
+  },[slots,apiKey,upSlot]);
+
+
   const reanalyze=useCallback(async(slot)=>{
     if(!confirm('흐름 분석을 다시 할까요?'))return;
     upSlot(slot.id,{status:'idle',analysis:null,error:''});
@@ -2525,7 +2600,7 @@ function App(){
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 입력해주세요.');return;}
     setMainGhSaving(true);
     try{
-      const entries=slots.filter(s=>['analyzed','saved','confirmed'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
+      const entries=slots.filter(s=>['analyzed','saved','confirmed'].includes(s.status)&&s.meta?.source&&(s.passageData||s.analysis?.sentences?.length)).map(s=>{
         const p=s.passageData||{};
         const metaId=makePassageId(s.meta.source,s.meta.chapter,s.meta.number);
         const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -2659,10 +2734,18 @@ function App(){
     return{passagePayload,questions,id};
   },[]);
 
-  const saveSlotToSheet=useCallback(async(slot)=>{
+  const saveSlotToSheet=useCallback(async(slot,skipConfirm)=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return false;}
     const {passagePayload,questions,id}=buildSlotPayload(slot);
-    if(!id||!slot.meta.source){alert('교재/강/번호가 비어있습니다.');return false;}
+    if(!id||!slot.meta.source){alert('⚠ 교재가 선택되지 않았습니다.\n슬롯 상단에서 교재와 강·문항번호를 확인한 후 다시 저장해주세요.');return false;}
+    // 신규 슬롯 덮어쓰기 방지: 시트에 같은 id가 이미 있으면 확인
+    if(!skipConfirm&&slot.status!=='saved'){
+      if(sheetIdsRef.current.size>0&&sheetIdsRef.current.has(id)){
+        if(!confirm('⚠ 이미 시트에 존재하는 지문입니다:\n'+id+'\n\n기존 지문·출제 데이터를 덮어쓸까요?'))return false;
+      }else if(sheetIdsRef.current.size===0){
+        if(!confirm('신규 저장: '+id+'\n(시트에 같은 id가 있으면 덮어씁니다. 계속할까요?)'))return false;
+      }
+    }
     setSlotSheetSaving(prev=>({...prev,[slot.id]:true}));
     try{
 
@@ -2674,6 +2757,7 @@ function App(){
         const r2=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
         if(!r2.ok&&!r2.warning)throw new Error('출제 저장 실패: '+(r2.error||'unknown'));
       }
+      sheetIdsRef.current.add(id);
       return true;
     }catch(e){
       alert('시트 저장 오류 ('+id+'): '+e.message);
@@ -2683,16 +2767,44 @@ function App(){
     }
   },[appsUrl,buildSlotPayload]);
 
+  // 💾 일괄 문제만 저장 — 출제DB만 저장(지문DB 생략으로 빠름). 시트에 지문이 이미 저장된(saved) 슬롯 대상.
+  const [qSaveAll,setQSaveAll]=useState({run:false,done:0,total:0});
+  const saveQuestionsOnlyAll=useCallback(async()=>{
+    if(qSaveAll.run)return;
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    const targets=slots.filter(s=>{
+      if(s.status!=='saved')return false;
+      const {questions,id}=buildSlotPayload(s);
+      return !!id&&!!s.meta.source&&questions.length>0;
+    });
+    if(!targets.length){alert('저장 대상이 없습니다.\n(시트에 지문이 저장된(saved) 슬롯 중 출제 데이터가 있는 슬롯)');return;}
+    if(!confirm(`💾 ${targets.length}개 슬롯의 문제(출제DB)만 저장할까요?\n지문DB는 건너뛰어 빠르게 저장됩니다.`))return;
+    setQSaveAll({run:true,done:0,total:targets.length});
+    let ok=0;const fails=[];
+    for(const s of targets){
+      const {questions,id}=buildSlotPayload(s);
+      try{
+        const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
+        if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
+        ok++;
+      }catch(e){fails.push(`${id}: ${e.message}`);}
+      setQSaveAll(st=>({...st,done:st.done+1}));
+    }
+    setQSaveAll({run:false,done:0,total:0});
+    alert(`💾 문제만 저장 완료\n성공 ${ok}개 / 실패 ${fails.length}개`+(fails.length?'\n\n'+fails.join('\n'):''));
+  },[slots,appsUrl,buildSlotPayload,qSaveAll.run]);
+
   const saveAllToSheet=useCallback(async()=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
-    const targets=slots.filter(s=>['analyzed','confirmed','saved'].includes(s.status)&&(s.passageData||s.analysis?.sentences?.length));
+    const targets=slots.filter(s=>['analyzed','confirmed','saved'].includes(s.status)&&s.meta?.source&&(s.passageData||s.analysis?.sentences?.length));
     if(!targets.length){alert('저장할 슬롯이 없습니다. (분석완료/저장완료 상태만 대상)');return;}
-    if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`))return;
+    const dupNew=targets.filter(s=>s.status!=='saved'&&sheetIdsRef.current.size>0&&sheetIdsRef.current.has(buildSlotPayload(s).id));
+    if(!confirm(`${targets.length}개 슬롯을 시트에 저장할까요?`+(dupNew.length?`\n⚠ 이미 시트에 존재하는 id ${dupNew.length}개 포함 — 덮어씁니다.`:'')))return;
     setSheetSaving(true);
     let ok=0,fail=0;
     const okIds=[];
     for(const slot of targets){
-      const success=await saveSlotToSheet(slot);
+      const success=await saveSlotToSheet(slot,true);
       if(success){ok++;okIds.push(slot.id);}else fail++;
     }
     if(okIds.length){
@@ -2711,13 +2823,13 @@ function App(){
   // ──────────────────────────────────────────────
   const bulkTogglePublic=useCallback(async(makePublic)=>{
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
-    // saved 상태이고 변경이 필요한 슬롯만 (이미 같은 상태면 건너뜀)
-    const targets=slots.filter(s=>s.status==='saved'&&!!s.isPublic!==makePublic&&(s.passageData?.id||makePassageId(s.meta?.source,s.meta?.chapter,s.meta?.number)));
+    // saved 상태 슬롯 전체에 무조건 전송 — 로컬/시트 상태가 어긋나 있어도 시트를 목표 상태로 강제 동기화
+    const targets=slots.filter(s=>s.status==='saved'&&(s.passageData?.id||makePassageId(s.meta?.source,s.meta?.chapter,s.meta?.number)));
     if(!targets.length){
-      alert(makePublic?'모든 저장된 슬롯이 이미 공개 상태입니다.':'모든 저장된 슬롯이 이미 비공개 상태입니다.');
+      alert('저장된(saved) 슬롯이 없습니다.');
       return;
     }
-    if(!confirm(`${targets.length}개 슬롯을 ${makePublic?'🌐 공개':'🔒 비공개'}로 변경할까요?`))return;
+    if(!confirm(`${targets.length}개 슬롯을 ${makePublic?'🌐 공개':'🔒 비공개'}로 변경(동기화)할까요?`))return;
     
     setSheetSaving(true);
     let ok=0,fail=0;
@@ -2726,22 +2838,10 @@ function App(){
     
     for(const slot of targets){
       try{
-        const pid=slot.passageData.id;
-        // 데이터 안전: 시트의 현재 상태 검증 (sentences가 비어있으면 차단)
-        const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
-        const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
-        
-        let payload;
-        if(!sheetP||(()=>{try{return JSON.parse(sheetP.sentences_json||'[]').length===0;}catch{return true;}})()){
-          // 시트에 데이터 없음 → 최소 payload
-          payload={action:'savePassage',id:pid,is_public:makePublic?'TRUE':'FALSE'};
-        }else{
-          // 시트에 데이터 있음 → 전체 payload (Apps Script 미패치 대비)
-          const {passagePayload}=buildSlotPayload({...slot,isPublic:makePublic});
-          payload={action:'savePassage',...passagePayload};
-        }
-        
-        const r=await formPostFetch(appsUrl,payload);
+        // 신규 슬롯은 passageData에 id가 없을 수 있으므로 meta 기반 fallback 필수
+        const pid=slot.passageData?.id||makePassageId(slot.meta?.source,slot.meta?.chapter,slot.meta?.number);
+        // index 관리자패널과 동일한 검증된 경로: JSONP GET, id+is_public만 전송 (지문 데이터 무접촉)
+        const r=await jsonpFetch(appsUrl,{action:'savePassage',id:pid,is_public:makePublic?'TRUE':'FALSE'});
         if(r&&(r.ok||r.warning)){
           ok++;
           okIds.push(slot.id);
@@ -2779,6 +2879,7 @@ function App(){
       const r=await jsonpFetch(appsUrl,{action:'getPassages'});
       if(!r.ok)throw new Error(r.error||'unknown');
       setSheetPassages(r.passages||[]);
+      sheetIdsRef.current=new Set((r.passages||[]).map(p=>p.id).filter(Boolean)); // id 캐시 갱신
       setShowSheetLoad(true);
     }catch(e){
       alert('시트 불러오기 실패: '+e.message);
@@ -2905,7 +3006,7 @@ function App(){
           next[targetIdx]={
             ...next[targetIdx],
             text:sentenceText,
-            meta:{source:sp.source||'',chapter:Number(sp.chapter)||1,chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
+            meta:{source:sp.source||'',chapter:(sp.chapter!=null&&sp.chapter!==''&&isNaN(Number(sp.chapter)))?String(sp.chapter):(Number(sp.chapter)||1),chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
             status:'saved',
             analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{difficultSentences:(pd.flow&&pd.flow.difficultSentences)||[]}},
             passageData:pd,
@@ -3571,12 +3672,14 @@ function App(){
               </span>
               <select value={mogoNew.org} onChange={e=>setMogoNew(p=>({...p,org:e.target.value}))}
                 style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,background:'#3A3A3C',color:'#fff'}}>
-                {['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재'].map(o=><option key={o} value={o}>{o}</option>)}
+                {['평가원','서울','경기','인천','부산','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'].map(o=><option key={o} value={o}>{o}</option>)}
               </select>
               <button onClick={()=>{
                 const id=`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`;
                 const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
-                const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
+                const orgFinal=mogoNew.org==='직접입력'?mogoNew.orgCustom.trim():mogoNew.org;
+                if(!orgFinal){alert('출제기관명을 입력해주세요.');return;}
+                const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${orgFinal}모의고사`;
                 if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
                 addCustomBook({id,label,storage:'sheet'});
               }} style={{background:'#E4F5E9',color:'#1E6B30',border:'none',borderRadius:5,padding:'5px 12px',fontSize:12,cursor:'pointer',fontWeight:600}}>+ 추가</button>
@@ -3686,12 +3789,16 @@ function App(){
                 </span>
                 <select value={mogoNew.org} onChange={e=>setMogoNew(p=>({...p,org:e.target.value}))}
                   style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12}}>
-                  {['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재'].map(o=><option key={o} value={o}>{o}</option>)}
+                  {['평가원','서울','경기','인천','부산','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'].map(o=><option key={o} value={o}>{o}</option>)}
                 </select>
+                {mogoNew.org==='직접입력'&&<input value={mogoNew.orgCustom} onChange={e=>setMogoNew(p=>({...p,orgCustom:e.target.value}))}
+                  placeholder="기관명 입력" style={{padding:'5px 7px',borderRadius:5,border:'none',fontSize:12,width:110}}/>}
                 <button onClick={()=>{
                   const id=`MOGO_${mogoNew.yr}_${mogoNew.gr}_${mogoNew.mon}`;
                   const grLabel={'G1':'고1','G2':'고2','G3':'고3'}[mogoNew.gr]||mogoNew.gr;
-                  const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${mogoNew.org}모의고사`;
+                  const orgFinal=mogoNew.org==='직접입력'?mogoNew.orgCustom.trim():mogoNew.org;
+                  if(!orgFinal){alert('출제기관명을 입력해주세요.');return;}
+                  const label=`${mogoNew.yr}년 ${grLabel} ${parseInt(mogoNew.mon)}월 ${orgFinal}모의고사`;
                   if(allBooks.find(b=>b.id===id)){alert('이미 존재합니다: '+id);return;}
                   addCustomBook({id,label,storage:'sheet'});
                 }} style={{background:'#E4F5E9',color:'#1E6B30',border:'none',borderRadius:5,padding:'6px 14px',fontSize:12,cursor:'pointer',fontWeight:700}}>+ 추가</button>
@@ -3829,6 +3936,18 @@ function App(){
               border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default',whiteSpace:'nowrap'}}>
             🔍 분석 {pending}
           </button>
+          <button onClick={autoAuthorAll} disabled={authorAll.run||!keyOk} title="분석 완료 슬롯 전체에 주제·요약·무관 자동 생성 (확인 후 시트 저장)"
+            style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
+              background:authorAll.run?'#E8E8ED':keyOk?'#FBF3DE':'#E8E8ED',color:authorAll.run?'#86868B':keyOk?'#8a6010':'#86868B',
+              border:authorAll.run?'none':'0.5px solid #C9A84C',borderRadius:7,cursor:authorAll.run||!keyOk?'default':'pointer',whiteSpace:'nowrap'}}>
+            {authorAll.run?`⏳ ${authorAll.done}/${authorAll.total}`:'⚡ 출제 3종'}
+          </button>
+          <button onClick={saveQuestionsOnlyAll} disabled={qSaveAll.run} title="출제DB(문제)만 일괄 저장 — 지문DB는 건너뛰어 빠름 (시트에 지문이 저장된 슬롯 대상)"
+            style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
+              background:qSaveAll.run?'#E8E8ED':'#EAF5EC',color:qSaveAll.run?'#86868B':'#1E6B30',
+              border:qSaveAll.run?'none':'0.5px solid #9CCBA5',borderRadius:7,cursor:qSaveAll.run?'default':'pointer',whiteSpace:'nowrap'}}>
+            {qSaveAll.run?`⏳ ${qSaveAll.done}/${qSaveAll.total}`:'💾 문제만'}
+          </button>
           <button onClick={()=>{const allOpen=slots.every(s=>s.open);setSlots(prev=>{const next=prev.map(s=>({...s,open:!allOpen}));saveSlots(next);return next;})}}
             style={{padding:'4px 10px',fontSize:11,background:'#fff',color:'#0058B0',border:'1px solid #ddd',
               borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',fontWeight:500,flexShrink:0,lineHeight:'1.4'}}>
@@ -3927,61 +4046,11 @@ function App(){
                 flash('Apps Script URL 미설정 - 로컬만 변경됨');
                 return;
               }
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              // 데이터 안정성 최우선 정책 (이전 채팅에서 결정된 안 G 적용)
-              //
-              // 위험 시나리오: 다기기/시점 차이로 로컬 슬롯이 시트보다 덜 완성된 상태일 때
-              //   토글로 전체 payload를 보내면 시트의 완성 데이터를 덮어쓸 위험
-              //
-              // 해결책 (2중 방어):
-              //   ① 토글은 오직 {id, is_public}만 전송 → 다른 필드 영향 최소화
-              //   ② Apps Script가 패치된 버전이면 다른 필드는 기존값 유지
-              //      미패치 버전이면 사전 차단: 시트 데이터와 비교해서 손실 위험 시 중단
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              const pid=slot.passageData?.id
-                      ||(makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number));
+              // index 관리자패널과 동일한 검증된 경로: JSONP GET, id+is_public만 전송
+              // (다른 필드는 일절 건드리지 않으므로 데이터 손실 위험 없음)
+              const pid=slot.passageData?.id||makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
               try{
-                // ① 시트의 현재 상태 조회 (안전 검증용)
-                const cur=await jsonpFetch(appsUrl,{action:'getPassages',id:pid});
-                const sheetP=(cur&&cur.passages&&cur.passages[0])||null;
-                
-                // ② 시트에 데이터가 있는데, 로컬과 다른 경우 경고
-                if(sheetP){
-                  const localTitle=slot.passageData?.title||'';
-                  const localSentLen=(slot.analysis?.sentences||slot.passageData?.sentences||[]).length;
-                  const sheetSentLen=(()=>{try{return JSON.parse(sheetP.sentences_json||'[]').length;}catch{return 0;}})();
-                  
-                  // 시트는 데이터가 있는데 로컬은 비어있음 → 절대 안 됨
-                  if(sheetSentLen>0&&localSentLen===0){
-                    alert('❌ 차단: 시트에 분석 데이터가 있지만 이 슬롯은 비어있습니다.\n\n공개 토글 시 시트 데이터가 손실될 수 있어 작업을 중단합니다.\n슬롯에 데이터를 먼저 불러온 후 다시 시도하세요.');
-                    return;
-                  }
-                  
-                  // 시트 sentences 길이와 로컬이 크게 다름 → 사용자 확인
-                  if(sheetSentLen>0&&Math.abs(sheetSentLen-localSentLen)>2){
-                    if(!window.confirm(`⚠️ 데이터 불일치 감지\n\n시트: ${sheetSentLen}개 문장\n로컬: ${localSentLen}개 문장\n\n그대로 진행하면 시트가 로컬 기준으로 덮어써집니다.\n계속하시겠습니까?`)){
-                      return;
-                    }
-                  }
-                }
-                
-                // ③ 최소 payload만 전송 (id + is_public)
-                //    Apps Script가 패치된 경우: 다른 필드는 기존값 유지
-                //    Apps Script가 미패치된 경우: 다른 필드가 ''로 덮어써짐 (위험)
-                //    → 따라서 미패치 상태면 아래 추가 안전망 동작
-                const safeMode=!sheetP||(sheetP&&JSON.parse(sheetP.sentences_json||'[]').length===0);
-                let payload;
-                if(safeMode){
-                  // 시트에 데이터가 아예 없거나 이번이 첫 저장 → 최소 payload OK
-                  payload={action:'savePassage',id:pid,is_public:next?'TRUE':'FALSE'};
-                }else{
-                  // 시트에 데이터가 있음 → Apps Script 미패치 대비 전체 payload 전송
-                  // (단, 위 검증 통과 후이므로 로컬 데이터도 충실한 상태)
-                  const {passagePayload}=buildSlotPayload({...slot,isPublic:next});
-                  payload={action:'savePassage',...passagePayload};
-                }
-                
-                const r=await formPostFetch(appsUrl,payload);
+                const r=await jsonpFetch(appsUrl,{action:'savePassage',id:pid,is_public:next?'TRUE':'FALSE'});
                 if(r&&(r.ok||r.warning)){
                   upSlot(slot.id,{isPublic:next});
                   flash(next?'🌐 공개 설정 완료':'🔒 비공개 설정 완료');
@@ -4053,11 +4122,11 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           )}
           <select value={slot.meta.source} onChange={e=>onMeta(slot.id,'source',e.target.value)}
             style={{...sB,fontSize:11,color:'#333',border:'0.5px solid #ddd',borderRadius:5,padding:'3px 5px',maxWidth:105,flexShrink:0}}>
-            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
+            {(()=>{const all=getAllBooks();const mocos=all.filter(b=>b.id.startsWith('MOGO_'));const nonMoco=all.filter(b=>!b.id.startsWith('MOGO_'));const mGroups={};mocos.forEach(b=>{const p=b.id.split('_');const k=(p[1]||'')+'_'+(p[2]||'');if(!mGroups[k])mGroups[k]={yr:p[1]||'',gr:p[2]||'',items:[]};mGroups[k].items.push(b);});return<><option value="">— 교재 선택 —</option>{nonMoco.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}{Object.values(mGroups).sort((a,b2)=>b2.yr.localeCompare(a.yr)).map(g=><optgroup key={g.yr+'_'+g.gr} label={`${g.yr} ${g.gr}`}>{g.items.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>)}</>;})()} 
           </select>
           {(()=>{
             const isMogo=slot.meta.source?.startsWith('MOGO_');
-            const MOGO_ORGS=['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'];
+            const MOGO_ORGS=['평가원','서울','경기','인천','부산','EBS','사관학교','경찰대','메가스터디','대성','이투스','비상','천재','직접입력'];
             return['chapter','number'].map(f=>{
               if(f==='chapter'&&isMogo){
                 const curOrg=slot.meta.chapterOrg||'';

@@ -432,52 +432,27 @@ function gen(passage, type, allP){
 
   /* ⑦ 무관한 문장 */
   case 'irrelevant':{
-    if(s.length < 4) return null;
-    // 새 데이터: irrelevant_sentence_index 사용
-    if(passage.irrelevant_sentence_index !== null && passage.irrelevant_sentence_index !== undefined){
-      const insertAt = passage.irrelevant_sentence_index;
-      if(insertAt < 0 || insertAt > s.length) return null;
-      // 무관 문장 텍스트
+    if(s.length < 5) return null; // 본문 5문장 이상이어야 ①~⑤ 번호 5개 보장
+    // 새 데이터: 출제DB의 무관문장 사용 (삽입 위치는 출제 시 랜덤이므로 sentence_index 불필요)
+    {
       const irrelSent = passage.irrel_sentence || (passage.irrel_candidates?.[passage.irrel_sel||0]) || null;
-      if(!irrelSent) return null;
+      if(irrelSent){
       // sentences가 객체 배열이면 text 추출
       const sTexts = s.map(x=>typeof x==='string'?x:(x?.text||''));
-      // insertAt이 0이면 1로 보정 (0번 문장은 번호 표시 안 됨)
-      const safeInsertAt = Math.max(1, Math.min(insertAt, sTexts.length));
+      // ★ 출제 시마다 삽입 위치 랜덤 (첫 문장 뒤 ~ 마지막 문장 앞) — 반복 풀이 시 위치 암기 방지
+      const safeInsertAt = 1 + Math.floor(Math.random()*(sTexts.length-1));
       const fullClean = [...sTexts];
       fullClean.splice(safeInsertAt, 0, irrelSent);
-      // 청크 방식으로 5개 번호 배정 (1번 이상, safeInsertAt 반드시 포함)
+      // ★ CSAT 표준: 무관문장을 포함한 "연속 5개 문장"에 ①~⑤ 부여 (번호 사이에 비번호 문장 없음)
       const fLen = fullClean.length;
-      const chunkSize2 = (fLen - 1) / 5;
-      const picked = new Set([safeInsertAt]);
-      for(let c=0; c<5; c++){
-        const lo = 1 + Math.floor(c * chunkSize2);
-        const hi = Math.min(fLen, 1 + Math.floor((c+1) * chunkSize2));
-        const seg = [];
-        for(let k=lo; k<hi; k++) seg.push(k);
-        if(!seg.length){ picked.add(Math.min(lo, fLen-1)); continue; }
-        if(seg.includes(safeInsertAt)) picked.add(safeInsertAt);
-        else picked.add(seg[Math.floor(Math.random()*seg.length)]);
-      }
-      let numberedIdxs = [...picked].filter(x=>x>=1&&x<fLen).sort((a,b)=>a-b);
-      // 부족하면 채우기
-      for(let i=1; i<fLen && numberedIdxs.length<5; i++){
-        if(!numberedIdxs.includes(i)) numberedIdxs.push(i);
-      }
-      numberedIdxs.sort((a,b)=>a-b);
-      // 초과하면 safeInsertAt 유지하며 5개로
-      if(numberedIdxs.length>5){
-        const rest=numberedIdxs.filter(x=>x!==safeInsertAt);
-        const step=Math.max(1,Math.floor(rest.length/4));
-        const p4=[];
-        for(let k=0;k<4&&p4.length<4;k++) if(rest[k*step]!==undefined) p4.push(rest[k*step]);
-        // 부족하면 앞에서 채우기
-        for(let i=0;i<rest.length&&p4.length<4;i++) if(!p4.includes(rest[i])) p4.push(rest[i]);
-        numberedIdxs=[...p4,safeInsertAt].sort((a,b)=>a-b);
-      }
-      const correctNum = numberedIdxs.indexOf(safeInsertAt) + 1;
-      if(correctNum===0) return null;
+      const wMin = Math.max(1, safeInsertAt - 4);
+      const wMax = Math.min(safeInsertAt, fLen - 5);
+      if(wMax < wMin) return null; // 안전장치 (s.length>=5면 발생 불가)
+      const w = wMin + Math.floor(Math.random()*(wMax - wMin + 1));
+      const numberedIdxs = [w, w+1, w+2, w+3, w+4];
+      const correctNum = safeInsertAt - w + 1;
       return {type, passage, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
+      }
     }
     // 구 데이터 fallback: 다른 지문에서 외래 문장 삽입
     // (시트 지문은 출제DB 정답과 무관한 문제가 되므로 fallback 금지 → 출제 제외)
@@ -661,15 +636,23 @@ function App(){
       .then(r=>{
         if(!r||!r.ok||!Array.isArray(r.books))return;
         const local=loadCustomBooks();
-        const ids=new Set([...BOOK_DEFS.map(b=>b.id),...local.map(b=>b.id)]);
+        const defIds=new Set(BOOK_DEFS.map(b=>b.id));
+        const ids=new Set([...defIds,...local.map(b=>b.id)]);
         const merged=[...local];
-        let added=0;
+        let added=0,changed=0;
         r.books.forEach(b=>{
-          if(!b||!b.id||ids.has(b.id))return;
+          if(!b||!b.id)return;
+          if(ids.has(b.id)){
+            // 기존 교재: 시트 라벨이 바뀌었으면 갱신 (BOOK_DEFS 기본 교재는 코드 고정)
+            if(defIds.has(b.id))return;
+            const ex=merged.find(m=>m.id===b.id);
+            if(ex&&b.label&&ex.label!==b.label){ex.label=b.label;changed++;}
+            return;
+          }
           merged.push({id:b.id,label:b.label||b.id,storage:b.storage||'sheet'});
           ids.add(b.id);added++;
         });
-        if(added>0){
+        if(added>0||changed>0){
           try{localStorage.setItem('te_custom_books',JSON.stringify(merged));}catch(e){}
           setBooksVer(v=>v+1);
         }
@@ -1283,6 +1266,26 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                 </div>
               ))}
             </div>}
+            {/* 학생 선택 시: 종합 요약 */}
+            {selectedStudent&&(stats.typeStats||[]).length>0&&(()=>{
+              const tc=(stats.typeStats||[]).reduce((s,t)=>s+(Number(t.correct)||0),0);
+              const ta=(stats.typeStats||[]).reduce((s,t)=>s+(Number(t.total)||0),0);
+              const ov=ta?Math.round(tc/ta*100):0;
+              const col=ov>=80?'#16a34a':ov>=60?'#f59e0b':'#dc2626';
+              const cnt=(stats.sessionStats||[]).length;
+              return <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,padding:'14px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div>
+                  <span style={{fontSize:14,fontWeight:800,color:'#7a1020'}}>{selectedStudent}</span>
+                  <span style={{fontSize:11.5,color:'#9a8570',marginLeft:8}}>응시 {cnt}회 · <b style={{color:'#3a2a20'}}>{tc}/{ta}문항</b></span>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  <div style={{width:90,height:7,borderRadius:4,background:'#f0e7d4',overflow:'hidden'}}>
+                    <div style={{width:ov+'%',height:'100%',background:col,borderRadius:4}}/>
+                  </div>
+                  <span style={{fontSize:16,fontWeight:800,color:col}}>{ov}%</span>
+                </div>
+              </div>;
+            })()}
             {/* 학생 선택 시: 회차별 기록 */}
             {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📅 회차별 기록</div>
@@ -2407,6 +2410,35 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [searchText,setSearchText]=useState('');
   const [activeSource,setActiveSource]=useState('ALL');
 
+  // ★ 선택 인쇄 모드
+  const [selMode,setSelMode]=useState(false);
+  const [selIds,setSelIds]=useState(new Set());
+  const [printJob,setPrintJob]=useState(null); // {items:[passage], mode:'teacher'|'student'}
+  const printRef=React.useRef(null);
+  const toggleSel=(id)=>setSelIds(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});
+  React.useEffect(()=>{
+    if(!printJob||!printRef.current)return;
+    const t=setTimeout(()=>{
+      const w=window.open('','_blank');
+      if(!w){alert('팝업이 차단되었습니다. 팝업을 허용해주세요.');setPrintJob(null);return;}
+      w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>자료 인쇄</title>
+<style>
+body{font-family:'Pretendard','Malgun Gothic',sans-serif;color:#222;margin:0;padding:18px;font-size:13px;line-height:1.7}
+.prn-item{page-break-after:always}
+.prn-item:last-child{page-break-after:auto}
+.prn-hd{border-bottom:2.5px solid #7a1020;padding-bottom:8px;margin-bottom:14px}
+.prn-hd b{font-size:16px;color:#7a1020}
+.prn-hd span{font-size:11px;color:#888;margin-left:8px}
+button{display:none!important}
+*{box-shadow:none!important}
+@media print{@page{margin:14mm} body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>${printRef.current.innerHTML}</body></html>`);
+      w.document.close();
+      setTimeout(()=>{w.focus();w.print();setPrintJob(null);},400);
+    },350);
+    return ()=>clearTimeout(t);
+  },[printJob]);
+
   // 펼침/접힘 상태 (교재, 강 각각 별도 관리)
   const [expandedBooks,setExpandedBooks]=useState({});
   const [expandedChapters,setExpandedChapters]=useState({});
@@ -2520,7 +2552,12 @@ function StudyView({scriptUrl,studentName,goBack}){
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
           <span style={{fontWeight:800,fontSize:16,color:'#1e293b'}}>📚 자료 보기</span>
-          <span style={{marginLeft:'auto',fontSize:11,color:'#94a3b8'}}>{studentName}</span>
+          <button onClick={()=>{setSelMode(m=>!m);setSelIds(new Set());}}
+            style={{marginLeft:'auto',fontSize:11,fontWeight:700,padding:'5px 11px',borderRadius:7,cursor:'pointer',
+              border:selMode?'1px solid #C9A84C':'1px solid #e6dcc6',
+              background:selMode?'#FBF3DE':'#fff',color:selMode?'#8a6010':'#3a2a20'}}>
+            {selMode?'✕ 선택 취소':'🖨 선택 인쇄'}</button>
+          <span style={{fontSize:11,color:'#94a3b8'}}>{studentName}</span>
         </div>
         <input value={searchText} onChange={e=>setSearchText(e.target.value)}
           placeholder="제목·요약 검색..."
@@ -2611,11 +2648,14 @@ function StudyView({scriptUrl,studentName,goBack}){
                         {chOpen&&(
                           <div style={{padding:'8px 14px 12px 28px',background:'#fafbfc'}}>
                             {c.items.map(p=>(
-                              <div key={p.id} onClick={()=>setSelected(p)}
-                                style={{background:'#fff',border:'1px solid #e8eef8',borderRadius:10,padding:'10px 12px',
-                                  marginBottom:6,cursor:'pointer',transition:'all .15s'}}
-                                onMouseEnter={e=>{e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}
-                                onMouseLeave={e=>{e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}>
+                              <div key={p.id} onClick={()=>selMode?toggleSel(p.id):setSelected(p)}
+                                style={{background:selMode&&selIds.has(p.id)?'#FBF3DE':'#fff',
+                                  border:selMode&&selIds.has(p.id)?'1.5px solid #C9A84C':'1px solid #e8eef8',
+                                  borderRadius:10,padding:'10px 12px',
+                                  marginBottom:6,cursor:'pointer',transition:'all .15s',position:'relative'}}
+                                onMouseEnter={e=>{if(!selMode){e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}}
+                                onMouseLeave={e=>{if(!selMode){e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}}>
+                                {selMode&&<span style={{position:'absolute',top:8,right:10,fontSize:14}}>{selIds.has(p.id)?'☑️':'⬜'}</span>}
                                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:p.abstract?4:0}}>
                                   <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
                                     background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
@@ -2643,6 +2683,27 @@ function StudyView({scriptUrl,studentName,goBack}){
           );
         })}
       </div>
+      {/* 선택 인쇄 하단 바 */}
+      {selMode&&<div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:50,background:'#fff',
+        borderTop:'1px solid #e6dcc6',boxShadow:'0 -2px 12px rgba(0,0,0,0.08)',
+        padding:'10px 16px',display:'flex',alignItems:'center',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+        <span style={{fontSize:12.5,fontWeight:700,color:'#3a2a20'}}>{selIds.size}개 선택</span>
+        <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'teacher'})}
+          style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
+            background:selIds.size?'#7a1020':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 교사용 인쇄</button>
+        <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'student'})}
+          style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
+            background:selIds.size?'#C9A84C':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 학생용 인쇄</button>
+      </div>}
+      {/* 인쇄용 off-screen 렌더 */}
+      {printJob&&<div ref={printRef} style={{position:'fixed',left:-99999,top:0,width:800}}>
+        {printJob.items.map(p=>(
+          <div key={p.id} className="prn-item">
+            <div className="prn-hd"><b>{p.title||p.id}</b><span>대단한영어 · 자료</span></div>
+            <SlotViewer slot={toStudySlot(p)} viewMode={printJob.mode}/>
+          </div>
+        ))}
+      </div>}
     </div>
   );
 }
@@ -2999,36 +3060,60 @@ function SlotViewer({slot,viewMode}){
 }
 
 /* ── 자료 상세 보기: 시트 데이터를 slot 형태로 변환 후 SlotViewer로 렌더 ── */
+function toStudySlot(passage){
+  let sentences=[],flow={},blockSummaries=null;
+  try{sentences=JSON.parse(passage.sentences_json||'[]');}catch{}
+  try{flow=JSON.parse(passage.flow_json||'{}');}catch{}
+  try{blockSummaries=JSON.parse(passage.blockSummaries_json||'null');}catch{}
+  return {
+    id:0,
+    text:'',
+    meta:{
+      source:passage.source||'',
+      chapter:passage.chapter||'',
+      number:passage.number||'',
+      difficulty:passage.difficulty||'중',
+    },
+    status:'saved',
+    analysis:{sentences,flow,grammar:{difficultSentences:(flow&&flow.difficultSentences)||[]}},
+    passageData:{
+      id:passage.id,
+      title:passage.title||'',
+      abstract:passage.abstract||'',
+      sentences,
+      flow,
+    },
+    blockSummaries:blockSummaries,
+    open:true,
+    isPublic:true,
+  };
+}
 function StudyDetail({passage,viewMode,setViewMode,goBack}){
   // 시트 row -> teacher.html slot 형태로 변환
-  const slot=React.useMemo(()=>{
-    let sentences=[],flow={},blockSummaries=null;
-    try{sentences=JSON.parse(passage.sentences_json||'[]');}catch{}
-    try{flow=JSON.parse(passage.flow_json||'{}');}catch{}
-    try{blockSummaries=JSON.parse(passage.blockSummaries_json||'null');}catch{}
-    return {
-      id:0,
-      text:'',
-      meta:{
-        source:passage.source||'',
-        chapter:passage.chapter||'',
-        number:passage.number||'',
-        difficulty:passage.difficulty||'중',
-      },
-      status:'saved',
-      analysis:{sentences,flow,grammar:{}},
-      passageData:{
-        id:passage.id,
-        title:passage.title||'',
-        abstract:passage.abstract||'',
-        sentences,
-        flow,
-      },
-      blockSummaries:blockSummaries,
-      open:true,
-      isPublic:true,
-    };
-  },[passage]);
+  const slot=React.useMemo(()=>toStudySlot(passage),[passage]);
+
+  const bodyRef=React.useRef(null);
+  const printStudy=()=>{
+    if(!bodyRef.current)return;
+    const w=window.open('','_blank');
+    if(!w){alert('팝업이 차단되었습니다. 팝업을 허용해주세요.');return;}
+    const title=(passage.title||passage.id||'자료').replace(/</g,'&lt;');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+<style>
+body{font-family:'Pretendard','Malgun Gothic',sans-serif;color:#222;margin:0;padding:18px;font-size:13px;line-height:1.7}
+.hd{border-bottom:2.5px solid #7a1020;padding-bottom:8px;margin-bottom:14px}
+.hd b{font-size:16px;color:#7a1020}
+.hd span{font-size:11px;color:#888;margin-left:8px}
+button{display:none!important}
+*{box-shadow:none!important}
+@media print{@page{margin:14mm} body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>
+<div class="hd"><b>${title}</b><span>대단한영어 · 자료</span></div>
+${bodyRef.current.innerHTML}
+</body></html>`);
+    w.document.close();
+    setTimeout(()=>{w.focus();w.print();},400);
+  };
 
   return(
     <div style={{maxWidth:900,margin:'0 auto',padding:'0 0 80px',background:'#fafafa',minHeight:'100vh'}}>
@@ -3036,6 +3121,7 @@ function StudyDetail({passage,viewMode,setViewMode,goBack}){
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
           <span style={{fontWeight:800,fontSize:14,color:'#1e293b',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{passage.title||passage.id}</span>
+          <button onClick={printStudy} style={{fontSize:11,fontWeight:700,padding:'5px 11px',borderRadius:7,border:'1px solid #e6dcc6',background:'#fff',color:'#3a2a20',cursor:'pointer'}}>🖨 인쇄</button>
           <div style={{display:'flex',background:'#f1f5f9',borderRadius:7,padding:2,gap:0}}>
             {['teacher','student'].map(m=>(
               <button key={m} onClick={()=>setViewMode(m)}
@@ -3048,7 +3134,7 @@ function StudyDetail({passage,viewMode,setViewMode,goBack}){
           </div>
         </div>
       </div>
-      <div style={{padding:'12px'}}>
+      <div style={{padding:'12px'}} ref={bodyRef}>
         <SlotViewer slot={slot} viewMode={viewMode}/>
       </div>
     </div>

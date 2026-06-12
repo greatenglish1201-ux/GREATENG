@@ -1,0 +1,296 @@
+{
+  "key": "이동고_3학년_2026_1학기_중간",
+  "school": "이동고",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "중간고사",
+  "subject": "영어독해와작문",
+  "total": 25,
+  "patterns": {
+    "어법": 5,
+    "주제": 3,
+    "문장삽입": 1,
+    "빈칸추론": 3,
+    "글의순서": 3,
+    "흐름무관": 3,
+    "요약문완성": 2,
+    "어휘": 2,
+    "제목": 2,
+    "내용일치": 1
+  },
+  "score_dist": {
+    "4.4": 4,
+    "3.6": 4,
+    "3.8": 4,
+    "4.7": 1,
+    "4.0": 1,
+    "3.4": 5,
+    "4.2": 2,
+    "4.6": 3,
+    "4.9": 1
+  },
+  "answer_dist": {
+    "④": 7,
+    "②": 5,
+    "⑤": 5,
+    "①": 4,
+    "③": 4
+  },
+  "passage_groups": {},
+  "questions": [
+    {
+      "num": 1,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 4.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "④",
+      "original_q": "1. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? [4.4]\n[지문 — 주제: Hellenistic 시대 천문학자 Hipparchus의 업적, eccentric 개념]\n밑줄: ① noted  ② devised  ③ where  ④ was  ⑤ upon which"
+    },
+    {
+      "num": 2,
+      "qtype": "주제",
+      "stem": "다음 글의 주제로 가장 적절한 것은?",
+      "score": 3.6,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "②",
+      "original_q": "2. 다음 글의 주제로 가장 적절한 것은? [3.6]\n[지문 — 주제: 미생물이 지구 생명체 대부분을 차지, DNA 분석으로 드러난 편향 교정]\n① the need to preserve endangered animals in diverse ecosystems\n② the dominance of microorganisms and a broader understanding of life\n③ the harmful effects of microscopic organisms on human health and housing\n④ environmental factors that lead to the extinction of microorganisms\n⑤ the complex process by which microorganisms cause diseases in various environments"
+    },
+    {
+      "num": 3,
+      "qtype": "문장삽입",
+      "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "⑤",
+      "original_q": "3. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? [3.8]\n<제시문> Not so, however, for the groundskeeper of a sports stadium, where the constituent grasses and their stages of growth really do matter.\n[지문 — 주제: 일반 명사로 추상화하기 vs 개별성, 잔디와 데이지의 고유성]\n( ① ) ~ ( ⑤ )"
+    },
+    {
+      "num": 4,
+      "qtype": "빈칸추론",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "score": 4.7,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "①",
+      "original_q": "4. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [4.7]\n[지문 — 주제: 복사기의 불편함이 직원 간 비공식적 상호작용을 유발]\n① wonderful stimuli for informal interactions\n② primary causes of technical malfunctions\n③ requirements for professional job training\n④ effective tools for individual task management\n⑤ barriers to smooth communication in the office"
+    },
+    {
+      "num": 5,
+      "qtype": "글의순서",
+      "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "score": 4.0,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "②",
+      "original_q": "5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [4.0]\n<주어진 글> We often express problems interrogatively.\n[지문 — 주제: 질문 형태로 표현된 문제, \"Where are my keys?\"의 해결 (A)(B)(C)]\n① (A) - (C) - (B)    ② (B) - (A) - (C)    ③ (B) - (C) - (A)    ④ (C) - (A) - (B)    ⑤ (C) - (B) - (A)"
+    },
+    {
+      "num": 6,
+      "qtype": "흐름무관",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "score": 3.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "③",
+      "original_q": "6. 다음 글에서 전체 흐름과 관계 없는 문장은? [3.4]\n[지문 — 주제: Carstensen 사회정서적 선택이론, 노화와 목표 우선순위]\n①~⑤ 문장 중 무관 문장 선택"
+    },
+    {
+      "num": 7,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 4.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "②",
+      "original_q": "7. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? [4.4]\n[지문 — 주제: 정보와 의미의 차이, 동전 던지기 게임 해석]\n밑줄: ① whose  ② which  ③ in which  ④ constitutes  ⑤ defeats"
+    },
+    {
+      "num": 8,
+      "qtype": "빈칸추론",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "score": 4.2,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "③",
+      "original_q": "8. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [4.2]\n[지문 — 주제: Dennett의 'consideration-generator-squelchers', 도덕적 고려가 무한 정당화를 끝냄]\n① ~ ⑤ (빈칸 추론 선지)"
+    },
+    {
+      "num": 9,
+      "qtype": "글의순서",
+      "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "④",
+      "original_q": "9. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3.8]\n<주어진 글> We often express problems interrogatively.\n[지문 — (A)(B)(C): 질문 형태 문제와 답변의 적절성]\n① (A) - (C) - (B)    ② (B) - (A) - (C)    ③ (B) - (C) - (A)    ④ (C) - (A) - (B)    ⑤ (C) - (B) - (A)"
+    },
+    {
+      "num": 10,
+      "qtype": "흐름무관",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "score": 3.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "④",
+      "original_q": "10. 다음 글에서 전체 흐름과 관계 없는 문장은? [3.4]\n[지문 — 주제: Carstensen 사회정서적 선택이론, 노년기 목표 정렬과 자아 인식]\n①~⑤ 문장 중 무관 문장 선택"
+    },
+    {
+      "num": 11,
+      "qtype": "요약문완성",
+      "stem": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+      "score": 4.2,
+      "format": "5지선다_표",
+      "pg": null,
+      "answer": "①",
+      "original_q": "11. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은? [4.2]\n[지문 — 주제: Dennett의 도덕적 고려가 끝없는 정당화 요구를 멈춰 의사결정을 가능하게 함]\n요약: ___(A)___ judgments function to ___(B)___ endless demands for justification, thereby enabling human decision-making.\n        (A)            (B)\n① Moral        terminate\n② Legal        suppress\n③ Normative    trigger\n④ Subjective   halt\n⑤ Ethical      prolong"
+    },
+    {
+      "num": 12,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 4.6,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "④",
+      "original_q": "12. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? [4.6]\n[지문 — 주제: 정보와 의미의 차이, 동전 던지기 게임에서의 해석]\n밑줄: ① whose  ② which  ③ in which  ④ constitutes  ⑤ defeats"
+    },
+    {
+      "num": 13,
+      "qtype": "주제",
+      "stem": "다음 글의 주제로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "⑤",
+      "original_q": "13. 다음 글의 주제로 가장 적절한 것은? [3.8]\n[지문 — 주제: \"Art without commerce is a hobby\", 예술과 상업성의 분리 불가]\n① various methods artists use to improve their creative productivity\n② the negative impact of university professors on fine arts education\n③ effective business strategies for young artists to achieve financial success\n④ the importance of pursuing art for its own sake regardless of financial rewards\n⑤ the capitalist tendency to evaluate artistic legitimacy based on commercial success"
+    },
+    {
+      "num": 14,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 3.6,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "④",
+      "original_q": "14. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? [3.6]\n[지문 — 주제: 코끼리 등 keystone species의 사바나 생태계 영향]\n밑줄: ① modify  ② what  ③ which  ④ creates  ⑤ to exceed"
+    },
+    {
+      "num": 15,
+      "qtype": "글의순서",
+      "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "③",
+      "original_q": "15. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3.8]\n<주어진 글> Young employees agree that AI has more positive impact on the dynamics of the workforce, though there are major concerns on job loss and being left behind. While AI has the potential to automate certain jobs, it is also giving rise to new career opportunities and demands.\n[지문 — (A)(B)(C): AI 시대 평생학습과 재교육의 필요성]\n① (A) - (C) - (B)    ② (B) - (A) - (C)    ③ (B) - (C) - (A)    ④ (C) - (A) - (B)    ⑤ (C) - (B) - (A)"
+    },
+    {
+      "num": 16,
+      "qtype": "흐름무관",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "score": 3.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "④",
+      "original_q": "16. 다음 글에서 전체 흐름과 관계 없는 문장은? [3.4]\n[지문 — 주제: 지리학의 핵심 'where', 공간적 배열의 중요성]\n①~⑤ 문장 중 무관 문장 선택"
+    },
+    {
+      "num": 17,
+      "qtype": "빈칸추론",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "score": 4.6,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "③",
+      "original_q": "17. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [4.6]\n[지문 — 주제: Darwin의 유전 보수성, 후손은 환경에 무관하게 다양성 생산]\n① to perfectly match their survival needs\n② in harmony with their immediate surroundings\n③ anticipating the future conditions they will face\n④ independently of environmental circumstances they face\n⑤ in direct response to changes in their surrounding environment"
+    },
+    {
+      "num": 18,
+      "qtype": "어휘",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "score": 3.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "⑤",
+      "original_q": "18. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? [3.4]\n[지문 — 주제: 연결성(connectivity)이 보존 생물학에서 갖는 의미, 서식지 단편화]\n밑줄: ① enhanced  ② restrict  ③ eliminate  ④ halt  ⑤ high"
+    },
+    {
+      "num": 19,
+      "qtype": "요약문완성",
+      "stem": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+      "score": 3.6,
+      "format": "5지선다_표",
+      "pg": null,
+      "answer": "①",
+      "original_q": "19. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은? [3.6]\n[지문 — 주제: 우주는 무언가로 팽창하는 것이 아니라 시공간 구조 자체가 늘어남]\n요약: Contrary to our common intuition that the Universe expands into a(n) ___(A)___ space, the actual expansion of the Universe is simply the ___(B)___ of its own inherent structure of space and time.\n        (A)            (B)\n① external      stretching\n② internal      downsizing\n③ its own       extending\n④ separate      movement\n⑤ outer         change"
+    },
+    {
+      "num": 20,
+      "qtype": "어휘",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 표현의 쓰임이 적절하지 않은 것은?",
+      "score": 3.6,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "⑤",
+      "original_q": "20. 다음 글의 밑줄 친 부분 중, 문맥상 표현의 쓰임이 적절하지 않은 것은? [3.6]\n[지문 — 주제: 혁신가로서의 음악가, 모더니즘 경매의 새로움 추구]\n밑줄: ① disappointed  ② more than  ③ progress  ④ breaking  ⑤ outdated"
+    },
+    {
+      "num": 21,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 4.4,
+      "format": "5지선다_번호",
+      "pg": null,
+      "answer": "②",
+      "original_q": "21. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? [4.4]\n[지문 — 주제: 가르침은 사회의 요구를 반영, 질서 부여를 통한 학습]\n밑줄: ① which  ② yield  ③ it  ④ that  ⑤ pursued"
+    },
+    {
+      "num": 22,
+      "qtype": "제목",
+      "stem": "다음 글의 제목으로 가장 적절한 것은?",
+      "score": 4.6,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "⑤",
+      "original_q": "22. 다음 글의 제목으로 가장 적절한 것은? [4.6]\n[지문 — 주제: 건축은 공간적 안무(spatial choreography), 사용자의 본능적 필요와 공명]\n① The Role of Communication in Architectural Design\n② How Technology Enhances Efficiency in Architecture\n③ Standardization in Architectural Design for Universal Use\n④ Architecture as a System of Explicit Instruction and Control\n⑤ Architecture as the Empathic Choreography of Human Experience"
+    },
+    {
+      "num": 23,
+      "qtype": "제목",
+      "stem": "다음 글의 제목으로 가장 적절한 것은?",
+      "score": 3.4,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "①",
+      "original_q": "23. 다음 글의 제목으로 가장 적절한 것은? [3.4]\n[지문 — 주제: soft-path river engineering, 강의 변동성을 수용하는 지적 겸손]\n① Least Intervention: The Philosophy of Soft-Path River Engineering\n② Soft-Path vs. Hard-Path River Engineering: Which is Better?\n③ The Impact of Soft-Path River Engineering on Human Beings\n④ The Significance of Employing Environment-Friendly Development\n⑤ Geographical Features and Landscapes Affected by Human Intervention"
+    },
+    {
+      "num": 24,
+      "qtype": "내용일치",
+      "stem": "다음 글의 내용과 일치하지 않는 것은?",
+      "score": 4.4,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "②",
+      "original_q": "24. 다음 글의 내용과 일치하지 않는 것은? [4.4]\n[지문 — 주제: 공간 명시적 방법의 발전, 지리학이 위치의 중요성을 입증]\n① In the past, researchers did not reveal the exact places their data were related to.\n② Anthropologists changed the names of studied communities to generalize their research findings.\n③ Protecting the privacy of human subjects remains a significant concern in current research practices.\n④ A few decades ago, most researchers outside of geography showed little interest in marking exact study locations.\n⑤ Thanks to the field of geography, researchers came to recognize the importance of specifying precise locations."
+    },
+    {
+      "num": 25,
+      "qtype": "주제",
+      "stem": "다음 글의 주제로 가장 적절한 것은?",
+      "score": 4.9,
+      "format": "5지선다",
+      "pg": null,
+      "answer": "④",
+      "original_q": "25. 다음 글의 주제로 가장 적절한 것은? [4.9]\n[지문 — 주제: 합리적 행위자 가정과 자유지상주의 정책, Becker의 합리적 중독 이론]\n① how human behavior can be interpreted in various ways\n② the role of libertarian policies in protecting individual freedom\n③ the inappropriateness of rational explanations for human behavior\n④ considering rational reasons for behavior before turning to psychological explanation\n⑤ the superiority of psychological interpretations in human behavior over rational reasons"
+    }
+  ],
+  "has_answers": true,
+  "summary": "25문항 100.0점, 전 문항 외부지문 수능형. 배점 3.4~4.9점 광범위(고난도 4.9점 1문항). 어법5·주제4·글의순서3·흐름무관3·빈칸3·어휘2·제목2·요약2·내용일치1. 정답 포함(정답표 기반). 9·15번 글의순서 주어진글 제시형, 11·19번 (A)(B) 요약표형. ※ A형 형식 패턴 — 발문·선지·정답은 기출 원문, 지문은 주제 메모.",
+  "savedAt": "2026-06-12T09:11:56.032495+09:00"
+}

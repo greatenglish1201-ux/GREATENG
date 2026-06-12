@@ -1,0 +1,733 @@
+{
+  "meta": {
+    "school": "제철중",
+    "grade": "2학년",
+    "year": "2026",
+    "semester": "1학기",
+    "exam": "기말고사",
+    "total": 26,
+    "build": "claude-authored",
+    "generated_at": "2026-06-11 15:27 KST",
+    "pattern_key": "제철중_2학년_2026_1학기_중간",
+    "savedAt": "2026-06-11T15:27:06.877720+09:00"
+  },
+  "questions": [
+    {
+      "type": "single",
+      "num": 1,
+      "qtype": "어휘",
+      "score": 4,
+      "question": "밑줄 친 단어의 쓰임이 적절하지 않은 것은?",
+      "choices": [
+        "① The law doesn't <u>allow</u> people to keep just one hamster.",
+        "② You must pay a <u>fine</u> if you break the rules.",
+        "③ Singapore <u>remains</u> very clean thanks to these rules.",
+        "④ Ketchup can <u>hide</u> the real taste of the food.",
+        "⑤ The room was so clean and <u>messy</u> that everyone loved it."
+      ],
+      "answer": "⑤",
+      "explanation": "messy(지저분한)는 clean(깨끗한)과 의미가 모순되어 쓰임이 부적절하다. 나머지는 allow(허용하다), fine(벌금), remain(여전히 ~이다), hide(숨기다)가 자연스럽게 쓰였다."
+    },
+    {
+      "type": "single",
+      "num": 2,
+      "qtype": "어휘",
+      "score": 4,
+      "question": "주어진 단어의 영영 풀이가 잘못된 것은?",
+      "choices": [
+        "① import: to bring goods into a country from another country",
+        "② tradition: a new idea or method that nobody has followed before",
+        "③ lonely: unhappy because you are not with other people",
+        "④ flavor: the particular taste of a food or drink",
+        "⑤ fine: an amount of money that you must pay for breaking a rule"
+      ],
+      "answer": "②",
+      "explanation": "tradition(전통)은 '오랫동안 전해 내려온 신념이나 관습'이다. ②의 풀이는 오히려 '새로운 발상'을 설명하므로 잘못되었다."
+    },
+    {
+      "type": "single",
+      "num": 3,
+      "qtype": "어휘",
+      "score": 4,
+      "question": "주어진 문장의 빈칸에 알맞은 말이 아닌 것은? (순서 상관없음)\nDon't forget to ______ the koalas at the zoo.",
+      "choices": [
+        "① feed",
+        "② watch",
+        "③ see",
+        "④ visit",
+        "⑤ import"
+      ],
+      "answer": "⑤",
+      "explanation": "동물원에서 코알라에게 '먹이를 주다/보다/구경하다/방문하다'는 모두 자연스럽지만 import(수입하다)는 의미상 빈칸에 들어갈 수 없다."
+    },
+    {
+      "type": "single",
+      "num": 4,
+      "qtype": "어휘",
+      "score": 4,
+      "question": "주어진 단어의 영영 풀이가 잘못된 것은?",
+      "choices": [
+        "① recommend: to tell someone that something is good or useful",
+        "② cruise: a journey on a ship for pleasure",
+        "③ sight: a place that is interesting for visitors to see",
+        "④ feed: to take food away from a person or an animal",
+        "⑤ remain: to stay in the same state without changing"
+      ],
+      "answer": "④",
+      "explanation": "feed는 '먹이를 주다(to give food to)'라는 뜻이다. ④는 반대로 '음식을 빼앗다'로 풀이하여 잘못되었다."
+    },
+    {
+      "type": "single",
+      "num": 5,
+      "qtype": "대화 완성/흐름",
+      "score": 4,
+      "question": "대화의 흐름상, (A)에 들어갈 가장 적절한 표현은?\nW: Hello! How may I help you?\nB: My family is planning to visit London. We're going to see the Tower of London and Big Ben.\nW: (A)\nB: That sounds good. Can you recommend any must-eat foods in London?\nW: Sure. You should try fish and chips. It's a classic English dish.",
+      "choices": [
+        "① Why don't you take a red bus tour? It's a great way to see all the sights.",
+        "② I have never been to London before, so I can't help you.",
+        "③ You must pay a fine if you eat on the bus.",
+        "④ How about staying home instead of traveling?",
+        "⑤ Don't forget to bring your own fish and chips."
+      ],
+      "answer": "①",
+      "explanation": "런던의 명소를 보러 간다는 말에 대한 응답이고, 바로 뒤에서 B가 'That sounds good.'이라고 호응하므로 관광 방법을 추천하는 ①이 자연스럽다."
+    },
+    {
+      "type": "single",
+      "num": 6,
+      "qtype": "대화 완성/흐름",
+      "score": 3,
+      "question": "대화들의 흐름상 어색한 것은?\nⓐ A: What should I visit in Sydney?  B: I recommend Sydney Zoo.\nⓑ A: Why don't you visit Hoi An?  B: That sounds perfect!\nⓒ A: Don't forget to feed them!  B: Okay, I won't.\nⓓ A: Can you recommend any must-eat foods?  B: Sure. You should try fish and chips.\nⓔ A: What can I do at the Eiffel Tower?  B: It's the longest river in the world.",
+      "choices": [
+        "① ⓐ",
+        "② ⓑ",
+        "③ ⓒ",
+        "④ ⓓ",
+        "⑤ ⓔ"
+      ],
+      "answer": "⑤",
+      "explanation": "에펠탑에서 무엇을 할 수 있는지 물었는데 '세계에서 가장 긴 강'이라고 답하는 것은 동문서답이다. 나머지는 질문과 응답이 자연스럽게 연결된다."
+    },
+    {
+      "type": "single",
+      "num": 7,
+      "qtype": "내용 일치/불일치",
+      "score": 3,
+      "question": "다음 공고문을 보고 답할 수 없는 것은?\n[World Culture Day]\n· When: Friday, July 10, 3 p.m.\n· Where: School Hall\n· What: Learn surprising rules from Switzerland, Singapore, and France\n· Bring: Your notebook\n· Free snacks for everyone!",
+      "choices": [
+        "① 행사는 언제 열리는가?",
+        "② 행사를 준비한 사람은 누구인가?",
+        "③ 행사는 어디에서 열리는가?",
+        "④ 행사에서 무엇을 배우는가?",
+        "⑤ 무엇을 가져가야 하는가?"
+      ],
+      "answer": "②",
+      "explanation": "공고문에 날짜·장소·내용·준비물·간식 제공은 나와 있으나 행사를 준비한 사람에 대한 정보는 없다."
+    },
+    {
+      "type": "single",
+      "num": 8,
+      "qtype": "어법",
+      "score": 5,
+      "question": "어법상 어색한 문장은?",
+      "choices": [
+        "① I met a girl who likes music.",
+        "② She learned how to cook Vietnamese food.",
+        "③ This book helped me to learn English.",
+        "④ My parents got me clean my room.",
+        "⑤ This is the book that is popular in Korea."
+      ],
+      "answer": "④",
+      "explanation": "준사역동사 get은 목적격보어로 to부정사를 취하므로 got me to clean이 되어야 한다. help는 동사원형과 to부정사 모두 가능(③)."
+    },
+    {
+      "type": "single",
+      "num": 9,
+      "qtype": "어법",
+      "score": 5,
+      "question": "어법상 올바른 문장은 모두 몇 개인가?\nⓐ He knows where to going after school.\nⓑ They are students who works hard.\nⓒ Swiss law gets people to spend time with their pets.\nⓓ I forgot when to call him.",
+      "choices": [
+        "① 0개",
+        "② 1개",
+        "③ 2개",
+        "④ 3개",
+        "⑤ 4개"
+      ],
+      "answer": "③",
+      "explanation": "ⓒ(get+목적어+to부정사), ⓓ(when+to부정사)가 올바르다. ⓐ는 where to go, ⓑ는 선행사 students(복수)에 맞춰 who work가 되어야 하므로 올바른 문장은 2개이다."
+    },
+    {
+      "type": "group",
+      "range": "10~11",
+      "passage": "Every country has its own culture. Culture shows ways of living and thinking. In each culture, there are rules that don't ⓐ      certain things. So, we need to know how to act in different countries.\n\nIn Switzerland, people really care about animals. ( ① ) Swiss law says that people cannot have just one hamster or one parrot at home. ( ② ) They must have at least two. These pets feel ⓑ      when they are alone. ( ③ ) Also, people who have dogs or cats must spend enough time with their pets. ( ④ ) Those who have dogs must take them outside for ⓒ      too. ( ⑤ ) Pets are very happy in Switzerland.",
+      "questions": [
+        {
+          "num": 10,
+          "qtype": "어법/어휘",
+          "score": 4,
+          "question": "윗글의 ⓐ~ⓒ에 들어갈 가장 적절한 단어는?",
+          "choices": [
+            "① ⓐ allow — ⓑ lonely — ⓒ exercise",
+            "② ⓐ allow — ⓑ proud — ⓒ exercise",
+            "③ ⓐ hide — ⓑ lonely — ⓒ exercise",
+            "④ ⓐ allow — ⓑ lonely — ⓒ flavor",
+            "⑤ ⓐ hide — ⓑ proud — ⓒ flavor"
+          ],
+          "answer": "①",
+          "explanation": "ⓐ '특정한 것을 허용하지 않는 규칙' → allow, ⓑ '혼자 있을 때 외로움을 느낀다' → lonely, ⓒ '운동을 위해 밖으로 데리고 나가야 한다' → exercise."
+        },
+        {
+          "num": 11,
+          "qtype": "문장 삽입",
+          "score": 3,
+          "question": "윗글의 흐름상 아래 문장이 들어가기에 가장 적절한 곳은? [3점]\nThey need a friend that can be with them.",
+          "choices": [
+            "① ①",
+            "② ②",
+            "③ ③",
+            "④ ④",
+            "⑤ ⑤"
+          ],
+          "answer": "③",
+          "explanation": "주어진 문장의 They는 외로움을 느끼는 반려동물을 가리키므로, '혼자 있으면 외롭다'는 문장 바로 뒤인 ③에 들어가야 '그래서 함께할 친구가 필요하다'로 자연스럽게 이어진다."
+        }
+      ]
+    },
+    {
+      "type": "single",
+      "num": 12,
+      "qtype": "어법",
+      "score": 4,
+      "question": "글의 흐름상 어법적으로 어색한 것은? [4점]\nSingapore is a very clean city ⓐ<u>which</u> is famous for its strict rules. People ⓑ<u>who</u> break the rules must pay a fine. Everyone knows ⓒ<u>where</u> to eat and where to throw away their trash. These rules ⓓ<u>helps</u> the city stay clean. Visitors should learn ⓔ<u>how</u> to act in the city.",
+      "choices": [
+        "① ⓐ",
+        "② ⓑ",
+        "③ ⓒ",
+        "④ ⓓ",
+        "⑤ ⓔ"
+      ],
+      "answer": "④",
+      "explanation": "주어 These rules가 복수이므로 helps가 아닌 help가 되어야 한다. ⓐ(사물 선행사+which), ⓑ(사람 선행사+who), ⓒⓔ(의문사+to부정사)는 모두 올바르다."
+    },
+    {
+      "type": "group",
+      "range": "13~15",
+      "passage": "In France, children can't have ketchup in school cafeterias. This sounds surprising, but there's a good reason. France is famous for its delicious food. French people are very proud of their food. (가) 그들은 케첩이 그들 음식의 진짜 맛을 숨긴다고 믿는다. They really hope (A)<u>that</u> their children can taste and enjoy the flavors of French cooking. That way, French children can learn to (나)      .",
+      "questions": [
+        {
+          "num": 13,
+          "qtype": "영작/배열",
+          "score": 4,
+          "question": "윗글의 (가) 문장을 주어진 단어들을 배열하여 영어로 옮길 때 세 번째 빈칸에 들어갈 단어로 알맞은 것은? [4점]\n<보기> believe / that / hides / ketchup / the real taste / they / of their food",
+          "choices": [
+            "① ketchup",
+            "② that",
+            "③ hides",
+            "④ believe",
+            "⑤ they"
+          ],
+          "answer": "②",
+          "explanation": "(가) = They believe that ketchup hides the real taste of their food. 세 번째 자리에 오는 단어는 명사절 접속사 that이다."
+        },
+        {
+          "num": 14,
+          "qtype": "빈칸 추론",
+          "score": 3,
+          "question": "윗글의 (나)에 들어갈 알맞은 표현은? [3점]",
+          "choices": [
+            "① pay a fine for ketchup",
+            "② import chewing gum",
+            "③ feel lonely at school",
+            "④ hide the taste of food",
+            "⑤ love their food culture"
+          ],
+          "answer": "⑤",
+          "explanation": "앞 내용이 '아이들이 프랑스 요리의 풍미를 맛보고 즐기길 바란다'이므로, 그 결과로 '자신들의 음식 문화를 사랑하는 법을 배운다'가 자연스럽다."
+        },
+        {
+          "num": 15,
+          "qtype": "어법/어휘",
+          "score": 4,
+          "question": "윗글의 (A)와 쓰임이 같은 것은? [4점]",
+          "choices": [
+            "① I met a girl that likes music.",
+            "② This is the book that is popular in Korea.",
+            "③ I know that he is honest.",
+            "④ Look at the dog that is running over there.",
+            "⑤ She has a friend that lives in Paris."
+          ],
+          "answer": "③",
+          "explanation": "(A)의 that은 hope의 목적어인 명사절을 이끄는 접속사이다. ③의 that도 know의 목적절을 이끄는 접속사로 쓰임이 같다. 나머지는 모두 선행사를 수식하는 관계대명사이다."
+        }
+      ]
+    },
+    {
+      "type": "single",
+      "num": 16,
+      "qtype": "대화",
+      "score": 3,
+      "question": "대화의 빈칸에 가장 알맞은 것은? [3점]\nHana: Hi! I'm planning to go to Da Nang.\nDoyun: It has beautiful beaches. It's a great place to relax.\nHana: Sounds good. I also want to enjoy Vietnamese traditions.\nDoyun: Then ____________? It's close to Da Nang, and you can see the old town there.\nHana: That sounds perfect!",
+      "choices": [
+        "① why don't you visit Hoi An",
+        "② what about staying at the beach all day",
+        "③ how do you go to Paris",
+        "④ when will you leave Korea",
+        "⑤ where did you buy the ticket"
+      ],
+      "answer": "①",
+      "explanation": "베트남 전통을 즐기고 싶다는 말에 대한 제안이고, 뒤에서 '다낭에서 가깝고 옛 시가지를 볼 수 있다'고 했으므로 호이안 방문을 제안하는 ①이 알맞다."
+    },
+    {
+      "type": "single",
+      "num": 17,
+      "qtype": "대화",
+      "score": 3,
+      "question": "두 사람의 대화가 어색한 것은? [3점]",
+      "choices": [
+        "① A: What should I visit in Sydney?  B: I recommend Sydney Zoo.",
+        "② A: Can I recommend a place?  B: Sure!",
+        "③ A: Don't forget to take a cruise on the river!  B: Okay, I won't.",
+        "④ A: How may I help you?  B: It's the largest zoo in Australia.",
+        "⑤ A: You should see the night view of the tower. It's fantastic!  B: I'd love to."
+      ],
+      "answer": "④",
+      "explanation": "도움이 필요한지 묻는 말에 '호주에서 가장 큰 동물원'이라고 답하는 것은 어색하다. 나머지는 제안·추천과 응답이 자연스럽다."
+    },
+    {
+      "type": "single",
+      "num": 18,
+      "qtype": "빈칸 추론",
+      "score": 4,
+      "question": "내용상 ①~⑤의 빈칸에 적절하지 않은 것은? [4점]\nEvery country has its own ①<u>culture</u>. In each culture, there are ②<u>rules</u> that don't allow certain things. In Switzerland, people who have dogs must ③<u>ignore</u> them and spend enough time with them. In Singapore, people cannot ④<u>import</u> chewing gum. In France, children can't have ⑤<u>ketchup</u> in school cafeterias.",
+      "choices": [
+        "① ①",
+        "② ②",
+        "③ ③",
+        "④ ④",
+        "⑤ ⑤"
+      ],
+      "answer": "③",
+      "explanation": "스위스에서는 반려견을 돌보고(care for) 충분한 시간을 보내야 한다고 했으므로 ignore(무시하다)는 내용상 적절하지 않다."
+    },
+    {
+      "type": "group",
+      "range": "19~20",
+      "passage": "Singapore is a very clean city. Here, people cannot eat or drink on buses or the subway. ( ① ) They also cannot sell or import chewing gum. ( ② ) People who break the rules must pay a ⓐ      . ( ③ ) In Singapore, everyone knows where to eat and where to ⓑ      their trash. ( ④ ) Thanks to these rules, Singapore ⓒ      very clean. ( ⑤ )",
+      "questions": [
+        {
+          "num": 19,
+          "qtype": "문장 삽입",
+          "score": 3,
+          "question": "윗글의 ①~⑤ 중 주어진 문장이 들어갈 가장 알맞은 곳은? [3점]\nThose actions can make the city dirty and messy.",
+          "choices": [
+            "① ①",
+            "② ②",
+            "③ ③",
+            "④ ④",
+            "⑤ ⑤"
+          ],
+          "answer": "②",
+          "explanation": "Those actions는 앞에 나온 '버스·지하철에서 먹고 마시기, 껌 판매·수입' 행위들을 가리키므로 그 행위들이 모두 언급된 직후인 ②가 알맞다."
+        },
+        {
+          "num": 20,
+          "qtype": "독해",
+          "score": 4,
+          "question": "윗글의 빈칸 ⓐ~ⓒ에 들어갈 말이 바르게 짝지어진 것은? [4점]",
+          "choices": [
+            "① ⓐ fine — ⓑ throw away — ⓒ remains",
+            "② ⓐ fine — ⓑ feed — ⓒ remains",
+            "③ ⓐ rule — ⓑ throw away — ⓒ becomes",
+            "④ ⓐ fine — ⓑ throw away — ⓒ imports",
+            "⑤ ⓐ tax — ⓑ hide — ⓒ remains"
+          ],
+          "answer": "①",
+          "explanation": "규칙을 어기면 '벌금(fine)'을 내야 하고, 쓰레기를 '버릴(throw away)' 곳을 알며, 그 덕분에 싱가포르는 깨끗하게 '유지된다(remains)'."
+        }
+      ]
+    },
+    {
+      "type": "single",
+      "num": 21,
+      "qtype": "독해",
+      "score": 4,
+      "question": "Which is TRUE about the passage below?\nThe Nile River is in Egypt. It is the longest river in the world. Many travelers visit Egypt to see this famous river. They can take a cruise on the river and enjoy the beautiful views. A river cruise is one of the best ways to experience Egypt.",
+      "choices": [
+        "① The Nile River is the largest zoo in Africa.",
+        "② The Nile River is the longest river in Egypt only.",
+        "③ Travelers cannot take a cruise on the Nile River.",
+        "④ The Nile River is in Egypt and is the longest river in the world.",
+        "⑤ A river cruise is the worst way to experience Egypt."
+      ],
+      "answer": "④",
+      "explanation": "글에서 나일강은 이집트에 있으며 세계에서 가장 긴 강이라고 했으므로 ④가 글의 내용과 일치한다."
+    },
+    {
+      "type": "single",
+      "num": 22,
+      "qtype": "글의 흐름",
+      "score": 3,
+      "question": "아래의 밑줄 친 ①~⑤ 중 글의 흐름상 어색한 것은?\nWhich rule is most surprising? ①<u>Maybe some rules sound strange to you, but they show different lifestyles around the world.</u> ②<u>Understanding different rules from different countries helps us live together more happily.</u> ③<u>We need to know how to act in different countries.</u> ④<u>Every culture has its own ways of living and thinking.</u> ⑤<u>Learning to ride a bike is the fastest way to make new friends.</u>",
+      "choices": [
+        "① ①",
+        "② ②",
+        "③ ③",
+        "④ ④",
+        "⑤ ⑤"
+      ],
+      "answer": "⑤",
+      "explanation": "글은 '나라마다 다른 규칙과 문화를 이해하자'는 내용인데 ⑤는 자전거 타기와 친구 사귀기에 대한 내용으로 글의 흐름과 무관하다."
+    },
+    {
+      "type": "single",
+      "num": 23,
+      "qtype": "독해",
+      "score": 4,
+      "question": "의미가 자연스럽게 이어지도록 문장을 완성하려고 할 때, ①~⑤의 빈칸에 알맞은 말은?\n① She learned ____ to make scones.\n② I don't know ____ to act in other countries.\n③ He taught me ____ to take good photos.\n④ Can you tell me ____ to get to the Eiffel Tower?\n⑤ We should learn ____ to care for pets.",
+      "choices": [
+        "① what",
+        "② when",
+        "③ where",
+        "④ why",
+        "⑤ how"
+      ],
+      "answer": "⑤",
+      "explanation": "다섯 문장 모두 '~하는 방법'을 의미하므로 의문사 how가 공통으로 들어간다. 참고로 why는 to부정사와 함께 쓰지 않는다."
+    },
+    {
+      "type": "single",
+      "num": 24,
+      "qtype": "어법",
+      "score": 4,
+      "question": "밑줄 친 부분이 어법상 틀린 것은?",
+      "choices": [
+        "① I have a friend <u>who lives</u> in Sydney.",
+        "② She knows <u>what to do</u> next.",
+        "③ The rules <u>which keeps</u> the city clean are strict.",
+        "④ He helped me <u>carry</u> the boxes.",
+        "⑤ They got him <u>to join</u> the club."
+      ],
+      "answer": "③",
+      "explanation": "주격 관계대명사절의 동사는 선행사의 수에 일치시킨다. 선행사 The rules가 복수이므로 keeps가 아닌 keep이 되어야 한다."
+    },
+    {
+      "type": "single",
+      "num": 25,
+      "qtype": "어법",
+      "score": 5,
+      "question": "어법상 올바른 것으로만 묶인 것은?\nⓐ This is a rule that protects animals.\nⓑ I wonder why to visit the museum.\nⓒ My teacher got me to read more books.\nⓓ People which live in Singapore follow the rules.\nⓔ What to eat for lunch is a big question.",
+      "choices": [
+        "① ⓐ, ⓑ",
+        "② ⓐ, ⓒ, ⓔ",
+        "③ ⓑ, ⓓ",
+        "④ ⓒ, ⓓ, ⓔ",
+        "⑤ ⓐ, ⓑ, ⓔ"
+      ],
+      "answer": "②",
+      "explanation": "ⓐ(사물 선행사+that), ⓒ(get+목적어+to부정사), ⓔ(what+to부정사 주어, 단수 취급)는 올바르다. ⓑ는 why+to부정사를 쓸 수 없고, ⓓ는 사람 선행사이므로 which가 아닌 who/that을 써야 한다."
+    },
+    {
+      "type": "single",
+      "num": 26,
+      "qtype": "어법",
+      "score": 5,
+      "question": "밑줄 친 부분에 유의하여, 어법상 어색한 문장을 고르면 모두 몇 개인가?\nⓐ He knows <u>how to swimming</u> in the sea.\nⓑ The girl <u>who sing</u> on the stage is my sister.\nⓒ This app helps people <u>to learn</u> languages.\nⓓ Tell me <u>when to starting</u> the game.\nⓔ I have a cat <u>which has</u> blue eyes.",
+      "choices": [
+        "① 1개",
+        "② 2개",
+        "③ 3개",
+        "④ 4개",
+        "⑤ 5개"
+      ],
+      "answer": "③",
+      "explanation": "ⓐ how to swim, ⓑ 선행사 The girl(단수)에 맞춰 sings, ⓓ when to start가 되어야 하므로 어색한 문장은 3개이다. ⓒ(help+목적어+to부정사)와 ⓔ(동물 선행사+which)는 올바르다."
+    }
+  ],
+  "analysisData": {
+    "key": "제철중_2학년_2026_1학기_중간",
+    "school": "제철중",
+    "grade": "2학년",
+    "year": "2026",
+    "semester": "1학기",
+    "exam": "중간고사",
+    "total": 26,
+    "patterns": {
+      "어휘": 4,
+      "대화": 2,
+      "독해": 3,
+      "어법": 6,
+      "글의 흐름": 1,
+      "문장 삽입": 2,
+      "어법/어휘": 2,
+      "빈칸 추론": 2,
+      "영작/배열": 1,
+      "대화 완성/흐름": 2,
+      "내용 일치/불일치": 1
+    },
+    "score_dist": {
+      "3점": 8,
+      "4점": 14,
+      "5점": 4
+    },
+    "passage_groups": {
+      "21": {
+        "type": "본문",
+        "text": "Standing Stretch\n  Stand and spread your feet. Bend your arms to make a W shape. Then lean your head backward. Look up at a 45-degree angle. Hold for 10 seconds. This stretch is great for your neck and shoulders.\nBedtime Stretch\n  Lie on your bed with your head at the edge. Let your head hang off the bed. Hold for 60 seconds. Don't do this for longer than 60 seconds. It can make you feel dizzy. This stretch helps relax your neck and back."
+      },
+      "22": {
+        "type": "본문",
+        "text": "  One thing is more important than stretching: good habits in everyday life. ①Look down at your smartphone or computer monitor. ②Try to keep it at eye level. ③When you are sitting, sit up straight and keep your feet on the floor. ④If you are studying for a long time, you should stretch every 50 minutes. ⑤Good habits keep your neck healthy and strong."
+      },
+      "10~11": {
+        "type": "본문",
+        "text": "※ 다음 글을 읽고 물음에 답하시오. (10-11)\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  Hello! I'm Christopher Robin from the storybook, Winnie-the-Pooh. I'm a __(ⓐ)__ character in the stories, and I'm kind to my friends. Now I'm looking at some old pictures of them. Would you like to take a look and hear about them?\n  This is Pooh and me. ( ① ) Pooh loves all kinds of food, but he likes honey the best. ( ② ) In this picture, he is holding a big balloon and trying to get honey from a beehive. ( ③ ) The bees popped his balloon, so he couldn't get the honey. ( ④ ) He failed, but he was cheerful and __(ⓑ)__. ( ⑤ ) He is always thinking of __(ⓒ)__ ways to get honey.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+      },
+      "13~15": {
+        "type": "본문",
+        "text": "※ 다음 글을 읽고 물음에 답하시오. (13-15)\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  My friend in the last picture is Owl. Owl believes he is the smartest animal in the woods. He is proud of his knowledge. In this picture, (가) Owl is telling us a long story, and we are listening. Do you see the (나) on our faces? You're right! We're not really following his story. He talks a lot, and sometimes his stories are hard (A) to understand. But he loves giving us advice, and it's often helpful. Owl is always ready to help.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+      },
+      "19~20": {
+        "type": "본문",
+        "text": "※ 다음 글을 읽고 물음에 답하시오. (19-20)\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  Many students have \"turtle neck.\" This happens when their head sticks __(ⓐ)__. ( ① ) It often comes from using smartphones, studying, or sitting for a long time. When you have turtle neck, you may get neck pain, back pain, or headaches. But don't worry. ( ② )\n  Sit up straight and move your head slowly from side to side. Put your right hand on the left side of your head. ( ③ ) Then gently pull your head to the __(ⓑ)__. Hold for 5 seconds. Repeat on your left side. ( ④ ) Finally, put your hands together and hold your chin with your thumbs. __(ⓒ)__ your head back slowly. Hold for 10 seconds. If you do this set of stretches, you'll feel better. ( ⑤ )\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+      }
+    },
+    "questions": [
+      {
+        "num": 1,
+        "stem": "밑줄 친 단어의 쓰임이 적절하지 않은 것은?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "1. 밑줄 친 단어의 쓰임이 적절하지 않은 것은?  [4점]\n① The lake is very deep.\n② I feel relaxed after the yoga class.\n③ Please stay calm during the emergency.\n④ Reading books gives you a lot of knowledge.\n⑤ I am helpful that the weather will be better tomorrow.",
+        "qtype": "어휘"
+      },
+      {
+        "num": 2,
+        "stem": "주어진 단어의 영영 풀이가 잘못된 것은?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "2. 주어진 단어의 영영 풀이가 잘못된 것은?  [4점]\n① actor: a person who acts in a play, movie, or drama\n② curious: having a desire to learn or know more about something\n③ volunteer: to choose to do something without getting paid\n④ smart: very good at learning or thinking about things\n⑤ curly: having curls or formed into a round shape",
+        "qtype": "어휘"
+      },
+      {
+        "num": 3,
+        "stem": "주어진 문장의 빈칸에 알맞은 말이 아닌 것은? (순서 상관없음)",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "3. 주어진 문장의 빈칸에 알맞은 말이 아닌 것은? (순서 상관없음)  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  · Let's check the class __________.\n  · She __________ closed the door.\n  · She took a __________ after lunch.\n  · He rested his __________ on his hand.\n  · Draw a right __________ with your ruler.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① angle    ② chin    ③ schedule    ④ nap    ⑤ physical",
+        "qtype": "어휘"
+      },
+      {
+        "num": 4,
+        "stem": "주어진 단어의 영영 풀이가 잘못된 것은?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "4. 주어진 단어의 영영 풀이가 잘못된 것은?  [4점]\n① level: the height of something\n② lean: to release liquid through the skin\n③ reduce: to make something less or smaller\n④ degree: a unit for measuring temperature or angles\n⑤ backward: moving or facing in the direction behind",
+        "qtype": "어휘"
+      },
+      {
+        "num": 5,
+        "stem": "대화의 흐름상, (A)에 들어갈 가장 적절한 표현은?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "5. 대화의 흐름상, (A)에 들어갈 가장 적절한 표현은?  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nB : My friend Amy wants to join your club, the school band.\nG : Really? What does she play?\nB : She is really good at playing the drums.\nG : __________(A)__________  Is she active?\nB : Yes, she is active and friendly.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① What does she like?\n② What is she like?\n③ Why does she like it?\n④ Who does she like?\n⑤ Which club does she like?",
+        "qtype": "대화 완성/흐름"
+      },
+      {
+        "num": 6,
+        "stem": "대화들의 흐름상 어색한 것은?",
+        "score": 3,
+        "format": "5지선다_기호",
+        "pg": null,
+        "original_q": "6. 대화들의 흐름상 어색한 것은?  [3점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nG1: Let's join the table tennis club, Sehun.\nB1: ⓐ Hmm, I'm into table tennis.\nG1: Which club do you want to join?\nB1: I'm going to join the soccer club.\n     ⓑ I enjoy exercising outside.\n\nB2: Haein, what club are you going to join?\nG2: ⓒ Well, I'm still thinking about it.\nB2: How about the art club? It sounds perfect for you.\nG2: ⓓ Really? Why do you think so?\nB2: You like painting, and you're creative.\nG2: ⓔ Hmm, that club sounds interesting.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① ⓐ    ② ⓑ    ③ ⓒ    ④ ⓓ    ⑤ ⓔ",
+        "qtype": "대화 완성/흐름"
+      },
+      {
+        "num": 7,
+        "stem": "다음 공고문을 보고 답할 수 없는 것은?",
+        "score": 3,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "7. 다음 공고문을 보고 답할 수 없는 것은?  [3점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  Do you love plays? Do you enjoy acting and performing? The drama club, SOUL, is looking for a new actor. The actor will play the main character, Leo, in our new play. Leo is brave and wise. He goes back in time to save his friends. Don't you want to be a star on stage? Come to the audition on March 27 at 4 p.m. in Rose Hall!\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① What is the club's name?\n② When is the audition?\n③ What is the main character's name?\n④ How old is the main character?\n⑤ Where is the audition?",
+        "qtype": "내용 일치/불일치"
+      },
+      {
+        "num": 8,
+        "stem": "어법상 어색한 문장은?",
+        "score": 5,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "8. 어법상 어색한 문장은?  [5점]\n① She wants to become a vet.\n② There is a cake to give to Jake.\n③ We went to bed early to go out at dawn.\n④ She doesn't have a pen to write for.\n⑤ We need somebody to turn to.",
+        "qtype": "어법"
+      },
+      {
+        "num": 9,
+        "stem": "어법상 올바른 문장은 모두 몇 개인가?",
+        "score": 5,
+        "format": "5지선다_개수",
+        "pg": null,
+        "original_q": "9. 어법상 올바른 문장은 모두 몇 개인가?  [5점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  · This is the goodest restaurant in town.\n  · She has the more stickers among us.\n  · Health is most important thing of all.\n  · Who is the funnyest student in your class?\n  · Summer is the hotest season of the year.\n  · He is the most tallest boy in the class.\n  · She is the youngest child in my family.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① 0개    ② 1개    ③ 2개    ④ 3개    ⑤ 4개",
+        "qtype": "어법"
+      },
+      {
+        "num": 10,
+        "stem": "윗글의 ⓐ~ⓒ에 들어갈 가장 적절한 단어는?",
+        "score": 4,
+        "format": "5지선다_표",
+        "pg": "10~11",
+        "original_q": "10. 윗글의 ⓐ~ⓒ에 들어갈 가장 적절한 단어는?  [4점]\n\nⓐ\nⓑ\nⓒ\n①\nthoughtful\nhopeful\nwrong\n②\nthoughtful\nbrave\nwrong\n③\nthoughtful\nhopeful\ncreative\n④\nselfish\nbrave\ncreative\n⑤\nselfish\nhopeful\ncreative",
+        "qtype": "어법/어휘"
+      },
+      {
+        "num": 11,
+        "stem": "윗글의 흐름상 아래 문장이 들어가기에 가장 적절한 곳은? [3점]\nWhat happened next?",
+        "score": 3,
+        "format": "5지선다_번호",
+        "pg": null,
+        "original_q": "11. 윗글의 흐름상 아래 문장이 들어가기에 가장 적절한 곳은?  [3점]\nWhat happened next?\n\n① ①    ② ②    ③ ③    ④ ④    ⑤ ⑤",
+        "qtype": "문장 삽입"
+      },
+      {
+        "num": 12,
+        "stem": "글의 흐름상 어법적으로 어색한 것은? [4점]",
+        "score": 4,
+        "format": "5지선다_기호",
+        "pg": null,
+        "original_q": "12. 글의 흐름상 어법적으로 어색한 것은?  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  This is a picture of a stormy day in the woods. The strong wind almost broke the door, so ⓐ my friends have to hold it. Luckily, there was a rope to help. Pooh and Rabbit couldn't move, ⓑ but small, scared Piglet could. They said to Piglet, \"Tie the door, please!\" ⓒ He gathered his courage and tied it tightly. ⓓ Piglet is shy and easily scared. ⓔ But he becomes brave when his friends need him.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① ⓐ    ② ⓑ    ③ ⓒ    ④ ⓓ    ⑤ ⓔ",
+        "qtype": "어법"
+      },
+      {
+        "num": 13,
+        "stem": "윗글의 (가) 문장을 주어진 단어들을 배열하여 영어로 옮길 때 세 번째 빈칸에 들어갈 단어로 알맞은 것은? [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nus    long    telling    story    a\nOwl is (       )(       )(       )(       )(       ).",
+        "score": 4,
+        "format": "5지선다_영작",
+        "pg": "13~15",
+        "original_q": "13. 윗글의 (가) 문장을 주어진 단어들을 배열하여 영어로 옮길 때 세 번째 빈칸에 들어갈 단어로 알맞은 것은?  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nus    long    telling    story    a\nOwl is (       )(       )(       )(       )(       ).\n\n① us    ② long    ③ telling    ④ story    ⑤ a",
+        "qtype": "영작/배열"
+      },
+      {
+        "num": 14,
+        "stem": "윗글의 (나)에 들어갈 알맞은 표현은? [3점]",
+        "score": 3,
+        "format": "5지선다",
+        "pg": "13~15",
+        "original_q": "14. 윗글의 (나)에 들어갈 알맞은 표현은?  [3점]\n① look    ② to look    ③ to looked    ④ looked    ⑤ to have looked",
+        "qtype": "빈칸 추론"
+      },
+      {
+        "num": 15,
+        "stem": "윗글의 (A)와 쓰임이 같은 것은? [4점]",
+        "score": 4,
+        "format": "5지선다",
+        "pg": "13~15",
+        "original_q": "15. 윗글의 (A)와 쓰임이 같은 것은?  [4점]\n① I have a picture to show you.\n② He found a place to park his bike.\n③ We made some snacks to share.\n④ She has a box to put her letters in.\n⑤ This box is heavy to lift.",
+        "qtype": "어법/어휘"
+      },
+      {
+        "num": 16,
+        "stem": "대화의 빈칸에 가장 알맞은 것은? [3점]",
+        "score": 3,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "16. 대화의 빈칸에 가장 알맞은 것은?  [3점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nA : Kevin, are you eating chips again?\nB : Yes, these chips are my lunch.\nA : I think you should __________. \n     Chips have too much salt and fat.\nB : Okay. I'll try.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① go to bed earlier\n② skip breakfast sometimes\n③ eat school meals instead\n④ sleep more for your health\n⑤ set an alarm to stop playing",
+        "qtype": "대화"
+      },
+      {
+        "num": 17,
+        "stem": "두 사람의 대화가 어색한 것은? [3점]",
+        "score": 3,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "17. 두 사람의 대화가 어색한 것은?  [3점]\n① A: How often do you exercise?      B: I exercise three times a week.\n② A: I do a thousand jump ropes after lunch.      B: That's cool. Can I join you tomorrow?\n③ A: Do you have any hobbies for relaxing?      B: Not really. I just play games sometimes.\n④ A: I try to drink two liters of water a day.      B: That's a good habit! Why don't you try it, too?\n⑤ A: You look very tired.      B: I watched short-form videos until 2 a.m. last night.",
+        "qtype": "대화"
+      },
+      {
+        "num": 18,
+        "stem": "내용상 ①~⑤의 빈칸에 적절하지 않은 것은? [4점]",
+        "score": 4,
+        "format": "5지선다_번호",
+        "pg": null,
+        "original_q": "18. 내용상 ①~⑤의 빈칸에 적절하지 않은 것은?  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n① James is __________. He studies math in the morning. He rides his bike after lunch. He takes swimming lessons in the evening. He reads books at night.\n② I'm on the school soccer team. My coach always makes us train hard. He lets us take enough breaks __________. My team members and I help each other to get better at playing. I love my soccer team.\n③ Chris sleeps eight hours a day and he never skips breakfast. He also works out every day. Chris stays healthy __________.\n④ On Saturdays, I wake up early and clean my room. After that, I ride my bike to the park. If I meet my friends there, we play soccer. In the evening, I do yoga. If I do yoga, I __________.\n⑤ Do you like exercising at the gym? I usually work out at home. It makes me feel great. I watch the \"StrongBody\" channel. The guy in the videos is so funny. Try \"StrongBody\" videos. If you follow them, you __________.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① busy every Sunday\n② when we feel tired\n③ with these bad habits\n④ sleep better at night\n⑤ will find exercise fun",
+        "qtype": "빈칸 추론"
+      },
+      {
+        "num": 19,
+        "stem": "윗글의 ①~⑤ 중 주어진 문장이 들어갈 가장 알맞은 곳은? [3점]\nHere are some easy stretches to help with turtle neck.",
+        "score": 3,
+        "format": "5지선다_번호",
+        "pg": "19~20",
+        "original_q": "19. 윗글의 ①~⑤ 중 주어진 문장이 들어갈 가장 알맞은 곳은?  [3점]\nHere are some easy stretches to help with turtle neck.\n\n① ①    ② ②    ③ ③    ④ ④    ⑤ ⑤",
+        "qtype": "문장 삽입"
+      },
+      {
+        "num": 20,
+        "stem": "윗글의 빈칸 ⓐ~ⓒ에 들어갈 말이 바르게 짝지어진 것은? [4점]",
+        "score": 4,
+        "format": "5지선다_표",
+        "pg": "19~20",
+        "original_q": "20. 윗글의 빈칸 ⓐ~ⓒ에 들어갈 말이 바르게 짝지어진 것은?  [4점]\n\nⓐ\nⓑ\nⓒ\n①\nforward\nleft\nPull\n②\nbackward\nleft\nPull\n③\nforward\nright\nPush\n④\nbackward\nright\nPush\n⑤\nforward\nleft\nPush",
+        "qtype": "독해"
+      },
+      {
+        "num": 21,
+        "stem": "Which is TRUE about the passage below?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": "21",
+        "original_q": "21. Which is TRUE about the passage below?  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nStanding Stretch\n  Stand and spread your feet. Bend your arms to make a W shape. Then lean your head backward. Look up at a 45-degree angle. Hold for 10 seconds. This stretch is great for your neck and shoulders.\nBedtime Stretch\n  Lie on your bed with your head at the edge. Let your head hang off the bed. Hold for 60 seconds. Don't do this for longer than 60 seconds. It can make you feel dizzy. This stretch helps relax your neck and back.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① The standing stretch can make you feel dizzy.\n② The bedtime stretch is helpful for your neck and back.\n③ Look up at a 45-degree angle in the bedtime stretch.\n④ Bend your legs to make a W shape in the standing stretch.\n⑤ Let your head hang off the bed for longer than 60 seconds in the bedtime stretch.",
+        "qtype": "독해"
+      },
+      {
+        "num": 22,
+        "stem": "아래의 밑줄 친 ①~⑤ 중 글의 흐름상 어색한 것은?",
+        "score": 3,
+        "format": "5지선다_번호",
+        "pg": "22",
+        "original_q": "22. 아래의 밑줄 친 ①~⑤ 중 글의 흐름상 어색한 것은?  [3점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  One thing is more important than stretching: good habits in everyday life. ①Look down at your smartphone or computer monitor. ②Try to keep it at eye level. ③When you are sitting, sit up straight and keep your feet on the floor. ④If you are studying for a long time, you should stretch every 50 minutes. ⑤Good habits keep your neck healthy and strong.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① ①    ② ②    ③ ③    ④ ④    ⑤ ⑤",
+        "qtype": "글의 흐름"
+      },
+      {
+        "num": 23,
+        "stem": "의미가 자연스럽게 이어지도록 문장을 완성하려고 할 때, ①~⑤의 빈칸에 알맞은 말은?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "23. 의미가 자연스럽게 이어지도록 문장을 완성하려고 할 때, ①~⑤의 빈칸에 알맞은 말은?  [4점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n① If you eat too much sweets, __________.\n② If you get up early, __________.\n③ If we save money, __________.\n④ Unless you study hard, __________.\n⑤ If the phone rings, __________.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① you will get healthy.\n② you won't see the sunrise.\n③ we can't buy that book.\n④ you can get good grades.\n⑤ can you answer it?",
+        "qtype": "독해"
+      },
+      {
+        "num": 24,
+        "stem": "밑줄 친 부분이 어법상 틀린 것은?",
+        "score": 4,
+        "format": "5지선다",
+        "pg": null,
+        "original_q": "24. 밑줄 친 부분이 어법상 틀린 것은?  [4점]\n① My friend helped me solve the puzzle.\n② The coach had the team practice harder.\n③ Mom makes my sister water the plants.\n④ She got her friend join the club.\n⑤ Please let me borrow your book for a week.",
+        "qtype": "어법"
+      },
+      {
+        "num": 25,
+        "stem": "어법상 올바른 것으로만 묶인 것은?",
+        "score": 5,
+        "format": "5지선다_기호",
+        "pg": null,
+        "original_q": "25. 어법상 올바른 것으로만 묶인 것은?  [5점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nⓐ Let me help you fix the door.\nⓑ If he know the truth, he will tell us.\nⓒ My brother got me to tell the truth.\nⓓ George can stay awake if he will drink coffee.\nⓔ The guide helped us to find the museum.\nⓕ If she cooks dinner, I will do the dishes.\nⓖ I had my friends to come over to my house.\nⓗ The heavy snow made people stay at home.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① ⓐ, ⓒ, ⓔ, ⓕ\n② ⓐ, ⓑ, ⓕ, ⓗ\n③ ⓑ, ⓔ, ⓕ, ⓖ\n④ ⓒ, ⓓ, ⓖ, ⓗ\n⑤ ⓒ, ⓓ, ⓔ, ⓖ",
+        "qtype": "어법"
+      },
+      {
+        "num": 26,
+        "stem": "밑줄 친 부분에 유의하여, 어법상 어색한 문장을 고르면 모두 몇 개인가?",
+        "score": 5,
+        "format": "5지선다_개수",
+        "pg": null,
+        "original_q": "26. 밑줄 친 부분에 유의하여, 어법상 어색한 문장을 고르면 모두 몇 개인가?  [5점]\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n  · He was sweat after the run.\n  · She skipped breakfast this morning.\n  · She lie on the bed and reads a book.\n  · It is 30 degrees Celsius today.\n  · The boy stuck his tongue out.\n  · We had a big meals this evening.\n  · A thousand people joins the event.\n  · Spread your arms wide and take a deep breath.\n  · The toy was hanging off the edge of the table.\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n① 1개    ② 2개    ③ 3개    ④ 4개    ⑤ 5개",
+        "qtype": "어법"
+      }
+    ],
+    "summary": "총 26문항 (3개 배치 병합). 어법 6문항, 어휘 4문항, 독해 3문항, 대화 2문항, 문장 삽입 2문항",
+    "savedAt": "2026-06-11T15:10:41.456305+09:00"
+  }
+}
