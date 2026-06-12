@@ -1507,7 +1507,7 @@ Return JSON only:
       const processedItems=valid.items;
       const calcAnswer=valid.answer;
       upPDeep(p=>{
-        const sets=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
+        const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
         const sel=isG?p.grammar_sel:p.vocab_sel;
         const newSet={items:processedItems,answer:calcAnswer};
         if(sets.length===0){sets.push(newSet);}
@@ -1764,7 +1764,7 @@ Return JSON only, EXACTLY this structure:
             onClick={()=>{
               if(w.trim().length<2)return;
               upPDeep(p=>{
-                const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
+                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])ss[si]={items:[],answer:1};
                 ss[si]={...ss[si],items:[...ss[si].items,{sent:i,word:w,pos:wPos,correct:true,note:'',alt:''}]};
@@ -1816,7 +1816,7 @@ Return JSON only, EXACTLY this structure:
             const c2=it.correct?'#185FA5':'#E24B4A';
             const num2=numMap.get(it);
             return<span key={k} style={{display:'inline-flex',alignItems:'center',marginRight:4,padding:'0 6px',borderRadius:12,background:c2+'18',border:`1px solid ${c2}44`,color:c2,fontWeight:700,fontSize:11,cursor:'pointer'}}
-              onClick={()=>{upPDeep(p=>{const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
+              onClick={()=>{upPDeep(p=>{const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
               {num2?`${num2}. `:''}{it.word} ✕
             </span>;
           })}
@@ -1828,7 +1828,7 @@ Return JSON only, EXACTLY this structure:
         if(idx>offset)parts.push(<span key={offset}
           onClick={()=>{
             upPDeep(p=>{
-              const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
+              const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
               const si=isG?p.grammar_sel:p.vocab_sel;
               if(!ss[si])return p;
               // 클릭한 위치의 단어를 새 항목으로 추가 (빈 영역 클릭 시)
@@ -1847,7 +1847,7 @@ Return JSON only, EXACTLY this structure:
             // shift+클릭: 항목 삭제, 일반 클릭: 항목 선택
             if(e.shiftKey){
               upPDeep(p=>{
-                const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
+                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])return p;
                 ss[si]={...ss[si],items:ss[si].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};
@@ -2499,21 +2499,34 @@ function App(){
 
   const handleMeta=useCallback((id,f,v)=>setSlots(prev=>{
     const next=prev.map(s=>s.id===id?{...s,meta:{...s.meta,[f]:v}}:s);
+    // ★ 메타(교재/강/번호) 변경 시: passageData에 박제된 id를 새 메타 기준으로 동기화하고,
+    //   저장완료(saved) 슬롯은 confirmed로 강등 → 재저장 시 덮어쓰기 confirm 보호 작동
+    //   (id↔number 불일치 저장 사고 원천 차단)
+    const syncIds=(arr)=>arr.map((s,i)=>{
+      const p=prev[i];
+      if(!p)return s;
+      const changed=['source','chapter','number'].some(k=>String(s.meta?.[k]??'')!==String(p.meta?.[k]??''));
+      if(!changed)return s;
+      const newId=s.meta?.source?makePassageId(s.meta.source,s.meta.chapter,s.meta.number):null;
+      return {...s,
+        passageData:(s.passageData&&newId)?{...s.passageData,id:newId}:s.passageData,
+        status:s.status==='saved'?'confirmed':s.status};
+    });
     if(id===0&&(f==='chapter'||f==='number')){
       // chapter가 텍스트(test 등)이면 전체 슬롯에 동일하게 적용
       if(f==='chapter'&&isNaN(parseInt(v))){
-        return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,chapter:v}});
+        return syncIds(next.map(s=>s.id===0?s:{...s,meta:{...s.meta,chapter:v}}));
       }
       const bCh=parseInt(f==='chapter'?v:next[0].meta.chapter)||1;
       const bN=parseInt(f==='number'?v:next[0].meta.number)||1;
-      return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,
+      return syncIds(next.map(s=>s.id===0?s:{...s,meta:{...s.meta,
         chapter:String(bCh).padStart(2,'0'),
-        number:String(bN+s.id).padStart(3,'0')}});
+        number:String(bN+s.id).padStart(3,'0')}}));
     }
     if(id===0&&f==='chapterOrg'){
       return next.map(s=>s.id===0?s:{...s,meta:{...s.meta,chapterOrg:v}});
     }
-    return next;
+    return syncIds(next);
   }),[]);
 
   const doAnalyze=useCallback(async(slot)=>{
@@ -2893,7 +2906,16 @@ function App(){
     const restored=[];
     try{
       // 유효 지문 선별 후 출제DB 병렬 조회 (직렬 → 병렬: N×1~2초 → 1~2초)
-      const validSps=selectedIds.map(id=>sheetPassages.find(p=>p.id===id)).filter(Boolean);
+      // ★ 시트 행 순서와 무관하게 교재→강→번호 순으로 정렬해 슬롯에 배치
+      const validSps=selectedIds.map(id=>sheetPassages.find(p=>p.id===id)).filter(Boolean)
+        .sort((a,b)=>{
+          const s=String(a.source||'').localeCompare(String(b.source||''));
+          if(s)return s;
+          const c=String(a.chapter||'').localeCompare(String(b.chapter||''),undefined,{numeric:true});
+          if(c)return c;
+          return String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true})
+            ||String(a.id||'').localeCompare(String(b.id||''),undefined,{numeric:true});
+        });
       const qResults=await Promise.all(validSps.map(sp=>
         jsonpFetch(appsUrl,{action:'getQuestions',pid:sp.id}).catch(()=>({ok:false,questions:[]}))
       ));
