@@ -1402,9 +1402,9 @@ function printExam(){
   .qblock { break-inside: avoid; margin-bottom: 10pt; }
   .qrow { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 3pt; }
   .qnum { font-weight: bold; min-width: 18px; flex-shrink: 0; }
-  .qtext { flex: 1; line-height: 1.5; text-align: left; }
+  .qtext { flex: 1; line-height: 1.5; text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto; word-spacing: -0.3px; }
   .qscore { font-size: 8pt; color: #666; white-space: nowrap; margin-left: 4px; }
-  .choice { padding-left: 14px; line-height: 1.45; text-indent: -13px; padding-left: 13px; }
+  .choice { line-height: 1.45; text-align: left; }
   .write-box { border: 1px solid #aaa; height: 18mm; margin: 3pt 0 3pt 16px; }
   .answer { display: none; } /* 문제지에서 정답 숨김 */
   /* 정답지 */
@@ -1459,7 +1459,7 @@ function printExam(){
   <span>점수 <span class="blank sm"></span></span>
 </div>
 
-<div class="columns">
+<div class="columns" lang="en">
 ${bodyHtml}
 </div>
 
