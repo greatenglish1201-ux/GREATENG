@@ -1507,7 +1507,7 @@ Return JSON only:
       const processedItems=valid.items;
       const calcAnswer=valid.answer;
       upPDeep(p=>{
-        const sets=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+        const sets=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
         const sel=isG?p.grammar_sel:p.vocab_sel;
         const newSet={items:processedItems,answer:calcAnswer};
         if(sets.length===0){sets.push(newSet);}
@@ -1764,7 +1764,7 @@ Return JSON only, EXACTLY this structure:
             onClick={()=>{
               if(w.trim().length<2)return;
               upPDeep(p=>{
-                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+                const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])ss[si]={items:[],answer:1};
                 ss[si]={...ss[si],items:[...ss[si].items,{sent:i,word:w,pos:wPos,correct:true,note:'',alt:''}]};
@@ -1816,7 +1816,7 @@ Return JSON only, EXACTLY this structure:
             const c2=it.correct?'#185FA5':'#E24B4A';
             const num2=numMap.get(it);
             return<span key={k} style={{display:'inline-flex',alignItems:'center',marginRight:4,padding:'0 6px',borderRadius:12,background:c2+'18',border:`1px solid ${c2}44`,color:c2,fontWeight:700,fontSize:11,cursor:'pointer'}}
-              onClick={()=>{upPDeep(p=>{const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
+              onClick={()=>{upPDeep(p=>{const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];const si2=isG?p.grammar_sel:p.vocab_sel;if(!ss[si2])return p;ss[si2]={...ss[si2],items:ss[si2].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};return isG?{...p,grammar_sets:ss}:{...p,vocab_sets:ss};});}}>
               {num2?`${num2}. `:''}{it.word} ✕
             </span>;
           })}
@@ -1828,7 +1828,7 @@ Return JSON only, EXACTLY this structure:
         if(idx>offset)parts.push(<span key={offset}
           onClick={()=>{
             upPDeep(p=>{
-              const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+              const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
               const si=isG?p.grammar_sel:p.vocab_sel;
               if(!ss[si])return p;
               // 클릭한 위치의 단어를 새 항목으로 추가 (빈 영역 클릭 시)
@@ -1847,7 +1847,7 @@ Return JSON only, EXACTLY this structure:
             // shift+클릭: 항목 삭제, 일반 클릭: 항목 선택
             if(e.shiftKey){
               upPDeep(p=>{
-                const ss=[...(isG?p.grammar_sets:p.vocab_sets)||[]];
+                const ss=[...((isG?p.grammar_sets:p.vocab_sets)||[])];
                 const si=isG?p.grammar_sel:p.vocab_sel;
                 if(!ss[si])return p;
                 ss[si]={...ss[si],items:ss[si].items.filter(x=>!(Number(x.sent)===i&&x.word===it.word))};
