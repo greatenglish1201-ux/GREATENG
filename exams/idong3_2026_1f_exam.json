@@ -48,78 +48,61 @@
   },
   "questions": [
     {
+      "type": "single",
       "num": 1,
       "qtype": "어법",
       "score": 4.4,
-      "format": "5지선다_번호",
-      "source_passage": "수특_25강_3번",
-      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
-      "passage": "The experiences of learning to ride a bicycle or drive a car illustrate well how the 'what' and 'how' systems — those ①<u>involved</u> in object identification and practical action — might interact during development. When we learn to drive a car, we go through a first stage where each required action and sequence of actions — such as looking in the mirror, signaling with the blinker, pressing the clutch prior to shifting into gear, and so forth — ②<u>are</u> explicitly thought of and double-checked while monitoring our situation in the environment. Once learned and after a few hours of practice, the required actions for driving become second nature, ③<u>transferable</u> to almost any vehicle and performed without explicit thinking. Information appears to be perceived directly; the affordances of the road, the car, and the traffic ④<u>implicitly detecting</u>. If you start to think too much about your driving, you actually increase your chances of having an accident. People in sport competitions confirm that self-consciousness is one's worst enemy: tennis, golf, or billiard players commonly report that they lose their 'touch' by ⑤<u>thinking</u> too much about their moves.",
+      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\nThe experiences of learning to ride a bicycle or drive a car illustrate well how the 'what' and 'how' systems — those ①<u>involved</u> in object identification and practical action — might interact during development. When we learn to drive a car, we go through a first stage where each required action and sequence of actions — such as looking in the mirror, signaling with the blinker, pressing the clutch prior to shifting into gear, and so forth — ②<u>are</u> explicitly thought of and double-checked while monitoring our situation in the environment. Once learned and after a few hours of practice, the required actions for driving become second nature, ③<u>transferable</u> to almost any vehicle and performed without explicit thinking. Information appears to be perceived directly; the affordances of the road, the car, and the traffic ④<u>implicitly detecting</u>. If you start to think too much about your driving, you actually increase your chances of having an accident. People in sport competitions confirm that self-consciousness is one's worst enemy: tennis, golf, or billiard players commonly report that they lose their 'touch' by ⑤<u>thinking</u> too much about their moves.",
       "choices": null,
       "answer": "④",
-      "explanation": "④ 분사구문 형태로 the affordances ... are implicitly detected의 의미이므로 수동의 detected가 되어야 한다. detecting(능동)은 어법상 틀리다. ①involved 과거분사 수식, ②복수주어 actions에 수일치한 are, ③형용사 보어 transferable, ⑤전치사 by의 목적어 동명사 thinking은 모두 적절.",
-      "range_label": "수특영어 25강_3"
+      "explanation": "④ 분사구문 형태로 the affordances ... are implicitly detected의 의미이므로 수동의 detected가 되어야 한다. detecting(능동)은 어법상 틀리다. ①involved 과거분사 수식, ②복수주어 actions에 수일치한 are, ③형용사 보어 transferable, ⑤전치사 by의 목적어 동명사 thinking은 모두 적절."
     },
     {
+      "type": "single",
       "num": 2,
       "qtype": "어법",
       "score": 4.4,
-      "format": "5지선다_번호",
-      "source_passage": "MOGO_26_G3_06_31",
-      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
-      "passage": "Ever since the early Enlightenment, preservation and conservation have been closely related. Taken as near synonyms, their meaning is to maintain an object or system insofar as possible in its present state, to protect it from change, usually for contemplation, research, display, and perhaps for use. Conservationists who ①<u>distinguish</u> their activities from preservation emphasize conservation's restorative aspects — restoring a historical musical instrument, for example, or a painting, or a dinosaur, or an ecosystem. Conservationists acknowledge change but try to manage it in order to prolong a desired state. Preservationists (who may nonetheless call ②<u>themselves</u> conservationists) think of themselves more as protectors. They sometimes criticize conservationists for setting an additional priority on yield or harvest or use, rather than ③<u>interfering</u> as minimally as possible in order to preserve the original object or system, as they would do. Preservationists would, for example, prefer ④<u>keeping</u> a historical musical instrument \"as found\" in a deteriorated state, for study, rather than to restore or repair it for display or use.",
+      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\nEver since the early Enlightenment, preservation and conservation have been closely related. Taken as near synonyms, their meaning is to maintain an object or system insofar as possible in its present state, to protect it from change, usually for contemplation, research, display, and perhaps for use. Conservationists who ①<u>distinguish</u> their activities from preservation emphasize conservation's restorative aspects — restoring a historical musical instrument, for example, or a painting, or a dinosaur, or an ecosystem. Conservationists acknowledge change but try to manage it in order to prolong a desired state. Preservationists (who may nonetheless call ②<u>themselves</u> conservationists) think of themselves more as protectors. They sometimes criticize conservationists for setting an additional priority on yield or harvest or use, rather than ③<u>interfering</u> as minimally as possible in order to preserve the original object or system, as they would do. Preservationists would, for example, prefer ④<u>keeping</u> a historical musical instrument \"as found\" in a deteriorated state, for study, rather than to restore or repair it for display or use.",
       "choices": null,
       "answer": "④",
-      "explanation": "④ prefer A rather than B 구조에서 뒤에 to restore가 to부정사이므로 병렬상 to keep이 되어야 한다. keeping은 어법상 틀리다. ①주격 관계대명사절 복수동사 distinguish, ②재귀대명사 themselves, ③rather than 뒤 동명사 interfering(앞 setting과 병렬)은 모두 적절.",
-      "range_label": "6모 31번"
+      "explanation": "④ prefer A rather than B 구조에서 뒤에 to restore가 to부정사이므로 병렬상 to keep이 되어야 한다. keeping은 어법상 틀리다. ①주격 관계대명사절 복수동사 distinguish, ②재귀대명사 themselves, ③rather than 뒤 동명사 interfering(앞 setting과 병렬)은 모두 적절."
     },
     {
+      "type": "single",
       "num": 3,
       "qtype": "어법",
       "score": 4.6,
-      "format": "5지선다_번호",
-      "source_passage": "MOGO_26_G3_06_34",
-      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
-      "passage": "The dependent and shifting nature of art values, not only on the market but inherently, ①<u>is</u> uppermost in the mind of today's art collector, whether he buys for himself or as the representative of an institution. Acquiring a work is acquiring a piece of art history, or it is acquiring nothing (beyond, that is, an object of personal enjoyment in the same class as a cat or a souvenir). In signing his check the collector asserts his belief in the future presence of the work as a significant point ②<u>attained</u> by art as a whole. History, however, is open to anything and the merit of the chosen painting or sculpture has at best only the validation of a present-day consensus. This consensus is all but certain to ③<u>be displaced</u>, as others have been in the past. In the last analysis, committing himself to a painting is the collector's own act. Through it he courageously affirms not only his aesthetic judgment, from ④<u>whatever</u> source it be derived, but the conviction ⑤<u>what</u> he can predict where art is going.",
+      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\nThe dependent and shifting nature of art values, not only on the market but inherently, ①<u>is</u> uppermost in the mind of today's art collector, whether he buys for himself or as the representative of an institution. Acquiring a work is acquiring a piece of art history, or it is acquiring nothing (beyond, that is, an object of personal enjoyment in the same class as a cat or a souvenir). In signing his check the collector asserts his belief in the future presence of the work as a significant point ②<u>attained</u> by art as a whole. History, however, is open to anything and the merit of the chosen painting or sculpture has at best only the validation of a present-day consensus. This consensus is all but certain to ③<u>be displaced</u>, as others have been in the past. In the last analysis, committing himself to a painting is the collector's own act. Through it he courageously affirms not only his aesthetic judgment, from ④<u>whatever</u> source it be derived, but the conviction ⑤<u>what</u> he can predict where art is going.",
       "choices": null,
       "answer": "⑤",
-      "explanation": "⑤ 뒤에 완전한 절(he can predict ...)이 이어지고 the conviction과 동격을 이루므로 동격 접속사 that이 되어야 한다. 관계대명사 what은 틀리다. ①단수주어 nature에 수일치한 is, ②point를 수식하는 과거분사 attained, ③be동사+과거분사 수동 be displaced, ④복합관계형용사 whatever는 모두 적절.",
-      "range_label": "6모 34번"
+      "explanation": "⑤ 뒤에 완전한 절(he can predict ...)이 이어지고 the conviction과 동격을 이루므로 동격 접속사 that이 되어야 한다. 관계대명사 what은 틀리다. ①단수주어 nature에 수일치한 is, ②point를 수식하는 과거분사 attained, ③be동사+과거분사 수동 be displaced, ④복합관계형용사 whatever는 모두 적절."
     },
     {
+      "type": "single",
       "num": 4,
       "qtype": "어법",
       "score": 3.6,
-      "format": "5지선다_번호",
-      "source_passage": "수특_29강_1번",
-      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
-      "passage": "Along with the mistaken notion that the law resides in the books ①<u>goes</u> the equally mistaken idea that law is secret, or at least inaccessible to the ordinary person. To understand and apply the law at the advanced, technical level that lawyers ②<u>do</u> requires professional knowledge, but to understand the basic substance of the law does not. Law reflects life. The principles and issues ③<u>embodied</u> in the law are not different from those that we experience in other aspects of our lives. Contract law, for example, is a commentary on the way people make, interpret, keep, and break their promises in commercial and noncommercial settings. If you cross your fingers when you make a promise, ④<u>does</u> it mean that the promise doesn't count? If your newly purchased television doesn't work, can you return it to the store? ⑤<u>Being</u> so on.",
+      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\nAlong with the mistaken notion that the law resides in the books ①<u>goes</u> the equally mistaken idea that law is secret, or at least inaccessible to the ordinary person. To understand and apply the law at the advanced, technical level that lawyers ②<u>do</u> requires professional knowledge, but to understand the basic substance of the law does not. Law reflects life. The principles and issues ③<u>embodied</u> in the law are not different from those that we experience in other aspects of our lives. Contract law, for example, is a commentary on the way people make, interpret, keep, and break their promises in commercial and noncommercial settings. If you cross your fingers when you make a promise, ④<u>does</u> it mean that the promise doesn't count? If your newly purchased television doesn't work, can you return it to the store? ⑤<u>Being</u> so on.",
       "choices": null,
       "answer": "⑤",
-      "explanation": "⑤ 관용 표현 'And so on(기타 등등)'이 되어야 하므로 동명사 Being은 어법상 틀리다(원문은 And so on). ①장소부사구 도치문에서 단수주어 idea에 수일치한 goes, ②대동사 do(=understand and apply), ③issues를 수식하는 과거분사 embodied, ④조건절 뒤 주절 의문문 does는 모두 적절.",
-      "range_label": "수특영어 29강_1"
+      "explanation": "⑤ 관용 표현 'And so on(기타 등등)'이 되어야 하므로 동명사 Being은 어법상 틀리다(원문은 And so on). ①장소부사구 도치문에서 단수주어 idea에 수일치한 goes, ②대동사 do(=understand and apply), ③issues를 수식하는 과거분사 embodied, ④조건절 뒤 주절 의문문 does는 모두 적절."
     },
     {
+      "type": "single",
       "num": 5,
       "qtype": "어법",
       "score": 4.4,
-      "format": "5지선다_번호",
-      "source_passage": "MOGO_26_G3_06_38",
-      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
-      "passage": "To minimize building costs and maximize revenues, skyscrapers generally take the shape of squares or rectangles. These are not particularly aerodynamic shapes, and this ①<u>results</u> in a wind phenomenon called \"vortex shedding.\" As wind meets a rectangular skyscraper it pushes on the flat face of the building before ②<u>flowing</u> around its sides, where eventually it separates from the face of the structure. The difference in pressures on the front and back faces of the building gives rise to vortices, or spinning currents of wind, ③<u>that</u> flow downstream from the building. The vortices pull and push the building in a direction perpendicular to the wind at frequencies that can become dangerously self-sustaining. To minimize vortex shedding, skyscraper designers do everything in their powers to confuse the wind. ④<u>Orienting</u> the building so that the longer face of the structure is parallel with prevailing winds can help. Chopping or rounding off corners of a building can ⑤<u>likewise</u> making it more aerodynamic.",
+      "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\nTo minimize building costs and maximize revenues, skyscrapers generally take the shape of squares or rectangles. These are not particularly aerodynamic shapes, and this ①<u>results</u> in a wind phenomenon called \"vortex shedding.\" As wind meets a rectangular skyscraper it pushes on the flat face of the building before ②<u>flowing</u> around its sides, where eventually it separates from the face of the structure. The difference in pressures on the front and back faces of the building gives rise to vortices, or spinning currents of wind, ③<u>that</u> flow downstream from the building. The vortices pull and push the building in a direction perpendicular to the wind at frequencies that can become dangerously self-sustaining. To minimize vortex shedding, skyscraper designers do everything in their powers to confuse the wind. ④<u>Orienting</u> the building so that the longer face of the structure is parallel with prevailing winds can help. Chopping or rounding off corners of a building can ⑤<u>likewise</u> making it more aerodynamic.",
       "choices": null,
       "answer": "⑤",
-      "explanation": "⑤ 조동사 can 뒤에는 동사원형이 와야 하므로 make가 되어야 한다(likewise는 부사). making은 어법상 틀리다. ①단수주어 this에 수일치한 results, ②전치사 before의 목적어 동명사 flowing, ③vortices를 선행사로 하는 주격 관계대명사 that, ④동명사 주어 Orienting은 모두 적절.",
-      "range_label": "6모 38번"
+      "explanation": "⑤ 조동사 can 뒤에는 동사원형이 와야 하므로 make가 되어야 한다(likewise는 부사). making은 어법상 틀리다. ①단수주어 this에 수일치한 results, ②전치사 before의 목적어 동명사 flowing, ③vortices를 선행사로 하는 주격 관계대명사 that, ④동명사 주어 Orienting은 모두 적절."
     },
     {
+      "type": "single",
       "num": 6,
       "qtype": "빈칸추론",
       "score": 4.7,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_05_32",
-      "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
-      "passage": "According to British economist Lionel Robbins, whether goods and services are beneficial to human welfare or not, economics should study them if they satisfy the wants of some men. It is also worth noting that in view of Robbins, economics does not deal with the question as to what ends should be achieved, that is, what wants should be satisfied and what not, because in this regard man himself has to decide. Economics itself does not make a choice. Economist only tells in what ways the given ends or wants can be achieved with the minimum possible resources. What ends or wants should be selected for satisfaction is not the concern of economists. Whether the ends chosen by man are good or bad, noble or ignoble, economics should study them, because the task of economist is not to praise or criticise but only to analyse and explain. To decide about the desirability or otherwise of a thing is beyond the scope of economics. Therefore, according to Robbins, economics is ______.",
+      "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?\nAccording to British economist Lionel Robbins, whether goods and services are beneficial to human welfare or not, economics should study them if they satisfy the wants of some men. It is also worth noting that in view of Robbins, economics does not deal with the question as to what ends should be achieved, that is, what wants should be satisfied and what not, because in this regard man himself has to decide. Economics itself does not make a choice. Economist only tells in what ways the given ends or wants can be achieved with the minimum possible resources. What ends or wants should be selected for satisfaction is not the concern of economists. Whether the ends chosen by man are good or bad, noble or ignoble, economics should study them, because the task of economist is not to praise or criticise but only to analyse and explain. To decide about the desirability or otherwise of a thing is beyond the scope of economics. Therefore, according to Robbins, economics is ______.",
       "choices": [
         "① neutral between ends",
         "② superior to ethics",
@@ -128,17 +111,14 @@
         "⑤ a critic of human desires"
       ],
       "answer": "①",
-      "explanation": "Robbins에 따르면 경제학은 목적의 좋고 나쁨을 판단하지 않고 분석·설명만 하므로 목적에 대해 '중립적'이다. 따라서 ①이 적절하다. ③⑤는 경제학이 가치판단을 한다는 본문과 반대, ②④는 본문에 근거 없다.",
-      "range_label": "5모 32번"
+      "explanation": "Robbins에 따르면 경제학은 목적의 좋고 나쁨을 판단하지 않고 분석·설명만 하므로 목적에 대해 '중립적'이다. 따라서 ①이 적절하다. ③⑤는 경제학이 가치판단을 한다는 본문과 반대, ②④는 본문에 근거 없다."
     },
     {
+      "type": "single",
       "num": 7,
       "qtype": "빈칸추론",
       "score": 4.2,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_06_33",
-      "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
-      "passage": "Imagination continues to function when perception is not actively discerning objects, in cases of emotion, disease, and sleep. Emotions dispose one to see the world in a distorted way. A coward's perceptual disposition is affected by his disposition to experience fear. A lover's expectations are affected by desire. In such cases, a small similarity between a perceived object and the thing one expects to see can lead to the misidentification of the perceived object as that thing. The coward sees the enemy, while the lover sees the object of desire everywhere. The more affected one is, the less similarity is required for the thing to appear. While the central organ of sense normally functions by comparing similarities and differences, emotions dispose one to discern objects inaccurately. The greater the emotional investment, ______.",
+      "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?\nImagination continues to function when perception is not actively discerning objects, in cases of emotion, disease, and sleep. Emotions dispose one to see the world in a distorted way. A coward's perceptual disposition is affected by his disposition to experience fear. A lover's expectations are affected by desire. In such cases, a small similarity between a perceived object and the thing one expects to see can lead to the misidentification of the perceived object as that thing. The coward sees the enemy, while the lover sees the object of desire everywhere. The more affected one is, the less similarity is required for the thing to appear. While the central organ of sense normally functions by comparing similarities and differences, emotions dispose one to discern objects inaccurately. The greater the emotional investment, ______.",
       "choices": [
         "① the weaker one's imagination grows",
         "② the clearer one's judgment becomes",
@@ -147,17 +127,14 @@
         "⑤ the less fear a coward experiences"
       ],
       "answer": "③",
-      "explanation": "감정이 클수록 더 적은 유사성만으로도 대상을 잘못 인식하게 된다는 흐름이므로, 감정 투자가 클수록 지각이 더 '편향된다'는 ①이 적절하다. ②는 정반대, ③④⑤는 본문 논지와 무관하다.",
-      "range_label": "6모 33번"
+      "explanation": "감정이 클수록 더 적은 유사성만으로도 대상을 잘못 인식하게 된다는 흐름이므로, 감정 투자가 클수록 지각이 더 '편향된다'는 ①이 적절하다. ②는 정반대, ③④⑤는 본문 논지와 무관하다."
     },
     {
+      "type": "single",
       "num": 8,
       "qtype": "빈칸추론",
       "score": 4.6,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_06_37",
-      "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
-      "passage": "Although there may be elements that trigger instinctive response, spectacle works primarily within a cultural frame and is subject to prevailing modes of perception that observers bring to bear. In saying that, we stress that creation of spectacle is neither a universal nor even an inevitable expression of culture, but is a strategy commonly used by people from many different cultures to address specific needs. The task of creating spectacle has been likened to creating new works of literature, where writers normally feel bound by the rules and traditions of their genre yet need to show sufficient originality to impress their audiences. By extension, spectacle is produced by working with the grain of a particular culture, ______. Thus anyone deploying spectacle may draw on a repertoire of techniques and conventions developed from previous festivals or related activities, but imitation is not enough. Spectacle must also be spectacular. A spectacle has to amaze spectators, outdoing previous efforts if it is to become part of the collective memory of those who witnessed and participated in it.",
+      "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?\nAlthough there may be elements that trigger instinctive response, spectacle works primarily within a cultural frame and is subject to prevailing modes of perception that observers bring to bear. In saying that, we stress that creation of spectacle is neither a universal nor even an inevitable expression of culture, but is a strategy commonly used by people from many different cultures to address specific needs. The task of creating spectacle has been likened to creating new works of literature, where writers normally feel bound by the rules and traditions of their genre yet need to show sufficient originality to impress their audiences. By extension, spectacle is produced by working with the grain of a particular culture, ______. Thus anyone deploying spectacle may draw on a repertoire of techniques and conventions developed from previous festivals or related activities, but imitation is not enough. Spectacle must also be spectacular. A spectacle has to amaze spectators, outdoing previous efforts if it is to become part of the collective memory of those who witnessed and participated in it.",
       "choices": [
         "① ignoring the expectations of the audience",
         "② rejecting all cultural conventions entirely",
@@ -166,17 +143,14 @@
         "⑤ blending the innovative with the established"
       ],
       "answer": "⑤",
-      "explanation": "스펙터클은 문화의 결을 따르면서도 청중을 놀라게 할 독창성이 필요하다고 했으므로, 혁신적인 것과 기존의 것을 '결합'한다는 ①이 적절하다. ②③④⑤는 모두 본문의 균형(전통+독창성)과 어긋난다.",
-      "range_label": "6모 37번"
+      "explanation": "스펙터클은 문화의 결을 따르면서도 청중을 놀라게 할 독창성이 필요하다고 했으므로, 혁신적인 것과 기존의 것을 '결합'한다는 ①이 적절하다. ②③④⑤는 모두 본문의 균형(전통+독창성)과 어긋난다."
     },
     {
+      "type": "single",
       "num": 9,
       "qtype": "글의순서",
       "score": 4.0,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_05_30",
-      "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
-      "passage": "In humans, the infant immune system is less active than that of adults, enabling a wide range of bacteria to establish in our guts.\n\n(A) Similarly, young plants release fewer defensive compounds into the soil than older ones, allowing a broad variety of microbes to colonize their rhizospheres. Human breast milk contains sugars. At first, scientists struggled to understand why mothers express these compounds, as babies can't digest them.\n\n(B) Similarly, young plants release large quantities of sugars into the soil, to feed and develop their new microbiomes. Like the human gut, the rhizosphere not only digests food, but also helps to protect plants from disease.\n\n(C) It now seems that their sole purpose is to feed the bacteria with which the child will grow. They selectively cultivate a particular bacterial species with a crucial role in helping the gut to develop and fine-tuning the immune system.",
+      "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nIn humans, the infant immune system is less active than that of adults, enabling a wide range of bacteria to establish in our guts.\n\n(A) Similarly, young plants release fewer defensive compounds into the soil than older ones, allowing a broad variety of microbes to colonize their rhizospheres. Human breast milk contains sugars. At first, scientists struggled to understand why mothers express these compounds, as babies can't digest them.\n\n(B) Similarly, young plants release large quantities of sugars into the soil, to feed and develop their new microbiomes. Like the human gut, the rhizosphere not only digests food, but also helps to protect plants from disease.\n\n(C) It now seems that their sole purpose is to feed the bacteria with which the child will grow. They selectively cultivate a particular bacterial species with a crucial role in helping the gut to develop and fine-tuning the immune system.",
       "choices": [
         "① (B)-(A)-(C)",
         "② (A)-(C)-(B)",
@@ -185,17 +159,14 @@
         "⑤ (C)-(B)-(A)"
       ],
       "answer": "②",
-      "explanation": "주어진 글(유아 면역)에 이어 식물도 유사하다는 (A)가 오고, (A)의 모유 당분의 목적을 설명하는 (C)가 이어진 뒤, 식물도 마찬가지로 당분을 분비한다는 (B)로 마무리된다. 따라서 (A)-(C)-(B).",
-      "range_label": "5모 30번"
+      "explanation": "주어진 글(유아 면역)에 이어 식물도 유사하다는 (A)가 오고, (A)의 모유 당분의 목적을 설명하는 (C)가 이어진 뒤, 식물도 마찬가지로 당분을 분비한다는 (B)로 마무리된다. 따라서 (A)-(C)-(B)."
     },
     {
+      "type": "single",
       "num": 10,
       "qtype": "글의순서",
       "score": 3.8,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_06_36",
-      "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
-      "passage": "Plants have evolved defenses almost as diverse as the number of genera.\n\n(A) Nor are individual plants entirely on their own while under attack. Plants can release chemical compounds that let their same-species neighbors know that an attack is likely coming, pushing those nearby plants to start building up defensive compounds in their tissues. Some of these cues even attract insect predators, a call for an assist that benefits both the plant and its bug-eating collaborators.\n\n(B) The back-and-forth is not a matter of natural balance, but more like a drawn-out evolutionary conversation. New plant defenses unintentionally select for insects with ways to get around them, which in turn help bring about more resilient and resistant plant species. New variations, shading into entire new forms and adaptations, maintain the stalemate.\n\n(C) Some load their tissues with harsh compounds that either are unpleasant to insects or intoxicate them, encouraging the insects to go bother another plant or at least slowing down their eating. Structural defenses like thick coats of wax on leaves may prevent some insect species from damaging the plant tissues altogether.",
+      "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nPlants have evolved defenses almost as diverse as the number of genera.\n\n(A) Nor are individual plants entirely on their own while under attack. Plants can release chemical compounds that let their same-species neighbors know that an attack is likely coming, pushing those nearby plants to start building up defensive compounds in their tissues. Some of these cues even attract insect predators, a call for an assist that benefits both the plant and its bug-eating collaborators.\n\n(B) The back-and-forth is not a matter of natural balance, but more like a drawn-out evolutionary conversation. New plant defenses unintentionally select for insects with ways to get around them, which in turn help bring about more resilient and resistant plant species. New variations, shading into entire new forms and adaptations, maintain the stalemate.\n\n(C) Some load their tissues with harsh compounds that either are unpleasant to insects or intoxicate them, encouraging the insects to go bother another plant or at least slowing down their eating. Structural defenses like thick coats of wax on leaves may prevent some insect species from damaging the plant tissues altogether.",
       "choices": [
         "① (A)-(C)-(B)",
         "② (B)-(A)-(C)",
@@ -204,17 +175,14 @@
         "⑤ (C)-(B)-(A)"
       ],
       "answer": "③",
-      "explanation": "주어진 글(방어의 다양성) 다음에 개별 식물의 화학·구조적 방어를 설명하는 (C)가 오고, 개별 식물을 넘어선 이웃 간 신호·포식자 유인을 다루는 (A)('Nor are individual plants ... on their own')가 이어진 뒤, 식물과 곤충의 진화적 군비경쟁으로 마무리하는 (B)가 온다. 따라서 (C)-(A)-(B).",
-      "range_label": "6모 36번"
+      "explanation": "주어진 글(방어의 다양성) 다음에 개별 식물의 화학·구조적 방어를 설명하는 (C)가 오고, 개별 식물을 넘어선 이웃 간 신호·포식자 유인을 다루는 (A)('Nor are individual plants ... on their own')가 이어진 뒤, 식물과 곤충의 진화적 군비경쟁으로 마무리하는 (B)가 온다. 따라서 (C)-(A)-(B)."
     },
     {
+      "type": "single",
       "num": 11,
       "qtype": "글의순서",
       "score": 3.8,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_06_41",
-      "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
-      "passage": "The structure of glass is, frankly, a bit of a mess. Clear and perfect as it might appear to our eyes, down at the molecular level, glass looks more like a random ball-pit of atoms.\n\n(A) The technical term for this mess depends on who you're asking: for some scientists it is an \"amorphous solid,\" for others a \"supercooled liquid.\" In theory it's both liquid and solid, though, given the way it behaves, in practice it's really the latter.\n\n(B) Those misshapen sheets of glass you sometimes see in old stained-glass windows, thicker at the bottom than the top, are generally not that way because the glass is slowly sinking over time. Unless the church has endured temperatures of more than 400°C, the chances are they are uneven because that's the way they were blown and solidified in the first place.\n\n(C) In fact, at room temperature glass never behaves as a liquid, even an imperceptibly viscous one, even over long periods of time. The paradox is that, despite it being one of the very oldest human-made substances, scientists still struggle to comprehend why glass behaves the way it does.",
+      "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nThe structure of glass is, frankly, a bit of a mess. Clear and perfect as it might appear to our eyes, down at the molecular level, glass looks more like a random ball-pit of atoms.\n\n(A) The technical term for this mess depends on who you're asking: for some scientists it is an \"amorphous solid,\" for others a \"supercooled liquid.\" In theory it's both liquid and solid, though, given the way it behaves, in practice it's really the latter.\n\n(B) Those misshapen sheets of glass you sometimes see in old stained-glass windows, thicker at the bottom than the top, are generally not that way because the glass is slowly sinking over time. Unless the church has endured temperatures of more than 400°C, the chances are they are uneven because that's the way they were blown and solidified in the first place.\n\n(C) In fact, at room temperature glass never behaves as a liquid, even an imperceptibly viscous one, even over long periods of time. The paradox is that, despite it being one of the very oldest human-made substances, scientists still struggle to comprehend why glass behaves the way it does.",
       "choices": [
         "① (A)-(C)-(B)",
         "② (B)-(A)-(C)",
@@ -223,56 +191,44 @@
         "⑤ (C)-(B)-(A)"
       ],
       "answer": "①",
-      "explanation": "유리 구조가 엉망이라는 주어진 글에 이어 그 용어(비정질 고체/과냉각 액체)를 설명하는 (A)가 오고, 실제로는 액체처럼 행동하지 않는다는 (C)가 이어진 뒤, 스테인드글라스 예시로 이를 뒷받침하는 (B)로 마무리된다. 따라서 (A)-(C)-(B).",
-      "range_label": "6모 41번"
+      "explanation": "유리 구조가 엉망이라는 주어진 글에 이어 그 용어(비정질 고체/과냉각 액체)를 설명하는 (A)가 오고, 실제로는 액체처럼 행동하지 않는다는 (C)가 이어진 뒤, 스테인드글라스 예시로 이를 뒷받침하는 (B)로 마무리된다. 따라서 (A)-(C)-(B)."
     },
     {
+      "type": "single",
       "num": 12,
       "qtype": "흐름무관",
       "score": 3.4,
-      "format": "5지선다_번호",
-      "source_passage": "수특_25강_2번",
-      "question": "다음 글에서 전체 흐름과 관계 없는 문장은?",
-      "passage": "When we lecture, scold, yell, or criticize, or when we try to make our kids feel guilty, it activates their amygdala, triggering their stress response and putting them into a defensive, rigid, reactive state. ① Even more basic, when we say no or don't, it releases stress chemicals in our kids' brains that are associated with fear and anger. ② Functional brain imaging research has shown that even seeing the word no on a screen for less than a second will cause your brain to suddenly release dozens of stress-producing hormones and neurotransmitters. ③ Children who are exposed to a second language before age three tend to achieve native-like pronunciation more easily than older learners. ④ Conversely, positive words like yes, love, and peace activate systems in the prefrontal cortex that are related to emotional regulation. ⑤ The problem is that negative words like no and don't have a more powerful effect on kids than positive words.",
+      "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nWhen we lecture, scold, yell, or criticize, or when we try to make our kids feel guilty, it activates their amygdala, triggering their stress response and putting them into a defensive, rigid, reactive state. ① Even more basic, when we say no or don't, it releases stress chemicals in our kids' brains that are associated with fear and anger. ② Functional brain imaging research has shown that even seeing the word no on a screen for less than a second will cause your brain to suddenly release dozens of stress-producing hormones and neurotransmitters. ③ Children who are exposed to a second language before age three tend to achieve native-like pronunciation more easily than older learners. ④ Conversely, positive words like yes, love, and peace activate systems in the prefrontal cortex that are related to emotional regulation. ⑤ The problem is that negative words like no and don't have a more powerful effect on kids than positive words.",
       "choices": null,
       "answer": "③",
-      "explanation": "글 전체는 부정어가 아이의 뇌에 일으키는 스트레스 반응과 긍정어의 효과를 다루고 있다. ③은 제2언어 습득 시기와 발음에 관한 내용으로 전체 흐름과 무관하다.",
-      "range_label": "수특영어 25강_2"
+      "explanation": "글 전체는 부정어가 아이의 뇌에 일으키는 스트레스 반응과 긍정어의 효과를 다루고 있다. ③은 제2언어 습득 시기와 발음에 관한 내용으로 전체 흐름과 무관하다."
     },
     {
+      "type": "single",
       "num": 13,
       "qtype": "흐름무관",
       "score": 3.4,
-      "format": "5지선다_번호",
-      "source_passage": "수특_28강_1번",
-      "question": "다음 글에서 전체 흐름과 관계 없는 문장은?",
-      "passage": "People like pictures of the savanna, even if they have never been there. ① In one study, people of different ages looked at images of tropical forests, deciduous forests, coniferous forests, deserts, and the East African savanna, and eight-year-old children said that they would like to live in or visit the savanna more than any other environment. ② Since none of these people had visited savannas, the implication is that this preference was programmed into their brains. ③ This programmed preference is called 'the savanna hypothesis.' ④ Deforestation in tropical regions has accelerated dramatically over the past few decades, threatening countless plant and animal species. ⑤ As people get older, this preference gets modified by where they have lived, shifting after puberty to areas with denser trees and higher mountains.",
+      "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nPeople like pictures of the savanna, even if they have never been there. ① In one study, people of different ages looked at images of tropical forests, deciduous forests, coniferous forests, deserts, and the East African savanna, and eight-year-old children said that they would like to live in or visit the savanna more than any other environment. ② Since none of these people had visited savannas, the implication is that this preference was programmed into their brains. ③ This programmed preference is called 'the savanna hypothesis.' ④ Deforestation in tropical regions has accelerated dramatically over the past few decades, threatening countless plant and animal species. ⑤ As people get older, this preference gets modified by where they have lived, shifting after puberty to areas with denser trees and higher mountains.",
       "choices": null,
       "answer": "④",
-      "explanation": "글 전체는 인간이 사바나 풍경을 선호하는 '사바나 가설'과 그 변화를 다룬다. ④는 열대림 벌채와 생물종 위협에 관한 내용으로 전체 흐름과 무관하다.",
-      "range_label": "수특영어 28강_1"
+      "explanation": "글 전체는 인간이 사바나 풍경을 선호하는 '사바나 가설'과 그 변화를 다룬다. ④는 열대림 벌채와 생물종 위협에 관한 내용으로 전체 흐름과 무관하다."
     },
     {
+      "type": "single",
       "num": 14,
       "qtype": "흐름무관",
       "score": 3.4,
-      "format": "5지선다_번호",
-      "source_passage": "수특_30강_2번",
-      "question": "다음 글에서 전체 흐름과 관계 없는 문장은?",
-      "passage": "Dietary behaviors are, in large part, the consequence of automatic responses to a particular situation with food, many of which lead to increased caloric consumption and poor dietary choices. ① Individuals are subject to inherent cognitive limitations and mostly lack the capacity to consistently resist contextual cues that encourage eating. ② Take, for example, going to the movies, which for many also means sharing popcorn, candy, and soda that people cannot resist. ③ Regular aerobic exercise strengthens the cardiovascular system and significantly lowers the risk of chronic heart disease. ④ Another example is eating potato chips or peanuts set out during a card game — people consume snacks not because they are hungry, but because they are prompted by the social environment. ⑤ Grocery stores often use placement of items to encourage impulse buying.",
+      "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nDietary behaviors are, in large part, the consequence of automatic responses to a particular situation with food, many of which lead to increased caloric consumption and poor dietary choices. ① Individuals are subject to inherent cognitive limitations and mostly lack the capacity to consistently resist contextual cues that encourage eating. ② Take, for example, going to the movies, which for many also means sharing popcorn, candy, and soda that people cannot resist. ③ Regular aerobic exercise strengthens the cardiovascular system and significantly lowers the risk of chronic heart disease. ④ Another example is eating potato chips or peanuts set out during a card game — people consume snacks not because they are hungry, but because they are prompted by the social environment. ⑤ Grocery stores often use placement of items to encourage impulse buying.",
       "choices": null,
       "answer": "③",
-      "explanation": "글 전체는 식이 행동이 상황적 단서에 의한 자동적 반응이라는 점을 예시로 설명한다. ③은 유산소 운동과 심혈관 건강에 관한 내용으로 전체 흐름과 무관하다.",
-      "range_label": "수특영어 30강_2"
+      "explanation": "글 전체는 식이 행동이 상황적 단서에 의한 자동적 반응이라는 점을 예시로 설명한다. ③은 유산소 운동과 심혈관 건강에 관한 내용으로 전체 흐름과 무관하다."
     },
     {
+      "type": "single",
       "num": 15,
       "qtype": "주제",
       "score": 3.6,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_05_36",
-      "question": "다음 글의 주제로 가장 적절한 것은?",
-      "passage": "The autonomy granted to the individual in terms of free speech can be both individual (understood purely from the speaker's point of view) and relational in nature. The individual's speech must be protected in order to allow them to freely develop their personality. This is important, even bearing in mind that this development is only possible in social life, which means in relation to and possibly in cooperation with others. Relational autonomy, however, also takes the interests of the audience of the speech into account. Speech can also limit the autonomy of others, for example in the case of defamation, invasion of privacy, or hate speech that hurts certain community. European legal systems also take the latter aspect into account when setting the limits of freedom of expression. They restrict freedom of expression in the interests of the autonomy of those affected by the speech, in order to ensure the peace and security of social coexistence.",
+      "question": "다음 글의 주제로 가장 적절한 것은?\nThe autonomy granted to the individual in terms of free speech can be both individual (understood purely from the speaker's point of view) and relational in nature. The individual's speech must be protected in order to allow them to freely develop their personality. This is important, even bearing in mind that this development is only possible in social life, which means in relation to and possibly in cooperation with others. Relational autonomy, however, also takes the interests of the audience of the speech into account. Speech can also limit the autonomy of others, for example in the case of defamation, invasion of privacy, or hate speech that hurts certain community. European legal systems also take the latter aspect into account when setting the limits of freedom of expression. They restrict freedom of expression in the interests of the autonomy of those affected by the speech, in order to ensure the peace and security of social coexistence.",
       "choices": [
         "① the economic consequences of restricting hate speech",
         "② the absolute priority of the speaker's freedom over all others",
@@ -281,17 +237,14 @@
         "⑤ the dual nature of autonomy that justifies limiting free speech"
       ],
       "answer": "⑤",
-      "explanation": "표현의 자유에서 자율성은 화자 개인적 측면과 청중을 고려하는 관계적 측면을 모두 지니며, 유럽 법체계가 후자를 근거로 표현의 자유를 제한한다는 내용이다. 따라서 ①이 주제로 적절하다.",
-      "range_label": "5모 36번"
+      "explanation": "표현의 자유에서 자율성은 화자 개인적 측면과 청중을 고려하는 관계적 측면을 모두 지니며, 유럽 법체계가 후자를 근거로 표현의 자유를 제한한다는 내용이다. 따라서 ①이 주제로 적절하다."
     },
     {
+      "type": "single",
       "num": 16,
       "qtype": "주제",
       "score": 3.8,
-      "format": "5지선다",
-      "source_passage": "수특_28강_3번",
-      "question": "다음 글의 주제로 가장 적절한 것은?",
-      "passage": "Much research in social psychology has documented some of the key strategies that people rely upon in defending the belief 'I am good.' For example, when people perform poorly at something, they tend to trivialize their failures. This trivialization disarms those failures and prevents them from overwriting their life stories. Imagine, say, that someone fails a calculus test. A common defensive response is to conclude that this test was just not that important to them. They may say to themselves, 'Who cares about calculus anyway. I'm not going to become a mathematician.' So if someone aces a calculus test, they may think to themselves about how crucial calculus is for their future career success. By titrating how importantly people view their successes and failures, they can shape their emotional reactions to these events in a way that enables them to tell a more convincing story that 'I am good.'",
+      "question": "다음 글의 주제로 가장 적절한 것은?\nMuch research in social psychology has documented some of the key strategies that people rely upon in defending the belief 'I am good.' For example, when people perform poorly at something, they tend to trivialize their failures. This trivialization disarms those failures and prevents them from overwriting their life stories. Imagine, say, that someone fails a calculus test. A common defensive response is to conclude that this test was just not that important to them. They may say to themselves, 'Who cares about calculus anyway. I'm not going to become a mathematician.' So if someone aces a calculus test, they may think to themselves about how crucial calculus is for their future career success. By titrating how importantly people view their successes and failures, they can shape their emotional reactions to these events in a way that enables them to tell a more convincing story that 'I am good.'",
       "choices": [
         "① the importance of mathematics for future career success",
         "② defensive strategies people use to maintain a positive self-image",
@@ -300,17 +253,14 @@
         "⑤ the cognitive benefits of studying calculus"
       ],
       "answer": "②",
-      "explanation": "사람들이 실패를 사소하게 만들고 성공의 중요성을 부풀려 '나는 좋은 사람'이라는 믿음을 지키는 방어 전략을 설명한다. 따라서 ①이 주제로 적절하다.",
-      "range_label": "수특영어 28강_3"
+      "explanation": "사람들이 실패를 사소하게 만들고 성공의 중요성을 부풀려 '나는 좋은 사람'이라는 믿음을 지키는 방어 전략을 설명한다. 따라서 ①이 주제로 적절하다."
     },
     {
+      "type": "single",
       "num": 17,
       "qtype": "주제",
       "score": 4.9,
-      "format": "5지선다",
-      "source_passage": "수특_30강_1번",
-      "question": "다음 글의 주제로 가장 적절한 것은?",
-      "passage": "Not too much or too little — that's what moderation means. Moderation does not mean that you have to eliminate low-nutrient-density foods from your diet, such as soft drinks and candy, but rather that you can include them occasionally. Moderation entails not taking anything to extremes. You probably have heard that vitamin C has positive effects, but that doesn't mean huge doses of this essential nutrient are appropriate for you. For example, the body needs zinc for hundreds of chemical reactions, including those that support normal growth, development, and immune function. Too much zinc, however, can cause deficiency of copper, another essential mineral, which can lead to damaged immune function. Being moderate in your diet means that you do not restrict or completely eliminate any one type of food, but rather that all types of food can fit into a healthful diet.",
+      "question": "다음 글의 주제로 가장 적절한 것은?\nNot too much or too little — that's what moderation means. Moderation does not mean that you have to eliminate low-nutrient-density foods from your diet, such as soft drinks and candy, but rather that you can include them occasionally. Moderation entails not taking anything to extremes. You probably have heard that vitamin C has positive effects, but that doesn't mean huge doses of this essential nutrient are appropriate for you. For example, the body needs zinc for hundreds of chemical reactions, including those that support normal growth, development, and immune function. Too much zinc, however, can cause deficiency of copper, another essential mineral, which can lead to damaged immune function. Being moderate in your diet means that you do not restrict or completely eliminate any one type of food, but rather that all types of food can fit into a healthful diet.",
       "choices": [
         "① the meaning of moderation as balance rather than elimination in diet",
         "② the necessity of taking large doses of vitamin C",
@@ -319,17 +269,14 @@
         "⑤ the complete elimination of candy from a healthful diet"
       ],
       "answer": "①",
-      "explanation": "절제란 특정 음식을 완전히 제거하는 것이 아니라 극단으로 치우치지 않고 균형을 맞추는 것임을 비타민C와 아연의 예로 설명한다. 따라서 ①이 주제로 적절하다. ③⑤는 '제거가 아니다'라는 본문과 반대된다.",
-      "range_label": "수특영어 30강_1"
+      "explanation": "절제란 특정 음식을 완전히 제거하는 것이 아니라 극단으로 치우치지 않고 균형을 맞추는 것임을 비타민C와 아연의 예로 설명한다. 따라서 ①이 주제로 적절하다. ③⑤는 '제거가 아니다'라는 본문과 반대된다."
     },
     {
+      "type": "single",
       "num": 18,
       "qtype": "제목",
       "score": 4.6,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_06_30",
-      "question": "다음 글의 제목으로 가장 적절한 것은?",
-      "passage": "Classical works by playwrights such as Shakespeare or Euripides or even American musical song lyrics contain unconventional and unrealistic methods of communicating characters' thoughts and feelings, and take a bit more skill and patience to understand. The reader must be mindful not to let the poetic form or archaic word usage get in the way of getting meaningful information about the story, but instead see the form itself as a revealing stylistic technique. Scripts with complex language or unfamiliar styles may require several additional readings in order for the nuance to become clear. Musical theater pieces are particularly difficult to visualize when reading because of the diminished emphasis on dialogue and a significant emphasis on song and dance. For example, when the music and lyrics are removed from a musical theater script, what is left is the dialogue, known as the book or libretto, and it can be very thin. There is an emphasis on dance, movement, or action in musical theater that can be time-consuming when actually performed on stage, but can take very little space when typed into a play script.",
+      "question": "다음 글의 제목으로 가장 적절한 것은?\nClassical works by playwrights such as Shakespeare or Euripides or even American musical song lyrics contain unconventional and unrealistic methods of communicating characters' thoughts and feelings, and take a bit more skill and patience to understand. The reader must be mindful not to let the poetic form or archaic word usage get in the way of getting meaningful information about the story, but instead see the form itself as a revealing stylistic technique. Scripts with complex language or unfamiliar styles may require several additional readings in order for the nuance to become clear. Musical theater pieces are particularly difficult to visualize when reading because of the diminished emphasis on dialogue and a significant emphasis on song and dance. For example, when the music and lyrics are removed from a musical theater script, what is left is the dialogue, known as the book or libretto, and it can be very thin. There is an emphasis on dance, movement, or action in musical theater that can be time-consuming when actually performed on stage, but can take very little space when typed into a play script.",
       "choices": [
         "① Reading Classical and Musical Scripts: A Challenge Worth the Effort",
         "② Why Modern Audiences Prefer Simple Dialogue",
@@ -338,17 +285,14 @@
         "⑤ How to Write a Successful Musical Libretto"
       ],
       "answer": "①",
-      "explanation": "고전극과 뮤지컬 대본은 시적 형식·낯선 양식·춤과 노래의 비중 때문에 읽고 이해하기 어렵지만 인내와 기술이 필요하다는 내용이다. 따라서 ①이 제목으로 적절하다.",
-      "range_label": "6모 30번"
+      "explanation": "고전극과 뮤지컬 대본은 시적 형식·낯선 양식·춤과 노래의 비중 때문에 읽고 이해하기 어렵지만 인내와 기술이 필요하다는 내용이다. 따라서 ①이 제목으로 적절하다."
     },
     {
+      "type": "single",
       "num": 19,
       "qtype": "제목",
       "score": 3.4,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_05_29",
-      "question": "다음 글의 제목으로 가장 적절한 것은?",
-      "passage": "A study by Eurofound found that young people who were working remotely reported more difficulties in managing their workload than older colleagues. Moreover, many young people began their careers working remotely during the pandemic, unlike those in older generations who had many years to establish interpersonal connections and embed themselves in the organizational culture in an in-person job. A survey by Prospects found that almost half of students and graduates in the United Kingdom found it difficult to work from home during the pandemic due to a lack of suitable workspace or distractions. While young people may struggle long-term with remote work, perhaps more of a hybrid model where they can work from home part of the time and work onsite other times, would work well for them. But it may not be that they need a formal hybrid structure with specific days of the week designated for working remotely but instead a fluid option that allows them, if possible, depending on the job role, to choose their day-to-day work location.",
+      "question": "다음 글의 제목으로 가장 적절한 것은?\nA study by Eurofound found that young people who were working remotely reported more difficulties in managing their workload than older colleagues. Moreover, many young people began their careers working remotely during the pandemic, unlike those in older generations who had many years to establish interpersonal connections and embed themselves in the organizational culture in an in-person job. A survey by Prospects found that almost half of students and graduates in the United Kingdom found it difficult to work from home during the pandemic due to a lack of suitable workspace or distractions. While young people may struggle long-term with remote work, perhaps more of a hybrid model where they can work from home part of the time and work onsite other times, would work well for them. But it may not be that they need a formal hybrid structure with specific days of the week designated for working remotely but instead a fluid option that allows them, if possible, depending on the job role, to choose their day-to-day work location.",
       "choices": [
         "① Why Older Colleagues Struggle with Remote Work",
         "② Remote Work Boosts Productivity for All Generations",
@@ -357,17 +301,14 @@
         "⑤ Strict Hybrid Schedules: The Key to Career Success"
       ],
       "answer": "③",
-      "explanation": "청년들이 원격근무에 어려움을 겪지만, 정해진 하이브리드 구조보다 그날그날 근무 장소를 선택할 수 있는 유연한 방식이 더 적합할 수 있다는 내용이다. 따라서 ①이 제목으로 적절하다. ⑤는 'formal hybrid가 아니라 fluid option'이라는 본문과 반대.",
-      "range_label": "5모 29번"
+      "explanation": "청년들이 원격근무에 어려움을 겪지만, 정해진 하이브리드 구조보다 그날그날 근무 장소를 선택할 수 있는 유연한 방식이 더 적합할 수 있다는 내용이다. 따라서 ①이 제목으로 적절하다. ⑤는 'formal hybrid가 아니라 fluid option'이라는 본문과 반대."
     },
     {
+      "type": "single",
       "num": 20,
       "qtype": "요약문완성",
       "score": 4.2,
-      "format": "5지선다_표",
-      "source_passage": "MOGO_26_G3_05_39",
-      "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
-      "passage": "When we practice, we want to strengthen the synapses relaying information on how to play something correctly, while weakening those that send erroneous messages. To understand how this works, think of a leaky hose that has many holes in it. Some of the water will go through the hose and out the nozzle, but a lot of it will leak out the holes. This is what your brain is like when you first start to learn something: the water running out the holes is all the erroneous information your brain is sending to your fingers, lips, etc. Once you plug the holes in the hose, all the water goes then out the nozzle: in your brain, this is analogous to the synapses relaying the correct messages being much stronger than those sending incorrect messages. The brain accomplishes this through changing the structure of the synapse to make it easier for the correct neurons to communicate. A common phrase in neuroscience is \"neurons that fire together wire together,\" meaning neurons that communicate with each other often change their structure to make that communication easier.\n\n→ Practice physically (A) the synapses that carry correct signals while (B) those that carry erroneous ones, by changing the structure of the synapse.",
+      "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?\nWhen we practice, we want to strengthen the synapses relaying information on how to play something correctly, while weakening those that send erroneous messages. To understand how this works, think of a leaky hose that has many holes in it. Some of the water will go through the hose and out the nozzle, but a lot of it will leak out the holes. This is what your brain is like when you first start to learn something: the water running out the holes is all the erroneous information your brain is sending to your fingers, lips, etc. Once you plug the holes in the hose, all the water goes then out the nozzle: in your brain, this is analogous to the synapses relaying the correct messages being much stronger than those sending incorrect messages. The brain accomplishes this through changing the structure of the synapse to make it easier for the correct neurons to communicate. A common phrase in neuroscience is \"neurons that fire together wire together,\" meaning neurons that communicate with each other often change their structure to make that communication easier.\n\n→ Practice physically (A) the synapses that carry correct signals while (B) those that carry erroneous ones, by changing the structure of the synapse.",
       "choices": [
         "① (A) strengthens … (B) reinforcing",
         "② (A) strengthens … (B) weakening",
@@ -376,18 +317,14 @@
         "⑤ (A) ignores … (B) weakening"
       ],
       "answer": "②",
-      "explanation": "연습은 올바른 신호를 전달하는 시냅스를 '강화(strengthens)'하고 잘못된 신호를 보내는 시냅스를 '약화(weakening)'시킨다는 내용이므로 ①이 적절하다.",
-      "table_AB": true,
-      "range_label": "5모 39번"
+      "explanation": "연습은 올바른 신호를 전달하는 시냅스를 '강화(strengthens)'하고 잘못된 신호를 보내는 시냅스를 '약화(weakening)'시킨다는 내용이므로 ①이 적절하다."
     },
     {
+      "type": "single",
       "num": 21,
       "qtype": "요약문완성",
       "score": 3.6,
-      "format": "5지선다_표",
-      "source_passage": "수특_28강_2번",
-      "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
-      "passage": "Dreamers find it difficult to determine whether a memory is from a dream or some other source after time has passed, known as 'source monitoring.' It is difficult to distinguish between memories of real dreams and made-up ones, imagination or stories someone else told us. Dream source monitoring was found to be less accurate than other memory source monitoring. A cognitive psychologist, Marcia K. Johnson and her colleagues' explanation is that 'real dreams are deficient in information about cognitive operations that help identify the self-generations we create when we are awake.' Although dreams are usually more vivid than imagination, the cognitive operations that generate imagining are also remembered. Dream generation, in contrast, is 'transparent' in that we don't experience the generation process, making it more difficult to source monitor.\n\n→ Source monitoring of dreams is less (A) than that of other memories because the process of dream generation is (B) to the dreamer.",
+      "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?\nDreamers find it difficult to determine whether a memory is from a dream or some other source after time has passed, known as 'source monitoring.' It is difficult to distinguish between memories of real dreams and made-up ones, imagination or stories someone else told us. Dream source monitoring was found to be less accurate than other memory source monitoring. A cognitive psychologist, Marcia K. Johnson and her colleagues' explanation is that 'real dreams are deficient in information about cognitive operations that help identify the self-generations we create when we are awake.' Although dreams are usually more vivid than imagination, the cognitive operations that generate imagining are also remembered. Dream generation, in contrast, is 'transparent' in that we don't experience the generation process, making it more difficult to source monitor.\n\n→ Source monitoring of dreams is less (A) than that of other memories because the process of dream generation is (B) to the dreamer.",
       "choices": [
         "① (A) accurate … (B) transparent",
         "② (A) accurate … (B) obvious",
@@ -396,57 +333,44 @@
         "⑤ (A) frequent … (B) hidden"
       ],
       "answer": "①",
-      "explanation": "꿈의 출처 감시는 다른 기억보다 덜 '정확(accurate)'한데, 이는 꿈 생성 과정이 꿈꾸는 이에게 '인식되지 않기(transparent)' 때문이라는 내용이다. 따라서 ①이 적절하다.",
-      "table_AB": true,
-      "range_label": "수특영어 28강_2"
+      "explanation": "꿈의 출처 감시는 다른 기억보다 덜 '정확(accurate)'한데, 이는 꿈 생성 과정이 꿈꾸는 이에게 '인식되지 않기(transparent)' 때문이라는 내용이다. 따라서 ①이 적절하다."
     },
     {
+      "type": "single",
       "num": 22,
       "qtype": "어휘",
       "score": 3.4,
-      "format": "5지선다_번호",
-      "source_passage": "수특_30강_3번",
-      "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
-      "passage": "Science shows that, when compared to adults, children naturally ①<u>prefer</u> higher levels of sweet and salty tastes and reject bitter tastes. This might help explain why children are drawn to more ②<u>unhealthy</u> food choices within our current food environment — an environment composed of high-salt, high-refined-sugar foods. In support of this idea, studies have found that sensory experiences, beginning early in life, can ③<u>shape</u> preferences in both a positive and a negative way. For example, expecting mothers who consume diets rich in healthy foods can help develop their child's taste preferences in a ④<u>negative</u> way because flavors from foods that the mother eats are transmitted to amniotic fluid and to mother's milk. Having healthy food experiences early in life may go a long way toward ⑤<u>promoting</u> healthy eating throughout a person's life span.",
+      "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nScience shows that, when compared to adults, children naturally ①<u>prefer</u> higher levels of sweet and salty tastes and reject bitter tastes. This might help explain why children are drawn to more ②<u>unhealthy</u> food choices within our current food environment — an environment composed of high-salt, high-refined-sugar foods. In support of this idea, studies have found that sensory experiences, beginning early in life, can ③<u>shape</u> preferences in both a positive and a negative way. For example, expecting mothers who consume diets rich in healthy foods can help develop their child's taste preferences in a ④<u>negative</u> way because flavors from foods that the mother eats are transmitted to amniotic fluid and to mother's milk. Having healthy food experiences early in life may go a long way toward ⑤<u>promoting</u> healthy eating throughout a person's life span.",
       "choices": null,
       "answer": "④",
-      "explanation": "④ 건강한 음식을 먹는 임신부가 아이의 미각 선호를 '긍정적(positive)'으로 발달시킨다는 맥락이므로 negative는 부적절하다. ①prefer, ②unhealthy, ③shape, ⑤promoting은 모두 문맥상 적절하다.",
-      "range_label": "수특영어 30강_3"
+      "explanation": "④ 건강한 음식을 먹는 임신부가 아이의 미각 선호를 '긍정적(positive)'으로 발달시킨다는 맥락이므로 negative는 부적절하다. ①prefer, ②unhealthy, ③shape, ⑤promoting은 모두 문맥상 적절하다."
     },
     {
+      "type": "single",
       "num": 23,
       "qtype": "어휘",
       "score": 3.6,
-      "format": "5지선다_번호",
-      "source_passage": "수특_26강_3번",
-      "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
-      "passage": "Through stories we can explore the human condition and see how other people think. This can ①<u>affirm</u> our own beliefs and perceptions, but it also challenges them. Regardless of the language, there is something ②<u>universal</u> about what occurs in the brain at the point when we are processing narratives, triggering better self-awareness and empathy for others. Psychologists scanned people listening to narratives in English, Farsi, and Mandarin, and found the ③<u>same</u> patterns of brain activation when people found meaning in the stories. And the more absorbed in a story a reader is, the more ④<u>indifferently</u> they behave in real life. For instance, those participants who had previously reported being 'highly absorbed' in the story were about twice as likely to help pick up the dropped pens. That is to say, if you read novels, you can probably read emotions, vital skills for forming ⑤<u>cooperative</u> societies.",
+      "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nThrough stories we can explore the human condition and see how other people think. This can ①<u>affirm</u> our own beliefs and perceptions, but it also challenges them. Regardless of the language, there is something ②<u>universal</u> about what occurs in the brain at the point when we are processing narratives, triggering better self-awareness and empathy for others. Psychologists scanned people listening to narratives in English, Farsi, and Mandarin, and found the ③<u>same</u> patterns of brain activation when people found meaning in the stories. And the more absorbed in a story a reader is, the more ④<u>indifferently</u> they behave in real life. For instance, those participants who had previously reported being 'highly absorbed' in the story were about twice as likely to help pick up the dropped pens. That is to say, if you read novels, you can probably read emotions, vital skills for forming ⑤<u>cooperative</u> societies.",
       "choices": null,
       "answer": "④",
-      "explanation": "④ 이야기에 더 몰입한 독자일수록 현실에서 더 '공감적으로(empathetically)' 행동한다는 흐름이며, 바로 뒤에 떨어진 펜을 도와줄 가능성이 두 배라는 예가 이어지므로 indifferently(무관심하게)는 부적절하다. ①affirm, ②universal, ③same, ⑤cooperative는 모두 적절.",
-      "range_label": "수특영어 26강_3"
+      "explanation": "④ 이야기에 더 몰입한 독자일수록 현실에서 더 '공감적으로(empathetically)' 행동한다는 흐름이며, 바로 뒤에 떨어진 펜을 도와줄 가능성이 두 배라는 예가 이어지므로 indifferently(무관심하게)는 부적절하다. ①affirm, ②universal, ③same, ⑤cooperative는 모두 적절."
     },
     {
+      "type": "single",
       "num": 24,
       "qtype": "문장삽입",
       "score": 3.8,
-      "format": "5지선다_번호",
-      "source_passage": "MOGO_26_G3_06_32",
-      "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
-      "passage": "[주어진 문장] As it is easy to misinterpret nonverbal behavior, effective listeners verbally confirm their interpretations of someone's nonverbal communication.\n\nSpeakers don't always put everything that's important to them into words. ( ① ) Very often you can understand a speaker's meaning by observing their nonverbal behaviors such as a change in a vocal tone or volume, eye contact, facial expressions and gestures. ( ② ) A question as simple as \"Do your nods indicate a yes vote?\" can make sure that everyone is on the same wavelength. ( ③ ) If, as nonverbal research indicates, more than half of a speaker's meaning is conveyed nonverbally, we are missing a lot of important information if we fail to \"listen\" to nonverbal behavior. ( ④ ) Even Freud suggested that \"he that has eyes to see and ears to hear may convince himself that no mortal can keep a secret.\" ( ⑤ ) No wonder it is difficult for most people to conceal what they mean and feel in a face-to-face group discussion.",
+      "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n[주어진 문장] As it is easy to misinterpret nonverbal behavior, effective listeners verbally confirm their interpretations of someone's nonverbal communication.\n\nSpeakers don't always put everything that's important to them into words. ( ① ) Very often you can understand a speaker's meaning by observing their nonverbal behaviors such as a change in a vocal tone or volume, eye contact, facial expressions and gestures. ( ② ) A question as simple as \"Do your nods indicate a yes vote?\" can make sure that everyone is on the same wavelength. ( ③ ) If, as nonverbal research indicates, more than half of a speaker's meaning is conveyed nonverbally, we are missing a lot of important information if we fail to \"listen\" to nonverbal behavior. ( ④ ) Even Freud suggested that \"he that has eyes to see and ears to hear may convince himself that no mortal can keep a secret.\" ( ⑤ ) No wonder it is difficult for most people to conceal what they mean and feel in a face-to-face group discussion.",
       "choices": null,
       "answer": "②",
-      "explanation": "주어진 문장은 '비언어 행동은 오해하기 쉬워 효과적인 청자는 해석을 말로 확인한다'는 내용이다. 비언어 행동 관찰을 언급한 ① 뒤, 그리고 그 확인의 구체적 예(고갯짓이 찬성인가 묻기)가 나오는 문장 앞인 ②에 들어가야 자연스럽다.",
-      "range_label": "6모 32번"
+      "explanation": "주어진 문장은 '비언어 행동은 오해하기 쉬워 효과적인 청자는 해석을 말로 확인한다'는 내용이다. 비언어 행동 관찰을 언급한 ① 뒤, 그리고 그 확인의 구체적 예(고갯짓이 찬성인가 묻기)가 나오는 문장 앞인 ②에 들어가야 자연스럽다."
     },
     {
+      "type": "single",
       "num": 25,
       "qtype": "내용일치",
       "score": 4.4,
-      "format": "5지선다",
-      "source_passage": "MOGO_26_G3_06_39",
-      "question": "다음 글의 내용과 일치하지 않는 것은?",
-      "passage": "For thousands of years in the West, red was the only color worthy of that name, the only true color. As much on the historical as hierarchical level, it exceeded all others. Not that they did not exist, but they had to wait a long time before they were considered colors and then played a comparable role in material culture, social codes, and systems of thought. It was with red that humans did their first color experiments, achieved their first successes, and then constructed a chromatic universe. It was also within the range of reds that they learned early on to diversify the palette and to produce varied tones and shades, as the oldest known color terms demonstrate. Here the lexicon seems in keeping with pictorial practices and coloring techniques. In certain languages, the same word can mean \"red\" or simply \"colored,\" depending on the context, such as coloratus in classical Latin or colorado in modern Castilian. In other languages, the words meaning \"red\" and \"beautiful\" share a common root; for example, that is the case in Russian, in which the terms krasnyy (red) and krasivy (beautiful) belong to the same lexical family.",
+      "question": "다음 글의 내용과 일치하지 않는 것은?\nFor thousands of years in the West, red was the only color worthy of that name, the only true color. As much on the historical as hierarchical level, it exceeded all others. Not that they did not exist, but they had to wait a long time before they were considered colors and then played a comparable role in material culture, social codes, and systems of thought. It was with red that humans did their first color experiments, achieved their first successes, and then constructed a chromatic universe. It was also within the range of reds that they learned early on to diversify the palette and to produce varied tones and shades, as the oldest known color terms demonstrate. Here the lexicon seems in keeping with pictorial practices and coloring techniques. In certain languages, the same word can mean \"red\" or simply \"colored,\" depending on the context, such as coloratus in classical Latin or colorado in modern Castilian. In other languages, the words meaning \"red\" and \"beautiful\" share a common root; for example, that is the case in Russian, in which the terms krasnyy (red) and krasivy (beautiful) belong to the same lexical family.",
       "choices": [
         "① 서양에서 오랫동안 빨강은 유일한 진정한 색으로 여겨졌다.",
         "② 러시아어에서 '빨강'과 '추한'은 같은 어족에 속한다.",
@@ -455,8 +379,7 @@
         "⑤ 다른 색들은 존재했지만 색으로 인정받기까지 오랜 시간이 걸렸다."
       ],
       "answer": "②",
-      "explanation": "러시아어에서 krasnyy(빨강)와 krasivy(아름다운)가 같은 어족에 속한다고 했으므로, '빨강'과 '추한'이 같은 어족이라는 ⑤는 일치하지 않는다. ①②③④는 모두 본문과 일치한다.",
-      "range_label": "6모 39번"
+      "explanation": "러시아어에서 krasnyy(빨강)와 krasivy(아름다운)가 같은 어족에 속한다고 했으므로, '빨강'과 '추한'이 같은 어족이라는 ⑤는 일치하지 않는다. ①②③④는 모두 본문과 일치한다."
     }
   ]
 }
