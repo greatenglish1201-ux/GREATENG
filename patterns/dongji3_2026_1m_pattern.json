@@ -1,0 +1,280 @@
+{
+  "key": "동지고_3학년_2026_1학기_중간",
+  "school": "동지고",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "중간고사",
+  "subject": "영어독해와작문",
+  "total": 26,
+  "patterns": {
+    "주제": 2,
+    "제목": 2,
+    "도표": 1,
+    "어법": 3,
+    "어휘": 4,
+    "흐름무관": 2,
+    "함축의미": 2,
+    "문장삽입": 3,
+    "글의순서": 2,
+    "내용일치": 2,
+    "빈칸추론": 3
+  },
+  "score_dist": {
+    "3.6": 6,
+    "3.8": 14,
+    "4.2": 6
+  },
+  "passage_groups": {
+    "9~10": {
+      "type": "외부지문",
+      "text": "[지문 생략 — 실직한 Sarah가 카페에서 은퇴 교사 Margaret을 만나 위로받고 재취업하는 이야기. (A) 도입 후 (B)(C)(D) 배열 + 내용일치(한글 선지) 2문항 세트]"
+    },
+    "12~13": {
+      "type": "외부지문",
+      "text": "[지문 생략 — 연구 과제를 '쇼핑 목록'에 비유한 교수법. (a)~(e) 어휘 밑줄 포함. 주제 + 어휘 2문항 세트]"
+    }
+  },
+  "questions": [
+    {
+      "num": 1,
+      "qtype": "주제",
+      "stem": "다음 글의 주제로 가장 적절한 것은?",
+      "score": 3.6,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "1. 다음 글의 주제로 가장 적절한 것은? (3.6점)\n[지문 생략 — 주제: 사회적 불안(social angst)을 공감·연민(compassion)으로 전환하여 대인관계에 활용]\n① Transforming anxiety into compassion to improve relationships with others\n② Why you should look for the cause of anxiety within yourself\n③ The need to break free from others' judgment in order to overcome anxiety\n④ Effective ways to avoid social relationships in order to reduce anxiety\n⑤ Social anxiety that hinders personal growth"
+    },
+    {
+      "num": 2,
+      "qtype": "제목",
+      "stem": "다음 글의 제목으로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "2. 다음 글의 제목으로 가장 적절한 것은? (3.8점)\n[지문 생략 — 주제: 사람들이 비판적 사고를 두려워하는 이유 — 오래 가진 신념이 흔들리는 것에 대한 두려움]\n① The Practical Value of Abstract Ideas\n② Why People Are Afraid to Think Critically\n③ Ways to Overcome Laziness in Learning\n④ The Importance of Logic in Modern Science\n⑤ How Students Learn to Debate Controversial Issues"
+    },
+    {
+      "num": 3,
+      "qtype": "도표",
+      "stem": "다음 도표의 내용과 일치하지 않는 것은?",
+      "score": 3.6,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "3. 다음 도표의 내용과 일치하지 않는 것은? (3.6점)\n[도표: Job Opportunity Outlook by Income Level Amid AI Adoption (2024) — 소득 수준별(All/Lower/Middle/Upper) AI 도입에 따른 일자리 전망 막대그래프]\n①~⑤ 도표 수치 비교 진술 5개 (영어 문장) — 그래프의 비율 비교(outnumbered, more than one-third, over 40%, among upper-income workers, at 8% 등)를 검증하는 형식"
+    },
+    {
+      "num": 4,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "4. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? (3.8점)\n[지문 생략 — 주제: 문학은 일회용 정보 운반체가 아니라 재경험을 통해 의미가 변화하는 글]\n밑줄: ① what  ② remarkably  ③ is  ④ activating  ⑤ to explain"
+    },
+    {
+      "num": 5,
+      "qtype": "어휘",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "5. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? (3.8점)\n[지문 생략 — 주제: 1인분 크기(portion size) 증가와 비만의 상관관계, portion distortion]\n밑줄: ① confronted  ② appropriate  ③ distortions  ④ increased  ⑤ intentionally"
+    },
+    {
+      "num": 6,
+      "qtype": "흐름무관",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "6. 다음 글에서 전체 흐름과 관계 없는 문장은? (3.8점)\n[지문 생략 — 주제: 구소련에 진출하려던 미국 음료회사 — 이념적 우선순위와 협상(산업 발전 기여 논리)]\n①~⑤ 문장 중 무관 문장 선택"
+    },
+    {
+      "num": 7,
+      "qtype": "함축의미",
+      "stem": "밑줄 친 assign credit and dates가 다음 글에서 의미하는 바로 가장 적절한 것은?",
+      "score": 4.2,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "7. 밑줄 친 assign credit and dates가 다음 글에서 의미하는 바로 가장 적절한 것은? (4.2점)\n[지문 생략 — 주제: Salk 연구소의 TRF 발견 사례 — 과학적 발견의 공로와 시점을 특정하기 어려움 (Bruno Latour)]\n① showing that scientific competition always delays the production of knowledge\n② identifying exactly when and by whom a scientific discovery was made\n③ determining which research method is most effective in laboratory practice\n④ proving that scientific findings are reached through a perfectly logical process\n⑤ explaining why outside observers misunderstand the value of scientific work"
+    },
+    {
+      "num": 8,
+      "qtype": "문장삽입",
+      "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "8. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? (3.8점)\n<제시문> But if it's a cloudy day, they may instead rely on landmarks or their magnetic sense.\n[지문 생략 — 주제: 뇌의 대체 경로 유연성(vicarious functioning) — 철새의 항법, 얼굴 인식 사례]\n( ① ) ~ ( ⑤ )"
+    },
+    {
+      "num": 9,
+      "qtype": "글의순서",
+      "stem": "주어진 글 (A)에 이어질 내용을 순서에 맞게 배열한 것으로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": "9~10",
+      "original_q": "9. 주어진 글 (A)에 이어질 내용을 순서에 맞게 배열한 것으로 가장 적절한 것은? (3.8점)\n[공통지문 9~10 — 주제: 실직한 Sarah가 카페에서 은퇴 교사 Margaret을 만나 위로와 도움을 받고 재취업하는 이야기, (A)~(D) 4단락]\n① (B) - (D) - (C)\n② (C) - (B) - (D)\n③ (C) - (D) - (B)\n④ (D) - (B) - (C)\n⑤ (D) - (C) - (B)"
+    },
+    {
+      "num": 10,
+      "qtype": "내용일치",
+      "stem": "윗글에 관한 내용으로 적절하지 않은 것은?",
+      "score": 3.6,
+      "format": "5지선다",
+      "pg": "9~10",
+      "original_q": "10. 윗글에 관한 내용으로 적절하지 않은 것은? (3.6점)\n① Sarah는 불안과 절망을 느끼고 있었다.\n② Margaret의 말은 단순하여 Sarah를 설득하지 못했다.\n③ Margaret은 이력서 작성에 도움을 주겠다고 했다.\n④ Sarah는 자신에게 잘 맞는 곳에 취업했다.\n⑤ Sarah는 Margaret이 동석하자는 제안을 받아들였다."
+    },
+    {
+      "num": 11,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "11. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? (3.8점)\n[지문 생략 — 주제: 논문 수정 요청 이메일 — 심사자 의견 반영 요청]\n밑줄: ① during  ② availability  ③ have summarized  ④ incorporating  ⑤ that"
+    },
+    {
+      "num": 12,
+      "qtype": "주제",
+      "stem": "윗글의 주제로 가장 적절한 것은?",
+      "score": 3.6,
+      "format": "5지선다",
+      "pg": "12~13",
+      "original_q": "12. 윗글의 주제로 가장 적절한 것은? (3.6점)\n[공통지문 12~13 — 주제: 연구 과제를 '쇼핑 목록'에 비유해 백과사전 통째 베끼기 대신 필요한 정보 선택을 가르치는 교수법]\n① Teachers should always provide students with detailed lists before assigning reports.\n② Comparing research to shopping helps students understand the value of encyclopedias.\n③ Effective research depends on choosing needed information rather than transcribing whole sources.\n④ Students need more practice finding reliable sources before they can write good reports.\n⑤ The best way to improve research skills is to spend more time reading every source carefully."
+    },
+    {
+      "num": 13,
+      "qtype": "어휘",
+      "stem": "위 글의 밑줄 친 (a)~(e) 중에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "score": 3.6,
+      "format": "5지선다_기호",
+      "pg": "12~13",
+      "original_q": "13. 위 글의 밑줄 친 (a)~(e) 중에서 문맥상 낱말의 쓰임이 적절하지 않은 것은? (3.6점)\n밑줄: (a) trouble  (b) located  (c) requisite  (d) helpful  (e) discard\n① (a)    ② (b)    ③ (c)    ④ (d)    ⑤ (e)"
+    },
+    {
+      "num": 14,
+      "qtype": "어법",
+      "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것을 모두 고르면?",
+      "score": 3.8,
+      "format": "5지선다_기호",
+      "pg": null,
+      "original_q": "14. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것을 모두 고르면? (3.8점)\n[지문 생략 — 주제: 자동차 대출 상환을 요청하는 편지]\n밑줄 ⓐ~ⓖ: ⓐ did  ⓑ when  ⓒ have  ⓓ what  ⓔ do  ⓕ are satisfying  ⓖ buy\n① ⓐ, ⓒ    ② ⓑ, ⓓ    ③ ⓒ, ⓔ    ④ ⓓ, ⓕ    ⑤ ⓕ, ⓖ"
+    },
+    {
+      "num": 15,
+      "qtype": "어휘",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "15. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절한 것은? (3.8점)\n[지문 생략 — 주제: 내부수용감각(interoception)이 타인의 감정 이해를 돕는 메커니즘]\n밑줄: ① external  ② immediate  ③ precise  ④ indispensable  ⑤ deliberately"
+    },
+    {
+      "num": 16,
+      "qtype": "어휘",
+      "stem": "(A), (B), (C)에서 문맥에 맞는 낱말로 가장 적절한 것은?",
+      "score": 4.2,
+      "format": "5지선다_표",
+      "pg": null,
+      "original_q": "16. (A), (B), (C)에서 문맥에 맞는 낱말로 가장 적절한 것은? (4.2점)\n[지문 생략 — 주제: CAD가 건축가의 손스케치 창의성을 대체하며 생기는 'premature fixation' 현상 (Yale 'Is Drawing Dead?' 심포지엄)]\n(A) [seeming / authentic]  (B) [cultivates / omits]  (C) [deterrent / stimulus]\n        (A)            (B)            (C)\n①    seeming        omits        deterrent\n②    seeming        omits        stimulus\n③    authentic      omits        stimulus\n④    authentic      cultivates   stimulus\n⑤    authentic      cultivates   deterrent"
+    },
+    {
+      "num": 17,
+      "qtype": "함축의미",
+      "stem": "What is the best meaning of the underlined expression, nothing was beneath us in the passage?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "17. What is the best meaning of the underlined expression, nothing was beneath us in the passage? (3.8점)\n[지문 생략 — 주제: 서번트 리더십 — 동업자와 함께 솔선수범하며 허드렛일을 마다하지 않은 경영 사례]\n① Leaders should leave minor duties to subordinates so that they can focus on broader goals.\n② Managers should avoid routine work in order to preserve efficiency and authority.\n③ Strong leadership means refraining from direct involvement so that team members learn responsibility.\n④ They intentionally appeared to be ordinary workers to evaluate others without bias.\n⑤ Effective leaders do not regard routine or menial tasks as unworthy of their involvement."
+    },
+    {
+      "num": 18,
+      "qtype": "흐름무관",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "18. 다음 글에서 전체 흐름과 관계 없는 문장은? (3.8점)\n[지문 생략 — 주제: 회복(recovery)의 결과·과정 개념 구분 — 생리적·심리적 자원의 복원]\n①~⑤ 문장 중 무관 문장 선택"
+    },
+    {
+      "num": 19,
+      "qtype": "내용일치",
+      "stem": "Movement in the Museum: Heart Centering Yoga에 관한 다음 안내문의 내용과 일치하지 않는 것은?",
+      "score": 3.6,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "19. Movement in the Museum: Heart Centering Yoga에 관한 다음 안내문의 내용과 일치하지 않는 것은? (3.6점)\n[안내문: 박물관 요가 세션 — 일시/장소/Classes(초급·중급 동시 진행, 강사, 의자 제공)/참가비(회원 $5, 비회원 사전 $15·당일 $20)/등록(온라인만, 18세 미만 불가, 동의서, 매트·물 미제공)/주차 정보/연락처]\n① Although participants are divided by level, the beginner and intermediate classes are scheduled to take place at the same time rather than at different times.\n② The participation fee depends not only on whether a person is a museum member but also, in the case of non-members, on when the registration is completed.\n③ People who need extra support can use chairs during the session whether they are in the beginner class or the intermediate class.\n④ Even if someone has registered online, that person still cannot join unless he or she is at least 18 years old and signs the required agreement.\n⑤ Those planning to attend are expected to bring their own yoga mats and water, since the museum will provide neither."
+    },
+    {
+      "num": 20,
+      "qtype": "문장삽입",
+      "stem": "다음 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+      "score": 3.8,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "20. 다음 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? (3.8점)\n<제시문> With these sorts of crises, your best chance is to identify those aspects that are within your control.\n[지문 생략 — 주제: 거대 위기(대침체 등)는 통제 가능한 부분으로 쪼개어 대응해야 함]\n( ① ) ~ ( ⑤ )"
+    },
+    {
+      "num": 21,
+      "qtype": "빈칸추론",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+      "score": 4.2,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "21. 다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. (4.2점)\n[지문 생략 — 주제: \"Art without commerce is a hobby\" — 예술과 상업성의 분리 불가능성, 전문 예술가의 정당화]\n① for that is regarded as the only indicator of success\n② for visible productivity is often mistaken for genuine artistic seriousness\n③ judged by the quantity of artistic output rather than its quality\n④ for that is true measure of development of academia\n⑤ for artistic value is ideally considered separately from market success"
+    },
+    {
+      "num": 22,
+      "qtype": "글의순서",
+      "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "22. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? (3.8점)\n<주어진 글> To acquire expert knowledge, one needs to become a member of the relevant group of knowledge bearers, for which I will use the term \"epistemic communities.\"\n[지문 생략 — (A)(B)(C) 단락: 인식 공동체의 폐쇄성→개방으로의 변화]\n① (A) - (B) - (C)    ② (B) - (A) - (C)    ③ (B) - (C) - (A)    ④ (C) - (B) - (A)    ⑤ (C) - (A) - (B)"
+    },
+    {
+      "num": 23,
+      "qtype": "빈칸추론",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "score": 4.2,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "23. 다음 빈칸에 들어갈 말로 가장 적절한 것은? (4.2점)\n[지문 생략 — 주제: 언어와 제스처의 동시성(co-expressive) — McNeil & Duncan의 'imagistic-categorial' 사고 표현 단위]\n① characteristic of language as a semiotic system\n② an indication that gestures impose stricter constraints than language\n③ an indication that gesture and language operate independently of each other\n④ evidence that gesture replaces language in human communication\n⑤ a reflection of the speaker's inability to fully rely on gesture"
+    },
+    {
+      "num": 24,
+      "qtype": "제목",
+      "stem": "다음 글의 제목으로 가장 적절한 것은?",
+      "score": 3.8,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "24. 다음 글의 제목으로 가장 적절한 것은? (3.8점)\n[지문 생략 — 주제: 회의적 시대에도 약병에 대한 대중의 믿음은 여전 — 외래 환자들의 처방 기대와 과로한 의사들]\n① The Enduring Public Faith in Medicines and Its Influence on Modern Medical Practice\n② The Rising Financial Burden of Drugs on Today's Health Services\n③ Why Many Hospital Out-patients Expect a Tangible Remedy Before Going Home\n④ How Overworked Doctors Turn to Prescriptions to Manage Heavy Workloads\n⑤ Why Advice on Diet and Healthy Habits Often Goes Unappreciated"
+    },
+    {
+      "num": 25,
+      "qtype": "문장삽입",
+      "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+      "score": 4.2,
+      "format": "5지선다_번호",
+      "pg": null,
+      "original_q": "25. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? (4.2점)\n<제시문> Aside from its unique flavor, turmeric may also prove a helpful treatment for people with arthritis, Alzheimer's disease, and some forms of cancer.\n[지문 생략 — 주제: 아유르베다와 음식 치유 — 강황(turmeric)의 약용 가능성]\n( ① ) ~ ( ⑤ )"
+    },
+    {
+      "num": 26,
+      "qtype": "빈칸추론",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "score": 4.2,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "26. 다음 빈칸에 들어갈 말로 가장 적절한 것은? (4.2점)\n[지문 생략 — 주제: 비교문화적 관점에서 '정치적 리더십=지배(dominance)' 등식에 대한 의문 — 아마존 원주민 사례, Marilyn Strathern]\n① all societies prioritize political power as the most important domain of social organization\n② conceptual tools that help explain why political authority is necessarily linked to coercion\n③ universal features of social life, a pattern shared by every human community\n④ anthropological studies have successfully eliminated cultural bias in defining political authority\n⑤ cultural obsessions of our own, a bias long reflected in anthropological constructs"
+    }
+  ],
+  "difficulty_zones": {
+    "4.2점 고난도": "7(함축)·16(어휘ABC)·21(빈칸)·23(빈칸)·25(삽입)·26(빈칸)",
+    "후반 집중": "21~26번 구간에 4.2점 4문항"
+  },
+  "summary": "26문항 100.0점, 전 문항 외부지문 수능형. 어휘4·삽입3·빈칸3·어법3 주력. 특수 형식: 14번 어법 '모두 고르면'(ⓐ~ⓖ 조합선지), 16번 (A)(B)(C) 표형, 13번 (a)~(e), 10번 한글 선지, 19번 안내문, 17번 영어 발문. 공통지문 2세트(9~10, 12~13). ※ A형 형식 패턴 — 발문·선지는 기출 원문, 지문은 주제 메모.",
+  "savedAt": "2026-06-12T09:06:18.613004+09:00"
+}

@@ -1,0 +1,292 @@
+{
+  "key": "이동중_3학년_2026_1학기_중간",
+  "school": "이동중",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "중간고사",
+  "total": 26,
+  "patterns": {
+    "어휘": 5,
+    "내용일치": 8,
+    "영작": 2,
+    "어법": 8,
+    "요약": 1,
+    "지칭추론": 1,
+    "함축의미": 1
+  },
+  "score_dist": {
+    "3": 8,
+    "4": 14,
+    "5": 4
+  },
+  "passage_groups": {
+    "13~14": {
+      "type": "본문",
+      "text": "[색깔별 음식과 건강 — 빨강(토마토·체리) 심장, 주황 피부·눈(비타민A), 노랑 뇌·위, 초록 암 예방·섬유질, 파랑·보라 항산화. 컬러푸드 권장]"
+    },
+    "15~17": {
+      "type": "본문",
+      "text": "[Why Do People Learn Foreign Languages? — Owen의 스페인어 질문에 Julie/Inho/Rohan이 일상 활용·영화·축구 어휘 등 학습법 조언]"
+    },
+    "18~20": {
+      "type": "본문",
+      "text": "[No More Subtitles! — DREAM4 팬 Marisa의 한국어 질문에 Lori(동아리)/Aishah(SNS)/Brandon(드라마 자막) 조언. 자신만의 동기 부여 방법 강조]"
+    },
+    "21~23": {
+      "type": "본문",
+      "text": "[음식과 신체 부위 닮음 — 호두=뇌, 당근=눈(비타민A), 양파=세포(비타민B). 분사·관계대명사 어법 포함]"
+    },
+    "24~26": {
+      "type": "본문",
+      "text": "[음식과 신체 — 토마토=심장(붉은색, 빈 공간, 심장병 위험 감소). (A)자연이 주는 단서, 음식이 돕는 신체 부위를 닮음]"
+    }
+  },
+  "questions": [
+    {
+      "num": 1,
+      "qtype": "어휘",
+      "stem": "단어의 영영 풀이로 적절하지 않은 것은?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "1. 단어의 영영 풀이로 적절하지 않은 것은? [3점]\n① contain  ② prevent  ③ process  ④ come to mind  ⑤ compare (영영풀이 선지)"
+    },
+    {
+      "num": 2,
+      "qtype": "어휘",
+      "stem": "단어의 관계가 서로 다른 것은?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "2. 단어의 관계가 서로 다른 것은? [3점]\n① hollow–empty ② mirror–reflect ③ beneficial–useful ④ convenient–difficult ⑤ a variety of–multiple"
+    },
+    {
+      "num": 3,
+      "qtype": "어휘",
+      "stem": "<보기>의 (A)~(C)에 나타난 단어 사이의 관계와 같도록 할 때, (D)의 빈칸에 들어갈 가장 알맞은 단어는?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "3. <보기>의 (A)~(C)에 나타난 단어 사이의 관계와 같도록 할 때, (D)의 빈칸에 들어갈 단어는? [3점]\n<보기> (A)top–bottom (B)improve–worsen (C)memorize–forget (D)confident–____\n① review ② anxious ③ convenient ④ confidence ⑤ convenience"
+    },
+    {
+      "num": 4,
+      "qtype": "어휘",
+      "stem": "<보기>의 내용이 가리키는 단어로 알맞은 것은?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "4. <보기>의 내용이 가리키는 단어로 알맞은 것은? [3점]\n<보기> to work to help others without being paid\n① perform ② motivate ③ entertain ④ volunteer ⑤ participate in"
+    },
+    {
+      "num": 5,
+      "qtype": "어휘",
+      "stem": "<보기>의 빈칸에 들어갈 단어가 바르게 연결되지 않은 것은?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "5. <보기>의 빈칸에 들어갈 단어가 바르게 연결되지 않은 것은? [3점]\n<보기> (1)~(5) 빈칸 문장 / ① mistake ② case ③ match ④ reason ⑤ talent"
+    },
+    {
+      "num": 6,
+      "qtype": "내용일치",
+      "stem": "다음 글을 읽고 답할 수 없는 질문은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "6. 다음 글을 읽고 답할 수 없는 질문은? [4점]\n[Jieun-Woosuk 가구 만들기 대화]\n① Who taught Woosuk... ② Who built the shelf... ③ Does Woosuk feel proud... ④ How did Woosuk feel at first... ⑤ Did Woosuk find it easy from the beginning..."
+    },
+    {
+      "num": 7,
+      "qtype": "내용일치",
+      "stem": "다음 글의 내용과 일치하지 않는 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "7. 다음 글의 내용과 일치하지 않는 것은? [4점]\n[Ben-Suji 스케이트보드 대화]\n① Suji is carrying a skateboard. ② made new friends ③ Ben didn't know Suji could ride ④ Ben was surprised ⑤ joined to win a race"
+    },
+    {
+      "num": 8,
+      "qtype": "영작",
+      "stem": "<보기>의 두 문장을 한 문장으로 바르게 연결한 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "8. <보기>의 두 문장을 한 문장으로 바르게 연결한 것은? [4점]\n<보기> The thing is not always true. / We see the thing with our eyes.\n① We see what with our eyes... ② What we see with our eyes is not always true. ③ What we see it... ④ What do we see... ⑤ The thing what we see..."
+    },
+    {
+      "num": 9,
+      "qtype": "어법",
+      "stem": "어법상 바르지 않은 문장의 개수는?",
+      "score": 5,
+      "format": "5지선다_개수",
+      "pg": null,
+      "original_q": "9. 어법상 바르지 않은 문장의 개수는? [5점]\n<보기> (a)~(h) 현재완료진행·관계대명사 what 등 / ① 0개 ② 1개 ③ 2개 ④ 3개 ⑤ 4개"
+    },
+    {
+      "num": 10,
+      "qtype": "영작",
+      "stem": "<보기>의 문장 ⓐ~ⓗ 중, 어법 및 의미상 영작이 정확한 것의 개수는?",
+      "score": 5,
+      "format": "5지선다_개수",
+      "pg": null,
+      "original_q": "10. <보기>의 문장 ⓐ~ⓗ 중 어법 및 의미상 영작이 정확한 것의 개수는? [5점]\n<보기> ⓐ~ⓖ 분사구문 영작 (병에서 훔친 쿠키, 공원에서 뛰는 소년 등) / ① 2개 ② 3개 ③ 4개 ④ 5개 ⑤ 6개"
+    },
+    {
+      "num": 11,
+      "qtype": "어법",
+      "stem": "<보기>의 ⓐ~ⓔ에 대한 설명으로 바른 것은?",
+      "score": 5,
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "11. <보기>의 ⓐ~ⓔ에 대한 설명으로 바른 것은? [5점]\n<보기> ⓐ~ⓔ 관계대명사 which 용법\n① ⓐ which 제한적, that 불가 ② ⓑ 계속적 주격, the book ③ ⓒ and it, my homework ④ ⓓ which→where(New York) ⑤ ⓔ which→when(five hours)"
+    },
+    {
+      "num": 12,
+      "qtype": "어법",
+      "stem": "다음 글의 (A)~(C)에 들어갈 말로 바르게 짝지어진 것은?",
+      "score": 4,
+      "format": "5지선다_표",
+      "pg": null,
+      "original_q": "12. 다음 글의 (A)~(C)에 들어갈 말로 바르게 짝지어진 것은? [4점]\n(A)promote/promotes (B)health/healthy (C)which/that\n① promote-health-that ② promote-healthy-which ③ promotes-healthy-that ④ promotes-healthy-which ⑤ promotes-health-that"
+    },
+    {
+      "num": 13,
+      "qtype": "어법",
+      "stem": "윗글의 밑줄 친 (A)와 쓰임이 같은 that을 포함한 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "13~14",
+      "original_q": "13. 윗글의 밑줄 친 (A)와 쓰임이 같은 that을 포함한 것은? [4점]\n① reason that he left ② know that he is kind ③ surprising that he solved ④ book that I read ⑤ happy that she passed"
+    },
+    {
+      "num": 14,
+      "qtype": "내용일치",
+      "stem": "윗글의 밑줄 친 (B)에 해당하는 예시로 가장 적절한 것은?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": "13~14",
+      "original_q": "14. 윗글의 밑줄 친 (B)에 해당하는 예시로 가장 적절한 것은? [3점]\n① Nuts–energy ② Yogurt–digestion ③ Blueberries–memory ④ Spinach–iron ⑤ Celery–bones"
+    },
+    {
+      "num": 15,
+      "qtype": "내용일치",
+      "stem": "윗글의 목적으로 가장 알맞은 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "15~17",
+      "original_q": "15. 윗글의 목적으로 가장 알맞은 것은? [4점]\n① introduce hobbies ② Spanish is best ③ Spanish soccer players ④ suggest language learning ways through student stories ⑤ compare difficulty"
+    },
+    {
+      "num": 16,
+      "qtype": "내용일치",
+      "stem": "'Julie, Inho, Rohan'의 공통적인 생각으로 가장 적절한 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "15~17",
+      "original_q": "16. 'Julie, Inho, Rohan'의 공통적인 생각으로 가장 적절한 것은? [4점]\n① only for fun ② writing>listening ③ grammar from textbooks ④ go to foreign country ⑤ use the language for your own interests and needs"
+    },
+    {
+      "num": 17,
+      "qtype": "어법",
+      "stem": "(A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은?",
+      "score": 4,
+      "format": "5지선다_표",
+      "pg": "15~17",
+      "original_q": "17. (A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은? [4점]\n(A)due to/since 등 (B)(C)전치사 in/to (D)improve/to improve\n① now that-in-to-improve ② owing to-to-to-to improve ③ because of-in-to-improve ④ due to-to-in-to improve ⑤ since-in-in-improve"
+    },
+    {
+      "num": 18,
+      "qtype": "어법",
+      "stem": "밑줄 친 (A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "18~20",
+      "original_q": "18. 밑줄 친 (A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은? [4점]\n[음식-신체 본문 (A)~(D) 어법/어휘]"
+    },
+    {
+      "num": 19,
+      "qtype": "내용일치",
+      "stem": "윗글에 등장하는 인물과 그 내용이 잘못 연결된 것은?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": "18~20",
+      "original_q": "19. 윗글에 등장하는 인물과 그 내용이 잘못 연결된 것은? [3점]\n① Marisa-DREAM4 좋아함 ② Lori-동아리 ③ Aishah-SNS ④ Brandon-드라마 자막 ⑤ DREAM4-교재 추천"
+    },
+    {
+      "num": 20,
+      "qtype": "요약",
+      "stem": "윗글을 한 문장으로 요약할 때 가장 적절한 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "18~20",
+      "original_q": "20. 윗글을 한 문장으로 요약할 때 가장 적절한 것은? [4점]\n① K-pop only reason ② grammar>hobbies ③ social media fastest ④ same way for everyone ⑤ Enjoying your learning and finding your own way are the keys"
+    },
+    {
+      "num": 21,
+      "qtype": "지칭추론",
+      "stem": "윗글의 밑줄 친 ⓐ~ⓔ가 가리키는 것을 바르게 짝지지 않은 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "21~23",
+      "original_q": "21. 윗글의 밑줄 친 ⓐ~ⓔ가 가리키는 것을 바르게 짝지지 않은 것은? [4점]\n① ⓐ-shape of a walnut ② ⓑ-walnuts ③ ⓒ-vitamin A ④ ⓓ-an onion ⑤ ⓔ-vitamin B"
+    },
+    {
+      "num": 22,
+      "qtype": "내용일치",
+      "stem": "윗글을 읽고 답할 수 없는 질문은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "21~23",
+      "original_q": "22. 윗글을 읽고 답할 수 없는 질문은? [4점]\n① Why cutting onion makes cry ② What nutrient makes new cells ③ How carrots improve vision ④ benefit of walnut ⑤ how walnut and brain look alike"
+    },
+    {
+      "num": 23,
+      "qtype": "어법",
+      "stem": "윗글의 밑줄 친 (A)~(E)에 대한 설명으로 바른 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "21~23",
+      "original_q": "23. 윗글의 밑줄 친 (A)~(E)에 대한 설명으로 바른 것은? [4점]\n① (A)divide→dividing ② (B)stay=to stay ③ (C)which=and it ④ (D)sending 동명사 ⑤ (E)one=cutting an onion"
+    },
+    {
+      "num": 24,
+      "qtype": "어법",
+      "stem": "윗글의 밑줄 친 ⓐ~ⓔ 중, 어법상 틀린 것의 개수는?",
+      "score": 5,
+      "format": "5지선다_개수",
+      "pg": "24~26",
+      "original_q": "24. 윗글의 밑줄 친 ⓐ~ⓔ 중 어법상 틀린 것의 개수는? [5점]\n[토마토-심장 본문 ⓐmake ⓑthat ⓒare ⓓlike ⓔmaking] / ① 1개 ② 2개 ③ 3개 ④ 4개 ⑤ 5개"
+    },
+    {
+      "num": 25,
+      "qtype": "함축의미",
+      "stem": "윗글의 밑줄 친 문장 (A)가 의미하는 바는?",
+      "score": 3,
+      "format": "5지선다",
+      "pg": "24~26",
+      "original_q": "25. 윗글의 밑줄 친 문장 (A)가 의미하는 바는? [3점]\n① Nature provides healthy foods ② Some foods resemble the body parts they help ③ eat foods from nature ④ choose without help ⑤ directly cure diseases"
+    },
+    {
+      "num": 26,
+      "qtype": "내용일치",
+      "stem": "윗글의 내용과 일치하지 않는 것은?",
+      "score": 4,
+      "format": "5지선다",
+      "pg": "24~26",
+      "original_q": "26. 윗글의 내용과 일치하지 않는 것은? [4점]\n① diet with various foods healthy ② may not know relationship ③ tomato-heart color/structure ④ chemicals beneficial ⑤ tomatoes decrease heart disease risk"
+    }
+  ],
+  "has_answers": false,
+  "grammar_focus": [
+    "관계대명사 what",
+    "계속적 용법 which(=and it)",
+    "현재완료진행",
+    "분사(현재/과거)",
+    "관계부사 where/when",
+    "사역동사+원형부정사"
+  ],
+  "summary": "26문항 100점. 어휘5·어법7·내용일치8·영작2·요약1·지칭1·함축1. 본문 5세트(색깔음식 13~14, 외국어학습 15~17, K-pop자막 18~20, 음식-신체 21~23/24~26). 문법축: 관계대명사 what·계속적 which·현재완료진행·분사. ※ A형 형식 패턴, 정답 미보유(정답표 별도 필요). 교재: YBM/지학사 계열 추정.",
+  "savedAt": "2026-06-12T09:16:40.746911+09:00"
+}
