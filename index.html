@@ -766,6 +766,15 @@ function App(){
   const [printQs,setPrintQs]=useState([]);
   const [printMode,setPrintMode]=useState('q');
 
+  // 🏆 메인 화면 탑3 배지 — 서버가 탑3일 때만 내려줌
+  const [mainRank,setMainRank]=useState(null);
+  useEffect(()=>{
+    if(!scriptUrl||!studentName){setMainRank(null);return;}
+    jsonpFetch(scriptUrl,{action:'getRank',student:studentName})
+      .then(r=>{if(r&&r.ok&&r.show)setMainRank(r.rank);else setMainRank(null);})
+      .catch(()=>{});
+  },[scriptUrl,studentName]);
+
   // 🔁 오답 복습 — 누적 이력에서 (지문×유형)별 마지막 시도가 틀림(X)인 조합만 재출제 (최대 10문항)
   const [reviewLoading,setReviewLoading]=useState(false);
   const startReview=async()=>{
@@ -868,7 +877,7 @@ function App(){
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
   if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -1624,7 +1633,7 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -1660,6 +1669,10 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             </div>
             <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
               {session?.role!=='admin'&&<span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>}
+              {mainRank&&<span title="대단한영어 누적 정답률 랭킹" style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:12,fontWeight:800,
+                background:'linear-gradient(135deg,#5e0c18,#7a1020)',color:'#F2D88F',border:'1.5px solid #C9A84C',
+                borderRadius:12,padding:'4px 12px',boxShadow:'0 2px 8px rgba(201,168,76,0.35)',whiteSpace:'nowrap'}}>
+                <span style={{fontSize:14}}>{mainRank===1?'🥇':mainRank===2?'🥈':'🥉'}</span>정답률 {mainRank}등</span>}
               {session?.role==='admin'&&<span style={{fontSize:10,background:'#fef3c7',color:'#92400e',padding:'2px 7px',borderRadius:8,fontWeight:600}}>관리자</span>}
               {goToStudy&&scriptUrl&&<button onClick={goToStudy} style={{fontSize:13,background:'linear-gradient(135deg,#ecfdf5,#d1fae5)',color:'#0a7c42',border:'1px solid #6ee7b7',borderRadius:10,padding:'6px 14px',cursor:'pointer',fontWeight:700}}>📚 자료 보기</button>}
               {startReview&&scriptUrl&&studentName&&<button onClick={startReview} disabled={reviewLoading} title="지금까지 틀린 문제 중 아직 다시 맞히지 못한 것만 최대 10문항 재출제"
