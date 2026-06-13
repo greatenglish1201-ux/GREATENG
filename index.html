@@ -1696,9 +1696,9 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           </div>
           <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap',alignItems:'center'}}>
             <span style={{fontSize:12,color:'#9a8570',marginRight:2}}>빠른 선택</span>
-            <button onClick={toggleAll} style={{padding:'9px 18px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#f0e7d4',color:'#7a6a55',border:'1px solid #e0d4ba'}}>전체</button>
-            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert']))} style={{padding:'9px 18px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#FBF3DE',color:'#8a6010',border:'1px solid #C9A84C'}}>⭐ 중요 3종</button>
-            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert','topic','summary']))} style={{padding:'9px 18px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#f4ecff',color:'#6a4a9a',border:'1px solid #c9b3e8'}}>📚 핵심 5종</button>
+            <button onClick={toggleAll} style={{flex:'1 1 110px',padding:'13px 20px',borderRadius:12,fontSize:15,fontWeight:800,cursor:'pointer',whiteSpace:'nowrap',background:'#f0e7d4',color:'#5a4a38',border:'1.5px solid #d8c9a8'}}>전체</button>
+            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert']))} style={{padding:'13px 16px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#FBF3DE',color:'#8a6010',border:'1px solid #C9A84C'}}>⭐ 중요 3종</button>
+            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert','topic','summary']))} style={{marginLeft:'auto',padding:'13px 16px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#f4ecff',color:'#6a4a9a',border:'1px solid #c9b3e8'}}>📚 핵심 5종</button>
           </div>
         </div>
 
