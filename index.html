@@ -719,9 +719,12 @@ function App(){
 
   const PASSAGE_IDS=useMemo(()=>new Set(PASSAGES.map(p=>p.id)),[]);
 
+  const [starting,setStarting]=useState(false);
   const start=async()=>{
     const types=[...selectedTypes];if(!types.length)return;
     if(selPassages.size===0)return;
+    if(starting)return; // 중복 클릭 방지
+    setStarting(true);
     try{
       let pool=allPassages.filter(p=>selPassages.has(p.id));
       if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
@@ -791,6 +794,8 @@ function App(){
     }catch(e){
       console.error('[시험 시작 오류]',e);
       alert('시험을 시작하는 중 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.');
+    }finally{
+      setStarting(false);
     }
   };
 
@@ -910,7 +915,7 @@ function App(){
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
   if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -1666,7 +1671,7 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -1995,8 +2000,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         </div>
 
 
-        <button onClick={start} disabled={selPassages.size===0} style={{width:'100%',padding:14,borderRadius:14,border:'none',background:selPassages.size>0?'linear-gradient(135deg,#4f7df7,#3b5fe0)':'#cbd5e1',color:'#fff',fontSize:15.5,fontWeight:700,cursor:selPassages.size>0?'pointer':'default',marginTop:14,boxShadow:selPassages.size>0?'0 4px 14px rgba(79,125,247,0.3)':'none'}}>
-          {selPassages.size>0?`시작하기 (${selPassages.size}개 지문)`:'지문을 선택해주세요'}
+        <button onClick={start} disabled={selPassages.size===0||starting} style={{width:'100%',padding:14,borderRadius:14,border:'none',background:starting?'#7a93d8':selPassages.size>0?'linear-gradient(135deg,#4f7df7,#3b5fe0)':'#cbd5e1',color:'#fff',fontSize:15.5,fontWeight:700,cursor:starting?'wait':selPassages.size>0?'pointer':'default',marginTop:14,boxShadow:selPassages.size>0&&!starting?'0 4px 14px rgba(79,125,247,0.3)':'none'}}>
+          {starting?'⏳ 문제 출제 중... 잠시만 기다려주세요':selPassages.size>0?`시작하기 (${selPassages.size}개 지문)`:'지문을 선택해주세요'}
         </button>
         <div style={{display:'flex',gap:8,marginTop:10}}>
           <button onClick={()=>printDirect('q')} disabled={selPassages.size===0} style={{flex:1,padding:12,borderRadius:12,border:'1px solid #e2e8f0',background:selPassages.size>0?'#fff':'#f1f5f9',color:selPassages.size>0?'#334155':'#b0bec5',fontSize:13,fontWeight:600,cursor:selPassages.size>0?'pointer':'default'}}>🖨️ 문제지 인쇄</button>
