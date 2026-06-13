@@ -897,7 +897,7 @@ const S={
   page:{minHeight:'100vh',background:'linear-gradient(160deg,#fdf6ec 0%,#f5ead8 100%)',fontFamily:"'Pretendard',sans-serif"},
   box:{maxWidth:740,margin:'0 auto',padding:'28px 16px'},
   card:{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:12,boxShadow:'0 2px 10px rgba(139,80,30,0.08)',border:'1px solid rgba(201,168,76,0.18)'},
-  pill:s=>({padding:'7px 15px',borderRadius:20,border:s?'2px solid #C9A84C':'2px solid #e8d8b8',background:s?'#fdf0d0':'#fffaf2',color:s?'#8a6010':'#9a8060',fontSize:12.5,fontWeight:500,cursor:'pointer'}),
+  pill:s=>({padding:'7px 15px',borderRadius:20,border:s?'2px solid #C9A84C':'2px solid #e8d8b8',background:s?'#fdf0d0':'#fffaf2',color:s?'#8a6010':'#9a8060',fontSize:12.5,fontWeight:500,cursor:'pointer',whiteSpace:'nowrap'}),
   chip:a=>({padding:'4px 13px',borderRadius:14,border:'none',background:a?'#7a1020':'#f0e4cc',color:a?'#fff':'#8a6030',fontSize:11.5,fontWeight:500,cursor:'pointer'}),
 };
 
@@ -1216,7 +1216,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
   };
 
   const btn=(active,label,onClick)=>
-    <button onClick={onClick} style={{padding:'8px 16px',borderRadius:10,border:'none',background:active?'#7a1020':'#f0e7d4',color:active?'#fff':'#7a6a55',fontWeight:600,fontSize:13,cursor:'pointer'}}>{label}</button>;
+    <button onClick={onClick} style={{padding:'8px 14px',borderRadius:10,border:'none',background:active?'#7a1020':'#f0e7d4',color:active?'#fff':'#7a6a55',fontWeight:600,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>{label}</button>;
 
   return(
     <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#fffdf8,#f6efe0)',fontFamily:"'Pretendard',sans-serif"}}>
@@ -1233,7 +1233,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
         </div>
 
         {/* 탭 */}
-        <div style={{display:'flex',gap:8,marginBottom:16}}>
+        <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
           {btn(tab==='students','👥 학생 관리',()=>{setTab('students');loadStudents();})}
           {btn(tab==='results','📊 시험 결과',()=>{setTab('results');setSelectedStudent('');loadStats('');})}
           {btn(tab==='books','📚 교재 관리',()=>{setTab('books');loadBooks();})}
@@ -1896,8 +1896,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           </p>
         </div>
 
-        <div style={{display:'flex',gap:12}}>
-          <div style={{...S.card,flex:1}}>
+        <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+          <div style={{...S.card,flex:'2 1 260px',minWidth:0,marginBottom:0}}>
             <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>문제 수</h3>
             <div style={{display:'flex',alignItems:'center',gap:10}}>
               <span style={{fontSize:22,fontWeight:800,color:'#C9A84C',minWidth:32}}>{qCount}</span>
@@ -1913,16 +1913,16 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
               </div>
             </div>
           </div>
-          <div style={{...S.card,flex:1}}>
+          <div style={{...S.card,flex:'1 1 150px',minWidth:150,marginBottom:0}}>
             <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>정답 확인</h3>
-            <div style={{display:'flex',gap:6}}>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
               <button onClick={()=>setAnsMode('immediate')} style={S.pill(ansMode==='immediate')}>즉시</button>
               <button onClick={()=>setAnsMode('later')} style={S.pill(ansMode==='later')}>나중에</button>
             </div>
           </div>
-          <div style={{...S.card,flex:1}}>
+          <div style={{...S.card,flex:'1 1 150px',minWidth:150,marginBottom:0}}>
             <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 10px'}}>중요문항</h3>
-            <div style={{display:'flex',gap:6}}>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
               <button onClick={()=>setHotOnly(false)} style={S.pill(!hotOnly)}>전체</button>
               <button onClick={()=>setHotOnly(true)} style={{...S.pill(hotOnly),background:hotOnly?'#e53935':'',borderColor:hotOnly?'#e53935':''}}>★만</button>
             </div>
