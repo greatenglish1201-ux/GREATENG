@@ -1394,10 +1394,12 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                               <span style={{fontSize:11,fontWeight:700,color:'#B3261E',marginRight:2}}>✗ 틀린 문항</span>
                               {wrongs.map((it,k)=>{
                                 const pl=pidLabel(it.pid);
-                                return <span key={k} title={(showBook&&pl.book?pl.book+' ':'')+(pl.loc||it.pid)} style={{fontSize:12,padding:'4px 10px',borderRadius:6,
+                                const loc=pl.loc?pl.loc.replace(/(\d+)번$/,'$1번 지문'):'';
+                                return <span key={k} title={it.pid} style={{fontSize:12,padding:'4px 10px',borderRadius:6,
                                   background:'#FBECEA',color:'#B3261E',fontWeight:700,display:'inline-flex',alignItems:'center',gap:5}}>
                                   <b style={{fontSize:13,fontWeight:800}}>{it.qNo}번</b>
                                   <span>{it.tname}</span>
+                                  {loc&&<span style={{fontSize:10.5,fontWeight:600,color:'#a05550'}}>· {pl.book?pl.book+' ':''}{loc}</span>}
                                 </span>;
                               })}
                             </div>}
