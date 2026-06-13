@@ -1400,6 +1400,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                                   if(!idx.has(it.pid)){idx.set(it.pid,groups.length);groups.push({pid:it.pid,items:[]});}
                                   groups[idx.get(it.pid)].items.push(it);
                                 });
+                                groups.forEach(g=>g.items.sort((a,b)=>a.qNo-b.qNo));
+                                groups.sort((a,b)=>a.items[0].qNo-b.items[0].qNo);
                                 return groups.map((g,k)=>{
                                   const pl=pidLabel(g.pid);
                                   const loc=pl.loc?pl.loc.replace(/(\d+)번$/,'$1번'):'';
