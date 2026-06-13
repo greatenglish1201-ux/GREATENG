@@ -1930,13 +1930,17 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             <div style={{display:'flex',alignItems:'center',gap:10}}>
               <span style={{fontSize:22,fontWeight:800,color:'#C9A84C',minWidth:32}}>{qCount}</span>
               <div style={{flex:1,display:'flex',flexDirection:'column',gap:4}}>
-                <input type="range" min={1} max={5} step={1} value={qCount/10}
-                  onChange={e=>setQCount(parseInt(e.target.value)*10)}
+                <input type="range" min={5} max={50} step={5} value={qCount}
+                  onChange={e=>setQCount(parseInt(e.target.value))}
                   style={{width:'100%',accentColor:'#C9A84C',cursor:'pointer',height:6}}/>
-                <div style={{display:'flex',justifyContent:'space-between',paddingTop:2}}>
-                  {[10,20,30,40,50].map(v=>(
-                    <span key={v} style={{fontSize:10,color:qCount===v?'#C9A84C':'#94a3b8',fontWeight:qCount===v?700:400,cursor:'pointer'}} onClick={()=>setQCount(v)}>{v===50?'MAX50':v}</span>
-                  ))}
+                <div style={{position:'relative',height:15,marginTop:2}}>
+                  {[5,10,20,30,40,50].map(v=>{
+                    const pct=(v-5)/45*100;
+                    return <span key={v} onClick={()=>setQCount(v)}
+                      style={{position:'absolute',left:pct+'%',transform:v===5?'none':v===50?'translateX(-100%)':'translateX(-50%)',
+                        fontSize:10,color:qCount===v?'#C9A84C':'#94a3b8',fontWeight:qCount===v?700:400,cursor:'pointer',whiteSpace:'nowrap'}}>
+                      {v===50?'MAX50':v}</span>;
+                  })}
                 </div>
               </div>
             </div>
@@ -1958,13 +1962,6 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         </div>
 
 
-          {/* Apps Script URL */}
-          <div style={{marginTop:10,marginBottom:0}}>
-            <h3 style={{fontSize:13,fontWeight:700,color:'#1e293b',margin:'0 0 6px'}}>🔗 결과 저장 URL <span style={{fontSize:10,color:'#94a3b8',fontWeight:400}}>(선택)</span></h3>
-            <input value={scriptUrl} onChange={e=>{setScriptUrl(e.target.value);localStorage.setItem(SCRIPT_URL_KEY,e.target.value);}}
-              placeholder="Apps Script 배포 URL"
-              style={{width:'100%',padding:'8px 12px',borderRadius:10,border:'1px solid #e2e8f0',fontSize:11.5,outline:'none',boxSizing:'border-box',color:'#64748b'}}/>
-          </div>
         <button onClick={start} disabled={selPassages.size===0} style={{width:'100%',padding:14,borderRadius:14,border:'none',background:selPassages.size>0?'linear-gradient(135deg,#4f7df7,#3b5fe0)':'#cbd5e1',color:'#fff',fontSize:15.5,fontWeight:700,cursor:selPassages.size>0?'pointer':'default',marginTop:14,boxShadow:selPassages.size>0?'0 4px 14px rgba(79,125,247,0.3)':'none'}}>
           {selPassages.size>0?`시작하기 (${selPassages.size}개 지문)`:'지문을 선택해주세요'}
         </button>
