@@ -766,6 +766,58 @@ function App(){
   const [printQs,setPrintQs]=useState([]);
   const [printMode,setPrintMode]=useState('q');
 
+  // 🔁 오답 복습 — 누적 이력에서 (지문×유형)별 마지막 시도가 틀림(X)인 조합만 재출제 (최대 10문항)
+  const [reviewLoading,setReviewLoading]=useState(false);
+  const startReview=async()=>{
+    if(!scriptUrl||!studentName)return;
+    setReviewLoading(true);
+    try{
+      const d=await jsonpFetch(scriptUrl,{action:'getStats',student:studentName});
+      const sessions=(d&&d.sessionStats)||[];
+      const last=new Map(); // "pid|유형명" → 마지막 O/X (sessions는 오래된→최신)
+      sessions.forEach(s=>{
+        String(s.detail||'').split('||').filter(Boolean).forEach(line=>{
+          const parts=line.split('|');
+          if(parts.length<3)return;
+          last.set(parts[0].trim()+'|'+parts[1].trim(),parts[2].trim());
+        });
+      });
+      const wrongCombos=[];
+      last.forEach((ox,key)=>{
+        if(ox!=='X')return;
+        const sep=key.indexOf('|');
+        const pid=key.slice(0,sep), tname=key.slice(sep+1);
+        const tid=TYPES.find(t=>t.name===tname)?.id;
+        if(!tid)return;
+        const p=allPassages.find(pp=>pp.id===pid);
+        if(!p)return; // 비공개·삭제된 지문은 제외
+        wrongCombos.push({p,tid});
+      });
+      if(!wrongCombos.length){alert('복습할 오답이 없습니다! 🎉');setReviewLoading(false);return;}
+      const picked=shuffle(wrongCombos).slice(0,10);
+      // 시트 지문은 출제DB 로드 후 생성
+      const gasIds=[...new Set(picked.filter(c=>!PASSAGE_IDS.has(c.p.id)).map(c=>c.p.id))];
+      const qMap={};
+      if(gasIds.length){
+        const fetched=await Promise.all(gasIds.map(pid=>jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))));
+        gasIds.forEach((pid,i)=>{qMap[pid]=(fetched[i]?.ok&&fetched[i].questions)||[];});
+      }
+      const qs=[];
+      for(const c of picked){
+        let pp=c.p;
+        if(qMap[pp.id]!==undefined){
+          const qsArr=qMap[pp.id];
+          pp={...(qsArr.length?applyGasQuestions(pp,qsArr):pp),__gasOnly:true,__authored:new Set(qsArr.map(q=>q.type))};
+        }
+        const q=gen(pp,c.tid,allPassages);
+        if(q)qs.push(q);
+      }
+      if(!qs.length){alert('복습 문항을 생성하지 못했습니다.\n(해당 지문이 비공개이거나 출제 데이터가 부족합니다)');setReviewLoading(false);return;}
+      setQuestions(shuffle(qs));setCurIdx(0);setUserAns({});setShowAns(false);setTimerKey(Date.now());setScreen('quiz');
+    }catch(e){alert('오답 복습 로드 실패: '+e.message);}
+    setReviewLoading(false);
+  };
+
   const genQuestions=async()=>{
     const types=[...selectedTypes];if(!types.length||selPassages.size===0)return [];
     let pool=allPassages.filter(p=>selPassages.has(p.id));
@@ -816,7 +868,7 @@ function App(){
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
   if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -1555,7 +1607,7 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,printDirect,startReview,reviewLoading,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -1593,6 +1645,9 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
               {session?.role!=='admin'&&<span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>}
               {session?.role==='admin'&&<span style={{fontSize:10,background:'#fef3c7',color:'#92400e',padding:'2px 7px',borderRadius:8,fontWeight:600}}>관리자</span>}
               {goToStudy&&scriptUrl&&<button onClick={goToStudy} style={{fontSize:13,background:'linear-gradient(135deg,#ecfdf5,#d1fae5)',color:'#0a7c42',border:'1px solid #6ee7b7',borderRadius:10,padding:'6px 14px',cursor:'pointer',fontWeight:700}}>📚 자료 보기</button>}
+              {startReview&&scriptUrl&&studentName&&<button onClick={startReview} disabled={reviewLoading} title="지금까지 틀린 문제 중 아직 다시 맞히지 못한 것만 최대 10문항 재출제"
+                style={{fontSize:13,background:reviewLoading?'#f0e7d4':'linear-gradient(135deg,#fdf2f2,#fbe4e4)',color:reviewLoading?'#b8a988':'#B3261E',border:'1px solid #e8b4b0',borderRadius:10,padding:'6px 14px',cursor:reviewLoading?'wait':'pointer',fontWeight:700}}>
+                {reviewLoading?'⏳ 불러오는 중...':'🔁 오답 복습'}</button>}
             </div>
           </div>
 
