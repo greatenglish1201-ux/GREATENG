@@ -1699,17 +1699,24 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
       <div style={S.box}>
         <div style={{textAlign:'center',marginBottom:32}}>
           <img src={LOGO} alt='logo' style={{width:100,height:100,borderRadius:'50%',marginBottom:10,boxShadow:'0 4px 18px rgba(139,80,30,0.25)',border:'2px solid #C9A84C'}}/>
-          {mainRank&&<div title="대단한영어 누적 정답률 랭킹" style={{position:'relative',overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',gap:9,
-            maxWidth:360,margin:'0 auto 14px',padding:'11px 22px',borderRadius:14,
-            background:'linear-gradient(135deg,#5e0c18 0%,#7a1020 45%,#9a3040 100%)',border:'2px solid #C9A84C',
-            boxShadow:'0 4px 18px rgba(201,168,76,0.5), inset 0 1px 0 rgba(255,255,255,0.18)'}}>
-            <span style={{position:'absolute',top:-24,right:-24,width:90,height:90,borderRadius:'50%',background:'radial-gradient(circle, rgba(201,168,76,0.4), transparent 70%)'}}/>
-            <span style={{fontSize:26,filter:'drop-shadow(0 2px 5px rgba(0,0,0,0.4))'}}>{mainRank===1?'🥇':mainRank===2?'🥈':'🥉'}</span>
-            <span style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3,zIndex:1}}>
-              누적 정답률 <span style={{color:'#F2D88F',fontSize:20}}>{mainRank}등</span>{mainRank===1?'!':''}
-            </span>
-            <span style={{fontSize:16,zIndex:1}}>{mainRank===1?'👑':'✨'}</span>
-          </div>}
+          {mainRank&&(()=>{
+            const medal={
+              1:{bg:'linear-gradient(135deg,#7a5c0e 0%,#9a7818 45%,#c9a84c 100%)',bd:'#F2D88F',glow:'rgba(201,168,76,0.55)',num:'#FFF1C4',ico:'🥇',deco:'👑'},
+              2:{bg:'linear-gradient(135deg,#5a5e66 0%,#7c828c 45%,#aab0ba 100%)',bd:'#E8ECF2',glow:'rgba(180,188,200,0.5)',num:'#ffffff',ico:'🥈',deco:'✨'},
+              3:{bg:'linear-gradient(135deg,#6e3d1f 0%,#8a5430 45%,#b5783c 100%)',bd:'#E8B98F',glow:'rgba(181,120,60,0.5)',num:'#FFE2C4',ico:'🥉',deco:'✨'},
+            }[mainRank]||{};
+            return <div title="대단한영어 누적 정답률 랭킹" style={{position:'relative',overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',gap:9,
+              maxWidth:360,margin:'0 auto 14px',padding:'11px 22px',borderRadius:14,
+              background:medal.bg,border:'2px solid '+medal.bd,
+              boxShadow:'0 4px 18px '+medal.glow+', inset 0 1px 0 rgba(255,255,255,0.22)'}}>
+              <span style={{position:'absolute',top:-24,right:-24,width:90,height:90,borderRadius:'50%',background:'radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%)'}}/>
+              <span style={{fontSize:26,filter:'drop-shadow(0 2px 5px rgba(0,0,0,0.4))'}}>{medal.ico}</span>
+              <span style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3,zIndex:1,textShadow:'0 1px 2px rgba(0,0,0,0.3)'}}>
+                누적 정답률 <span style={{color:medal.num,fontSize:20}}>{mainRank}등</span>{mainRank===1?'!':''}
+              </span>
+              <span style={{fontSize:16,zIndex:1}}>{medal.deco}</span>
+            </div>;
+          })()}
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
             <div>
               <h1 style={{fontSize:22,fontWeight:800,color:'#7a1020',margin:0}}>{APP_NAME}</h1>
@@ -3412,20 +3419,27 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
         </div>
 
         {/* 🏆 탑3 랭킹 축하 (서버가 탑3일 때만 내려줌 — 그 외 학생에겐 표시 안 됨) */}
-        {rankInfo&&<div style={{position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#5e0c18 0%,#7a1020 45%,#9a3040 100%)',
-          border:'2px solid #C9A84C',borderRadius:16,padding:'16px 20px',marginBottom:16,
-          boxShadow:'0 4px 20px rgba(201,168,76,0.45), inset 0 1px 0 rgba(255,255,255,0.18)',
-          display:'flex',alignItems:'center',gap:14}}>
-          <div style={{position:'absolute',top:-30,right:-30,width:110,height:110,borderRadius:'50%',background:'radial-gradient(circle, rgba(201,168,76,0.35), transparent 70%)'}}/>
-          <span style={{fontSize:38,filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.4))'}}>{rankInfo.rank===1?'🥇':rankInfo.rank===2?'🥈':'🥉'}</span>
-          <div style={{flex:1}}>
-            <div style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3}}>
-              정답률 <span style={{color:'#F2D88F',fontSize:21}}>{rankInfo.rank}등</span>{rankInfo.rank===1?'!':''} <span style={{fontSize:15}}>{rankInfo.rank===1?'👑':'✨'}</span>
+        {rankInfo&&(()=>{
+          const medal={
+            1:{bg:'linear-gradient(135deg,#7a5c0e 0%,#9a7818 45%,#c9a84c 100%)',bd:'#F2D88F',glow:'rgba(201,168,76,0.5)',num:'#FFF1C4',sub:'#f0e2bf',ico:'🥇',deco:'👑'},
+            2:{bg:'linear-gradient(135deg,#5a5e66 0%,#7c828c 45%,#aab0ba 100%)',bd:'#E8ECF2',glow:'rgba(180,188,200,0.5)',num:'#ffffff',sub:'#eef1f5',ico:'🥈',deco:'✨'},
+            3:{bg:'linear-gradient(135deg,#6e3d1f 0%,#8a5430 45%,#b5783c 100%)',bd:'#E8B98F',glow:'rgba(181,120,60,0.5)',num:'#FFE2C4',sub:'#f0d8c2',ico:'🥉',deco:'✨'},
+          }[rankInfo.rank]||{};
+          return <div style={{position:'relative',overflow:'hidden',background:medal.bg,
+            border:'2px solid '+medal.bd,borderRadius:16,padding:'16px 20px',marginBottom:16,
+            boxShadow:'0 4px 20px '+medal.glow+', inset 0 1px 0 rgba(255,255,255,0.22)',
+            display:'flex',alignItems:'center',gap:14}}>
+            <div style={{position:'absolute',top:-30,right:-30,width:110,height:110,borderRadius:'50%',background:'radial-gradient(circle, rgba(255,255,255,0.28), transparent 70%)'}}/>
+            <span style={{fontSize:38,filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.4))'}}>{medal.ico}</span>
+            <div style={{flex:1}}>
+              <div style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3,textShadow:'0 1px 2px rgba(0,0,0,0.3)'}}>
+                정답률 <span style={{color:medal.num,fontSize:21}}>{rankInfo.rank}등</span>{rankInfo.rank===1?'!':''} <span style={{fontSize:15}}>{medal.deco}</span>
+              </div>
+              <div style={{fontSize:11.5,color:medal.sub,marginTop:3}}>대단한영어 누적 랭킹 · 탁월함이 습관이 되도록</div>
             </div>
-            <div style={{fontSize:11.5,color:'#e8c9ce',marginTop:3}}>대단한영어 누적 랭킹 · 탁월함이 습관이 되도록</div>
-          </div>
-          <span style={{fontSize:11,fontWeight:800,background:'linear-gradient(135deg,#F2D88F,#C9A84C)',color:'#41310a',padding:'5px 12px',borderRadius:12,letterSpacing:0.6,boxShadow:'0 2px 6px rgba(0,0,0,0.25)',whiteSpace:'nowrap'}}>TOP 3</span>
-        </div>}
+            <span style={{fontSize:11,fontWeight:800,background:'rgba(255,255,255,0.92)',color:'#3a2a20',padding:'5px 12px',borderRadius:12,letterSpacing:0.6,boxShadow:'0 2px 6px rgba(0,0,0,0.25)',whiteSpace:'nowrap'}}>TOP 3</span>
+          </div>;
+        })()}
         {/* 이번 회차 유형별 요약 (누적 아님) */}
         {(()=>{
           const byType={};
