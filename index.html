@@ -3278,7 +3278,7 @@ ${bodyRef.current.innerHTML}
 function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHome,doPrint}){
   // 📖 틀린 지문 분석자료 바로 보기
   const [viewP,setViewP]=useState(null);
-  const [studyMode,setStudyMode]=useState('student');
+  const [studyMode,setStudyMode]=useState('teacher');
   const pct=score.total>0?Math.round(score.correct/score.total*100):0;
   const emoji=pct>=80?'🏆':pct>=50?'💪':'📖';
   const [saveStatus,setSaveStatus]=React.useState('idle'); // idle | saving | done | error
