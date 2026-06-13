@@ -1694,11 +1694,11 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
               </button>;
             })}
           </div>
-          <div style={{display:'flex',gap:6,marginTop:10,flexWrap:'wrap',alignItems:'center'}}>
-            <span style={{fontSize:11,color:'#9a8570',marginRight:2}}>빠른 선택</span>
-            <button onClick={toggleAll} style={{...S.chip(false),fontSize:10.5}}>전체</button>
-            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert']))} style={{...S.chip(false),fontSize:10.5,background:'#FBF3DE',color:'#8a6010',border:'1px solid #C9A84C'}}>⭐ 중요 3종 (빈칸·순서·삽입)</button>
-            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert','topic','summary']))} style={{...S.chip(false),fontSize:10.5,background:'#f4ecff',color:'#6a4a9a',border:'1px solid #c9b3e8'}}>📚 핵심 5종</button>
+          <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap',alignItems:'center'}}>
+            <span style={{fontSize:12,color:'#9a8570',marginRight:2}}>빠른 선택</span>
+            <button onClick={toggleAll} style={{padding:'9px 18px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#f0e7d4',color:'#7a6a55',border:'1px solid #e0d4ba'}}>전체</button>
+            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert']))} style={{padding:'9px 18px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#FBF3DE',color:'#8a6010',border:'1px solid #C9A84C'}}>⭐ 중요 3종</button>
+            <button onClick={()=>setSelectedTypes(new Set(['blank','order','insert','topic','summary']))} style={{padding:'9px 18px',borderRadius:12,fontSize:13.5,fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',background:'#f4ecff',color:'#6a4a9a',border:'1px solid #c9b3e8'}}>📚 핵심 5종</button>
           </div>
         </div>
 
