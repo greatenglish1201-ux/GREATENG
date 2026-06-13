@@ -3297,6 +3297,17 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
   const pct=score.total>0?Math.round(score.correct/score.total*100):0;
   const emoji=pct>=80?'🏆':pct>=50?'💪':'📖';
   const [saveStatus,setSaveStatus]=React.useState('idle'); // idle | saving | done | error
+  const [rankInfo,setRankInfo]=React.useState(null); // {rank,total} — 탑3일 때만 서버가 내려줌
+  React.useEffect(()=>{
+    if(!scriptUrl||!studentName)return;
+    // 결과 저장 반영 시간을 살짝 기다린 후 랭킹 조회
+    const t=setTimeout(()=>{
+      jsonpFetch(scriptUrl,{action:'getRank',student:studentName})
+        .then(r=>{if(r&&r.ok&&r.show)setRankInfo({rank:r.rank,total:r.total});})
+        .catch(()=>{});
+    },1200);
+    return ()=>clearTimeout(t);
+  },[]);
 
   // 결과 저장 (마운트 시 자동 전송)
   React.useEffect(()=>{
@@ -3345,6 +3356,21 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
           )}
         </div>
 
+        {/* 🏆 탑3 랭킹 축하 (서버가 탑3일 때만 내려줌 — 그 외 학생에겐 표시 안 됨) */}
+        {rankInfo&&<div style={{position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#5e0c18 0%,#7a1020 45%,#9a3040 100%)',
+          border:'2px solid #C9A84C',borderRadius:16,padding:'16px 20px',marginBottom:16,
+          boxShadow:'0 4px 20px rgba(201,168,76,0.45), inset 0 1px 0 rgba(255,255,255,0.18)',
+          display:'flex',alignItems:'center',gap:14}}>
+          <div style={{position:'absolute',top:-30,right:-30,width:110,height:110,borderRadius:'50%',background:'radial-gradient(circle, rgba(201,168,76,0.35), transparent 70%)'}}/>
+          <span style={{fontSize:38,filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.4))'}}>{rankInfo.rank===1?'🥇':rankInfo.rank===2?'🥈':'🥉'}</span>
+          <div style={{flex:1}}>
+            <div style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3}}>
+              정답률 <span style={{color:'#F2D88F',fontSize:21}}>{rankInfo.rank}등</span>{rankInfo.rank===1?'!':''} <span style={{fontSize:15}}>{rankInfo.rank===1?'👑':'✨'}</span>
+            </div>
+            <div style={{fontSize:11.5,color:'#e8c9ce',marginTop:3}}>대단한영어 누적 랭킹 · 탁월함이 습관이 되도록</div>
+          </div>
+          <span style={{fontSize:11,fontWeight:800,background:'linear-gradient(135deg,#F2D88F,#C9A84C)',color:'#41310a',padding:'5px 12px',borderRadius:12,letterSpacing:0.6,boxShadow:'0 2px 6px rgba(0,0,0,0.25)',whiteSpace:'nowrap'}}>TOP 3</span>
+        </div>}
         {/* 이번 회차 유형별 요약 (누적 아님) */}
         {(()=>{
           const byType={};
