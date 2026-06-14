@@ -589,7 +589,7 @@ function App(){
   });
   const [scriptUrl,setScriptUrl]=useState(()=>localStorage.getItem(SCRIPT_URL_KEY)||HARDCODED_URL);
   const [selectedTypes,setSelectedTypes]=useState(new Set(TYPES.map(t=>t.id)));
-  const [activeBook,setActiveBook]=useState('27ST');
+  const [activeBook,setActiveBook]=useState('');
   const [selPassages,setSelPassages]=useState(new Set());
   const [qCount,setQCount]=useState(10);
   const [ansMode,setAnsMode]=useState('immediate');
@@ -692,10 +692,9 @@ function App(){
 
   const books=useMemo(()=>detectBooks(allPassages),[allPassages,booksVer]);
 
-  // 시트 로드 후 현재 선택 교재가 목록에 없으면 첫 교재로 자동 보정
+  // 선택한 교재가 목록에서 사라진 경우에만 첫 교재로 보정 (빈 값=의도적 미선택이므로 건드리지 않음)
   useEffect(()=>{
-    if(books.length&&!books.some(b=>b.id===activeBook)){
-      // 모의고사(MOGO_)보다 일반 교재를 우선 기본 선택
+    if(books.length&&activeBook&&!books.some(b=>b.id===activeBook)){
       const firstNormal=books.find(b=>!b.id.startsWith('MOGO_'));
       setActiveBook((firstNormal||books[0]).id);
     }
@@ -1269,7 +1268,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
 
     const sec=(title,inner)=>inner?`<div style="margin-bottom:18px"><div style="font-size:13px;font-weight:700;color:#7a1020;border-left:4px solid #C9A84C;padding-left:8px;margin-bottom:8px">${title}</div>${inner}</div>`:'';
 
-    const sessHtml=sessions.length?`<table style="width:100%;border-collapse:collapse">${sessions.map(s=>`<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:12px;color:#555">${esc(String(s.date).slice(0,10))}</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-size:12.5px;color:#222">${esc(s.score)}문항</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(s.rate)};font-size:12.5px">${esc(s.rate)}%</td></tr>`).join('')}</table>`:'';
+    const sessHtml=sessions.length?`<table style="width:100%;border-collapse:collapse">${sessions.map(s=>`<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:12px;color:#555">${esc(String(s.date).slice(0,10))}${String(s.date).length>10?` <span style="color:#aaa;font-size:11px">${esc(String(s.date).slice(11,16))}</span>`:''}</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-size:12.5px;color:#222">${esc(s.score)}문항</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(s.rate)};font-size:12.5px">${esc(s.rate)}%</td></tr>`).join('')}</table>`:'';
     const typeHtml=types.length?`<table style="width:100%;border-collapse:collapse">${types.map(t=>row(t.type,`${t.correct}/${t.total}`,t.rate)).join('')}</table>`:'';
     const bookHtml=books.length?`<table style="width:100%;border-collapse:collapse">${books.map(b=>row(b.label,`${b.correct}/${b.total}`,b.rate)).join('')}</table>`:'';
     const allBookIds=getAllBooks().map(b=>b.id).sort((a,b)=>b.length-a.length);
@@ -1622,7 +1621,7 @@ ${ESC_}
                 return <div key={i} style={{borderBottom:'1px solid #f6efe0'}}>
                   <div onClick={()=>setExpandedSession(open?null:i)}
                     style={{padding:'10px 16px',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',background:open?'#fdfaf2':'#fff'}}>
-                    <span style={{fontSize:12,color:'#9a8570'}}><span style={{display:'inline-block',width:14,color:'#C9A84C'}}>{open?'▾':'▸'}</span>{String(s.date).slice(0,10)}</span>
+                    <span style={{fontSize:12,color:'#9a8570'}}><span style={{display:'inline-block',width:14,color:'#C9A84C'}}>{open?'▾':'▸'}</span>{String(s.date).slice(0,10)}{String(s.date).length>10?<span style={{fontSize:10.5,color:'#c4b89e',marginLeft:6}}>{String(s.date).slice(11,16)}</span>:''}</span>
                     <div style={{display:'flex',gap:12,alignItems:'center'}}>
                       <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{s.score}문항</span>
                       <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
@@ -2110,7 +2109,12 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           )}
 
           {/* 전체 선택/해제 + 빠른 선택 */}
-          <QuickSelectBar activeBook={activeBook} allPassages={allPassages} selPassages={selPassages} toggleP={toggleP} allSelInBook={allSelInBook} selectAllInBook={selectAllInBook} deselectAllInBook={deselectAllInBook} />
+          {activeBook&&<QuickSelectBar activeBook={activeBook} allPassages={allPassages} selPassages={selPassages} toggleP={toggleP} allSelInBook={allSelInBook} selectAllInBook={selectAllInBook} deselectAllInBook={deselectAllInBook} />}
+
+          {/* 교재 미선택 안내 */}
+          {!activeBook&&!searchText&&<div style={{padding:'28px 16px',textAlign:'center',color:'#94a3b8',fontSize:13,background:'#fafbfc',border:'1.5px dashed #e2e8f0',borderRadius:12}}>
+            👆 위에서 교재를 선택하면 강 목록이 표시됩니다
+          </div>}
 
           {/* 강 단위 그룹 선택 */}
           {(()=>{
