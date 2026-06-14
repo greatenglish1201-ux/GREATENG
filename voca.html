@@ -416,6 +416,7 @@
             await loadSharedDB();
             document.getElementById('status-msg').innerText = "시스템 준비 완료";
             initPracticeUI();
+            updateAdminQuickBtn(); // 새로고침 후 인증상태 반영
         } catch(e) {
             document.getElementById('status-msg').innerText = e.message || "DB 로드 실패";
         }
@@ -424,7 +425,7 @@
     /* ============================================================
        관리자 진입 (첫 화면 비번 모달 → GAS adminLogin 검증)
        ============================================================ */
-    let adminAuthed = false; // 세션 동안 인증 유지 → 비번 없이 왕복
+    let adminAuthed = (sessionStorage.getItem('voca_admin_authed') === '1'); // 새로고침해도 유지(탭 닫으면 해제)
 
     async function tryGoAdmin() {
         const pw = document.getElementById('admin-pw-input').value;
@@ -437,6 +438,7 @@
             const data = await res.json();
             if (data.ok) {
                 adminAuthed = true;
+                sessionStorage.setItem('voca_admin_authed', '1');
                 document.getElementById('admin-pw-input').value = "";
                 enterAdmin();
             } else {
@@ -1125,6 +1127,7 @@
 
         // 관리자 화면 진입 시 호출 (학생명단·교재 셀렉트 초기화)
         init: async function() {
+            this._targetTouched = false;
             // 교재 목록 (공유 db 사용 — 다시 fetch 안 함)
             const books = [...new Set(db.map(x => x.book))].sort();
             const bSel = document.getElementById('book-sel');
@@ -1273,15 +1276,23 @@
                 document.getElementById(id + '-num').value = 0;
             });
 
-            // 출제 목표개수 바: 최대 = Pool. target이 Pool보다 크면 Pool로 제한.
+            // 출제 목표개수 바: 최대 = Pool.
             const tVal = document.getElementById('target-val');
             const tNum = document.getElementById('target-num');
             tVal.max = count;
             let curTarget = parseInt(tNum.value) || 0;
-            if (curTarget > count) curTarget = count;   // Pool 초과 시 제한
-            if (curTarget === 0 && count > 0) curTarget = Math.min(120, count); // 기본 120
+            if (count === 0) {
+                // 범위 없음: 기본 120 표시(비활성 상태)
+                curTarget = 120;
+            } else if (this._targetTouched) {
+                // 관리자가 직접 정한 값 유지 (단 Pool 초과 시 제한)
+                if (curTarget > count) curTarget = count;
+            } else {
+                // 아직 손대지 않음: 120 기본 (Pool이 120 미만이면 Pool)
+                curTarget = Math.min(120, count);
+            }
             tNum.value = curTarget;
-            tVal.value = curTarget;
+            tVal.value = Math.min(curTarget, count);
             this._highlightQtyBtn(curTarget);
 
             document.getElementById('total-val').max = count;
@@ -1306,7 +1317,9 @@
                 b.classList.toggle('active', parseInt(b.dataset.q) === val);
             });
         },
+        _targetTouched: false,
         setTarget: function(n) {
+            this._targetTouched = true;
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
             let t = (pool > 0 && n > pool) ? pool : n;
             document.getElementById('target-num').value = t;
@@ -1314,6 +1327,7 @@
             this._highlightQtyBtn(t);
         },
         onTargetInput: function() {
+            this._targetTouched = true;
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
             let t = parseInt(document.getElementById('target-num').value) || 0;
             if (pool > 0 && t > pool) { t = pool; document.getElementById('target-num').value = t; }
@@ -1321,6 +1335,7 @@
             this._highlightQtyBtn(t);
         },
         onTargetSlider: function() {
+            this._targetTouched = true;
             let t = parseInt(document.getElementById('target-val').value) || 0;
             document.getElementById('target-num').value = t;
             this._highlightQtyBtn(t);
@@ -1373,7 +1388,7 @@
             document.getElementById('total-num').value = finalSum;
         },
 
-        clearBasket: function() { this.basket = []; this.renderBasket(); },
+        clearBasket: function() { this.basket = []; this._targetTouched = false; this.renderBasket(); },
 
         // 현재 장바구니 Pool에서 영영(ee)/예문(ex) 보유 단어 수 집계
         _poolStats: function() {
@@ -1473,6 +1488,7 @@
             alert(name + " 학생 배정 완료!");
             // 관리자 화면 유지하면서 상태만 초기화
             this.basket = [];
+            this._targetTouched = false;
             this.renderBasket();
             document.getElementById('adm-status-msg').innerText = "저장 완료!";
         }
