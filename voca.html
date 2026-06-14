@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대단한영어 VOCA MASTER</title>
+    <style>
+        :root { --gold: #d4af37; --gold-hover: #b8962e; --black: #1a1a1a; --dark-gray: #2d2d2d; --bg-gray: #f0f0f0; --card-bg: #ffffff; --blue: #0000FF; --gray: #f8f9fa; --obj-blue: #4a90e2; --subj-green: #27ae60; --ee-purple: #8e44ad; --ex-orange: #d35400; --red: #c0392b; --navy: #2c3e50; }
+        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f0f2f5; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; }
+
+        /* ===== 학생 화면 ===== */
+        .card { background: white; width: 100%; max-width: 480px; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; height: fit-content; margin-top: 20px; position: relative; }
+        .logo-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; color: white; margin-top: 10px; transition: 0.3s; }
+        input[type="text"], input[type="password"], select { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #ddd; font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--blue); }
+        .chk-label { font-size: 15px; color: #333; display: inline-flex; align-items: center; cursor: pointer; text-align: left; }
+        #test-area, #result-area, #info-box { display: none; }
+        .q-text { font-size: 32px; font-weight: bold; color: #333; margin: 25px 0; }
+        .q-text.long-text { font-size: 18px; line-height: 1.5; font-weight: 600; text-align: left; padding: 15px; background: #f9f9f9; border-radius: 10px; border-left: 4px solid var(--gold);}
+        #status-msg { font-size: 14px; color: var(--blue); font-weight: bold; margin-top: 15px; }
+        .progress { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 0; }
+        .score-text { font-size: 32px; color: var(--blue); font-weight: 900; margin: 20px 10px; }
+        .pass-fail-text { font-size: 28px; font-weight: 900; margin-bottom: 20px; }
+        .choice-btn { width: 100%; padding: 14px; margin-bottom: 8px; border: 2px solid #eee; border-radius: 12px; background: white; font-size: 16px; font-weight: bold; color: #333; cursor: pointer; transition: all 0.2s ease; text-align: left; box-sizing: border-box; }
+        .choice-btn:hover { border-color: var(--blue); background: #f0f4ff; color: var(--blue); }
+        .choice-btn .number { display: inline-block; width: 24px; color: var(--gold); font-weight: 900; }
+        .hint-text { font-size: 20px; color: var(--blue); font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .timer-text { font-size: 20px; font-weight: 900; color: #e74c3c; }
+        .test-type-label { font-size: 14px; color: #fff; background: var(--gold); padding: 4px 10px; border-radius: 8px; font-weight: bold; display: inline-block; margin-bottom: 10px;}
+        #practice-feedback { display: none; font-size: 18px; margin: 15px 0; border-radius: 12px; padding: 15px; font-weight: bold; transition: 0.2s; }
+        .practice-section { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ddd; }
+
+        /* 관리자 진입 버튼 (index 스타일: 로고/타이틀 근처 작은 버튼) */
+        .admin-enter-btn { font-size: 11px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; padding: 4px 12px; cursor: pointer; font-weight: 600; margin-top: 6px; }
+        .admin-enter-btn:hover { background: #e2e8f0; }
+
+        /* 관리자 비번 모달 */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 999; display: flex; align-items: center; justify-content: center; }
+        .modal-box { background:#fff; border-radius:18px; padding:28px 24px; width:300px; box-shadow:0 8px 32px rgba(0,0,0,0.18); text-align:left; }
+        .modal-box h3 { font-size:16px; font-weight:800; color:#1e293b; margin:0 0 6px; }
+        .modal-box p { font-size:12px; color:#94a3b8; margin:0 0 16px; }
+        .modal-box input { width:100%; padding:11px 14px; border-radius:10px; border:1.5px solid #e2e8f0; font-size:14px; outline:none; box-sizing:border-box; margin-bottom:8px; text-align:left; }
+        .modal-err { font-size:12px; color:#dc2626; margin:0 0 8px; }
+        .modal-btns { display:flex; gap:8px; }
+        .modal-btns button { flex:1; padding:10px; border-radius:10px; font-size:13px; cursor:pointer; font-weight:600; }
+        .modal-cancel { border:1px solid #e2e8f0; background:#fff; color:#64748b; }
+        .modal-ok { border:none; background: linear-gradient(135deg,#4f7df7,#3b5fe0); color:#fff; font-weight:700; }
+
+        /* ===== 관리자 화면 ===== */
+        #admin-screen { display:none; width:100%; justify-content:center; }
+        .admin-box { background: var(--card-bg); color: var(--black); padding: 35px; border-radius: 30px; width: 100%; max-width: 650px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border-top: 10px solid var(--gold); height: fit-content; margin-top: 20px; }
+        .admin-box .main-title { text-align: center; margin-bottom: 35px; }
+        .admin-box .main-title h2 { font-size: 32px; font-weight: 900; color: var(--black); margin: 0; letter-spacing: -1px; }
+        .admin-box .main-title h2 span { color: var(--gold); }
+        .admin-box .main-title p { color: #888; font-size: 13px; letter-spacing: 5px; margin-top: 5px; text-transform: uppercase; }
+        .admin-box .section { background: #fdfdfd; border-radius: 20px; padding: 22px; margin-bottom: 25px; border: 1px solid #e0e0e0; position: relative; }
+        .admin-box .label { font-size: 15px; font-weight: 800; color: var(--black); border-left: 5px solid var(--gold); padding-left: 12px; margin-bottom: 15px; display: block; }
+        .admin-box select { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box; background: #fff; cursor: pointer; text-align: left; margin-bottom: 0; }
+        .admin-box select:focus { border-color: var(--gold); }
+        .admin-box button { cursor: pointer; font-weight: bold; border: none; transition: 0.3s; font-family: inherit; }
+        .btn-black { background: var(--black); color: white; padding: 15px; border-radius: 12px; font-size: 14px; }
+        .btn-red { background: var(--red); color: white; padding: 15px; border-radius: 12px; font-size: 14px; }
+        .btn-print { background: #4a4a4a; color: white; padding: 15px; border-radius: 12px; font-size: 14px; flex: 1; }
+        .btn-print:hover { background: var(--black); }
+        .btn-wrong-print { background: var(--navy); color: white; padding: 15px; border-radius: 12px; font-size: 14px; flex: 1; }
+        .btn-wrong-print:hover { background: var(--dark-gray); }
+        .btn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+        .btn-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; cursor: pointer; }
+        .btn-item.active { background: var(--gold) !important; color: white !important; border-color: var(--gold); }
+        .add-btn { width: 100%; padding: 15px; margin-top: 15px; background: var(--dark-gray); color: var(--gold); border-radius: 12px; font-size: 14px; }
+        .select-all-btn { background: #e0e0e0; color: var(--black); border-radius: 6px; padding: 6px 12px; font-size: 12px; }
+        .basket { background: #fff; border: 1px dashed var(--gold); padding: 15px; border-radius: 15px; margin: 10px 0; min-height: 50px;}
+        .basket-item { background: #f8f9fa; padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 13px; }
+        .btn-save { width: 100%; padding: 22px; background: var(--gold); color: white; border-radius: 18px; font-size: 20px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); margin-bottom: 15px; }
+        #adm-status-msg { font-size: 13px; text-align: center; margin-top: 15px; color: var(--navy); font-weight: bold; }
+        .admin-box input[type="range"] { width: 100%; height: 6px; cursor: pointer; accent-color: var(--gold); }
+        .num-input { width: 55px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; text-align: right; font-size: 14px; font-weight: bold; color: var(--black); margin-left: 10px; margin-bottom:0; }
+        .admin-back-btn { font-size: 13px; background:#eee; color:#555; border:none; border-radius:10px; padding:8px 16px; cursor:pointer; font-weight:700; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<datalist id="tickmarks"></datalist>
+
+<!-- ====================== 학생 화면 ====================== -->
+<div class="card" id="student-screen">
+    <div id="login-area">
+        <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 VOCA">
+        <h1 style="margin: 0 0 6px 0; font-size: 26px; font-weight: 900; color: var(--black);">대단한영어 <span style="color: var(--gold);">VOCA</span></h1>
+        <!-- 관리자 진입 버튼 (index 스타일) -->
+        <button class="admin-enter-btn" onclick="openAdminModal()">⚙️ 관리자</button>
+        <div style="height:18px;"></div>
+
+        <input type="text" id="st-name" placeholder="이름을 입력하세요 (정규 미션용)" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
+        <button class="btn" style="background:var(--black); color:var(--gold);" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
+        <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
+
+        <div id="info-box" style="margin-top:20px; background:#eef2ff; padding:20px; border-radius:15px; text-align:left;">
+            <p id="info-msg" style="margin:0; line-height:1.6; font-size:15px;"></p>
+            <div class="btn-group">
+                <button id="start-mission-btn" class="btn" style="background:var(--blue); display:none;" onclick="startTest()">오늘의 미션 시작하기</button>
+                <button id="db-wrong-btn" class="btn" style="background:#e74c3c; display:none;" onclick="startAccumulatedWrongTest()">누적 오답 훈련하기</button>
+            </div>
+        </div>
+
+        <div class="practice-section" id="practice-area" style="display:none;">
+            <h3 style="margin: 0 0 5px 0; color: var(--black);">자율 무한 반복 학습 ♾️</h3>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">범위와 유형을 골라 무한으로 복습합니다.</p>
+
+            <select id="sel-book" onchange="updateUnits()" style="padding: 12px; font-size:15px; margin-bottom: 10px;"></select>
+
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-weight: bold; font-size: 14px; color: var(--blue);">📖 범위 선택 (복수 선택 가능)</label>
+                <div id="unit-checkboxes" style="max-height: 150px; overflow-y: auto; border: 2px solid #ddd; border-radius: 10px; padding: 12px; background: white; margin-top: 5px;">
+                    <span style="color:#999; font-size:13px;">(교재를 먼저 선택하세요)</span>
+                </div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="font-weight: bold; font-size: 14px; color: var(--blue);">📝 문제 유형 선택</label>
+                <div style="border: 2px solid #ddd; border-radius: 10px; padding: 12px; background: white; margin-top: 5px; display:flex; flex-wrap:wrap; gap:12px;">
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ek" checked> 뜻 고르기</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ke" checked> 단어 고르기</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-subj"> 스펠링 쓰기</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ee"> 영영풀이</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ex"> 예문 빈칸</label>
+                </div>
+            </div>
+            <button class="btn" style="background: var(--ee-purple); color: white; padding:15px;" onclick="startPractice()">무한 학습 시작하기</button>
+        </div>
+    </div>
+
+    <div id="test-area">
+        <div class="header-bar">
+            <div class="progress" id="progress-text">1 / 20</div>
+            <button id="practice-exit-btn" style="display:none; background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="resetTest()">그만하기 ⏹️</button>
+            <div class="timer-text" id="timer-display">⏱ 00:00</div>
+        </div>
+        <div id="test-type-label" class="test-type-label">유형</div>
+        <div class="q-text" id="question-text">Apple</div>
+        <div id="practice-feedback"></div>
+        <div id="type-subj-area" style="display:none;">
+            <div id="hint-text" class="hint-text">💡 힌트: </div>
+            <input type="text" id="answer-input" placeholder="영어 스펠링을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) submitSubj()">
+            <div style="font-size:13px; color:var(--blue); margin-bottom:10px; font-weight:bold; text-align:center;">안내: 물결(~)이나 빈칸 빼고 알파벳만 다 적어도 정답 인정!</div>
+            <button class="btn" style="background:var(--black); color:var(--gold);" onclick="submitSubj()">제출 및 다음 (엔터)</button>
+        </div>
+        <div id="type-obj-area" style="display:none;"></div>
+    </div>
+
+    <div id="result-area">
+        <h2 style="color: var(--black);">테스트 완료! 🎉</h2>
+        <div class="score-text" id="final-score">0 / 0 (0점)</div>
+        <div id="pass-fail-msg" class="pass-fail-text"></div>
+        <p id="saving-msg" style="color:var(--blue); font-weight:bold;">데이터를 안전하게 저장하고 있습니다...</p>
+        <div class="btn-group">
+            <button class="btn" id="btn-copy-wrong" style="background:#27ae60; color:white; display:none;" onclick="copyWrongWords()">📋 틀린 단어 복사하기</button>
+            <button class="btn" id="btn-review-wrong" style="background:#e74c3c; color:white; display:none;" onclick="reviewWrong()">🚨 방금 틀린 문제 바로 복습하기</button>
+            <button class="btn" id="btn-retest" style="background:#eee; color:#555; display:none;" onclick="handleRetest()">🔄 이전 범위 그대로 다시 풀기</button>
+            <button class="btn" style="background:var(--gold); color:var(--black);" onclick="resetTest()">처음으로 돌아가기</button>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== 관리자 비번 모달 ====================== -->
+<div id="admin-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box" onclick="event.stopPropagation();">
+        <h3>관리자 패널</h3>
+        <p>관리자 비밀번호를 입력하세요</p>
+        <input type="password" id="admin-pw-input" placeholder="관리자 비밀번호" onkeydown="if(event.key==='Enter') tryGoAdmin()">
+        <p id="admin-pw-err" class="modal-err" style="display:none;"></p>
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeAdminModal()">취소</button>
+            <button class="modal-ok" onclick="tryGoAdmin()">확인</button>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== 관리자 화면 ====================== -->
+<div id="admin-screen">
+    <div class="admin-box">
+        <button class="admin-back-btn" onclick="exitAdmin()">← 학생 화면으로</button>
+        <div class="main-title">
+            <p>Dae-dan-han Premium System</p>
+            <h2>대단한영어 <span>VOCA MASTER</span></h2>
+        </div>
+
+        <div class="section">
+            <span class="label">1. 학생 관리 및 재시험 설정</span>
+            <select id="adm-st-list" onchange="ADMIN.loadStudentConfig()" style="margin-bottom: 10px;">
+                <option value="">학생 명단을 불러오는 중...</option>
+            </select>
+            <div id="prev-range-msg" style="font-size: 13px; font-weight: bold; color: var(--red); margin-bottom: 15px; padding-left: 5px; line-height: 1.4;"></div>
+
+            <select id="exam-mode-sel" style="width:100%; background: #fff8e1; border-color: var(--gold); margin-bottom: 10px; font-weight: bold;">
+                <option value="정기시험" selected>실전 정기시험 (1회 제출 시 자동 마감)</option>
+                <option value="연습">반복 연습 모드 (여러 번 응시 가능)</option>
+            </select>
+            <button class="btn-black" onclick="ADMIN.triggerRetest()" style="width: 100%; height: 50px; font-size: 15px;">🔄 이전 범위 그대로 재시험(누적복습) 허용</button>
+        </div>
+
+        <div class="section">
+            <span class="label">2. 단어 교재 및 유닛 선택</span>
+            <select id="book-sel" onchange="ADMIN.loadUnits()" style="margin-bottom: 10px;"><option value="">단어 교재 선택</option></select>
+            <div id="unit-area" style="display:none; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">유닛 다중 선택</span>
+                    <button class="select-all-btn" onclick="ADMIN.toggleAllUnits()">전체 선택/해제</button>
+                </div>
+                <div id="unit-grid" class="btn-grid" style="max-height: 180px; overflow-y: auto; padding-right: 5px;"></div>
+                <button class="add-btn" onclick="ADMIN.addUnitsToBasket()">🛒 선택 유닛 장바구니 담기</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <span class="label">3. 세부 문항 선택 (필요시)</span>
+            <select id="detail-unit-sel" onchange="ADMIN.loadDetails()" style="margin-bottom: 10px;"><option value="">세부 문항 유닛 선택</option></select>
+            <div id="detail-area" style="display:none; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">세부 문항 다중 선택</span>
+                    <button class="select-all-btn" onclick="ADMIN.toggleAllDetails()">전체 선택/해제</button>
+                </div>
+                <div id="detail-grid" class="btn-grid" style="max-height: 150px; overflow-y: auto; padding-right: 5px;"></div>
+                <button class="add-btn" onclick="ADMIN.addDetailsToBasket()">🛒 선택 문항만 장바구니 담기</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div style="display: flex; justify-content: space-between;">
+                <span class="label">4. 최종 출제 구성 (게이지 조절)</span>
+                <button onclick="ADMIN.clearBasket()" style="color:var(--red); font-size:12px; background:none; cursor:pointer; font-weight: bold;">비우기</button>
+            </div>
+            <div id="basket" class="basket"></div>
+
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
+                <div style="text-align: center; font-size: 15px; font-weight: bold; color: #666; margin-bottom: 15px;">
+                    전체 풀(Pool): <span id="pool-text" style="color: var(--navy);">0</span>개 단어
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 14px; font-weight: bold; color: var(--black);">총 출제 문항 (자동 합산)</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="total-num" class="num-input" value="0" readonly style="background:#eee;"> <span style="font-size:14px; margin-left:3px; font-weight:bold;">개</span>
+                    </div>
+                </div>
+                <input type="range" id="total-val" min="0" max="0" step="1" value="0" style="margin-bottom: 25px; accent-color: var(--black);" disabled>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">1. 영-한 (객관식)</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="ek-num" class="num-input" style="color: var(--gold);" min="0" value="0" oninput="ADMIN.syncInput('ek')">
+                    </div>
+                </div>
+                <input type="range" id="ek-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px;" oninput="ADMIN.syncSlider('ek')">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">2. 한-영 (객관식)</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="ke-obj-num" class="num-input" style="color: var(--obj-blue);" min="0" value="0" oninput="ADMIN.syncInput('ke-obj')">
+                    </div>
+                </div>
+                <input type="range" id="ke-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--obj-blue);" oninput="ADMIN.syncSlider('ke-obj')">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">3. 한-영 (스펠링 쓰기)</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="ke-subj-num" class="num-input" style="color: var(--subj-green);" min="0" value="0" oninput="ADMIN.syncInput('ke-subj')">
+                    </div>
+                </div>
+                <input type="range" id="ke-subj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--subj-green);" oninput="ADMIN.syncSlider('ke-subj')">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">4. 영영풀이 (객관식)</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="ee-obj-num" class="num-input" style="color: var(--ee-purple);" min="0" value="0" oninput="ADMIN.syncInput('ee-obj')">
+                    </div>
+                </div>
+                <input type="range" id="ee-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--ee-purple);" oninput="ADMIN.syncSlider('ee-obj')">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">5. 예문 빈칸 (객관식)</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="ex-obj-num" class="num-input" style="color: var(--ex-orange);" min="0" value="0" oninput="ADMIN.syncInput('ex-obj')">
+                    </div>
+                </div>
+                <input type="range" id="ex-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--ex-orange);" oninput="ADMIN.syncSlider('ex-obj')">
+            </div>
+        </div>
+
+        <button class="btn-save" onclick="ADMIN.saveToSheet()">구글 시트에 최종 배정 저장</button>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-print" onclick="alert('인쇄 준비중')">배정 시험지 인쇄</button>
+            <button class="btn-wrong-print" onclick="alert('오답노트 준비중')">오답노트 인쇄</button>
+        </div>
+        <div id="adm-status-msg">시스템 준비됨</div>
+    </div>
+</div>
+
+<script>
+    /* ============================================================
+       공통 상수 (학생/관리자 동일 시트·GAS 공유)
+       ============================================================ */
+    const APP_URL = "https://script.google.com/macros/s/AKfycbwGq_DTjgzjJbacIodVE859aa_Ke4LxL28-sIbv-nRkecAaJefL179BKN4Jgr2F9xXKRw/exec";
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-3vzDLmtDUF_45xjQurffz8gFpzZN-3IYaZECeafSsAQ3XgjeGCeEr1f0zDP5faY31iagIMZrfm67/pub?gid=0&single=true&output=csv";
+
+    /* ============================================================
+       공통 CSV 파서 (학생/관리자 동일 로직 — 1개로 통합)
+       ============================================================ */
+    function parseCSV(str) {
+        let result = []; let row = []; let col = ''; let quote = false;
+        for (let i = 0; i < str.length; i++) {
+            let char = str[i]; let nextChar = str[i + 1];
+            if (quote) {
+                if (char === '"' && nextChar === '"') { col += '"'; i++; }
+                else if (char === '"') { quote = false; }
+                else { col += char; }
+            } else {
+                if (char === '"') { quote = true; }
+                else if (char === ',') { row.push(col); col = ''; }
+                else if (char === '\n' || char === '\r') {
+                    if (char === '\r' && nextChar === '\n') i++;
+                    row.push(col); result.push(row); row = []; col = '';
+                } else { col += char; }
+            }
+        }
+        if (col !== '' || row.length > 0) { row.push(col); result.push(row); }
+        if (result.length === 0) return [];
+
+        let header = result.shift().map(h => (h||'').replace(/\s+/g, '').toLowerCase());
+
+        let idxB = header.findIndex(h => h.includes('교재') || h.includes('book'));
+        let idxU = header.findIndex(h => h.includes('unit') || h.includes('day') || h.includes('유닛'));
+        let idxD = header.findIndex(h => h.includes('세부') || h.includes('detail'));
+        let idxEng = header.findIndex(h => h.includes('단어') || h.includes('eng') || h.includes('voca'));
+        let idxKor = header.findIndex(h => h.includes('뜻') || h.includes('의미') || h.includes('kor'));
+        let idxEE = header.findIndex(h => h.includes('영영') || h.includes('ee') || h.includes('def'));
+        let idxEX = header.findIndex(h => h.includes('예문') || h.includes('ex') || h.includes('sen'));
+
+        if(idxB === -1) idxB = 0; if(idxU === -1) idxU = 1; if(idxD === -1) idxD = 2;
+        if(idxEng === -1) idxEng = 3; if(idxKor === -1) idxKor = 4;
+
+        return result.map(c => {
+            let b = (c[idxB]||"").replace(/\s+/g, '').toUpperCase();
+            let u = (c[idxU]||"").trim(); let d = (idxD !== -1 ? c[idxD] : "").trim();
+            let eng = (c[idxEng]||"").trim(); let kor = (c[idxKor]||"").trim();
+
+            let eeRaw = c[idxEE !== -1 ? idxEE : 7] || "";
+            let exRaw = c[idxEX !== -1 ? idxEX : 8] || "";
+
+            let ee = /[a-zA-Z]/.test(eeRaw) ? eeRaw.trim() : "";
+            let ex = /[a-zA-Z]/.test(exRaw) ? exRaw.trim() : "";
+
+            if (u.includes('_')) { let parts = u.split('_'); u = parts[0].trim(); if (!d) { d = parts.slice(1).join('_').trim(); } }
+            return { book: b, unit: u, detail: d, eng: eng, kor: kor, ee: ee, ex: ex };
+        }).filter(x => x.book && x.eng && x.kor && x.book.length < 40 && !x.book.includes("<!DOCTYPE"));
+    }
+
+    /* ============================================================
+       공통 DB 로딩 (1회만 fetch → 학생/관리자 공유)
+       ============================================================ */
+    let db = [];          // 학생 화면용 (기존 전역 유지)
+    let dbReady = false;
+
+    async function loadSharedDB() {
+        const res = await fetch(CSV_URL + "&t=" + Date.now());
+        const text = await res.text();
+        if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
+            throw new Error("DB 로딩 실패 (웹 게시 확인 요망)");
+        }
+        db = parseCSV(text);
+        dbReady = true;
+        return db;
+    }
+
+    window.onload = async () => {
+        try {
+            await loadSharedDB();
+            document.getElementById('status-msg').innerText = "시스템 준비 완료";
+            initPracticeUI();
+        } catch(e) {
+            document.getElementById('status-msg').innerText = e.message || "DB 로드 실패";
+        }
+    };
+
+    /* ============================================================
+       관리자 진입 (첫 화면 비번 모달 → GAS adminLogin 검증)
+       ============================================================ */
+    function openAdminModal() {
+        document.getElementById('admin-pw-input').value = "";
+        document.getElementById('admin-pw-err').style.display = "none";
+        document.getElementById('admin-modal').style.display = "flex";
+        setTimeout(() => document.getElementById('admin-pw-input').focus(), 100);
+    }
+    function closeAdminModal() {
+        document.getElementById('admin-modal').style.display = "none";
+    }
+    async function tryGoAdmin() {
+        const pw = document.getElementById('admin-pw-input').value;
+        const errEl = document.getElementById('admin-pw-err');
+        if (!pw) { errEl.innerText = "비밀번호를 입력하세요."; errEl.style.display = "block"; return; }
+        try {
+            const res = await fetch(APP_URL + "?type=adminLogin&pw=" + encodeURIComponent(pw) + "&t=" + Date.now());
+            const data = await res.json();
+            if (data.ok) {
+                closeAdminModal();
+                enterAdmin();
+            } else {
+                errEl.innerText = "비밀번호가 틀렸습니다."; errEl.style.display = "block";
+            }
+        } catch(e) {
+            errEl.innerText = "서버 연결 실패"; errEl.style.display = "block";
+        }
+    }
+    function enterAdmin() {
+        document.getElementById('student-screen').style.display = "none";
+        document.getElementById('admin-screen').style.display = "flex";
+        ADMIN.init();
+    }
+    function exitAdmin() {
+        document.getElementById('admin-screen').style.display = "none";
+        document.getElementById('student-screen').style.display = "block";
+    }
+
+    /* ============================================================
+       학생 화면 로직 (기존 student 파일 — 로직 그대로)
+       ============================================================ */
+    const SEC_OBJ = 7;
+    const SEC_SUBJ = 15;
+    const SEC_LONG_OBJ = 15;
+
+    let stName = "", config = null, questionList = [], currentIdx = 0, score = 0, accumulatedWrongWords = [], currentWrongObjects = [], isAccumulatedMode = false, timerInterval = null, remainingTime = 0;
+    let isPracticeMode = false, isPracticePaused = false;
+
+    function initPracticeUI() {
+        let books = [...new Set(db.map(x => x.book))].filter(Boolean);
+        let selBook = document.getElementById('sel-book');
+        selBook.innerHTML = '<option value="">교재를 선택하세요</option>' + books.map(b => `<option value="${b}">${b}</option>`).join('');
+        document.getElementById('practice-area').style.display = 'block';
+        updateUnits();
+    }
+
+    function updateUnits() {
+        let book = document.getElementById('sel-book').value;
+        let unitContainer = document.getElementById('unit-checkboxes');
+
+        if(!book) {
+            unitContainer.innerHTML = '<span style="color:#999; font-size:13px;">(교재를 먼저 선택하세요)</span>';
+            return;
+        }
+
+        let items = [...new Set(db.filter(x => x.book === book).map(x => {
+            return x.detail ? x.unit + "::" + x.detail : x.unit;
+        }))].filter(Boolean);
+
+        items.sort((a, b) => {
+            let partsA = a.split("::"); let partsB = b.split("::");
+            let numA = parseInt(partsA[0].replace(/[^0-9]/g, '')) || 0;
+            let numB = parseInt(partsB[0].replace(/[^0-9]/g, '')) || 0;
+            if (numA !== numB) return numA - numB;
+
+            let detA = partsA[1] ? (parseInt(partsA[1].replace(/[^0-9]/g, '')) || 0) : 0;
+            let detB = partsB[1] ? (parseInt(partsB[1].replace(/[^0-9]/g, '')) || 0) : 0;
+            return detA - detB;
+        });
+
+        let html = `<label class="chk-label" style="display:block; margin-bottom:8px; font-weight:bold; color:var(--blue);"><input type="checkbox" id="chk-all-units" onchange="toggleAllUnits(this)" checked> 전체 선택</label><hr style="border:0; border-top:1px dashed #ddd; margin:8px 0;">`;
+
+        items.forEach((item, i) => {
+            let displayTxt = item.includes("::") ? item.replace("::", " - ") : item;
+            html += `<label class="chk-label" style="display:inline-block; width:48%; margin-bottom:8px;"><input type="checkbox" class="chk-unit" value="${item}" checked onchange="checkUnitAllState()"> ${displayTxt}</label>`;
+        });
+
+        unitContainer.innerHTML = html;
+    }
+
+    function toggleAllUnits(source) {
+        let checkboxes = document.querySelectorAll('.chk-unit');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+
+    function checkUnitAllState() {
+        let checkboxes = document.querySelectorAll('.chk-unit');
+        let allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        document.getElementById('chk-all-units').checked = allChecked;
+    }
+
+    function startPractice() {
+        let book = document.getElementById('sel-book').value;
+        if(!book) return alert("교재를 선택해주세요.");
+
+        let selectedItems = Array.from(document.querySelectorAll('.chk-unit:checked')).map(cb => cb.value);
+        if(selectedItems.length === 0) return alert("최소 1개 이상의 범위를 체크해주세요.");
+
+        let doEK = document.getElementById('chk-type-ek').checked;
+        let doKE = document.getElementById('chk-type-ke').checked;
+        let doSUBJ = document.getElementById('chk-type-subj').checked;
+        let doEE = document.getElementById('chk-type-ee').checked;
+        let doEX = document.getElementById('chk-type-ex').checked;
+
+        if(!doEK && !doKE && !doSUBJ && !doEE && !doEX) {
+            return alert("최소 1개 이상의 문제 유형을 체크해주세요.");
+        }
+
+        let filtered = db.filter(x => {
+            if (x.book !== book) return false;
+            let itemKey = x.detail ? x.unit + "::" + x.detail : x.unit;
+            return selectedItems.includes(itemKey);
+        });
+
+        if(filtered.length === 0) return alert("선택한 범위에 등록된 단어가 없습니다.");
+
+        isAccumulatedMode = false;
+        isPracticeMode = true;
+        questionList = [];
+
+        filtered.forEach(w => {
+            if (doEK) {
+                let wrongKor = [...new Set(db.map(x => x.kor).filter(k => k !== w.kor && k.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrongKor].sort(()=>Math.random()-0.5) });
+            }
+            if (doKE) {
+                let wrongEng = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrongEng].sort(()=>Math.random()-0.5) });
+            }
+            if (doSUBJ) {
+                questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor });
+            }
+            if (doEE && w.ee && w.ee.trim() !== '') {
+                let wrongEng = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrongEng].sort(()=>Math.random()-0.5) });
+            }
+            if (doEX && w.ex && w.ex.trim() !== '') {
+                let wrong = [...new Set(db.map(x => x.eng).filter(e => e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 4);
+                questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+            }
+        });
+
+        if(questionList.length === 0) return alert("선택한 유형(예문 등)이 포함된 단어가 해당 범위에 없습니다.");
+
+        questionList = questionList.sort(()=>Math.random()-0.5);
+        beginTestingUI();
+    }
+
+    async function checkConfig() {
+        stName = document.getElementById('st-name').value.trim(); if(!stName) return;
+        document.getElementById('status-msg').innerText = "정보를 확인 중입니다...";
+        try {
+            const res = await fetch(APP_URL + "?name=" + encodeURIComponent(stName) + "&t=" + Date.now());
+            const data = await res.json();
+            accumulatedWrongWords = data.wrongWords || [];
+
+            let hasMission = !!data.config;
+            let hasWrong = accumulatedWrongWords.length > 0;
+
+            if (!hasMission && !hasWrong) {
+                alert("오늘 배정된 정규 미션이 없습니다.\n아래 [자율 무한 반복 학습] 기능을 이용해보세요!");
+                document.getElementById('status-msg').innerText = "미션 및 오답 없음";
+                return;
+            }
+
+            const missionBtn = document.getElementById('start-mission-btn');
+            const wrongBtn = document.getElementById('db-wrong-btn');
+
+            if(hasMission) {
+                config = data.config;
+                let totalEK = parseInt(config.ek) || 0, totalKeObj = parseInt(config.keObj) || 0, totalKeSubj = parseInt(config.keSubj) || 0;
+                let totalEE = parseInt(config.ee) || 0, totalEX = parseInt(config.ex) || 0;
+                let totalQ = totalEK + totalKeObj + totalKeSubj + totalEE + totalEX;
+                let rangeText = config.book.split(';').map(r => r.split('|').slice(0,2).join(' ')).join(', ');
+
+                let modeStr = config.testMode || config.type || "정기시험";
+
+                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>범위: " + rangeText + "<br>출제: 총 " + totalQ + "문제<br>(영한 " + totalEK + " / 한영 " + totalKeObj + " / 스펠링 " + totalKeSubj + " / 영영 " + totalEE + " / 예문 " + totalEX + ")<br><br><span style='color:" + (modeStr==='정기시험'?'#e74c3c':'#0000FF') + "; font-weight:bold;'>[" + modeStr + "] 모드</span>";
+
+                if (data.isDone && modeStr === '정기시험') {
+                    document.getElementById('info-msg').innerHTML += "<br><br><span style='color:red'>이미 완료된 시험입니다.</span>";
+                    missionBtn.style.display = 'none';
+                } else {
+                    missionBtn.style.display = 'block';
+                }
+                document.getElementById('info-box').style.display = 'block';
+            } else {
+                config = null;
+                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>현재 새롭게 배정된 미션은 없습니다.<br>누적된 오답을 복습해 보세요!";
+                missionBtn.style.display = 'none';
+                document.getElementById('info-box').style.display = 'block';
+            }
+
+            if (hasWrong) {
+                wrongBtn.style.display = 'block'; wrongBtn.innerText = "🚨 누적 오답 훈련하기 (" + accumulatedWrongWords.length + "개)";
+            } else { wrongBtn.style.display = 'none'; }
+            document.getElementById('status-msg').innerText = "확인 완료!";
+        } catch(e) { alert("서버 연결 실패!"); }
+    }
+
+    async function handleStart(mode) {
+        if(mode === 'retest') {
+            const ok = confirm("현재 범위를 유지한 채 기록을 초기화하고 다시 응시하시겠습니까?");
+            if(!ok) return;
+            await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ type: "retest", name: stName }) });
+        }
+        startTest();
+    }
+
+    function handleRetest() {
+        handleStart('retest');
+    }
+
+    function startTest() {
+        if (!config) return;
+        isAccumulatedMode = false;
+        isPracticeMode = false;
+        let pool = [];
+
+        config.book.split(';').forEach(m => {
+            const parts = m.split('|');
+            const b = parts[0] ? parts[0].trim() : "";
+            const u = parts[1] ? parts[1].trim() : "";
+            const dStr = parts[2] ? parts[2].trim() : "ALL";
+
+            const matched = db.filter(w => {
+                const bookMatch = w.book === b;
+                const unitMatch = w.unit === u;
+                let detailMatch = false;
+                if (dStr === 'ALL' || dStr === '' || !dStr) { detailMatch = true; }
+                else { detailMatch = dStr.split(',').map(d => d.trim()).includes(w.detail); }
+                return bookMatch && unitMatch && detailMatch;
+            });
+            pool = pool.concat(matched);
+        });
+
+        pool = [...new Map(pool.map(item => [item.eng + item.kor, item])).values()];
+
+        let numEK = parseInt(config.ek) || 0; let numKeObj = parseInt(config.keObj) || 0;
+        let numKeSubj = parseInt(config.keSubj) || 0; let numEE = parseInt(config.ee) || 0; let numEX = parseInt(config.ex) || 0;
+
+        let shuffledPool = pool.sort(() => Math.random() - 0.5);
+
+        let eePool = shuffledPool.filter(w => w.ee && w.ee.trim() !== "");
+        let exPool = shuffledPool.filter(w => w.ex && w.ex.trim() !== "");
+
+        let eeWords = eePool.slice(0, numEE);
+        let exWords = exPool.slice(0, numEX);
+
+        let usedEngs = [...eeWords, ...exWords].map(w => w.eng);
+        let remainPool = shuffledPool.filter(w => !usedEngs.includes(w.eng));
+
+        let ekWords = remainPool.slice(0, numEK);
+        let keObjWords = remainPool.slice(numEK, numEK + numKeObj);
+        let keSubjWords = remainPool.slice(numEK + numKeObj, numEK + numKeObj + numKeSubj);
+
+        questionList = [];
+
+        ekWords.forEach(w => {
+            let wrong = [...new Set(db.map(x => x.kor).filter(k => k !== w.kor && k.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() => Math.random() - 0.5) });
+        });
+        keObjWords.forEach(w => {
+            let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+        });
+        keSubjWords.forEach(w => { questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor }); });
+        eeWords.forEach(w => {
+            let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+        });
+        exWords.forEach(w => {
+            let wrong = [...new Set(db.map(x => x.eng).filter(e => e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+        });
+
+        questionList = questionList.sort(() => Math.random() - 0.5);
+        if (questionList.length === 0) return alert("해당 범위에 단어가 없습니다.");
+        beginTestingUI();
+    }
+
+    function startAccumulatedWrongTest() {
+        isAccumulatedMode = true;
+        isPracticeMode = false;
+        questionList = [];
+
+        let probEX = 0, probEE = 0, probEK = 0, probKeObj = 0, probSUBJ = 0;
+        let totalQ = 0;
+
+        if (config) {
+            let tEK = parseInt(config.ek) || 0;
+            let tKeObj = parseInt(config.keObj) || 0;
+            let tKeSubj = parseInt(config.keSubj) || 0;
+            let tEE = parseInt(config.ee) || 0;
+            let tEX = parseInt(config.ex) || 0;
+            totalQ = tEK + tKeObj + tKeSubj + tEE + tEX;
+
+            if (totalQ > 0) {
+                probEX = tEX / totalQ;
+                probEE = tEE / totalQ;
+                probEK = tEK / totalQ;
+                probKeObj = tKeObj / totalQ;
+                probSUBJ = tKeSubj / totalQ;
+            }
+        }
+
+        if (totalQ === 0) { probEK = 0.5; probSUBJ = 0.5; }
+
+        let fullWrongWords = [];
+        accumulatedWrongWords.forEach(w => {
+            let matches = db.filter(x => x.eng.trim().toLowerCase() === w.eng.trim().toLowerCase() && x.kor.trim() === w.kor.trim());
+            let bestMatch = matches[0];
+
+            if (matches.length > 1) {
+                if (config) {
+                    let assignedRanges = config.book.split(';');
+                    for(let m of assignedRanges) {
+                        let parts = m.split('|');
+                        let b = parts[0] ? parts[0].trim() : "";
+                        let u = parts[1] ? parts[1].trim() : "";
+                        let exact = matches.find(x => x.book === b && x.unit === u);
+                        if(exact) { bestMatch = exact; break; }
+                    }
+                }
+                if (probEX > 0 && (!bestMatch || !bestMatch.ex || bestMatch.ex.trim() === "")) {
+                    let matchWithEx = matches.find(x => x.ex && x.ex.trim() !== "");
+                    if (matchWithEx) bestMatch = matchWithEx;
+                }
+            }
+
+            if (bestMatch) fullWrongWords.push(bestMatch);
+            else fullWrongWords.push({ eng: w.eng, kor: w.kor, ex: "", ee: "" });
+        });
+
+        fullWrongWords.sort(() => Math.random() - 0.5).forEach((w) => {
+            let hasEx = w.ex && w.ex.trim() !== "";
+            let hasEe = w.ee && w.ee.trim() !== "";
+            let rand = Math.random();
+
+            let thresholdEX = probEX;
+            let thresholdEE = thresholdEX + probEE;
+            let thresholdEK = thresholdEE + probEK;
+            let thresholdKeObj = thresholdEK + probKeObj;
+
+            let typeToMake;
+
+            if (rand < thresholdEX) typeToMake = "EX";
+            else if (rand < thresholdEE) typeToMake = "EE";
+            else if (rand < thresholdEK) typeToMake = "EK";
+            else if (rand < thresholdKeObj) typeToMake = "KE-OBJ";
+            else typeToMake = "SUBJ";
+
+            if (typeToMake === "EX" && !hasEx) typeToMake = "EK";
+            if (typeToMake === "EE" && !hasEe) typeToMake = "EK";
+
+            if (typeToMake === "EX") {
+                let wrong = [...new Set(db.map(x => x.eng).filter(e => e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+            } else if (typeToMake === "EE") {
+                let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+            } else if (typeToMake === "KE-OBJ") {
+                let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+            } else if (typeToMake === "SUBJ") {
+                questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor });
+            } else {
+                let wrong = [...new Set(db.map(x => x.kor).filter(k => k !== w.kor && k.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() => Math.random() - 0.5) });
+            }
+        });
+
+        if (questionList.length === 0) {
+            alert("출제할 오답 문제가 없습니다.");
+            return;
+        }
+
+        beginTestingUI();
+    }
+
+    function reviewWrong() {
+        if(currentWrongObjects.length === 0) return alert("틀린 단어가 없습니다.");
+        questionList = [...currentWrongObjects];
+        beginTestingUI();
+    }
+
+    function copyWrongWords() {
+        if (currentWrongObjects.length === 0) return alert("틀린 단어가 없습니다.");
+
+        let textToCopy = "🚨 나의 오답 노트 🚨\n\n";
+        currentWrongObjects.forEach(q => { textToCopy += `${q.eng} : ${q.kor}\n`; });
+
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus(); textArea.select(); textArea.setSelectionRange(0, 99999);
+
+        try { document.execCommand('copy'); alert("📋 틀린 단어가 복사되었습니다!\n메모장이나 카톡에 붙여넣기 해보세요."); }
+        catch (err) { alert("복사에 실패했습니다. 다른 브라우저를 이용해주세요."); }
+        document.body.removeChild(textArea);
+    }
+
+    function beginTestingUI() {
+        document.getElementById('login-area').style.display = 'none';
+        document.getElementById('test-area').style.display = 'block';
+        currentIdx = 0; score = 0; currentWrongObjects = []; isPracticePaused = false;
+
+        if (isPracticeMode) {
+            clearInterval(timerInterval);
+            document.getElementById('timer-display').innerText = "♾️ 무한모드";
+            document.getElementById('timer-display').style.color = "#8e44ad";
+            document.getElementById('practice-exit-btn').style.display = "block";
+        } else {
+            document.getElementById('practice-exit-btn').style.display = "none";
+            document.getElementById('timer-display').style.color = "#e74c3c";
+            remainingTime = 0;
+            questionList.forEach(q => {
+                if (q.type === 'KE-SUBJ') { remainingTime += SEC_SUBJ; }
+                else if (q.type === 'EE-OBJ' || q.type === 'EX-OBJ') { remainingTime += SEC_LONG_OBJ; }
+                else { remainingTime += SEC_OBJ; }
+            });
+
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                remainingTime--; updateTimerDisplay();
+                if (remainingTime <= 0) { clearInterval(timerInterval); alert("시간 초과!"); endTest(); }
+            }, 1000);
+        }
+        showQuestion();
+    }
+
+    function updateTimerDisplay() {
+        let m = Math.floor(remainingTime / 60).toString().padStart(2, '0'), s = (remainingTime % 60).toString().padStart(2, '0');
+        document.getElementById('timer-display').innerText = "⏱ " + m + ":" + s;
+    }
+
+    function showQuestion() {
+        const q = questionList[currentIdx];
+
+        if (isPracticeMode) {
+            document.getElementById('progress-text').innerText = (currentIdx + 1) + " 번째 문제";
+        } else {
+            document.getElementById('progress-text').innerText = (currentIdx + 1) + " / " + questionList.length;
+        }
+
+        const qTextEl = document.getElementById('question-text');
+
+        if (q.type === 'EE-OBJ' || q.type === 'EX-OBJ') {
+            let txt = q.q || "";
+            try {
+                txt = txt.replace(/\([^)]*[가-힣]+[^)]*\)/g, '');
+                txt = txt.replace(/\[[^\]]*[가-힣]+[^\]]*\]/g, '');
+                txt = txt.replace(/[가-힣]+/g, '');
+            } catch(e) {}
+
+            if (q.type === 'EX-OBJ') {
+                try {
+                    if (/_+|\.{3,}|\[\s*\]/.test(txt)) {
+                        txt = txt.replace(/_+|\.{3,}|\[\s*\]/g, "_______");
+                    } else {
+                        let cleanEng = q.eng.replace(/[~A-Za-z가-힣]+(에게|을|를|에|와|과|의)/g, '').replace(/^(to|be|a|an|the)\s+/gi, '').replace(/\([^)]+\)/g, '').replace(/[~.\-]/g, ' ').replace(/\.\.\./g, '').trim();
+
+                        let words = cleanEng.split(/[\s_]+/);
+                        let firstWord = words[0];
+                        let restOfPhrase = words.slice(1).join(' ');
+                        let fwLower = firstWord.toLowerCase();
+
+                        const irregulars = { 'stress':'stress|stresses|stressed|stressing', 'work':'work|works|worked|working', 'move':'move|moves|moved|moving', 'turn':'turn|turns|turned|turning', 'look':'look|looks|looked|looking', 'take':'take|takes|took|taking|taken', 'keep':'keep|keeps|kept|keeping', 'catch':'catch|catches|caught|catching', 'bring':'bring|brings|brought|bringing', 'buy':'buy|buys|bought|buying', 'think':'think|thinks|thought|thinking', 'seek':'seek|seeks|sought|seeking', 'make':'make|makes|made|making', 'find':'find|finds|found|finding', 'lead':'lead|leads|led|leading', 'leave':'leave|leaves|left|leaving', 'feel':'feel|feels|felt|feeling', 'hold':'hold|holds|held|holding', 'stand':'stand|stands|stood|standing', 'understand':'understand|understands|understood|understanding', 'write':'write|writes|wrote|written|writing', 'speak':'speak|speaks|spoke|spoken|speaking', 'choose':'choose|chooses|chose|chosen|choosing', 'drive':'drive|drives|drove|driven|driving', 'know':'know|knows|knew|known|knowing', 'throw':'throw|throws|threw|thrown|throwing', 'draw':'draw|draws|drew|drawn|drawing', 'fly':'fly|flies|flew|flown|flying', 'grow':'grow|grows|grew|grown|growing', 'see':'see|sees|saw|seen|seeing', 'go':'go|goes|went|gone|going', 'do':'do|does|did|done|doing', 'have':'have|has|had|having', 'be':'am|is|are|was|were|been|being', 'come':'come|comes|came|coming', 'become':'become|becomes|became|becoming', 'run':'run|runs|ran|running', 'begin':'begin|begins|began|begun|beginning', 'drink':'drink|drinks|drank|drunk|drinking', 'sing':'sing|sings|sang|sung|singing', 'give':'give|gives|gave|given|giving', 'forgive':'forgive|forgives|forgave|forgiven|forgiving', 'get':'get|gets|got|gotten|getting', 'forget':'forget|forgets|forgot|forgotten|forgetting', 'fall':'fall|falls|fell|fallen|falling', 'eat':'eat|eats|ate|eaten|eating', 'break':'break|breaks|broke|broken|breaking', 'hide':'hide|hides|hid|hidden|hiding', 'ride':'ride|rides|rode|ridden|riding', 'strike':'strike|strikes|struck|striking', 'build':'build|builds|built|building', 'spend':'spend|spends|spent|spending', 'send':'send|sends|sent|sending', 'lend':'lend|lends|lent|lending', 'lose':'lose|loses|lost|losing', 'sell':'sell|sells|sold|selling', 'tell':'tell|tells|told|telling', 'pay':'pay|pays|paid|paying', 'say':'say|says|said|saying', 'lie':'lie|lies|lay|lain|lying', 'lay':'lay|lays|laid|laying', 'bear':'bear|bears|bore|born|borne|bearing', 'wear':'wear|wears|wore|worn|wearing', 'tear':'tear|tears|tore|torn|tearing', 'set':'set|sets|setting', 'put':'put|puts|putting', 'cut':'cut|cuts|cutting', 'hit':'hit|hits|hitting', 'let':'let|lets|letting', 'read':'read|reads|reading', 'cost':'cost|costs|costing', 'mean':'mean|means|meant|meaning', 'meet':'meet|meets|met|meeting', 'win':'win|wins|won|winning', 'teach':'teach|teaches|taught|teaching', 'fight':'fight|fights|fought|fighting', 'shoot':'shoot|shoots|shot|shooting', 'sleep':'sleep|sleeps|slept|sleeping', 'wake':'wake|wakes|woke|woken|waking', 'steal':'steal|steals|stole|stolen|stealing', 'sweep':'sweep|sweeps|swept|sweeping', 'bind':'bind|binds|bound|binding', 'grind':'grind|grinds|ground|grinding', 'wind':'wind|winds|wound|winding', 'ring':'ring|rings|rang|rung|ringing', 'shrink':'shrink|shrinks|shrank|shrunk|shrinking', 'sink':'sink|sinks|sank|sunk|sinking', 'stink':'stink|stinks|stank|stunk|stinking', 'spring':'spring|springs|sprang|sprung|springing', 'swear':'swear|swears|swore|sworn|swearing', 'swing':'swing|swings|swung|swinging'};
+
+                        const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                        let firstWordRegexStr;
+                        if (irregulars[fwLower]) {
+                            firstWordRegexStr = "(?:" + irregulars[fwLower] + ")";
+                        } else {
+                            let root = firstWord.length > 3 ? firstWord.substring(0, firstWord.length - 1) : firstWord;
+                            firstWordRegexStr = "(?:" + escapeRegExp(root) + "[a-zA-Z]*)";
+                        }
+
+                        let targetRegex;
+                        if (restOfPhrase.length > 0) {
+                            let restRegexStr = escapeRegExp(restOfPhrase);
+
+                            restRegexStr = restRegexStr.replace(/someone's/gi, "(?:someone's|my|your|his|her|its|our|their)");
+                            restRegexStr = restRegexStr.replace(/\bone's\b/gi, "(?:one's|ones|my|your|his|her|its|our|their)");
+                            restRegexStr = restRegexStr.replace(/oneself/gi, "(?:oneself|myself|yourself|himself|herself|itself|ourselves|themselves)");
+                            restRegexStr = restRegexStr.replace(/\bsomeone\b/gi, "(?:someone|me|you|him|her|us|them|it|[a-zA-Z]+)");
+
+                            restRegexStr = restRegexStr.replace(/\s+/g, '\\s+');
+
+                            targetRegex = new RegExp("\\b" + firstWordRegexStr + "\\s+(?:[a-zA-Z-']+\\s+){0,2}" + restRegexStr + "\\b", "gi");
+                        } else {
+                            targetRegex = new RegExp("\\b" + firstWordRegexStr + "\\b", "gi");
+                        }
+
+                        let replacedTxt = txt.replace(targetRegex, "_______");
+
+                        if (replacedTxt === txt) {
+                            let exactRegex = new RegExp("\\b" + escapeRegExp(cleanEng) + "\\b", "gi");
+                            txt = txt.replace(exactRegex, "_______");
+                        } else {
+                            txt = replacedTxt;
+                        }
+                    }
+                } catch(e) { console.error(e); }
+            }
+
+            qTextEl.innerText = txt.trim();
+            qTextEl.classList.add('long-text');
+        } else {
+            qTextEl.innerText = q.q || "";
+            qTextEl.classList.remove('long-text');
+        }
+
+        const typeLabel = document.getElementById('test-type-label');
+
+        if (q.type === 'EK-OBJ' || q.type === 'KE-OBJ' || q.type === 'EE-OBJ' || q.type === 'EX-OBJ') {
+            if (q.type === 'EK-OBJ') { typeLabel.innerText = "뜻 고르기"; typeLabel.style.background = "var(--gold)"; }
+            else if (q.type === 'KE-OBJ') { typeLabel.innerText = "단어 고르기"; typeLabel.style.background = "var(--obj-blue)"; }
+            else if (q.type === 'EE-OBJ') { typeLabel.innerText = "영영풀이"; typeLabel.style.background = "var(--ee-purple)"; }
+            else if (q.type === 'EX-OBJ') { typeLabel.innerText = "예문 빈칸"; typeLabel.style.background = "var(--ex-orange)"; }
+
+            document.getElementById('type-subj-area').style.display = 'none';
+            const objArea = document.getElementById('type-obj-area');
+            objArea.style.display = 'block'; objArea.innerHTML = '';
+
+            (q.choices || []).forEach((c, i) => {
+                const b = document.createElement('button'); b.className = 'choice-btn'; b.innerHTML = "<span class='number'>" + (i + 1) + ".</span> " + (c || "");
+                b.onclick = function() { submitObj(c, this); };
+                objArea.appendChild(b);
+            });
+        } else if (q.type === 'KE-SUBJ') {
+            typeLabel.innerText = "스펠링 쓰기"; typeLabel.style.background = "var(--subj-green)";
+            document.getElementById('type-obj-area').style.display = 'none'; document.getElementById('type-subj-area').style.display = 'block';
+
+            let hintStr = ""; let isFirst = true; let rawWord = q.eng || "";
+            for(let i=0; i<rawWord.length; i++) {
+                let c = rawWord[i];
+                if(/[a-zA-Z]/.test(c)) {
+                    if(isFirst) { hintStr += c; isFirst = false; } else { hintStr += "_"; }
+                } else { hintStr += c; isFirst = true; }
+            }
+            let shapeHint = rawWord.replace(/[a-zA-Z]/g, '○');
+            document.getElementById('hint-text').innerText = "💡 힌트: " + hintStr;
+            document.getElementById('answer-input').value = "";
+            document.getElementById('answer-input').placeholder = "정답 모양: " + shapeHint;
+            setTimeout(() => { document.getElementById('answer-input').focus(); }, 100);
+        }
+    }
+
+    function moveToNextPractice() {
+        document.getElementById('practice-feedback').style.display = 'none';
+        isPracticePaused = false;
+        next();
+    }
+
+    function submitObj(ans, btnEl) {
+        if (isPracticePaused) return;
+        const q = questionList[currentIdx];
+
+        if (isPracticeMode) {
+            isPracticePaused = true;
+            const feedbackEl = document.getElementById('practice-feedback');
+            feedbackEl.style.display = 'block';
+
+            let nextBtnHtml = `<button class="btn" style="background:var(--blue); margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️</button>`;
+
+            if (ans === q.a) {
+                btnEl.style.background = '#27ae60'; btnEl.style.color = 'white';
+                feedbackEl.innerHTML = `⭕ 정답입니다! ${nextBtnHtml}`;
+                feedbackEl.style.color = "#27ae60"; feedbackEl.style.background = "#e8f8f5";
+            } else {
+                btnEl.style.background = '#e74c3c'; btnEl.style.color = 'white';
+                feedbackEl.innerHTML = `❌ 오답!<br><span style="color:#e74c3c; font-size:24px;">정답: ${q.a}</span> ${nextBtnHtml}`;
+                feedbackEl.style.color = "#c0392b"; feedbackEl.style.background = "#fdedec";
+
+                document.querySelectorAll('.choice-btn').forEach(b => {
+                    if(b.innerText.includes(q.a)) { b.style.border = "3px solid #27ae60"; b.style.background = "#e8f8f5"; }
+                });
+            }
+        } else {
+            if (ans === q.a) score++; else { currentWrongObjects.push(q); }
+            next();
+        }
+    }
+
+    function submitSubj() {
+        if(isPracticePaused) {
+            moveToNextPractice();
+            return;
+        }
+
+        const val = document.getElementById('answer-input').value.trim(); const q = questionList[currentIdx];
+        const cleanVal = val.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        const cleanAns = (q.a || "").replace(/[^a-zA-Z]/g, '').toLowerCase();
+
+        if (isPracticeMode) {
+            isPracticePaused = true;
+            const feedbackEl = document.getElementById('practice-feedback');
+            feedbackEl.style.display = 'block';
+
+            let nextBtnHtml = `<button class="btn" style="background:var(--blue); margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️ (엔터)</button>`;
+
+            if(cleanVal === cleanAns && cleanAns !== "") {
+                feedbackEl.innerHTML = `⭕ 정답입니다! ${nextBtnHtml}`;
+                feedbackEl.style.color = "#27ae60"; feedbackEl.style.background = "#e8f8f5";
+            } else {
+                feedbackEl.innerHTML = `❌ 오답!<br><span style="color:#e74c3c; font-size:24px;">정답: ${q.a}</span> ${nextBtnHtml}`;
+                feedbackEl.style.color = "#c0392b"; feedbackEl.style.background = "#fdedec";
+            }
+        } else {
+            if(cleanVal === cleanAns && cleanAns !== "") { score++; } else { currentWrongObjects.push(q); }
+            next();
+        }
+    }
+
+    function next() {
+        currentIdx++;
+        if(currentIdx < questionList.length) {
+            showQuestion();
+        } else {
+            if (isPracticeMode) {
+                questionList = questionList.sort(() => Math.random() - 0.5);
+                currentIdx = 0;
+                showQuestion();
+            } else {
+                endTest();
+            }
+        }
+    }
+
+    function endTest() {
+        clearInterval(timerInterval); document.getElementById('test-area').style.display = 'none'; document.getElementById('result-area').style.display = 'block';
+        const total = questionList.length; const percent = Math.round((score / total) * 100); const isPass = percent >= 90;
+
+        document.getElementById('final-score').innerText = score + " / " + total + " (" + percent + "점)";
+        const msgEl = document.getElementById('pass-fail-msg');
+        msgEl.innerText = isPass ? "합격 🎉" : "불합격 💡 (90% 미만)"; msgEl.style.color = isPass ? "var(--blue)" : "#e74c3c";
+
+        let modeStr = "누적오답훈련"; let currentRange = "오답노트전체";
+        if (!isAccumulatedMode && config) { modeStr = config.testMode || config.type || "정기시험"; currentRange = config.book; }
+
+        if (currentWrongObjects.length > 0) {
+            document.getElementById('btn-review-wrong').style.display = 'block';
+            document.getElementById('btn-copy-wrong').style.display = 'block';
+        } else {
+            document.getElementById('btn-review-wrong').style.display = 'none';
+            document.getElementById('btn-copy-wrong').style.display = 'none';
+        }
+
+        if (config && modeStr === '정기시험' && !isAccumulatedMode) { document.getElementById('btn-retest').style.display = 'block'; }
+
+        const payloadWrongWords = currentWrongObjects.map(q => ({ eng: q.eng, kor: q.kor }));
+        const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords };
+        fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
+    }
+
+    function resetTest() {
+        clearInterval(timerInterval); document.getElementById('result-area').style.display = 'none'; document.getElementById('info-box').style.display = 'none'; document.getElementById('test-area').style.display = 'none';
+        document.getElementById('login-area').style.display = 'block'; document.getElementById('st-name').value = ""; document.getElementById('status-msg').innerText = "시스템 준비 완료";
+        document.getElementById('pass-fail-msg').innerText = ""; document.getElementById('practice-feedback').style.display = 'none';
+        questionList = []; currentIdx = 0; score = 0; currentWrongObjects = [];
+    }
+
+    /* ============================================================
+       관리자 화면 로직 (기존 admin 파일 — ADMIN 네임스페이스로 감쌈)
+       함수/변수 이름은 그대로, 호출 경로만 ADMIN.* 로 분리
+       ============================================================ */
+    const ADMIN = {
+        basket: [],
+
+        // 관리자 화면 진입 시 호출 (학생명단·교재 셀렉트 초기화)
+        init: async function() {
+            // 교재 목록 (공유 db 사용 — 다시 fetch 안 함)
+            const books = [...new Set(db.map(x => x.book))].sort();
+            const bSel = document.getElementById('book-sel');
+            bSel.innerHTML = '<option value="">단어 교재 선택</option>';
+            books.forEach(b => { bSel.add(new Option(b, b)); });
+
+            // 학생 명단 로딩
+            try {
+                const stRes = await fetch(APP_URL + "?type=getList&t=" + Date.now());
+                const stList = await stRes.json();
+                const sSel = document.getElementById('adm-st-list');
+                sSel.innerHTML = '<option value="">학생을 선택하세요</option>';
+                stList.forEach(n => { if(n) sSel.add(new Option(n.trim(), n.trim())); });
+            } catch(e) {
+                document.getElementById('adm-status-msg').innerText = "학생 명단 로딩 실패";
+            }
+            this.renderBasket();
+        },
+
+        loadStudentConfig: async function() {
+            const name = document.getElementById('adm-st-list').value;
+            const msg = document.getElementById('prev-range-msg');
+            if(!name) { msg.innerText = ""; return; }
+            try {
+                const res = await fetch(APP_URL + "?name=" + encodeURIComponent(name) + "&t=" + Date.now());
+                const data = await res.json();
+                if(data.config) {
+                    let range = data.config.book.split(';').map(r => r.split('|').slice(0,2).join(' ')).join(', ');
+                    msg.innerHTML = "이전 배정: <span style='color:var(--navy);'>" + range + "</span>";
+                } else { msg.innerText = "이전 배정 기록이 없습니다."; }
+            } catch(e) { }
+        },
+
+        triggerRetest: async function() {
+            const name = document.getElementById('adm-st-list').value;
+            if(!name) return alert("학생을 먼저 선택해주세요!");
+            document.getElementById('adm-status-msg').innerText = "재시험 허용 중...";
+            await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ type: "retest", name: name }) });
+            alert(name + " 학생 재시험 허용 완료!");
+        },
+
+        loadUnits: function() {
+            const book = document.getElementById('book-sel').value;
+            const grid = document.getElementById('unit-grid');
+            if(!book) { document.getElementById('unit-area').style.display = 'none'; return; }
+            document.getElementById('unit-area').style.display = 'block';
+            const units = [...new Set(db.filter(x => x.book === book).map(x => x.unit))].sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric: true}));
+            grid.innerHTML = units.map(u => `<div class="btn-item unit-btn" onclick="this.classList.toggle('active')">${u}</div>`).join('');
+
+            const dSel = document.getElementById('detail-unit-sel');
+            dSel.innerHTML = '<option value="">세부 문항 유닛 선택</option>';
+            units.forEach(u => dSel.add(new Option(u, u)));
+        },
+
+        toggleAllUnits: function() {
+            const btns = document.querySelectorAll('.unit-btn');
+            const all = Array.from(btns).every(b => b.classList.contains('active'));
+            btns.forEach(b => all ? b.classList.remove('active') : b.classList.add('active'));
+        },
+
+        addUnitsToBasket: function() {
+            const book = document.getElementById('book-sel').value;
+            const btns = document.querySelectorAll('.unit-btn.active');
+            btns.forEach(b => {
+                const u = b.innerText; const label = `${book}|${u}|ALL`;
+                if(!this.basket.some(i => i.label === label)) this.basket.push({ label: label, desc: `${book} U${u}` });
+                b.classList.remove('active');
+            });
+            this.renderBasket();
+        },
+
+        loadDetails: function() {
+            const book = document.getElementById('book-sel').value;
+            const unit = document.getElementById('detail-unit-sel').value;
+            const grid = document.getElementById('detail-grid');
+            if(!unit) { document.getElementById('detail-area').style.display='none'; return; }
+            document.getElementById('detail-area').style.display='block';
+            const details = [...new Set(db.filter(x => x.book === book && x.unit === unit).map(x => x.detail))].filter(d=>d);
+            grid.innerHTML = details.map(d => `<div class="btn-item d-btn" onclick="this.classList.toggle('active')">${d}</div>`).join('');
+        },
+
+        toggleAllDetails: function() {
+            const btns = document.querySelectorAll('.d-btn');
+            const all = Array.from(btns).every(b => b.classList.contains('active'));
+            btns.forEach(b => all ? b.classList.remove('active') : b.classList.add('active'));
+        },
+
+        addDetailsToBasket: function() {
+            const book = document.getElementById('book-sel').value;
+            const unit = document.getElementById('detail-unit-sel').value;
+            const checked = Array.from(document.querySelectorAll('.d-btn.active')).map(b => b.innerText);
+            if (checked.length === 0) return alert("문항을 선택해주세요!");
+            const label = `${book}|${unit}|${checked.join(',')}`;
+            this.basket.push({ label: label, desc: `${book} U${unit} (${checked.length}개)` });
+            this.renderBasket();
+        },
+
+        renderBasket: function() {
+            const el = document.getElementById('basket');
+            el.innerHTML = this.basket.map((i, idx) => `<div class="basket-item"><span>${i.desc}</span><span onclick="ADMIN.removeBasketItem(${idx})" style="color:var(--red); cursor:pointer;">×</span></div>`).join('');
+            this.updateCount();
+        },
+
+        removeBasketItem: function(idx) {
+            this.basket.splice(idx, 1);
+            this.renderBasket();
+        },
+
+        updateCount: function() {
+            let count = 0;
+            this.basket.forEach(b => {
+                const p = b.label.split('|');
+                let m = db.filter(w => w.book === p[0] && w.unit === p[1]);
+                if(p[2] !== 'ALL') {
+                    const dts = p[2].split(','); m = m.filter(w => dts.includes(w.detail));
+                }
+                count += m.length;
+            });
+            document.getElementById('pool-text').innerText = count;
+
+            const ids = ['ek', 'ke-obj', 'ke-subj', 'ee-obj', 'ex-obj'];
+            ids.forEach(id => {
+                const slider = document.getElementById(id + '-val');
+                slider.max = count;
+                slider.value = (id === 'ek') ? count : 0;
+                document.getElementById(id + '-num').value = slider.value;
+            });
+
+            document.getElementById('total-val').max = count;
+            document.getElementById('total-val').value = count;
+            document.getElementById('total-num').value = count;
+
+            const dl = document.getElementById('tickmarks'); dl.innerHTML = '';
+            for(let i = 0; i <= count; i += 10) {
+                let op = document.createElement('option'); op.value = i; dl.appendChild(op);
+            }
+        },
+
+        syncSlider: function(type) {
+            let val = parseInt(document.getElementById(type + '-val').value);
+            document.getElementById(type + '-num').value = val;
+            this.handleSubChange(type);
+        },
+
+        syncInput: function(type) {
+            let el = document.getElementById(type + '-num');
+            let val = parseInt(el.value) || 0;
+            let max = parseInt(document.getElementById(type + '-val').max);
+            if (val > max) val = max; el.value = val;
+            document.getElementById(type + '-val').value = val;
+            this.handleSubChange(type);
+        },
+
+        handleSubChange: function(source) {
+            let poolMax = parseInt(document.getElementById('pool-text').innerText) || 0;
+            let vals = {
+                'ek': parseInt(document.getElementById('ek-val').value) || 0,
+                'ke-obj': parseInt(document.getElementById('ke-obj-val').value) || 0,
+                'ke-subj': parseInt(document.getElementById('ke-subj-val').value) || 0,
+                'ee-obj': parseInt(document.getElementById('ee-obj-val').value) || 0,
+                'ex-obj': parseInt(document.getElementById('ex-obj-val').value) || 0
+            };
+            let sum = Object.values(vals).reduce((a, b) => a + b, 0);
+
+            if (sum > poolMax) {
+                let over = sum - poolMax;
+                if (source !== 'ek' && vals['ek'] >= over) {
+                    vals['ek'] -= over; over = 0;
+                }
+                let targets = ['ek', 'ke-obj', 'ke-subj', 'ee-obj', 'ex-obj'].filter(id => id !== source);
+                for(let id of targets) {
+                    if (over <= 0) break;
+                    let diff = Math.min(vals[id], over); vals[id] -= diff; over -= diff;
+                }
+                if (over > 0) { vals[source] -= over; }
+            }
+            for (let id in vals) {
+                document.getElementById(id + '-val').value = vals[id];
+                document.getElementById(id + '-num').value = vals[id];
+            }
+            let finalSum = Object.values(vals).reduce((a, b) => a + b, 0);
+            document.getElementById('total-val').value = finalSum;
+            document.getElementById('total-num').value = finalSum;
+        },
+
+        clearBasket: function() { this.basket = []; this.renderBasket(); },
+
+        saveToSheet: async function() {
+            const name = document.getElementById('adm-st-list').value;
+            if(!name || this.basket.length === 0) return alert("학생과 범위를 확인하세요!");
+            const payload = {
+                name: name, book: this.basket.map(i => i.label).join(';'),
+                testMode: document.getElementById('exam-mode-sel').value,
+                ek: document.getElementById('ek-num').value,
+                keObj: document.getElementById('ke-obj-num').value,
+                keSubj: document.getElementById('ke-subj-num').value,
+                ee: document.getElementById('ee-obj-num').value,
+                ex: document.getElementById('ex-obj-num').value
+            };
+            document.getElementById('adm-status-msg').innerText = "저장 중...";
+            await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            alert(name + " 학생 배정 완료!");
+            // 관리자 화면 유지하면서 상태만 초기화
+            this.basket = [];
+            this.renderBasket();
+            document.getElementById('adm-status-msg').innerText = "저장 완료!";
+        }
+    };
+</script>
+</body>
+</html>
