@@ -1386,7 +1386,7 @@ ${ESC_}
             <p style={{fontSize:12,color:'#9a8570',margin:'3px 0 0'}}>대단한영어</p>
           </div>
           <button onClick={goBack} style={{padding:'8px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>로그아웃</button>
-          <button onClick={openSetupNewTab||goToSetup} title="새 탭에서 문제풀기 (관리자 패널은 이 탭에 유지)" style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#7a1020,#9a3040)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기 ↗</button>
+          <button onClick={goToSetup} title="문제풀기로 이동 (관리자 패널로 자유롭게 복귀 가능)" style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#7a1020,#9a3040)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기</button>
         </div>
 
         {/* 탭 */}
@@ -1847,7 +1847,10 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             <div>
               <h1 style={{fontSize:22,fontWeight:800,color:'#7a1020',margin:0}}>{APP_NAME}</h1>
               <p style={{fontSize:14,color:'#9a7040',marginTop:5,fontWeight:600}}>{APP_SUB}</p>
-              {session?.role==='admin'&&<button onClick={()=>{setAdminPwInput('');setAdminPwErr('');setShowAdminModal(true);}} style={{fontSize:11,background:'#f1f5f9',color:'#475569',border:'none',borderRadius:8,padding:'3px 10px',cursor:'pointer',fontWeight:600,marginTop:4,alignSelf:'flex-start'}}>⚙️ 관리자 패널</button>}
+              {session?.role==='admin'&&<button onClick={()=>{
+                if(session?.adminPw){goToAdmin();} // 이미 인증됨 → 비번 재입력 없이 바로
+                else{setAdminPwInput('');setAdminPwErr('');setShowAdminModal(true);}
+              }} style={{fontSize:11,background:'#f1f5f9',color:'#475569',border:'none',borderRadius:8,padding:'3px 10px',cursor:'pointer',fontWeight:600,marginTop:4,alignSelf:'flex-start'}}>⚙️ 관리자 패널</button>}
             </div>
             <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
               {session?.role!=='admin'&&<span style={{fontSize:12,color:'#4f7df7',fontWeight:600}}>{session?.name||studentName}</span>}
