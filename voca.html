@@ -188,17 +188,13 @@
         </div>
 
         <div class="section">
-            <span class="label">1. 학생 관리 및 재시험 설정</span>
+            <span class="label">1. 학생 선택 (지난 배정 확인)</span>
             <select id="adm-st-list" onchange="ADMIN.loadStudentConfig()" style="margin-bottom: 10px;">
                 <option value="">학생 명단을 불러오는 중...</option>
             </select>
-            <div id="prev-range-msg" style="font-size: 13px; font-weight: bold; color: var(--red); margin-bottom: 15px; padding-left: 5px; line-height: 1.4;"></div>
-
-            <select id="exam-mode-sel" style="width:100%; background: #fff8e1; border-color: var(--gold); margin-bottom: 10px; font-weight: bold;">
-                <option value="정기시험" selected>실전 정기시험 (1회 제출 시 자동 마감)</option>
-                <option value="연습">반복 연습 모드 (여러 번 응시 가능)</option>
-            </select>
-            <button class="btn-black" onclick="ADMIN.triggerRetest()" style="width: 100%; height: 50px; font-size: 15px;">🔄 이전 범위 그대로 재시험(누적복습) 허용</button>
+            <div id="prev-range-msg" style="font-size: 13px; font-weight: bold; color: var(--red); margin-bottom: 5px; padding-left: 5px; line-height: 1.4;"></div>
+            <!-- 모든 미션은 합격(90%)까지 자동 반복 응시가 기본. 모드 선택 불필요. -->
+            <input type="hidden" id="exam-mode-sel" value="정기시험">
         </div>
 
         <div class="section">
@@ -555,8 +551,8 @@
             let hasWrong = accumulatedWrongWords.length > 0;
 
             if (!hasMission && !hasWrong) {
-                alert("오늘 배정된 정규 미션이 없습니다.\n아래 [자율 무한 반복 학습] 기능을 이용해보세요!");
-                document.getElementById('status-msg').innerText = "미션 및 오답 없음";
+                alert("현재 배정된 미션이 없습니다.\n무한복습 · 누적복습으로 단어 학습을 이어가세요!");
+                document.getElementById('status-msg').innerText = "배정된 미션 없음";
                 document.getElementById('practice-area').style.display = 'block';
                 return;
             }
@@ -571,20 +567,12 @@
                 let totalQ = totalEK + totalKeObj + totalKeSubj + totalEE + totalEX;
                 let rangeText = config.book.split(';').map(r => r.split('|').slice(0,2).join(' ')).join(', ');
 
-                let modeStr = config.testMode || config.type || "정기시험";
-
-                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>범위: " + rangeText + "<br>출제: 총 " + totalQ + "문제<br>(영한 " + totalEK + " / 한영 " + totalKeObj + " / 스펠링 " + totalKeSubj + " / 영영 " + totalEE + " / 예문 " + totalEX + ")<br><br><span style='color:" + (modeStr==='정기시험'?'#e74c3c':'#0000FF') + "; font-weight:bold;'>[" + modeStr + "] 모드</span>";
-
-                if (data.isDone && modeStr === '정기시험') {
-                    document.getElementById('info-msg').innerHTML += "<br><br><span style='color:red'>이미 완료된 시험입니다.</span>";
-                    missionBtn.style.display = 'none';
-                } else {
-                    missionBtn.style.display = 'block';
-                }
+                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>범위: " + rangeText + "<br>출제: 총 " + totalQ + "문제<br>(영한 " + totalEK + " / 한영 " + totalKeObj + " / 스펠링 " + totalKeSubj + " / 영영 " + totalEE + " / 예문 " + totalEX + ")<br><br><span style='color:#0000FF; font-weight:bold;'>90% 이상이면 합격! 합격할 때까지 응시할 수 있어요.</span>";
+                missionBtn.style.display = 'block';
                 document.getElementById('info-box').style.display = 'block';
             } else {
                 config = null;
-                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>현재 새롭게 배정된 미션은 없습니다.<br>누적된 오답을 복습해 보세요!";
+                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>현재 배정된 미션이 없습니다.<br>무한복습 · 누적복습으로 단어 학습을 이어가세요!";
                 missionBtn.style.display = 'none';
                 document.getElementById('info-box').style.display = 'block';
             }
@@ -1035,7 +1023,14 @@
 
         document.getElementById('final-score').innerText = score + " / " + total + " (" + percent + "점)";
         const msgEl = document.getElementById('pass-fail-msg');
-        msgEl.innerText = isPass ? "합격 🎉" : "불합격 💡 (90% 미만)"; msgEl.style.color = isPass ? "var(--blue)" : "#e74c3c";
+        const isRegular = (!isAccumulatedMode && config);
+        if (isPass) {
+            msgEl.innerHTML = "합격 축하합니다! 🎉" + (isRegular ? "<br><span style='font-size:15px; font-weight:600; color:#555;'>추가 단어 학습은 무한복습 · 누적복습으로 이어가세요.</span>" : "");
+            msgEl.style.color = "var(--blue)";
+        } else {
+            msgEl.innerHTML = "불합격 💡 (90% 미만)" + (isRegular ? "<br><span style='font-size:15px; font-weight:600; color:#e74c3c;'>합격할 때까지 다시 응시할 수 있어요.</span>" : "");
+            msgEl.style.color = "#e74c3c";
+        }
 
         let modeStr = "누적오답훈련"; let currentRange = "오답노트전체";
         if (!isAccumulatedMode && config) { modeStr = config.testMode || config.type || "정기시험"; currentRange = config.book; }
@@ -1056,9 +1051,10 @@
             const payload = { type: "reviewResult", name: stName, correctWords: payloadCorrect };
             fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "복습 반영 완료! (맞힌 단어는 오답노트에서 제외)"; });
         } else {
-            // 정규미션·재시: 기존대로 성적·오답 기록.
+            // 정규미션·재시: 기존대로 성적·오답 기록. assignDate로 GAS가 회차 계산.
             const payloadWrongWords = currentWrongObjects.map(q => ({ eng: q.eng, kor: q.kor }));
-            const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords };
+            const assignDate = (config && config.assignDate) ? config.assignDate : "";
+            const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords, assignDate: assignDate };
             fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
         }
     }
@@ -1103,22 +1099,24 @@
             const name = document.getElementById('adm-st-list').value;
             const msg = document.getElementById('prev-range-msg');
             if(!name) { msg.innerText = ""; return; }
+            msg.style.color = "var(--navy)";
+            msg.innerText = "지난 배정 조회 중...";
             try {
-                const res = await fetch(APP_URL + "?name=" + encodeURIComponent(name) + "&t=" + Date.now());
+                // 관리자 전용: 마감 여부 무관하게 마지막 배정을 가져옴
+                const res = await fetch(APP_URL + "?type=adminGetLast&name=" + encodeURIComponent(name) + "&t=" + Date.now());
                 const data = await res.json();
-                if(data.config) {
+                if(data.config && data.config.book) {
                     let range = data.config.book.split(';').map(r => r.split('|').slice(0,2).join(' ')).join(', ');
-                    msg.innerHTML = "이전 배정: <span style='color:var(--navy);'>" + range + "</span>";
-                } else { msg.innerText = "이전 배정 기록이 없습니다."; }
-            } catch(e) { }
-        },
-
-        triggerRetest: async function() {
-            const name = document.getElementById('adm-st-list').value;
-            if(!name) return alert("학생을 먼저 선택해주세요!");
-            document.getElementById('adm-status-msg').innerText = "재시험 허용 중...";
-            await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ type: "retest", name: name }) });
-            alert(name + " 학생 재시험 허용 완료!");
+                    let dateStr = data.config.assignDate ? (" <span style='color:#888;'>(" + data.config.assignDate.split(' ')[0] + ")</span>") : "";
+                    msg.innerHTML = "📌 지난 배정: <span style='color:var(--navy);'>" + range + "</span>" + dateStr;
+                } else {
+                    msg.style.color = "#888";
+                    msg.innerText = "지난 배정 기록이 없습니다. (첫 배정)";
+                }
+            } catch(e) {
+                msg.style.color = "var(--red)";
+                msg.innerText = "조회 실패 (네트워크 확인)";
+            }
         },
 
         loadUnits: function() {
