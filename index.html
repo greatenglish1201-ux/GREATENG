@@ -930,7 +930,7 @@ function App(){
   };
 
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
-  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} openSetupNewTab={()=>{
+  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{try{sessionStorage.removeItem('greateng_admin_entered');}catch(e){}sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>{try{sessionStorage.removeItem('greateng_admin_entered');}catch(e){}setScreen('setup');}} openSetupNewTab={()=>{
     try{
       const s=session?{...session}:null;
       if(s){ delete s.adminPw; localStorage.setItem(HANDOFF_KEY,JSON.stringify({...s,_goSetup:true})); }
@@ -1071,7 +1071,19 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 
 /* ── 관리자 패널 ── */
 function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
-  const [tab,setTab]=useState('results'); // students | results — 진입/새로고침 시 시험결과 우선
+  // 진입 시엔 결과 탭 고정, 새로고침(재로드) 시엔 보던 탭 유지
+  const [tab,setTabState]=useState(()=>{
+    try{
+      // _adminEntered 플래그가 있으면 = 이미 패널에 머무는 중 새로고침 → 저장된 탭 복원
+      if(sessionStorage.getItem('greateng_admin_entered')==='1'){
+        return sessionStorage.getItem('greateng_admin_tab')||'results';
+      }
+    }catch(e){}
+    // 새 진입
+    try{sessionStorage.setItem('greateng_admin_entered','1');}catch(e){}
+    return 'results';
+  });
+  const setTab=(t)=>{setTabState(t);try{sessionStorage.setItem('greateng_admin_tab',t);}catch(e){}};
   const [students,setStudents]=useState([]);
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState('');
