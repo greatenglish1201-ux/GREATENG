@@ -1375,6 +1375,80 @@ ${ESC_}
   const btn=(active,label,onClick)=>
     <button onClick={onClick} style={{padding:'8px 14px',borderRadius:10,border:'none',background:active?'#7a1020':'#f0e7d4',color:active?'#fff':'#7a6a55',fontWeight:600,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>{label}</button>;
 
+  // 📊 전체 학생 성취도 리포트 (화면+인쇄+이미지) — 학생 미선택 시
+  const printAll=()=>{
+    if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
+    const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const rateColor=r=>Number(r)>=80?'#1E6B30':Number(r)>=60?'#B7791F':'#B3261E';
+    const today=new Date();
+    const dStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+    const allBookIds=getAllBooks().map(b=>b.id).sort((a,b)=>b.length-a.length);
+    const pidLabelFor=(pid)=>{
+      const bk=allBookIds.find(b=>String(pid).startsWith(b+'_'));
+      if(!bk)return pid;
+      const rest=String(pid).slice(bk.length+1).split('_');
+      const ch=rest[0],no=rest[1];
+      const chL=ch?(isNaN(parseInt(ch))?ch+' ':parseInt(ch)+'강 '):'';
+      const noL=no?(parseInt(no)||no)+'번 ':'';
+      return bookLabel(bk)+' '+chL+noL+'지문';
+    };
+    const studs=(stats.studentStats||[]).filter(s=>s.name!=='관리자');
+    const types=(stats.typeStats||[]);
+    const wrongs=(stats.wrongRanking||[]);
+    const bar=(r)=>`<div style="display:inline-block;width:120px;height:10px;border-radius:5px;background:#eee;overflow:hidden;vertical-align:middle;margin-right:8px"><div style="width:${Number(r)}%;height:100%;background:${rateColor(r)}"></div></div>`;
+    const studRows=studs.map((s,i)=>`<tr>
+      <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:14px"><b style="color:${i<3?'#C9A84C':'#bbb'}">${i+1}</b> <b>${esc(s.name)}</b> <span style="color:#aaa;font-size:12px">응시 ${s.count}회 · ${s.correct}/${s.total}</span></td>
+      <td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${bar(s.rate)}<b style="color:${rateColor(s.rate)};font-size:15px">${s.rate}%</b></td></tr>`).join('');
+    const typeRows=types.map(t=>`<tr>
+      <td style="padding:7px 10px;border-bottom:1px solid #eee;font-size:14px">${esc(t.type)} <span style="color:#aaa;font-size:12px">${t.correct}/${t.total}</span></td>
+      <td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${bar(t.rate)}<b style="color:${rateColor(t.rate)};font-size:15px">${t.rate}%</b></td></tr>`).join('');
+    const wrongRows=wrongs.slice(0,10).map((w,i)=>{
+      const tps=Array.isArray(w.types)?w.types:[];
+      const tpStr=tps.length?tps.map(tp=>`${esc(tp.type)} <b style="color:#B3261E">${esc(tp.wrong)}</b>`).join(' · '):'';
+      return `<tr><td style="padding:7px 10px;border-bottom:1px solid #eee;font-size:13px"><b style="color:${i<3?'#C9A84C':'#bbb'}">#${i+1}</b> <b>${esc(pidLabelFor(w.pid))}</b>${tpStr?`<br/><span style="color:#888;font-size:12px;padding-left:18px">${tpStr}</span>`:''}</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap"><b style="color:#B3261E;font-size:14px">✗ ${esc(w.wrong)}회</b></td></tr>`;
+    }).join('');
+    const avgRate=studs.length?Math.round(studs.reduce((a,s)=>a+Number(s.rate),0)/studs.length):0;
+    const LT='<',SC=LT+'script',ESC_='</'+'script>';
+    const phtml=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>전체 학생 성취도 · 대단한영어</title>
+<style>@media print{@page{size:A4;margin:12mm} .noprint{display:none!important}} *{box-sizing:border-box} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:0;color:#222;background:#eee;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#cap{max-width:740px;margin:0 auto;padding:30px;background:#fff}
+.bar2{max-width:740px;margin:10px auto;display:flex;gap:8px;justify-content:center}
+.bar2 button{font-family:inherit;font-size:14px;font-weight:700;padding:10px 20px;border-radius:10px;border:none;cursor:pointer}
+h2{font-size:18px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin:0 0 10px}</style>
+${SC} src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">${ESC_}</head>
+<body>
+  <div class="bar2 noprint">
+    <button onclick="saveImg()" style="background:linear-gradient(135deg,#7a1020,#C9A84C);color:#fff">🖼 이미지로 저장 (PNG)</button>
+    <button onclick="window.print()" style="background:#fff;color:#7a1020;border:1px solid #7a1020">🖨 인쇄 / PDF</button>
+  </div>
+  <div id="cap">
+    <div style="text-align:center;border-bottom:3px solid #7a1020;padding-bottom:16px;margin-bottom:22px">
+      <div style="font-size:14px;color:#C9A84C;font-weight:800;letter-spacing:2px">대단한영어 · 전체 학생 성취도</div>
+      <div style="font-size:27px;font-weight:800;color:#7a1020;margin-top:6px">전체 학생 성취도 리포트</div>
+      <div style="font-size:15px;margin-top:9px;color:#555">학생 <b>${studs.length}명</b> · 평균 정답률 <b style="font-size:21px;color:${rateColor(avgRate)}">${avgRate}%</b> <span style="font-size:13px;color:#aaa">· ${dStr}</span></div>
+    </div>
+    <h2>👥 학생별 정답률</h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px">${studRows}</table>
+    <h2>📝 유형별 정답률</h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px">${typeRows}</table>
+    ${wrongRows?`<h2>🏆 많이 틀린 지문 <span style="font-size:12px;color:#aaa;font-weight:400">(전체 학생 합산)</span></h2>
+    <table style="width:100%;border-collapse:collapse">${wrongRows}</table>`:''}
+    <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
+  </div>
+${SC}>
+function saveImg(){
+  var el=document.getElementById('cap');
+  html2canvas(el,{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(function(canvas){
+    var a=document.createElement('a');a.download='대단한영어_전체성취도.png';a.href=canvas.toDataURL('image/png');a.click();
+  }).catch(function(e){alert('이미지 저장 실패: '+e.message);});
+}
+${ESC_}
+</body></html>`;
+    const pw=window.open('','_blank');
+    if(!pw){setMsg('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');return;}
+    pw.document.write(phtml);pw.document.close();
+  };
+
   return(
     <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#fffdf8,#f6efe0)',fontFamily:"'Pretendard',sans-serif"}}>
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
@@ -1451,12 +1525,16 @@ ${ESC_}
               {students.map((s,i)=><option key={i} value={s.name}>{s.name}</option>)}
             </select>
             <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
-            <button onClick={()=>printReport()} disabled={!selectedStudent||!stats}
-              title={selectedStudent?'약점 분석 리포트 인쇄':'학생을 선택하면 인쇄할 수 있습니다'}
-              style={{padding:'9px 16px',borderRadius:10,border:'1px solid #7a1020',background:(!selectedStudent||!stats)?'#f0e7d4':'#fff',color:(!selectedStudent||!stats)?'#b8a988':'#7a1020',fontWeight:700,fontSize:13,cursor:(!selectedStudent||!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖨 인쇄</button>
-            <button onClick={()=>printReport(true)} disabled={!selectedStudent||!stats}
-              title={selectedStudent?'블로그·SNS용 홍보 리포트 (이름 가림 + 상담 안내)':'학생을 선택하면 사용할 수 있습니다'}
-              style={{padding:'9px 16px',borderRadius:10,border:'none',background:(!selectedStudent||!stats)?'#f0e7d4':'linear-gradient(135deg,#7a1020,#C9A84C)',color:(!selectedStudent||!stats)?'#b8a988':'#fff',fontWeight:700,fontSize:13,cursor:(!selectedStudent||!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>📢 홍보용</button>
+            <button onClick={()=>selectedStudent?printReport():printAll()} disabled={!stats}
+              title={selectedStudent?'약점 분석 리포트 인쇄':'전체 학생 성취도 인쇄'}
+              style={{padding:'9px 16px',borderRadius:10,border:'1px solid #7a1020',background:(!stats)?'#f0e7d4':'#fff',color:(!stats)?'#b8a988':'#7a1020',fontWeight:700,fontSize:13,cursor:(!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖨 {selectedStudent?'인쇄':'전체 인쇄'}</button>
+            {selectedStudent
+              ?<button onClick={()=>printReport(true)} disabled={!stats}
+                title="블로그·SNS용 홍보 리포트 (이름 가림)"
+                style={{padding:'9px 16px',borderRadius:10,border:'none',background:(!stats)?'#f0e7d4':'linear-gradient(135deg,#7a1020,#C9A84C)',color:(!stats)?'#b8a988':'#fff',fontWeight:700,fontSize:13,cursor:(!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>📢 홍보용</button>
+              :<button onClick={()=>printAll()} disabled={!stats}
+                title="전체 학생 성취도 이미지 저장"
+                style={{padding:'9px 16px',borderRadius:10,border:'none',background:(!stats)?'#f0e7d4':'linear-gradient(135deg,#7a1020,#C9A84C)',color:(!stats)?'#b8a988':'#fff',fontWeight:700,fontSize:13,cursor:(!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖼 이미지</button>}
           </div>
           {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>로딩 중...</p>}
           {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>데이터 없음</p>}
