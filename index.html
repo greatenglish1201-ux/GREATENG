@@ -1235,7 +1235,22 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     const sessHtml=sessions.length?`<table style="width:100%;border-collapse:collapse">${sessions.map(s=>`<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:12px;color:#555">${esc(String(s.date).slice(0,10))}</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-size:12.5px;color:#222">${esc(s.score)}문항</td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(s.rate)};font-size:12.5px">${esc(s.rate)}%</td></tr>`).join('')}</table>`:'';
     const typeHtml=types.length?`<table style="width:100%;border-collapse:collapse">${types.map(t=>row(t.type,`${t.correct}/${t.total}`,t.rate)).join('')}</table>`:'';
     const bookHtml=books.length?`<table style="width:100%;border-collapse:collapse">${books.map(b=>row(b.label,`${b.correct}/${b.total}`,b.rate)).join('')}</table>`:'';
-    const wrongHtml=wrongs.length?`<table style="width:100%;border-collapse:collapse">${wrongs.map((w,i)=>`<tr><td style="padding:5px 8px;border-bottom:1px solid #eee;font-size:12px;color:#222"><b style="color:${i<3?'#C9A84C':'#999'}">#${i+1}</b> ${esc(w.pid)} <span style="color:#999;font-size:11px">${esc(w.type)}</span></td><td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;color:#B3261E;font-weight:700;font-size:12px">✗ ${esc(w.wrong)}/${esc(w.total)}회</td></tr>`).join('')}</table>`:'';
+    const allBookIds=getAllBooks().map(b=>b.id).sort((a,b)=>b.length-a.length);
+    const pidLabelFor=(pid)=>{
+      const bk=allBookIds.find(b=>String(pid).startsWith(b+'_'));
+      if(!bk)return pid;
+      const rest=String(pid).slice(bk.length+1).split('_');
+      const ch=rest[0],no=rest[1];
+      const chL=ch?(isNaN(parseInt(ch))?ch+' ':parseInt(ch)+'강 '):'';
+      const noL=no?(parseInt(no)||no)+'번 ':'';
+      return bookLabel(bk)+' '+chL+noL+'지문';
+    };
+    const wrongHtml=wrongs.length?`<table style="width:100%;border-collapse:collapse">${wrongs.map((w,i)=>{
+      const tps=Array.isArray(w.types)?w.types:[];
+      const tpStr=tps.length?tps.map(tp=>`${esc(tp.type)} <b style="color:#B3261E">${esc(tp.wrong)}</b>`).join(' · '):(w.type?esc(w.type):'');
+      const ratio=Number(w.total)?Math.round(Number(w.wrong)/Number(w.total)*100):0;
+      return `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#222"><b style="color:${i<3?'#C9A84C':'#999'}">#${i+1}</b> <b>${esc(pidLabelFor(w.pid))}</b>${tpStr?`<br/><span style="color:#888;font-size:11px;padding-left:14px">${tpStr}</span>`:''}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;vertical-align:top"><span style="color:#B3261E;font-weight:700;font-size:12px">✗ ${esc(w.wrong)}/${esc(w.total)}회</span> <b style="color:${ratio>=50?'#B3261E':'#9a7040'};font-size:12px">${ratio}%</b></td></tr>`;
+    }).join('')}</table>`:'';
     const weakHtml=weakTypes.length?`<div style="background:#FBF3DE;border:1px solid #e6c97a;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#5a3a10;line-height:1.7"><b style="color:#7a1020">⚠ 집중 보완 추천 유형</b><br/>${weakTypes.map(t=>`${esc(t.type)} <b style="color:${rateColor(t.rate)}">${esc(t.rate)}%</b>`).join(' · ')}</div>`:'';
 
     const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(selectedStudent)} 약점 분석 리포트</title>
