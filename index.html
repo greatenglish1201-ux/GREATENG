@@ -1071,7 +1071,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 
 /* ── 관리자 패널 ── */
 function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
-  const [tab,setTab]=useState('students'); // students | results
+  const [tab,setTab]=useState('results'); // students | results — 진입/새로고침 시 시험결과 우선
   const [students,setStudents]=useState([]);
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState('');
@@ -1129,7 +1129,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     setStatsLoading(false);
   };
 
-  React.useEffect(()=>{loadStudents();},[]);
+  React.useEffect(()=>{loadStudents();loadStats('');},[]);
 
   const saveStudent=async()=>{
     if(!form.name||!form.password){setMsg('이름과 비밀번호를 입력하세요.');return;}
