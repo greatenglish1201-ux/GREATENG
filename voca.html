@@ -169,7 +169,7 @@
     <div class="modal-box" onclick="event.stopPropagation();">
         <h3>관리자 패널</h3>
         <p>관리자 비밀번호를 입력하세요</p>
-        <input type="password" id="admin-pw-input" placeholder="관리자 비밀번호" onkeydown="if(event.key==='Enter') tryGoAdmin()">
+        <input type="password" id="admin-pw-input" placeholder="관리자 비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') tryGoAdmin()">
         <p id="admin-pw-err" class="modal-err" style="display:none;"></p>
         <div class="modal-btns">
             <button class="modal-cancel" onclick="closeAdminModal()">취소</button>
@@ -430,14 +430,14 @@
     const SEC_SUBJ = 15;
     const SEC_LONG_OBJ = 15;
 
-    let stName = "", config = null, questionList = [], currentIdx = 0, score = 0, accumulatedWrongWords = [], currentWrongObjects = [], isAccumulatedMode = false, timerInterval = null, remainingTime = 0;
+    let stName = "", config = null, questionList = [], currentIdx = 0, score = 0, accumulatedWrongWords = [], currentWrongObjects = [], currentCorrectObjects = [], isAccumulatedMode = false, timerInterval = null, remainingTime = 0;
     let isPracticeMode = false, isPracticePaused = false;
 
     function initPracticeUI() {
+        // 교재 셀렉트만 미리 채워둠 (노출은 이름 확인 후 checkConfig에서)
         let books = [...new Set(db.map(x => x.book))].filter(Boolean);
         let selBook = document.getElementById('sel-book');
         selBook.innerHTML = '<option value="">교재를 선택하세요</option>' + books.map(b => `<option value="${b}">${b}</option>`).join('');
-        document.getElementById('practice-area').style.display = 'block';
         updateUnits();
     }
 
@@ -557,6 +557,7 @@
             if (!hasMission && !hasWrong) {
                 alert("오늘 배정된 정규 미션이 없습니다.\n아래 [자율 무한 반복 학습] 기능을 이용해보세요!");
                 document.getElementById('status-msg').innerText = "미션 및 오답 없음";
+                document.getElementById('practice-area').style.display = 'block';
                 return;
             }
 
@@ -591,6 +592,7 @@
             if (hasWrong) {
                 wrongBtn.style.display = 'block'; wrongBtn.innerText = "🚨 누적 오답 훈련하기 (" + accumulatedWrongWords.length + "개)";
             } else { wrongBtn.style.display = 'none'; }
+            document.getElementById('practice-area').style.display = 'block';
             document.getElementById('status-msg').innerText = "확인 완료!";
         } catch(e) { alert("서버 연결 실패!"); }
     }
@@ -801,7 +803,7 @@
     function beginTestingUI() {
         document.getElementById('login-area').style.display = 'none';
         document.getElementById('test-area').style.display = 'block';
-        currentIdx = 0; score = 0; currentWrongObjects = []; isPracticePaused = false;
+        currentIdx = 0; score = 0; currentWrongObjects = []; currentCorrectObjects = []; isPracticePaused = false;
 
         if (isPracticeMode) {
             clearInterval(timerInterval);
@@ -977,7 +979,7 @@
                 });
             }
         } else {
-            if (ans === q.a) score++; else { currentWrongObjects.push(q); }
+            if (ans === q.a) { score++; currentCorrectObjects.push(q); } else { currentWrongObjects.push(q); }
             next();
         }
     }
@@ -1007,7 +1009,7 @@
                 feedbackEl.style.color = "#c0392b"; feedbackEl.style.background = "#fdedec";
             }
         } else {
-            if(cleanVal === cleanAns && cleanAns !== "") { score++; } else { currentWrongObjects.push(q); }
+            if(cleanVal === cleanAns && cleanAns !== "") { score++; currentCorrectObjects.push(q); } else { currentWrongObjects.push(q); }
             next();
         }
     }
@@ -1048,16 +1050,25 @@
 
         if (config && modeStr === '정기시험' && !isAccumulatedMode) { document.getElementById('btn-retest').style.display = 'block'; }
 
-        const payloadWrongWords = currentWrongObjects.map(q => ({ eng: q.eng, kor: q.kor }));
-        const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords };
-        fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
+        if (isAccumulatedMode) {
+            // 누적복습: 시험기록에 안 남김. 맞힌 단어만 오답노트에서 졸업 처리.
+            const payloadCorrect = currentCorrectObjects.map(q => ({ eng: q.eng, kor: q.kor }));
+            const payload = { type: "reviewResult", name: stName, correctWords: payloadCorrect };
+            fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "복습 반영 완료! (맞힌 단어는 오답노트에서 제외)"; });
+        } else {
+            // 정규미션·재시: 기존대로 성적·오답 기록.
+            const payloadWrongWords = currentWrongObjects.map(q => ({ eng: q.eng, kor: q.kor }));
+            const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords };
+            fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
+        }
     }
 
     function resetTest() {
         clearInterval(timerInterval); document.getElementById('result-area').style.display = 'none'; document.getElementById('info-box').style.display = 'none'; document.getElementById('test-area').style.display = 'none';
         document.getElementById('login-area').style.display = 'block'; document.getElementById('st-name').value = ""; document.getElementById('status-msg').innerText = "시스템 준비 완료";
         document.getElementById('pass-fail-msg').innerText = ""; document.getElementById('practice-feedback').style.display = 'none';
-        questionList = []; currentIdx = 0; score = 0; currentWrongObjects = [];
+        document.getElementById('practice-area').style.display = 'none';
+        questionList = []; currentIdx = 0; score = 0; currentWrongObjects = []; currentCorrectObjects = [];
     }
 
     /* ============================================================
