@@ -5,13 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>대단한영어 VOCA MASTER</title>
     <style>
-        :root { --gold: #d4af37; --gold-hover: #b8962e; --black: #1a1a1a; --dark-gray: #2d2d2d; --bg-gray: #f0f0f0; --card-bg: #ffffff; --blue: #0000FF; --gray: #f8f9fa; --obj-blue: #4a90e2; --subj-green: #27ae60; --ee-purple: #8e44ad; --ex-orange: #d35400; --red: #c0392b; --navy: #2c3e50; }
-        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f0f2f5; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        :root {
+            /* index 브랜드 계열 */
+            --wine: #7a1020; --wine-deep: #5e0c18;
+            --gold: #C9A84C; --gold-soft: #b89a48; --gold-hover: #b8962e;
+            --ink: #3a2a20; --ink-soft: #9a8570;
+            --cream: #FBF3DE; --cream-deep: #f0e7d4; --paper: #fffdf8;
+            --black: #2a2018; --dark-gray: #5a4a3c;
+            --bg-gray: #f0f0f0; --card-bg: #ffffff; --gray: #faf7f0;
+            --blue: #185FA5;
+            /* 기능 유형색 (차분하게 조정 — 고급 톤) */
+            --obj-blue: #3a6ea5; --subj-green: #3a8a5c; --ee-purple: #7a5a9a; --ex-orange: #c06a2c;
+            --red: #B3261E; --navy: #3a2a20;
+        }
+        body { font-family: 'Pretendard', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: linear-gradient(160deg,#fffdf8,#f6efe0); background-attachment: fixed; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; }
 
         /* ===== 학생 화면 ===== */
-        .card { background: white; width: 100%; max-width: 480px; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; height: fit-content; margin-top: 20px; position: relative; }
-        .logo-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; color: white; margin-top: 10px; transition: 0.3s; }
+        .card { background: var(--paper); width: 100%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 18px 50px rgba(122,16,32,0.10), 0 2px 8px rgba(58,42,32,0.06); text-align: center; height: fit-content; margin-top: 20px; position: relative; border: 1px solid var(--cream-deep); overflow: hidden; }
+        .card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background: linear-gradient(90deg,#7a1020,#C9A84C); }
+        .logo-img { width: 96px; height: 96px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 18px; box-shadow: 0 4px 18px rgba(122,16,32,0.18); }
+        .btn { width: 100%; padding: 17px; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; color: white; margin-top: 10px; transition: 0.25s; letter-spacing: -0.2px; }
         input[type="text"], input[type="password"], select { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #ddd; font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--blue); }
         .chk-label { font-size: 15px; color: #333; display: inline-flex; align-items: center; cursor: pointer; text-align: left; }
@@ -51,13 +65,14 @@
 
         /* ===== 관리자 화면 ===== */
         #admin-screen { display:none; width:100%; justify-content:center; }
-        .admin-box { background: var(--card-bg); color: var(--black); padding: 35px; border-radius: 30px; width: 100%; max-width: 650px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border-top: 10px solid var(--gold); height: fit-content; margin-top: 20px; }
+        .admin-box { background: var(--paper); color: var(--black); padding: 35px; border-radius: 26px; width: 100%; max-width: 650px; box-shadow: 0 18px 50px rgba(122,16,32,0.10), 0 2px 8px rgba(58,42,32,0.06); border: 1px solid var(--cream-deep); border-top: none; height: fit-content; margin-top: 20px; position: relative; overflow: hidden; }
+        .admin-box::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background: linear-gradient(90deg,#7a1020,#C9A84C); }
         .admin-box .main-title { text-align: center; margin-bottom: 35px; }
-        .admin-box .main-title h2 { font-size: 32px; font-weight: 900; color: var(--black); margin: 0; letter-spacing: -1px; }
+        .admin-box .main-title h2 { font-size: 30px; font-weight: 800; color: var(--wine); margin: 0; letter-spacing: -1px; }
         .admin-box .main-title h2 span { color: var(--gold); }
         .admin-box .main-title p { color: #888; font-size: 13px; letter-spacing: 5px; margin-top: 5px; text-transform: uppercase; }
         .admin-box .section { background: #fdfdfd; border-radius: 20px; padding: 22px; margin-bottom: 25px; border: 1px solid #e0e0e0; position: relative; }
-        .admin-box .label { font-size: 15px; font-weight: 800; color: var(--black); border-left: 5px solid var(--gold); padding-left: 12px; margin-bottom: 15px; display: block; }
+        .admin-box .label { font-size: 15px; font-weight: 800; color: var(--ink); border-left: 4px solid var(--gold); padding-left: 12px; margin-bottom: 15px; display: block; }
         .admin-box select { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box; background: #fff; cursor: pointer; text-align: left; margin-bottom: 0; }
         .admin-box select:focus { border-color: var(--gold); }
         .admin-box button { cursor: pointer; font-weight: bold; border: none; transition: 0.3s; font-family: inherit; }
@@ -72,9 +87,11 @@
         .btn-item.active { background: var(--gold) !important; color: white !important; border-color: var(--gold); }
         .add-btn { width: 100%; padding: 15px; margin-top: 15px; background: var(--dark-gray); color: var(--gold); border-radius: 12px; font-size: 14px; }
         .select-all-btn { background: #e0e0e0; color: var(--black); border-radius: 6px; padding: 6px 12px; font-size: 12px; }
+        .preset-btn { flex:1; min-width:70px; background: var(--ink, #3a2a20); color: var(--gold); border:none; border-radius: 8px; padding: 9px 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition:0.2s; }
+        .preset-btn:hover { opacity: 0.85; }
         .basket { background: #fff; border: 1px dashed var(--gold); padding: 15px; border-radius: 15px; margin: 10px 0; min-height: 50px;}
         .basket-item { background: #f8f9fa; padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 13px; }
-        .btn-save { width: 100%; padding: 22px; background: var(--gold); color: white; border-radius: 18px; font-size: 20px; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); margin-bottom: 15px; }
+        .btn-save { width: 100%; padding: 21px; background: linear-gradient(135deg,#7a1020,#C9A84C); color: white; border-radius: 16px; font-size: 19px; font-weight: 800; letter-spacing:-0.3px; box-shadow: 0 6px 20px rgba(122,16,32,0.25); margin-bottom: 15px; }
         #adm-status-msg { font-size: 13px; text-align: center; margin-top: 15px; color: var(--navy); font-weight: bold; }
         .admin-box input[type="range"] { width: 100%; height: 6px; cursor: pointer; accent-color: var(--gold); }
         .num-input { width: 55px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; text-align: right; font-size: 14px; font-weight: bold; color: var(--black); margin-left: 10px; margin-bottom:0; }
@@ -88,13 +105,14 @@
 <div class="card" id="student-screen">
     <div id="login-area">
         <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 VOCA">
-        <h1 style="margin: 0 0 6px 0; font-size: 26px; font-weight: 900; color: var(--black);">대단한영어 <span style="color: var(--gold);">VOCA</span></h1>
+        <h1 style="margin: 0 0 3px 0; font-size: 25px; font-weight: 800; color: var(--wine); letter-spacing:-0.5px;">대단한영어 <span style="color: var(--gold);">VOCA</span></h1>
+        <p style="margin:0 0 8px; font-size:12.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px;">단어 마스터 시스템</p>
         <!-- 관리자 진입 버튼 (index 스타일) -->
         <button class="admin-enter-btn" onclick="openAdminModal()">⚙️ 관리자</button>
         <div style="height:18px;"></div>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요 (정규 미션용)" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
-        <button class="btn" style="background:var(--black); color:var(--gold);" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
+        <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:white;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
         <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
 
         <div id="info-box" style="margin-top:20px; background:#eef2ff; padding:20px; border-radius:15px; text-align:left;">
@@ -201,10 +219,11 @@
             <span class="label">2. 단어 교재 및 유닛 선택</span>
             <select id="book-sel" onchange="ADMIN.loadUnits()" style="margin-bottom: 10px;"><option value="">단어 교재 선택</option></select>
             <div id="unit-area" style="display:none; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">유닛 다중 선택</span>
                     <button class="select-all-btn" onclick="ADMIN.toggleAllUnits()">전체 선택/해제</button>
                 </div>
+                <div style="font-size: 11px; color: #999; margin-bottom: 10px;">💡 연속 선택: 첫 강 클릭 후 <b>Shift</b> 누른 채 끝 강 클릭</div>
                 <div id="unit-grid" class="btn-grid" style="max-height: 180px; overflow-y: auto; padding-right: 5px;"></div>
                 <button class="add-btn" onclick="ADMIN.addUnitsToBasket()">🛒 선택 유닛 장바구니 담기</button>
             </div>
@@ -231,8 +250,15 @@
             <div id="basket" class="basket"></div>
 
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                <div style="text-align: center; font-size: 15px; font-weight: bold; color: #666; margin-bottom: 15px;">
+                <div style="text-align: center; font-size: 15px; font-weight: bold; color: #666; margin-bottom: 12px;">
                     전체 풀(Pool): <span id="pool-text" style="color: var(--navy);">0</span>개 단어
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px;">
+                    <button onclick="ADMIN.applyPreset('ek-ke')" class="preset-btn">영한 반반</button>
+                    <button onclick="ADMIN.applyPreset('even')" class="preset-btn">균등 분배</button>
+                    <button onclick="ADMIN.applyPreset('ee-ex')" class="preset-btn">영영+예문 반반</button>
+                    <button onclick="ADMIN.applyPreset('manual')" class="preset-btn" style="background:#fff; color:#777; border:1px solid #ddd;">직접 설정</button>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
@@ -1125,11 +1151,29 @@
             if(!book) { document.getElementById('unit-area').style.display = 'none'; return; }
             document.getElementById('unit-area').style.display = 'block';
             const units = [...new Set(db.filter(x => x.book === book).map(x => x.unit))].sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric: true}));
-            grid.innerHTML = units.map(u => `<div class="btn-item unit-btn" onclick="this.classList.toggle('active')">${u}</div>`).join('');
+            this._lastUnitIdx = null; // Shift 범위선택 기준점 초기화
+            grid.innerHTML = units.map((u, i) => `<div class="btn-item unit-btn" data-idx="${i}" onclick="ADMIN.unitClick(${i}, event)">${u}</div>`).join('');
 
             const dSel = document.getElementById('detail-unit-sel');
             dSel.innerHTML = '<option value="">세부 문항 유닛 선택</option>';
             units.forEach(u => dSel.add(new Option(u, u)));
+        },
+
+        _lastUnitIdx: null,
+        unitClick: function(idx, event) {
+            const btns = document.querySelectorAll('.unit-btn');
+            if (event && event.shiftKey && this._lastUnitIdx !== null) {
+                // Shift 클릭: 직전 클릭 지점 ~ 현재 사이 전부 선택
+                const start = Math.min(this._lastUnitIdx, idx);
+                const end = Math.max(this._lastUnitIdx, idx);
+                for (let i = start; i <= end; i++) {
+                    if (btns[i]) btns[i].classList.add('active');
+                }
+            } else {
+                // 일반 클릭: 토글
+                if (btns[idx]) btns[idx].classList.toggle('active');
+            }
+            this._lastUnitIdx = idx;
         },
 
         toggleAllUnits: function() {
@@ -1264,6 +1308,85 @@
         },
 
         clearBasket: function() { this.basket = []; this.renderBasket(); },
+
+        // 현재 장바구니 Pool에서 영영(ee)/예문(ex) 보유 단어 수 집계
+        _poolStats: function() {
+            let total = 0, eeCount = 0, exCount = 0;
+            this.basket.forEach(b => {
+                const p = b.label.split('|');
+                let m = db.filter(w => w.book === p[0] && w.unit === p[1]);
+                if(p[2] !== 'ALL') { const dts = p[2].split(','); m = m.filter(w => dts.includes(w.detail)); }
+                m.forEach(w => {
+                    total++;
+                    if (w.ee && w.ee.trim() !== "") eeCount++;
+                    if (w.ex && w.ex.trim() !== "") exCount++;
+                });
+            });
+            return { total, eeCount, exCount };
+        },
+
+        // 게이지 프리셋 적용
+        applyPreset: function(kind) {
+            const s = this._poolStats();
+            const pool = s.total;
+            if (pool === 0) { alert("먼저 범위를 장바구니에 담아주세요!"); return; }
+
+            // 5개 유형 값 초기화
+            let v = { ek:0, 'ke-obj':0, 'ke-subj':0, 'ee-obj':0, 'ex-obj':0 };
+
+            if (kind === 'manual') {
+                // 직접 설정: 전부 0으로 비우고 사용자가 조절
+                this._setGauges(v);
+                return;
+            }
+            else if (kind === 'ek-ke') {
+                // 영한(뜻고르기) + 한영(단어고르기) 반반
+                v.ek = Math.ceil(pool / 2);
+                v['ke-obj'] = pool - v.ek;
+            }
+            else if (kind === 'even') {
+                // 5개 유형 균등 (단, 영영/예문은 데이터 있는 만큼만)
+                let base = Math.floor(pool / 5);
+                let rem = pool - base * 5;
+                v.ek = base; v['ke-obj'] = base; v['ke-subj'] = base;
+                v['ee-obj'] = Math.min(base, s.eeCount);
+                v['ex-obj'] = Math.min(base, s.exCount);
+                // 영영/예문 부족분 + 나머지를 영한/한영에 보탬
+                let assigned = v.ek + v['ke-obj'] + v['ke-subj'] + v['ee-obj'] + v['ex-obj'];
+                let leftover = pool - assigned;
+                v.ek += Math.ceil(leftover / 2);
+                v['ke-obj'] += Math.floor(leftover / 2);
+            }
+            else if (kind === 'ee-ex') {
+                // 영영풀이 + 예문 반반 (데이터 있는 만큼만, 부족분은 영한/한영으로)
+                let half = Math.ceil(pool / 2);
+                v['ee-obj'] = Math.min(half, s.eeCount);
+                v['ex-obj'] = Math.min(pool - v['ee-obj'], s.exCount);
+                let leftover = pool - v['ee-obj'] - v['ex-obj'];
+                if (leftover > 0) {
+                    v.ek = Math.ceil(leftover / 2);
+                    v['ke-obj'] = leftover - v.ek;
+                }
+            }
+
+            this._setGauges(v);
+        },
+
+        _setGauges: function(v) {
+            // pool 초과 방지 보정
+            let poolMax = parseInt(document.getElementById('pool-text').innerText) || 0;
+            let sum = Object.values(v).reduce((a,b)=>a+b,0);
+            if (sum > poolMax) { let over = sum - poolMax; v.ek = Math.max(0, v.ek - over); }
+            for (let id in v) {
+                const slider = document.getElementById(id + '-val');
+                const num = document.getElementById(id + '-num');
+                if (slider) slider.value = v[id];
+                if (num) num.value = v[id];
+            }
+            let finalSum = Object.values(v).reduce((a,b)=>a+b,0);
+            document.getElementById('total-val').value = finalSum;
+            document.getElementById('total-num').value = finalSum;
+        },
 
         saveToSheet: async function() {
             const name = document.getElementById('adm-st-list').value;
