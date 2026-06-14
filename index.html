@@ -2138,6 +2138,22 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             };
             return(
               <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                {lessonKeys.length>0&&(()=>{
+                  const allKeys=lessonKeys.map(lk=>activeBook+'_'+lk);
+                  const allExpanded=allKeys.every(k=>expandedLessons.has(k));
+                  return <div style={{display:'flex',justifyContent:'flex-end',marginBottom:2}}>
+                    <button onClick={()=>{
+                      setExpandedLessons(prev=>{
+                        const n=new Set(prev);
+                        if(allExpanded){allKeys.forEach(k=>n.delete(k));}
+                        else{allKeys.forEach(k=>n.add(k));}
+                        return n;
+                      });
+                    }} style={{fontSize:11.5,fontWeight:600,padding:'5px 12px',borderRadius:8,border:'1px solid #cbd5e1',background:'#fff',color:'#475569',cursor:'pointer'}}>
+                      {allExpanded?'▲ 전체 강 접기':'▼ 전체 강 펼치기'}
+                    </button>
+                  </div>;
+                })()}
                 {gatePassages.length>0&&<div style={{display:'flex',alignItems:'center',gap:8,padding:'7px 10px',background:gateAllSel?'#eff6ff':'#f8fafc',borderRadius:8,border:`1px solid ${gateAllSel?'#93c5fd':'#e2e8f0'}`,marginBottom:2}}>
                   <button onClick={toggleGate} style={{flex:1,textAlign:'left',background:'none',border:'none',cursor:'pointer',fontSize:13.5,fontWeight:600,color:gateAllSel?'#1d4ed8':'#475569',padding:0}}>
                     📌 Gateway 지문 ({gatePassages.length}개) {gateSelCount>0?`✓${gateSelCount}`:''}
