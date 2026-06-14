@@ -539,6 +539,17 @@ function useTimer(seconds, onExpire){
 const SCRIPT_URL_KEY='greateng_script_url';
 const HARDCODED_URL='https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec';
 const SESSION_KEY='greateng_session';
+const HANDOFF_KEY='greateng_handoff'; // 새 탭으로 관리자 세션 1회 인계
+// 새 탭 진입 시: 인계 토큰이 있으면 이 탭 sessionStorage로 옮기고 원본 제거
+(function(){
+  try{
+    const h=localStorage.getItem(HANDOFF_KEY);
+    if(h){
+      localStorage.removeItem(HANDOFF_KEY);
+      if(!sessionStorage.getItem(SESSION_KEY)) sessionStorage.setItem(SESSION_KEY,h);
+    }
+  }catch(e){}
+})();
 const STUDENTS_KEY='greateng_students';
 const ADMIN_PW_KEY2='greateng_admin_pw';
 
@@ -913,7 +924,13 @@ function App(){
   };
 
   if(screen==='login') return <LoginScreen scriptUrl={scriptUrl} setScriptUrl={setScriptUrl} onLogin={(sess)=>{setSession(sess);setStudentName(sess.name);sessionStorage.setItem(SESSION_KEY,JSON.stringify(sess));setScreen(sess.role==='admin'?'admin':'setup');}} />;
-  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} />;
+  if(screen==='admin') return <AdminPanel scriptUrl={scriptUrl} adminPw={session?.adminPw||''} goBack={()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setScreen('login');}} goToSetup={()=>setScreen('setup')} openSetupNewTab={()=>{
+    try{
+      const s=session?{...session}:null;
+      if(s){ delete s.adminPw; localStorage.setItem(HANDOFF_KEY,JSON.stringify({...s,_goSetup:true})); }
+    }catch(e){}
+    window.open(window.location.pathname+window.location.search,'_blank');
+  }} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
   if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
@@ -1047,7 +1064,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
 }
 
 /* ── 관리자 패널 ── */
-function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
+function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   const [tab,setTab]=useState('students'); // students | results
   const [students,setStudents]=useState([]);
   const [loading,setLoading]=useState(false);
@@ -1369,7 +1386,7 @@ ${ESC_}
             <p style={{fontSize:12,color:'#9a8570',margin:'3px 0 0'}}>대단한영어</p>
           </div>
           <button onClick={goBack} style={{padding:'8px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>로그아웃</button>
-          <button onClick={goToSetup} style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#7a1020,#9a3040)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기</button>
+          <button onClick={openSetupNewTab||goToSetup} title="새 탭에서 문제풀기 (관리자 패널은 이 탭에 유지)" style={{padding:'8px 16px',borderRadius:10,border:'none',background:'linear-gradient(135deg,#7a1020,#9a3040)',fontSize:13,fontWeight:700,cursor:'pointer',color:'#fff'}}>📝 문제풀기 ↗</button>
         </div>
 
         {/* 탭 */}
