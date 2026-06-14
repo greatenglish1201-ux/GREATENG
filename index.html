@@ -1492,16 +1492,29 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
                 return (Number(b.wrong)-Number(a.wrong))||((Number(b.total)?Number(b.wrong)/Number(b.total):0)-(Number(a.total)?Number(a.wrong)/Number(a.total):0));
               }).map((w,i)=>{
                 const ratio=Number(w.total)?Math.round(Number(w.wrong)/Number(w.total)*100):0;
-                return <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <span style={{fontSize:12,fontWeight:800,color:i<3?'#C9A84C':'#9a8570',minWidth:20}}>#{i+1}</span>
-                    <div>
-                      <span style={{fontSize:12,fontWeight:600,color:'#3a2a20'}}>{w.pid}</span>
-                      <span style={{fontSize:11,color:'#9a8570',marginLeft:6}}>{w.type}</span>
+                const allBookIds=getAllBooks().map(b=>b.id).sort((a,b)=>b.length-a.length);
+                const bk=allBookIds.find(b=>String(w.pid).startsWith(b+'_'));
+                let label=w.pid;
+                if(bk){
+                  const rest=String(w.pid).slice(bk.length+1).split('_');
+                  const ch=rest[0],no=rest[1];
+                  const chL=ch?(isNaN(parseInt(ch))?ch+' ':parseInt(ch)+'강 '):'';
+                  const noL=no?(parseInt(no)||no)+'번 ':'';
+                  label=bookLabel(bk)+' '+chL+noL+'지문';
+                }
+                const types=Array.isArray(w.types)?w.types:[];
+                return <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:10}}>
+                  <div style={{display:'flex',alignItems:'flex-start',gap:8,flex:1,minWidth:0}}>
+                    <span style={{fontSize:12,fontWeight:800,color:i<3?'#C9A84C':'#9a8570',minWidth:20,paddingTop:1}}>#{i+1}</span>
+                    <div style={{minWidth:0}}>
+                      <div style={{fontSize:12.5,fontWeight:700,color:'#3a2a20'}} title={w.pid}>{label}</div>
+                      {types.length>0&&<div style={{fontSize:11,color:'#9a8570',marginTop:3,display:'flex',flexWrap:'wrap',gap:'2px 8px'}}>
+                        {types.map((tp,j)=>(<span key={j}>{tp.type} <b style={{color:'#B3261E'}}>{tp.wrong}</b></span>))}
+                      </div>}
                     </div>
                   </div>
-                  <div style={{display:'flex',gap:10,alignItems:'center'}}>
-                    <span style={{fontSize:13,fontWeight:800,color:'#dc2626'}}>✗ {w.wrong}회 / {w.total}회</span>
+                  <div style={{display:'flex',gap:10,alignItems:'center',flexShrink:0,paddingTop:1}}>
+                    <span style={{fontSize:13,fontWeight:800,color:'#dc2626'}}>✗ {w.wrong}/{w.total}회</span>
                     <span style={{fontSize:12,fontWeight:800,color:ratio>=50?'#B3261E':'#9a7040',minWidth:38,textAlign:'right'}}>{ratio}%</span>
                   </div>
                 </div>;
@@ -1783,7 +1796,10 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         </div>
 
         <div style={S.card}>
-          <h3 style={{fontSize:13,fontWeight:800,color:S.c.wine,margin:'0 0 10px'}}>📂 교재 · 지문 선택</h3>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',margin:'0 0 10px',gap:8,flexWrap:'wrap'}}>
+            <h3 style={{fontSize:13,fontWeight:800,color:S.c.wine,margin:0}}>📂 교재 · 지문 선택</h3>
+            <span style={{fontSize:12,color:'#64748b',fontWeight:600,whiteSpace:'nowrap'}}>선택 <strong style={{color:'#4f7df7',fontSize:14}}>{selPassages.size}</strong> / {allPassages.length}</span>
+          </div>
 
           {/* 교재 탭 (일반) + 모의고사 드롭다운 */}
           <div style={{display:'flex',alignItems:'flex-end',gap:6,marginBottom:12,borderBottom:'2px solid #ece2cf',flexWrap:'wrap'}}>
@@ -1971,9 +1987,6 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             );
           })()}
 
-          <p style={{fontSize:10.5,color:'#64748b',marginTop:8}}>
-            선택된 지문: <strong style={{color:'#4f7df7'}}>{selPassages.size}</strong> / {allPassages.length}
-          </p>
         </div>
 
         <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
