@@ -1158,7 +1158,18 @@
                 const res = await fetch(APP_URL + "?type=adminGetLast&name=" + encodeURIComponent(name) + "&t=" + Date.now());
                 const data = await res.json();
                 if(data.config && data.config.book) {
-                    let range = data.config.book.split(';').map(r => r.split('|').slice(0,2).join(' ')).join(', ');
+                    let range = data.config.book.split(';').map(r => {
+                        const p = r.split('|');
+                        const book = p[0] || "";
+                        const unit = p[1] || "";
+                        const detail = p[2] || "";
+                        let base = (book + " " + unit).trim();
+                        // 세부가 ALL/빈값이면 생략, 특정 문항이면 표시
+                        if (detail && detail !== 'ALL') {
+                            base += " <span style='color:var(--ex-orange);'>[" + detail + "]</span>";
+                        }
+                        return base;
+                    }).join(', ');
                     let dateStr = data.config.assignDate ? (" <span style='color:#888;'>(" + data.config.assignDate.split(' ')[0] + ")</span>") : "";
                     msg.innerHTML = "📌 지난 배정: <span style='color:var(--navy);'>" + range + "</span>" + dateStr;
                 } else {
