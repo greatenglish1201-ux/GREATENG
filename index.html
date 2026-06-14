@@ -1214,8 +1214,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     if(!selectedStudent){setMsg('인쇄할 학생을 먼저 선택하세요.');return;}
     if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
     const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    // 홍보 모드: 이름 마스킹 (첫 글자 + ○)
-    const dispName=promo?(selectedStudent.length>1?selectedStudent[0]+'○'.repeat(selectedStudent.length-1):'○○'):selectedStudent;
+    // 홍보 모드: 이름 완전 비식별
+    const dispName=promo?'○○ 학생':selectedStudent;
     const rateColor=r=>Number(r)>=80?'#1E6B30':Number(r)>=60?'#B7791F':'#B3261E';
     const today=new Date();
     const dateStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
@@ -1267,6 +1267,50 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     <div style="font-size:11.5px;color:#e8c9ce;margin-top:14px">포항 대단한영어 · 수능/내신 출제예상 전문</div>
   </div>`:'';
 
+    // ── 홍보(promo) 전용: 글씨 키우고 핵심만, A4 PDF 한 장 ──
+    if(promo){
+      const bigBar=(r)=>`<div style="display:inline-block;width:130px;height:11px;border-radius:6px;background:#eee;overflow:hidden;vertical-align:middle;margin-right:9px"><div style="width:${Number(r)}%;height:100%;background:${rateColor(r)}"></div></div>`;
+      const typeRows=types.map(t=>`<tr>
+        <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#222">${esc(t.type)} <span style="color:#aaa;font-size:13px;font-weight:400">${t.correct}/${t.total}</span></td>
+        <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${bigBar(t.rate)}<b style="color:${rateColor(t.rate)};font-size:17px">${esc(t.rate)}%</b></td></tr>`).join('');
+      const wrongTop=wrongs.slice(0,6).map((w,i)=>{
+        const tps=Array.isArray(w.types)?w.types:[];
+        const tpStr=tps.length?tps.map(tp=>`${esc(tp.type)} <b style="color:#B3261E">${esc(tp.wrong)}</b>`).join(' · '):'';
+        return `<tr>
+          <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:15px;color:#222"><b style="color:${i<3?'#C9A84C':'#bbb'};font-size:16px">#${i+1}</b> <b>${esc(pidLabelFor(w.pid))}</b>${tpStr?`<br/><span style="color:#888;font-size:12.5px;padding-left:22px">${tpStr}</span>`:''}</td>
+          <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;vertical-align:top"><b style="color:#B3261E;font-size:16px">✗ ${esc(w.wrong)}회</b></td></tr>`;
+      }).join('');
+      const weakBig=weakTypes.length?weakTypes.map(t=>`<span style="display:inline-block;background:#fff;border:2px solid ${rateColor(t.rate)};border-radius:24px;padding:7px 16px;margin:4px;font-size:16px;font-weight:800;color:#5a3a10">${esc(t.type)} <span style="color:${rateColor(t.rate)}">${esc(t.rate)}%</span></span>`).join(''):'';
+
+      const phtml=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>약점 분석 리포트 · 대단한영어</title>
+<style>@media print{@page{size:A4;margin:12mm}} *{box-sizing:border-box} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0 auto;max-width:740px;padding:30px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#fff}</style></head>
+<body>
+  <div style="text-align:center;border-bottom:3px solid #7a1020;padding-bottom:16px;margin-bottom:22px">
+    <div style="font-size:15px;color:#C9A84C;font-weight:800;letter-spacing:2px">대단한영어 · 데이터 기반 약점 진단</div>
+    <div style="font-size:30px;font-weight:800;color:#7a1020;margin-top:6px">${esc(dispName)} 약점 분석 리포트</div>
+    <div style="font-size:17px;margin-top:10px;color:#555">종합 정답률 <b style="font-size:26px;color:${rateColor(overall)}">${overall}%</b> <span style="font-size:14px;color:#aaa">· ${dateStr}</span></div>
+  </div>
+
+  ${weakBig?`<div style="background:#FBF3DE;border:2px solid #e6c97a;border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
+    <div style="font-size:18px;font-weight:800;color:#7a1020;margin-bottom:10px">⚠ 시험 전 집중 보완 추천 유형</div>
+    <div>${weakBig}</div></div>`:''}
+
+  <div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:10px">📝 유형별 정답률</div>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${typeRows}</table>
+
+  ${wrongTop?`<div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:10px">🏆 많이 틀린 지문 <span style="font-size:13px;color:#aaa;font-weight:400">(어느 지문·유형에서 막히는지)</span></div>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${wrongTop}</table>`:''}
+
+  ${promoFooter}
+</body></html>`;
+      const pw=window.open('','_blank');
+      if(!pw){setMsg('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');return;}
+      pw.document.write(phtml);pw.document.close();
+      setTimeout(()=>{pw.focus();pw.print();},400);
+      return;
+    }
+
+
     const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(dispName)} 약점 분석 리포트</title>
 <style>@media print{@page{margin:14mm}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}${promo?'body{max-width:600px;margin:0 auto;background:#fff}':''}</style></head>
 <body>
@@ -1281,7 +1325,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
   ${sec('🏆 많이 틀린 지문',wrongHtml)}
   ${sec('📚 교재별 정답률',bookHtml)}
   ${sec('📅 회차별 기록',sessHtml)}
-  ${promoFooter||'<div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>'}
+  <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
 </body></html>`;
 
     const w=window.open('','_blank');
