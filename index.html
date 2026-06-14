@@ -1210,10 +1210,12 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
   const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',active:s.active});};
 
   // ── 개별 학생 약점 분석 리포트 인쇄 ──
-  const printReport=()=>{
+  const printReport=(promo)=>{
     if(!selectedStudent){setMsg('인쇄할 학생을 먼저 선택하세요.');return;}
     if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
     const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    // 홍보 모드: 이름 마스킹 (첫 글자 + ○)
+    const dispName=promo?(selectedStudent.length>1?selectedStudent[0]+'○'.repeat(selectedStudent.length-1):'○○'):selectedStudent;
     const rateColor=r=>Number(r)>=80?'#1E6B30':Number(r)>=60?'#B7791F':'#B3261E';
     const today=new Date();
     const dateStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
@@ -1253,11 +1255,23 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
     }).join('')}</table>`:'';
     const weakHtml=weakTypes.length?`<div style="background:#FBF3DE;border:1px solid #e6c97a;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#5a3a10;line-height:1.7"><b style="color:#7a1020">⚠ 집중 보완 추천 유형</b><br/>${weakTypes.map(t=>`${esc(t.type)} <b style="color:${rateColor(t.rate)}">${esc(t.rate)}%</b>`).join(' · ')}</div>`:'';
 
-    const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(selectedStudent)} 약점 분석 리포트</title>
-<style>@media print{@page{margin:14mm}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>
+    const promoFooter=promo?`
+  <div style="margin-top:22px;padding:20px;border-radius:14px;background:linear-gradient(135deg,#5e0c18,#7a1020);color:#fff;text-align:center">
+    <div style="font-size:16px;font-weight:800;color:#F2D88F;margin-bottom:6px">우리 아이의 약점도 이렇게 정확히 분석해 드립니다</div>
+    <div style="font-size:12.5px;color:#f0dcd0;line-height:1.7;margin-bottom:16px">막연한 '영어 공부'가 아니라, 어느 지문 어느 유형에서 막히는지 데이터로 짚어<br/>시험 전 꼭 필요한 부분만 집중 보완합니다.</div>
+    <div style="background:rgba(255,255,255,0.1);border:1px solid rgba(201,168,76,0.4);border-radius:10px;padding:14px 16px;text-align:left;line-height:1.8;font-size:12.5px;color:#fff">
+      <div style="color:#f0dcd0;margin-bottom:10px">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.</div>
+      <div style="margin-bottom:8px"><b style="color:#F2D88F">1.</b> 먼저 학원 <b>상담 가이드</b>를 꼭 읽어주세요.<br/><span style="font-size:11.5px;color:#e8c9ce;word-break:break-all">https://blog.naver.com/pkf78/224202820359</span></div>
+      <div><b style="color:#F2D88F">2.</b> 아래 링크에서 <b>네이버 톡톡 상담신청서</b>를 작성해 주시면,<br/>확인하는 대로 원장이 직접 빠르고 친절하게 답변해 드립니다.<br/><span style="font-size:11.5px;color:#e8c9ce;word-break:break-all">https://talk.naver.com/profile/wccog3/form/1</span></div>
+    </div>
+    <div style="font-size:11.5px;color:#e8c9ce;margin-top:14px">포항 대단한영어 · 수능/내신 출제예상 전문</div>
+  </div>`:'';
+
+    const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(dispName)} 약점 분석 리포트</title>
+<style>@media print{@page{margin:14mm}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}${promo?'body{max-width:600px;margin:0 auto;background:#fff}':''}</style></head>
 <body>
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px solid #7a1020;padding-bottom:10px;margin-bottom:18px">
-    <div><div style="font-size:20px;font-weight:800;color:#7a1020">${esc(selectedStudent)} <span style="font-size:14px;color:#9a8570;font-weight:600">약점 분석 리포트</span></div>
+    <div><div style="font-size:20px;font-weight:800;color:#7a1020">${esc(dispName)} <span style="font-size:14px;color:#9a8570;font-weight:600">약점 분석 리포트</span></div>
     <div style="font-size:12px;color:#9a8570;margin-top:3px">대단한영어 · 시험 전 보완용</div></div>
     <div style="text-align:right"><div style="font-size:12px;color:#999">${dateStr}</div>
     <div style="font-size:13px;margin-top:4px">종합 정답률 <b style="font-size:18px;color:${rateColor(overall)}">${overall}%</b></div></div>
@@ -1267,7 +1281,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
   ${sec('🏆 많이 틀린 지문',wrongHtml)}
   ${sec('📚 교재별 정답률',bookHtml)}
   ${sec('📅 회차별 기록',sessHtml)}
-  <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
+  ${promoFooter||'<div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>'}
 </body></html>`;
 
     const w=window.open('','_blank');
@@ -1359,6 +1373,9 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup}){
             <button onClick={printReport} disabled={!selectedStudent||!stats}
               title={selectedStudent?'약점 분석 리포트 인쇄':'학생을 선택하면 인쇄할 수 있습니다'}
               style={{padding:'9px 16px',borderRadius:10,border:'1px solid #7a1020',background:(!selectedStudent||!stats)?'#f0e7d4':'#fff',color:(!selectedStudent||!stats)?'#b8a988':'#7a1020',fontWeight:700,fontSize:13,cursor:(!selectedStudent||!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖨 인쇄</button>
+            <button onClick={()=>printReport(true)} disabled={!selectedStudent||!stats}
+              title={selectedStudent?'블로그·SNS용 홍보 리포트 (이름 가림 + 상담 안내)':'학생을 선택하면 사용할 수 있습니다'}
+              style={{padding:'9px 16px',borderRadius:10,border:'none',background:(!selectedStudent||!stats)?'#f0e7d4':'linear-gradient(135deg,#7a1020,#C9A84C)',color:(!selectedStudent||!stats)?'#b8a988':'#fff',fontWeight:700,fontSize:13,cursor:(!selectedStudent||!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>📢 홍보용</button>
           </div>
           {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>로딩 중...</p>}
           {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>데이터 없음</p>}
