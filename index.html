@@ -572,7 +572,13 @@ function verifyLogin(name, pw){
 
 function App(){
   const [screen,setScreen]=useState(()=>{
-    try{const s=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');if(s?.name)return 'setup';}catch(e){}
+    try{
+      const s=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');
+      if(s?.name){
+        if(s._goSetup)return 'setup'; // 새 탭 인계: 관리자라도 문제풀기로
+        return s.role==='admin'?'admin':'setup';
+      }
+    }catch(e){}
     return 'login';
   });
   const [session,setSession]=useState(()=>{
@@ -1928,7 +1934,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
               <span style={{position:'absolute',top:-24,right:-24,width:90,height:90,borderRadius:'50%',background:'radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%)'}}/>
               <span style={{fontSize:26,filter:'drop-shadow(0 2px 5px rgba(0,0,0,0.4))'}}>{medal.ico}</span>
               <span style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3,zIndex:1,textShadow:'0 1px 2px rgba(0,0,0,0.3)'}}>
-                누적 정답률 <span style={{color:medal.num,fontSize:20}}>{mainRank}등</span>{mainRank===1?'!':''}
+                종합 랭킹 <span style={{color:medal.num,fontSize:20}}>{mainRank}등</span>{mainRank===1?'!':''}
               </span>
               <span style={{fontSize:16,zIndex:1}}>{medal.deco}</span>
             </div>;
@@ -3652,7 +3658,7 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
             <span style={{fontSize:38,filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.4))'}}>{medal.ico}</span>
             <div style={{flex:1}}>
               <div style={{fontSize:17,fontWeight:800,color:'#fff',letterSpacing:0.3,textShadow:'0 1px 2px rgba(0,0,0,0.3)'}}>
-                정답률 <span style={{color:medal.num,fontSize:21}}>{rankInfo.rank}등</span>{rankInfo.rank===1?'!':''} <span style={{fontSize:15}}>{medal.deco}</span>
+                종합 랭킹 <span style={{color:medal.num,fontSize:21}}>{rankInfo.rank}등</span>{rankInfo.rank===1?'!':''} <span style={{fontSize:15}}>{medal.deco}</span>
               </div>
               <div style={{fontSize:11.5,color:medal.sub,marginTop:3}}>대단한영어 누적 랭킹 · 탁월함이 습관이 되도록</div>
             </div>
