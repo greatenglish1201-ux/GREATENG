@@ -89,6 +89,9 @@
         .select-all-btn { background: #e0e0e0; color: var(--black); border-radius: 6px; padding: 6px 12px; font-size: 12px; }
         .preset-btn { flex:1; min-width:70px; background: var(--ink, #3a2a20); color: var(--gold); border:none; border-radius: 8px; padding: 9px 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition:0.2s; }
         .preset-btn:hover { opacity: 0.85; }
+        .qty-btn { flex:1; background:#fff; color:var(--ink); border:1.5px solid var(--cream-deep); border-radius:8px; padding:10px 4px; font-size:14px; font-weight:800; cursor:pointer; transition:0.2s; }
+        .qty-btn:hover { border-color:var(--gold); }
+        .qty-btn.active { background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; border-color:transparent; }
         .basket { background: #fff; border: 1px dashed var(--gold); padding: 15px; border-radius: 15px; margin: 10px 0; min-height: 50px;}
         .basket-item { background: #f8f9fa; padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 13px; }
         .btn-save { width: 100%; padding: 21px; background: linear-gradient(135deg,#7a1020,#C9A84C); color: white; border-radius: 16px; font-size: 19px; font-weight: 800; letter-spacing:-0.3px; box-shadow: 0 6px 20px rgba(122,16,32,0.25); margin-bottom: 15px; }
@@ -106,14 +109,22 @@
     <div id="login-area">
         <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 VOCA">
         <h1 style="margin: 0 0 3px 0; font-size: 25px; font-weight: 800; color: var(--wine); letter-spacing:-0.5px;">대단한영어 <span style="color: var(--gold);">VOCA</span></h1>
-        <p style="margin:0 0 8px; font-size:12.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px;">단어 마스터 시스템</p>
-        <!-- 관리자 진입 버튼 (index 스타일) -->
-        <button class="admin-enter-btn" onclick="openAdminModal()">⚙️ 관리자</button>
-        <div style="height:18px;"></div>
+        <p style="margin:0 0 20px; font-size:12.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px;">단어 마스터 시스템</p>
+
+        <button id="admin-quick-btn" onclick="goAdminDirect()" style="display:none; width:100%; padding:12px; margin-bottom:16px; background:var(--ink); color:var(--gold); border:none; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer;">⚙️ 관리자 패널로 돌아가기</button>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요 (정규 미션용)" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
         <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:white;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
         <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
+
+        <!-- 관리자 로그인 (VOCA ID + 비번) -->
+        <div id="admin-login-area" style="margin-top:22px; padding-top:18px; border-top:1px dashed var(--cream-deep);">
+            <div style="font-size:12px; color:var(--ink-soft); font-weight:700; margin-bottom:10px; letter-spacing:0.5px;">관리자 로그인</div>
+            <input type="text" id="admin-id-input" placeholder="관리자 ID" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="margin-bottom:8px;">
+            <input type="password" id="admin-pw-input" placeholder="비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') tryGoAdmin()" style="margin-bottom:8px;">
+            <p id="admin-pw-err" class="modal-err" style="display:none; text-align:center;"></p>
+            <button class="btn" style="background:var(--ink); color:var(--gold); padding:14px; font-size:15px;" onclick="tryGoAdmin()">관리자 패널 진입</button>
+        </div>
 
         <div id="info-box" style="margin-top:20px; background:#eef2ff; padding:20px; border-radius:15px; text-align:left;">
             <p id="info-msg" style="margin:0; line-height:1.6; font-size:15px;"></p>
@@ -182,20 +193,6 @@
     </div>
 </div>
 
-<!-- ====================== 관리자 비번 모달 ====================== -->
-<div id="admin-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-box" onclick="event.stopPropagation();">
-        <h3>관리자 패널</h3>
-        <p>관리자 비밀번호를 입력하세요</p>
-        <input type="password" id="admin-pw-input" placeholder="관리자 비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') tryGoAdmin()">
-        <p id="admin-pw-err" class="modal-err" style="display:none;"></p>
-        <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeAdminModal()">취소</button>
-            <button class="modal-ok" onclick="tryGoAdmin()">확인</button>
-        </div>
-    </div>
-</div>
-
 <!-- ====================== 관리자 화면 ====================== -->
 <div id="admin-screen">
     <div class="admin-box">
@@ -254,6 +251,24 @@
                     전체 풀(Pool): <span id="pool-text" style="color: var(--navy);">0</span>개 단어
                 </div>
 
+                <div style="background:#faf7f0; border:1px solid var(--cream-deep); border-radius:14px; padding:14px; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:14px; font-weight:800; color:var(--ink);">🎯 출제 개수</span>
+                        <div style="display:flex; align-items:center;">
+                            <input type="number" id="target-num" class="num-input" min="0" value="120" oninput="ADMIN.onTargetInput()" style="color:var(--wine); width:64px;"> <span style="font-size:13px; margin-left:3px; font-weight:bold;">개</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px; margin-bottom:10px;">
+                        <button onclick="ADMIN.setTarget(60)" class="qty-btn" data-q="60">60</button>
+                        <button onclick="ADMIN.setTarget(80)" class="qty-btn" data-q="80">80</button>
+                        <button onclick="ADMIN.setTarget(120)" class="qty-btn" data-q="120">120</button>
+                        <button onclick="ADMIN.setTarget(160)" class="qty-btn" data-q="160">160</button>
+                    </div>
+                    <input type="range" id="target-val" min="0" max="0" value="120" oninput="ADMIN.onTargetSlider()" style="accent-color:var(--wine);">
+                    <div style="font-size:11px; color:#999; margin-top:4px;">전체 풀(Pool)보다 크면 풀 개수만큼만 출제됩니다.</div>
+                </div>
+
+                <div style="font-size:12px; color:var(--ink-soft); font-weight:700; margin-bottom:8px;">유형 분배 (위 개수를 나눔)</div>
                 <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px;">
                     <button onclick="ADMIN.applyPreset('ek-ke')" class="preset-btn">영한 반반</button>
                     <button onclick="ADMIN.applyPreset('even')" class="preset-btn">균등 분배</button>
@@ -262,7 +277,7 @@
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 14px; font-weight: bold; color: var(--black);">총 출제 문항 (자동 합산)</span>
+                    <span style="font-size: 14px; font-weight: bold; color: var(--black);">합산 출제 문항</span>
                     <div style="display: flex; align-items: center;">
                         <input type="number" id="total-num" class="num-input" value="0" readonly style="background:#eee;"> <span style="font-size:14px; margin-left:3px; font-weight:bold;">개</span>
                     </div>
@@ -409,24 +424,20 @@
     /* ============================================================
        관리자 진입 (첫 화면 비번 모달 → GAS adminLogin 검증)
        ============================================================ */
-    function openAdminModal() {
-        document.getElementById('admin-pw-input').value = "";
-        document.getElementById('admin-pw-err').style.display = "none";
-        document.getElementById('admin-modal').style.display = "flex";
-        setTimeout(() => document.getElementById('admin-pw-input').focus(), 100);
-    }
-    function closeAdminModal() {
-        document.getElementById('admin-modal').style.display = "none";
-    }
+    let adminAuthed = false; // 세션 동안 인증 유지 → 비번 없이 왕복
+
     async function tryGoAdmin() {
         const pw = document.getElementById('admin-pw-input').value;
         const errEl = document.getElementById('admin-pw-err');
         if (!pw) { errEl.innerText = "비밀번호를 입력하세요."; errEl.style.display = "block"; return; }
+        errEl.style.display = "none";
         try {
+            // ID는 형식만(검증은 비번으로). GAS 무수정.
             const res = await fetch(APP_URL + "?type=adminLogin&pw=" + encodeURIComponent(pw) + "&t=" + Date.now());
             const data = await res.json();
             if (data.ok) {
-                closeAdminModal();
+                adminAuthed = true;
+                document.getElementById('admin-pw-input').value = "";
                 enterAdmin();
             } else {
                 errEl.innerText = "비밀번호가 틀렸습니다."; errEl.style.display = "block";
@@ -443,6 +454,18 @@
     function exitAdmin() {
         document.getElementById('admin-screen').style.display = "none";
         document.getElementById('student-screen').style.display = "block";
+        // 인증된 상태면 학생화면에 '관리자 패널' 빠른 진입 버튼 노출
+        updateAdminQuickBtn();
+    }
+    // 인증 후 학생화면에서 비번 없이 관리자 재진입
+    function goAdminDirect() {
+        if (adminAuthed) enterAdmin();
+    }
+    function updateAdminQuickBtn() {
+        const btn = document.getElementById('admin-quick-btn');
+        const loginArea = document.getElementById('admin-login-area');
+        if (btn) btn.style.display = adminAuthed ? "block" : "none";
+        if (loginArea) loginArea.style.display = adminAuthed ? "none" : "block";
     }
 
     /* ============================================================
@@ -1246,18 +1269,61 @@
             ids.forEach(id => {
                 const slider = document.getElementById(id + '-val');
                 slider.max = count;
-                slider.value = (id === 'ek') ? count : 0;
-                document.getElementById(id + '-num').value = slider.value;
+                slider.value = 0;
+                document.getElementById(id + '-num').value = 0;
             });
 
+            // 출제 목표개수 바: 최대 = Pool. target이 Pool보다 크면 Pool로 제한.
+            const tVal = document.getElementById('target-val');
+            const tNum = document.getElementById('target-num');
+            tVal.max = count;
+            let curTarget = parseInt(tNum.value) || 0;
+            if (curTarget > count) curTarget = count;   // Pool 초과 시 제한
+            if (curTarget === 0 && count > 0) curTarget = Math.min(120, count); // 기본 120
+            tNum.value = curTarget;
+            tVal.value = curTarget;
+            this._highlightQtyBtn(curTarget);
+
             document.getElementById('total-val').max = count;
-            document.getElementById('total-val').value = count;
-            document.getElementById('total-num').value = count;
+            document.getElementById('total-val').value = 0;
+            document.getElementById('total-num').value = 0;
 
             const dl = document.getElementById('tickmarks'); dl.innerHTML = '';
             for(let i = 0; i <= count; i += 10) {
                 let op = document.createElement('option'); op.value = i; dl.appendChild(op);
             }
+        },
+
+        // 출제 목표개수 제어
+        _effectiveTarget: function() {
+            const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
+            let t = parseInt(document.getElementById('target-num').value) || 0;
+            if (t > pool) t = pool;   // Pool 초과 시 Pool만큼만
+            return t;
+        },
+        _highlightQtyBtn: function(val) {
+            document.querySelectorAll('.qty-btn').forEach(b => {
+                b.classList.toggle('active', parseInt(b.dataset.q) === val);
+            });
+        },
+        setTarget: function(n) {
+            const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
+            let t = (pool > 0 && n > pool) ? pool : n;
+            document.getElementById('target-num').value = t;
+            document.getElementById('target-val').value = t;
+            this._highlightQtyBtn(t);
+        },
+        onTargetInput: function() {
+            const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
+            let t = parseInt(document.getElementById('target-num').value) || 0;
+            if (pool > 0 && t > pool) { t = pool; document.getElementById('target-num').value = t; }
+            document.getElementById('target-val').value = t;
+            this._highlightQtyBtn(t);
+        },
+        onTargetSlider: function() {
+            let t = parseInt(document.getElementById('target-val').value) || 0;
+            document.getElementById('target-num').value = t;
+            this._highlightQtyBtn(t);
         },
 
         syncSlider: function(type) {
@@ -1328,8 +1394,10 @@
         // 게이지 프리셋 적용
         applyPreset: function(kind) {
             const s = this._poolStats();
-            const pool = s.total;
-            if (pool === 0) { alert("먼저 범위를 장바구니에 담아주세요!"); return; }
+            if (s.total === 0) { alert("먼저 범위를 장바구니에 담아주세요!"); return; }
+            // 분배 기준 = 목표 출제개수 (Pool 초과 시 Pool로 제한된 값)
+            const pool = this._effectiveTarget();
+            if (pool === 0) { alert("출제 개수를 입력하세요!"); return; }
 
             // 5개 유형 값 초기화
             let v = { ek:0, 'ke-obj':0, 'ke-subj':0, 'ee-obj':0, 'ex-obj':0 };
