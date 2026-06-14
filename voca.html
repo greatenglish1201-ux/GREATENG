@@ -83,7 +83,7 @@
         .btn-wrong-print { background: var(--navy); color: white; padding: 15px; border-radius: 12px; font-size: 14px; flex: 1; }
         .btn-wrong-print:hover { background: var(--dark-gray); }
         .btn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
-        .btn-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; cursor: pointer; }
+        .btn-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; cursor: pointer; user-select: none; -webkit-user-select: none; }
         .btn-item.active { background: var(--gold) !important; color: white !important; border-color: var(--gold); }
         .add-btn { width: 100%; padding: 15px; margin-top: 15px; background: var(--dark-gray); color: var(--gold); border-radius: 12px; font-size: 14px; }
         .select-all-btn { background: #e0e0e0; color: var(--black); border-radius: 6px; padding: 6px 12px; font-size: 12px; }
@@ -1187,7 +1187,9 @@
 
         _lastUnitIdx: null,
         unitClick: function(idx, event) {
-            const btns = document.querySelectorAll('.unit-btn');
+            event = event || window.event;
+            const btns = Array.from(document.querySelectorAll('.unit-btn'))
+                .sort((a,b)=> parseInt(a.dataset.idx) - parseInt(b.dataset.idx));
             if (event && event.shiftKey && this._lastUnitIdx !== null) {
                 // Shift 클릭: 직전 클릭 지점 ~ 현재 사이 전부 선택
                 const start = Math.min(this._lastUnitIdx, idx);
@@ -1195,6 +1197,8 @@
                 for (let i = start; i <= end; i++) {
                     if (btns[i]) btns[i].classList.add('active');
                 }
+                // Shift 드래그로 생긴 텍스트 선택 해제
+                if (window.getSelection) { try { window.getSelection().removeAllRanges(); } catch(e){} }
             } else {
                 // 일반 클릭: 토글
                 if (btns[idx]) btns[idx].classList.toggle('active');
@@ -1411,44 +1415,49 @@
             const s = this._poolStats();
             if (s.total === 0) { alert("먼저 범위를 장바구니에 담아주세요!"); return; }
             // 분배 기준 = 목표 출제개수 (Pool 초과 시 Pool로 제한된 값)
-            const pool = this._effectiveTarget();
-            if (pool === 0) { alert("출제 개수를 입력하세요!"); return; }
+            let target = this._effectiveTarget();
+            if (target === 0) { alert("출제 개수를 입력하세요!"); return; }
 
-            // 5개 유형 값 초기화
             let v = { ek:0, 'ke-obj':0, 'ke-subj':0, 'ee-obj':0, 'ex-obj':0 };
+            const eeMax = s.eeCount;   // 영영풀이 가능 최대
+            const exMax = s.exCount;   // 예문 가능 최대
 
             if (kind === 'manual') {
-                // 직접 설정: 전부 0으로 비우고 사용자가 조절
                 this._setGauges(v);
                 return;
             }
             else if (kind === 'ek-ke') {
-                // 영한(뜻고르기) + 한영(단어고르기) 반반
-                v.ek = Math.ceil(pool / 2);
-                v['ke-obj'] = pool - v.ek;
+                // 영한 + 한영 반반 (정확히 target)
+                v.ek = Math.ceil(target / 2);
+                v['ke-obj'] = target - v.ek;
             }
             else if (kind === 'even') {
-                // 5개 유형 균등 (단, 영영/예문은 데이터 있는 만큼만)
-                let base = Math.floor(pool / 5);
-                let rem = pool - base * 5;
-                v.ek = base; v['ke-obj'] = base; v['ke-subj'] = base;
-                v['ee-obj'] = Math.min(base, s.eeCount);
-                v['ex-obj'] = Math.min(base, s.exCount);
-                // 영영/예문 부족분 + 나머지를 영한/한영에 보탬
+                // 5유형 균등. ee/ex는 가용한도까지만, 부족분은 영한/한영/스펠링에 재분배.
+                let per = Math.floor(target / 5);
+                v.ek = per; v['ke-obj'] = per; v['ke-subj'] = per;
+                v['ee-obj'] = Math.min(per, eeMax);
+                v['ex-obj'] = Math.min(per, exMax);
+                // target에 정확히 맞추기: 남은 만큼을 영한→한영→스펠링 순으로 보탬
                 let assigned = v.ek + v['ke-obj'] + v['ke-subj'] + v['ee-obj'] + v['ex-obj'];
-                let leftover = pool - assigned;
-                v.ek += Math.ceil(leftover / 2);
-                v['ke-obj'] += Math.floor(leftover / 2);
+                let left = target - assigned;
+                const fillOrder = ['ek','ke-obj','ke-subj'];
+                let fi = 0;
+                while (left > 0) { v[fillOrder[fi % 3]]++; left--; fi++; }
             }
             else if (kind === 'ee-ex') {
-                // 영영풀이 + 예문 반반 (데이터 있는 만큼만, 부족분은 영한/한영으로)
-                let half = Math.ceil(pool / 2);
-                v['ee-obj'] = Math.min(half, s.eeCount);
-                v['ex-obj'] = Math.min(pool - v['ee-obj'], s.exCount);
-                let leftover = pool - v['ee-obj'] - v['ex-obj'];
-                if (leftover > 0) {
-                    v.ek = Math.ceil(leftover / 2);
-                    v['ke-obj'] = leftover - v.ek;
+                // 영영풀이 + 예문 반반. 각자 가용한도 내에서, 부족분은 서로 보완 후 영한/한영으로.
+                let halfEe = Math.ceil(target / 2);
+                let halfEx = target - halfEe;
+                v['ee-obj'] = Math.min(halfEe, eeMax);
+                v['ex-obj'] = Math.min(halfEx, exMax);
+                // 한쪽이 부족하면 다른 쪽으로 채워봄 (가용한도 내)
+                let left = target - v['ee-obj'] - v['ex-obj'];
+                if (left > 0 && v['ex-obj'] < exMax) { let add = Math.min(left, exMax - v['ex-obj']); v['ex-obj'] += add; left -= add; }
+                if (left > 0 && v['ee-obj'] < eeMax) { let add = Math.min(left, eeMax - v['ee-obj']); v['ee-obj'] += add; left -= add; }
+                // 그래도 남으면 영한/한영으로 (데이터 한계)
+                if (left > 0) {
+                    v.ek = Math.ceil(left / 2);
+                    v['ke-obj'] = left - v.ek;
                 }
             }
 
