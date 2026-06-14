@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대단한영어 — 학부모님께 드리는 수업 안내</title>
+<style>
+  :root{
+    --wine:#7a1020;
+    --wine-deep:#5a0b18;
+    --gold:#C9A84C;
+    --gold-soft:#e3cd8a;
+    --ink:#3a2a20;
+    --paper:#faf6ef;
+    --paper-2:#f1e9dc;
+    --line:#e0d4c0;
+    --muted:#6f6253;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+
+  /* ── Hero ── */
+  .hero{
+    background:
+      radial-gradient(120% 100% at 80% -10%, rgba(201,168,76,.18), transparent 55%),
+      linear-gradient(160deg,var(--wine-deep),var(--wine) 70%);
+    color:#fff;
+    padding:54px 0 46px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+  .eyebrow{
+    font-size:13px;letter-spacing:.22em;color:var(--gold-soft);
+    font-weight:600;text-transform:uppercase;margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:30px;font-weight:800;line-height:1.35;letter-spacing:-.02em;
+    margin-bottom:14px;
+  }
+  .hero h1 .hl{color:var(--gold-soft)}
+  .hero p{font-size:16px;color:rgba(255,255,255,.86);max-width:540px}
+
+  /* ── Tabs ── */
+  .tabbar{
+    position:sticky;top:0;z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 2px 12px rgba(58,42,32,.04);
+  }
+  .tabs{display:flex;gap:8px;padding:12px 0}
+  .tab{
+    flex:1;
+    appearance:none;border:1.5px solid var(--line);
+    background:#fff;color:var(--muted);
+    font-family:inherit;font-size:16px;font-weight:700;
+    padding:13px 10px;border-radius:12px;cursor:pointer;
+    transition:all .2s ease;
+  }
+  .tab .sub{display:block;font-size:11px;font-weight:500;letter-spacing:.04em;margin-top:2px;opacity:.7}
+  .tab:hover{border-color:var(--gold)}
+  .tab[aria-selected="true"]{
+    background:linear-gradient(160deg,var(--wine),var(--wine-deep));
+    color:#fff;border-color:var(--wine);
+    box-shadow:0 6px 18px rgba(122,16,32,.22);
+  }
+  .tab[aria-selected="true"] .sub{opacity:.85;color:var(--gold-soft)}
+
+  /* ── Panels ── */
+  .panel{display:none;padding:34px 0 10px}
+  .panel.active{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .lead{
+    font-size:17px;color:var(--ink);font-weight:600;
+    padding:18px 20px;margin-bottom:26px;
+    background:var(--paper-2);border-radius:14px;
+    border-left:4px solid var(--gold);
+  }
+
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:16px;
+    padding:24px 22px;margin-bottom:16px;
+    box-shadow:0 2px 10px rgba(58,42,32,.03);
+  }
+  .card .step{
+    display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;
+    color:var(--wine);background:rgba(122,16,32,.07);
+    padding:4px 11px;border-radius:20px;margin-bottom:12px;
+  }
+  .card h3{font-size:19px;font-weight:800;letter-spacing:-.01em;margin-bottom:10px}
+  .card p{font-size:15.5px;color:#4a3d31;margin-bottom:10px}
+  .card p:last-child{margin-bottom:0}
+  .card ul{list-style:none;margin-top:6px}
+  .card li{
+    font-size:15px;color:#4a3d31;padding:7px 0 7px 26px;position:relative;
+    border-top:1px dashed var(--line);
+  }
+  .card li:first-child{border-top:none}
+  .card li::before{
+    content:"";position:absolute;left:4px;top:14px;
+    width:7px;height:7px;border-radius:50%;background:var(--gold);
+  }
+  .tag{
+    display:inline-block;font-size:12.5px;font-weight:700;color:var(--wine-deep);
+    background:var(--gold-soft);padding:2px 8px;border-radius:6px;
+  }
+
+  /* ── Track toggle (기초/심화) ── */
+  .track{display:flex;gap:8px;margin-bottom:18px}
+  .trackbtn{
+    flex:1;appearance:none;border:1.5px solid var(--line);
+    background:#fff;color:var(--muted);
+    font-family:inherit;font-size:15px;font-weight:700;
+    padding:11px 10px;border-radius:10px;cursor:pointer;transition:all .18s ease;
+  }
+  .trackbtn:hover{border-color:var(--gold)}
+  .trackbtn[aria-selected="true"]{
+    background:var(--ink);color:var(--gold-soft);border-color:var(--ink);
+  }
+  .trackpanel{display:none}
+  .trackpanel.active{display:block;animation:fade .35s ease}
+
+  .card.exam{
+    border-color:var(--wine);border-width:1.5px;
+    background:linear-gradient(160deg,#fff,#fbf1f1);
+  }
+  .card.exam .step{color:#fff;background:var(--wine)}
+
+  /* ── System callout ── */
+  .system{
+    background:linear-gradient(160deg,#fff,var(--paper-2));
+    border:1.5px solid var(--gold);
+    border-radius:16px;padding:24px 22px;margin-bottom:16px;position:relative;
+  }
+  .system .badge{
+    font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold);
+    background:var(--ink);padding:5px 12px;border-radius:20px;
+    display:inline-block;margin-bottom:12px;
+  }
+  .system h3{font-size:19px;font-weight:800;margin-bottom:10px}
+  .system p{font-size:15.5px;color:#4a3d31}
+  .system .hit{
+    margin-top:14px;display:flex;align-items:baseline;gap:10px;
+    padding-top:14px;border-top:1px solid var(--line);
+  }
+  .system .hit b{font-size:30px;font-weight:800;color:var(--wine);letter-spacing:-.02em}
+  .system .hit span{font-size:13.5px;color:var(--muted)}
+
+  /* ── Director ── */
+  .director{
+    background:linear-gradient(160deg,var(--wine-deep),var(--wine));
+    color:#fff;border-radius:18px;padding:30px 26px;margin:30px 0 16px;
+  }
+  .director .badge{font-size:12px;letter-spacing:.16em;color:var(--gold-soft);font-weight:600;margin-bottom:10px}
+  .director h3{font-size:20px;font-weight:800;margin-bottom:14px}
+  .director .creds{display:flex;flex-wrap:wrap;gap:10px}
+  .director .cred{
+    background:rgba(255,255,255,.1);border:1px solid rgba(227,205,138,.3);
+    border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;
+  }
+  .director .cred small{display:block;font-size:11.5px;font-weight:400;color:var(--gold-soft);margin-top:2px}
+
+  /* ── CTA ── */
+  .cta{text-align:center;padding:36px 0 56px}
+  .cta h3{font-size:22px;font-weight:800;margin-bottom:8px}
+  .cta p{color:var(--muted);font-size:15px;margin-bottom:20px}
+  .cta a{
+    display:inline-block;background:var(--gold);color:var(--ink);
+    font-weight:800;font-size:16px;text-decoration:none;
+    padding:15px 34px;border-radius:30px;
+    box-shadow:0 8px 22px rgba(201,168,76,.35);
+    transition:transform .15s ease;
+  }
+  .cta a:hover{transform:translateY(-2px)}
+  .brand{text-align:center;padding-bottom:30px;color:var(--muted);font-size:13px;letter-spacing:.05em}
+  .brand b{color:var(--wine)}
+
+  /* ── Simulator ── */
+  .sim{margin-bottom:16px}
+  .sim-cap{text-align:center;font-size:13.5px;font-weight:700;color:var(--wine);
+    letter-spacing:.02em;margin-bottom:14px}
+  .sim-stepper{display:flex;justify-content:center;gap:6px;margin-bottom:14px}
+  .sim-dot{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;max-width:90px;cursor:pointer}
+  .sim-dot .n{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:800;background:#fff;border:1.5px solid var(--line);color:var(--muted);transition:.25s}
+  .sim-dot .t{font-size:10.5px;color:var(--muted);text-align:center;line-height:1.25;font-weight:600}
+  .sim-dot.active .n{background:var(--wine);border-color:var(--wine);color:#fff;box-shadow:0 4px 12px rgba(122,16,32,.25)}
+  .sim-dot.active .t{color:var(--wine)}
+  .sim-dot.done .n{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+  .sim-screen{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    box-shadow:0 4px 16px rgba(58,42,32,.06);min-height:300px}
+  .sim-h{background:linear-gradient(160deg,var(--wine-deep),var(--wine));color:#fff;padding:12px 16px;
+    display:flex;align-items:center;gap:8px}
+  .sim-h .ic{width:24px;height:24px;border-radius:6px;background:rgba(227,205,138,.25);
+    display:flex;align-items:center;justify-content:center;font-size:13px}
+  .sim-h h4{font-size:14px;font-weight:700}
+  .sim-h .st{margin-left:auto;font-size:10.5px;background:var(--gold-soft);color:var(--wine-deep);
+    padding:3px 9px;border-radius:20px;font-weight:700}
+  .sim-b{padding:16px}
+  .sim-stage{display:none}.sim-stage.on{display:block;animation:fade .35s ease}
+
+  .sim-passage{font-size:12px;color:#4a3d31;background:var(--paper-2);padding:11px;border-radius:9px;
+    line-height:1.65;margin-bottom:12px;border-left:3px solid var(--gold)}
+  .sim-blocks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+  .sim-blocks .bl{border-radius:8px;padding:9px 7px;font-size:10.5px;line-height:1.4}
+  .sim-blocks .bl b{display:block;font-size:11px;margin-bottom:4px}
+  .sim-blocks .b1{background:#eaf2fb;color:#2a4a6b}
+  .sim-blocks .b2{background:#fdeeea;color:#9a3b2a}
+  .sim-blocks .b3{background:#e9f5ee;color:#2a6b4a}
+  .sim-hint{font-size:11.5px;color:var(--muted);text-align:center;margin-top:12px}
+
+  .sim-types{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .sim-types .ty{background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:11px 5px;
+    text-align:center;font-size:11.5px;font-weight:700;color:var(--ink);position:relative}
+  .sim-types .ty .e{display:block;font-size:17px;margin-bottom:3px}
+  .sim-types .ty.pk{border-color:var(--wine);background:#fbf1f1}
+  .sim-types .ty.pk::after{content:"✓";position:absolute;top:4px;right:6px;color:var(--wine);font-weight:800;font-size:11px}
+
+  .sim-q{border:1px solid var(--line);border-radius:10px;padding:13px}
+  .sim-q .qn{font-size:11.5px;color:var(--wine);font-weight:800;margin-bottom:6px}
+  .sim-q .qt{font-size:13px;color:#4a3d31;margin-bottom:10px;line-height:1.55}
+  .sim-ch{display:flex;flex-direction:column;gap:6px}
+  .sim-ch .c{font-size:12.5px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;color:#4a3d31}
+  .sim-ch .c.ans{border-color:var(--gold);background:#fbf6e9;font-weight:700}
+
+  .sim-rp{text-align:center;margin-bottom:12px}
+  .sim-rp .pct{font-size:30px;font-weight:800;color:var(--wine)}
+  .sim-rp .pl{font-size:11.5px;color:var(--muted)}
+  .sim-warn{background:#fbf4e0;border:1px solid var(--gold-soft);border-radius:9px;padding:10px;
+    text-align:center;font-size:12px;margin-bottom:12px}
+  .sim-warn b{color:var(--wine)}
+  .sim-bar{display:flex;align-items:center;gap:9px;margin-bottom:8px;font-size:11.5px}
+  .sim-bar .nm{width:58px;font-weight:700;flex-shrink:0}
+  .sim-bar .tk{flex:1;height:8px;background:#eee;border-radius:5px;overflow:hidden}
+  .sim-bar .fl{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--wine),var(--gold))}
+  .sim-bar .v{width:34px;text-align:right;font-weight:700;color:var(--muted)}
+
+  .sim-nav{display:flex;gap:8px;margin-top:14px}
+  .sim-btn{flex:1;appearance:none;border:none;font-family:inherit;font-size:13.5px;font-weight:700;
+    padding:12px;border-radius:10px;cursor:pointer;transition:.18s}
+  .sim-btn.prev{background:#fff;border:1.5px solid var(--line);color:var(--muted)}
+  .sim-btn.next{background:var(--wine);color:#fff;box-shadow:0 5px 14px rgba(122,16,32,.22)}
+  .sim-btn:disabled{opacity:.4;cursor:default}
+  .sim-btn.next.restart{background:var(--gold);color:var(--ink)}
+
+  @media (max-width:480px){
+    .hero h1{font-size:24px}
+    .tab{font-size:14px;padding:11px 6px}
+    .card h3,.system h3{font-size:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">대단한영어 · 포항</div>
+    <h1>중등·고등 영어,<br><span class="hl">수업과 시험 대비</span>를 이렇게 합니다</h1>
+    <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
+  </div>
+</header>
+
+<nav class="tabbar">
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="mid">
+        중등 과정<span class="sub">내신 기초를 다지는 시기</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="high">
+        고등 과정<span class="sub">수능·내신을 함께 잡는 시기</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ───────── 중등 ───────── -->
+  <section class="panel active" id="mid" role="tabpanel">
+    <p class="lead">중등은 학생 수준에 따라 <b>기초반과 심화반</b>으로 나눠 수업합니다. 두 반 모두 고등 과정을 미리 준비한다는 방향은 같지만, 다루는 교재와 깊이가 다릅니다.</p>
+
+    <div class="track">
+      <button class="trackbtn" data-track="basic" aria-selected="true">기초반</button>
+      <button class="trackbtn" data-track="deep" aria-selected="false">심화반</button>
+    </div>
+
+    <div class="trackpanel active" id="basic">
+      <div class="card">
+        <span class="step">기초반 · 수업은 이렇게</span>
+        <h3>고등 과정을 미리, 쉽게 맛봅니다</h3>
+        <p>중등용 시중교재로 수업합니다. 어렵게 느껴질 수 있는 고등부 과정을 학생 눈높이에서 쉽게 풀어내, 고등 진학 전에 자연스럽게 기초 체력을 쌓는 과정입니다.</p>
+        <ul>
+          <li>중등 학생에게 맞는 검증된 시중교재 사용</li>
+          <li>고등 과정의 핵심 개념을 부담 없이 선행</li>
+          <li>해석·문법·어휘의 탄탄한 토대 만들기</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trackpanel" id="deep">
+      <div class="card">
+        <span class="step">심화반 · 수업은 이렇게</span>
+        <h3>고등 과정을 실제로 당겨 배웁니다</h3>
+        <p>고등부 모의고사 수준의 교재로, <span class="tag">수능 유형 독해</span>를 중점적으로 훈련합니다. 단순 선행이 아니라 실제 고등 영어 실력을 미리 끌어올리는 과정입니다.</p>
+        <ul>
+          <li>고등 모의고사 수준 교재로 수업</li>
+          <li>수능 유형 독해 집중 훈련</li>
+          <li>고등 진학 시 바로 상위권에서 출발</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card exam">
+      <span class="step">시험 기간엔 · 기초·심화 공통</span>
+      <h3>학교 시험 모드로 전환합니다</h3>
+      <p>내신 시험 기간이 되면 반과 상관없이 <b>다니는 학교 시험 대비</b>에 집중합니다. 같은 중3이라도 학교마다 출제 스타일이 다르기 때문에, 각 학교의 <span class="tag">기출 패턴</span>을 분석해 맞춤 예상문제로 대비합니다.</p>
+    </div>
+
+    <div class="system">
+      <span class="badge">우리 학원만의 시스템</span>
+      <h3>학교별 맞춤이 가능한 이유</h3>
+      <p>원장이 직접 개발·운영하는 자체 출제 플랫폼이 있습니다. 학교별 기출을 분석해 그 학교 시험에 맞춘 예상문제를 만들어내기 때문에, "우리 아이 학교"에 딱 맞는 대비가 가능합니다.</p>
+      <div class="hit">
+        <b>77%</b>
+        <span>포항제철중 시험에서 실제 출제와 예상문제의 적중률<br>(자체 분석 결과)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="step">관리는 이렇게</span>
+      <h3>우리 아이의 약점을 기록하고 채워줍니다</h3>
+      <p>학생이 푼 문제 결과가 자동으로 기록됩니다. 어떤 유형을 자주 틀리는지 파악해서, 그 약한 부분을 반복 훈련으로 채워나갑니다.</p>
+    </div>
+  </section>
+
+  <!-- ───────── 고등 ───────── -->
+  <section class="panel" id="high" role="tabpanel">
+    <p class="lead">고등은 <b>학년별 수업</b>을 원칙으로 합니다. 다만 학생의 실력에 따라 더 잘 맞는 반으로 배정될 수 있어, 각자의 수준에 맞는 수업을 받습니다.</p>
+
+    <div class="card">
+      <span class="step">수업은 이렇게</span>
+      <h3>학년별로, 실력에 맞게 배정합니다</h3>
+      <p>기본은 학년에 맞춰 수업을 진행합니다. 여기에 더해 학생의 실력을 보고 더 적합한 반으로 배정할 수 있어, "내 학년이라서"가 아니라 "내 수준에 맞아서" 따라갈 수 있는 수업을 받습니다.</p>
+      <ul>
+        <li>학년별 정규 수업이 기본 원칙</li>
+        <li>실력에 따라 상·하위 반 유연하게 배정</li>
+        <li>수능 유형 훈련과 내신을 균형 있게 병행</li>
+      </ul>
+    </div>
+
+    <div class="card exam">
+      <span class="step">시험 기간엔 · 핵심</span>
+      <h3>학교·학년별 맞춤 자료를 실시간으로 받습니다</h3>
+      <p>내신 시험 기간엔 <b>다니는 학교와 학년에 딱 맞춘</b> 대비 자료를 제공합니다. 시험 범위 지문의 분석 자료와 변형문제를, <span class="tag">온라인으로 가장 빠르고 정확하게 실시간</span>으로 받아볼 수 있습니다.</p>
+      <ul>
+        <li>시험 범위 지문을 미리 분석한 자료 제공</li>
+        <li>실제 출제 유형을 반영한 변형문제 제공</li>
+        <li>인쇄물을 기다릴 필요 없이 온라인 실시간 전달</li>
+      </ul>
+    </div>
+
+    <div class="sim">
+      <div class="sim-cap">실제 진행 과정을 화면으로 보여드립니다</div>
+      <div class="sim-stepper">
+        <div class="sim-dot active" data-dot="0"><div class="n">1</div><div class="t">지문 분석</div></div>
+        <div class="sim-dot" data-dot="1"><div class="n">2</div><div class="t">변형문제 출제</div></div>
+        <div class="sim-dot" data-dot="2"><div class="n">3</div><div class="t">학생 풀이</div></div>
+        <div class="sim-dot" data-dot="3"><div class="n">4</div><div class="t">약점 진단</div></div>
+      </div>
+
+      <div class="sim-screen">
+        <div class="sim-stage on" data-stage="0">
+          <div class="sim-h"><div class="ic">📖</div><h4>지문 분석</h4><span class="st">시험 범위 지문</span></div>
+          <div class="sim-b">
+            <div class="sim-passage">Many people believe that taking constant short breaks to check their phones keeps them refreshed. Yet a mind pulled in many directions struggles to think deeply, and real focus is lost long before we notice it.</div>
+            <div class="sim-blocks">
+              <div class="bl b1"><b>통념 제시·반박</b>흔한 생각을 제시하고 핵심을 반박</div>
+              <div class="bl b2"><b>핵심 메커니즘</b>주의산만이 깊은 사고를 방해함을 설명</div>
+              <div class="bl b3"><b>결과·결론</b>집중력 회복의 필요성으로 마무리</div>
+            </div>
+            <div class="sim-hint">시험 범위 지문을 구조로 분석합니다</div>
+          </div>
+        </div>
+        <div class="sim-stage" data-stage="1">
+          <div class="sim-h"><div class="ic">⚡</div><h4>변형문제 출제</h4><span class="st">유형별 자동 생성</span></div>
+          <div class="sim-b">
+            <div class="sim-types">
+              <div class="ty"><span class="e">🎯</span>주제 찾기</div>
+              <div class="ty pk"><span class="e">🔀</span>순서 배열</div>
+              <div class="ty pk"><span class="e">📌</span>문장 삽입</div>
+              <div class="ty pk"><span class="e">📝</span>빈칸 추론</div>
+              <div class="ty"><span class="e">📋</span>요약문</div>
+              <div class="ty"><span class="e">✏️</span>어법</div>
+            </div>
+            <div class="sim-hint">분석한 지문에서 유형별 변형문제를 만들어냅니다</div>
+          </div>
+        </div>
+        <div class="sim-stage" data-stage="2">
+          <div class="sim-h"><div class="ic">✍️</div><h4>학생 풀이</h4><span class="st">온라인 실시간</span></div>
+          <div class="sim-b">
+            <div class="sim-q">
+              <div class="qn">Q. 빈칸 추론</div>
+              <div class="qt">A mind pulled in many directions struggles to think ______.</div>
+              <div class="sim-ch"><div class="c">① quickly</div><div class="c ans">② deeply</div><div class="c">③ loudly</div></div>
+            </div>
+            <div class="sim-hint">학생이 변형문제를 풀면 결과가 자동 기록됩니다</div>
+          </div>
+        </div>
+        <div class="sim-stage" data-stage="3">
+          <div class="sim-h"><div class="ic">📊</div><h4>약점 진단 리포트</h4><span class="st">데이터 기반</span></div>
+          <div class="sim-b">
+            <div class="sim-rp"><div class="pct">76%</div><div class="pl">종합 정답률</div></div>
+            <div class="sim-warn">⚠ 시험 전 집중 보완 추천 — <b>어법 56%</b></div>
+            <div class="sim-bar"><div class="nm">어법</div><div class="tk"><div class="fl" style="width:56%"></div></div><div class="v">56%</div></div>
+            <div class="sim-bar"><div class="nm">무관문장</div><div class="tk"><div class="fl" style="width:71%"></div></div><div class="v">71%</div></div>
+            <div class="sim-bar"><div class="nm">빈칸추론</div><div class="tk"><div class="fl" style="width:77%"></div></div><div class="v">77%</div></div>
+            <div class="sim-bar"><div class="nm">순서배열</div><div class="tk"><div class="fl" style="width:91%"></div></div><div class="v">91%</div></div>
+            <div class="sim-hint">어느 유형·어느 지문에서 막히는지 정밀하게 진단합니다</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-nav">
+        <button class="sim-btn prev" id="simPrev" disabled>이전</button>
+        <button class="sim-btn next" id="simNext">다음 단계 →</button>
+      </div>
+    </div>
+
+    <div class="system">
+      <p>원장이 직접 개발·운영하는 출제 플랫폼이 있기 때문에 가능한 일입니다. 학교별·학년별 시험 범위를 분석해 변형문제를 즉시 만들어내고, 학생들은 그 자료를 온라인으로 가장 먼저 받아봅니다. 평가원 수능 유형도 그대로 재현해 실전 감각을 키웁니다.</p>
+    </div>
+
+    <div class="card">
+      <span class="step">관리는 이렇게</span>
+      <h3>약점 유형을 데이터로 파악합니다</h3>
+      <p>학생별 풀이 결과가 누적 기록되어, 어떤 수능 유형·어떤 내신 파트가 약한지 한눈에 파악됩니다. 막연한 공부가 아니라, 약점을 정확히 겨냥한 훈련을 합니다.</p>
+    </div>
+  </section>
+
+  <!-- ───────── 공통: 원장 ───────── -->
+  <div class="director">
+    <div class="badge">원장이 직접 가르치고 관리합니다</div>
+    <h3>전문성과 시스템을 모두 갖췄습니다</h3>
+    <div class="creds">
+      <div class="cred">고려대학교<small>영어교육과 학사</small></div>
+      <div class="cred">맥쿼리대학교<small>TESOL 석사</small></div>
+      <div class="cred">자체 출제 플랫폼<small>원장 직접 개발·운영</small></div>
+    </div>
+  </div>
+
+  <!-- ───────── CTA ───────── -->
+  <div class="cta">
+    <h3>우리 아이에게 맞는지 궁금하신가요?</h3>
+    <p>상담을 통해 자녀의 현재 수준과 학습 방향을 함께 짚어드립니다.</p>
+    <a href="#">상담 문의하기</a>
+  </div>
+
+</main>
+
+<div class="brand"><b>대단한영어</b> · 포항 남구 영어 전문 학원</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.forEach(t=>t.setAttribute('aria-selected','false'));
+      tab.setAttribute('aria-selected','true');
+      const id = tab.dataset.tab;
+      panels.forEach(p=>p.classList.toggle('active', p.id===id));
+      window.scrollTo({top: document.querySelector('.tabbar').offsetTop - 0, behavior:'smooth'});
+    });
+  });
+
+  const trackBtns = document.querySelectorAll('.trackbtn');
+  const trackPanels = document.querySelectorAll('.trackpanel');
+  trackBtns.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      trackBtns.forEach(b=>b.setAttribute('aria-selected','false'));
+      btn.setAttribute('aria-selected','true');
+      const id = btn.dataset.track;
+      trackPanels.forEach(p=>p.classList.toggle('active', p.id===id));
+    });
+  });
+
+  // simulator
+  let sc=0; const stot=4;
+  const sStages=document.querySelectorAll('.sim-stage');
+  const sDots=document.querySelectorAll('.sim-dot');
+  const sPrev=document.getElementById('simPrev'), sNext=document.getElementById('simNext');
+  function sRender(){
+    sStages.forEach((s,i)=>s.classList.toggle('on',i===sc));
+    sDots.forEach((d,i)=>{d.classList.toggle('active',i===sc);d.classList.toggle('done',i<sc)});
+    sPrev.disabled = sc===0;
+    if(sc===stot-1){sNext.textContent='처음부터';sNext.classList.add('restart')}
+    else{sNext.textContent='다음 단계 →';sNext.classList.remove('restart')}
+  }
+  if(sNext){
+    sNext.onclick=()=>{sc = sc===stot-1 ? 0 : sc+1; sRender()};
+    sPrev.onclick=()=>{if(sc>0){sc--;sRender()}};
+    sDots.forEach(d=>d.onclick=()=>{sc=+d.dataset.dot;sRender()});
+  }
+</script>
+</body>
+</html>
