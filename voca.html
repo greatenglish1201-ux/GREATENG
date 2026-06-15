@@ -1522,6 +1522,9 @@
     function beginTestingUI() {
         document.getElementById('login-area').style.display = 'none';
         document.getElementById('test-area').style.display = 'block';
+        // 시험 중에는 로그아웃/톱니바퀴 숨김 (타이머와 겹침 방지)
+        const lo = document.getElementById('logout-btn'); if(lo) lo.style.display = 'none';
+        const gb = document.getElementById('admin-gear-btn'); if(gb) gb.style.display = 'none';
         currentIdx = 0; score = 0; currentWrongObjects = []; currentCorrectObjects = []; isPracticePaused = false;
 
         if (isPracticeMode) {
@@ -1750,6 +1753,9 @@
 
     function endTest() {
         clearInterval(timerInterval); document.getElementById('test-area').style.display = 'none'; document.getElementById('result-area').style.display = 'block';
+        // 시험 끝 → 로그아웃 버튼 복원 (톱니바퀴는 관리자 상태 따라)
+        if(stName){ const lo = document.getElementById('logout-btn'); if(lo) lo.style.display = 'inline-block'; }
+        if(typeof updateAdminQuickBtn === 'function') updateAdminQuickBtn();
         const total = questionList.length; const percent = Math.round((score / total) * 100); const isPass = percent >= 90;
 
         document.getElementById('final-score').innerText = score + " / " + total + " (" + percent + "점)";
