@@ -120,17 +120,21 @@
             <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:16px; font-size:16px; font-weight:800; box-shadow:0 4px 14px rgba(122,16,32,0.25);" onclick="hw_open()">📸 숙제 제출하기</button>
         </div>
 
-        <input type="text" id="st-name" placeholder="이름을 입력하세요 (정규 미션용)" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
+        <input type="text" id="st-name" placeholder="이름을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
         <button class="btn" style="background:var(--ink); color:#fff;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
         <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
 
-        <!-- 관리자 로그인 (VOCA ID + 비번) -->
-        <div id="admin-login-area" style="margin-top:22px; padding-top:18px; border-top:1px dashed var(--cream-deep);">
-            <div style="font-size:12px; color:var(--ink-soft); font-weight:700; margin-bottom:10px; letter-spacing:0.5px;">관리자 로그인</div>
-            <input type="text" id="admin-id-input" placeholder="관리자 ID" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="margin-bottom:8px;">
-            <input type="password" id="admin-pw-input" placeholder="비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') tryGoAdmin()" style="margin-bottom:8px;">
-            <p id="admin-pw-err" class="modal-err" style="display:none; text-align:center;"></p>
-            <button class="btn" style="background:var(--ink); color:var(--gold); padding:14px; font-size:15px;" onclick="tryGoAdmin()">관리자 패널 진입</button>
+        <!-- 관리자 비번 모달 (이름칸에 '관리자' 입력 시 표시) -->
+        <div id="admin-pw-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#fff; border-radius:16px; padding:26px 22px; width:84%; max-width:320px; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+                <h3 style="margin:0 0 16px; color:var(--wine); font-size:17px; text-align:center;">🔒 관리자 인증</h3>
+                <input type="password" id="admin-pw-input" placeholder="비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') tryGoAdmin()" style="width:100%; box-sizing:border-box; margin-bottom:8px;">
+                <p id="admin-pw-err" class="modal-err" style="display:none; text-align:center; color:#e74c3c; font-size:12.5px; margin:4px 0;"></p>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button class="btn" style="background:#eee; color:#555; padding:13px; flex:1;" onclick="hw_closeAdminModal()">취소</button>
+                    <button class="btn" style="background:var(--ink); color:var(--gold); padding:13px; flex:2;" onclick="tryGoAdmin()">진입</button>
+                </div>
+            </div>
         </div>
 
         <div id="info-box" style="margin-top:20px; background:#eef2ff; padding:20px; border-radius:15px; text-align:left;">
@@ -144,9 +148,10 @@
         <div id="hw-panel" style="display:none; margin-top:16px; background:#fff; border:2px solid var(--wine,#7a1020); border-radius:15px; padding:18px; text-align:left;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="margin:0; color:var(--wine,#7a1020); font-size:18px;">📸 숙제 제출</h3>
-                <div>
-                    <button onclick="hw_resetGradeCourse()" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:11px; cursor:pointer; color:#888; padding:4px 8px; margin-right:6px;">학년·과정 수정</button>
-                    <button onclick="hw_close()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;">✕</button>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <button onclick="hw_goHome()" title="홈" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:13px; cursor:pointer; color:#888; padding:5px 9px;">🏠 홈</button>
+                    <button onclick="hw_resetGradeCourse()" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:11px; cursor:pointer; color:#888; padding:5px 8px;">학년·과정</button>
+                    <button onclick="hw_logout()" title="로그아웃" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:13px; cursor:pointer; color:#888; padding:5px 9px;">로그아웃</button>
                 </div>
             </div>
 
@@ -597,6 +602,7 @@
                 adminAuthed = true;
                 sessionStorage.setItem('voca_admin_authed', '1');
                 document.getElementById('admin-pw-input').value = "";
+                document.getElementById('admin-pw-modal').style.display = 'none';
                 enterAdmin();
             } else {
                 errEl.innerText = "비밀번호가 틀렸습니다."; errEl.style.display = "block";
@@ -604,6 +610,9 @@
         } catch(e) {
             errEl.innerText = "서버 연결 실패"; errEl.style.display = "block";
         }
+    }
+    function hw_closeAdminModal(){
+        document.getElementById('admin-pw-modal').style.display = 'none';
     }
     function enterAdmin() {
         document.getElementById('student-screen').style.display = "none";
@@ -622,9 +631,7 @@
     }
     function updateAdminQuickBtn() {
         const btn = document.getElementById('admin-gear-btn');
-        const loginArea = document.getElementById('admin-login-area');
         if (btn) btn.style.display = adminAuthed ? "flex" : "none";
-        if (loginArea) loginArea.style.display = adminAuthed ? "none" : "block";
     }
 
     /* ============================================================
@@ -751,6 +758,15 @@
 
     async function checkConfig() {
         stName = document.getElementById('st-name').value.trim(); if(!stName) return;
+        // 이름칸에 '관리자' 입력 시 → 관리자 비번 모달
+        if(stName === '관리자'){
+            document.getElementById('st-name').value = '';
+            stName = '';
+            document.getElementById('admin-pw-err').style.display = 'none';
+            document.getElementById('admin-pw-input').value = '';
+            document.getElementById('admin-pw-modal').style.display = 'flex';
+            return;
+        }
         document.getElementById('status-msg').innerText = "정보를 확인 중입니다...";
         try {
             const res = await fetch(APP_URL + "?name=" + encodeURIComponent(stName) + "&t=" + Date.now());
@@ -813,9 +829,22 @@
         hw_showPanel();
     }
 
+    function hw_toggleMain(hide){
+        const ids = ['st-name','status-msg','info-box','practice-area','hw-entry'];
+        ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display = hide ? 'none' : ''; });
+        document.querySelectorAll('#login-area > button').forEach(b=>{
+            if(b.getAttribute('onclick')==='checkConfig()') b.style.display = hide ? 'none' : '';
+        });
+        if(!hide){
+            document.getElementById('hw-entry').style.display = 'block';
+            document.getElementById('practice-area').style.display = 'block';
+            document.getElementById('info-box').style.display = 'block';
+        }
+    }
+
     function hw_showPanel(){
         document.getElementById('hw-panel').style.display = 'block';
-        document.getElementById('hw-entry').style.display = 'none';
+        hw_toggleMain(true);
         hwSelectedType = '';
         document.querySelectorAll('.hw-type-btn').forEach(b=>{
             b.style.background = '#fff'; b.style.color = '#555'; b.style.borderColor = '#ddd';
@@ -877,7 +906,17 @@
 
     function hw_close(){
         document.getElementById('hw-panel').style.display = 'none';
-        document.getElementById('hw-entry').style.display = 'block';
+        hw_toggleMain(false);
+    }
+
+    function hw_goHome(){
+        hw_close();
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function hw_logout(){
+        if(!confirm('로그아웃 하시겠어요?')) return;
+        location.reload();
     }
 
     function hw_onSrcChange(){
