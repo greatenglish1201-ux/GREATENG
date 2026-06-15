@@ -363,9 +363,12 @@
             <h2>대단한영어 <span>멤버스</span></h2>
         </div>
 
-        <div class="section" style="background:#fdf7f0; border-color:#e8d8b8;">
-            <span class="label">🔒 관리자 비밀번호 변경</span>
-            <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="section" style="background:#fdf7f0; border-color:#e8d8b8; padding:14px 18px;">
+            <button onclick="hw_togglePwBox()" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:15px; font-weight:800; color:var(--ink);">
+                <span>🔒 관리자 비밀번호 변경</span>
+                <span id="pw-box-arrow" style="color:var(--gold); font-size:13px;">▼</span>
+            </button>
+            <div id="pw-box" style="display:none; flex-direction:column; gap:8px; margin-top:14px;">
                 <input type="password" id="pw-cur" placeholder="현재 비밀번호" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
                 <input type="password" id="pw-next" placeholder="새 비밀번호 (4자 이상)" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
                 <input type="password" id="pw-next2" placeholder="새 비밀번호 확인" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
@@ -632,6 +635,13 @@
     }
     function hw_closeAdminModal(){
         document.getElementById('admin-pw-modal').style.display = 'none';
+    }
+    function hw_togglePwBox(){
+        const box = document.getElementById('pw-box');
+        const arrow = document.getElementById('pw-box-arrow');
+        const open = box.style.display === 'none' || !box.style.display;
+        box.style.display = open ? 'flex' : 'none';
+        if(arrow) arrow.textContent = open ? '▲' : '▼';
     }
     function hw_changePw(){
         const cur = document.getElementById('pw-cur').value;
