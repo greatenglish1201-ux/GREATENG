@@ -134,6 +134,79 @@
             </div>
         </div>
 
+        <!-- ===== 📸 숙제 제출 (신규) ===== -->
+        <div id="hw-entry" style="display:none; margin-top:16px;">
+            <button class="btn" style="background:linear-gradient(135deg,#3a2a20,#7a1020); color:#fff; padding:15px;" onclick="hw_open()">📸 숙제 제출하기</button>
+        </div>
+
+        <div id="hw-panel" style="display:none; margin-top:16px; background:#fff; border:2px solid var(--wine,#7a1020); border-radius:15px; padding:18px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0; color:var(--wine,#7a1020); font-size:18px;">📸 숙제 제출</h3>
+                <button onclick="hw_close()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;">✕</button>
+            </div>
+
+            <!-- 14일 제출현황 -->
+            <div style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20); margin-bottom:6px;">📅 최근 14일 — 안 낸 날짜를 누르세요</div>
+            <div id="hw-status-grid" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
+                <span style="color:#999; font-size:13px;">현황 불러오는 중...</span>
+            </div>
+
+            <!-- 선택된 숙제 날짜 -->
+            <div id="hw-date-box" style="display:none; background:#fff7e6; border:1px solid var(--gold,#C9A84C); border-radius:10px; padding:10px; margin-bottom:14px; text-align:center; font-weight:700; color:var(--ink,#3a2a20);">
+                선택한 숙제 날짜: <span id="hw-date-label"></span>
+            </div>
+
+            <!-- 출처 -->
+            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">출처</label>
+            <select id="hw-src" onchange="hw_onSrcChange()" style="padding:11px; font-size:15px; margin:5px 0 8px; width:100%;">
+                <option value="모의고사">모의고사</option>
+                <option value="모의고사편집본">모의고사편집본</option>
+                <option value="수능특강 영어">수능특강 영어</option>
+                <option value="수능특강 영독">수능특강 영독</option>
+                <option value="수능완성">수능완성</option>
+                <option value="학교부교재">학교부교재</option>
+                <option value="미리수능 기초독해">미리수능 기초독해</option>
+                <option value="__custom__">직접입력</option>
+            </select>
+
+            <!-- 모의고사: 년/월/문항 -->
+            <div id="hw-src-mock" style="display:flex; gap:6px; margin-bottom:8px;">
+                <input type="text" id="hw-mock-year" placeholder="년 (예:2026)" style="padding:10px; font-size:14px; width:33%;">
+                <input type="text" id="hw-mock-month" placeholder="월 (예:6)" style="padding:10px; font-size:14px; width:25%;">
+                <input type="text" id="hw-mock-no" placeholder="문항번호" style="padding:10px; font-size:14px; flex:1;">
+            </div>
+
+            <!-- 일반교재: 강/회차 + 문항 -->
+            <div id="hw-src-normal" style="display:none; gap:6px; margin-bottom:8px;">
+                <input type="text" id="hw-normal-detail" placeholder="강/회차·문항번호 (예: 13-1)" style="padding:10px; font-size:14px; width:100%;">
+            </div>
+
+            <!-- 직접입력 -->
+            <div id="hw-src-custom" style="display:none; margin-bottom:8px;">
+                <input type="text" id="hw-custom-src" placeholder="출처 직접 입력" style="padding:10px; font-size:14px; width:100%;">
+            </div>
+
+            <!-- 숙제 구분 -->
+            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 구분</label>
+            <select id="hw-type" onchange="hw_onTypeChange()" style="padding:11px; font-size:15px; margin:5px 0 8px; width:100%;">
+                <option value="지문분석">지문분석</option>
+                <option value="단어쓰기">단어쓰기</option>
+                <option value="__custom__">직접입력</option>
+            </select>
+            <input type="text" id="hw-type-custom" placeholder="숙제 구분 직접 입력" style="display:none; padding:10px; font-size:14px; width:100%; margin-bottom:8px;">
+
+            <!-- 사진 -->
+            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 사진</label>
+            <input type="file" id="hw-photo" accept="image/*" capture="environment" onchange="hw_preview()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
+            <img id="hw-preview-img" style="display:none; max-width:100%; border-radius:10px; margin-bottom:10px;">
+
+            <button class="btn" id="hw-submit-btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:15px;" onclick="hw_submit()">제출하기</button>
+            <div id="hw-msg" style="text-align:center; font-size:13px; margin-top:8px; color:var(--ink-soft,#3a2a20);"></div>
+        </div>
+
+        <!-- 숙제 제출용 숨김 iframe -->
+        <iframe name="hw_iframe" id="hw_iframe" style="display:none;"></iframe>
+
         <div class="practice-section" id="practice-area" style="display:none;">
             <h3 style="margin: 0 0 5px 0; color: var(--black);">자율 무한 반복 학습 ♾️</h3>
             <p style="font-size: 13px; color: #666; margin-bottom: 15px;">범위와 유형을 골라 무한으로 복습합니다.</p>
@@ -340,6 +413,8 @@
        공통 상수 (학생/관리자 동일 시트·GAS 공유)
        ============================================================ */
     const APP_URL = "https://script.google.com/macros/s/AKfycbwGq_DTjgzjJbacIodVE859aa_Ke4LxL28-sIbv-nRkecAaJefL179BKN4Jgr2F9xXKRw/exec";
+    // 숙제 제출 전용 GAS (숙제점검 시트 — 단어장 GAS와 별개)
+    const HW_URL = "https://script.google.com/macros/s/AKfycbwu_6vMigAhIXq8o-4mda7Gyd1dfiC5nSsT0Ei9Ckwlwuc_OGMAEb9FybGB6lOJcsbL/exec";
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-3vzDLmtDUF_45xjQurffz8gFpzZN-3IYaZECeafSsAQ3XgjeGCeEr1f0zDP5faY31iagIMZrfm67/pub?gid=0&single=true&output=csv";
 
     /* ============================================================
@@ -478,6 +553,8 @@
     const SEC_LONG_OBJ = 15;
 
     let stName = "", config = null, questionList = [], currentIdx = 0, score = 0, accumulatedWrongWords = [], currentWrongObjects = [], currentCorrectObjects = [], isAccumulatedMode = false, timerInterval = null, remainingTime = 0;
+    // 숙제 제출용 (학년·과정은 localStorage 기억, 숙제날짜는 현황 클릭으로 선택)
+    let hwGrade = "", hwCourse = "", hwSelectedDate = "";
     let isPracticeMode = false, isPracticePaused = false;
 
     function initPracticeUI() {
@@ -633,7 +710,230 @@
             } else { wrongBtn.style.display = 'none'; }
             document.getElementById('practice-area').style.display = 'block';
             document.getElementById('status-msg').innerText = "확인 완료!";
+            document.getElementById('hw-entry').style.display = 'block';
         } catch(e) { alert("서버 연결 실패!"); }
+    }
+
+    /* ===== 📸 숙제 제출 기능 (신규 — 기존 단어장 로직과 분리) ===== */
+    const HW_GRADE_OPTS = ['1학년','2학년','3학년'];
+    const HW_COURSE_OPTS = ['중등부','고등부'];
+
+    function hw_open(){
+        // 학년·과정 최초 1회 확보 (localStorage 기억)
+        hwGrade  = localStorage.getItem('hw_grade')  || '';
+        hwCourse = localStorage.getItem('hw_course') || '';
+        if(!hwGrade || !hwCourse){
+            if(!hw_askGradeCourse()) return;
+        }
+        document.getElementById('hw-panel').style.display = 'block';
+        document.getElementById('hw-entry').style.display = 'none';
+        hw_onSrcChange();
+        hw_loadStatus();
+    }
+
+    function hw_askGradeCourse(){
+        let g = prompt('학년을 입력하세요 (예: 1학년 / 2학년 / 3학년)\n※ 처음 한 번만 입력하면 기억됩니다.', '');
+        if(g===null) return false;
+        g = g.trim();
+        if(!g){ alert('학년을 입력해주세요.'); return false; }
+        let c = prompt('과정을 입력하세요 — 중등부 또는 고등부', '');
+        if(c===null) return false;
+        c = c.trim();
+        if(c!=='중등부' && c!=='고등부'){ alert('중등부 또는 고등부로 입력해주세요.'); return false; }
+        hwGrade = g; hwCourse = c;
+        localStorage.setItem('hw_grade', g);
+        localStorage.setItem('hw_course', c);
+        return true;
+    }
+
+    function hw_close(){
+        document.getElementById('hw-panel').style.display = 'none';
+        document.getElementById('hw-entry').style.display = 'block';
+    }
+
+    function hw_onSrcChange(){
+        const v = document.getElementById('hw-src').value;
+        document.getElementById('hw-src-mock').style.display   = (v==='모의고사') ? 'flex' : 'none';
+        document.getElementById('hw-src-normal').style.display = (v==='모의고사' || v==='__custom__') ? 'none' : 'block';
+        document.getElementById('hw-src-custom').style.display = (v==='__custom__') ? 'block' : 'none';
+    }
+
+    function hw_onTypeChange(){
+        const v = document.getElementById('hw-type').value;
+        document.getElementById('hw-type-custom').style.display = (v==='__custom__') ? 'block' : 'none';
+    }
+
+    // 14일 현황 조회
+    async function hw_loadStatus(){
+        const grid = document.getElementById('hw-status-grid');
+        grid.innerHTML = '<span style="color:#999; font-size:13px;">현황 불러오는 중...</span>';
+        try{
+            const res = await fetch(HW_URL + "?type=homeworkStatus&name=" + encodeURIComponent(stName) + "&t=" + Date.now());
+            const data = await res.json();
+            hw_renderStatus(data.days || []);
+        }catch(e){
+            grid.innerHTML = '<span style="color:#e74c3c; font-size:13px;">현황을 불러오지 못했습니다. 날짜를 직접 선택해 제출하세요.</span>';
+            hw_renderFallbackDates();
+        }
+    }
+
+    function hw_statusStyle(s){
+        if(s==='미제출') return {bg:'#f4cccc', fg:'#cc0000', label:'미제출'};
+        if(s==='지연제출') return {bg:'#fff2cc', fg:'#7f6000', label:'지연'};
+        if(s==='선제출') return {bg:'#d9ead3', fg:'#274e13', label:'선제출'};
+        if(s==='제출') return {bg:'#d9ead3', fg:'#274e13', label:'제출'};
+        if(s==='시험') return {bg:'#ddebf7', fg:'#1f4e79', label:'시험'};
+        if(s==='휴일') return {bg:'#eeeeee', fg:'#666666', label:'휴일'};
+        return {bg:'#fafafa', fg:'#999', label:'-'};  // 빈칸(미래/미배정)
+    }
+
+    function hw_renderStatus(days){
+        const grid = document.getElementById('hw-status-grid');
+        if(!days.length){ hw_renderFallbackDates(); return; }
+        grid.innerHTML = '';
+        days.forEach(d=>{
+            const st = hw_statusStyle(d.status);
+            const md = d.date.slice(5).replace('-','/'); // MM/DD
+            const submittable = (d.status==='미제출' || d.status==='지연제출' || d.status==='' || d.status==='선제출');
+            const el = document.createElement('div');
+            el.style.cssText = `flex:0 0 auto; min-width:58px; text-align:center; padding:7px 4px; border-radius:9px; background:${st.bg}; color:${st.fg}; font-size:12px; font-weight:700; cursor:${submittable?'pointer':'default'}; border:2px solid transparent;`;
+            el.innerHTML = `${md}<br><span style="font-size:10px;">${st.label}</span>`;
+            if(submittable){
+                el.onclick = ()=> hw_pickDate(d.date, el);
+            }
+            grid.appendChild(el);
+        });
+    }
+
+    // 현황 조회 실패 시 — 최근 14일 날짜를 직접 선택하게
+    function hw_renderFallbackDates(){
+        const grid = document.getElementById('hw-status-grid');
+        grid.innerHTML = '';
+        const today = new Date(); today.setHours(0,0,0,0);
+        for(let i=13;i>=0;i--){
+            const d = new Date(today); d.setDate(d.getDate()-i);
+            const iso = d.toISOString().slice(0,10);
+            const md = (d.getMonth()+1)+'/'+d.getDate();
+            const el = document.createElement('div');
+            el.style.cssText = 'flex:0 0 auto; min-width:54px; text-align:center; padding:7px 4px; border-radius:9px; background:#fafafa; color:#555; font-size:12px; font-weight:700; cursor:pointer; border:2px solid transparent;';
+            el.textContent = md;
+            el.onclick = ()=> hw_pickDate(iso, el);
+            grid.appendChild(el);
+        }
+    }
+
+    function hw_pickDate(iso, el){
+        hwSelectedDate = iso;
+        // 하이라이트
+        document.querySelectorAll('#hw-status-grid > div').forEach(x=> x.style.border='2px solid transparent');
+        if(el) el.style.border = '2px solid #7a1020';
+        // 'yyyy. m. d' 형식(기존 시트 표기와 동일)으로 라벨
+        const [y,m,dd] = iso.split('-').map(Number);
+        document.getElementById('hw-date-label').textContent = `${y}. ${m}. ${dd}`;
+        document.getElementById('hw-date-box').style.display = 'block';
+    }
+
+    // 사진 미리보기 + 압축 보관
+    let hwCompressedDataUrl = '';
+    function hw_preview(){
+        const f = document.getElementById('hw-photo').files[0];
+        if(!f) return;
+        const reader = new FileReader();
+        reader.onload = (ev)=>{
+            const img = new Image();
+            img.onload = ()=>{
+                const maxW = 1200;
+                let w = img.width, h = img.height;
+                if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+                const cv = document.createElement('canvas');
+                cv.width = w; cv.height = h;
+                cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                hwCompressedDataUrl = cv.toDataURL('image/jpeg', 0.7);
+                const pv = document.getElementById('hw-preview-img');
+                pv.src = hwCompressedDataUrl;
+                pv.style.display = 'block';
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(f);
+    }
+
+    function hw_buildSrc(){
+        const v = document.getElementById('hw-src').value;
+        if(v==='__custom__'){
+            return document.getElementById('hw-custom-src').value.trim();
+        }
+        if(v==='모의고사'){
+            const y = document.getElementById('hw-mock-year').value.trim();
+            const m = document.getElementById('hw-mock-month').value.trim();
+            const no = document.getElementById('hw-mock-no').value.trim();
+            return `모의고사 ${y} ${m}월 ${no}`.replace(/\s+/g,' ').trim();
+        }
+        const detail = document.getElementById('hw-normal-detail').value.trim();
+        return (v + ' ' + detail).trim();
+    }
+
+    function hw_buildType(){
+        const v = document.getElementById('hw-type').value;
+        if(v==='__custom__') return document.getElementById('hw-type-custom').value.trim();
+        return v;
+    }
+
+    function hw_submit(){
+        const msg = document.getElementById('hw-msg');
+        if(!hwSelectedDate){ msg.style.color='#e74c3c'; msg.textContent='먼저 위에서 숙제 날짜를 선택하세요.'; return; }
+        const src = hw_buildSrc();
+        if(!src){ msg.style.color='#e74c3c'; msg.textContent='출처를 입력/선택하세요.'; return; }
+        const type = hw_buildType();
+        if(!type){ msg.style.color='#e74c3c'; msg.textContent='숙제 구분을 입력하세요.'; return; }
+        if(!hwCompressedDataUrl){ msg.style.color='#e74c3c'; msg.textContent='사진을 선택하세요.'; return; }
+
+        // 'yyyy. m. d' 형식으로 due 전송 (기존 시트 표기와 동일)
+        const [y,m,dd] = hwSelectedDate.split('-').map(Number);
+        const dueStr = `${y}. ${m}. ${dd}`;
+
+        const btn = document.getElementById('hw-submit-btn');
+        btn.disabled = true;
+        msg.style.color = 'var(--ink-soft,#3a2a20)';
+        msg.textContent = '전송 중...';
+
+        // iframe form-POST (대용량 base64 안전 전송)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = HW_URL;
+        form.target = 'hw_iframe';
+        form.style.display = 'none';
+        const fields = {
+            name: stName, grade: hwGrade, due: dueStr, src: src,
+            course: hwCourse, type: type, image: hwCompressedDataUrl, mime: 'image/jpeg'
+        };
+        for(const k in fields){
+            const inp = document.createElement('textarea');
+            inp.name = k; inp.value = fields[k];
+            form.appendChild(inp);
+        }
+        document.body.appendChild(form);
+
+        const iframe = document.getElementById('hw_iframe');
+        let done = false;
+        const onload = ()=>{
+            if(done) return; done = true;
+            iframe.removeEventListener('load', onload);
+            msg.style.color = '#274e13';
+            msg.innerHTML = '✅ 제출 완료! (현황 반영까지 잠시 걸릴 수 있어요)';
+            btn.disabled = false;
+            // 입력 초기화 (날짜·현황은 유지)
+            document.getElementById('hw-photo').value = '';
+            document.getElementById('hw-preview-img').style.display = 'none';
+            hwCompressedDataUrl = '';
+            setTimeout(()=>{ document.body.removeChild(form); }, 500);
+            // 잠시 후 현황 새로고침
+            setTimeout(hw_loadStatus, 2500);
+        };
+        iframe.addEventListener('load', onload);
+        form.submit();
+        // 안전장치: 응답 없어도 8초 후 완료 처리
+        setTimeout(()=>{ if(!done) onload(); }, 8000);
     }
 
     async function handleStart(mode) {
