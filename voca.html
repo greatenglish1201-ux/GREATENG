@@ -359,7 +359,18 @@
         <button class="admin-back-btn" onclick="exitAdmin()">← 학생 화면으로</button>
         <div class="main-title">
             <p>Dae-dan-han Premium System</p>
-            <h2>대단한영어 <span>VOCA MASTER</span></h2>
+            <h2>대단한영어 <span>멤버스</span></h2>
+        </div>
+
+        <div class="section" style="background:#fdf7f0; border-color:#e8d8b8;">
+            <span class="label">🔒 관리자 비밀번호 변경</span>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <input type="password" id="pw-cur" placeholder="현재 비밀번호" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
+                <input type="password" id="pw-next" placeholder="새 비밀번호 (4자 이상)" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
+                <input type="password" id="pw-next2" placeholder="새 비밀번호 확인" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
+                <button class="btn" style="background:var(--ink); color:var(--gold); padding:13px;" onclick="hw_changePw()">비밀번호 변경</button>
+                <div id="pw-change-msg" style="font-size:13px; text-align:center; min-height:18px;"></div>
+            </div>
         </div>
 
         <div class="section">
@@ -585,20 +596,23 @@
     };
 
     /* ============================================================
-       관리자 진입 (첫 화면 비번 모달 → GAS adminLogin 검증)
+       관리자 진입 (이름칸 '관리자' → 비번 모달 → 숙제점검 GAS adminCheck 검증)
        ============================================================ */
     let adminAuthed = (sessionStorage.getItem('voca_admin_authed') === '1'); // 새로고침해도 유지(탭 닫으면 해제)
 
-    async function tryGoAdmin() {
+    function tryGoAdmin() {
         const pw = document.getElementById('admin-pw-input').value;
         const errEl = document.getElementById('admin-pw-err');
         if (!pw) { errEl.innerText = "비밀번호를 입력하세요."; errEl.style.display = "block"; return; }
         errEl.style.display = "none";
-        try {
-            // ID는 형식만(검증은 비번으로). GAS 무수정.
-            const res = await fetch(APP_URL + "?type=adminLogin&pw=" + encodeURIComponent(pw) + "&t=" + Date.now());
-            const data = await res.json();
-            if (data.ok) {
+        errEl.innerText = "";
+
+        const cbName = 'hwAdmin_' + Date.now();
+        let done = false;
+        const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName] = (data)=>{
+            done = true; cleanup();
+            if (data && data.ok) {
                 adminAuthed = true;
                 sessionStorage.setItem('voca_admin_authed', '1');
                 document.getElementById('admin-pw-input').value = "";
@@ -607,12 +621,48 @@
             } else {
                 errEl.innerText = "비밀번호가 틀렸습니다."; errEl.style.display = "block";
             }
-        } catch(e) {
-            errEl.innerText = "서버 연결 실패"; errEl.style.display = "block";
-        }
+        };
+        const s = document.createElement('script');
+        s.id = cbName;
+        s.src = HW_URL + "?type=adminCheck&pw=" + encodeURIComponent(pw) + "&callback=" + cbName + "&t=" + Date.now();
+        s.onerror = ()=>{ if(done) return; cleanup(); errEl.innerText="서버 연결 실패"; errEl.style.display="block"; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done) return; cleanup(); errEl.innerText="서버 연결 실패"; errEl.style.display="block"; }, 8000);
     }
     function hw_closeAdminModal(){
         document.getElementById('admin-pw-modal').style.display = 'none';
+    }
+    function hw_changePw(){
+        const cur = document.getElementById('pw-cur').value;
+        const next = document.getElementById('pw-next').value;
+        const next2 = document.getElementById('pw-next2').value;
+        const m = document.getElementById('pw-change-msg');
+        m.style.color = '#e74c3c';
+        if(!cur || !next){ m.textContent = '모든 칸을 입력하세요.'; return; }
+        if(next !== next2){ m.textContent = '새 비밀번호가 일치하지 않습니다.'; return; }
+        if(next.length < 4){ m.textContent = '새 비밀번호는 4자 이상이어야 합니다.'; return; }
+        m.style.color = '#666'; m.textContent = '변경 중...';
+
+        const cbName = 'hwPwSet_' + Date.now();
+        let done = false;
+        const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName] = (data)=>{
+            done = true; cleanup();
+            if(data && data.ok){
+                m.style.color = '#274e13'; m.textContent = '✅ 비밀번호가 변경되었습니다.';
+                document.getElementById('pw-cur').value = '';
+                document.getElementById('pw-next').value = '';
+                document.getElementById('pw-next2').value = '';
+            } else {
+                m.style.color = '#e74c3c'; m.textContent = (data && data.msg) || '변경 실패';
+            }
+        };
+        const s = document.createElement('script');
+        s.id = cbName;
+        s.src = HW_URL + "?type=adminSetPw&cur=" + encodeURIComponent(cur) + "&next=" + encodeURIComponent(next) + "&callback=" + cbName + "&t=" + Date.now();
+        s.onerror = ()=>{ if(done) return; cleanup(); m.style.color='#e74c3c'; m.textContent='서버 연결 실패'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done) return; cleanup(); m.style.color='#e74c3c'; m.textContent='서버 연결 실패'; }, 8000);
     }
     function enterAdmin() {
         document.getElementById('student-screen').style.display = "none";
