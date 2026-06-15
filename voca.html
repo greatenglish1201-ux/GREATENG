@@ -948,6 +948,7 @@
         form.method = 'POST';
         form.action = HW_URL;
         form.target = 'hw_iframe';
+        form.enctype = 'application/x-www-form-urlencoded';
         form.style.display = 'none';
         const fields = {
             name: stName, grade: hwGrade, due: dueStr, src: src,
