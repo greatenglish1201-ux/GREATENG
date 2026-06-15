@@ -142,7 +142,10 @@
         <div id="hw-panel" style="display:none; margin-top:16px; background:#fff; border:2px solid var(--wine,#7a1020); border-radius:15px; padding:18px; text-align:left;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="margin:0; color:var(--wine,#7a1020); font-size:18px;">📸 숙제 제출</h3>
-                <button onclick="hw_close()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;">✕</button>
+                <div>
+                    <button onclick="hw_resetGradeCourse()" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:11px; cursor:pointer; color:#888; padding:4px 8px; margin-right:6px;">학년·과정 수정</button>
+                    <button onclick="hw_close()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;">✕</button>
+                </div>
             </div>
 
             <!-- 14일 제출현황 -->
@@ -211,6 +214,31 @@
 
             <button class="btn" id="hw-submit-btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:15px;" onclick="hw_submit()">제출하기</button>
             <div id="hw-msg" style="text-align:center; font-size:13px; margin-top:8px; color:var(--ink-soft,#3a2a20);"></div>
+        </div>
+
+        <!-- 학년·과정 최초 입력 모달 (드롭다운) -->
+        <div id="hw-gc-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#fff; border-radius:16px; padding:24px; width:86%; max-width:340px; text-align:left; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+                <h3 style="margin:0 0 4px; color:var(--wine,#7a1020); font-size:18px;">학생 정보 입력</h3>
+                <p style="margin:0 0 16px; font-size:12.5px; color:#888;">처음 한 번만 입력하면 기억됩니다.</p>
+                <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">학년</label>
+                <select id="hw-gc-grade" style="padding:11px; font-size:15px; margin:5px 0 12px; width:100%;">
+                    <option value="">선택하세요</option>
+                    <option value="1학년">1학년</option>
+                    <option value="2학년">2학년</option>
+                    <option value="3학년">3학년</option>
+                </select>
+                <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">과정</label>
+                <select id="hw-gc-course" style="padding:11px; font-size:15px; margin:5px 0 18px; width:100%;">
+                    <option value="">선택하세요</option>
+                    <option value="중등부">중등부</option>
+                    <option value="고등부">고등부</option>
+                </select>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn" style="background:#eee; color:#555; padding:13px; flex:1;" onclick="hw_gcCancel()">취소</button>
+                    <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:13px; flex:2;" onclick="hw_gcSave()">저장</button>
+                </div>
+            </div>
         </div>
 
         <!-- 숙제 제출용 숨김 iframe -->
@@ -732,8 +760,15 @@
         hwGrade  = localStorage.getItem('hw_grade')  || '';
         hwCourse = localStorage.getItem('hw_course') || '';
         if(!hwGrade || !hwCourse){
-            if(!hw_askGradeCourse()) return;
+            document.getElementById('hw-gc-grade').value = hwGrade;
+            document.getElementById('hw-gc-course').value = hwCourse;
+            document.getElementById('hw-gc-modal').style.display = 'flex';
+            return;
         }
+        hw_showPanel();
+    }
+
+    function hw_showPanel(){
         document.getElementById('hw-panel').style.display = 'block';
         document.getElementById('hw-entry').style.display = 'none';
         hw_fillMockSelects();
@@ -752,19 +787,27 @@
         }
     }
 
-    function hw_askGradeCourse(){
-        let g = prompt('학년을 입력하세요 (예: 1학년 / 2학년 / 3학년)\n※ 처음 한 번만 입력하면 기억됩니다.', '');
-        if(g===null) return false;
-        g = g.trim();
-        if(!g){ alert('학년을 입력해주세요.'); return false; }
-        let c = prompt('과정을 입력하세요 — 중등부 또는 고등부', '');
-        if(c===null) return false;
-        c = c.trim();
-        if(c!=='중등부' && c!=='고등부'){ alert('중등부 또는 고등부로 입력해주세요.'); return false; }
+    function hw_gcSave(){
+        const g = document.getElementById('hw-gc-grade').value;
+        const c = document.getElementById('hw-gc-course').value;
+        if(!g){ alert('학년을 선택하세요.'); return; }
+        if(!c){ alert('과정을 선택하세요.'); return; }
         hwGrade = g; hwCourse = c;
         localStorage.setItem('hw_grade', g);
         localStorage.setItem('hw_course', c);
-        return true;
+        document.getElementById('hw-gc-modal').style.display = 'none';
+        hw_showPanel();
+    }
+
+    function hw_gcCancel(){
+        document.getElementById('hw-gc-modal').style.display = 'none';
+    }
+
+    // 학년·과정 다시 바꾸기 (필요 시 호출)
+    function hw_resetGradeCourse(){
+        document.getElementById('hw-gc-grade').value = localStorage.getItem('hw_grade') || '';
+        document.getElementById('hw-gc-course').value = localStorage.getItem('hw_course') || '';
+        document.getElementById('hw-gc-modal').style.display = 'flex';
     }
 
     function hw_close(){
