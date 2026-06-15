@@ -787,6 +787,11 @@
                 alert("현재 배정된 미션이 없습니다.\n무한복습 · 누적복습으로 단어 학습을 이어가세요!");
                 document.getElementById('status-msg').innerText = "배정된 미션 없음";
                 document.getElementById('practice-area').style.display = 'block';
+                document.getElementById('hw-entry').style.display = 'block';
+                adminAuthed = false;
+                sessionStorage.removeItem('voca_admin_authed');
+                const gb = document.getElementById('admin-gear-btn');
+                if(gb) gb.style.display = 'none';
                 return;
             }
 
@@ -816,6 +821,11 @@
             document.getElementById('practice-area').style.display = 'block';
             document.getElementById('status-msg').innerText = "확인 완료!";
             document.getElementById('hw-entry').style.display = 'block';
+            // 학생 모드 진입 → 관리자 권한 해제 (공용기기 보안)
+            adminAuthed = false;
+            sessionStorage.removeItem('voca_admin_authed');
+            const gearBtn = document.getElementById('admin-gear-btn');
+            if(gearBtn) gearBtn.style.display = 'none';
         } catch(e) { alert("서버 연결 실패!"); }
     }
 
