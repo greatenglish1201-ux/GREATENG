@@ -502,6 +502,7 @@
         </div>
 
         <button class="btn-save" onclick="ADMIN.saveToSheet()">구글 시트에 최종 배정 저장</button>
+        <button class="btn" style="background:var(--blue); color:#fff; margin-top:10px;" onclick="previewAsStudent()">👀 선택한 학생으로 화면 확인</button>
         <div style="display: flex; gap: 10px;">
             <button class="btn-print" onclick="alert('인쇄 준비중')">배정 시험지 인쇄</button>
             <button class="btn-wrong-print" onclick="alert('오답노트 준비중')">오답노트 인쇄</button>
@@ -688,7 +689,22 @@
     }
     // 인증 후 학생화면에서 비번 없이 관리자 재진입
     function goAdminDirect() {
-        if (adminAuthed) enterAdmin();
+        if (adminAuthed) { previewMode = false; enterAdmin(); }
+    }
+
+    // 관리자: 선택한 학생으로 학생 화면 미리보기 (관리자 권한 유지)
+    let previewMode = false;
+    function previewAsStudent(){
+        const sel = document.getElementById('adm-st-list');
+        const name = sel ? sel.value : '';
+        if(!name){ alert('먼저 위에서 학생을 선택하세요.'); return; }
+        previewMode = true;  // checkConfig가 관리자 권한 해제하지 않도록
+        document.getElementById('admin-screen').style.display = "none";
+        document.getElementById('student-screen').style.display = "block";
+        document.getElementById('st-name').value = name;
+        // 미리보기 안내
+        document.getElementById('status-msg').innerText = "👀 [" + name + "] 미리보기 — 우측 상단 ⚙️로 관리자 복귀";
+        checkConfig();
     }
     function updateAdminQuickBtn() {
         const btn = document.getElementById('admin-gear-btn');
@@ -852,10 +868,12 @@
                 document.getElementById('status-msg').innerText = "배정된 미션 없음";
                 document.getElementById('practice-area').style.display = 'block';
                 document.getElementById('hw-entry').style.display = 'block';
-                adminAuthed = false;
-                sessionStorage.removeItem('voca_admin_authed');
-                const gb = document.getElementById('admin-gear-btn');
-                if(gb) gb.style.display = 'none';
+                if(!previewMode){
+                    adminAuthed = false;
+                    sessionStorage.removeItem('voca_admin_authed');
+                    const gb = document.getElementById('admin-gear-btn');
+                    if(gb) gb.style.display = 'none';
+                } else { updateAdminQuickBtn(); }
                 hw_showLogout();
                 return;
             }
@@ -884,13 +902,14 @@
                 wrongBtn.style.display = 'block'; wrongBtn.innerText = "🚨 누적 오답 훈련하기 (" + accumulatedWrongWords.length + "개)";
             } else { wrongBtn.style.display = 'none'; }
             document.getElementById('practice-area').style.display = 'block';
-            document.getElementById('status-msg').innerText = "확인 완료!";
+            if(!previewMode){
+                document.getElementById('status-msg').innerText = "확인 완료!";
+                adminAuthed = false;
+                sessionStorage.removeItem('voca_admin_authed');
+                const gearBtn = document.getElementById('admin-gear-btn');
+                if(gearBtn) gearBtn.style.display = 'none';
+            } else { updateAdminQuickBtn(); }
             document.getElementById('hw-entry').style.display = 'block';
-            // 학생 모드 진입 → 관리자 권한 해제 (공용기기 보안)
-            adminAuthed = false;
-            sessionStorage.removeItem('voca_admin_authed');
-            const gearBtn = document.getElementById('admin-gear-btn');
-            if(gearBtn) gearBtn.style.display = 'none';
             hw_showLogout();
         } catch(e) { alert("서버 연결 실패!"); }
     }
@@ -1031,6 +1050,7 @@
 
     function hw_logout(){
         if(!confirm('로그아웃 하시겠어요?')) return;
+        previewMode = false;
         location.reload();
     }
 
