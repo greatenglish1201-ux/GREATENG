@@ -183,9 +183,6 @@
                     </select>
                     <select id="hw-mock-year" style="padding:10px; font-size:14px; flex:1;">
                         <option value="">년</option>
-                        <option value="2025">2025</option>
-                        <option value="2026" selected>2026</option>
-                        <option value="2027">2027</option>
                     </select>
                 </div>
                 <div style="display:flex; gap:6px;">
@@ -827,8 +824,14 @@
     }
 
     function hw_fillMockSelects(){
+        const ySel = document.getElementById('hw-mock-year');
         const mSel = document.getElementById('hw-mock-month');
         const nSel = document.getElementById('hw-mock-no');
+        if(ySel && ySel.options.length <= 1){
+            const cur = new Date().getFullYear();
+            for(let y=cur; y>=1994; y--){ ySel.add(new Option(String(y), y)); }
+            ySel.value = String(cur);  // 올해 기본 선택
+        }
         if(mSel.options.length <= 1){
             for(let m=1;m<=12;m++){ mSel.add(new Option(m+'월', m)); }
         }
@@ -1065,25 +1068,42 @@
 
     function hw_submit(){
         const msg = document.getElementById('hw-msg');
-        if(!hwSelectedDate){ msg.style.color='#e74c3c'; msg.textContent='먼저 위에서 숙제 날짜를 선택하세요.'; return; }
-        // 일반 교재는 강·번 필수
+        const missing = [];
+
+        if(!hwSelectedDate) missing.push('숙제 날짜');
+
         const srcSel = document.getElementById('hw-src').value;
-        if(srcSel==='교과서'){
+        if(!srcSel) missing.push('출처');
+
+        if(srcSel==='모의고사'){
+            if(!document.getElementById('hw-mock-grade').value) missing.push('모의고사 학년');
+            if(!document.getElementById('hw-mock-year').value) missing.push('모의고사 년도');
+            if(!document.getElementById('hw-mock-month').value) missing.push('모의고사 월');
+            if(!document.getElementById('hw-mock-no').value) missing.push('모의고사 문항');
+        } else if(srcSel==='교과서'){
             let pub = document.getElementById('hw-tb-pub').value;
             if(pub==='__custom__') pub = document.getElementById('hw-tb-pub-custom').value.trim();
-            const lesson = document.getElementById('hw-tb-lesson').value.trim();
-            const no = document.getElementById('hw-tb-no').value.trim();
-            if(!pub || !lesson || !no){ msg.style.color='#e74c3c'; msg.textContent='출판사·과·번을 입력하세요. (페이지는 선택)'; return; }
-        } else if(srcSel!=='모의고사' && srcSel!=='__custom__'){
-            const lesson = document.getElementById('hw-normal-lesson').value.trim();
-            const no = document.getElementById('hw-normal-no').value.trim();
-            if(!lesson || !no){ msg.style.color='#e74c3c'; msg.textContent='강과 번을 입력하세요. (페이지는 선택)'; return; }
+            if(!pub) missing.push('출판사(저자)');
+            if(!document.getElementById('hw-tb-lesson').value) missing.push('과');
+            if(!document.getElementById('hw-tb-no').value) missing.push('번');
+        } else if(srcSel==='__custom__'){
+            if(!document.getElementById('hw-custom-src').value.trim()) missing.push('출처 내용');
+        } else if(srcSel){
+            if(!document.getElementById('hw-normal-lesson').value) missing.push('강');
+            if(!document.getElementById('hw-normal-no').value) missing.push('번');
         }
-        const src = hw_buildSrc();
-        if(!src){ msg.style.color='#e74c3c'; msg.textContent='출처를 입력/선택하세요.'; return; }
+
         const type = hw_buildType();
-        if(!type){ msg.style.color='#e74c3c'; msg.textContent='숙제 구분을 선택하세요.'; return; }
-        if(!hwCompressedDataUrl){ msg.style.color='#e74c3c'; msg.textContent='사진을 선택하세요.'; return; }
+        if(!type) missing.push('숙제 구분');
+
+        if(!hwCompressedDataUrl) missing.push('사진');
+
+        if(missing.length){
+            alert('아래 항목을 선택/입력해주세요:\n\n· ' + missing.join('\n· '));
+            return;
+        }
+
+        const src = hw_buildSrc();
 
         // 'yyyy. m. d' 형식으로 due 전송 (기존 시트 표기와 동일)
         const [y,m,dd] = hwSelectedDate.split('-').map(Number);
