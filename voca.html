@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대단한영어 VOCA MASTER</title>
+    <title>대단한영어 멤버스</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root {
@@ -24,7 +24,7 @@
         /* ===== 학생 화면 ===== */
         .card { background: var(--paper); width: 100%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 18px 50px rgba(122,16,32,0.10), 0 2px 8px rgba(58,42,32,0.06); text-align: center; height: fit-content; margin-top: 20px; position: relative; border: 1px solid var(--cream-deep); overflow: hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background: linear-gradient(90deg,#7a1020,#C9A84C); }
-        .logo-img { width: 96px; height: 96px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 18px; box-shadow: 0 4px 18px rgba(122,16,32,0.18); }
+        .logo-img { width: 96px; height: 96px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 18px; box-shadow: 0 0 30px rgba(201,168,76,0.35), 0 4px 18px rgba(122,16,32,0.18); }
         .btn { width: 100%; padding: 17px; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; color: white; margin-top: 10px; transition: 0.25s; letter-spacing: -0.2px; }
         input[type="text"], input[type="password"], select { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #ddd; font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--blue); }
@@ -110,9 +110,10 @@
     <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--gold); border:none; font-size:17px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.15); align-items:center; justify-content:center;">⚙️</button>
 
     <div id="login-area">
-        <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 VOCA">
-        <h1 style="margin: 0 0 3px 0; font-size: 25px; font-weight: 800; color: var(--wine); letter-spacing:-0.5px;">대단한영어 <span style="color: var(--gold);">VOCA</span></h1>
-        <p style="margin:0 0 22px; font-size:12.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px;">단어 마스터 시스템</p>
+        <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 멤버스">
+        <h1 style="margin: 0 0 4px 0; font-size: 26px; font-weight: 900; color: var(--wine); letter-spacing:1px;">대단한영어 <span style="color: var(--gold);">멤버스</span></h1>
+        <p style="margin:0 0 4px; font-size:13px; color:var(--gold-soft); font-weight:700; letter-spacing:1.5px;">MEMBERS</p>
+        <p style="margin:0 0 22px; font-size:12px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px; font-style:italic;">탁월함이 습관이 되도록</p>
 
         <!-- ===== 📸 숙제 제출 (상단 배치) ===== -->
         <div id="hw-entry" style="display:none; margin-bottom:22px;">
@@ -120,7 +121,7 @@
         </div>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요 (정규 미션용)" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
-        <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:white;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
+        <button class="btn" style="background:var(--ink); color:#fff;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
         <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
 
         <!-- 관리자 로그인 (VOCA ID + 비번) -->
@@ -136,7 +137,7 @@
             <p id="info-msg" style="margin:0; line-height:1.6; font-size:15px;"></p>
             <div class="btn-group">
                 <button id="start-mission-btn" class="btn" style="background:var(--blue); display:none;" onclick="startTest()">오늘의 미션 시작하기</button>
-                <button id="db-wrong-btn" class="btn" style="background:#e74c3c; display:none;" onclick="startAccumulatedWrongTest()">누적 오답 훈련하기</button>
+                <button id="db-wrong-btn" class="btn" style="background:#b5485a; display:none;" onclick="startAccumulatedWrongTest()">누적 오답 훈련하기</button>
             </div>
         </div>
 
@@ -311,7 +312,7 @@
                     <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ex"> 예문 빈칸</label>
                 </div>
             </div>
-            <button class="btn" style="background: var(--ee-purple); color: white; padding:15px;" onclick="startPractice()">무한 학습 시작하기</button>
+            <button class="btn" style="background: var(--ink); color: white; padding:15px;" onclick="startPractice()">무한 학습 시작하기</button>
         </div>
     </div>
 
