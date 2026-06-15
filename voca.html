@@ -768,6 +768,13 @@
             return;
         }
         document.getElementById('status-msg').innerText = "정보를 확인 중입니다...";
+        // 숙제점검 명단 검증 (없는 이름 차단)
+        const ok = await hw_checkRoster(stName);
+        if(!ok){
+            document.getElementById('status-msg').innerText = "";
+            alert('등록되지 않은 이름입니다.\n이름을 정확히 입력했는지 확인하거나 선생님께 문의하세요.');
+            return;
+        }
         try {
             const res = await fetch(APP_URL + "?name=" + encodeURIComponent(stName) + "&t=" + Date.now());
             const data = await res.json();
@@ -827,6 +834,33 @@
             return;
         }
         hw_showPanel();
+    }
+
+    // 숙제점검 명단 검증 (JSONP, 1회 로드 후 캐시)
+    let hwRosterCache = null;
+    function hw_normName(s){ return String(s||'').normalize('NFKC').replace(/\s|\u00A0|[\u200B-\u200D\uFEFF]/g,'').toLowerCase(); }
+    function hw_checkRoster(name){
+        return new Promise((resolve)=>{
+            const decide = (names)=>{
+                const nk = hw_normName(name);
+                resolve(names.some(n => hw_normName(n) === nk));
+            };
+            if(hwRosterCache){ decide(hwRosterCache); return; }
+            const cbName = 'hwRoster_' + Date.now();
+            let done = false;
+            const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+            window[cbName] = (data)=>{
+                done = true; cleanup();
+                hwRosterCache = (data && data.names) || [];
+                decide(hwRosterCache);
+            };
+            const s = document.createElement('script');
+            s.id = cbName;
+            s.src = HW_URL + "?type=roster&callback=" + cbName + "&t=" + Date.now();
+            s.onerror = ()=>{ if(done) return; cleanup(); resolve(true); };
+            document.body.appendChild(s);
+            setTimeout(()=>{ if(done) return; cleanup(); resolve(true); }, 8000);
+        });
     }
 
     function hw_toggleMain(hide){
