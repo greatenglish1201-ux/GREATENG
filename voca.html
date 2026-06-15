@@ -325,7 +325,7 @@
     <div id="test-area">
         <div class="header-bar">
             <div class="progress" id="progress-text">1 / 20</div>
-            <button id="practice-exit-btn" style="display:none; background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="resetTest()">그만하기 ⏹️</button>
+            <button id="practice-exit-btn" style="display:none; background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="exitTest()">그만하기 ⏹️</button>
             <div class="timer-text" id="timer-display">⏱ 00:00</div>
         </div>
         <div id="test-type-label" class="test-type-label">유형</div>
@@ -1533,7 +1533,7 @@
             document.getElementById('timer-display').style.color = "#8e44ad";
             document.getElementById('practice-exit-btn').style.display = "block";
         } else {
-            document.getElementById('practice-exit-btn').style.display = "none";
+            document.getElementById('practice-exit-btn').style.display = "block";
             document.getElementById('timer-display').style.color = "#e74c3c";
             remainingTime = 0;
             questionList.forEach(q => {
@@ -1794,6 +1794,32 @@
             const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords, assignDate: assignDate };
             fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
         }
+    }
+
+    function exitTest() {
+        // 정규 시험(자율·누적오답 아님)만 확인창 — 점수 기록 방지
+        const isRegular = !isPracticeMode && !isAccumulatedMode;
+        if(isRegular){
+            if(!confirm("지금 그만두면 이번 시험은 기록되지 않습니다.\n정말 그만두시겠어요?")) return;
+        }
+        resetTestToMain();
+    }
+
+    // 시험만 닫고 메인(이름 확인된 상태)으로 복귀 — 이름 유지
+    function resetTestToMain() {
+        clearInterval(timerInterval);
+        document.getElementById('result-area').style.display = 'none';
+        document.getElementById('test-area').style.display = 'none';
+        document.getElementById('login-area').style.display = 'block';
+        document.getElementById('practice-feedback').style.display = 'none';
+        document.getElementById('info-box').style.display = 'block';
+        document.getElementById('practice-area').style.display = 'block';
+        document.getElementById('status-msg').innerText = "";
+        // 버튼 복원
+        if(stName){ const lo = document.getElementById('logout-btn'); if(lo) lo.style.display = 'inline-block'; }
+        if(typeof updateAdminQuickBtn === 'function') updateAdminQuickBtn();
+        document.getElementById('hw-entry').style.display = 'block';
+        questionList = []; currentIdx = 0; score = 0; currentWrongObjects = []; currentCorrectObjects = [];
     }
 
     function resetTest() {
