@@ -201,8 +201,12 @@
             <!-- 일반교재: 강[필수] 번[필수] 페이지[선택] -->
             <div id="hw-src-normal" style="display:none; margin-bottom:8px;">
                 <div style="display:flex; gap:6px;">
-                    <input type="text" id="hw-normal-lesson" placeholder="강 (필수)" style="padding:10px; font-size:14px; width:33%;">
-                    <input type="text" id="hw-normal-no" placeholder="번 (필수)" style="padding:10px; font-size:14px; width:33%;">
+                    <select id="hw-normal-lesson" style="padding:10px; font-size:14px; width:33%;">
+                        <option value="">강</option>
+                    </select>
+                    <select id="hw-normal-no" style="padding:10px; font-size:14px; width:33%;">
+                        <option value="">번</option>
+                    </select>
                     <input type="text" id="hw-normal-page" placeholder="페이지 (선택)" style="padding:10px; font-size:14px; flex:1;">
                 </div>
             </div>
@@ -225,8 +229,12 @@
                 </select>
                 <input type="text" id="hw-tb-pub-custom" placeholder="출판사(저자) 직접 입력" style="display:none; padding:10px; font-size:14px; width:100%; margin-bottom:6px;">
                 <div style="display:flex; gap:6px;">
-                    <input type="text" id="hw-tb-lesson" placeholder="과 (필수)" style="padding:10px; font-size:14px; width:33%;">
-                    <input type="text" id="hw-tb-no" placeholder="번 (필수)" style="padding:10px; font-size:14px; width:33%;">
+                    <select id="hw-tb-lesson" style="padding:10px; font-size:14px; width:33%;">
+                        <option value="">과</option>
+                    </select>
+                    <select id="hw-tb-no" style="padding:10px; font-size:14px; width:33%;">
+                        <option value="">번</option>
+                    </select>
                     <input type="text" id="hw-tb-page" placeholder="페이지 (선택)" style="padding:10px; font-size:14px; flex:1;">
                 </div>
             </div>
@@ -827,6 +835,16 @@
         if(nSel.options.length <= 1){
             for(let n=1;n<=45;n++){ nSel.add(new Option(n+'번', n)); }
         }
+        // 일반교재 강(1~30)·번(1~30)
+        const nl = document.getElementById('hw-normal-lesson');
+        const nn = document.getElementById('hw-normal-no');
+        if(nl && nl.options.length <= 1){ for(let i=1;i<=30;i++){ nl.add(new Option(i+'강', i)); } }
+        if(nn && nn.options.length <= 1){ for(let i=1;i<=30;i++){ nn.add(new Option(i+'번', i)); } }
+        // 교과서 과(1~30)·번(1~30)
+        const tl = document.getElementById('hw-tb-lesson');
+        const tn = document.getElementById('hw-tb-no');
+        if(tl && tl.options.length <= 1){ for(let i=1;i<=30;i++){ tl.add(new Option(i+'과', i)); } }
+        if(tn && tn.options.length <= 1){ for(let i=1;i<=30;i++){ tn.add(new Option(i+'번', i)); } }
     }
 
     function hw_gcSave(){
