@@ -163,34 +163,72 @@
             <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">출처</label>
             <select id="hw-src" onchange="hw_onSrcChange()" style="padding:11px; font-size:15px; margin:5px 0 8px; width:100%;">
                 <option value="모의고사">모의고사</option>
-                <option value="모의고사편집본">모의고사편집본</option>
+                <option value="미리수능 기초독해">미리수능 기초독해</option>
+                <option value="학교부교재">학교부교재</option>
+                <option value="교과서">교과서</option>
                 <option value="수능특강 영어">수능특강 영어</option>
                 <option value="수능특강 영독">수능특강 영독</option>
                 <option value="수능완성">수능완성</option>
-                <option value="학교부교재">학교부교재</option>
-                <option value="미리수능 기초독해">미리수능 기초독해</option>
                 <option value="__custom__">직접입력</option>
             </select>
 
-            <!-- 모의고사: 년/월/문항 (드롭다운) -->
-            <div id="hw-src-mock" style="display:flex; gap:6px; margin-bottom:8px;">
-                <select id="hw-mock-year" style="padding:10px; font-size:14px; width:34%;">
-                    <option value="">년</option>
-                    <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
-                    <option value="2027">2027</option>
-                </select>
-                <select id="hw-mock-month" style="padding:10px; font-size:14px; width:24%;">
-                    <option value="">월</option>
-                </select>
-                <select id="hw-mock-no" style="padding:10px; font-size:14px; flex:1;">
-                    <option value="">문항</option>
-                </select>
+            <!-- 모의고사: 학년/년/월/문항 (드롭다운) -->
+            <div id="hw-src-mock" style="margin-bottom:8px;">
+                <div style="display:flex; gap:6px; margin-bottom:6px;">
+                    <select id="hw-mock-grade" style="padding:10px; font-size:14px; width:34%;">
+                        <option value="">학년</option>
+                        <option value="고1">고1</option>
+                        <option value="고2">고2</option>
+                        <option value="고3">고3</option>
+                    </select>
+                    <select id="hw-mock-year" style="padding:10px; font-size:14px; flex:1;">
+                        <option value="">년</option>
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <select id="hw-mock-month" style="padding:10px; font-size:14px; width:50%;">
+                        <option value="">월</option>
+                    </select>
+                    <select id="hw-mock-no" style="padding:10px; font-size:14px; flex:1;">
+                        <option value="">문항</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- 일반교재: 강/회차 + 문항 -->
-            <div id="hw-src-normal" style="display:none; gap:6px; margin-bottom:8px;">
-                <input type="text" id="hw-normal-detail" placeholder="강/회차·문항번호 (예: 13-1)" style="padding:10px; font-size:14px; width:100%;">
+            <!-- 일반교재: 강[필수] 번[필수] 페이지[선택] -->
+            <div id="hw-src-normal" style="display:none; margin-bottom:8px;">
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="hw-normal-lesson" placeholder="강 (필수)" style="padding:10px; font-size:14px; width:33%;">
+                    <input type="text" id="hw-normal-no" placeholder="번 (필수)" style="padding:10px; font-size:14px; width:33%;">
+                    <input type="text" id="hw-normal-page" placeholder="페이지 (선택)" style="padding:10px; font-size:14px; flex:1;">
+                </div>
+            </div>
+
+            <!-- 교과서: 출판사(저자) + 과 + 번 + 페이지 -->
+            <div id="hw-src-textbook" style="display:none; margin-bottom:8px;">
+                <select id="hw-tb-pub" onchange="hw_onTbPubChange()" style="padding:10px; font-size:14px; width:100%; margin-bottom:6px;">
+                    <option value="">출판사(저자) 선택</option>
+                    <option value="NE능률(김기택)">NE능률(김기택)</option>
+                    <option value="YBM(김은영)">YBM(김은영)</option>
+                    <option value="YBM(박준언)">YBM(박준언)</option>
+                    <option value="동아(윤정미)">동아(윤정미)</option>
+                    <option value="동아(이병민)">동아(이병민)</option>
+                    <option value="미래엔(문영인)">미래엔(문영인)</option>
+                    <option value="비상(황종배)">비상(황종배)</option>
+                    <option value="지학사(송미정)">지학사(송미정)</option>
+                    <option value="천재(소영순)">천재(소영순)</option>
+                    <option value="천재(이상기)">천재(이상기)</option>
+                    <option value="__custom__">직접입력</option>
+                </select>
+                <input type="text" id="hw-tb-pub-custom" placeholder="출판사(저자) 직접 입력" style="display:none; padding:10px; font-size:14px; width:100%; margin-bottom:6px;">
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="hw-tb-lesson" placeholder="과 (필수)" style="padding:10px; font-size:14px; width:33%;">
+                    <input type="text" id="hw-tb-no" placeholder="번 (필수)" style="padding:10px; font-size:14px; width:33%;">
+                    <input type="text" id="hw-tb-page" placeholder="페이지 (선택)" style="padding:10px; font-size:14px; flex:1;">
+                </div>
             </div>
 
             <!-- 직접입력 -->
@@ -198,13 +236,13 @@
                 <input type="text" id="hw-custom-src" placeholder="출처 직접 입력" style="padding:10px; font-size:14px; width:100%;">
             </div>
 
-            <!-- 숙제 구분 -->
+            <!-- 숙제 구분 (가로 버튼) -->
             <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 구분</label>
-            <select id="hw-type" onchange="hw_onTypeChange()" style="padding:11px; font-size:15px; margin:5px 0 8px; width:100%;">
-                <option value="지문분석">지문분석</option>
-                <option value="단어쓰기">단어쓰기</option>
-                <option value="__custom__">직접입력</option>
-            </select>
+            <div style="display:flex; gap:6px; margin:5px 0 8px;">
+                <button type="button" class="hw-type-btn" data-type="지문분석" onclick="hw_pickType(this,'지문분석')" style="flex:1; padding:11px 4px; font-size:14px; font-weight:700; border:2px solid #ddd; border-radius:10px; background:#fff; color:#555; cursor:pointer;">지문분석</button>
+                <button type="button" class="hw-type-btn" data-type="단어쓰기" onclick="hw_pickType(this,'단어쓰기')" style="flex:1; padding:11px 4px; font-size:14px; font-weight:700; border:2px solid #ddd; border-radius:10px; background:#fff; color:#555; cursor:pointer;">단어쓰기</button>
+                <button type="button" class="hw-type-btn" data-type="__custom__" onclick="hw_pickType(this,'__custom__')" style="flex:1; padding:11px 4px; font-size:14px; font-weight:700; border:2px solid #ddd; border-radius:10px; background:#fff; color:#555; cursor:pointer;">직접입력</button>
+            </div>
             <input type="text" id="hw-type-custom" placeholder="숙제 구분 직접 입력" style="display:none; padding:10px; font-size:14px; width:100%; margin-bottom:8px;">
 
             <!-- 사진 -->
@@ -771,6 +809,10 @@
     function hw_showPanel(){
         document.getElementById('hw-panel').style.display = 'block';
         document.getElementById('hw-entry').style.display = 'none';
+        hwSelectedType = '';
+        document.querySelectorAll('.hw-type-btn').forEach(b=>{
+            b.style.background = '#fff'; b.style.color = '#555'; b.style.borderColor = '#ddd';
+        });
         hw_fillMockSelects();
         hw_onSrcChange();
         hw_loadStatus();
@@ -817,14 +859,28 @@
 
     function hw_onSrcChange(){
         const v = document.getElementById('hw-src').value;
-        document.getElementById('hw-src-mock').style.display   = (v==='모의고사') ? 'flex' : 'none';
-        document.getElementById('hw-src-normal').style.display = (v==='모의고사' || v==='__custom__') ? 'none' : 'block';
-        document.getElementById('hw-src-custom').style.display = (v==='__custom__') ? 'block' : 'none';
+        const isMock = (v==='모의고사');
+        const isCustom = (v==='__custom__');
+        const isTextbook = (v==='교과서');
+        document.getElementById('hw-src-mock').style.display     = isMock ? 'block' : 'none';
+        document.getElementById('hw-src-textbook').style.display = isTextbook ? 'block' : 'none';
+        document.getElementById('hw-src-normal').style.display   = (isMock || isCustom || isTextbook) ? 'none' : 'block';
+        document.getElementById('hw-src-custom').style.display   = isCustom ? 'block' : 'none';
     }
 
-    function hw_onTypeChange(){
-        const v = document.getElementById('hw-type').value;
-        document.getElementById('hw-type-custom').style.display = (v==='__custom__') ? 'block' : 'none';
+    function hw_onTbPubChange(){
+        const v = document.getElementById('hw-tb-pub').value;
+        document.getElementById('hw-tb-pub-custom').style.display = (v==='__custom__') ? 'block' : 'none';
+    }
+
+    let hwSelectedType = '';
+    function hw_pickType(btn, t){
+        hwSelectedType = t;
+        document.querySelectorAll('.hw-type-btn').forEach(b=>{
+            b.style.background = '#fff'; b.style.color = '#555'; b.style.borderColor = '#ddd';
+        });
+        btn.style.background = '#7a1020'; btn.style.color = '#fff'; btn.style.borderColor = '#7a1020';
+        document.getElementById('hw-type-custom').style.display = (t==='__custom__') ? 'block' : 'none';
     }
 
     // 14일 현황 조회 (JSONP — CORS 우회)
@@ -949,32 +1005,66 @@
             return document.getElementById('hw-custom-src').value.trim();
         }
         if(v==='모의고사'){
+            const g = document.getElementById('hw-mock-grade').value.trim();
             const y = document.getElementById('hw-mock-year').value.trim();
             const m = document.getElementById('hw-mock-month').value.trim();
             const no = document.getElementById('hw-mock-no').value.trim();
             let s = '모의고사';
+            if(g) s += ' ' + g;
             if(y) s += ' ' + y;
             if(m) s += ' ' + m + '월';
             if(no) s += ' ' + no + '번';
             return s.trim();
         }
-        const detail = document.getElementById('hw-normal-detail').value.trim();
-        return (v + ' ' + detail).trim();
+        if(v==='교과서'){
+            let pub = document.getElementById('hw-tb-pub').value;
+            if(pub==='__custom__') pub = document.getElementById('hw-tb-pub-custom').value.trim();
+            const lesson = document.getElementById('hw-tb-lesson').value.trim();
+            const no = document.getElementById('hw-tb-no').value.trim();
+            const page = document.getElementById('hw-tb-page').value.trim();
+            let s = '교과서';
+            if(pub) s += ' ' + pub;
+            if(lesson) s += ' ' + lesson + '과';
+            if(no) s += ' ' + no + '번';
+            if(page) s += ' p.' + page;
+            return s.trim();
+        }
+        // 일반 교재: 강[필수] 번[필수] 페이지[선택]
+        const lesson = document.getElementById('hw-normal-lesson').value.trim();
+        const no = document.getElementById('hw-normal-no').value.trim();
+        const page = document.getElementById('hw-normal-page').value.trim();
+        let s = v;
+        if(lesson) s += ' ' + lesson + '강';
+        if(no) s += ' ' + no + '번';
+        if(page) s += ' p.' + page;
+        return s.trim();
     }
 
     function hw_buildType(){
-        const v = document.getElementById('hw-type').value;
-        if(v==='__custom__') return document.getElementById('hw-type-custom').value.trim();
-        return v;
+        if(hwSelectedType==='__custom__') return document.getElementById('hw-type-custom').value.trim();
+        return hwSelectedType;
     }
 
     function hw_submit(){
         const msg = document.getElementById('hw-msg');
         if(!hwSelectedDate){ msg.style.color='#e74c3c'; msg.textContent='먼저 위에서 숙제 날짜를 선택하세요.'; return; }
+        // 일반 교재는 강·번 필수
+        const srcSel = document.getElementById('hw-src').value;
+        if(srcSel==='교과서'){
+            let pub = document.getElementById('hw-tb-pub').value;
+            if(pub==='__custom__') pub = document.getElementById('hw-tb-pub-custom').value.trim();
+            const lesson = document.getElementById('hw-tb-lesson').value.trim();
+            const no = document.getElementById('hw-tb-no').value.trim();
+            if(!pub || !lesson || !no){ msg.style.color='#e74c3c'; msg.textContent='출판사·과·번을 입력하세요. (페이지는 선택)'; return; }
+        } else if(srcSel!=='모의고사' && srcSel!=='__custom__'){
+            const lesson = document.getElementById('hw-normal-lesson').value.trim();
+            const no = document.getElementById('hw-normal-no').value.trim();
+            if(!lesson || !no){ msg.style.color='#e74c3c'; msg.textContent='강과 번을 입력하세요. (페이지는 선택)'; return; }
+        }
         const src = hw_buildSrc();
         if(!src){ msg.style.color='#e74c3c'; msg.textContent='출처를 입력/선택하세요.'; return; }
         const type = hw_buildType();
-        if(!type){ msg.style.color='#e74c3c'; msg.textContent='숙제 구분을 입력하세요.'; return; }
+        if(!type){ msg.style.color='#e74c3c'; msg.textContent='숙제 구분을 선택하세요.'; return; }
         if(!hwCompressedDataUrl){ msg.style.color='#e74c3c'; msg.textContent='사진을 선택하세요.'; return; }
 
         // 'yyyy. m. d' 형식으로 due 전송 (기존 시트 표기와 동일)
@@ -998,7 +1088,6 @@
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         }).then(()=>{
-            alert('fetch 성공 — GAS로 전송됨');
             msg.style.color = '#274e13';
             msg.innerHTML = '✅ 제출 완료! (현황 반영까지 잠시 걸려요)';
             btn.disabled = false;
@@ -1007,9 +1096,8 @@
             hwCompressedDataUrl = '';
             setTimeout(hw_loadStatus, 3000);
         }).catch((err)=>{
-            alert('fetch 실패: ' + (err && err.message ? err.message : err));
             msg.style.color = '#e74c3c';
-            msg.textContent = '전송 실패: ' + (err && err.message ? err.message : '다시 시도해주세요');
+            msg.textContent = '전송 실패: 다시 시도해주세요';
             btn.disabled = false;
         });
     }
