@@ -106,7 +106,8 @@
 
 <!-- ====================== 학생 화면 ====================== -->
 <div class="card" id="student-screen" style="position:relative;">
-    <!-- 우측 상단 톱니바퀴 (관리자 인증 시에만 노출) -->
+    <!-- 우측 상단: 로그아웃(로그인 후) + 톱니바퀴(관리자 인증 시) -->
+    <button id="logout-btn" onclick="hw_logout()" title="로그아웃" style="display:none; position:absolute; top:14px; right:14px; height:34px; padding:0 13px; border-radius:17px; background:#fff; color:var(--ink-soft); border:1px solid var(--cream-deep); font-size:12.5px; font-weight:700; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.08);">로그아웃</button>
     <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--gold); border:none; font-size:17px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.15); align-items:center; justify-content:center;">⚙️</button>
 
     <div id="login-area">
@@ -681,7 +682,10 @@
     }
     function updateAdminQuickBtn() {
         const btn = document.getElementById('admin-gear-btn');
+        const lo = document.getElementById('logout-btn');
         if (btn) btn.style.display = adminAuthed ? "flex" : "none";
+        // 톱니바퀴가 보이면 로그아웃을 그 왼쪽으로
+        if (lo) lo.style.right = adminAuthed ? "60px" : "14px";
     }
 
     /* ============================================================
@@ -842,6 +846,7 @@
                 sessionStorage.removeItem('voca_admin_authed');
                 const gb = document.getElementById('admin-gear-btn');
                 if(gb) gb.style.display = 'none';
+                hw_showLogout();
                 return;
             }
 
@@ -876,7 +881,13 @@
             sessionStorage.removeItem('voca_admin_authed');
             const gearBtn = document.getElementById('admin-gear-btn');
             if(gearBtn) gearBtn.style.display = 'none';
+            hw_showLogout();
         } catch(e) { alert("서버 연결 실패!"); }
+    }
+
+    function hw_showLogout(){
+        const lo = document.getElementById('logout-btn');
+        if(lo) lo.style.display = 'inline-block';
     }
 
     /* ===== 📸 숙제 제출 기능 (신규 — 기존 단어장 로직과 분리) ===== */
