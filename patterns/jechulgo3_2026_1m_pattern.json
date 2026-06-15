@@ -1,0 +1,350 @@
+{
+  "key": "제철고_3학년_2026_1학기_중간",
+  "school": "제철고",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "중간고사",
+  "subject": "영어II",
+  "course_code": "08",
+  "exam_date": "2026-04-21",
+  "total": 30,
+  "total_score": 100.0,
+  "patterns": {
+    "제목": 1,
+    "글의순서": 3,
+    "어휘": 5,
+    "함축의미": 4,
+    "요지": 1,
+    "흐름무관": 3,
+    "빈칸추론": 7,
+    "추론": 1,
+    "요약문완성": 3,
+    "문장삽입": 2
+  },
+  "score_dist": {
+    "2.5": 1,
+    "2.7": 1,
+    "2.9": 1,
+    "3.1": 4,
+    "3.0": 1,
+    "3.4": 9,
+    "3.2": 2,
+    "3.5": 4,
+    "3.7": 3,
+    "3.6": 4
+  },
+  "answer_dist": {
+    "①": 5,
+    "②": 6,
+    "③": 6,
+    "④": 7,
+    "⑤": 6
+  },
+  "pattern_kind": "full",
+  "has_answers": true,
+  "questions": [
+    {
+      "num": 1,
+      "qtype": "제목",
+      "score": 2.5,
+      "answer": "①",
+      "stem": "다음 글의 제목으로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "1. 다음 글의 제목으로 가장 적절한 것은? [2.5점]\nLiving things are not confined to the familiar temperate realm of land, water, and sunlight inhabited by plants and plant-eating animals. They can be found in the darkest depths of the ocean, in hot volcanic mud, in pools beneath the frozen surface of the Antarctic, and buried kilometers deep in the Earth's crust. The creatures that live in these extreme environments are generally unfamiliar, not only because they are inaccessible, but also because they are mostly microscopic. In more homely habitats, too, most organisms are too small for us to see without special equipment: they tend to go unnoticed, unless they cause a disease or rot the timbers of our houses. Yet microorganisms make up most of the total mass of living matter on our planet. Only recently, through new methods of molecular analysis and specifically through the analysis of DNA sequences, have we begun to get a picture of life on Earth that is not grossly distorted by our biased perspective as large animals living on dry land.\n① The Hidden Majority of Life on Earth\n② The Secret Lives of Animals on Dry Land\n③ Why Extreme Habitats Remain the Last Frontier of Animal Evolution\n④ How DNA Analysis Confirmed the Superiority of Traditional Biology\n⑤ The Limited Role of Microscopic Life in Earth's Ecosystems"
+    },
+    {
+      "num": 2,
+      "qtype": "글의순서",
+      "score": 2.7,
+      "answer": "③",
+      "stem": "글의 문맥상, 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "2. 글의 문맥상, 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [2.7점]\n(A) But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation and get involved in a situation we would be better off avoiding, and science reveals how this feeling and forgetting is essential for maintaining a cooperative society.\n(B) When we witness unjust harm, whether someone committing interpersonal violence or obvious cheating, we have an embodied physical reaction. We get angry, our blood pressure spikes, our heart beats faster; we thirst for retribution.\n(C) Outrage leads us to ignore the irrationality of risking our own safety to punish someone. In any single situation, there is rarely an immediate personal benefit for meting out punishment, and often there is real risk, because the person you are serving justice against could lash out at you or get revenge in the future.\n① (A)-(C)-(B)    ② (B)-(A)-(C)    ③ (B)-(C)-(A)\n④ (C)-(A)-(B)    ⑤ (C)-(B)-(A)"
+    },
+    {
+      "num": 3,
+      "qtype": "어휘",
+      "score": 2.9,
+      "answer": "④",
+      "stem": "다음 글의 밑줄 친 어휘 중, 문맥상 쓰임이 적절하지 않은 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "3. 다음 글의 밑줄 친 어휘 중, 문맥상 쓰임이 적절하지 않은 것은? [2.9점]\nLinguists typically ①differentiate between signals that are communicative and those that are informative, depending on whether the information is conveyed intentionally or not. For example, a deliberate wink is distinguished from an ②involuntary blink by the communicative intention that lies behind it. Yet in intercultural interaction, information conveyed unintentionally may actually be interpreted as intentional; for instance, in some cultures, showing the soles of one's shoes can communicate an insult and when somebody does that, it is typically assumed to have ③communicative intent. However, for someone from a cultural group where that convention does not exist, such behaviour would be ④meaningful and hence would not be communicative. In other words, a given piece of behaviour may be communicative to some of the participants and only ⑤informative to others."
+    },
+    {
+      "num": 4,
+      "qtype": "함축의미",
+      "score": 3.1,
+      "answer": "⑤",
+      "stem": "다음 글에서 밑줄 친 부분의 의미로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "4. 다음 글에서 밑줄 친 부분의 의미로 가장 적절한 것은? [3.1점]\nThe idea of music direction, in the sense of someone shaping and leading a musical performance, goes back to the beginnings of music. Even the gamelans of ancient Indonesia had leaders who would signal to the group changes of meter and tempo, beginnings and endings, and transitions from piece to piece. Yet listening audiences are rarely aware of any musical leadership, and for good aesthetic reason. They need not be aware to fulfill their experience; indeed, the unnecessarily conspicuous presence of a musical leader will detract from it. An audience is better off, for the most part, taking in the whole of a stage work rather than being party to the techniques that go into realizing it. This is not to say that when an orchestra plays alone the audience members' eyes are not fixed on the conductor for the majority of the time; they probably are. When music is accompanying something happening on stage, however, all eyes turn to the stage, and so do everyone's ears, too (including the music director's).\n① A stage work is fully appreciated only when the audience understands how each technical element is executed in performance.\n② Audience members should divide their attention equally between the conductor and the events on stage.\n③ The techniques used to realize a performance are more artistically valuable than the performance itself.\n④ Only highly trained listeners are capable of grasping a stage work as a unified artistic whole.\n⑤ Audiences usually benefit more from experiencing the performance as an integrated whole than from focusing on the production methods behind it."
+    },
+    {
+      "num": 5,
+      "qtype": "요지",
+      "score": 3.0,
+      "answer": "②",
+      "stem": "다음 글의 요지로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "5. 다음 글의 요지로 가장 적절한 것은? [3점]\nThe internet has transformed the fashion marketplace, making it increasingly difficult to predict the demand for the selling season. Consumers can browse for product information and prices and gain comparative information almost instantaneously, making them more informed than ever before, transferring the balance of power from the retailer to the customer. This is exacerbated by open and real-time access to fashion shows, facilitated through livestreaming, coupled with social media access to celebrity looks and lifestyles and the sharing of all aspects of life on social media. Consumers use fashion choices to express their individual style and personality, especially those promoting 'brand me' on social media. The traditional two-season offer is no longer seen as enough, with consumers demanding new products throughout the whole year. This creates a problem for fashion retailers as many consumers are looking for more exclusive pieces to differentiate themselves, forcing up the desire for trend-led ever more rapidly changing styles, while still demanding affordable prices.\n① Affordable fashion has disappeared because customers want only luxury goods.\n② Digital connectivity has shifted market power toward consumers, complicating demand forecasting and intensifying pressure on retailers.\n③ Social media has reduced consumers' interest in expressing individuality through fashion.\n④ In order to survive, fashion retailers must stop offering low-priced items and devote themselves entirely to high-end, distinctive merchandise.\n⑤ Retailers can easily predict seasonal demand thanks to advances in online technology."
+    },
+    {
+      "num": 6,
+      "qtype": "어휘",
+      "score": 3.4,
+      "answer": "⑤",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "6. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? [3.4점]\nReformist approaches assume that markets could operate in more equitable and environmentally reasonable ways, and that a market is the most efficient option available. Yet the logic of market efficiencies generally rotates on purely monetary calculations, effectively reasoning in a hall of mirrors and ①marginalising real social and environmental values. Familiar examples are conventional food retailers, such as supermarkets, which purchase fruit and vegetables as ②economically as possible. Inexpensive produce might be grown using soil- and water-damaging fertilisers, by poorly paid illegal migrant workers, and transported long distances using more cheap labour and environmentally damaging practices. However, organic farmers can only ③maintain ecologically sound practices and make sure they pay their workers fair wages if the food costs more, meaning supply for an elite demand. By its very nature, one never manages to ④overcome the dilemmas that production for trade entails. Real social and environmental values involved in caring for people and Earth ⑤mask the inequities and damage of market-oriented activities."
+    },
+    {
+      "num": 7,
+      "qtype": "흐름무관",
+      "score": 3.1,
+      "answer": "②",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "7. 다음 글에서 전체 흐름과 관계 없는 문장은? [3.1점]\nHuman perception identifies objects consistently across diverse contexts through an extraordinary adaptation to change. This multifaceted system allows the brain to switch to backup routes the moment one path is obstructed. ①This immense flexibility of the brain to rely on changing cues, according to whatever is available, is known as vicarious functioning. ②Given the enormous energy required to maintain such system, the brain often prioritizes efficiency by shutting down non-essential sensory routes to minimize neural activity during periods of rest. ③It is found in most biological systems; for instance, migrating birds navigate thousands of miles using the stars, but they flexibly switch to landmarks or magnetic senses when clouds block their view. ④Similarly, the human brain typically identifies a face through the specific shapes of eyes, nose, and mouth. ⑤However, even when these features are obscured or reduced to a few lines in a caricature, the brain successfully recognizes the identity by relying on any available external cues."
+    },
+    {
+      "num": 8,
+      "qtype": "글의순서",
+      "score": 3.2,
+      "answer": "①",
+      "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "8. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3.2점]\n(A) These efforts are difficult to duplicate, and performing them successfully requires a work environment without distractions. Still, many people devote most of their time to shallow work, involving tasks that demand little mental effort and rarely produce new results.\n(B) Although shallow work has a necessary role in completing routine tasks, spending too much time on this style of working can leave individuals feeling busy or stressed, yet they see little meaningful output reflecting their effort.\n(C) This style of working is generally routine and procedural. People often carry out these tasks while their attention is divided, which makes the work less productive and cognitively undemanding.\n① (A)-(C)-(B)    ② (B)-(A)-(C)    ③ (B)-(C)-(A)\n④ (C)-(A)-(B)    ⑤ (C)-(B)-(A)"
+    },
+    {
+      "num": 9,
+      "qtype": "빈칸추론",
+      "score": 3.4,
+      "answer": "③",
+      "stem": "다음 글의 빈칸 (A)에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "9. 다음 글의 빈칸 (A)에 들어갈 말로 가장 적절한 것은? [3.4점]\nAs the set of cultural norms and categories taken for granted at any particular time, the present is normally hardly (A) to those who participate in it. It is the unthought background of their thought and action, like water to a fish, or air to a dove. In films, this background can sometimes become (A) as a bygone present in a film that is not just historically but culturally dated. In the culturally dated film, attitudes and ways of behaving that have altered over time and which now appear as quaint, strange, 'incorrect' or problematic, are taken for granted by the characters in the film, and go unquestioned or are even happily endorsed in the film's narrative. The present is also (A) in contemporary historical dramas that 'read the past in terms of the present', anachronistically importing modern attitudes into the past they portray. This is something that is doubly evident in dated historical films that read the past in terms of their present, where the anachronisms are themselves reflective of a bygone present.\n① flexible    ② subjective    ③ recognizable\n④ stable    ⑤ applicable"
+    },
+    {
+      "num": 10,
+      "qtype": "빈칸추론",
+      "score": 3.4,
+      "answer": "③",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "10. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [3.4점]\nMuch research in social psychology has documented the key strategies that people rely upon in defending the belief I am good. For example, when people perform poorly at something, they tend to trivialize their failures. This trivialization effectively disarms those failures and prevents them from overwriting their life stories. Imagine, for instance, that someone fails a calculus test. A common defensive response is to conclude that this test was just not that important to them. They may say to themselves, \"Who cares about calculus anyway? I'm not going to become a mathematician.\" In contrast, people will typically show the precise opposite pattern for their successes and will interpret those events as being of outsize importance. So if someone aces a calculus test, they may think to themselves about how crucial calculus is for their future career success and how it's key to getting into graduate school or obtaining a highly desired job as an engineer. By _________________, they can shape their emotional reactions to these events in a way that enables them to tell a more convincing story that I am good.\n① seeking validation from others to feel competent\n② accepting their weaknesses as inevitable parts of life\n③ adjusting the perceived significance of their successes and failures\n④ downplaying the career relevance of their academic achievements\n⑤ controlling their emotional reactions to achievements and setbacks"
+    },
+    {
+      "num": 11,
+      "qtype": "글의순서",
+      "score": 3.1,
+      "answer": "④",
+      "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "11. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3.1점]\n(A) Indeed, something like this thought probably lay behind the disappearance of alien voting: with universal adult citizen suffrage after 1920, the only way to maintain an exclusionary kind of citizenship was to restrict the vote to citizens and not residents.\n(B) But no theory of \"active\" democracy can countenance this distinction: the laws concerning our common life must be made by all those who are taking part in it, and residence is the only convincing test of whether someone is taking part.\n(C) If the vote, of all rights, is in the hands of noncitizens, why should they not count as citizens, and the entire distinction between resident alien and citizen be abandoned?\n① (A)-(C)-(B)    ② (B)-(A)-(C)    ③ (B)-(C)-(A)\n④ (C)-(A)-(B)    ⑤ (C)-(B)-(A)"
+    },
+    {
+      "num": 12,
+      "qtype": "어휘",
+      "score": 3.4,
+      "answer": "④",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "12. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? [3.4점]\nIn 2012, the Yale School of Architecture held a symposium called \"Is Drawing Dead?\" The bold title reflects a growing sense that the architect's freehand sketch is being ①substituted by the computer. The transition from sketchpad to screen entails, many architects believe, a loss of creativity, of adventurousness. Thanks to the precision and apparent completeness of screen renderings, a designer working at a computer has a tendency to lock in, visually and cognitively, on a design at an early stage. He ②skips much of the reflective and exploratory playfulness that springs from the uncertainty and ambiguity of sketching. Researchers term this phenomenon \"premature fixation\" and trace its cause to \"the ③discouragement for design changes once a large amount of detail and interconnectedness is built too quickly into a CAD (Computer-Aided Design) model.\" The designer at the computer also tends to ④downplay formal experimentation at the expense of expressiveness. By weakening an architect's \"personal, emotional connection with the work,\" a renowned American architect and designer Michael Graves argues, CAD software produces designs that, \"while complex and interesting in their own way,\" often \"⑤lack the emotional content of a design derived from hand.\""
+    },
+    {
+      "num": 13,
+      "qtype": "함축의미",
+      "score": 3.1,
+      "answer": "①",
+      "stem": "다음 글의 밑줄 친 the far side of despair가 다음 글에서 의미하는 바로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "13. 다음 글의 밑줄 친 the far side of despair가 다음 글에서 의미하는 바로 가장 적절한 것은? [3.1점]\nThe difficult times that we endure play a key role in helping us to lead more meaningful lives. As Jean-Paul Sartre put it, \"Human life begins on the far side of despair.\" That is, many of the ways people feel their lives are meaningful are grounded in the sufferings they have experienced. One research project investigated the differences between people who found their lives to be happy and those who found them to be meaningful. While happy lives and meaningful lives overlap a great deal, the researchers focused on those aspects of a meaningful life that were distinct from happiness. And, remarkably, they found that people who had more meaningful lives reported that they had more experience suffering through past negative events. They also reported worrying more and enduring more things that caused them stress. On the other hand, these past experiences with suffering tended to reduce people's overall levels of happiness. Our sufferings, then, seem to help to provide people with the sense that their lives are more meaningful, even if these events are associated with lower feelings of happiness.\n① the psychological point where life's significance is discovered through enduring hardships\n② the state of achieving emotional stability by avoiding all stressful events\n③ a physical boundary that separates professional success from personal happiness\n④ a stage where individuals prioritize immediate pleasure over long-term goals\n⑤ the hidden potential of humans to reach expert levels solely through innate talent"
+    },
+    {
+      "num": 14,
+      "qtype": "빈칸추론",
+      "score": 3.4,
+      "answer": "②",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "14. 다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. [3.4점]\nAlthough many U.S. Americans consider mathematics boring and tedious, all forms of standardized rankings involve figures and numbers. When ranking quarterbacks, for instance, the NFL (National Football League) standardizes the ranking process by defining different numerical categories that cover all aspects of the position. Each quarterback has certain numbers and figures, ranging from \"percentage of pass completions\" to \"interceptions over touchdowns\" to \"number of yards passed per game.\" The quarterback's livelihood depends on those numbers. To negotiate a raise, a quarterback has to improve his numbers, and when a quarterback is benched, it is often due to unsatisfactory numbers. Similarly, at least 13 million Americans belong to virtual football leagues in which participants select players from different professional teams; at the end of the season, the participant whose virtual team has amassed the most points, defined by each virtual league differently, wins the jackpot. Such widespread reliance on quantified performance in both professional and recreational domains suggests that _________________.\n① the pursuit of numerical excellence often leads to a decline in athletic creativity\n② individuals are subconsciously bound to the logic they overtly claim to despise\n③ standardized rankings are being replaced by more subjective forms of evaluation\n④ the complexity of modern sports necessitates a departure from traditional statistics\n⑤ virtual football leagues offer a rare escape from the tedious nature of mathematics"
+    },
+    {
+      "num": 15,
+      "qtype": "흐름무관",
+      "score": 3.2,
+      "answer": "④",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "15. 다음 글에서 전체 흐름과 관계 없는 문장은? [3.2점]\nThe advent of automobiles drastically altered urban landscapes by enabling the growth of suburbs. Cars provided individuals the ability to live farther from city centers, where land was cheaper and more abundant. ①This expansion created the modern suburb, characterized by residential zones separate from commercial and industrial areas, promoting a shift from high-density urban living to the spacious suburbs. ②The flexibility cars offered meant people could commute daily, uniting work, leisure, and homelife in new ways. ③In response, urban planning evolved, placing emphasis on roads and highways to accommodate increased travel. ④However, people increasingly began to value virtual mobility over physical mobility, relying more on digital platforms to communicate, work, and socialize rather than traveling across urban spaces. ⑤This decentralization led to altered living patterns, encouraging families to seek homes in quieter, suburban environments while maintaining access to urban job markets, as cars were instrumental in detaching home locations from places of employment."
+    },
+    {
+      "num": 16,
+      "qtype": "추론",
+      "score": 3.4,
+      "answer": "③",
+      "stem": "다음 글을 통해 추론할 수 있는 것으로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "16. 다음 글을 통해 추론할 수 있는 것으로 가장 적절한 것은? [3.4점]\nAlthough blinking is a spontaneous action, it is also a necessary one. It serves to spread our tears across our eyes, which keeps their surface moist and clean. However, recent research now suggests that blinking has another purpose as well — it gives our brains a chance to power down. In the study, 20 participants watched movies while their brains were scanned and their blinking was monitored. Changes in their brain activity were then analyzed, particularly those that occurred immediately after a blink. What the researchers found was that when the participants blinked, their brains slipped into a kind of idle setting. In this default mode, when the brain is not required to handle any cognitive tasks, our thoughts are free to wander. It is believed that this is part of a process whereby our brains briefly cut off their flow of information in order to perform a sort of fine tuning of the body's sensory organs.\n① Blinking interrupts perception only because the eyes become physically closed for a moment.\n② The brain's default mode is a sign that it has stopped all activity altogether.\n③ A brief pause in active attention may itself serve a functional biological purpose.\n④ People who blink more often are always cognitively less engaged than others.\n⑤ Sensory organs function best when they receive uninterrupted information."
+    },
+    {
+      "num": 17,
+      "qtype": "요약문완성",
+      "score": 3.4,
+      "answer": "①",
+      "stem": "다음 글의 내용을 한 문장으로 요약할 때, 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다_표",
+      "pg": null,
+      "original_q": "17. 다음 글의 내용을 한 문장으로 요약할 때, 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은? [3.4점]\n⬇"
+    },
+    {
+      "num": 18,
+      "qtype": "흐름무관",
+      "score": 3.5,
+      "answer": "③",
+      "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "18. 다음 글에서 전체 흐름과 관계 없는 문장은? [3.5점]\nIndividuals with borderline personality disorder often have a history of having their emotions invalidated by others; in other words, they are told that their feelings are wrong. ①They are made to believe that they have to look outside themselves, to other people, in order to know whether or not their feelings have value. ②This leads to chronic, internal tension, as the individuals feel that they must act according to other people's expectations and must not have any negative feelings. ③In some cases, people who struggle with emotional pain prefer to spend time alone because solitude gives them a sense of temporary comfort and safety. ④Over time, this internal tension builds, eventually leading to an eruption of emotion. ⑤In addition, individuals who had their emotions invalidated as children tend to feel that unless they express their feelings through large displays, nobody will take their feelings seriously. As a result, these individuals subconsciously overemphasize their emotions in order to make sure that other people acknowledge their authenticity."
+    },
+    {
+      "num": 19,
+      "qtype": "어휘",
+      "score": 3.7,
+      "answer": "④",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "19. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? [3.7점]\nIn the aftermath of World War I, there was a serious loss of confidence in the economic benefits of free flowing of materials. Before the war broke out, most of the value being created in Europe had ①shifted away from manufacturing towards retail and international trade. Britain had been most eagerly devoted to free trade, but after the war, it faced ②recession in its retail and financial markets and decided to change its policies. In order to assist domestic industries, the British government took measures to ③defend its economy from foreign competition. Soon, this strategy was adopted by other European countries as well. This weakening of free trade, which had previously encouraged the expansion of the European economy, involved taxes and regulations that ④accelerated material movement between countries. A great amount of time would be needed to once again reach previous levels of international exchange. Furthermore, it would be impossible for Europe to revive the ⑤zealous optimism that it indulged in during its first period of modern materialism."
+    },
+    {
+      "num": 20,
+      "qtype": "빈칸추론",
+      "score": 3.4,
+      "answer": "⑤",
+      "stem": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "20. 다음 글의 빈칸에 들어갈 말로 가장 적절한 것은? [3.4점]\nUniversal literacy was supposed to help cultivate a democratic society; it was supposed to empower individuals to think for themselves, thus making them fit to rule themselves. In many cases, though, it has resulted in man becoming an easier subject to be ruled. Universal literacy has allowed people to be constantly exposed to advertising slogans, tabloid gossip, and the platitudes of history, but these do not encourage original thought. All the millions of individuals that make up a society are targets of this same information, which is all too often simply reproduced for others upon reception. When such information is disseminated in order to exert influence over the public, usually for political, religious or commercial reasons, it is known as propaganda. As a tool of manipulation, propaganda takes advantage of universal literacy to actually _________________.\n① encourage citizens to resist political and commercial pressure\n② spread original thought throughout the whole society\n③ make people harder to manage rather than encouraging them to think independently\n④ strengthen people's ability to rule themselves wisely\n⑤ deprive man of his ability to think for himself"
+    },
+    {
+      "num": 21,
+      "qtype": "문장삽입",
+      "score": 3.5,
+      "answer": "⑤",
+      "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "21. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? [3.5점]\nThe great composers were often remarkably swift in their work, and this swiftness has long been a source of wonder among those who admire them. ( ① ) However, much of that admiration rests on a misunderstanding. ( ② ) Tales of Mozart or Mendelssohn producing masterworks at breathtaking speed might lead one to assume that the act of creation itself was equally hasty — but this was rarely true. ( ③ ) These composers typically worked out their music entirely in the mind, with neither pen nor piano at hand, and put off the tedious physical task of committing their music to paper until they could delay no longer. ( ④ ) Only at that point would the entire work be set down on paper in one sitting. ( ⑤ ) One has only to copy a piece of music or to try to put into notes some piece of music previously memorized to see that this is so."
+    },
+    {
+      "num": 22,
+      "qtype": "함축의미",
+      "score": 3.6,
+      "answer": "②",
+      "stem": "밑줄 친 are like the oak tree가 다음 글에서 의미하는 바로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "22. 밑줄 친 are like the oak tree가 다음 글에서 의미하는 바로 가장 적절한 것은? [3.6점]\nBibliography functions as a flexible instrument, serving a wide range of purposes through its interconnected accounts. Those who work within information science draw on bibliographical tools and methods to pursue their own varied goals. A helpful analogy comes from the biologist Jakob von Uexküll. He invites us to consider an oak tree, which offers a fox a hollow in its roots as shelter. The very same tree provides an owl with a sturdy branch on which to rest. A wasp, meanwhile, finds the tree's soft bark an ideal surface for depositing its eggs. But the fox and the owl and the wasp will not perceive the oak tree as an oak tree, according to Uexküll. The oak tree will not be an oak tree for them; rather, it is a burrow, a branch, or soft bark that serves the particular ends pursued by their species. In making the case for bibliography as a foundational infrastructure within information science, I am proposing that bibliography and its principal modes — enumerative, descriptive, analytical, and critical — are like the oak tree. *bibliography: 서지학    **enumerative: 열거하는\n① serve other disciplines and are in turn shaped by them\n② function as a foundational resource for diverse uses\n③ adapt themselves to meet the needs of those who depend on them\n④ attract interest from many scholars but remain poorly understood\n⑤ appeal to numerous scholars while resisting clear interpretation"
+    },
+    {
+      "num": 23,
+      "qtype": "빈칸추론",
+      "score": 3.4,
+      "answer": "①",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "23. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [3.4점]\nAmong older teenagers, media tastes are in a period of shift. While they still retain many preferences common to younger adolescents, they also begin to align with those of young adults. For instance, they remain drawn to fast-paced media and maintain some interest in television and music aimed at teenagers, though this tendency gradually weakens. However, their sense of humor has grown more sophisticated, closely resembling that of adults. At this stage, cognitive and social-emotional development are no longer the primary drivers of how they appreciate humor; instead, factors such as educational background and cultural context take on a greater role. Older teenagers are capable of engaging with all forms of adult humor — whether in advertising, public information campaigns, or entertainment — including wordplay, subtle references, and parody. As adolescence draws to a close, teens are predominantly reading magazines, watching programs, and purchasing products intended for adults. For this reason, the most effective way to connect with older teenagers is to treat them as people _________________.\n① who are ready to be engaged with as emerging adults\n② who are fluent across a wide range of media platforms\n③ whose tastes are shaped more by peer influence than by age\n④ whose sense of humor reflects their level of social intelligence\n⑤ who still need guidance in balancing adolescent and adult media worlds"
+    },
+    {
+      "num": 24,
+      "qtype": "빈칸추론",
+      "score": 3.7,
+      "answer": "③",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "24. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [3.7점]\nThe insights of the subjectivist tradition remind us that when minor situational changes produce dramatically different behaviors, it is likely because those changes have significantly _________________. Take, for instance, research showing that European nations where organ donation is the default and drivers must actively choose to withdraw enroll five to ten times more potential donors than those where donation requires drivers to actively sign up. A hasty interpretation might simply attribute this difference to laziness on the part of potential donors. A closer look, however, reveals something more meaningful: the sign-up system frames donation as a matter of altruism or indifference toward the fate of one's body after death, while the default-enrollment system frames it as normative, making non-participation appear to be an idiosyncratic rejection of a shared norm. *altruism: 이타주의    **idiosyncratic: 개인적인, 기이한\n① reinforced the normative expectations already embedded in a given cultural context\n② altered the way the actor consciously weighs and judges the available options\n③ shifted the perceived meaning of the situation for the person involved\n④ made the consequences of one's decision more visible to the actor\n⑤ redefined the social appropriateness of the action within the given frame"
+    },
+    {
+      "num": 25,
+      "qtype": "요약문완성",
+      "score": 3.6,
+      "answer": "⑤",
+      "stem": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A)와 (B)에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다_표",
+      "pg": null,
+      "original_q": "25. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A)와 (B)에 들어갈 말로 가장 적절한 것은? [3.6점]\n⬇"
+    },
+    {
+      "num": 26,
+      "qtype": "빈칸추론",
+      "score": 3.6,
+      "answer": "④",
+      "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "26. 다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. [3.6점]\nLike many errors and biases that seem irrational on the surface, auditory looming turns out, on closer examination, to be pretty smart. Animals like rhesus monkeys have evolved the same bias. This intentional error functions as an advance warning system, manned by the self-protection subself, providing individuals with a margin of safety when they are confronted with potentially dangerous approaching objects. If you spot a rhinoceros or hear an avalanche speeding toward you, auditory looming will motivate you to jump out of the way now rather than wait until the last second. The evolutionary benefits of this reaction led natural selection to endow us with biased brains. Although this kind of bias might inhibit economically rational judgment in laboratory tasks, it leads us to behave in a deeply rational manner in the real world. _________________.\n① Accurate perception is essential for rational decision-making.\n② Biases should be eliminated to improve human judgment.\n③ Rational behavior always depends on objective accuracy.\n④ Being accurate is not always smart.\n⑤ Perceptual errors reduce our ability to respond effectively to real-world dangers."
+    },
+    {
+      "num": 27,
+      "qtype": "어휘",
+      "score": 3.6,
+      "answer": "⑤",
+      "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "27. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? [3.6점]\nMuch of the moral and political discussion has centered on the question: To have or not to have? On the moral-religious level this meant the alternative between the ascetic life and the non-ascetic life, the latter including both productive enjoyment and limitless pleasure. In the economic and political field a similar ①erroneous alternative is between unrestricted inequality and absolute equality of income. If everybody's possessions are functional and personal, then whether someone has somewhat more than another person does not constitute a social problem, for since possession is not ②essential, envy does not grow. On the other hand, those who are concerned with equality in the sense that each one's share must be exactly equal to anyone else's show that their own ③having orientation is as strong as ever. It is simply ④expressed by their preoccupation with exact equality. Behind this concern their real motivation is ⑤generosity. *ascetic: 금욕적인"
+    },
+    {
+      "num": 28,
+      "qtype": "요약문완성",
+      "score": 3.5,
+      "answer": "②",
+      "stem": "다음 글의 내용을 한 문장으로 요약하자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+      "format": "5지선다_표",
+      "pg": null,
+      "original_q": "28. 다음 글의 내용을 한 문장으로 요약하자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은? [3.5점]\n⬇"
+    },
+    {
+      "num": 29,
+      "qtype": "문장삽입",
+      "score": 3.7,
+      "answer": "②",
+      "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "29. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? [3.7점]\nAccording to Peter Drucker's Post-Capitalist Society, the real, controlling resource and absolutely vital \"factor of production\" nowadays is neither capital nor land nor labor. ( ① ) The basic economic resource is and will continue to be knowledge. The traditional \"factors of production\" — land, labor and capital — have not disappeared, but they have become secondary. ( ② ) And knowledge in this new sense means knowledge as a unity, knowledge as the means to obtain social and economic results. ( ③ ) That knowledge has become the resource, rather than a resource. Knowledge is what makes our society \"post-capitalist.\" It creates new social and economic dynamics as well as new politics. In order to achieve success in the long-term, policy must be directed at converting manufacturing from a labor-based enterprise into a knowledge-based one. ( ④ ) The fact that the market economy organizes economic activity around information is what makes it superior. Neither the allocation of capital to productive uses nor labor — the two vehicles of 19th- and 20th-century economic growth — will be the central creators of wealth. ( ⑤ ) Value is now created by \"productivity\" and \"innovation,\" both of which are applications of knowledge to work. The economic challenge of the post-capitalist society will therefore be the productivity of knowledge work and the knowledge worker."
+    },
+    {
+      "num": 30,
+      "qtype": "함축의미",
+      "score": 3.5,
+      "answer": "④",
+      "stem": "밑줄 친 The plural — narratives — is utterly essential.이 다음 글에서 의미하는 바로 가장 적절한 것은?",
+      "format": "5지선다",
+      "pg": null,
+      "original_q": "30. 밑줄 친 The plural — narratives — is utterly essential.이 다음 글에서 의미하는 바로 가장 적절한 것은? [3.5점]\nWe are a species that delights in story. We look out on reality, we grasp patterns, and we join them into narratives that can captivate, inform, amuse, and thrill. The plural — narratives — is utterly essential. In the library of human reflection, there is no single, unified volume that conveys ultimate understanding. Instead, we have written many stories that study different domains of human inquiry and experience: stories, that is, that divide and analyze the patterns of reality using different grammars and vocabularies. Protons, neutrons, and electrons are essential for telling the story of elements, analyzing the stuff of reality. Metabolism, mutation, and adaptation are essential for telling the story of life's emergence and development, analyzing the biochemical workings of remarkable molecules and cells. Neurons, information, and awareness are essential for the story of mind — and with that the narratives proliferate: myth to religion, literature to philosophy, art to music, telling of humankind's struggle for survival, will to understand, urge for expression, and search for meaning. *proliferate: 증식하다\n① There is no absolute truth; all knowledge is purely subjective.\n② Every field of study is ultimately explained by a unified theory of nature.\n③ We tend to organize knowledge in narrative forms that are easy to remember.\n④ We need various disciplines to explain the world and ourselves.\n⑤ We are conditioned to link diverse physical phenomena to one single concept.\n— 끝 —"
+    }
+  ],
+  "summary": "제철고3 1학기 중간(영어II) 30문항 100점. 완전판(기출 원문 보존). 빈칸7·어휘5·함축4·순서3·흐름무관3·요약3·문장삽입2·제목1·요지1·추론1. 배점 2.5~3.7 점진증가(앞쪽 저배점). 정답분포 {'①': 5, '②': 6, '③': 6, '④': 7, '⑤': 6}. EBS 수특/수완 변형 지문 기반 수능형. 함축의미·요약 비중 높음(고3 영어II 특징).",
+  "savedAt": "2026-06-15T21:50:43.968002+09:00"
+}
