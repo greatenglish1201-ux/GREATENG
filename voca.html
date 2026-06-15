@@ -105,13 +105,19 @@
 <datalist id="tickmarks"></datalist>
 
 <!-- ====================== 학생 화면 ====================== -->
-<div class="card" id="student-screen">
+<div class="card" id="student-screen" style="position:relative;">
+    <!-- 우측 상단 톱니바퀴 (관리자 인증 시에만 노출) -->
+    <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--gold); border:none; font-size:17px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.15); align-items:center; justify-content:center;">⚙️</button>
+
     <div id="login-area">
         <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 VOCA">
         <h1 style="margin: 0 0 3px 0; font-size: 25px; font-weight: 800; color: var(--wine); letter-spacing:-0.5px;">대단한영어 <span style="color: var(--gold);">VOCA</span></h1>
-        <p style="margin:0 0 20px; font-size:12.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px;">단어 마스터 시스템</p>
+        <p style="margin:0 0 22px; font-size:12.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px;">단어 마스터 시스템</p>
 
-        <button id="admin-quick-btn" onclick="goAdminDirect()" style="display:none; width:100%; padding:12px; margin-bottom:16px; background:var(--ink); color:var(--gold); border:none; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer;">⚙️ 관리자 패널로 돌아가기</button>
+        <!-- ===== 📸 숙제 제출 (상단 배치) ===== -->
+        <div id="hw-entry" style="display:none; margin-bottom:22px;">
+            <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:16px; font-size:16px; font-weight:800; box-shadow:0 4px 14px rgba(122,16,32,0.25);" onclick="hw_open()">📸 숙제 제출하기</button>
+        </div>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요 (정규 미션용)" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
         <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:white;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
@@ -132,11 +138,6 @@
                 <button id="start-mission-btn" class="btn" style="background:var(--blue); display:none;" onclick="startTest()">오늘의 미션 시작하기</button>
                 <button id="db-wrong-btn" class="btn" style="background:#e74c3c; display:none;" onclick="startAccumulatedWrongTest()">누적 오답 훈련하기</button>
             </div>
-        </div>
-
-        <!-- ===== 📸 숙제 제출 (신규) ===== -->
-        <div id="hw-entry" style="display:none; margin-top:16px;">
-            <button class="btn" style="background:linear-gradient(135deg,#3a2a20,#7a1020); color:#fff; padding:15px;" onclick="hw_open()">📸 숙제 제출하기</button>
         </div>
 
         <div id="hw-panel" style="display:none; margin-top:16px; background:#fff; border:2px solid var(--wine,#7a1020); border-radius:15px; padding:18px; text-align:left;">
@@ -619,9 +620,9 @@
         if (adminAuthed) enterAdmin();
     }
     function updateAdminQuickBtn() {
-        const btn = document.getElementById('admin-quick-btn');
+        const btn = document.getElementById('admin-gear-btn');
         const loginArea = document.getElementById('admin-login-area');
-        if (btn) btn.style.display = adminAuthed ? "block" : "none";
+        if (btn) btn.style.display = adminAuthed ? "flex" : "none";
         if (loginArea) loginArea.style.display = adminAuthed ? "none" : "block";
     }
 
