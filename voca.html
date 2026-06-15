@@ -943,44 +943,30 @@
         msg.style.color = 'var(--ink-soft,#3a2a20)';
         msg.textContent = '전송 중...';
 
-        // iframe form-POST (대용량 base64 안전 전송)
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = HW_URL;
-        form.target = 'hw_iframe';
-        form.enctype = 'application/x-www-form-urlencoded';
-        form.style.display = 'none';
-        const fields = {
+        const payload = {
             name: stName, grade: hwGrade, due: dueStr, src: src,
             course: hwCourse, type: type, image: hwCompressedDataUrl, mime: 'image/jpeg'
         };
-        for(const k in fields){
-            const inp = document.createElement('textarea');
-            inp.name = k; inp.value = fields[k];
-            form.appendChild(inp);
-        }
-        document.body.appendChild(form);
 
-        const iframe = document.getElementById('hw_iframe');
-        let done = false;
-        const onload = ()=>{
-            if(done) return; done = true;
-            iframe.removeEventListener('load', onload);
+        // 단어장이 이미 쓰는 검증된 방식: fetch + no-cors + JSON body
+        fetch(HW_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        }).then(()=>{
             msg.style.color = '#274e13';
             msg.innerHTML = '✅ 제출 완료! (현황 반영까지 잠시 걸릴 수 있어요)';
             btn.disabled = false;
-            // 입력 초기화 (날짜·현황은 유지)
             document.getElementById('hw-photo').value = '';
             document.getElementById('hw-preview-img').style.display = 'none';
             hwCompressedDataUrl = '';
-            setTimeout(()=>{ document.body.removeChild(form); }, 500);
-            // 잠시 후 현황 새로고침
-            setTimeout(hw_loadStatus, 2500);
-        };
-        iframe.addEventListener('load', onload);
-        form.submit();
-        // 안전장치: 응답 없어도 8초 후 완료 처리
-        setTimeout(()=>{ if(!done) onload(); }, 8000);
+            setTimeout(hw_loadStatus, 3000);
+        }).catch((err)=>{
+            msg.style.color = '#e74c3c';
+            msg.textContent = '전송 실패: ' + (err && err.message ? err.message : '다시 시도해주세요');
+            btn.disabled = false;
+        });
     }
 
     async function handleStart(mode) {
