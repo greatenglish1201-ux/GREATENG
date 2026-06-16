@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대단한영어 — 학부모님께 드리는 수업 안내</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-12E7VM1SQ8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-12E7VM1SQ8');
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap');
   :root{
@@ -234,6 +242,18 @@
     border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;
   }
   .director .cred small{display:block;font-size:11.5px;font-weight:400;color:var(--gold-soft);margin-top:2px}
+
+  /* ── Cross link ── */
+  .crosslink{display:flex;align-items:center;gap:14px;text-decoration:none;
+    background:linear-gradient(160deg,var(--navy-2),var(--navy));
+    border:1px solid rgba(201,168,76,.3);border-radius:16px;
+    padding:18px 20px;margin:24px 0 8px;transition:transform .15s ease}
+  .crosslink:hover{transform:translateY(-2px)}
+  .cl-ic{font-size:26px;flex-shrink:0}
+  .cl-tx{flex:1}
+  .cl-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--gold-soft);margin-bottom:4px}
+  .cl-title{font-size:15.5px;font-weight:700;color:#fff;line-height:1.4}
+  .cl-arrow{font-size:20px;color:var(--gold);font-weight:700;flex-shrink:0}
 
   /* ── CTA ── */
   .cta{text-align:center;padding:36px 0 56px}
@@ -605,6 +625,15 @@
       </a>
     </div>
   </div>
+
+  <a class="crosslink" href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">
+    <div class="cl-ic">🧭</div>
+    <div class="cl-tx">
+      <div class="cl-label">함께 보면 좋아요</div>
+      <div class="cl-title">포항 27개 고교 입시 정보 한눈에 보기</div>
+    </div>
+    <div class="cl-arrow">→</div>
+  </a>
 
 </main>
 
