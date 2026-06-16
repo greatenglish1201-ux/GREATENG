@@ -2251,12 +2251,9 @@
             };
             document.getElementById('adm-status-msg').innerText = "저장 중...";
             await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            alert(name + " 학생 배정 완료!");
-            // 관리자 화면 유지하면서 상태만 초기화
-            this.basket = [];
-            this._targetTouched = false;
-            this.renderBasket();
-            document.getElementById('adm-status-msg').innerText = "저장 완료!";
+            alert(name + " 학생 배정 완료!\n(범위는 그대로 유지됩니다 — 다른 학생을 선택해 같은 범위로 바로 저장하세요.)");
+            // 범위(basket)는 유지 — 같은 범위를 여러 학생에게 빠르게 배정
+            document.getElementById('adm-status-msg').innerText = "저장 완료! 범위 유지 중 — 다음 학생 선택";
         }
     };
 </script>
