@@ -26,6 +26,7 @@
   --red:      #c0392b;
   --red2:     #e74c3c;
   --blue:     #1a4a8c;
+  --wine:     #7a1020;
   --blue2:    #2980b9;
   --amber:    #e67e22;
   --border:   #e0d8cc;
@@ -600,6 +601,55 @@ header { padding: 12px 16px; }
 .rv-orig{ font-size:.8rem; color:#555; background:#fafafa; padding:8px; border-radius:4px; margin-top:4px; text-align:justify; }
 .rv-exp{ background:#f4f7fb; border-left:3px solid var(--navy); padding:7px 10px; margin-top:10px; font-size:.82rem; }
 .rv-card u{ text-underline-offset:2px; font-weight:600; }
+
+/* ━━━ 사용법 매뉴얼 박스 ━━━ */
+.manual{border:1px solid var(--gold-lt);border-left:4px solid var(--gold2);border-radius:8px;background:linear-gradient(180deg,#fffdf6,#fdf9ee);margin-bottom:14px;overflow:hidden;}
+.manual>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:.9rem;color:var(--navy);list-style:none;user-select:none;display:flex;align-items:center;gap:7px;}
+.manual>summary::-webkit-details-marker{display:none;}
+.manual>summary::before{content:"📖";font-size:1rem;}
+.manual[open]>summary{border-bottom:1px solid var(--gold-lt);background:var(--gold-lt);}
+.manual .mbody{padding:12px 16px 14px;font-size:.84rem;line-height:1.62;color:var(--ink2);}
+.manual .mbody h4{margin:12px 0 5px;font-size:.86rem;color:var(--wine);font-weight:700;}
+.manual .mbody h4:first-child{margin-top:0;}
+.manual .mbody ol,.manual .mbody ul{margin:4px 0 8px;padding-left:20px;}
+.manual .mbody li{margin:3px 0;}
+.manual .mbody code{background:#f3eee2;padding:1px 5px;border-radius:4px;font-size:.8rem;color:var(--wine);}
+.manual .mbody .tag{display:inline-block;background:var(--navy);color:#fff;font-size:.72rem;padding:1px 7px;border-radius:10px;margin-right:5px;}
+.manual .mbody .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;}
+.manual .mbody .flow span{background:var(--white);border:1px solid var(--gold2);border-radius:6px;padding:4px 9px;font-size:.78rem;font-weight:600;color:var(--navy);}
+.manual .mbody .flow .arr{border:none;background:none;color:var(--gold);font-weight:700;padding:0;}
+.manual .mbody .hl{background:var(--gold-lt);padding:1px 4px;border-radius:3px;font-weight:600;}
+.manual .mbody .warn{color:var(--red);font-weight:600;}
+
+/* ━━━ B2B 2층 검토 구조 ━━━ */
+.rv-layer{border:1px solid var(--gold-lt);border-radius:10px;background:#fffdf8;padding:12px 14px;margin-bottom:14px;}
+.rv-layer-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rv-layer-t{font-weight:700;font-size:.92rem;color:var(--navy);}
+.rv-layer-s{margin-left:auto;font-size:.78rem;color:var(--ink4);}
+.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:9px;}
+.gate-cell{background:var(--white);border-radius:7px;padding:8px 10px;}
+.gate-l{font-size:.72rem;color:var(--ink4);}
+.gate-v{font-size:1.15rem;font-weight:700;margin-top:2px;}
+.gate-v.ok{color:var(--green2);} .gate-v.bad{color:var(--red);} .gate-v.warn{color:var(--gold);} .gate-v.na{color:var(--ink4);}
+.gate-reject{margin-top:10px;background:#fdecea;border-left:3px solid var(--red);padding:7px 10px;border-radius:4px;font-size:.8rem;color:#922;}
+.gate-reject a{color:var(--red);font-weight:700;}
+.gate-warn{margin-top:8px;font-size:.78rem;color:var(--gold);}
+.rv-section-t{font-weight:700;font-size:.84rem;color:var(--ink3);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--gold-lt);}
+.rv-card.reject{border-left:4px solid var(--red);}
+.rv-card.review{border-left:4px solid var(--blue);}
+.rv-card.auto{border-left:4px solid var(--green2);opacity:.92;}
+.rv-card.rv-approved{opacity:.55;}
+.rv-st.reject{color:var(--red);} .rv-st.review{color:var(--blue);} .rv-st.auto{color:var(--green2);}
+.rv-qh{cursor:pointer;}
+.rv-chkbox{background:#f6f9fd;border:1px solid #e0eaf5;border-radius:6px;padding:8px 10px;margin:8px 0;}
+.rv-chk{font-size:.8rem;color:var(--ink2);margin:4px 0;line-height:1.5;}
+.rv-chk.bad{color:#922;} .rv-chk.warn{color:#8a6d1a;}
+.rv-chk-tag{display:inline-block;background:var(--navy);color:#fff;font-size:.68rem;padding:1px 7px;border-radius:9px;margin-right:5px;}
+.rv-cardact{display:flex;gap:8px;margin-top:10px;}
+.rv-foot{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid var(--gold-lt);}
+.rv-prog{flex:1;height:8px;background:var(--paper);border-radius:99px;overflow:hidden;}
+.rv-prog-bar{height:100%;background:var(--green2);}
+.rv-prog-t{font-size:.78rem;color:var(--ink3);white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -624,6 +674,43 @@ header { padding: 12px 16px; }
 
 <!-- ━━━ 0. 대시보드 ━━━ -->
 <div class="panel active" id="tab0">
+
+  <details class="manual">
+    <summary>전체 사용 매뉴얼 — 기출 분석부터 시험지 출력까지</summary>
+    <div class="mbody">
+      <h4>이 도구의 전체 흐름</h4>
+      <div class="flow">
+        <span>① 기출 분석</span><span class="arr">→</span>
+        <span>② 패턴 선택</span><span class="arr">→</span>
+        <span>③ Claude 출제</span><span class="arr">→</span>
+        <span>④ 예상문제 등록</span><span class="arr">→</span>
+        <span>⑤ 검토</span><span class="arr">→</span>
+        <span>⑥ 출력</span>
+      </div>
+
+      <h4>핵심 개념 — "하이브리드 패턴 파일" 하나가 두 역할을 한다</h4>
+      <p>학교별 패턴 파일(예: <code>jechulgo1_2026_1f_pattern.json</code>)은 한 파일이지만 두 부분으로 나뉜다.</p>
+      <ul>
+        <li><span class="tag">허브가 읽는 부분</span> <code>key·school·patterns·questions[].stem</code> 등 — 이 화면(허브)이 활성 패턴 표시·발문 대조에 사용한다.</li>
+        <li><span class="tag">Claude가 읽는 부분</span> <code>_analysis_card</code> — 기출분석·출처구간·출제규칙·Flesch목표·선지함정 규칙이 담긴 <b>출제 설계도</b>. 허브는 이 필드를 무시하고, <b>Claude(AI)에게 줄 때만</b> 쓴다.</li>
+      </ul>
+
+      <h4>_analysis_card 사용법 (가장 중요)</h4>
+      <p><code>_analysis_card</code>는 다음에 같은 학교를 다시 출제하거나, 다른 학교를 같은 품질로 출제할 때 <b>Claude에게 주는 설계도</b>다. 사용 절차:</p>
+      <ol>
+        <li>새 대화(Claude)를 연다.</li>
+        <li><span class="hl">범용 핸드오프 md</span>(<code>exam_authoring_universal_handoff.md</code>)를 올린다 — 출제 절차·검증습관이 담긴 문서.</li>
+        <li>해당 학교 <span class="hl">패턴 파일</span>을 올린다 — 그 안의 <code>_analysis_card</code>가 그 학교의 발문·배점·난이도·선지규칙을 알려준다.</li>
+        <li>기출 docx + 시험범위 + 지문소스를 주고 "이 카드·절차대로 출제해줘"라고 한다.</li>
+        <li>Claude가 동일 품질로 출제 → 예상문제 JSON 산출 → 이 허브 ④에서 등록.</li>
+      </ol>
+      <p class="warn">※ 패턴 파일만 보면 분포표로 보이지만, 진짜 품질은 핸드오프 md(절차) + _analysis_card(설계도)를 함께 줄 때 재현된다. 둘 다 필요하다.</p>
+
+      <h4>새 학교를 시작할 때</h4>
+      <p>기출 docx를 Claude에게 올리고 핸드오프 절차대로 분석하면, 그 학교용 하이브리드 패턴 파일이 새로 만들어진다. 그 파일을 이 허브 📚 자산 탭에 등록하면 끝.</p>
+    </div>
+  </details>
+
   <div class="dash-grid">
     <div class="step-box">
       <div class="step-title">📋 활성 기출 패턴</div>
@@ -641,6 +728,20 @@ header { padding: 12px 16px; }
 
 <!-- ━━━ 1. 자산 ━━━ -->
 <div class="panel" id="tab1">
+
+  <details class="manual">
+    <summary>자산 탭 사용법 — ② 기출 패턴 선택</summary>
+    <div class="mbody">
+      <h4>여기서 하는 일</h4>
+      <p>출제의 <b>기준이 될 학교 패턴</b>을 고른다. 선택한 패턴이 대시보드에 "활성 패턴"으로 표시되고, 이후 ④ 예상문제 등록 시 <b>발문 대조</b>의 기준이 된다.</p>
+      <h4>절차</h4>
+      <ol>
+        <li>아래 목록에서 해당 학교·시험의 패턴을 선택(자동 저장됨).</li>
+        <li>패턴이 없으면 → Claude에게 기출 docx를 주고 분석시켜 패턴 파일을 만든 뒤, 시트/깃허브에 올려 여기서 불러온다.</li>
+        <li>패턴 파일 안 <code>_analysis_card</code>를 보려면 파일을 직접 열어 확인(허브에는 표시 안 됨 — Claude용 설계도).</li>
+      </ol>
+    </div>
+  </details>
 
   <!-- 기출 패턴 -->
   <div class="step-box">
@@ -759,6 +860,31 @@ header { padding: 12px 16px; }
 
 <!-- ━━━ 2. 출제 ━━━ -->
 <div class="panel" id="tab2">
+
+  <details class="manual">
+    <summary>출제 탭 사용법 — ③ Claude 출제 + ④ 예상문제 등록</summary>
+    <div class="mbody">
+      <h4>③ Claude로 출제하기</h4>
+      <p>실제 문항 출제는 Claude(AI)가 한다. 새 대화에서 다음 3종을 주고 출제를 의뢰한다.</p>
+      <ol>
+        <li><span class="hl">핸드오프 md</span> — 출제 절차·실시간 검증습관</li>
+        <li><span class="hl">학교 패턴 파일</span> — 그 안 <code>_analysis_card</code>가 발문·배점·출처구간·Flesch목표·선지함정 규칙을 알려줌</li>
+        <li><span class="hl">기출 docx + 시험범위 + 지문소스</span></li>
+      </ol>
+      <p>의뢰 예: <code>"핸드오프·패턴 올림. 이 _analysis_card·절차대로 [학교][시험] 출제해줘. 기출 docx 올림, 범위 N강, 지문소스 [교과서/시트]."</code></p>
+
+      <h4>_analysis_card가 출제를 어떻게 통제하나</h4>
+      <ul>
+        <li><b>발문</b>: 카드의 발문 원문(토씨 그대로)을 그대로 사용</li>
+        <li><b>출처구간</b>: 1~4 교과서(쉬움) / 중간 부교재 / 뒤 외부지문(어려움) 난이도 곡선</li>
+        <li><b>난이도</b>: 외부지문은 Flesch 목표 이하 최고난도 선별, 선지 함정 4종</li>
+        <li><b>정답분포</b>: ①~⑤ 균등화 규칙</li>
+      </ul>
+
+      <h4>④ 산출된 예상문제 등록</h4>
+      <p>Claude가 만든 <code>exam.json</code>을 아래 버튼으로 불러오면 자동 검증된다. 활성 패턴과 <b>발문 일치율(N/총)</b>이 표시되며, 불일치가 많으면 다른 세트일 수 있다는 경고가 뜬다.</p>
+    </div>
+  </details>
   <div class="step-box">
     <div class="step-title">📥 납품 예상문제 불러오기
       <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">Claude가 출제한 표준 JSON을 등록하고 자동 검증합니다</span>
@@ -779,6 +905,20 @@ header { padding: 12px 16px; }
 
 <!-- ━━━ 3. 출력 ━━━ -->
 <div class="panel" id="tab3">
+
+  <details class="manual">
+    <summary>출력 탭 사용법 — ⑥ 시험지 / PDF 출력</summary>
+    <div class="mbody">
+      <h4>여기서 하는 일</h4>
+      <p>검토를 마친 예상문제를 실제 시험지로 인쇄·PDF 저장한다. A4 2단 레이아웃, 박스형 머리글(학교 풀네임·과목·배점·응시자란), 정답지 별도 페이지로 출력된다.</p>
+      <h4>팁</h4>
+      <ul>
+        <li>브라우저 인쇄 대화상자에서 <b>PDF로 저장</b> 선택</li>
+        <li>브라우저 자동 머리글/바닥글은 인쇄 설정에서 <b>해제</b>(HTML로 제어 불가)</li>
+        <li>출제 탭에서 예상문제를 먼저 등록해야 활성화됨</li>
+      </ul>
+    </div>
+  </details>
   <div class="step-box">
     <div class="step-title">🖨️ 시험지 출력</div>
     <div id="printExamInfo" class="pattern-card" style="margin-bottom:10px;"><span style="color:var(--ink4);">✍️ 출제 탭에서 예상문제를 먼저 등록하세요</span></div>
@@ -812,6 +952,21 @@ header { padding: 12px 16px; }
 
 <!-- ━━━ 6. 검토 ━━━ -->
 <div class="panel" id="tab6">
+
+  <details class="manual">
+    <summary>검토 탭 사용법 — ⑤ 신호등 검증</summary>
+    <div class="mbody">
+      <h4>여기서 하는 일</h4>
+      <p>등록된 예상문제를 문항별로 자동 검증한다. <code>_orig</code>(원문)·<code>_origtype</code>(원유형)을 대조해 순수 프론트엔드로 점검하며, GAS·passages.js는 건드리지 않는다.</p>
+      <h4>신호등 의미</h4>
+      <ul>
+        <li><b>✓ 초록</b> = 통과 / <b>⚠ 노랑</b> = 수동확인 필요(의미반전형·어법 등 자동검증 한계)</li>
+        <li>점검 문항은 빨강으로 추출 + 점프링크로 바로 이동</li>
+        <li>✎ 수정 → 발문·지문·선지·정답·해설 인라인 편집 → 저장 → 재검증</li>
+      </ul>
+      <p>검증 후 수정본 JSON을 내보내 ④에서 다시 등록할 수 있다.</p>
+    </div>
+  </details>
   <div id="reviewRoot">
     <div style="color:var(--ink4);padding:20px;text-align:center;">✍️ 출제 탭에서 예상문제를 먼저 로드하세요.</div>
   </div>
@@ -1649,6 +1804,113 @@ function _rvSim(a,b){ // 간이 유사도 (Dice 계수, 단어집합)
 function _rvBody(q){ return (q.question||'').split('\n').slice(1).join('\n'); }
 
 // 유형별 자동 검증 → {status, rows(html), flags[]}
+/* ━━━ B2B 자동검증: 간이 난이도 (Flesch 근사) ━━━ */
+function _rvReadability(text){
+  const t=(text||'').replace(/<[^>]+>/g,' ');
+  const words=(t.match(/[A-Za-z]+/g)||[]);
+  const sents=(t.match(/[.!?]+/g)||[]).length||1;
+  if(!words.length) return null;
+  // 음절 근사: 모음군 수
+  let syl=0; words.forEach(w=>{ const m=w.toLowerCase().match(/[aeiouy]+/g); syl+=Math.max(1,(m?m.length:1)); });
+  const wps=words.length/sents, spw=syl/words.length;
+  // Flesch Reading Ease
+  const fre=206.835 - 1.015*wps - 84.6*spw;
+  return Math.round(fre*10)/10;
+}
+
+/* ━━━ B2B 자동검증: 정답 본문 복붙률 (제목/주제/요약만 — 빈칸·함축은 정답이 본문에 있는 게 정상) ━━━ */
+function _rvCopyRate(q){
+  const qt=q.qtype, orig=(q._orig||'')+' '+_rvBody(q);
+  if(!['제목','주제','요지','요약문완성'].includes(qt)) return null;
+  let ans=''; (q.choices||[]).forEach(c=>{ if(c.startsWith(q.answer)) ans=c.replace(/^[①②③④⑤]\s*/,''); });
+  const stop=new Set('the a an of to in on at for and or but with that this from as is are was were be been by it its their his her our your they them then than into more most such not only also can will would could should may might'.split(/\s+/));
+  const aw=(ans.toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!stop.has(w));
+  if(!aw.length) return null;
+  const ow=new Set((orig.toLowerCase().match(/[a-z]{4,}/g)||[]));
+  const hit=aw.filter(w=>ow.has(w)).length;
+  return Math.round(hit/aw.length*100);
+}
+
+/* ━━━ B2B 자동검증: 선지 길이 편차 (정답이 유독 긴가) ━━━ */
+function _rvLenFlag(q){
+  const ch=(q.choices||[]).map(c=>c.replace(/^[①②③④⑤]\s*/,'').replace(/^\([a-e]\)\s*/,''));
+  if(ch.length<2) return null;
+  const lens=ch.map(c=>(c.match(/[A-Za-z]+/g)||[]).length).filter(l=>l>0);
+  if(lens.length<2) return null;
+  const ansidx='①②③④⑤'.indexOf(q.answer);
+  const ansLen=lens[ansidx]||0;
+  const others=lens.filter((_,i)=>i!==ansidx);
+  const avg=others.reduce((a,b)=>a+b,0)/others.length;
+  const max=Math.max(...lens);
+  // 정답이 가장 길고 평균보다 40%↑ 길면 단서 (짧은 선지 유형 오탐 방지)
+  return (ansLen===max && ansLen>avg*1.4 && ansLen-avg>=4) ? {ansLen, avg:Math.round(avg)} : null;
+}
+
+/* ━━━ B2B 자동검증: 해설 정답기호 정합 ━━━ */
+function _rvExpMismatch(q){
+  const exp=q.explanation||''; if(!q.answer) return false;
+  const m=exp.match(/따라서\s*([①②③④⑤])/);
+  return m && m[1]!==q.answer;
+}
+
+/* ━━━ B2B: 전역 게이트 (시험 전체 기계검사) ━━━ */
+function _rvGate(Q){
+  const g={pass:[], fail:[], warn:[]};
+  // 총점
+  const tot=Math.round(Q.reduce((s,q)=>s+(+q.score||0),0)*10)/10;
+  if(tot!==100) g.fail.push(`총점 ${tot}점 (≠100)`);
+  // 유형 총량 vs 활성패턴
+  if(analysisData && analysisData.patterns){
+    const cur={}; Q.forEach(q=>cur[q.qtype]=(cur[q.qtype]||0)+1);
+    const diff=[];
+    Object.keys(analysisData.patterns).forEach(k=>{ if((cur[k]||0)!==analysisData.patterns[k]) diff.push(`${k} ${cur[k]||0}/${analysisData.patterns[k]}`); });
+    if(diff.length) g.warn.push('유형총량 불일치: '+diff.join(', '));
+  }
+  // 정답분포 쏠림
+  const dist={}; Q.forEach(q=>dist[q.answer]=(dist[q.answer]||0)+1);
+  const sk=Object.entries(dist).filter(([k,v])=>v>=8||v<=1);
+  if(sk.length) g.warn.push('정답분포 쏠림: '+sk.map(([k,v])=>`${k}=${v}`).join(' '));
+  // 발문 일치 (활성패턴)
+  let stemMatch=null;
+  if(analysisData && analysisData.questions){
+    const pm={}; analysisData.questions.forEach(p=>pm[p.num]=p.stem||p.original_q||'');
+    let ok=0,tot2=0;
+    Q.forEach(q=>{ const ps=pm[q.num]; if(ps){ tot2++; const gs=(q.question||'').split('\n')[0]; if(_rvNorm(gs.slice(0,12))===_rvNorm(ps.slice(0,12))) ok++; } });
+    if(tot2) stemMatch={ok,tot:tot2};
+  }
+  return {tot, dist, stemMatch, ...g};
+}
+
+/* ━━━ B2B: 문항 트리아지 (자동통과 vs 검수대기) ━━━ */
+function _rvTriage(q, verify){
+  const reasons=[];      // 검수자가 봐야 할 이유
+  const autoflags=[];    // 자동 경고(반려급)
+  // 자동 경고 (기계가 확실히 잡는 것)
+  if(verify.flags && verify.flags.length) autoflags.push(...verify.flags);
+  if(_rvExpMismatch(q)) autoflags.push('해설 정답기호 불일치');
+  const copy=_rvCopyRate(q);
+  // 교과서존(쉬운 워밍업)은 복붙 관대 — 외부/부교재 출처만 엄격
+  const isEasy=/교과서/.test(q._src||q.source||'');
+  if(copy!=null && copy>60 && !isEasy) autoflags.push(`정답 본문복붙 ${copy}%`);
+  // 길이단서: 함축은 선지가 본래 길어 제외
+  const len=(q.qtype==='함축의미')?null:_rvLenFlag(q);
+  if(len) autoflags.push(`정답 길이단서(${len.ansLen}vs평균${len.avg})`);
+  // 전문가 판단 포인트 (유형별)
+  if(q.qtype==='어법') reasons.push({tag:'전문가 판단', q:'어법 포인트가 적절한가? (도치·대동사·분사 등 변별력)'});
+  if(['빈칸추론','제목','주제','요지'].includes(q.qtype)) reasons.push({tag:'정독 필요', q:'정답이 맞나? 오답에 복수정답·매력적 함정이 있나?'});
+  if(q.qtype==='함축의미') reasons.push({tag:'정독 필요', q:'밑줄어구가 비유/함의를 담나? 정답이 진의를 정확히 포착하나?'});
+  if(['글의순서','문장삽입'].includes(q.qtype)) reasons.push({tag:'정독 필요', q:'단서(연결어·대명사)로 유일 정답이 보장되나?'});
+  // 외부지문(고난도존)은 난이도도 확인
+  const fre=_rvReadability(_rvBody(q));
+  let diffNote=null;
+  if(q._src && /수특|외부|영독|영어/.test(q._src) && fre!=null && fre>40) diffNote=`외부지문 Flesch ${fre} (다소 쉬움)`;
+  // 분류: autoflags 있으면 반려, reasons 있으면 검수대기, 둘 다 없으면 자동통과
+  let lane='auto';
+  if(autoflags.length) lane='reject';
+  else if(reasons.length || diffNote) lane='review';
+  return {lane, reasons, autoflags, copy, fre, diffNote};
+}
+
 function _rvVerify(q){
   const orig=q._orig||'', made=_rvBody(q), qt=q.qtype;
   const ansidx='①②③④⑤'.indexOf(q.answer)+1;
@@ -1731,68 +1993,117 @@ function renderReview(){
     root.innerHTML='<div style="color:var(--ink4);padding:20px;text-align:center;">✍️ 출제 탭에서 예상문제를 먼저 로드하세요.</div>';
     return;
   }
-  const Q=generatedQs.filter(q=>q.type!=='group'); // 단일 문항만 (그룹은 추후)
-  const results=Q.map(q=>({q, ...(_rvVerify(q))}));
-  const warnItems=results.filter(r=>r.flags.length);
+  const Q=generatedQs.filter(q=>q.type!=='group');
+  const results=Q.map(q=>{ const v=_rvVerify(q); return {q, v, tri:_rvTriage(q,v)}; });
+  const gate=_rvGate(Q);
   const hasOrig=Q.some(q=>q._orig);
 
-  // 대시보드
-  let dash=`<div class="rv-dash">
-    <div class="rv-dash-top">
-      <span>📋 ${Q.length}문항</span>
-      <span>✓ 통과 ${Q.length-warnItems.length} · ⚠ 점검 ${warnItems.length}</span>
-      ${hasOrig?'':'<span style="background:#fff0f0;color:#a00">⚠ 원문 정보 없음 — 대조 제한</span>'}
-    </div>`;
-  if(warnItems.length){
-    dash+=`<div class="rv-dash-warn"><b>⚠ 점검 필요:</b> `
-      +warnItems.map(r=>`<a href="#rvq${r.q.num}">${r.q.num}번</a>(${r.flags.join(', ')})`).join(' · ')+`</div>`;
-  } else {
-    dash+=`<div class="rv-dash-ok">✓ 자동 점검 통과 — 이상 문항 없음</div>`;
-  }
-  dash+=`<div class="rv-tb">
-    <button class="btn btn-navy" onclick="rvExport()">💾 수정본 JSON</button>
-    <button class="btn btn-gold" onclick="switchTab(3)">🖨 출력으로</button>
-  </div></div>`;
+  const reject=results.filter(r=>r.tri.lane==='reject');
+  const review=results.filter(r=>r.tri.lane==='review');
+  const auto  =results.filter(r=>r.tri.lane==='auto');
 
-  // 카드
-  let cards='';
-  results.forEach(({q,status,rows,flags})=>{
-    const n=q.num;
+  // ━━━ 1층: 자동 게이트 스코어카드 ━━━
+  const g1=(label,val,st)=>`<div class="gate-cell"><div class="gate-l">${label}</div><div class="gate-v ${st}">${val}</div></div>`;
+  let gateHtml=`<div class="rv-layer">
+    <div class="rv-layer-h"><span class="rv-layer-t">🛡 1층 · 자동 게이트</span><span class="rv-layer-s">기계 검사 — 검수자 손 안 탐</span></div>
+    <div class="gate-grid">
+      ${g1('발문 일치', gate.stemMatch?`${gate.stemMatch.ok}/${gate.stemMatch.tot}`:'패턴없음', gate.stemMatch&&gate.stemMatch.ok===gate.stemMatch.tot?'ok':(gate.stemMatch?'warn':'na'))}
+      ${g1('총점', gate.tot, gate.tot===100?'ok':'bad')}
+      ${g1('정답 정합', `${Q.length-results.filter(r=>_rvExpMismatch(r.q)).length}/${Q.length}`, results.some(r=>_rvExpMismatch(r.q))?'bad':'ok')}
+      ${g1('자동 반려', reject.length, reject.length?'bad':'ok')}
+    </div>`;
+  if(reject.length){
+    gateHtml+=`<div class="gate-reject"><b>⛔ 출제 반려 권장:</b> `
+      +reject.map(r=>`<a href="#rvq${r.q.num}">${r.q.num}번</a>(${r.tri.autoflags.join(', ')})`).join(' · ')+`</div>`;
+  }
+  if(gate.warn.length) gateHtml+=`<div class="gate-warn">⚠ ${gate.warn.join(' / ')}</div>`;
+  gateHtml+=`</div>`;
+
+  // ━━━ 2층: 전문가 검수 큐 ━━━
+  const needReview=reject.concat(review); // 반려+검수대기 모두 카드로
+  let queueHtml=`<div class="rv-layer">
+    <div class="rv-layer-h"><span class="rv-layer-t">👤 2층 · 전문가 검수 큐</span>
+      <span class="rv-layer-s">${auto.length} 자동통과 · <b style="color:var(--blue)">${needReview.length} 검수대기</b></span></div>`;
+  if(!needReview.length){
+    queueHtml+=`<div class="rv-dash-ok" style="margin:8px 0">✓ 전 문항 자동통과 — 검수 대기 없음</div>`;
+  }
+  queueHtml+=`</div>`;
+
+  // ━━━ 진행률 + 액션 ━━━
+  let foot=`<div class="rv-foot">
+    <div class="rv-prog"><div class="rv-prog-bar" style="width:${Math.round(auto.length/Q.length*100)}%"></div></div>
+    <span class="rv-prog-t">자동통과 ${auto.length}/${Q.length}</span>
+    <button class="btn btn-navy" onclick="rvExport()">💾 수정본 JSON</button>
+    <button class="btn btn-gold" onclick="switchTab(3)">🖨 출력</button>
+  </div>`;
+
+  // ━━━ 카드 렌더 (검수대기 먼저, 자동통과는 접힘) ━━━
+  const cardHtml=(r,collapsed)=>{
+    const {q,v,tri}=r; const n=q.num;
     const qbody=_rvEsc(_rvBody(q));
     const ch=(q.choices||[]).map(c=>`<div class="rv-ch">${_rvEsc(c)}</div>`).join('');
-    const badge=flags.length?'⚠':'✓';
-    const otype=q._origtype?`<span class="rv-otype">${q._origtype}→${q.qtype}</span>`:'';
-    cards+=`<div class="rv-card ${status}" id="rvq${n}" data-num="${n}">
-      <div class="rv-qh"><span class="rv-st ${status}">${badge}</span> <b>${n}.</b>
+    const laneColor=tri.lane==='reject'?'reject':(tri.lane==='review'?'review':'auto');
+    const badge=tri.lane==='reject'?'⛔':(tri.lane==='review'?'👁':'✓');
+    // 검수 포인트
+    let chk='';
+    if(tri.autoflags.length) chk+=`<div class="rv-chk bad"><b>자동 반려:</b> ${tri.autoflags.join(' · ')}</div>`;
+    if(tri.diffNote) chk+=`<div class="rv-chk warn"><b>난이도:</b> ${tri.diffNote}</div>`;
+    tri.reasons.forEach(rr=>{ chk+=`<div class="rv-chk"><span class="rv-chk-tag">${rr.tag}</span> ${rr.q}</div>`; });
+    const fre=tri.fre!=null?` · Flesch ${tri.fre}`:'';
+    const cp=tri.copy!=null?` · 복붙 ${tri.copy}%`:'';
+    return `<div class="rv-card ${laneColor}" id="rvq${n}" data-num="${n}"${collapsed?' data-collapsed="1"':''}>
+      <div class="rv-qh" onclick="rvCardToggle(${n})">
+        <span class="rv-st ${laneColor}">${badge}</span> <b>${n}.</b>
         <span class="rv-stem">${_rvEsc((q.question||'').split('\n')[0])}</span>
-        <span class="rv-sc">[${q.score}점]·${q.qtype}${q._src?'·'+q._src:''}</span>${otype}
-        <button class="rv-edit" onclick="rvToggle(${n})">✎ 수정</button>
+        <span class="rv-sc">[${q.score}점]·${q.qtype}${fre}${cp}</span>
       </div>
-      <div class="rv-cols">
-        <div class="rv-col">
-          <div class="rv-view">
-            <div class="rv-bd">${qbody}</div><div class="rv-chs">${ch}</div>
-            <div class="rv-ans">정답 <b>${q.answer||''}</b></div>
+      <div class="rv-cardbody"${collapsed?' style="display:none"':''}>
+        ${chk?`<div class="rv-chkbox">${chk}</div>`:''}
+        <div class="rv-cols">
+          <div class="rv-col">
+            <div class="rv-view">
+              <div class="rv-bd">${qbody}</div><div class="rv-chs">${ch}</div>
+              <div class="rv-ans">정답 <b>${q.answer||''}</b></div>
+            </div>
+            <div class="rv-editm" style="display:none">
+              <label>발문</label><textarea class="rf-stem" rows="2">${(q.question||'').split('\n')[0]}</textarea>
+              <label>지문</label><textarea class="rf-body" rows="7">${_rvBody(q)}</textarea>
+              <label>선지(한 줄 하나)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>
+              <label>정답</label><select class="rf-ans">${['①','②','③','④','⑤'].map(c=>`<option ${q.answer===c?'selected':''}>${c}</option>`).join('')}</select>
+              <label>해설</label><textarea class="rf-exp" rows="3">${q.explanation||''}</textarea>
+              <div class="rv-eact"><button class="btn btn-navy" onclick="rvSave(${n})">저장</button><button class="btn btn-gray" onclick="rvToggle(${n})">취소</button></div>
+            </div>
           </div>
-          <div class="rv-editm" style="display:none">
-            <label>발문</label><textarea class="rf-stem" rows="2">${(q.question||'').split('\n')[0]}</textarea>
-            <label>지문</label><textarea class="rf-body" rows="7">${_rvBody(q)}</textarea>
-            <label>선지(한 줄 하나)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>
-            <label>정답</label><select class="rf-ans">${['①','②','③','④','⑤'].map(c=>`<option ${q.answer===c?'selected':''}>${c}</option>`).join('')}</select>
-            <label>해설</label><textarea class="rf-exp" rows="3">${q.explanation||''}</textarea>
-            <div class="rv-eact"><button class="btn btn-navy" onclick="rvSave(${n})">저장</button><button class="btn btn-gray" onclick="rvToggle(${n})">취소</button></div>
+          <div class="rv-col">
+            <div class="rv-lbl">원본·원유형 대조 ${v.flags.length?'<span class="rv-fbad">⚠ '+v.flags.join(' / ')+'</span>':'<span class="rv-fok">✓ 정상</span>'}</div>
+            <div class="rv-detail">${v.rows}</div>
+            ${q._orig?`<details><summary>원문 전체</summary><div class="rv-orig">${_rvEsc(q._orig)}</div></details>`:''}
           </div>
         </div>
-        <div class="rv-col">
-          <div class="rv-lbl">원본·원유형 대조 ${flags.length?'<span class="rv-fbad">⚠ '+flags.join(' / ')+'</span>':'<span class="rv-fok">✓ 정상</span>'}</div>
-          <div class="rv-detail">${rows}</div>
-          ${q._orig?`<details><summary>원문 전체</summary><div class="rv-orig">${_rvEsc(q._orig)}</div></details>`:''}
+        <div class="rv-exp">${_rvEsc(q.explanation||'')}</div>
+        <div class="rv-cardact">
+          <button class="btn btn-green" onclick="rvApprove(${n})">✓ 승인</button>
+          <button class="btn btn-gold" onclick="rvToggle(${n})">✎ 수정</button>
         </div>
       </div>
-      <div class="rv-exp">${_rvEsc(q.explanation||'')}</div>
     </div>`;
-  });
-  root.innerHTML=dash+cards;
+  };
+
+  let cards='<div class="rv-section-t">검수 대기</div>';
+  needReview.forEach(r=> cards+=cardHtml(r,false));
+  cards+=`<div class="rv-section-t">자동 통과 <span style="font-weight:400;color:var(--ink4)">(접힘 — 클릭하면 펼침)</span></div>`;
+  auto.forEach(r=> cards+=cardHtml(r,true));
+
+  root.innerHTML=gateHtml+queueHtml+cards+foot;
+}
+function rvCardToggle(n){
+  const c=document.querySelector(`.rv-card[data-num="${n}"]`);
+  const b=c.querySelector('.rv-cardbody'); if(!b) return;
+  b.style.display = b.style.display==='none' ? 'block' : 'none';
+}
+function rvApprove(n){
+  const c=document.querySelector(`.rv-card[data-num="${n}"]`);
+  if(c){ c.classList.add('rv-approved'); const st=c.querySelector('.rv-st'); if(st) st.textContent='✓'; }
 }
 function rvToggle(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
