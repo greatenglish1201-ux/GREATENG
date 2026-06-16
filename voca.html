@@ -158,8 +158,15 @@
 
             <!-- 14일 제출현황 -->
             <div style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20); margin-bottom:6px;">📅 최근 14일 — 안 낸 날짜를 누르세요</div>
-            <div id="hw-status-grid" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
+            <div id="hw-status-grid" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
                 <span style="color:#999; font-size:13px;">현황 불러오는 중...</span>
+            </div>
+
+            <!-- 선제출 (미리 내기) -->
+            <button type="button" id="hw-pre-btn" onclick="hw_togglePre()" style="width:100%; background:#eef2ff; color:#3a4a7a; border:1px dashed #aab4d4; border-radius:10px; padding:9px; font-size:12.5px; font-weight:700; cursor:pointer; margin-bottom:12px;">📅 여행·일정으로 미리 낼래요 (선제출)</button>
+            <div id="hw-pre-wrap" style="display:none; margin-bottom:12px;">
+                <div style="font-size:12px; color:#3a4a7a; font-weight:700; margin-bottom:6px;">앞으로 7일 — 미리 낼 날짜를 누르세요</div>
+                <div id="hw-pre-grid" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
             </div>
 
             <!-- 선택된 숙제 날짜 -->
@@ -220,13 +227,15 @@
             <div id="hw-src-textbook" style="display:none; margin-bottom:8px;">
                 <select id="hw-tb-pub" onchange="hw_onTbPubChange()" style="padding:10px; font-size:14px; width:100%; margin-bottom:6px;">
                     <option value="">출판사(저자) 선택</option>
-                    <option value="NE능률(김기택)">NE능률(김기택)</option>
+                    <option value="능률(김기택)">능률(김기택)</option>
+                    <option value="능률(김성곤)">능률(김성곤)</option>
                     <option value="YBM(김은영)">YBM(김은영)</option>
                     <option value="YBM(박준언)">YBM(박준언)</option>
                     <option value="동아(윤정미)">동아(윤정미)</option>
                     <option value="동아(이병민)">동아(이병민)</option>
                     <option value="미래엔(문영인)">미래엔(문영인)</option>
                     <option value="비상(황종배)">비상(황종배)</option>
+                    <option value="비상(김진완)">비상(김진완)</option>
                     <option value="지학사(송미정)">지학사(송미정)</option>
                     <option value="천재(소영순)">천재(소영순)</option>
                     <option value="천재(이상기)">천재(이상기)</option>
@@ -979,6 +988,8 @@
     function hw_showPanel(){
         document.getElementById('hw-panel').style.display = 'block';
         hw_toggleMain(true);
+        const preWrap = document.getElementById('hw-pre-wrap');
+        if(preWrap) preWrap.style.display = 'none';
         hwSelectedType = '';
         document.querySelectorAll('.hw-type-btn').forEach(b=>{
             b.style.background = '#fff'; b.style.color = '#555'; b.style.borderColor = '#ddd';
@@ -1162,13 +1173,36 @@
 
     function hw_pickDate(iso, el){
         hwSelectedDate = iso;
-        // 하이라이트
-        document.querySelectorAll('#hw-status-grid > div').forEach(x=> x.style.border='2px solid transparent');
+        // 하이라이트 (현황+선제출 그리드 모두 해제 후 선택)
+        document.querySelectorAll('#hw-status-grid > div, #hw-pre-grid > div').forEach(x=> x.style.border='2px solid transparent');
         if(el) el.style.border = '2px solid #7a1020';
-        // 'yyyy. m. d' 형식(기존 시트 표기와 동일)으로 라벨
         const [y,m,dd] = iso.split('-').map(Number);
         document.getElementById('hw-date-label').textContent = `${y}. ${m}. ${dd}`;
         document.getElementById('hw-date-box').style.display = 'block';
+    }
+
+    // 선제출 토글: 누를 때만 앞으로 7일 표시
+    function hw_togglePre(){
+        const wrap = document.getElementById('hw-pre-wrap');
+        const open = wrap.style.display === 'none' || !wrap.style.display;
+        wrap.style.display = open ? 'block' : 'none';
+        if(open) hw_renderPreDates();
+    }
+
+    function hw_renderPreDates(){
+        const grid = document.getElementById('hw-pre-grid');
+        grid.innerHTML = '';
+        const today = new Date(); today.setHours(0,0,0,0);
+        for(let i=1;i<=7;i++){
+            const d = new Date(today); d.setDate(d.getDate()+i);
+            const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            const md = (d.getMonth()+1)+'/'+d.getDate();
+            const el = document.createElement('div');
+            el.style.cssText = 'flex:0 0 auto; min-width:54px; text-align:center; padding:7px 4px; border-radius:9px; background:#eef2ff; color:#3a4a7a; font-size:12px; font-weight:700; cursor:pointer; border:2px solid transparent;';
+            el.innerHTML = `${md}<br><span style="font-size:10px;">미리</span>`;
+            el.onclick = ()=> hw_pickDate(iso, el);
+            grid.appendChild(el);
+        }
     }
 
     // 사진 미리보기 + 압축 보관
