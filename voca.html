@@ -387,10 +387,15 @@
         </div>
 
         <div class="section">
-            <span class="label">1. 학생 선택 (지난 배정 확인)</span>
-            <select id="adm-st-list" onchange="ADMIN.loadStudentConfig()" style="margin-bottom: 10px;">
-                <option value="">학생 명단을 불러오는 중...</option>
-            </select>
+            <span class="label">1. 학생 선택 (여러 명 체크 → 일괄 배정)</span>
+            <div style="display:flex; gap:8px; margin-bottom:8px;">
+                <button type="button" class="btn" style="background:#eef2ff; color:#3a4a7a; padding:8px; font-size:13px; flex:1;" onclick="ADMIN.checkAll(true)">전체 선택</button>
+                <button type="button" class="btn" style="background:#f3f3f3; color:#777; padding:8px; font-size:13px; flex:1;" onclick="ADMIN.checkAll(false)">전체 해제</button>
+            </div>
+            <div id="adm-st-checks" style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:8px; max-height:180px; overflow-y:auto; padding:4px;">
+                <span style="color:#999; font-size:13px;">학생 명단을 불러오는 중...</span>
+            </div>
+            <div id="adm-st-count" style="font-size:12.5px; color:var(--navy); font-weight:700; margin-bottom:8px;">선택된 학생: 0명</div>
             <div id="prev-range-msg" style="font-size: 13px; font-weight: bold; color: var(--red); margin-bottom: 5px; padding-left: 5px; line-height: 1.4;"></div>
             <!-- 모든 미션은 합격(90%)까지 자동 반복 응시가 기본. 모드 선택 불필요. -->
             <input type="hidden" id="exam-mode-sel" value="정기시험">
@@ -510,8 +515,13 @@
             </div>
         </div>
 
-        <button class="btn-save" onclick="ADMIN.saveToSheet()">구글 시트에 최종 배정 저장</button>
-        <button class="btn" style="background:var(--blue); color:#fff; margin-top:10px; margin-bottom:14px;" onclick="previewAsStudent()">👀 선택한 학생으로 화면 확인</button>
+        <button class="btn-save" onclick="ADMIN.saveToSheet()">✅ 선택한 학생 전체에 배정 저장</button>
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom:14px; align-items:center;">
+            <select id="adm-preview-sel" style="flex:1; padding:11px; font-size:14px;">
+                <option value="">미리보기할 학생 선택</option>
+            </select>
+            <button class="btn" style="background:var(--blue); color:#fff; padding:11px 14px; white-space:nowrap;" onclick="previewAsStudent()">👀 화면 확인</button>
+        </div>
         <div style="display: flex; gap: 10px;">
             <button class="btn-print" onclick="alert('인쇄 준비중')">배정 시험지 인쇄</button>
             <button class="btn-wrong-print" onclick="alert('오답노트 준비중')">오답노트 인쇄</button>
@@ -556,6 +566,7 @@
 
         let idxB = header.findIndex(h => h.includes('교재') || h.includes('book'));
         let idxU = header.findIndex(h => h.includes('unit') || h.includes('day') || h.includes('유닛'));
+        let idxNo = header.findIndex(h => h.includes('번호') || h.includes('문항') || h.includes('no'));
         let idxD = header.findIndex(h => h.includes('세부') || h.includes('detail'));
         let idxEng = header.findIndex(h => h.includes('단어') || h.includes('eng') || h.includes('voca'));
         let idxKor = header.findIndex(h => h.includes('뜻') || h.includes('의미') || h.includes('kor'));
@@ -568,6 +579,8 @@
         return result.map(c => {
             let b = (c[idxB]||"").replace(/\s+/g, '').toUpperCase();
             let u = (c[idxU]||"").trim(); let d = (idxD !== -1 ? c[idxD] : "").trim();
+            // day(unit)가 비어 있으면 '번호'(문항) 열을 unit으로 사용 — 모의고사·수특 문항 분류
+            if(!u && idxNo !== -1){ const no = (c[idxNo]||"").trim(); if(no) u = no + "번"; }
             let eng = (c[idxEng]||"").trim(); let kor = (c[idxKor]||"").trim();
 
             let eeRaw = c[idxEE !== -1 ? idxEE : 7] || "";
@@ -704,9 +717,9 @@
     // 관리자: 선택한 학생으로 학생 화면 미리보기 (관리자 권한 유지)
     let previewMode = false;
     function previewAsStudent(){
-        const sel = document.getElementById('adm-st-list');
+        const sel = document.getElementById('adm-preview-sel');
         const name = sel ? sel.value : '';
-        if(!name){ alert('먼저 위에서 학생을 선택하세요.'); return; }
+        if(!name){ alert('미리보기할 학생을 선택하세요. (위 드롭다운에서)'); return; }
         previewMode = true;  // checkConfig가 관리자 권한 해제하지 않도록
         document.getElementById('admin-screen').style.display = "none";
         document.getElementById('student-screen').style.display = "block";
@@ -1884,17 +1897,55 @@
             try {
                 const stRes = await fetch(APP_URL + "?type=getList&t=" + Date.now());
                 const stList = await stRes.json();
-                const sSel = document.getElementById('adm-st-list');
-                sSel.innerHTML = '<option value="">학생을 선택하세요</option>';
-                stList.forEach(n => { if(n) sSel.add(new Option(n.trim(), n.trim())); });
+                this._roster = stList.map(n => String(n||'').trim()).filter(Boolean);
+                this.renderStudentChecks();
             } catch(e) {
                 document.getElementById('adm-status-msg').innerText = "학생 명단 로딩 실패";
             }
             this.renderBasket();
         },
 
-        loadStudentConfig: async function() {
-            const name = document.getElementById('adm-st-list').value;
+        _roster: [],
+        renderStudentChecks: function(){
+            const wrap = document.getElementById('adm-st-checks');
+            const psel = document.getElementById('adm-preview-sel');
+            wrap.innerHTML = '';
+            psel.innerHTML = '<option value="">미리보기할 학생 선택</option>';
+            this._roster.forEach((n, i)=>{
+                const id = 'stchk_' + i;
+                const lbl = document.createElement('label');
+                lbl.style.cssText = 'display:inline-flex; align-items:center; gap:5px; background:#f7f7f9; border:1px solid #e3e3ea; border-radius:8px; padding:7px 11px; font-size:14px; cursor:pointer;';
+                lbl.innerHTML = `<input type="checkbox" class="adm-st-chk" value="${n.replace(/"/g,'&quot;')}" onchange="ADMIN.onStudentCheck()" style="cursor:pointer;"> ${n}`;
+                wrap.appendChild(lbl);
+                psel.add(new Option(n, n));
+            });
+            this.onStudentCheck();
+        },
+
+        getCheckedStudents: function(){
+            return Array.from(document.querySelectorAll('.adm-st-chk:checked')).map(c=>c.value);
+        },
+
+        onStudentCheck: function(){
+            const checked = this.getCheckedStudents();
+            document.getElementById('adm-st-count').innerText = "선택된 학생: " + checked.length + "명";
+            // 한 명만 체크되면 그 학생 지난 배정 표시, 여러 명이면 생략
+            const msg = document.getElementById('prev-range-msg');
+            if(checked.length === 1){
+                this.loadStudentConfig(checked[0]);
+            } else {
+                msg.innerText = checked.length > 1 ? "여러 학생 선택됨 — 동일 범위로 일괄 배정됩니다." : "";
+                msg.style.color = "var(--navy)";
+            }
+        },
+
+        checkAll: function(on){
+            document.querySelectorAll('.adm-st-chk').forEach(c=> c.checked = on);
+            this.onStudentCheck();
+        },
+
+        loadStudentConfig: async function(nameArg) {
+            const name = nameArg || (this.getCheckedStudents()[0] || '');
             const msg = document.getElementById('prev-range-msg');
             if(!name) { msg.innerText = ""; return; }
             msg.style.color = "var(--navy)";
@@ -2238,10 +2289,10 @@
         },
 
         saveToSheet: async function() {
-            const name = document.getElementById('adm-st-list').value;
-            if(!name || this.basket.length === 0) return alert("학생과 범위를 확인하세요!");
-            const payload = {
-                name: name, book: this.basket.map(i => i.label).join(';'),
+            const names = this.getCheckedStudents();
+            if(names.length === 0 || this.basket.length === 0) return alert("학생을 체크하고 범위를 담아주세요!");
+            const common = {
+                book: this.basket.map(i => i.label).join(';'),
                 testMode: document.getElementById('exam-mode-sel').value,
                 ek: document.getElementById('ek-num').value,
                 keObj: document.getElementById('ke-obj-num').value,
@@ -2249,11 +2300,14 @@
                 ee: document.getElementById('ee-obj-num').value,
                 ex: document.getElementById('ex-obj-num').value
             };
-            document.getElementById('adm-status-msg').innerText = "저장 중...";
-            await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            alert(name + " 학생 배정 완료!\n(범위는 그대로 유지됩니다 — 다른 학생을 선택해 같은 범위로 바로 저장하세요.)");
-            // 범위(basket)는 유지 — 같은 범위를 여러 학생에게 빠르게 배정
-            document.getElementById('adm-status-msg').innerText = "저장 완료! 범위 유지 중 — 다음 학생 선택";
+            document.getElementById('adm-status-msg').innerText = names.length + "명 배정 저장 중...";
+            // 학생마다 순차 저장 (no-cors라 응답은 못 받지만 순서대로 전송)
+            for(const name of names){
+                const payload = Object.assign({ name: name }, common);
+                await fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            }
+            alert(names.length + "명 배정 완료!\n(" + names.join(', ') + ")\n\n범위는 유지됩니다 — 다른 학생을 체크해 또 배정하세요.");
+            document.getElementById('adm-status-msg').innerText = "저장 완료! (" + names.length + "명) 범위 유지 중";
         }
     };
 </script>
