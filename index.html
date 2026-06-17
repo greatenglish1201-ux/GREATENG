@@ -10,6 +10,8 @@
 <body>
 <div id="root"></div>
 <script src="passages.js?v=20260522" charset="utf-8"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
@@ -2867,6 +2869,241 @@ const SM=SV_SM, BC=SV_BC, STATUS=SV_STATUS, DIFF_STYLE=SV_DIFF_STYLE;
 const SYMS=SV_SYMS, SOURCES=SV_SOURCES, nStr=SV_nStr;
 const DIFFS=SV_DIFFS, STRUCTS=SV_STRUCTS, NSTR=SV_NSTR;
 
+/* ══════════════════════════════════════════════════════════════
+   📄 자료 보기 DOCX 다운로드 (teacher.html 로직 이식)
+   - buildDOCXChildren: teacher.html 원문 그대로 (검증 완료)
+   - 의존 헬퍼(outputTitle 등)는 index.html에 없으므로 여기서 정의
+   - makePassageId / SM / nStr 은 index.html에 이미 존재 → 재정의 안 함
+   ══════════════════════════════════════════════════════════════ */
+const OUTPUT_FOOTER_TEXT='탁월함이 습관이 되도록';
+const OUTPUT_BRAND='대단한영어';
+function SV_chapterLabel(ch){
+  if(ch==null||ch==='')return'';
+  const t=String(ch).trim();
+  const n=parseInt(t);
+  return (Number.isInteger(n)&&String(n)===t)?n+'강':t;
+}
+function outputTitle(meta){
+  const b=getAllBooks().find(x=>x.id===meta.source);
+  const label=(b&&b.label)||meta.source||'';
+  const n=parseInt(meta.number)||meta.number||'';
+  if((meta.source||'').startsWith('MOGO_'))return label+' '+n+'번';
+  const cl=SV_chapterLabel(meta.chapter);
+  return label+(cl?' '+cl:'')+' '+n+'번';
+}
+
+function buildDOCXChildren(slot,mode,opts){
+const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
+    AlignmentType,BorderStyle,WidthType,ShadingType,VerticalAlign,TabStopType}=docx;
+  const IS=mode==='student';
+  // 학생용 옵션 (교사용은 항상 전체 표시)
+  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+  // 학생용 + showAnswers=true → 교사용처럼 chunks/해석 다 표시. 빈칸 모드면 끊어읽기 숨김
+  const SHOW_ANSWERS=!IS||O.showAnswers;
+  const {analysis,meta}=slot;
+  if(!analysis)return;
+  const {sentences=[],flow={},grammar={}}=analysis;
+  const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
+  const {difficultSentences=[]}=grammar;
+  const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
+  const conn=i=>interBlockConnectors[i]||'→';
+  const id=makePassageId(meta.source,meta.chapter,meta.number);
+  const F='Malgun Gothic',P9=18,P8=16,P10=20;
+  const nb={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
+  const bd=(c='888888',sz=3)=>({style:BorderStyle.SINGLE,size:sz,color:c});
+  const nobs={top:nb,bottom:nb,left:nb,right:nb};
+  // 블록 컬러맵 (hex # 제거)
+  const BDC={
+    blue:{hd:'B5D4F4',bd:'185FA5',tx:'0C447C',row:'E6F1FB'},
+    coral:{hd:'F5C4B3',bd:'D85A30',tx:'712B13',row:'FAECE7'},
+    teal:{hd:'9FE1CB',bd:'1D9E75',tx:'085041',row:'E1F5EE'},
+    purple:{hd:'CECBF6',bd:'534AB7',tx:'3C3489',row:'EEEDFE'},
+    green:{hd:'C0DD97',bd:'639922',tx:'173404',row:'EAF3DE'},
+    amber:{hd:'FAC775',bd:'BA7517',tx:'633806',row:'FAEEDA'},
+    gray:{hd:'E4E3DF',bd:'5F5E5A',tx:'2C2C2A',row:'F1EFE8'},
+  };
+  const bdc=c=>BDC[c]||BDC.gray;
+  const CM={top:60,bottom:60,left:100,right:100};
+  const cell=(children,opts={})=>new TableCell({
+    borders:opts.borders||{top:bd(opts.bc||'AAAAAA'),bottom:bd(opts.bc||'AAAAAA'),
+      left:bd(opts.bc||'AAAAAA'),right:bd(opts.bc||'AAAAAA')},
+    shading:opts.bg?{fill:opts.bg,type:ShadingType.CLEAR}:undefined,
+    width:opts.w?{size:opts.w,type:WidthType.DXA}:undefined,
+    verticalAlign:VerticalAlign.CENTER,margins:opts.m||CM,children,
+  });
+  const para=(text,opts={})=>new Paragraph({
+    alignment:opts.a||AlignmentType.LEFT,
+    spacing:{before:opts.sb||0,after:opts.sa||40},
+    border:opts.border,indent:opts.indent,
+    children:Array.isArray(text)?text:[new TextRun({
+      text:String(text||''),bold:opts.bold||false,size:opts.size||P9,
+      color:opts.color||'1a1a1a',font:F,italics:opts.italic||false})],
+  });
+  const run=(text,opts={})=>new TextRun({
+    text:String(text||''),bold:opts.bold||false,size:opts.size||P9,
+    color:opts.color||'1a1a1a',font:F,italics:opts.italic||false});
+  const blank=()=>new Paragraph({spacing:{after:80,before:0},
+    border:{bottom:{style:BorderStyle.SINGLE,size:3,color:'888888',space:1}},
+    children:[run(' ',{size:P9})]});
+const ch=[];
+
+  /* 헤더: 좌측 교재명·강·번호 / 우측 브랜드 */
+  const now=new Date();
+  const ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  ch.push(new Paragraph({spacing:{before:0,after:80},
+    tabStops:[{type:TabStopType.RIGHT,position:10500}],
+    border:{bottom:{style:BorderStyle.SINGLE,size:10,color:'1a1a1a',space:3}},
+    children:[
+      run(outputTitle(meta),{bold:true,size:P10}),
+      run('  '+(SHOW_ANSWERS?'[교사용]':'[학생용]')+'  '+ts,{size:P8,color:'999999'}),
+      run('\t'+OUTPUT_BRAND,{bold:true,size:P9,color:'185FA5'}),
+    ]}));
+
+  /* 지문 */
+  if(O.passage){
+  ch.push(para('■ 지문',{bold:true,size:P8,color:'185FA5',sa:20}));
+  const pRuns=[];
+  sentences.forEach(s=>{
+    pRuns.push(run(nStr(s.num)+' ',{bold:true,size:P9}));
+    pRuns.push(run(s.text+' ',{size:P9}));
+  });
+  ch.push(new Paragraph({spacing:{before:0,after:120},
+    border:{left:{style:BorderStyle.SINGLE,size:14,color:'185FA5',space:6}},
+    indent:{left:160},children:pRuns}));
+  }
+
+  /* Block Diagram */
+  if(O.structure){
+  ch.push(para('■ 글의 구조',{bold:true,size:P8,color:'185FA5',sb:20,sa:20}));
+  const nc=blocks.length-1;
+  const bw=Math.floor((9200-nc*440)/blocks.length);
+  const colW=[];blocks.forEach((_,bi)=>{colW.push(bw);if(bi<blocks.length-1)colW.push(440);});
+  const hCells=blocks.map((blk,bi)=>{
+    const _bc=bdc(blk.color);
+    const hd=IS?[blank()]:[para(blk.name,{bold:true,size:P9,color:_bc.tx,sa:20}),para(blk.nameEn,{size:P8,italic:true,color:_bc.tx,sa:0})];
+    const c=cell(hd,{bg:_bc.hd,bc:_bc.bd,w:bw});
+    if(bi<blocks.length-1)return[c,cell([para(conn(bi),{bold:true,size:P10,color:'444444',a:AlignmentType.CENTER,sa:0})],{borders:nobs,w:440})];
+    return[c];
+  }).flat();
+  const maxS=Math.max(...blocks.map(b=>(b.sentenceNums||[]).length));
+  const bRows=Array.from({length:maxS},(_,ri)=>{
+    const rCells=blocks.map((blk,bi)=>{
+      const sn=(blk.sentenceNums||[])[ri];
+      const sent=sn?sm[sn]:null;
+      const _bdc=bdc(blk.color);
+      const c=cell(sent?[para([run(nStr(sent.num)+' ',{bold:true,size:P9,color:_bdc.tx}),
+        run('('+sent.symbol+')  ',{size:P8,color:_bdc.bd}),run(sent.role,{size:P8,color:_bdc.tx})],{sa:0})]:[para('',{sa:0})],
+        {bc:_bdc.bd,bg:_bdc.row,w:bw});
+      if(bi<blocks.length-1)return[c,cell([para('',{sa:0})],{borders:nobs,w:440})];
+      return[c];
+    }).flat();
+    return new TableRow({children:rCells});
+  });
+  ch.push(new Table({width:{size:9200,type:WidthType.DXA},columnWidths:colW,
+    rows:[new TableRow({children:hCells}),...bRows]}));
+  }
+
+  /* 핵심소재/주제요약/구조 — 가로 1행 표 (지면 절약) */
+  if(O.keyTopics){
+    const ktItems=[
+      {lbl:'핵심 소재',val:keyword,w:2400},
+      {lbl:'주제 요약',val:topicSummary,w:4400},
+      {lbl:'구조 유형',val:structureType,w:2400},
+    ];
+    const ktCells=ktItems.map(it=>cell([new Paragraph({spacing:{before:0,after:0},children:[
+      run(it.lbl,{bold:true,size:P8,color:'185FA5'})
+    ]}),new Paragraph({spacing:{before:20,after:0},children:[
+      IS?run('________________',{size:P8}):run(it.val,{size:P8})
+    ]})],{bc:'CCCCCC',w:it.w,m:{top:60,bottom:60,left:120,right:120}}));
+    ch.push(new Table({width:{size:9200,type:WidthType.DXA},
+      columnWidths:ktItems.map(i=>i.w),
+      rows:[new TableRow({children:ktCells})]}));
+  }
+
+  /* 문장별 분석 */
+  if(O.sentences){
+  // hardOnly: 어려운 문장만 / hardOnly=false: 전체 문장
+  const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
+  if(dsToShow.length){
+    ch.push(para(IS?'■ 구문 분석':'■ 문장별 분석 (끊어읽기 + 구문)',{bold:true,size:P8,color:'185FA5',sb:20,sa:20}));
+    dsToShow.forEach(s=>{
+      const ds=difficultSentences.find(d=>d.num===s.num);
+      const chunks=s.chunks||[];
+      const hasChunks=SHOW_ANSWERS&&chunks.length;
+      // 방안2: 번호·하단 테두리=소속 블록 색, (기호)=기호 색
+      const _blk=blocks.find(b=>Array.isArray(b.sentenceNums)&&b.sentenceNums.includes(s.num));
+      const _bc=bdc(_blk&&_blk.color);
+      const _symc=((SM[s.symbol]&&SM[s.symbol].bd)||'#888888').replace('#','');
+      // chunks 있으면: 번호+심볼+끊어읽기 영문을 한 줄에 / chunks 없으면: 원본 문장 표시
+      if(hasChunks){
+        ch.push(new Paragraph({spacing:{before:0,after:0},
+          border:{bottom:{style:BorderStyle.SINGLE,size:3,color:_bc.bd,space:1}},
+          children:[run(nStr(s.num),{bold:true,size:P9,color:_bc.tx}),
+            run(' ('+s.symbol+')  ',{bold:true,size:P9,color:_symc}),
+            run(chunks.map(c=>c.en||'').join(' / '),{size:P8,italic:true})]}));
+        ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},
+          children:[run(chunks.map(c=>c.ko||'').join(' / '),{size:P8,color:'444444'})]}));
+      }else{
+        ch.push(new Paragraph({spacing:{before:0,after:0},
+          border:{bottom:{style:BorderStyle.SINGLE,size:3,color:_bc.bd,space:1}},
+          children:[run(nStr(s.num),{bold:true,size:P9,color:_bc.tx}),
+            run(' ('+s.symbol+')  ',{bold:true,size:P9,color:_symc}),
+            run(s.text,{size:P8,italic:true,color:'333333'})]}));
+      }
+      if(ds){
+        [{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].forEach(r=>{
+          ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},children:[
+            run('['+r.l+'] ',{bold:true,size:P8,color:'555555'}),
+            (IS&&!SHOW_ANSWERS&&r.f==='translation')?run('______________________________',{size:P8}):run(ds[r.f]||'',{size:P8}),
+          ]}));
+        });
+      }else if(IS&&!SHOW_ANSWERS){
+        // 학생용 빈칸 모드: 해설 없는 문장도 해석 빈칸은 표시
+        ch.push(new Paragraph({spacing:{before:0,after:0},indent:{left:200},children:[
+          run('[해석] ',{bold:true,size:P8,color:'555555'}),
+          run('______________________________',{size:P8}),
+        ]}));
+      }
+    });
+  }
+  }
+  return ch;
+}
+
+/* ── 자료 보기 전용: 선택 지문들을 한 DOCX로 묶어 다운로드 ──
+   ⚠ 검증결과 반영: analysis 없는 슬롯은 사전 필터링(없으면 Document 깨짐) */
+function buildStudyDOCX(passages,mode){
+  if(typeof docx==='undefined'||typeof saveAs==='undefined'){
+    alert('DOCX 라이브러리를 불러오지 못했습니다. 네트워크 확인 후 다시 시도해주세요.');return;
+  }
+  const {Document,Packer}=docx;
+  const IS=mode==='student';
+  // 교사용=전체표시 / 학생용=빈칸(showAnswers:false) — getStuOpts 의존 회피, opts 직접 전달
+  const opts=IS
+    ?{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false}
+    :{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+  // 슬롯 변환 + analysis 유효성 필터 (sentences 없는 지문 제외)
+  const slots=passages.map(toStudySlot).filter(s=>{
+    const a=s&&s.analysis;
+    return a&&Array.isArray(a.sentences)&&a.sentences.length>0;
+  });
+  if(!slots.length){alert('분석 데이터가 있는 지문이 없습니다.\n(DOCX는 문장 분석이 완료된 지문만 출력됩니다.)');return;}
+  const ftr=new docx.Footer({children:[new docx.Paragraph({alignment:docx.AlignmentType.CENTER,
+    children:[new docx.TextRun({text:OUTPUT_FOOTER_TEXT,font:'Malgun Gothic',size:14,color:'999999',italics:true})]})]});
+  const sections=slots.map(slot=>{
+    const ch=buildDOCXChildren(slot,mode,opts);
+    return{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},
+      footers:{default:ftr},children:ch};
+  }).filter(s=>Array.isArray(s.children)&&s.children.length>0);
+  if(!sections.length){alert('출력할 내용이 없습니다.');return;}
+  const doc=new Document({styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},sections});
+  const fname=(slots.length===1
+    ? makePassageId(slots[0].meta.source,slots[0].meta.chapter,slots[0].meta.number)
+    : '자료_'+slots.length+'개')+'_'+(IS?'학생용':'교사용')+'.docx';
+  Packer.toBlob(doc).then(blob=>saveAs(blob,fname))
+    .catch(e=>alert('DOCX 생성 실패: '+e.message));
+}
+
 /* ── 자료 보기 (StudyView) ── */
 function StudyView({scriptUrl,studentName,goBack}){
   const [passages,setPassages]=useState([]);
@@ -2883,6 +3120,13 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [printJob,setPrintJob]=useState(null); // {items:[passage], mode:'teacher'|'student'}
   const printRef=React.useRef(null);
   const toggleSel=(id)=>setSelIds(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});
+  // ★ 교재/강 단위 일괄 선택·해제: 대상 id가 모두 선택돼 있으면 해제, 아니면 전체 선택
+  const toggleBulk=(ids)=>setSelIds(prev=>{
+    const n=new Set(prev);
+    const allOn=ids.length>0&&ids.every(id=>n.has(id));
+    ids.forEach(id=>allOn?n.delete(id):n.add(id));
+    return n;
+  });
   React.useEffect(()=>{
     if(!printJob||!printRef.current)return;
     const t=setTimeout(()=>{
@@ -3083,6 +3327,16 @@ button{display:none!important}
                   cursor:'pointer',userSelect:'none'}}>
                 <span style={{fontSize:13,transition:'transform .15s',transform:bookOpen?'rotate(90deg)':'rotate(0deg)',display:'inline-block'}}>▶</span>
                 <span style={{fontWeight:800,fontSize:14,flex:1}}>{bookLabel(b.book)}</span>
+                {selMode&&(()=>{
+                  const ids=b.chapterList.flatMap(c=>c.items.map(p=>p.id));
+                  const allOn=ids.length>0&&ids.every(id=>selIds.has(id));
+                  return <button onClick={e=>{e.stopPropagation();toggleBulk(ids);}}
+                    style={{fontSize:10.5,fontWeight:700,padding:'3px 9px',borderRadius:7,cursor:'pointer',
+                      border:'1px solid '+(allOn?'#C9A84C':(bookOpen?'rgba(255,255,255,0.4)':'#cbd5e1')),
+                      background:allOn?'#C9A84C':(bookOpen?'rgba(255,255,255,0.12)':'#fff'),
+                      color:allOn?'#fff':(bookOpen?'#fff':'#475569'),whiteSpace:'nowrap'}}>
+                    {allOn?'✓ 교재 해제':'교재 전체선택'}</button>;
+                })()}
                 <span style={{fontSize:11,fontWeight:600,opacity:0.7,
                   background:bookOpen?'rgba(255,255,255,0.15)':'#e2e8f0',
                   padding:'2px 8px',borderRadius:10}}>
@@ -3106,6 +3360,15 @@ button{display:none!important}
                           <span style={{fontWeight:700,fontSize:13,color:'#334155',flex:1}}>
                             {String(b.book||'').startsWith('MOGO_')?'전체 문항':`${c.chapter}강`}
                           </span>
+                          {selMode&&(()=>{
+                            const ids=c.items.map(p=>p.id);
+                            const allOn=ids.length>0&&ids.every(id=>selIds.has(id));
+                            return <button onClick={e=>{e.stopPropagation();toggleBulk(ids);}}
+                              style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:6,cursor:'pointer',
+                                border:'1px solid '+(allOn?'#C9A84C':'#cbd5e1'),
+                                background:allOn?'#C9A84C':'#fff',color:allOn?'#fff':'#475569',whiteSpace:'nowrap'}}>
+                              {allOn?'✓ 해제':'전체선택'}</button>;
+                          })()}
                           <span style={{fontSize:10,fontWeight:600,color:'#64748b',
                             background:'#f1f5f9',padding:'2px 7px',borderRadius:9}}>
                             {c.items.length}개
@@ -3155,12 +3418,21 @@ button{display:none!important}
         borderTop:'1px solid #e6dcc6',boxShadow:'0 -2px 12px rgba(0,0,0,0.08)',
         padding:'10px 16px',display:'flex',alignItems:'center',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
         <span style={{fontSize:12.5,fontWeight:700,color:'#3a2a20'}}>{selIds.size}개 선택</span>
+        {selIds.size>0&&<button onClick={()=>setSelIds(new Set())}
+          style={{padding:'8px 12px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:12,fontWeight:700,
+            cursor:'pointer',background:'#fff',color:'#8a6010'}}>전체 해제</button>}
         <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'teacher'})}
           style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
             background:selIds.size?'#7a1020':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 교사용 인쇄</button>
         <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'student'})}
           style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
             background:selIds.size?'#C9A84C':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 학생용 인쇄</button>
+        <button disabled={!selIds.size} onClick={()=>buildStudyDOCX(passages.filter(p=>selIds.has(p.id)),'teacher')}
+          style={{padding:'8px 16px',borderRadius:10,border:'1px solid '+(selIds.size?'#7a1020':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
+            background:'#fff',color:selIds.size?'#7a1020':'#b8a988'}}>📄 교사용 DOCX</button>
+        <button disabled={!selIds.size} onClick={()=>buildStudyDOCX(passages.filter(p=>selIds.has(p.id)),'student')}
+          style={{padding:'8px 16px',borderRadius:10,border:'1px solid '+(selIds.size?'#C9A84C':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
+            background:'#fff',color:selIds.size?'#8a6010':'#b8a988'}}>📄 학생용 DOCX</button>
       </div>}
       {/* 인쇄용 off-screen 렌더 */}
       {printJob&&<div ref={printRef} style={{position:'fixed',left:-99999,top:0,width:800}}>
