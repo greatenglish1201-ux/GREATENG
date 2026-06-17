@@ -1199,15 +1199,15 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       const tabTypes=['topic','blank','order','summary','implication','irrelevant','insert','grammar','vocab'];
       const type=tabTypes[at];
       let q=null;
-      if(type==='topic'&&p.topic_options?.length)q={type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''};
-      else if(type==='blank'){let bc=p.blank_candidates;if((!bc||!bc.length)&&p.blank_target)bc=[{sentence_index:p.blank_sentence_index,keyword:p.blank_target,distractors:(p.blank_options||[]).slice(1)}];if(bc?.length)q={type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:bc,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer}),answer:p.blank_answer||''};}
-      else if(type==='order'&&(p.order_blocks||p.order_options))q={type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''};
-      else if(type==='summary'&&p.summary_candidates?.length)q={type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1}),answer:''};
-      else if(type==='implication'&&p.implication_options?.length)q={type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''};
-      else if(type==='irrelevant'&&p.irrel_candidates?.length)q={type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index}),answer:''};
-      else if(type==='insert'){let ic=p.insert_candidates;if((!ic||!ic.length)&&p.insert_sentence)ic=[{sentence:p.insert_sentence,pos:p.insert_answer||1}];if(ic?.length)q={type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:ic,sentence:p.insert_sentence,answer:p.insert_answer}),answer:p.insert_answer||''};}
-      else if(type==='grammar'){const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};if(gs.items?.length){const sorted=[...gs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);const ans=idx>=0?idx+1:(p.grammar_answer||gs.answer||1);q={type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted}),answer:ans};}}
-      else if(type==='vocab'){const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};if(vs.items?.length){const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);const ans=idx>=0?idx+1:(p.vocab_answer||vs.answer||1);q={type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted}),answer:ans};}}
+      if(type==='topic'&&p.topic_options?.length)q={type:'topic',data_json:JSON.stringify({options:p.topic_options,explanation:p.explanation||''}),answer:p.topic_answer||''};
+      else if(type==='blank'){let bc=p.blank_candidates;if((!bc||!bc.length)&&p.blank_target)bc=[{sentence_index:p.blank_sentence_index,keyword:p.blank_target,distractors:(p.blank_options||[]).slice(1)}];if(bc?.length)q={type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:bc,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer,explanation:p.explanation||''}),answer:p.blank_answer||''};}
+      else if(type==='order'&&(p.order_blocks||p.order_options))q={type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options,explanation:p.explanation||''}),answer:p.order_answer||''};
+      else if(type==='summary'&&p.summary_candidates?.length)q={type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1,explanation:p.explanation||''}),answer:''};
+      else if(type==='implication'&&p.implication_options?.length)q={type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options,explanation:p.explanation||''}),answer:p.implication_answer||''};
+      else if(type==='irrelevant'&&p.irrel_candidates?.length)q={type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index,explanation:p.explanation||''}),answer:''};
+      else if(type==='insert'){let ic=p.insert_candidates;if((!ic||!ic.length)&&p.insert_sentence)ic=[{sentence:p.insert_sentence,pos:p.insert_answer||1}];if(ic?.length)q={type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:ic,sentence:p.insert_sentence,answer:p.insert_answer,explanation:p.explanation||''}),answer:p.insert_answer||''};}
+      else if(type==='grammar'){const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};if(gs.items?.length){const sorted=[...gs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);const ans=idx>=0?idx+1:(p.grammar_answer||gs.answer||1);q={type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted,explanation:p.explanation||''}),answer:ans};}}
+      else if(type==='vocab'){const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};if(vs.items?.length){const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);const ans=idx>=0?idx+1:(p.vocab_answer||vs.answer||1);q={type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted,explanation:p.explanation||''}),answer:ans};}}
       if(!q){alert('현재 탭에 저장할 데이터가 없습니다.');setSheetSaving(false);return;}
       const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify([q])});
       if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
@@ -1228,7 +1228,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};
       const questions=[];
       if(p.topic_options&&p.topic_options.length){
-        questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''});
+        questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options,explanation:p.explanation||''}),answer:p.topic_answer||''});
       }
       // 빈칸: blank_candidates 없으면 blank_target로 단일 후보 즉석 생성
       let blankCands=p.blank_candidates;
@@ -1236,10 +1236,10 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
         blankCands=[{sentence_index:p.blank_sentence_index,keyword:p.blank_target,distractors:(p.blank_options||[]).slice(1)}];
       }
       if(blankCands&&blankCands.length){
-        questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:blankCands,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer}),answer:p.blank_answer||''});
+        questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:blankCands,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer,explanation:p.explanation||''}),answer:p.blank_answer||''});
       }
       if(p.order_blocks||p.order_options){
-        questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''});
+        questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options,explanation:p.explanation||''}),answer:p.order_answer||''});
       }
       // 삽입: insert_candidates 없으면 insert_sentence로 단일 후보 즉석 생성
       let insCands=p.insert_candidates;
@@ -1247,28 +1247,28 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
         insCands=[{sentence:p.insert_sentence,pos:p.insert_answer||1}];
       }
       if(insCands&&insCands.length){
-        questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:insCands,sentence:p.insert_sentence,answer:p.insert_answer}),answer:p.insert_answer||''});
+        questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:insCands,sentence:p.insert_sentence,answer:p.insert_answer,explanation:p.explanation||''}),answer:p.insert_answer||''});
       }
       if(p.summary_candidates&&p.summary_candidates.length){
-        questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1}),answer:''});
+        questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1,explanation:p.explanation||''}),answer:''});
       }
       if(p.implication_options&&p.implication_options.length){
-        questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''});
+        questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options,explanation:p.explanation||''}),answer:p.implication_answer||''});
       }
       if(p.irrel_candidates&&p.irrel_candidates.length){
-        questions.push({type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index}),answer:''});
+        questions.push({type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index,explanation:p.explanation||''}),answer:''});
       }
       if(gs.items&&gs.items.length){
         const sorted=[...gs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));
         const idx=sorted.findIndex(it=>it.correct===false);
         const ans=idx>=0?idx+1:(p.grammar_answer||gs.answer||1);
-        questions.push({type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted}),answer:ans});
+        questions.push({type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted,explanation:p.explanation||''}),answer:ans});
       }
       if(vs.items&&vs.items.length){
         const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));
         const idx=sorted.findIndex(it=>it.correct===false);
         const ans=idx>=0?idx+1:(p.vocab_answer||vs.answer||1);
-        questions.push({type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted}),answer:ans});
+        questions.push({type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted,explanation:p.explanation||''}),answer:ans});
       }
       if(!questions.length){alert('저장할 출제 데이터가 없습니다.');setSheetSaving(false);return;}
       const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
@@ -2186,7 +2186,7 @@ Return JSON only, EXACTLY this structure:
         vocab_items:(()=>{const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));return sorted;})(),
         vocab_answer:(()=>{const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));const idx=sorted.findIndex(it=>it.correct===false);return idx>=0?idx+1:(p.vocab_answer||vs.answer||1);})(),
         aGroup:(p.summary_A_options||[]).slice(0,3),bGroup:(p.summary_B_options||[]).slice(0,3),
-        disabled_types:p.disabled_types||[]};
+        disabled_types:p.disabled_types||[],explanation:p.explanation||''};
     });
     return`// GREATENG passageData 추가분 (${entries.length}개)\n// order_answer는 merge 스크립트 재처리 필요\n\n`+entries.map(e=>JSON.stringify(e,null,2)).join(',\n\n');
   };
@@ -2329,6 +2329,13 @@ Return JSON only, EXACTLY this structure:
         {p&&<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
           <div style={{...card,padding:'12px'}}><LeftPanel p={p}/></div>
           <div style={{...card,padding:'12px',overflowY:'auto',maxHeight:540}}><RightPanel p={p}/></div>
+        </div>}
+        {p&&<div style={{...card,padding:'12px',marginTop:12}}>
+          <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>📖 해설 (모든 유형 공통 · 학생 채점 후 표시)</div>
+          <textarea defaultValue={p.explanation||''} key={'expl_'+(p.id||'')}
+            onBlur={e=>upP({explanation:e.target.value})}
+            placeholder="이 문제의 정답 근거·해설을 입력하세요. (비워두면 학생 화면에 해설이 표시되지 않습니다)"
+            style={{width:'100%',minHeight:70,fontSize:13,padding:'9px 11px',border:'1px solid #D2D2D7',borderRadius:7,color:'#1d1d1f',lineHeight:1.6,resize:'vertical',boxSizing:'border-box',fontFamily:'inherit'}}/>
         </div>}
       </div>
     );
@@ -2702,7 +2709,7 @@ function App(){
     const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};
     const questions=[];
     if(p.topic_options&&p.topic_options.length){
-      questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options}),answer:p.topic_answer||''});
+      questions.push({type:'topic',data_json:JSON.stringify({options:p.topic_options,explanation:p.explanation||''}),answer:p.topic_answer||''});
     }
     // 빈칸: blank_candidates 없으면 blank_target로 단일 후보 즉석 생성
     let blankCands=p.blank_candidates;
@@ -2710,10 +2717,10 @@ function App(){
       blankCands=[{sentence_index:p.blank_sentence_index,keyword:p.blank_target,distractors:(p.blank_options||[]).slice(1)}];
     }
     if(blankCands&&blankCands.length){
-      questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:blankCands,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer}),answer:p.blank_answer||''});
+      questions.push({type:'blank',data_json:JSON.stringify({sel:p.blank_sel||0,candidates:blankCands,sentence_index:p.blank_sentence_index,target:p.blank_target,options:p.blank_options,answer:p.blank_answer,explanation:p.explanation||''}),answer:p.blank_answer||''});
     }
     if(p.order_blocks||p.order_options){
-      questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options}),answer:p.order_answer||''});
+      questions.push({type:'order',data_json:JSON.stringify({given_index:p.order_given_index,blocks:p.order_blocks,options:p.order_options,explanation:p.explanation||''}),answer:p.order_answer||''});
     }
     // 삽입: insert_candidates 없으면 insert_sentence로 단일 후보 즉석 생성
     let insCands=p.insert_candidates;
@@ -2721,28 +2728,28 @@ function App(){
       insCands=[{sentence:p.insert_sentence,pos:p.insert_answer||1}];
     }
     if(insCands&&insCands.length){
-      questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:insCands,sentence:p.insert_sentence,answer:p.insert_answer}),answer:p.insert_answer||''});
+      questions.push({type:'insert',data_json:JSON.stringify({sel:p.insert_sel||0,candidates:insCands,sentence:p.insert_sentence,answer:p.insert_answer,explanation:p.explanation||''}),answer:p.insert_answer||''});
     }
     if(p.summary_candidates&&p.summary_candidates.length){
-      questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1}),answer:''});
+      questions.push({type:'summary',data_json:JSON.stringify({sel:p.summary_sel||0,candidates:p.summary_candidates,template:p.summary_template,A_options:p.summary_A_options,A_answer:p.summary_A_answer||1,B_options:p.summary_B_options,B_answer:p.summary_B_answer||1,explanation:p.explanation||''}),answer:''});
     }
     if(p.implication_options&&p.implication_options.length){
-      questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options}),answer:p.implication_answer||''});
+      questions.push({type:'implication',data_json:JSON.stringify({sentence_index:p.implication_sentence_index,keyword:p.implication_keyword,options:p.implication_options,explanation:p.explanation||''}),answer:p.implication_answer||''});
     }
     if(p.irrel_candidates&&p.irrel_candidates.length){
-      questions.push({type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index}),answer:''});
+      questions.push({type:'irrelevant',data_json:JSON.stringify({sel:p.irrel_sel||0,candidates:p.irrel_candidates,insert_pos:p.irrel_insert_pos||0,confirmed:p.irrel_confirmed||false,sentence_index:p.irrelevant_sentence_index,explanation:p.explanation||''}),answer:''});
     }
     if(gs.items&&gs.items.length){
       const sorted=[...gs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));
       const idx=sorted.findIndex(it=>it.correct===false);
       const ans=idx>=0?idx+1:(p.grammar_answer||gs.answer||1);
-      questions.push({type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted}),answer:ans});
+      questions.push({type:'grammar',data_json:JSON.stringify({sets:p.grammar_sets||[],sel:p.grammar_sel||0,items:sorted,explanation:p.explanation||''}),answer:ans});
     }
     if(vs.items&&vs.items.length){
       const sorted=[...vs.items].sort((a,b)=>Number(a.sent)-Number(b.sent));
       const idx=sorted.findIndex(it=>it.correct===false);
       const ans=idx>=0?idx+1:(p.vocab_answer||vs.answer||1);
-      questions.push({type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted}),answer:ans});
+      questions.push({type:'vocab',data_json:JSON.stringify({sets:p.vocab_sets||[],sel:p.vocab_sel||0,items:sorted,explanation:p.explanation||''}),answer:ans});
     }
     return{passagePayload,questions,id};
   },[]);
@@ -2937,6 +2944,7 @@ function App(){
         qs.forEach(q=>{
           let d={};
           try{d=q.data_json?JSON.parse(q.data_json):{};}catch{return;}
+          if(d.explanation) pd.explanation=d.explanation; // 공통 해설 복원
           if(q.type==='topic'){
             pd.topic_options=d.options;
             pd.topic_answer=q.answer;
@@ -3904,6 +3912,7 @@ function App(){
         const qr=await jsonpFetch(appsUrl,{action:'getQuestions',pid});
         (qr?.questions||[]).forEach(q=>{
           let qd={};try{qd=q.data_json?JSON.parse(q.data_json):{};}catch{return;}
+          if(qd.explanation) d.explanation=qd.explanation; // 공통 해설 복원
           if(q.type==='topic'){d.topic_options=qd.options;d.topic_answer=q.answer;}
           else if(q.type==='blank'){d.blank_sel=qd.sel||0;d.blank_candidates=(qd.candidates||[]).map(c=>{const ss=d.sentences||[];const ri=ss.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(c.keyword));return ri>=0?{...c,sentence_index:ri}:c;});const bc=d.blank_candidates[d.blank_sel]||{};d.blank_sentence_index=bc.sentence_index??qd.sentence_index;d.blank_target=qd.target??bc.keyword;d.blank_options=qd.options||(bc.keyword?[bc.keyword,...(bc.distractors||[])]:['','','','','']);d.blank_answer=q.answer;}
           else if(q.type==='order'){d.order_given_index=qd.given_index||0;d.order_blocks=qd.blocks||[];d.order_answer=q.answer;}
@@ -4020,6 +4029,7 @@ function App(){
                       pd.number=sp.number||slot.meta.number;
                       qs_.forEach(q=>{
                         let d={};try{d=q.data_json?JSON.parse(q.data_json):{};}catch{return;}
+                        if(d.explanation) pd.explanation=d.explanation; // 공통 해설 복원
                         if(q.type==='topic'){pd.topic_options=d.options;pd.topic_answer=q.answer;}
                         else if(q.type==='blank'){pd.blank_sel=d.sel||0;pd.blank_candidates=(d.candidates||[]).map(c=>{const sents=pd.sentences||[];const ri=sents.findIndex(s=>(typeof s==='string'?s:s.text||'').includes(c.keyword));return ri>=0?{...c,sentence_index:ri}:c;});const bc=pd.blank_candidates[pd.blank_sel]||{};pd.blank_sentence_index=bc.sentence_index??d.sentence_index;pd.blank_target=d.target??bc.keyword;pd.blank_options=d.options||(bc.keyword?[bc.keyword,...(bc.distractors||[])]:['','','','','']);pd.blank_answer=q.answer;}
                         else if(q.type==='order'){pd.order_given_index=d.given_index||0;pd.order_blocks=d.blocks||[];pd.order_options=d.options||['(A)-(B)-(C)','(B)-(C)-(A)','(C)-(A)-(B)','(B)-(A)-(C)','(A)-(C)-(B)'];pd.order_answer=q.answer;}

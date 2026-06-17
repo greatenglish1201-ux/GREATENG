@@ -212,6 +212,8 @@ function applyGasQuestions(passage, questions){
   const p={...passage};
   questions.forEach(q=>{
     try{
+      const __d=q.data_json?JSON.parse(q.data_json):null;
+      if(__d&&__d.explanation) p['explanation_'+q.type]=__d.explanation; // 유형별 해설 보관
       const d=JSON.parse(q.data_json||'{}');
       if(q.type==='topic'){p.topic_options=d.options;p.topic_answer=Number(q.answer)||1;}
       else if(q.type==='blank'){p.blank_sel=d.sel||0;p.blank_candidates=d.candidates||[];p.blank_sentence_index=d.sentence_index;p.blank_target=d.target;p.blank_options=d.options;p.blank_answer=Number(q.answer)||1;}
@@ -272,6 +274,9 @@ function gen(passage, type, allP){
   // 시트(GAS) 지문: 출제DB에 실제 저장된 유형만 출제 (passages.js 지문은 기존 방식 유지)
   if(passage.__gasOnly && !(passage.__authored && passage.__authored.has(TYPE_KEYS[type]))) return null;
 
+  // 유형별 저장 해설(있으면) → 문제 객체에 실어 채점 후 표시
+  const __expl = passage['explanation_'+type] || '';
+
   switch(type){
 
   /* ① 주제 */
@@ -281,7 +286,7 @@ function gen(passage, type, allP){
       text,
       correct: i === (passage.topic_answer - 1)
     }));
-    return {type, passage, options: shuffle(opts), instruction: '다음 글의 주제로 가장 적절한 것은?'};
+    return {type, passage, explanation: __expl, options: shuffle(opts), instruction: '다음 글의 주제로 가장 적절한 것은?'};
   }
 
   /* ② 순서 배열 */
@@ -360,7 +365,7 @@ function gen(passage, type, allP){
       .map(p => '(' + p.join(')-(') + ')');
     const allOpts = shuffle([correctText, ...wrongPerms].slice(0,5))
       .map(text => ({text, correct: text===correctText}));
-    return {type, passage, given, blocks, options: allOpts, instruction: '주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?'};
+    return {type, passage, explanation: __expl, given, blocks, options: allOpts, instruction: '주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?'};
   }
 
   /* ③ 빈칸 추론 */
@@ -374,7 +379,7 @@ function gen(passage, type, allP){
       text,
       correct: i === (passage.blank_answer - 1)
     }));
-    return {type, passage, blanked, blankIdx: blankSentIdx, options: shuffle(opts), instruction: '다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?'};
+    return {type, passage, explanation: __expl, blanked, blankIdx: blankSentIdx, options: shuffle(opts), instruction: '다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?'};
   }
 
   /* ④ 문장 삽입 */
@@ -420,7 +425,7 @@ function gen(passage, type, allP){
     const beforePicks=pickEvenly(before,needBefore);
     const afterPicks=pickEvenly(after,needAfter);
     const markerIdxs = [...new Set([...beforePicks, realPos, ...afterPicks])].sort((a,b)=>a-b);
-    return {type, passage, removed: passage.insert_sentence, remaining: sClean, markerIdxs, correctPos:realPos, instruction: '글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?'};
+    return {type, passage, explanation: __expl, removed: passage.insert_sentence, remaining: sClean, markerIdxs, correctPos:realPos, instruction: '글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?'};
   }
 
   /* ⑤ 요약문 완성 */
@@ -435,7 +440,7 @@ function gen(passage, type, allP){
     for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
     const aOpts = order.map(i=>aArr[i]);
     const bOpts = order.map(i=>bArr[i]);
-    return {type, passage, abstract: passage.abstract, ansA, ansB, aOpts, bOpts, instruction: '다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A)와 (B)에 들어갈 말로 가장 적절한 것은?'};
+    return {type, passage, explanation: __expl, abstract: passage.abstract, ansA, ansB, aOpts, bOpts, instruction: '다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A)와 (B)에 들어갈 말로 가장 적절한 것은?'};
   }
 
   /* ⑥ 함의 추론 */
@@ -448,7 +453,7 @@ function gen(passage, type, allP){
       text,
       correct: i === (passage.implication_answer - 1)
     }));
-    return {type, passage, targetIdx: sentIdx, underline: passage.implication_keyword, options: shuffle(opts), instruction: '밑줄 친 부분이 다음 글에서 의미하는 바로 가장 적절한 것은?'};
+    return {type, passage, explanation: __expl, targetIdx: sentIdx, underline: passage.implication_keyword, options: shuffle(opts), instruction: '밑줄 친 부분이 다음 글에서 의미하는 바로 가장 적절한 것은?'};
   }
 
   /* ⑦ 무관한 문장 */
@@ -472,7 +477,7 @@ function gen(passage, type, allP){
       const w = wMin + Math.floor(Math.random()*(wMax - wMin + 1));
       const numberedIdxs = [w, w+1, w+2, w+3, w+4];
       const correctNum = safeInsertAt - w + 1;
-      return {type, passage, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
+      return {type, passage, explanation: __expl, full:fullClean, numberedIdxs, correctNum, foreignSource: '', instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
       }
     }
     // 구 데이터 fallback: 다른 지문에서 외래 문장 삽입
@@ -499,7 +504,7 @@ function gen(passage, type, allP){
     const numberedIdxs = [...numberedSet].sort((a, b) => a - b);
     const correctNum = numberedIdxs.indexOf(insertAt) + 1;
     if(correctNum === 0) return null;
-    return {type, passage, full, numberedIdxs, correctNum, foreignSource: rOther.title, instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
+    return {type, passage, explanation: __expl, full, numberedIdxs, correctNum, foreignSource: rOther.title, instruction: '다음 글에서 전체 흐름과 관계 없는 문장은?'};
   }
 
   /* ⑧ 어법 */
@@ -513,7 +518,7 @@ function gen(passage, type, allP){
       note:item.note||'',
       correct:i+1===answer
     }));
-    return {type,passage,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?'};
+    return {type,passage,explanation:__expl,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?'};
   }
 
   /* ⑨ 어휘 */
@@ -527,7 +532,7 @@ function gen(passage, type, allP){
       alt:item.alt||'',
       correct:i+1===answer
     }));
-    return {type,passage,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?'};
+    return {type,passage,explanation:__expl,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?'};
   }
 
   default: return null;
@@ -2519,7 +2524,10 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
                   {userAnswer.expired?'⏱ 시간 초과':userAnswer.correct?'✓ 정답입니다':'✕ 오답'}
                 </p>
                 <p style={{fontSize:'clamp(12px,1.9vw,13px)',color:S.c.ink,marginTop:8,marginBottom:0,lineHeight:1.65}}>
-                  <strong style={{color:S.c.wine}}>{q.passage.title}</strong><br/>{q.passage.abstract}
+                  <strong style={{color:S.c.wine}}>{q.passage.title}</strong>
+                  {q.explanation
+                    ? <><br/><span style={{fontWeight:700,color:S.c.goldDk}}>해설 </span>{q.explanation}</>
+                    : (q.passage.abstract ? <><br/>{q.passage.abstract}</> : null)}
                 </p>
               </div>}
               <button onClick={onNext} style={{width:'100%',padding:'clamp(13px,2.5vw,15px)',borderRadius:13,border:'none',background:S.c.wine,color:'#fff',fontSize:'clamp(14px,2.2vw,15.5px)',fontWeight:800,letterSpacing:1,cursor:'pointer'}}>
