@@ -772,65 +772,54 @@ function App(){
       if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
       pool=shuffle(pool);
 
-      // 필요한 문제 수(qCount)만큼만 만들면 되므로, 섞은 pool의 앞쪽 지문만 출제DB 조회 (전체 조회 → 부분 조회로 속도 개선)
-      // 유형 수로 나눠 지문 개수를 추정하고 여유분(×2 + 4) 확보 → 일부 지문에 출제 데이터가 없어도 qCount 충족
-      const need=Math.max(1,Math.ceil(qCount/Math.max(1,types.length)));
-      const probe=pool.slice(0,Math.min(pool.length,need*2+4));
-
-      // GAS 지문은 출제DB에서 출제 데이터 병합 (probe 대상만)
-      const gasIds=probe.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
+      // 선택된 지문 전체를 조회 (균등 배분을 위해 전체 필요)
+      const gasIds=pool.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
       if(gasIds.length&&scriptUrl){
         const fetched=await Promise.all(gasIds.map(pid=>
           jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
         ));
         gasIds.forEach((pid,i)=>{
-        const idx=pool.findIndex(p=>p.id===pid);
-        if(idx<0)return;
-        const qsArr=(fetched[i]?.ok&&fetched[i].questions)||[];
-        const merged=qsArr.length?applyGasQuestions(pool[idx],qsArr):pool[idx];
-        pool[idx]={...merged,__gasOnly:true,__authored:new Set(qsArr.map(q=>q.type))};
-      });
+          const idx=pool.findIndex(p=>p.id===pid);
+          if(idx<0)return;
+          const qsArr=(fetched[i]?.ok&&fetched[i].questions)||[];
+          const merged=qsArr.length?applyGasQuestions(pool[idx],qsArr):pool[idx];
+          pool[idx]={...merged,__gasOnly:true,__authored:new Set(qsArr.map(q=>q.type))};
+        });
       }
 
-      // 가능한 모든 (지문×유형) 조합 → 지문 1개에 여러 문제 가능 (조회한 probe 지문만 대상)
-      const combos=[];
-      for(const p of probe){
-        const pp=pool.find(x=>x.id===p.id)||p; // 병합된 최신 버전 사용
-        for(const t of types){
+      // 지문별로 출제 가능한 유형의 문제를 미리 생성해 둔다 (유형 순서는 지문마다 랜덤)
+      // byPassage = [{id, qs:[유형별 문제…]}], 각 지문 내 qs는 서로 다른 유형
+      const byPassage=[];
+      for(const p of pool){
+        const pp=pool.find(x=>x.id===p.id)||p;
+        const made=[];
+        for(const t of shuffle([...types])){
           let q=null;
           try{ q=gen(pp,t,allPassages); }catch(e){ console.error('[문제 생성 오류]',pp?.id,t,e); }
-          if(q) combos.push(q);
+          if(q) made.push(q); // 유형이 다르므로 같은 지문 내 유형 중복 없음
         }
+        if(made.length) byPassage.push({id:p.id, qs:made});
       }
-      let shuffled=shuffle(combos);
-      // probe만으로 qCount가 부족하면 나머지 지문에서 추가 조회·생성 (드물게 발생)
-      if(shuffled.length<qCount && probe.length<pool.length){
-        const rest=pool.slice(probe.length);
-        const restGasIds=rest.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
-        if(restGasIds.length&&scriptUrl){
-          const f2=await Promise.all(restGasIds.map(pid=>
-            jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
-          ));
-          restGasIds.forEach((pid,i)=>{
-            const idx=pool.findIndex(p=>p.id===pid);
-            if(idx<0)return;
-            const qsArr=(f2[i]?.ok&&f2[i].questions)||[];
-            const merged=qsArr.length?applyGasQuestions(pool[idx],qsArr):pool[idx];
-            pool[idx]={...merged,__gasOnly:true,__authored:new Set(qsArr.map(q=>q.type))};
-          });
-        }
-        const more=[];
-        for(const p of rest){
-          const pp=pool.find(x=>x.id===p.id)||p;
-          for(const t of types){
-            let q=null;
-            try{ q=gen(pp,t,allPassages); }catch(e){}
-            if(q) more.push(q);
+
+      // 라운드 로빈 균등 배분: 모든 지문에서 1문제씩(1라운드) → 부족하면 2·3라운드…
+      // 각 지문은 자기 qs를 순서대로 소진 → 같은 지문에서 같은 유형이 다시 나오지 않음
+      const picked=[];
+      let round=0;
+      let added=true;
+      while(picked.length<qCount && added){
+        added=false;
+        for(const entry of byPassage){
+          if(picked.length>=qCount) break;
+          if(entry.qs.length>round){
+            picked.push(entry.qs[round]);
+            added=true;
           }
         }
-        shuffled=shuffle([...combos,...more]);
+        round++;
       }
-      const qs=shuffled.slice(0,Math.min(qCount,shuffled.length));
+
+      // 출제 순서 랜덤화 (지문 묶음으로 몰리지 않게)
+      const qs=shuffle(picked).slice(0,Math.min(qCount,picked.length));
       if(!qs.length){ alert('출제할 수 있는 문제가 없습니다. 다른 교재나 유형을 선택해 주세요.'); return; }
       setQuestions(qs);setCurIdx(0);setUserAns({});setShowAns(false);setTimerKey(Date.now());setScreen('quiz');
     }catch(e){
