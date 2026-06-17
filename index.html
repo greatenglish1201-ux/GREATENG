@@ -1143,6 +1143,26 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   };
 
   const [expandedSession,setExpandedSession]=useState(null);
+  // ── 시험 범위(커버리지 분석용) ── 교재/강 id 집합. localStorage에 저장
+  const RANGE_KEY='greateng_exam_range';
+  const [examRange,setExamRange]=useState(()=>{
+    try{const v=JSON.parse(localStorage.getItem(RANGE_KEY));return new Set(Array.isArray(v)?v:[]);}catch{return new Set();}
+  });
+  const [rangePids,setRangePids]=useState(null); // 범위에 속한 전체 pid 목록(범위 지문 분모)
+  const [rangeOpen,setRangeOpen]=useState(false);
+  const [weakTab,setWeakTab]=useState('pid'); // 'pid'=지문약점, 'type'=유형약점
+  const saveRange=(set)=>{
+    setExamRange(new Set(set));
+    try{localStorage.setItem(RANGE_KEY,JSON.stringify([...set]));}catch{}
+  };
+  // 출제DB 전체 pid를 한 번 받아 캐시 → 범위(prefix) 필터로 분모 구성
+  const [allQPids,setAllQPids]=useState(null);
+  React.useEffect(()=>{
+    if(!scriptUrl){setAllQPids([]);return;}
+    jsonpFetch(scriptUrl,{action:'getQuestionPids'})
+      .then(d=>setAllQPids((d&&d.ok&&d.pids)||[]))
+      .catch(()=>setAllQPids([]));
+  },[scriptUrl]);
   const [wrongSort,setWrongSort]=useState('count'); // 'count'=틀린 횟수순, 'ratio'=틀린 비율순
   // 화면·인쇄 공통 정렬 (어긋남 방지). sortMode 미지정 시 현재 wrongSort 사용.
   const sortWrongs=(arr,sortMode)=>{
@@ -1272,12 +1292,54 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
 
   const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',active:s.active});};
 
+  // ── 약점/커버리지 공통 계산 (화면 카드 = 인쇄 동일 보장) ──
+  const computeWeakness=()=>{
+    if(!stats||!(stats.sessionStats||[]).length)return null;
+    const perPid={}, perType={};
+    const inRangeChk=(pid)=>{
+      if(examRange.size===0)return true;
+      for(const pre of examRange){ if(pid===pre||pid.startsWith(pre+'_'))return true; }
+      return false;
+    };
+    (stats.sessionStats||[]).forEach((s,si)=>{
+      (s.detail||'').split('||').filter(Boolean).forEach(line=>{
+        const p=line.split('|'); const pid=p[0]||''; if(!pid)return;
+        const tname=p[1]||''; const ok=p[2]==='O';
+        if(!perPid[pid])perPid[pid]={t:0,c:0,hist:[]};
+        perPid[pid].t++; if(ok)perPid[pid].c++; perPid[pid].hist.push({s:si,ok});
+        if(tname&&inRangeChk(pid)){
+          if(!perType[tname])perType[tname]={t:0,c:0,hist:[]};
+          perType[tname].t++; if(ok)perType[tname].c++; perType[tname].hist.push({s:si,ok});
+        }
+      });
+    });
+    const rangeAll=(examRange.size>0&&Array.isArray(allQPids))?allQPids.filter(inRangeChk):Object.keys(perPid);
+    const WZ=1.96;
+    const wilsonLowerWrong=(wrong,n)=>{ if(n<=0)return 0; const phat=wrong/n,z2=WZ*WZ;
+      return Math.max(0,((phat+z2/(2*n))-WZ*Math.sqrt((phat*(1-phat)+z2/(4*n))/n))/(1+z2/n)); };
+    const DECAY=0.6;
+    const recencyWrongRate=(hist)=>{ const maxS=Math.max(...hist.map(h=>h.s)); let wSum=0,wWrong=0;
+      hist.forEach(h=>{ const w=Math.pow(DECAY,maxS-h.s); wSum+=w; if(!h.ok)wWrong+=w; }); return wSum?wWrong/wSum:0; };
+    const calcWeak=(dict,keys,recThr)=>keys.filter(k=>dict[k]).map(k=>{
+      const d=dict[k]; const base=wilsonLowerWrong(d.t-d.c,d.t); let score=base,recencyApplied=false;
+      if(d.t>=recThr){ score=base*0.4+recencyWrongRate(d.hist)*0.6; recencyApplied=true; }
+      return {key:k,t:d.t,c:d.c,rate:Math.round(d.c/d.t*100),score,recencyApplied};
+    }).filter(w=>w.score>0.05).sort((a,b)=>b.score-a.score).slice(0,15);
+    const weakPid=calcWeak(perPid,rangeAll.filter(pid=>perPid[pid]),5);
+    const weakType=calcWeak(perType,Object.keys(perType),3);
+    const zero=rangeAll.filter(pid=>!perPid[pid]);
+    const once=rangeAll.filter(pid=>perPid[pid]&&perPid[pid].t===1);
+    const covered=rangeAll.length-zero.length;
+    const covPct=rangeAll.length?Math.round(covered/rangeAll.length*100):0;
+    return {perPid,perType,rangeAll,weakPid,weakType,zero,once,covered,covPct};
+  };
+
   // ── 개별 학생 약점 분석 리포트 인쇄 ──
   const printReport=(promo,secOpts)=>{
     if(!selectedStudent){setMsg('인쇄할 학생을 먼저 선택하세요.');return;}
     if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
     // 섹션 선택 옵션 (개별 리포트 전용). 미지정 시 전체 포함.
-    const SO=secOpts||{weak:true,type:true,wrong:true,book:true,sess:true};
+    const SO=secOpts||{weak:true,weakPid:true,weakType:true,blind:true,type:true,book:true,sess:true};
     const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     // 홍보 모드: 이름 완전 비식별
     const dispName=promo?'○○ 학생':selectedStudent;
@@ -1287,6 +1349,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     const sessions=(stats.sessionStats||[]).slice().reverse();
     const types=(stats.typeStats||[]).slice().sort((a,b)=>Number(a.rate)-Number(b.rate)); // 약한 유형 먼저
     const wrongs=sortWrongs(stats.wrongRanking);
+    const Wk=computeWeakness(); // 화면과 동일한 약점점수
     const books=(stats.bookStats||[]);
     // 종합 정답률
     const totCorrect=types.reduce((s,t)=>s+(Number(t.correct)||0),0);
@@ -1312,12 +1375,23 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       const noL=no?(parseInt(no)||no)+'번 ':'';
       return bookLabel(bk)+' '+chL+noL+'지문';
     };
-    const wrongHtml=wrongs.length?`<table style="width:100%;border-collapse:collapse">${wrongs.map((w,i)=>{
-      const tps=Array.isArray(w.types)?w.types:[];
-      const tpStr=tps.length?tps.map(tp=>`${esc(tp.type)} <b style="color:#B3261E">${esc(tp.wrong)}</b>`).join(' · '):(w.type?esc(w.type):'');
-      const ratio=Number(w.total)?Math.round(Number(w.wrong)/Number(w.total)*100):0;
-      return `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#222"><b style="color:${i<3?'#C9A84C':'#999'}">#${i+1}</b> <b>${esc(pidLabelFor(w.pid))}</b>${tpStr?`<br/><span style="color:#888;font-size:11px;padding-left:14px">${tpStr}</span>`:''}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;vertical-align:top"><span style="color:#B3261E;font-weight:700;font-size:12px">✗ ${esc(w.wrong)}/${esc(w.total)}회</span> <b style="color:${ratio>=50?'#B3261E':'#9a7040'};font-size:12px">${ratio}%</b></td></tr>`;
+    // 진짜 약점(지문) — Wilson+최근성 점수 기반
+    const scoreColor=sc=>sc>=50?'#B3261E':sc>=30?'#B7791F':'#9a7040';
+    const weakPidHtml=(Wk&&Wk.weakPid.length)?`<table style="width:100%;border-collapse:collapse">${Wk.weakPid.map((w,i)=>{
+      const sc=Math.round(w.score*100);
+      return `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#222"><b style="color:${i<3?'#C9A84C':'#999'}">#${i+1}</b> <b>${esc(pidLabelFor(w.key))}</b>${w.recencyApplied?` <span style="font-size:10px;color:#7a1020;background:#f6e3e6;border-radius:3px;padding:1px 4px">최근성</span>`:''}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;vertical-align:top"><span style="color:#888;font-size:11px">${esc(w.c)}/${esc(w.t)} (${w.rate}%)</span> <b style="color:${scoreColor(sc)};font-size:13px">${sc}</b></td></tr>`;
+    }).join('')}</table><div style="font-size:10px;color:#bbb;margin-top:4px">우측 숫자=약점 점수(표본 보정·최근 추세 반영, 높을수록 약점)</div>`:'';
+    // 진짜 약점(유형)
+    const weakTypeHtml=(Wk&&Wk.weakType.length)?`<table style="width:100%;border-collapse:collapse">${Wk.weakType.map((w,i)=>{
+      const sc=Math.round(w.score*100);
+      return `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#222"><b>${esc(w.key)}</b>${w.recencyApplied?` <span style="font-size:10px;color:#7a1020;background:#f6e3e6;border-radius:3px;padding:1px 4px">최근성</span>`:''}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap"><span style="color:#888;font-size:11px">${esc(w.c)}/${esc(w.t)} (${w.rate}%)</span> <b style="color:${scoreColor(sc)};font-size:13px">${sc}</b></td></tr>`;
     }).join('')}</table>`:'';
+    // 사각지대(안 본 지문) — 0회/1회
+    const blindHtml=(Wk&&(Wk.zero.length||Wk.once.length))?`<div style="font-size:12px;line-height:1.7">
+      <div style="margin-bottom:4px"><b style="color:#7a1020">커버리지 ${Wk.covPct}%</b> <span style="color:#999">(범위 ${Wk.rangeAll.length}개 중 ${Wk.covered}개 학습)</span></div>
+      ${Wk.zero.length?`<div style="margin-bottom:4px"><span style="color:#B3261E;font-weight:700">한 번도 안 푼 지문 (${Wk.zero.length})</span><br/>${Wk.zero.slice(0,30).map(p=>`<span style="display:inline-block;background:#fdecec;color:#B3261E;border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;font-size:11px">${esc(pidLabelFor(p))}</span>`).join('')}${Wk.zero.length>30?` <span style="color:#999;font-size:11px">외 ${Wk.zero.length-30}개</span>`:''}</div>`:''}
+      ${Wk.once.length?`<div><span style="color:#92670a;font-weight:700">1회만 푼 지문 (${Wk.once.length})</span><br/>${Wk.once.slice(0,30).map(p=>`<span style="display:inline-block;background:#fdf6e3;color:#92670a;border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;font-size:11px">${esc(pidLabelFor(p))}</span>`).join('')}${Wk.once.length>30?` <span style="color:#999;font-size:11px">외 ${Wk.once.length-30}개</span>`:''}</div>`:''}
+    </div>`:'';
     const weakHtml=weakTypes.length?`<div style="background:#FBF3DE;border:1px solid #e6c97a;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#5a3a10;line-height:1.7"><b style="color:#7a1020">⚠ 집중 보완 추천 유형</b><br/>${weakTypes.map(t=>`${esc(t.type)} <b style="color:${rateColor(t.rate)}">${esc(t.rate)}%</b>`).join(' · ')}</div>`:'';
 
     const promoFooter=promo?`
@@ -1336,13 +1410,18 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       const typeRows=types.map(t=>`<tr>
         <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#222">${esc(t.type)} <span style="color:#aaa;font-size:13px;font-weight:400">${t.correct}/${t.total}</span></td>
         <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${bigBar(t.rate)}<b style="color:${rateColor(t.rate)};font-size:17px">${esc(t.rate)}%</b></td></tr>`).join('');
-      const wrongTop=wrongs.slice(0,6).map((w,i)=>{
-        const tps=Array.isArray(w.types)?w.types:[];
-        const tpStr=tps.length?tps.map(tp=>`${esc(tp.type)} <b style="color:#B3261E">${esc(tp.wrong)}</b>`).join(' · '):'';
+      // 홍보용: 약점점수 기반 큰 글씨 (지문 약점 Top6 + 유형 약점)
+      const scColP=sc=>sc>=50?'#B3261E':sc>=30?'#B7791F':'#9a7040';
+      const weakPidBig=(Wk&&Wk.weakPid.length)?Wk.weakPid.slice(0,6).map((w,i)=>{
+        const sc=Math.round(w.score*100);
         return `<tr>
-          <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:15px;color:#222"><b style="color:${i<3?'#C9A84C':'#bbb'};font-size:16px">#${i+1}</b> <b>${esc(pidLabelFor(w.pid))}</b>${tpStr?`<br/><span style="color:#888;font-size:12.5px;padding-left:22px">${tpStr}</span>`:''}</td>
-          <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;vertical-align:top"><b style="color:#B3261E;font-size:16px">✗ ${esc(w.wrong)}회</b></td></tr>`;
-      }).join('');
+          <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:15px;color:#222"><b style="color:${i<3?'#C9A84C':'#bbb'};font-size:16px">#${i+1}</b> <b>${esc(pidLabelFor(w.key))}</b></td>
+          <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap"><span style="color:#999;font-size:13px">${esc(w.c)}/${esc(w.t)} (${w.rate}%)</span> <b style="color:${scColP(sc)};font-size:18px">${sc}</b></td></tr>`;
+      }).join(''):'';
+      const weakTypeBig=(Wk&&Wk.weakType.length)?Wk.weakType.slice(0,8).map(w=>{
+        const sc=Math.round(w.score*100);
+        return `<span style="display:inline-block;background:#fff;border:2px solid ${scColP(sc)};border-radius:24px;padding:7px 16px;margin:4px;font-size:16px;font-weight:800;color:#5a3a10">${esc(w.key)} <span style="color:${scColP(sc)}">${sc}</span></span>`;
+      }).join(''):'';
       const weakBig=weakTypes.length?weakTypes.map(t=>`<span style="display:inline-block;background:#fff;border:2px solid ${rateColor(t.rate)};border-radius:24px;padding:7px 16px;margin:4px;font-size:16px;font-weight:800;color:#5a3a10">${esc(t.type)} <span style="color:${rateColor(t.rate)}">${esc(t.rate)}%</span></span>`).join(''):'';
 
       const LT='<', SC=LT+'script', ESC_='</'+'script>'; // 백틱/부모 script 충돌 회피
@@ -1365,15 +1444,19 @@ ${SC} src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.
     <div style="font-size:17px;margin-top:10px;color:#555">종합 정답률 <b style="font-size:26px;color:${rateColor(overall)}">${overall}%</b> <span style="font-size:14px;color:#aaa">· ${dateStr}</span></div>
   </div>
 
-  ${weakBig?`<div style="background:#FBF3DE;border:2px solid #e6c97a;border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
+  ${weakTypeBig?`<div style="background:#FBF3DE;border:2px solid #e6c97a;border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
+    <div style="font-size:18px;font-weight:800;color:#7a1020;margin-bottom:4px">🎯 진짜 약점 유형 <span style="font-size:13px;color:#9a8570;font-weight:600">(표본 보정·최근 추세 반영)</span></div>
+    <div style="font-size:12.5px;color:#9a8570;margin-bottom:10px">단순 오답 수가 아니라, 통계적으로 검증된 약점만 골라냅니다</div>
+    <div>${weakTypeBig}</div></div>`:(weakBig?`<div style="background:#FBF3DE;border:2px solid #e6c97a;border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
     <div style="font-size:18px;font-weight:800;color:#7a1020;margin-bottom:10px">⚠ 시험 전 집중 보완 추천 유형</div>
-    <div>${weakBig}</div></div>`:''}
+    <div>${weakBig}</div></div>`:'')}
 
   <div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:10px">📝 유형별 정답률</div>
   <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${typeRows}</table>
 
-  ${wrongTop?`<div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:10px">🏆 많이 틀린 지문 <span style="font-size:13px;color:#aaa;font-weight:400">(어느 지문·유형에서 막히는지)</span></div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${wrongTop}</table>`:''}
+  ${weakPidBig?`<div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:4px">🎯 진짜 약점 — 지문 <span style="font-size:13px;color:#aaa;font-weight:400">(우측 숫자=약점 점수)</span></div>
+  <div style="font-size:12.5px;color:#9a8570;margin-bottom:10px">표본이 적은 우연 오답은 자동으로 제외하고, 정말 막히는 지문만 짚어줍니다</div>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${weakPidBig}</table>`:''}
 
   ${promoFooter}
   </div>
@@ -1406,8 +1489,10 @@ ${ESC_}
     <div style="font-size:13px;margin-top:4px">종합 정답률 <b style="font-size:18px;color:${rateColor(overall)}">${overall}%</b></div></div>
   </div>
   ${SO.weak&&weakHtml?`<div style="margin-bottom:18px">${weakHtml}</div>`:''}
+  ${SO.weakPid?sec('🎯 진짜 약점 — 지문 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakPidHtml):''}
+  ${SO.weakType?sec('🎯 진짜 약점 — 유형 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakTypeHtml):''}
+  ${SO.blind?sec('📍 사각지대 — 안 본 지문',blindHtml):''}
   ${SO.type?sec('📝 유형별 정답률 <span style="font-size:11px;color:#999;font-weight:400">(낮은 순)</span>',typeHtml):''}
-  ${SO.wrong?sec('🏆 많이 틀린 지문',wrongHtml):''}
   ${SO.book?sec('📚 교재별 정답률',bookHtml):''}
   ${SO.sess?sec('📅 회차별 기록',sessHtml):''}
   <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
@@ -1576,7 +1661,7 @@ ${ESC_}
             </select>
             <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
             <button onClick={()=>setReportModal(selectedStudent
-              ?{scope:'student',opts:{weak:true,type:true,wrong:true,book:true,sess:true}}
+              ?{scope:'student',opts:{weakPid:true,weakType:true,blind:true,weak:true,type:true,book:true,sess:true}}
               :{scope:'all',opts:{student:true,type:true,wrong:true}})} disabled={!stats}
               title={selectedStudent?'약점 분석 리포트 인쇄 (영역 선택)':'전체 학생 성취도 인쇄 (영역 선택)'}
               style={{padding:'9px 16px',borderRadius:10,border:'1px solid #7a1020',background:(!stats)?'#f0e7d4':'#fff',color:(!stats)?'#b8a988':'#7a1020',fontWeight:700,fontSize:13,cursor:(!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖨 {selectedStudent?'인쇄':'전체 인쇄'}</button>
@@ -1594,9 +1679,11 @@ ${ESC_}
             const scope=reportModal.scope;
             const setO=(patch)=>setReportModal({...reportModal,opts:{...O,...patch}});
             const items=scope==='student'
-              ?[{key:'weak',label:'⚠ 집중 보완 추천 유형'},
+              ?[{key:'weakPid',label:'🎯 진짜 약점 — 지문'},
+                {key:'weakType',label:'🎯 진짜 약점 — 유형'},
+                {key:'blind',label:'📍 사각지대 (안 본 지문)'},
+                {key:'weak',label:'⚠ 집중 보완 추천 유형'},
                 {key:'type',label:'📝 유형별 정답률'},
-                {key:'wrong',label:'🏆 많이 틀린 지문'},
                 {key:'book',label:'📚 교재별 정답률'},
                 {key:'sess',label:'📅 회차별 기록'}]
               :[{key:'student',label:'👥 학생별 정답률'},
@@ -1693,6 +1780,101 @@ ${ESC_}
                     <div style={{width:ov+'%',height:'100%',background:col,borderRadius:4}}/>
                   </div>
                   <span style={{fontSize:16,fontWeight:800,color:col}}>{ov}%</span>
+                </div>
+              </div>;
+            })()}
+            {/* 학생 선택 시: 시험범위 커버리지 + 진짜 약점 */}
+            {selectedStudent&&(stats.sessionStats||[]).length>0&&(()=>{
+              // 약점/커버리지는 공통 헬퍼로 계산 (인쇄와 동일 결과 보장)
+              const W=computeWeakness();
+              if(!W)return null;
+              const {weakPid,weakType,zero,once,covered,covPct,rangeAll}=W;
+              const allBks2=getAllBooks().slice().sort((a,b)=>b.id.length-a.id.length);
+              const lbl=(pid)=>{
+                const bk=allBks2.find(b=>pid.startsWith(b.id+'_'));
+                if(!bk)return pid;
+                const rest=pid.slice(bk.id.length+1).split('_');
+                const ch=rest.length>=2?rest[0]:''; const no=rest.length>=2?rest[1]:rest[0];
+                return (bk.label||bk.id)+(ch?(' '+ch+'강'):'')+' '+no+'번';
+              };
+              const cardWrap={background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'};
+              const head={padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20',display:'flex',justifyContent:'space-between',alignItems:'center'};
+              const chip=(t,c,bg)=><span style={{display:'inline-block',fontSize:11,fontWeight:700,color:c,background:bg,borderRadius:6,padding:'2px 8px',margin:'3px 4px 0 0'}}>{t}</span>;
+              return <div>
+                {/* 시험범위 설정 */}
+                <div style={cardWrap}>
+                  <div style={head} onClick={()=>setRangeOpen(o=>!o)}>
+                    <span>🎯 시험 범위 {examRange.size>0?<span style={{fontSize:11,color:'#7a1020'}}>({examRange.size}개 교재/강)</span>:<span style={{fontSize:11,color:'#9a8570'}}>전체</span>}</span>
+                    <span style={{cursor:'pointer',color:'#C9A84C'}}>{rangeOpen?'▾ 닫기':'▸ 설정'}</span>
+                  </div>
+                  {rangeOpen&&<div style={{padding:'10px 16px'}}>
+                    <div style={{fontSize:11.5,color:'#9a8570',marginBottom:8}}>커버리지·약점 분석의 기준 범위입니다. 교재(또는 강)를 선택하세요.</div>
+                    {getAllBooks().map(b=>{
+                      const on=examRange.has(b.id);
+                      return <label key={b.id} style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:12,marginRight:12,marginBottom:6,cursor:'pointer'}}>
+                        <input type="checkbox" checked={on} onChange={()=>{
+                          const ns=new Set(examRange); on?ns.delete(b.id):ns.add(b.id); saveRange(ns);
+                        }}/>
+                        <span style={{color:on?'#7a1020':'#3a2a20',fontWeight:on?700:400}}>{b.label}</span>
+                      </label>;
+                    })}
+                    {examRange.size>0&&<div><button onClick={()=>saveRange(new Set())} style={{fontSize:11,color:'#9a8570',background:'#f6efe0',border:'none',borderRadius:6,padding:'4px 10px',cursor:'pointer',marginTop:4}}>전체로 초기화</button></div>}
+                    {examRange.size>0&&!Array.isArray(allQPids)&&<div style={{fontSize:11,color:'#C9A84C',marginTop:6}}>지문 목록 불러오는 중…</div>}
+                  </div>}
+                </div>
+                {/* 사각지대 카드 */}
+                <div style={cardWrap}>
+                  <div style={head}>
+                    <span>📍 사각지대 (안 본 지문)</span>
+                    <span style={{fontSize:12,fontWeight:800,color:covPct>=80?'#16a34a':covPct>=50?'#f59e0b':'#dc2626'}}>커버 {covPct}% · {covered}/{rangeAll.length}</span>
+                  </div>
+                  <div style={{padding:'10px 16px'}}>
+                    {zero.length===0&&once.length===0
+                      ?<div style={{fontSize:12,color:'#16a34a'}}>범위 내 지문을 모두 2회 이상 학습했습니다. 👍</div>
+                      :<div>
+                        {zero.length>0&&<div style={{marginBottom:8}}>
+                          <div style={{fontSize:11.5,fontWeight:700,color:'#dc2626',marginBottom:2}}>한 번도 안 푼 지문 ({zero.length})</div>
+                          <div>{zero.slice(0,30).map(pid=>chip(lbl(pid),'#dc2626','#fdecec'))}{zero.length>30&&<span style={{fontSize:11,color:'#9a8570'}}> 외 {zero.length-30}개</span>}</div>
+                        </div>}
+                        {once.length>0&&<div>
+                          <div style={{fontSize:11.5,fontWeight:700,color:'#b8860b',marginBottom:2}}>1회만 푼 지문 ({once.length})</div>
+                          <div>{once.slice(0,30).map(pid=>chip(lbl(pid),'#92670a','#fdf6e3'))}{once.length>30&&<span style={{fontSize:11,color:'#9a8570'}}> 외 {once.length-30}개</span>}</div>
+                        </div>}
+                      </div>}
+                  </div>
+                </div>
+                {/* 진짜 약점 카드 (지문/유형 탭) */}
+                <div style={cardWrap}>
+                  <div style={head}><span>🎯 진짜 약점</span><span style={{fontSize:10.5,color:'#9a8570'}}>표본보정·최근성 반영</span></div>
+                  <div style={{display:'flex',borderBottom:'1px solid #efe6d4'}}>
+                    {[['pid','지문별'],['type','유형별']].map(([k,t])=>{
+                      const on=weakTab===k;
+                      return <div key={k} onClick={()=>setWeakTab(k)} style={{flex:1,textAlign:'center',padding:'8px 0',fontSize:12,fontWeight:on?800:500,color:on?'#7a1020':'#9a8570',borderBottom:on?'2px solid #7a1020':'2px solid transparent',cursor:'pointer'}}>{t}</div>;
+                    })}
+                  </div>
+                  {(()=>{
+                    const weak=weakTab==='type'?weakType:weakPid;
+                    const labelOf=(k)=>weakTab==='type'?k:lbl(k);
+                    const emptyMsg=weakTab==='type'?'두드러진 약점 유형이 없습니다. (오답이 쌓이면 표시됩니다)':'두드러진 약점 지문이 없습니다. (오답이 쌓이면 표시됩니다)';
+                    return <div style={{padding:'8px 16px 12px'}}>
+                      {weak.length===0
+                        ?<div style={{fontSize:12,color:'#9a8570'}}>{emptyMsg}</div>
+                        :weak.map((w,i)=>{
+                          const sc=Math.round(w.score*100);
+                          const col=sc>=50?'#dc2626':sc>=30?'#f59e0b':'#b8860b';
+                          return <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 0',borderBottom:i<weak.length-1?'1px solid #f6efe0':'none'}}>
+                            <span style={{fontSize:12,color:'#3a2a20'}}>{labelOf(w.key)}
+                              {w.recencyApplied&&<span style={{fontSize:9,color:'#7a1020',background:'#f6e3e6',borderRadius:4,padding:'1px 5px',marginLeft:6}}>최근성</span>}
+                            </span>
+                            <span style={{display:'flex',gap:10,alignItems:'center'}}>
+                              <span style={{fontSize:11,color:'#9a8570'}}>{w.c}/{w.t} 정답 ({w.rate}%)</span>
+                              <span style={{fontSize:13,fontWeight:800,color:col,minWidth:42,textAlign:'right'}} title="약점 점수(표본보정 오답률, 높을수록 약점)">{sc}</span>
+                            </span>
+                          </div>;
+                        })}
+                      {weak.length>0&&<div style={{fontSize:10,color:'#c4b89e',marginTop:8}}>우측 숫자=약점 점수(표본 적으면 자동 하향, 5회 이상은 최근 추세 반영)</div>}
+                    </div>;
+                  })()}
                 </div>
               </div>;
             })()}
