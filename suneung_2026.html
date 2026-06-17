@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js">
+<head>
+<script>document.documentElement.classList.remove('no-js')</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-12E7VM1SQ8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-12E7VM1SQ8');
+</script>
+<title>대단한영어 — 고3 수능대비반 7월 오픈특강</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine:#7a1020;
+    --wine-deep:#5a0a16;
+    --gold:#C9A84C;
+    --gold-soft:#e3cd8b;
+    --ink:#2a1c16;
+    --ink-soft:#5b4a40;
+    --paper:#f7f3ec;
+    --paper-warm:#efe7d8;
+    --cream:#fcfaf5;
+    --line:rgba(42,28,22,.12);
+    --shadow:0 10px 40px rgba(42,28,22,.12);
+    --shadow-lg:0 24px 70px rgba(90,10,22,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;color-scheme:light;background:var(--paper)}
+  body{
+    font-family:'Noto Sans KR',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+  }
+  /* 다크모드에서도 항상 라이트 톤 유지: 색 반전 방지 */
+  @media (prefers-color-scheme:dark){
+    html{background:var(--paper)}
+    body{background:var(--paper);color:var(--ink)}
+  }
+  .serif{font-family:'Noto Serif KR',serif}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(120% 80% at 80% 0%, rgba(201,168,76,.18), transparent 55%),
+      linear-gradient(160deg,var(--wine-deep) 0%,var(--wine) 55%,#6a0e1c 100%);
+    color:#fff;
+    padding:72px 24px 90px;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;left:0;right:0;bottom:-1px;height:60px;
+    background:var(--paper);
+    clip-path:polygon(0 100%,100% 100%,100% 0);
+  }
+  .hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:2}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:13px;letter-spacing:.22em;font-weight:500;
+    color:var(--gold-soft);text-transform:uppercase;margin-bottom:26px;
+  }
+  .eyebrow::before{content:"";width:30px;height:1px;background:var(--gold)}
+  .brand-tag{
+    font-size:13px;letter-spacing:.18em;color:rgba(255,255,255,.62);
+    font-weight:300;margin-bottom:34px;
+  }
+  .hero h1{
+    font-family:'Noto Serif KR',serif;font-weight:700;
+    font-size:clamp(30px,7.4vw,46px);line-height:1.34;
+    letter-spacing:-.01em;margin-bottom:24px;
+  }
+  .hero h1 .hl{
+    color:var(--gold-soft);
+    position:relative;white-space:nowrap;
+  }
+  .hero h1 .strike{
+    color:rgba(255,255,255,.5);
+    text-decoration:line-through;
+    text-decoration-color:var(--gold);
+    text-decoration-thickness:2px;
+  }
+  .hero p.lead{
+    font-size:clamp(15px,4vw,17px);color:rgba(255,255,255,.82);
+    font-weight:300;max-width:560px;
+  }
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:34px;
+  }
+  .chip{
+    font-size:13px;font-weight:500;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(227,205,139,.35);
+    color:var(--gold-soft);
+    padding:8px 15px;border-radius:100px;
+    backdrop-filter:blur(4px);
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:0 22px}
+  .wrap{max-width:760px;margin:0 auto}
+  .block{padding:56px 0}
+
+  .kicker{
+    display:inline-block;font-size:12px;letter-spacing:.2em;
+    font-weight:700;color:var(--wine);text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .kicker.gold{color:#a8862e}
+  h2.head{
+    font-family:'Noto Serif KR',serif;font-weight:700;
+    font-size:clamp(23px,5.6vw,31px);line-height:1.4;
+    letter-spacing:-.01em;margin-bottom:18px;
+  }
+  .head .accent{color:var(--wine)}
+  p.body{font-size:16px;color:var(--ink-soft);font-weight:400}
+  p.body + p.body{margin-top:14px}
+  .body strong{color:var(--ink);font-weight:700}
+
+  /* ---------- PAIN CARD ---------- */
+  .pains{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:28px 24px;
+    margin-top:28px;
+  }
+  .pains .ptitle{
+    font-family:'Noto Serif KR',serif;font-weight:600;font-size:16px;
+    color:var(--wine);margin-bottom:20px;display:flex;align-items:center;gap:9px;
+  }
+  .pain{
+    display:flex;gap:14px;padding:15px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .pain:last-child{border-bottom:none;padding-bottom:0}
+  .pain:first-of-type{padding-top:0}
+  .pain .pn{
+    flex:none;width:26px;height:26px;border-radius:8px;
+    background:var(--paper-warm);color:var(--wine);
+    font-size:13px;font-weight:700;
+    display:grid;place-items:center;margin-top:2px;
+  }
+  .pain p{font-size:15px;color:var(--ink-soft);line-height:1.66}
+  .pain b{color:var(--ink);font-weight:700}
+
+  /* ---------- TRANSFORM SIGNATURE ---------- */
+  .transform{
+    background:linear-gradient(165deg,#fff,var(--paper-warm));
+    border:1px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden;margin-top:30px;
+  }
+  .tf-row{padding:22px 22px}
+  .tf-label{
+    font-size:11px;letter-spacing:.16em;font-weight:700;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  }
+  .tf-old .tf-label{color:#a89484}
+  .tf-new .tf-label{color:var(--wine)}
+  .tf-old{background:rgba(42,28,22,.03)}
+  .tf-chips{display:flex;flex-wrap:wrap;gap:7px}
+  .tf-chips span{
+    font-size:13px;font-weight:500;padding:6px 12px;border-radius:8px;
+  }
+  .tf-old .tf-chips span{
+    background:#fff;border:1px solid var(--line);color:#9a8576;
+    text-decoration:line-through;text-decoration-color:#c9b9a6;
+  }
+  .tf-arrow{
+    text-align:center;padding:4px 0 2px;
+    color:var(--gold);font-size:22px;line-height:1;
+  }
+  .tf-new{
+    background:linear-gradient(120deg,rgba(201,168,76,.1),transparent);
+    border-top:1px solid var(--line);
+  }
+  .tf-new .tf-chips span{
+    background:var(--wine);color:#fff;font-weight:600;
+    box-shadow:0 4px 12px rgba(122,16,32,.22);
+  }
+  .tf-flow{
+    display:flex;align-items:center;gap:6px;margin-top:14px;flex-wrap:wrap;
+  }
+  .tf-flow .dot{
+    flex:none;width:9px;height:9px;border-radius:50%;background:var(--gold);
+  }
+  .tf-flow .ln{flex:1;min-width:18px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-soft));border-radius:2px}
+  .tf-flow .tx{font-size:12px;color:var(--wine);font-weight:600;white-space:nowrap}
+
+  /* ---------- FEATURE CARDS ---------- */
+  .fcards{margin-top:28px;display:flex;flex-direction:column;gap:16px}
+  .fcard{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    padding:24px 22px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden;
+  }
+  .fcard::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:linear-gradient(var(--wine),var(--gold));
+  }
+  .fcard .ic{
+    width:46px;height:46px;border-radius:13px;
+    background:linear-gradient(150deg,var(--wine),var(--wine-deep));
+    color:var(--gold-soft);display:grid;place-items:center;
+    font-size:22px;margin-bottom:16px;
+    box-shadow:0 8px 20px rgba(122,16,32,.25);
+  }
+  .fcard h3{
+    font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;
+    line-height:1.45;margin-bottom:10px;letter-spacing:-.01em;
+  }
+  .fcard p{font-size:14.5px;color:var(--ink-soft);line-height:1.7}
+  .fcard p strong{color:var(--wine);font-weight:700}
+
+  /* ---------- TYPE STRATEGY MINI ---------- */
+  .types{
+    margin-top:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  }
+  .type{
+    background:var(--cream);border:1px solid var(--line);border-radius:13px;
+    padding:14px 14px;text-align:center;
+  }
+  .type .ty{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:3px}
+  .type .td{font-size:12px;color:var(--ink-soft);line-height:1.5}
+
+  /* ---------- TIMELINE / WHY NOW ---------- */
+  .why{
+    background:linear-gradient(160deg,var(--wine-deep),var(--wine));
+    color:#fff;border-radius:22px;padding:36px 26px;
+    margin-top:30px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+  }
+  .why::before{
+    content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    background:radial-gradient(circle,rgba(201,168,76,.25),transparent 70%);
+  }
+  .why .kicker{color:var(--gold-soft)}
+  .why h2{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:22px;
+    line-height:1.5;margin-bottom:14px;position:relative;
+  }
+  .why p{font-size:15px;color:rgba(255,255,255,.85);font-weight:300;position:relative}
+  .why .tl{
+    margin-top:24px;display:flex;flex-direction:column;gap:0;position:relative;
+  }
+  .why .tlrow{
+    display:flex;gap:14px;align-items:flex-start;padding-bottom:18px;position:relative;
+  }
+  .why .tlrow:last-child{padding-bottom:0}
+  .why .tlrow::before{
+    content:"";position:absolute;left:8px;top:20px;bottom:0;width:2px;
+    background:rgba(227,205,139,.3);
+  }
+  .why .tlrow:last-child::before{display:none}
+  .why .tdot{
+    flex:none;width:18px;height:18px;border-radius:50%;
+    background:var(--gold);border:3px solid var(--wine-deep);
+    box-shadow:0 0 0 2px var(--gold);margin-top:2px;z-index:1;
+  }
+  .why .tlrow.now .tdot{background:#fff}
+  .why .tc .tt{font-weight:700;font-size:14px;color:var(--gold-soft);margin-bottom:2px}
+  .why .tc .tp{font-size:13.5px;color:rgba(255,255,255,.8);font-weight:300}
+
+  /* ---------- SCHEDULE ---------- */
+  .sched{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+  .scard{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  .scard .stop{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 20px 16px;
+    background:linear-gradient(120deg,rgba(201,168,76,.12),transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .scard .stop .sname{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:18px;color:var(--wine);
+    display:flex;align-items:center;gap:9px;
+  }
+  .scard .stop .sbadge{
+    font-size:11px;font-weight:700;letter-spacing:.04em;
+    background:var(--wine);color:#fff;padding:5px 11px;border-radius:100px;
+  }
+  .scard .sbody{padding:16px 20px 20px;display:flex;flex-direction:column;gap:11px}
+  .srow{display:flex;align-items:center;gap:12px;font-size:15px}
+  .srow .si{
+    flex:none;width:30px;height:30px;border-radius:9px;background:var(--paper-warm);
+    color:var(--wine);display:grid;place-items:center;font-size:15px;
+  }
+  .srow b{color:var(--ink);font-weight:700;font-size:16px}
+  .srow .note{font-size:12.5px;color:var(--gold-soft);background:#a8862e;color:#fff;padding:2px 9px;border-radius:7px;font-weight:600;margin-left:2px}
+  .snote{
+    font-size:13px;color:var(--ink-soft);background:var(--cream);
+    border-radius:10px;padding:11px 13px;line-height:1.6;
+    border:1px dashed var(--line);
+  }
+  .snote b{color:var(--wine)}
+  .limit{
+    margin-top:18px;text-align:center;font-size:13.5px;font-weight:500;
+    color:var(--wine);background:rgba(201,168,76,.14);
+    border:1px solid rgba(201,168,76,.4);border-radius:100px;padding:11px 18px;
+  }
+
+  /* ---------- DATA SYSTEM ---------- */
+  .sys{margin-top:28px;display:flex;flex-direction:column;gap:16px}
+  .syscard{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  .syscard .sytop{
+    display:flex;align-items:center;gap:13px;
+    padding:20px 20px 18px;border-bottom:1px solid var(--line);
+    background:linear-gradient(120deg,rgba(122,16,32,.05),transparent);
+  }
+  .syscard .syic{
+    flex:none;width:46px;height:46px;border-radius:13px;
+    background:linear-gradient(150deg,var(--wine),var(--wine-deep));
+    color:var(--gold-soft);display:grid;place-items:center;font-size:22px;
+    box-shadow:0 8px 20px rgba(122,16,32,.25);
+  }
+  .syscard .syttl{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:17px;
+    line-height:1.4;letter-spacing:-.01em;
+  }
+  .syscard .syttl small{
+    display:block;font-family:'Noto Sans KR',sans-serif;font-weight:500;
+    font-size:12px;letter-spacing:.04em;color:var(--wine);margin-top:3px;
+  }
+  .syscard .sybody{padding:18px 20px 20px}
+  .syline{
+    display:flex;gap:11px;padding:9px 0;font-size:14.5px;color:var(--ink-soft);line-height:1.6;
+  }
+  .syline .syck{flex:none;color:var(--gold);font-weight:900;margin-top:1px}
+  .syline b{color:var(--ink);font-weight:700}
+
+  /* 누적복습 시각화 */
+  .vocaviz{
+    margin-top:14px;background:var(--cream);border:1px dashed var(--line);
+    border-radius:12px;padding:14px;
+  }
+  .vocaviz .vtag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--wine);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .vchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .vchips .vw{
+    font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:8px;
+    background:#fff;border:1px solid var(--line);color:#9a8576;
+  }
+  .vchips .vw.wrong{
+    background:var(--wine);color:#fff;border-color:var(--wine);
+    box-shadow:0 3px 9px rgba(122,16,32,.2);
+  }
+  .vchips .vloop{font-size:14px;color:var(--gold);font-weight:900;margin:0 2px}
+
+  /* 오답 진단 바 */
+  .diag{margin-top:14px;background:var(--cream);border:1px dashed var(--line);border-radius:12px;padding:15px 14px}
+  .diag .dtag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--wine);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+  .dbar{margin-bottom:11px}
+  .dbar:last-child{margin-bottom:0}
+  .dbar .dhd{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+  .dbar .dnm{font-weight:700;color:var(--ink)}
+  .dbar .dpc{font-weight:700;color:var(--ink-soft)}
+  .dtrack{height:8px;background:#fff;border:1px solid var(--line);border-radius:100px;overflow:hidden}
+  .dfill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--gold-soft))}
+  .dbar.weak .dnm{color:var(--wine)}
+  .dbar.weak .dpc{color:var(--wine)}
+  .dbar.weak .dfill{background:linear-gradient(90deg,var(--wine),#a8324a)}
+  .dnote{margin-top:12px;font-size:12.5px;color:var(--wine);font-weight:600;background:rgba(122,16,32,.07);border-radius:8px;padding:8px 11px;line-height:1.5}
+
+  /* ---------- CREDENTIAL ---------- */
+  .cred{
+    margin-top:30px;background:var(--ink);color:#fff;border-radius:20px;
+    padding:30px 24px;box-shadow:var(--shadow-lg);
+  }
+  .cred .kicker{color:var(--gold-soft)}
+  .cred h2{font-family:'Noto Serif KR',serif;font-weight:600;font-size:20px;margin-bottom:20px;line-height:1.4}
+  .cred-grid{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.1);border-radius:14px;overflow:hidden}
+  .cred-item{
+    background:var(--ink);padding:15px 18px;display:flex;align-items:baseline;gap:12px;
+  }
+  .cred-item .cv{font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;color:#fff;flex:none}
+  .cred-item .cl{font-size:13px;color:rgba(255,255,255,.6);font-weight:300}
+
+  /* ---------- CTA ---------- */
+  .cta{
+    margin:0 22px;
+    background:linear-gradient(160deg,#fff,var(--paper-warm));
+    border:1px solid var(--line);border-radius:24px;
+    padding:38px 26px;text-align:center;box-shadow:var(--shadow-lg);
+    max-width:760px;margin-left:auto;margin-right:auto;
+  }
+  .cta h2{font-family:'Noto Serif KR',serif;font-weight:700;font-size:23px;margin-bottom:12px;line-height:1.4}
+  .cta p{font-size:14.5px;color:var(--ink-soft);margin-bottom:8px;line-height:1.7}
+  .cta .small{font-size:13px;color:var(--ink-soft);margin:18px 0 22px;opacity:.85}
+  .btns{display:flex;flex-direction:column;gap:11px}
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    text-decoration:none;font-weight:700;font-size:15px;
+    padding:16px 20px;border-radius:14px;transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .btn:active{transform:scale(.985)}
+  .btn-num{
+    flex:none;width:23px;height:23px;border-radius:7px;font-size:13px;
+    display:grid;place-items:center;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--wine),var(--wine-deep));color:#fff;
+    box-shadow:0 12px 28px rgba(122,16,32,.3);
+  }
+  .btn-primary .btn-num{background:rgba(255,255,255,.2)}
+  .btn-second{
+    background:#fff;color:var(--wine);border:1.5px solid var(--wine);
+  }
+  .btn-second .btn-num{background:var(--paper-warm)}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;padding:46px 22px 60px;
+  }
+  footer .fbrand{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:18px;color:var(--wine);margin-bottom:6px;
+  }
+  footer .fsub{font-size:13px;color:var(--ink-soft);font-weight:300;margin-bottom:4px}
+  footer .faddr{font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:18px}
+  footer a.flink{
+    display:inline-block;font-size:13.5px;font-weight:600;color:var(--wine);
+    text-decoration:none;border-bottom:1.5px solid var(--gold);padding-bottom:2px;
+  }
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+  /* JS가 꺼진 환경에서도 모든 섹션 표시 */
+  .no-js .rv{opacity:1;transform:none}
+  @media(min-width:680px){
+    .fcards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .fcard.wide{grid-column:1/-1}
+    .btns{flex-direction:row;justify-content:center}
+    .btn{flex:1;max-width:300px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">2027 수능 대비 · 고3</div>
+    <div class="brand-tag">대단한영어 · 포항 · Excellence as a Habit</div>
+    <h1>해도 안 된다고<br><span class="strike">느꼈던 거,</span><br><span class="hl">네 탓이 아니야</span></h1>
+    <p class="lead">단어를 외워도, 해석이 돼도 점수가 안 올랐다면 — 노력이 부족한 게 아닙니다. 수능 영어는 푸는 방법이 따로 있는데, 그걸 한 번도 제대로 배운 적이 없었을 뿐입니다. 지금부터 다시 시작하면 됩니다.</p>
+    <div class="hero-meta">
+      <span class="chip">7월 오픈특강</span>
+      <span class="chip">수능까지 연계</span>
+      <span class="chip">주중·주말반</span>
+    </div>
+  </div>
+</header>
+
+<!-- PAINS -->
+<section>
+  <div class="wrap block rv">
+    <span class="kicker">이런 학생을 위한 수업입니다</span>
+    <h2 class="head">혹시, <span class="accent">우리 아이 이야기</span>인가요</h2>
+    <p class="body">"나는 영어 머리가 없나 봐." 점수가 안 오를 때마다 학생들은 자기 탓을 합니다. 하지만 대부분은 <strong>머리가 나쁜 게 아니라, 수능 영어를 푸는 방법을 모른 채 혼자 헤맸을 뿐</strong>입니다. 방법을 알면 지금까지 안 보이던 길이 보이기 시작합니다.</p>
+
+    <div class="pains">
+      <div class="ptitle serif">📋 이런 마음, 느껴본 적 있나요</div>
+      <div class="pain"><span class="pn">1</span><p>단어는 외웠는데, <b>독해만 하면 머릿속이 하얘진다</b></p></div>
+      <div class="pain"><span class="pn">2</span><p>해석은 됐는데, <b>답을 고르면 꼭 틀려서 허탈하다</b></p></div>
+      <div class="pain"><span class="pn">3</span><p>시간에 쫓겨 <b>뒤 지문은 찍고, 시험이 끝나면 후회한다</b></p></div>
+      <div class="pain"><span class="pn">4</span><p>아무리 해도 안 올라서, <b>'그냥 포기할까' 싶은 날이 있다</b></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE 1 : FLOW -->
+<section style="background:var(--paper-warm)">
+  <div class="wrap block rv">
+    <span class="kicker">핵심 ①</span>
+    <h2 class="head">'문장 분석'이 아니라<br><span class="accent">'글의 흐름'</span>을 잡습니다</h2>
+    <p class="body">지금까지는 문장을 끊어 읽고, 구문을 분석하고, 단어를 대입해 해석하는 방식으로 독해를 배웠습니다. 내신까지는 통합니다. 하지만 수능은 <strong>처음 보는 지문을 제한된 시간 안에</strong> 읽어내야 합니다.</p>
+    <p class="body">한 문장을 정밀하게 번역하는 능력이 아니라, 글이 어디서 시작해 어디로 흘러가는지 — <strong>그 흐름을 빠르게 읽어내는 능력</strong>을 묻습니다.</p>
+
+    <div class="transform">
+      <div class="tf-row tf-old">
+        <div class="tf-label">🔍 지금까지의 독해</div>
+        <div class="tf-chips">
+          <span>한 문장씩 끊어 읽기</span><span>구문 분석</span><span>단어 대입 해석</span>
+        </div>
+      </div>
+      <div class="tf-arrow">↓</div>
+      <div class="tf-row tf-new">
+        <div class="tf-label">✦ 대단한영어의 독해</div>
+        <div class="tf-chips">
+          <span>글 전체 구조 먼저</span><span>논리 전개 따라가기</span><span>흐름으로 답 찾기</span>
+        </div>
+        <div class="tf-flow">
+          <span class="dot"></span><span class="ln"></span><span class="tx">도입</span><span class="ln"></span><span class="tx">전환</span><span class="ln"></span><span class="tx">결론</span><span class="ln"></span><span class="dot"></span>
+        </div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:22px">이 방식이 몸에 배면 읽는 속도가 빨라지고, <strong>시간 부족 문제도 자연스럽게 풀립니다.</strong></p>
+  </div>
+</section>
+
+<!-- CORE 2 : LANGUAGE CLUES -->
+<section>
+  <div class="wrap block rv">
+    <span class="kicker gold">핵심 ②</span>
+    <h2 class="head">배경지식이 없어도,<br><span class="accent">언어적 단서</span>만으로 읽어냅니다</h2>
+    <p class="body">수능에는 과학·기술·철학·경제처럼 낯설고 전문적인 지문이 반드시 등장합니다. 많은 학생이 "내용을 몰라서 못 풀었다"고 말하지만, 사실 <strong>수능은 배경지식을 요구하지 않습니다.</strong></p>
+
+    <div class="fcards">
+      <div class="fcard wide">
+        <div class="ic">🧭</div>
+        <h3>답은 언제나 지문 안, 언어적 단서 안에 있습니다</h3>
+        <p>연결어, 지시어, 대조와 반복, 문장 간의 논리 관계 같은 <strong>글 자체가 주는 신호</strong>를 읽는 법을 훈련합니다. 내용을 다 이해하지 못해도, 글이 어떻게 짜여 있는지를 보면 답이 보입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE 3 : SOLVING + TIMING -->
+<section style="background:var(--paper-warm)">
+  <div class="wrap block rv">
+    <span class="kicker">핵심 ③</span>
+    <h2 class="head">문제 푸는 법,<br><span class="accent">시간 쓰는 법</span>까지 잡습니다</h2>
+    <p class="body">독해가 되어도 점수가 안 나오는 학생이 있습니다. 유형별로 무엇을 묻는지, 어디를 봐야 답이 나오는지를 모르기 때문입니다. 유형마다 <strong>접근법과 시간 배분</strong>을 함께 훈련합니다.</p>
+
+    <div class="types">
+      <div class="type"><div class="ty">빈칸 추론</div><div class="td">근거 문장을 찾는 법</div></div>
+      <div class="type"><div class="ty">순서 배열</div><div class="td">연결 단서로 잇는 법</div></div>
+      <div class="type"><div class="ty">문장 삽입</div><div class="td">논리 공백 짚는 법</div></div>
+      <div class="type"><div class="ty">요지·주제</div><div class="td">핵심을 빠르게 잡는 법</div></div>
+    </div>
+    <p class="body" style="margin-top:22px">흐름을 읽는 힘과 문제를 푸는 전략, 시간을 배분하는 감각이 합쳐지는 순간 — <strong>"어, 이제 좀 보인다" 하는 날이 옵니다.</strong> 그때부터 점수가 움직입니다.</p>
+  </div>
+</section>
+
+<!-- WHY NOW -->
+<section>
+  <div class="wrap block rv">
+    <div class="why">
+      <span class="kicker">왜 지금인가</span>
+      <h2>늦은 게 아니라,<br>아직 기회가 남아 있는 겁니다.</h2>
+      <p>지금 이 순간에도 망설이는 사이 시간은 흘러갑니다. 하지만 방법을 바꾸기로 마음먹은 오늘이, 수능까지 가는 길에서 가장 빠른 출발점입니다. 늦었다고 포기하기엔, 아직 충분히 남았습니다.</p>
+      <div class="tl">
+        <div class="tlrow now">
+          <span class="tdot"></span>
+          <div class="tc"><div class="tt">지금 · 7월</div><div class="tp">마음먹은 오늘, 막혔던 독해를 다시 푸는 출발점</div></div>
+        </div>
+        <div class="tlrow">
+          <span class="tdot"></span>
+          <div class="tc"><div class="tt">여름 ~ 가을</div><div class="tp">흐름 독해와 유형 전략을 몸에 새기는 집중 훈련</div></div>
+        </div>
+        <div class="tlrow">
+          <span class="tdot"></span>
+          <div class="tc"><div class="tt">11월 · 수능</div><div class="tp">처음 보는 지문 앞에서도 흔들리지 않는 실전 감각</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section style="background:var(--paper-warm)">
+  <div class="wrap block rv">
+    <span class="kicker">수업 안내</span>
+    <h2 class="head">7월, <span class="accent">오픈특강</span>으로 시작합니다</h2>
+    <p class="body">수능까지 쭉 이어지는 과정입니다. 평일 수강이 어려운 학생은 주말반으로 신청할 수 있습니다.</p>
+
+    <div class="sched">
+      <div class="scard">
+        <div class="stop">
+          <div class="sname">주중반</div>
+          <div class="sbadge">평일 저녁</div>
+        </div>
+        <div class="sbody">
+          <div class="srow"><span class="si">📅</span><span><b>화요일 · 목요일</b></span></div>
+          <div class="srow"><span class="si">🕗</span><span><b>저녁 8:30 ~ 10:00</b></span></div>
+        </div>
+      </div>
+
+      <div class="scard">
+        <div class="stop">
+          <div class="sname">주말반</div>
+          <div class="sbadge">토요일</div>
+        </div>
+        <div class="sbody">
+          <div class="srow"><span class="si">📅</span><span><b>토요일</b></span></div>
+          <div class="srow"><span class="si">🕑</span><span><b>오후 2:00 ~ 5:00</b><span class="note">시간 변경 가능</span></span></div>
+          <div class="snote">평일 수강이 어려운 학생을 위한 <b>주 1회 3시간 집중반</b>입니다. 시간은 상담을 통해 조정할 수 있습니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="limit">⏳ 정원이 제한되어 있어 조기 마감될 수 있습니다</div>
+  </div>
+</section>
+
+<!-- DATA SYSTEM -->
+<section style="background:var(--paper-warm)">
+  <div class="wrap block rv">
+    <span class="kicker">대단한영어만의 시스템</span>
+    <h2 class="head">실력은 <span class="accent">데이터</span>로 관리합니다</h2>
+    <p class="body">원장이 직접 개발·운영하는 자체 출제 플랫폼이 있습니다. 단어 암기부터 수능형 오답까지, 학생 한 명 한 명의 기록이 쌓여 <strong>약점을 정확히 겨냥한 훈련</strong>으로 이어집니다.</p>
+
+    <div class="sys">
+      <div class="syscard">
+        <div class="sytop">
+          <div class="syic">🔁</div>
+          <div class="syttl">단어, 틀린 것만 무한 반복<small>누적복습 시스템</small></div>
+        </div>
+        <div class="sybody">
+          <div class="syline"><span class="syck">✓</span><span>매일 단어 테스트를 <b>온라인으로 진행</b>하고 제출 여부를 실시간 확인</span></div>
+          <div class="syline"><span class="syck">✓</span><span>틀린 단어는 그냥 넘어가지 않고 <b>자동으로 누적</b></span></div>
+          <div class="syline"><span class="syck">✓</span><span>완전히 외울 때까지 <b>틀린 단어만 모아 무한 반복</b></span></div>
+
+          <div class="vocaviz">
+            <div class="vtag">🔁 틀린 단어만 다시</div>
+            <div class="vchips">
+              <span class="vw">adapt</span>
+              <span class="vw wrong">distraction</span>
+              <span class="vw">insight</span>
+              <span class="vw wrong">overwhelm</span>
+              <span class="vloop">↻</span>
+              <span class="vw wrong">distraction</span>
+              <span class="vw wrong">overwhelm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="syscard">
+        <div class="sytop">
+          <div class="syic">🎯</div>
+          <div class="syttl">수능형 문제, 개인별 오답 관리<small>약점 진단 시스템</small></div>
+        </div>
+        <div class="sybody">
+          <div class="syline"><span class="syck">✓</span><span>수능 유형 문제 풀이 결과가 <b>학생별로 자동 기록</b></span></div>
+          <div class="syline"><span class="syck">✓</span><span>어떤 유형에서 막히는지 <b>데이터로 정밀 진단</b></span></div>
+          <div class="syline"><span class="syck">✓</span><span>약점 유형만 겨냥해 <b>반복 출제 → 오답이 줄 때까지 관리</b></span></div>
+
+          <div class="diag">
+            <div class="dtag">📊 개인별 유형 진단 (예시)</div>
+            <div class="dbar weak">
+              <div class="dhd"><span class="dnm">빈칸추론</span><span class="dpc">56%</span></div>
+              <div class="dtrack"><div class="dfill" style="width:56%"></div></div>
+            </div>
+            <div class="dbar weak">
+              <div class="dhd"><span class="dnm">문장삽입</span><span class="dpc">64%</span></div>
+              <div class="dtrack"><div class="dfill" style="width:64%"></div></div>
+            </div>
+            <div class="dbar">
+              <div class="dhd"><span class="dnm">순서배열</span><span class="dpc">88%</span></div>
+              <div class="dtrack"><div class="dfill" style="width:88%"></div></div>
+            </div>
+            <div class="dnote">⚠ 빈칸추론·문장삽입 집중 보완 추천 — 해당 유형만 반복 출제로 관리합니다</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDENTIAL -->
+<section>
+  <div class="wrap block rv">
+    <div class="cred">
+      <span class="kicker">원장이 직접 가르치고 관리합니다</span>
+      <h2>전문성과 시스템을 모두 갖췄습니다</h2>
+      <div class="cred-grid">
+        <div class="cred-item"><span class="cv">고려대학교</span><span class="cl">영어교육과 학사</span></div>
+        <div class="cred-item"><span class="cv">맥쿼리대학교</span><span class="cl">TESOL 석사</span></div>
+        <div class="cred-item"><span class="cv">자체 출제 플랫폼</span><span class="cl">원장 직접 개발·운영</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta rv">
+  <h2>아직 늦지 않았습니다.<br>지금 함께 시작해요.</h2>
+  <p>막막했던 우리 아이의 수능 영어, 어디서부터 풀어가야 할지 함께 짚어드립니다.</p>
+  <p class="small">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>아래 순서로 신청해 주시면 원장이 직접 빠르고 친절하게 답변드립니다.</p>
+  <div class="btns">
+    <a class="btn btn-second" href="https://blog.naver.com/pkf78/224202820359" target="_blank" rel="noopener"><span class="btn-num">1</span>상담 가이드 먼저 읽기</a>
+    <a class="btn btn-primary" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener"><span class="btn-num">2</span>네이버 톡톡으로 신청</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="rv">
+  <div class="fbrand">대단한영어 GREATENG</div>
+  <div class="fsub">포항 남구 영어 전문 학원</div>
+  <div class="faddr">포항시 남구 대이로 105, 아이코아빌딩 5층 501호<br>이동플렉스 맞은편</div>
+  <a class="flink" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">학원 블로그 바로가기 →</a>
+</footer>
+
+<script>
+  (function(){
+    var items=document.querySelectorAll('.rv');
+    // 안전장치: 관찰 기능이 없거나 실행이 막힌 환경(텔레그램 등 인앱 브라우저)에서는 전부 표시
+    if(!('IntersectionObserver' in window)){
+      items.forEach(function(el){el.classList.add('in')});
+      return;
+    }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})
+    },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    items.forEach(function(el){io.observe(el)});
+    // 폴백: 1.2초 안에 화면 밖 항목이 여전히 숨어 있으면 모두 표시
+    setTimeout(function(){
+      items.forEach(function(el){if(!el.classList.contains('in'))el.classList.add('in')});
+    },1200);
+  })();
+</script>
+</body>
+</html>
