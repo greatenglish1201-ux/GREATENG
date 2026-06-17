@@ -3115,10 +3115,14 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [activeSource,setActiveSource]=useState('ALL');
 
   // ★ 선택 인쇄 모드
-  const [selMode,setSelMode]=useState(false);
   const [selIds,setSelIds]=useState(new Set());
   const [printJob,setPrintJob]=useState(null); // {items:[passage], mode:'teacher'|'student'}
   const printRef=React.useRef(null);
+  // ★ teacher.html식 별도 선택 화면(모달)
+  const [showSelModal,setShowSelModal]=useState(false);
+  const [modalSearch,setModalSearch]=useState('');
+  const [modalSrc,setModalSrc]=useState('');
+  const [modalExpanded,setModalExpanded]=useState(''); // 'source' 또는 'source__chapter'
   const toggleSel=(id)=>setSelIds(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});
   // ★ 교재/강 단위 일괄 선택·해제: 대상 id가 모두 선택돼 있으면 해제, 아니면 전체 선택
   const toggleBulk=(ids)=>setSelIds(prev=>{
@@ -3263,11 +3267,11 @@ button{display:none!important}
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
           <button onClick={goBack} style={{background:'none',border:'none',fontSize:20,cursor:'pointer',padding:0,color:'#4f7df7'}}>←</button>
           <span style={{fontWeight:800,fontSize:16,color:'#1e293b'}}>📚 자료 보기</span>
-          <button onClick={()=>{setSelMode(m=>!m);setSelIds(new Set());}}
+          <button onClick={()=>{setShowSelModal(true);setModalSearch('');setModalSrc('');setModalExpanded('');}}
             style={{marginLeft:'auto',fontSize:11,fontWeight:700,padding:'5px 11px',borderRadius:7,cursor:'pointer',
-              border:selMode?'1px solid #C9A84C':'1px solid #e6dcc6',
-              background:selMode?'#FBF3DE':'#fff',color:selMode?'#8a6010':'#3a2a20'}}>
-            {selMode?'✕ 선택 취소':'🖨 선택 인쇄'}</button>
+              border:selIds.size?'1px solid #C9A84C':'1px solid #e6dcc6',
+              background:selIds.size?'#FBF3DE':'#fff',color:selIds.size?'#8a6010':'#3a2a20'}}>
+            🖨 선택 인쇄·DOCX{selIds.size?` (${selIds.size})`:''}</button>
           <span style={{fontSize:11,color:'#94a3b8'}}>{studentName}</span>
         </div>
         <input value={searchText} onChange={e=>setSearchText(e.target.value)}
@@ -3327,16 +3331,6 @@ button{display:none!important}
                   cursor:'pointer',userSelect:'none'}}>
                 <span style={{fontSize:13,transition:'transform .15s',transform:bookOpen?'rotate(90deg)':'rotate(0deg)',display:'inline-block'}}>▶</span>
                 <span style={{fontWeight:800,fontSize:14,flex:1}}>{bookLabel(b.book)}</span>
-                {selMode&&(()=>{
-                  const ids=b.chapterList.flatMap(c=>c.items.map(p=>p.id));
-                  const allOn=ids.length>0&&ids.every(id=>selIds.has(id));
-                  return <button onClick={e=>{e.stopPropagation();toggleBulk(ids);}}
-                    style={{fontSize:10.5,fontWeight:700,padding:'3px 9px',borderRadius:7,cursor:'pointer',
-                      border:'1px solid '+(allOn?'#C9A84C':(bookOpen?'rgba(255,255,255,0.4)':'#cbd5e1')),
-                      background:allOn?'#C9A84C':(bookOpen?'rgba(255,255,255,0.12)':'#fff'),
-                      color:allOn?'#fff':(bookOpen?'#fff':'#475569'),whiteSpace:'nowrap'}}>
-                    {allOn?'✓ 교재 해제':'교재 전체선택'}</button>;
-                })()}
                 <span style={{fontSize:11,fontWeight:600,opacity:0.7,
                   background:bookOpen?'rgba(255,255,255,0.15)':'#e2e8f0',
                   padding:'2px 8px',borderRadius:10}}>
@@ -3360,15 +3354,6 @@ button{display:none!important}
                           <span style={{fontWeight:700,fontSize:13,color:'#334155',flex:1}}>
                             {String(b.book||'').startsWith('MOGO_')?'전체 문항':`${c.chapter}강`}
                           </span>
-                          {selMode&&(()=>{
-                            const ids=c.items.map(p=>p.id);
-                            const allOn=ids.length>0&&ids.every(id=>selIds.has(id));
-                            return <button onClick={e=>{e.stopPropagation();toggleBulk(ids);}}
-                              style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:6,cursor:'pointer',
-                                border:'1px solid '+(allOn?'#C9A84C':'#cbd5e1'),
-                                background:allOn?'#C9A84C':'#fff',color:allOn?'#fff':'#475569',whiteSpace:'nowrap'}}>
-                              {allOn?'✓ 해제':'전체선택'}</button>;
-                          })()}
                           <span style={{fontSize:10,fontWeight:600,color:'#64748b',
                             background:'#f1f5f9',padding:'2px 7px',borderRadius:9}}>
                             {c.items.length}개
@@ -3378,14 +3363,14 @@ button{display:none!important}
                         {chOpen&&(
                           <div style={{padding:'8px 14px 12px 28px',background:'#fafbfc'}}>
                             {c.items.map(p=>(
-                              <div key={p.id} onClick={()=>selMode?toggleSel(p.id):setSelected(p)}
-                                style={{background:selMode&&selIds.has(p.id)?'#FBF3DE':'#fff',
-                                  border:selMode&&selIds.has(p.id)?'1.5px solid #C9A84C':'1px solid #e8eef8',
+                              <div key={p.id} onClick={()=>setSelected(p)}
+                                style={{background:selIds.has(p.id)?'#FBF3DE':'#fff',
+                                  border:selIds.has(p.id)?'1.5px solid #C9A84C':'1px solid #e8eef8',
                                   borderRadius:10,padding:'10px 12px',
                                   marginBottom:6,cursor:'pointer',transition:'all .15s',position:'relative'}}
-                                onMouseEnter={e=>{if(!selMode){e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}}
-                                onMouseLeave={e=>{if(!selMode){e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}}>
-                                {selMode&&<span style={{position:'absolute',top:8,right:10,fontSize:14}}>{selIds.has(p.id)?'☑️':'⬜'}</span>}
+                                onMouseEnter={e=>{if(!selIds.has(p.id)){e.currentTarget.style.borderColor='#4f7df7';e.currentTarget.style.boxShadow='0 2px 8px rgba(79,125,247,0.1)';}}}
+                                onMouseLeave={e=>{if(!selIds.has(p.id)){e.currentTarget.style.borderColor='#e8eef8';e.currentTarget.style.boxShadow='none';}}}>
+                                {selIds.has(p.id)&&<span style={{position:'absolute',top:8,right:10,fontSize:12,color:'#C9A84C',fontWeight:700}}>✓ 선택됨</span>}
                                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:p.abstract?4:0}}>
                                   <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:8,
                                     background:p.difficulty==='상'?'#fee2e2':p.difficulty==='하'?'#dcfce7':'#fef9c3',
@@ -3413,27 +3398,168 @@ button{display:none!important}
           );
         })}
       </div>
-      {/* 선택 인쇄 하단 바 */}
-      {selMode&&<div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:50,background:'#fff',
-        borderTop:'1px solid #e6dcc6',boxShadow:'0 -2px 12px rgba(0,0,0,0.08)',
-        padding:'10px 16px',display:'flex',alignItems:'center',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-        <span style={{fontSize:12.5,fontWeight:700,color:'#3a2a20'}}>{selIds.size}개 선택</span>
-        {selIds.size>0&&<button onClick={()=>setSelIds(new Set())}
-          style={{padding:'8px 12px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:12,fontWeight:700,
-            cursor:'pointer',background:'#fff',color:'#8a6010'}}>전체 해제</button>}
-        <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'teacher'})}
-          style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
-            background:selIds.size?'#7a1020':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 교사용 인쇄</button>
-        <button disabled={!selIds.size} onClick={()=>setPrintJob({items:passages.filter(p=>selIds.has(p.id)),mode:'student'})}
-          style={{padding:'8px 16px',borderRadius:10,border:'none',fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
-            background:selIds.size?'#C9A84C':'#f0e7d4',color:selIds.size?'#fff':'#b8a988'}}>🖨 학생용 인쇄</button>
-        <button disabled={!selIds.size} onClick={()=>buildStudyDOCX(passages.filter(p=>selIds.has(p.id)),'teacher')}
-          style={{padding:'8px 16px',borderRadius:10,border:'1px solid '+(selIds.size?'#7a1020':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
-            background:'#fff',color:selIds.size?'#7a1020':'#b8a988'}}>📄 교사용 DOCX</button>
-        <button disabled={!selIds.size} onClick={()=>buildStudyDOCX(passages.filter(p=>selIds.has(p.id)),'student')}
-          style={{padding:'8px 16px',borderRadius:10,border:'1px solid '+(selIds.size?'#C9A84C':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:selIds.size?'pointer':'not-allowed',
-            background:'#fff',color:selIds.size?'#8a6010':'#b8a988'}}>📄 학생용 DOCX</button>
-      </div>}
+      {/* ★ teacher.html식 선택 화면 (모달) — 교재/강 체크박스 + 칩 선택 */}
+      {showSelModal&&(()=>{
+        // 모달 전용 그룹화 (검색·교재필터 반영)
+        const mq=modalSearch.trim().toLowerCase();
+        const mPassages=passages.filter(p=>{
+          if(modalSrc&&p.source!==modalSrc)return false;
+          if(mq){
+            return (p.title||'').toLowerCase().includes(mq)
+              ||(p.abstract||'').toLowerCase().includes(mq)
+              ||(p.id||'').toLowerCase().includes(mq);
+          }
+          return true;
+        });
+        const srcGroups={};
+        mPassages.forEach(p=>{
+          const src=p.source||'기타';
+          const isMogoSrc=String(src).startsWith('MOGO_');
+          const chKey=isMogoSrc?src+'__ALL':src+'__'+String(p.chapter||'?');
+          if(!srcGroups[src])srcGroups[src]={source:src,isMogo:isMogoSrc,chapters:{},passages:[]};
+          srcGroups[src].passages.push(p);
+          if(!srcGroups[src].chapters[chKey])srcGroups[src].chapters[chKey]={key:chKey,chapter:isMogoSrc?'ALL':p.chapter,passages:[],isMogo:isMogoSrc};
+          srcGroups[src].chapters[chKey].passages.push(p);
+        });
+        const order=getAllBooks().map(b=>b.id);
+        const srcList=Object.values(srcGroups).sort((a,b)=>{
+          const ia=order.indexOf(a.source),ib=order.indexOf(b.source);
+          if(ia>=0&&ib>=0)return ia-ib;if(ia>=0)return -1;if(ib>=0)return 1;
+          return String(a.source).localeCompare(String(b.source));
+        });
+        const isGroupAll=(arr)=>arr.length>0&&arr.every(p=>selIds.has(p.id));
+        const isGroupSome=(arr)=>arr.some(p=>selIds.has(p.id));
+        const srcOptions=Array.from(new Set(passages.map(p=>p.source))).filter(Boolean);
+        const cnt=selIds.size;
+        const selectedItems=passages.filter(p=>selIds.has(p.id));
+        const Pill=({p})=>{
+          const sel=selIds.has(p.id);
+          return(<label onClick={e=>{e.preventDefault();toggleSel(p.id);}}
+            style={{display:'inline-flex',alignItems:'center',gap:4,padding:'3px 9px',
+              border:'1px solid '+(sel?'#7a1020':'#ddd'),background:sel?'#7a1020':'#fff',
+              color:sel?'#fff':'#333',borderRadius:13,cursor:'pointer',fontSize:11,fontWeight:600}}>
+            <span style={{fontFamily:'monospace'}}>{String(p.number||'').padStart(3,'0')}</span>
+            {p.title&&<span style={{fontWeight:400,opacity:.9}}>· {p.title}</span>}
+          </label>);
+        };
+        return(
+          <div onClick={()=>setShowSelModal(false)}
+            style={{position:'fixed',inset:0,zIndex:200,background:'rgba(0,0,0,0.45)',
+              display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
+            <div onClick={e=>e.stopPropagation()}
+              style={{background:'#fff',width:'100%',maxWidth:560,maxHeight:'88vh',
+                borderTopLeftRadius:18,borderTopRightRadius:18,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+              {/* 헤더 */}
+              <div style={{background:'#7a1020',padding:'13px 16px',display:'flex',alignItems:'center',gap:8}}>
+                <span style={{color:'#fff',fontWeight:800,fontSize:15,flex:1}}>🖨 인쇄·DOCX 지문 선택</span>
+                <span style={{color:'#FBE9C8',fontWeight:700,fontSize:13}}>{cnt}개 선택</span>
+                <button onClick={()=>setShowSelModal(false)}
+                  style={{background:'rgba(255,255,255,0.15)',color:'#fff',border:'none',borderRadius:7,
+                    padding:'5px 11px',fontSize:13,cursor:'pointer'}}>✕</button>
+              </div>
+              {/* 검색·필터 바 */}
+              <div style={{padding:'10px 14px',borderBottom:'1px solid #f0e7d4',display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
+                <select value={modalSrc} onChange={e=>{setModalSrc(e.target.value);setModalExpanded('');}}
+                  style={{padding:'6px 9px',fontSize:12,borderRadius:7,border:'1px solid #e2d6bb'}}>
+                  <option value="">전체 교재</option>
+                  {srcOptions.map(s=><option key={s} value={s}>{bookLabel(s)}</option>)}
+                </select>
+                <input value={modalSearch} onChange={e=>{setModalSearch(e.target.value);setModalExpanded('');}}
+                  placeholder="제목·ID 검색"
+                  style={{flex:1,minWidth:110,padding:'6px 10px',fontSize:12,borderRadius:7,border:'1px solid #e2d6bb',outline:'none'}}/>
+                <button onClick={()=>setSelIds(new Set())}
+                  style={{padding:'6px 11px',fontSize:11.5,fontWeight:700,background:'#F5F0E6',border:'1px solid #e2d6bb',borderRadius:7,cursor:'pointer',color:'#8a6010'}}>전체해제</button>
+              </div>
+              {/* 본문: 교재 → 강 → 칩 */}
+              <div style={{flex:1,overflowY:'auto',padding:'12px 14px',background:'#faf8f3'}}>
+                {srcList.length===0&&<div style={{textAlign:'center',color:'#b8a988',padding:30,fontSize:13}}>해당하는 지문이 없습니다.</div>}
+                {srcList.map(sg=>{
+                  const srcAll=isGroupAll(sg.passages),srcSome=isGroupSome(sg.passages);
+                  const srcSelN=sg.passages.filter(p=>selIds.has(p.id)).length;
+                  const isSrcOpen=modalExpanded===sg.source||String(modalExpanded).startsWith(sg.source+'__');
+                  const chList=Object.values(sg.chapters).sort((a,b)=>{
+                    const na=parseInt(a.chapter),nb=parseInt(b.chapter);
+                    if(!isNaN(na)&&!isNaN(nb))return na-nb;
+                    return String(a.chapter).localeCompare(String(b.chapter));
+                  });
+                  return(
+                    <div key={sg.source} style={{border:'1px solid '+(srcSome?'#C9A84C':'#e6dcc6'),borderRadius:9,overflow:'hidden',marginBottom:8}}>
+                      {/* 교재 헤더 */}
+                      <div onClick={()=>setModalExpanded(isSrcOpen?'':sg.source)}
+                        style={{display:'flex',alignItems:'center',gap:9,padding:'10px 12px',
+                          background:srcAll?'#FBF3DE':(srcSome?'#FDF8EC':'#f5f1e8'),cursor:'pointer'}}>
+                        <input type="checkbox" checked={srcAll}
+                          ref={el=>{if(el)el.indeterminate=!srcAll&&srcSome;}}
+                          onChange={e=>{e.stopPropagation();toggleBulk(sg.passages.map(p=>p.id));}}
+                          onClick={e=>e.stopPropagation()}
+                          style={{width:16,height:16,accentColor:'#7a1020',cursor:'pointer',flexShrink:0}}/>
+                        <span style={{fontSize:13,fontWeight:800,color:'#7a1020',flex:1}}>
+                          📚 {bookLabel(sg.source)} <span style={{fontSize:11,fontWeight:500,color:'#a89878'}}>({sg.passages.length}문항{srcSelN?` · 선택 ${srcSelN}`:''})</span>
+                        </span>
+                        <span style={{fontSize:11,color:'#bbb'}}>{isSrcOpen?'▲':'▼'}</span>
+                      </div>
+                      {/* 강 목록 */}
+                      {isSrcOpen&&<div style={{padding:8,display:'flex',flexDirection:'column',gap:5,background:'#fff'}}>
+                        {sg.isMogo?(
+                          <div style={{display:'flex',flexWrap:'wrap',gap:5,padding:'3px 2px'}}>
+                            {sg.passages.sort((a,b)=>Number(a.number||0)-Number(b.number||0)).map(p=><Pill key={p.id} p={p}/>)}
+                          </div>
+                        ):chList.map(g=>{
+                          const all=isGroupAll(g.passages),some=isGroupSome(g.passages);
+                          const selN=g.passages.filter(p=>selIds.has(p.id)).length;
+                          const chExpKey=sg.source+'__'+g.chapter;
+                          const isChOpen=modalExpanded===chExpKey;
+                          const chLabel=isNaN(parseInt(g.chapter))?g.chapter+'강':String(g.chapter).padStart(2,'0')+'강';
+                          return(
+                            <div key={g.key} style={{border:'1px solid '+(some?'#C9A84C':'#eadfca'),
+                              background:all?'#FBF3DE':(some?'#FDF8EC':'#fff'),borderRadius:7,overflow:'hidden'}}>
+                              <div style={{display:'flex',alignItems:'center',gap:8,padding:'7px 10px'}}>
+                                <input type="checkbox" checked={all}
+                                  ref={el=>{if(el)el.indeterminate=!all&&some;}}
+                                  onChange={()=>toggleBulk(g.passages.map(p=>p.id))}
+                                  style={{width:14,height:14,accentColor:'#7a1020',cursor:'pointer',flexShrink:0}}/>
+                                <span style={{fontSize:12.5,fontWeight:700,color:'#7a1020',flex:1}}>
+                                  {chLabel} <span style={{color:'#a89878',fontWeight:500}}>({g.passages.length}문항{selN?` · 선택 ${selN}`:''})</span>
+                                </span>
+                                <button onClick={()=>setModalExpanded(isChOpen?sg.source:chExpKey)}
+                                  style={{padding:'3px 9px',fontSize:10.5,fontWeight:700,
+                                    background:isChOpen?'#7a1020':'#fff',color:isChOpen?'#fff':'#7a1020',
+                                    border:'1px solid #7a1020',borderRadius:6,cursor:'pointer'}}>
+                                  {isChOpen?'▲ 접기':'📋 세부'}
+                                </button>
+                              </div>
+                              {isChOpen&&<div style={{padding:'6px 10px 9px',background:'rgba(0,0,0,0.02)',
+                                borderTop:'1px solid #eadfca',display:'flex',flexWrap:'wrap',gap:5}}>
+                                {g.passages.sort((a,b)=>Number(a.number||0)-Number(b.number||0)).map(p=><Pill key={p.id} p={p}/>)}
+                              </div>}
+                            </div>
+                          );
+                        })}
+                      </div>}
+                    </div>
+                  );
+                })}
+              </div>
+              {/* 푸터: 인쇄/DOCX 액션 */}
+              <div style={{borderTop:'1px solid #e6dcc6',padding:'11px 14px',background:'#fff',
+                display:'flex',gap:7,flexWrap:'wrap',justifyContent:'center'}}>
+                <button disabled={!cnt} onClick={()=>{setPrintJob({items:selectedItems,mode:'teacher'});setShowSelModal(false);}}
+                  style={{padding:'9px 14px',borderRadius:9,border:'none',fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
+                    background:cnt?'#7a1020':'#f0e7d4',color:cnt?'#fff':'#b8a988'}}>🖨 교사용 인쇄</button>
+                <button disabled={!cnt} onClick={()=>{setPrintJob({items:selectedItems,mode:'student'});setShowSelModal(false);}}
+                  style={{padding:'9px 14px',borderRadius:9,border:'none',fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
+                    background:cnt?'#C9A84C':'#f0e7d4',color:cnt?'#fff':'#b8a988'}}>🖨 학생용 인쇄</button>
+                <button disabled={!cnt} onClick={()=>buildStudyDOCX(selectedItems,'teacher')}
+                  style={{padding:'9px 14px',borderRadius:9,border:'1px solid '+(cnt?'#7a1020':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
+                    background:'#fff',color:cnt?'#7a1020':'#b8a988'}}>📄 교사용 DOCX</button>
+                <button disabled={!cnt} onClick={()=>buildStudyDOCX(selectedItems,'student')}
+                  style={{padding:'9px 14px',borderRadius:9,border:'1px solid '+(cnt?'#C9A84C':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
+                    background:'#fff',color:cnt?'#8a6010':'#b8a988'}}>📄 학생용 DOCX</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
       {/* 인쇄용 off-screen 렌더 */}
       {printJob&&<div ref={printRef} style={{position:'fixed',left:-99999,top:0,width:800}}>
         {printJob.items.map(p=>(
