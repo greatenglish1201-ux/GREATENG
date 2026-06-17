@@ -1095,6 +1095,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   const [selectedStudent,setSelectedStudent]=useState(''); // '' = 전체
   const [stats,setStats]=useState(null);
   const [statsLoading,setStatsLoading]=useState(false);
+  // ★ 시험결과 인쇄 — 섹션 선택 모달. null | {scope:'student'|'all', opts:{...}}
+  const [reportModal,setReportModal]=useState(null);
 
   const api=async(body)=>{
     return jsonpFetch(scriptUrl, {...body, adminPw});
@@ -1246,9 +1248,11 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',active:s.active});};
 
   // ── 개별 학생 약점 분석 리포트 인쇄 ──
-  const printReport=(promo)=>{
+  const printReport=(promo,secOpts)=>{
     if(!selectedStudent){setMsg('인쇄할 학생을 먼저 선택하세요.');return;}
     if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
+    // 섹션 선택 옵션 (개별 리포트 전용). 미지정 시 전체 포함.
+    const SO=secOpts||{weak:true,type:true,wrong:true,book:true,sess:true};
     const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     // 홍보 모드: 이름 완전 비식별
     const dispName=promo?'○○ 학생':selectedStudent;
@@ -1376,11 +1380,11 @@ ${ESC_}
     <div style="text-align:right"><div style="font-size:12px;color:#999">${dateStr}</div>
     <div style="font-size:13px;margin-top:4px">종합 정답률 <b style="font-size:18px;color:${rateColor(overall)}">${overall}%</b></div></div>
   </div>
-  ${weakHtml?`<div style="margin-bottom:18px">${weakHtml}</div>`:''}
-  ${sec('📝 유형별 정답률 <span style="font-size:11px;color:#999;font-weight:400">(낮은 순)</span>',typeHtml)}
-  ${sec('🏆 많이 틀린 지문',wrongHtml)}
-  ${sec('📚 교재별 정답률',bookHtml)}
-  ${sec('📅 회차별 기록',sessHtml)}
+  ${SO.weak&&weakHtml?`<div style="margin-bottom:18px">${weakHtml}</div>`:''}
+  ${SO.type?sec('📝 유형별 정답률 <span style="font-size:11px;color:#999;font-weight:400">(낮은 순)</span>',typeHtml):''}
+  ${SO.wrong?sec('🏆 많이 틀린 지문',wrongHtml):''}
+  ${SO.book?sec('📚 교재별 정답률',bookHtml):''}
+  ${SO.sess?sec('📅 회차별 기록',sessHtml):''}
   <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
 </body></html>`;
 
@@ -1395,8 +1399,10 @@ ${ESC_}
     <button onClick={onClick} style={{padding:'8px 14px',borderRadius:10,border:'none',background:active?'#7a1020':'#f0e7d4',color:active?'#fff':'#7a6a55',fontWeight:600,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>{label}</button>;
 
   // 📊 전체 학생 성취도 리포트 (화면+인쇄+이미지) — 학생 미선택 시
-  const printAll=()=>{
+  const printAll=(secOpts)=>{
     if(!stats){setMsg('데이터를 먼저 조회하세요.');return;}
+    // 섹션 선택 옵션 (전체 리포트 전용). 미지정 시 전체 포함.
+    const SO=secOpts||{student:true,type:true,wrong:true};
     const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const rateColor=r=>Number(r)>=80?'#1E6B30':Number(r)>=60?'#B7791F':'#B3261E';
     const today=new Date();
@@ -1446,11 +1452,11 @@ ${SC} src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.
       <div style="font-size:27px;font-weight:800;color:#7a1020;margin-top:6px">전체 학생 성취도 리포트</div>
       <div style="font-size:15px;margin-top:9px;color:#555">학생 <b>${studs.length}명</b> · 평균 정답률 <b style="font-size:21px;color:${rateColor(avgRate)}">${avgRate}%</b> <span style="font-size:13px;color:#aaa">· ${dStr}</span></div>
     </div>
-    <h2>👥 학생별 정답률 <span style="font-size:12px;color:#9a8570;font-weight:400">(P = 랭킹포인트 · 문항 수 보정 점수)</span></h2>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:24px">${studRows}</table>
-    <h2>📝 유형별 정답률</h2>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:24px">${typeRows}</table>
-    ${wrongRows?`<h2>🏆 많이 틀린 지문 <span style="font-size:12px;color:#aaa;font-weight:400">(전체 학생 합산)</span></h2>
+    ${SO.student?`<h2>👥 학생별 정답률 <span style="font-size:12px;color:#9a8570;font-weight:400">(P = 랭킹포인트 · 문항 수 보정 점수)</span></h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px">${studRows}</table>` : ''}
+    ${SO.type?`<h2>📝 유형별 정답률</h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px">${typeRows}</table>` : ''}
+    ${SO.wrong&&wrongRows?`<h2>🏆 많이 틀린 지문 <span style="font-size:12px;color:#aaa;font-weight:400">(전체 학생 합산)</span></h2>
     <table style="width:100%;border-collapse:collapse">${wrongRows}</table>`:''}
     <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
   </div>
@@ -1544,8 +1550,10 @@ ${ESC_}
               {students.map((s,i)=><option key={i} value={s.name}>{s.name}</option>)}
             </select>
             <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
-            <button onClick={()=>selectedStudent?printReport():printAll()} disabled={!stats}
-              title={selectedStudent?'약점 분석 리포트 인쇄':'전체 학생 성취도 인쇄'}
+            <button onClick={()=>setReportModal(selectedStudent
+              ?{scope:'student',opts:{weak:true,type:true,wrong:true,book:true,sess:true}}
+              :{scope:'all',opts:{student:true,type:true,wrong:true}})} disabled={!stats}
+              title={selectedStudent?'약점 분석 리포트 인쇄 (영역 선택)':'전체 학생 성취도 인쇄 (영역 선택)'}
               style={{padding:'9px 16px',borderRadius:10,border:'1px solid #7a1020',background:(!stats)?'#f0e7d4':'#fff',color:(!stats)?'#b8a988':'#7a1020',fontWeight:700,fontSize:13,cursor:(!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖨 {selectedStudent?'인쇄':'전체 인쇄'}</button>
             {selectedStudent
               ?<button onClick={()=>printReport(true)} disabled={!stats}
@@ -1555,7 +1563,61 @@ ${ESC_}
                 title="전체 학생 성취도 이미지 저장"
                 style={{padding:'9px 16px',borderRadius:10,border:'none',background:(!stats)?'#f0e7d4':'linear-gradient(135deg,#7a1020,#C9A84C)',color:(!stats)?'#b8a988':'#fff',fontWeight:700,fontSize:13,cursor:(!stats)?'not-allowed':'pointer',whiteSpace:'nowrap'}}>🖼 이미지</button>}
           </div>
-          {statsLoading&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>로딩 중...</p>}
+          {/* ★ 시험결과 인쇄 — 섹션(영역) 선택 모달 */}
+          {reportModal&&(()=>{
+            const O=reportModal.opts;
+            const scope=reportModal.scope;
+            const setO=(patch)=>setReportModal({...reportModal,opts:{...O,...patch}});
+            const items=scope==='student'
+              ?[{key:'weak',label:'⚠ 집중 보완 추천 유형'},
+                {key:'type',label:'📝 유형별 정답률'},
+                {key:'wrong',label:'🏆 많이 틀린 지문'},
+                {key:'book',label:'📚 교재별 정답률'},
+                {key:'sess',label:'📅 회차별 기록'}]
+              :[{key:'student',label:'👥 학생별 정답률'},
+                {key:'type',label:'📝 유형별 정답률'},
+                {key:'wrong',label:'🏆 많이 틀린 지문'}];
+            const any=items.some(it=>O[it.key]);
+            const doPrint=()=>{
+              if(scope==='student')printReport(false,O);
+              else printAll(O);
+              setReportModal(null);
+            };
+            return(
+              <div onClick={()=>setReportModal(null)}
+                style={{position:'fixed',inset:0,zIndex:300,background:'rgba(0,0,0,0.5)',
+                  display:'flex',alignItems:'center',justifyContent:'center',padding:18}}>
+                <div onClick={e=>e.stopPropagation()}
+                  style={{background:'#fff',borderRadius:14,padding:'22px 24px',maxWidth:420,width:'100%',
+                    maxHeight:'90vh',overflow:'auto',boxShadow:'0 10px 44px rgba(0,0,0,0.3)'}}>
+                  <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:'#7a1020'}}>🖨 인쇄 영역 선택</div>
+                  <div style={{fontSize:12,color:'#a89878',marginBottom:14}}>
+                    {scope==='student'?`${selectedStudent} 약점 분석 리포트`:'전체 학생 성취도 리포트'} — 인쇄할 항목을 고르세요
+                  </div>
+                  <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:16}}>
+                    {items.map(it=>(
+                      <label key={it.key} style={{display:'flex',alignItems:'center',gap:9,padding:'9px 12px',
+                        border:'1px solid '+(O[it.key]?'#7a1020':'#e2d6bb'),
+                        background:O[it.key]?'#FBF3DE':'#fff',borderRadius:8,cursor:'pointer',fontSize:13}}>
+                        <input type="checkbox" checked={!!O[it.key]} onChange={e=>setO({[it.key]:e.target.checked})}
+                          style={{width:16,height:16,accentColor:'#7a1020',cursor:'pointer'}}/>
+                        <span style={{fontWeight:O[it.key]?700:400,color:O[it.key]?'#3a2a20':'#999'}}>{it.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {!any&&<div style={{fontSize:12,color:'#c0392b',marginBottom:12,textAlign:'center'}}>1개 이상 선택하세요.</div>}
+                  <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}>
+                    <button onClick={()=>setReportModal(null)}
+                      style={{padding:'9px 14px',fontSize:13,background:'#F5F0E6',color:'#8a6010',
+                        border:'1px solid #e2d6bb',borderRadius:8,cursor:'pointer'}}>취소</button>
+                    <button disabled={!any} onClick={doPrint}
+                      style={{padding:'9px 22px',fontSize:13,fontWeight:700,borderRadius:8,cursor:any?'pointer':'not-allowed',
+                        background:any?'#7a1020':'#f0e7d4',color:any?'#fff':'#b8a988',border:'none'}}>🖨 인쇄 / PDF</button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
           {!statsLoading&&!stats&&<p style={{padding:16,textAlign:'center',color:'#9a8570',fontSize:13}}>데이터 없음</p>}
           {stats&&<div>
             {/* 전체 보기: 학생별 카드 */}
