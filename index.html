@@ -1155,6 +1155,18 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
 
   const [expandedSession,setExpandedSession]=useState(null);
   const [wrongSort,setWrongSort]=useState('count'); // 'count'=틀린 횟수순, 'ratio'=틀린 비율순
+  // 화면·인쇄 공통 정렬 (어긋남 방지). sortMode 미지정 시 현재 wrongSort 사용.
+  const sortWrongs=(arr,sortMode)=>{
+    const mode=sortMode||wrongSort;
+    return (arr||[]).slice().sort((a,b)=>{
+      if(mode==='ratio'){
+        const ra=Number(a.total)?Number(a.wrong)/Number(a.total):0;
+        const rb=Number(b.total)?Number(b.wrong)/Number(b.total):0;
+        return (rb-ra)||(Number(b.wrong)-Number(a.wrong));
+      }
+      return (Number(b.wrong)-Number(a.wrong))||((Number(b.total)?Number(b.wrong)/Number(b.total):0)-(Number(a.total)?Number(a.wrong)/Number(a.total):0));
+    });
+  };
   const loadStats=async(student)=>{
     if(!scriptUrl){setMsg('결과 저장 URL을 설정 탭에서 입력하세요.');return;}
     setStatsLoading(true);setStats(null);setExpandedSession(null);
@@ -1285,7 +1297,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     const dateStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
     const sessions=(stats.sessionStats||[]).slice().reverse();
     const types=(stats.typeStats||[]).slice().sort((a,b)=>Number(a.rate)-Number(b.rate)); // 약한 유형 먼저
-    const wrongs=(stats.wrongRanking||[]);
+    const wrongs=sortWrongs(stats.wrongRanking);
     const books=(stats.bookStats||[]);
     // 종합 정답률
     const totCorrect=types.reduce((s,t)=>s+(Number(t.correct)||0),0);
@@ -1443,7 +1455,7 @@ ${ESC_}
     };
     const studs=(stats.studentStats||[]).filter(s=>s.name!=='관리자');
     const types=(stats.typeStats||[]);
-    const wrongs=(stats.wrongRanking||[]);
+    const wrongs=sortWrongs(stats.wrongRanking);
     const bar=(r)=>`<div style="display:inline-block;width:120px;height:10px;border-radius:5px;background:#eee;overflow:hidden;vertical-align:middle;margin-right:8px"><div style="width:${Number(r)}%;height:100%;background:${rateColor(r)}"></div></div>`;
     const studRows=studs.map((s,i)=>`<tr>
       <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:14px"><b style="color:${i<3?'#C9A84C':'#bbb'}">${i+1}</b> <b>${esc(s.name)}</b> <span style="color:#aaa;font-size:12px">응시 ${s.count}회 · ${s.correct}/${s.total}</span></td>
@@ -1791,14 +1803,7 @@ ${ESC_}
                   ))}
                 </div>
               </div>
-              {(stats.wrongRanking||[]).slice().sort((a,b)=>{
-                if(wrongSort==='ratio'){
-                  const ra=Number(a.total)?Number(a.wrong)/Number(a.total):0;
-                  const rb=Number(b.total)?Number(b.wrong)/Number(b.total):0;
-                  return (rb-ra)||(Number(b.wrong)-Number(a.wrong));
-                }
-                return (Number(b.wrong)-Number(a.wrong))||((Number(b.total)?Number(b.wrong)/Number(b.total):0)-(Number(a.total)?Number(a.wrong)/Number(a.total):0));
-              }).map((w,i)=>{
+              {sortWrongs(stats.wrongRanking).map((w,i)=>{
                 const ratio=Number(w.total)?Math.round(Number(w.wrong)/Number(w.total)*100):0;
                 const allBookIds=getAllBooks().map(b=>b.id).sort((a,b)=>b.length-a.length);
                 const bk=allBookIds.find(b=>String(w.pid).startsWith(b+'_'));
