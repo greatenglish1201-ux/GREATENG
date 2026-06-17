@@ -3072,16 +3072,16 @@ const ch=[];
 
 /* ── 자료 보기 전용: 선택 지문들을 한 DOCX로 묶어 다운로드 ──
    ⚠ 검증결과 반영: analysis 없는 슬롯은 사전 필터링(없으면 Document 깨짐) */
-function buildStudyDOCX(passages,mode){
+function buildStudyDOCX(passages,mode,optsIn){
   if(typeof docx==='undefined'||typeof saveAs==='undefined'){
     alert('DOCX 라이브러리를 불러오지 못했습니다. 네트워크 확인 후 다시 시도해주세요.');return;
   }
   const {Document,Packer}=docx;
   const IS=mode==='student';
-  // 교사용=전체표시 / 학생용=빈칸(showAnswers:false) — getStuOpts 의존 회피, opts 직접 전달
-  const opts=IS
+  // 영역 옵션: 호출 시 전달받으면 그대로, 없으면 모드별 기본값
+  const opts=optsIn||(IS
     ?{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false}
-    :{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+    :{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true});
   // 슬롯 변환 + analysis 유효성 필터 (sentences 없는 지문 제외)
   const slots=passages.map(toStudySlot).filter(s=>{
     const a=s&&s.analysis;
@@ -3097,11 +3097,147 @@ function buildStudyDOCX(passages,mode){
   }).filter(s=>Array.isArray(s.children)&&s.children.length>0);
   if(!sections.length){alert('출력할 내용이 없습니다.');return;}
   const doc=new Document({styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},sections});
+  const label=opts.showAnswers?'교사용':'학생용';
   const fname=(slots.length===1
     ? makePassageId(slots[0].meta.source,slots[0].meta.chapter,slots[0].meta.number)
-    : '자료_'+slots.length+'개')+'_'+(IS?'학생용':'교사용')+'.docx';
+    : '자료_'+slots.length+'개')+'_'+label+'.docx';
   Packer.toBlob(doc).then(blob=>saveAs(blob,fname))
     .catch(e=>alert('DOCX 생성 실패: '+e.message));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   🖨 자료 보기 인쇄(HTML) — teacher.html buildHTML 로직 이식
+   - 영역 옵션(passage/structure/keyTopics/sentences/hardOnly/showAnswers) 반영
+   - DOCX와 동일한 옵션 체계를 공유
+   - sentBlockColor는 자체 BCF 내장(전역 BC와 무관하게 안전)
+   ══════════════════════════════════════════════════════════════ */
+const SV_BCF={
+  blue:{bd:'#185FA5',bg:'#E6F1FB',tx:'#0C447C'},coral:{bd:'#D85A30',bg:'#FAECE7',tx:'#712B13'},
+  teal:{bd:'#1D9E75',bg:'#E1F5EE',tx:'#085041'},purple:{bd:'#534AB7',bg:'#EEEDFE',tx:'#3C3489'},
+  green:{bd:'#639922',bg:'#EAF3DE',tx:'#173404'},amber:{bd:'#BA7517',bg:'#FAEEDA',tx:'#633806'},
+  gray:{bd:'#5F5E5A',bg:'#F1EFE8',tx:'#2C2C2A'}};
+const sentBlockColor=(blocks,num)=>{
+  const blk=(blocks||[]).find(b=>Array.isArray(b.sentenceNums)&&b.sentenceNums.includes(num));
+  return SV_BCF[blk&&blk.color]||SV_BCF.gray;
+};
+function openPrintWindow(html){
+  const win=window.open('','_blank');
+  if(!win){alert('팝업이 차단되었습니다. 팝업을 허용해주세요.');return;}
+  win.document.write(html);win.document.close();
+}
+function buildHTML(slot,mode,opts){
+  const IS=mode==='student';
+  const O=IS?(opts||getStuOpts()):{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+  const SHOW_ANSWERS=!IS||O.showAnswers;
+  const {analysis,meta}=slot;
+  if(!analysis)return'';
+  const {sentences=[],flow={},grammar={}}=analysis;
+  const {blocks=[],interBlockConnectors=[],keyword='',topicSummary='',structureType=''}=flow;
+  const {difficultSentences=[]}=grammar;
+  const sm=Object.fromEntries(sentences.map(s=>[s.num,s]));
+  const conn=i=>interBlockConnectors[i]||'→';
+  const id=makePassageId(meta.source,meta.chapter,meta.number);
+  const esc=w=>w.replace(/[-.*+?^${}()|[\]\\]/g,'\\$&');
+  const hlHTML=(text,words)=>{
+    if(!words||!words.length)return text;
+    const sorted=[...words].sort((a,b)=>b.length-a.length);
+    const pat=new RegExp('('+sorted.map(esc).join('|')+')','gi');
+    return text.replace(pat,m=>'<mark style="background:#FFD700;color:inherit;border-radius:2px;padding:0 2px;font-weight:700">'+m+'</mark>');
+  };
+  const passHTML=sentences.map(s=>{
+    const sc=SM[s.symbol]||{};
+    return'<span><span style="font-size:12px;font-weight:700;color:'+sc.tx+';margin-right:4px">'+nStr(s.num)+'</span>'+s.text+' </span>';
+  }).join('');
+  const blockCards=blocks.map((blk,bi)=>{
+    const c=BC[blk.color]||BC.blue;
+    const ss=(blk.sentenceNums||[]).map(n=>sm[n]).filter(Boolean);
+    const hd=IS
+      ?'<div style="border-bottom:2px solid '+c.bd+';height:22px;width:85%;margin-bottom:5px"></div>'
+      :'<div style="font-size:1em;font-weight:700;color:'+c.tx+'">'+blk.name+'</div><div style="font-size:.72em;color:'+c.tx+';font-style:italic;font-weight:600;opacity:.85">'+blk.nameEn+'</div>';
+    const rows=ss.map((sent,si)=>{
+      const sc=SM[sent.symbol]||{};
+      const arr=si>0?'<div style="font-size:9px;color:#ccc;margin:1px 0 1px 20px">↓</div>':'';
+      return arr+'<div style="display:flex;align-items:flex-start;gap:6px;padding:5px 7px;border-radius:6px;background:'+sc.bg+';margin-bottom:3px"><span style="font-size:1em;font-weight:700;color:'+sc.tx+';flex-shrink:0;margin-top:1px">'+nStr(sent.num)+'</span><div style="flex:1;min-width:0"><span style="font-size:.7em;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.6);color:'+sc.tx+';border:1px solid '+sc.bd+'">'+sent.symbol+'</span><div style="font-size:.75em;color:#444;word-break:keep-all;line-height:1.4;margin-top:2px">'+sent.role+'</div></div></div>';
+    }).join('');
+    const connDiv=bi<blocks.length-1?'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex-shrink:0;padding-top:50px;min-width:32px"><div style="font-size:1.2em;font-weight:700;color:#666">'+conn(bi)+'</div><div style="font-size:.6em;color:#bbb;text-align:center">'+(SM[conn(bi)]&&SM[conn(bi)].lbl||'')+'</div></div>':'';
+    return'<div style="flex:1 1 130px;min-width:0;border-radius:10px;border:2px solid '+c.bd+'"><div style="padding:8px 11px;background:'+c.hd+';border-bottom:1.5px solid '+c.bd+';border-radius:8px 8px 0 0">'+hd+'</div><div style="padding:7px;background:#fff">'+rows+'</div></div>'+connDiv;
+  }).join('');
+  // hardOnly: 어려운 문장만 / hardOnly=false: 전체 문장
+  const dsToShow=O.hardOnly?sentences.filter(s=>difficultSentences.find(d=>d.num===s.num)):sentences;
+  const analysisHTML=dsToShow.map(s=>{
+    const sc=SM[s.symbol]||{};
+    const bc=sentBlockColor(blocks,s.num);
+    const ds=difficultSentences.find(d=>d.num===s.num);
+    const chunks=s.chunks||[];
+    const symBadge='<span style="font-size:.7em;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.6);color:'+(sc.tx||'#555')+';border:1px solid '+(sc.bd||'#999')+'">'+s.symbol+'</span>';
+    const chunksDiv=SHOW_ANSWERS&&chunks.length?'<div style="padding:7px 12px;background:#fff;border-top:1px dashed #eee"><div style="font-size:.85em;font-style:italic;color:#222;line-height:1.9;word-break:keep-all">'+chunks.map(c=>c.en||'').join(' / ')+'</div><div style="font-size:.85em;color:#555;line-height:1.9;word-break:keep-all;border-top:1px dashed #e8e8e8;margin-top:3px;padding-top:3px">'+chunks.map(c=>c.ko||'').join(' / ')+'</div></div>':'';
+    const diffDiv=ds?'<div style="padding:7px 12px;background:#FBFBFD;border-top:1px dashed #eee">'+[{l:'구조',f:'structure'},{l:'해석',f:'translation'},{l:'포인트',f:'point'}].map(r=>'<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #E8E8ED;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">'+r.l+'</span>'+((IS&&!SHOW_ANSWERS&&r.f==='translation')?'<div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div>':'<div style="font-size:.88em;color:#333;word-break:keep-all;flex:1">'+(ds[r.f]||'')+'</div>')+'</div>').join('')+'</div>':(IS&&!SHOW_ANSWERS?'<div style="padding:7px 12px;background:#FBFBFD;border-top:1px dashed #eee"><div style="display:flex;gap:8px;padding:3px 0;align-items:flex-start"><span style="font-size:.7em;font-weight:700;color:#888;flex-shrink:0;width:32px;padding-top:1px">해석</span><div style="flex:1;border-bottom:1px solid #bbb;height:20px"></div></div></div>':'');
+    if(!chunksDiv&&!diffDiv)return IS&&!SHOW_ANSWERS?'<div style="margin-bottom:6px;border:0.5px solid '+bc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+bc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+bc.tx+'">'+nStr(s.num)+'</span>'+symBadge+'<span style="font-size:.85em;color:'+bc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div></div>':'';
+    return'<div style="margin-bottom:6px;border:0.5px solid '+bc.bd+';border-radius:8px;overflow:hidden"><div style="padding:6px 12px;background:'+bc.bg+';display:flex;align-items:center;gap:7px"><span style="font-size:1em;font-weight:700;color:'+bc.tx+'">'+nStr(s.num)+'</span>'+symBadge+'<span style="font-size:.85em;color:'+bc.tx+';font-style:italic;word-break:keep-all">'+s.text+'</span></div>'+chunksDiv+diffDiv+'</div>';
+  }).filter(Boolean).join('');
+
+  return'<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">'
+    +'<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">'
+    +'<title>'+id+' '+(IS?'학생용':'교사용')+'</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0}'
+    +'body{font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#1a1a1a;background:#fff;'
+    +'font-size:14px;line-height:1.65;padding:13mm 13mm 11mm;word-break:keep-all}'
+    +'@page{size:A4;margin:9mm 11mm}'
+    +'@media print{.np{display:none!important}body{padding:0 0 10mm}.pfoot{position:fixed;bottom:0;left:0;right:0;border-top:none}}'
+    +'@media screen and (min-width:1024px){body{font-size:16px;padding:24px 28px}}'
+    +'@media screen and (min-width:1194px){body{font-size:17px;padding:28px 32px}}'
+    +'</style></head><body>'
+    +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;border-bottom:2.5px solid #1a1a1a;padding-bottom:6px">'
+    +'<div style="font-size:1.1em;font-weight:700">'+outputTitle(meta)+' <span style="font-size:.62em;color:#888;font-weight:400;margin-left:6px">'+(IS?'학생용':'교사용')+'</span></div>'
+    +'<div style="font-size:.95em;font-weight:800;color:#185FA5;letter-spacing:.02em">'+OUTPUT_BRAND+'</div>'
+    +'</div>'
+    +'<div style="display:flex;justify-content:flex-end;gap:16px;font-size:.8em;color:#666;margin-bottom:12px"><span>이름: <span style="display:inline-block;width:80px;border-bottom:1px solid #999">&nbsp;</span></span><span>날짜: <span style="display:inline-block;width:70px;border-bottom:1px solid #999">&nbsp;</span></span></div>'
+    +(O.passage?'<div style="border-left:4px solid #185FA5;background:#FBFBFD;border-radius:0 8px 8px 0;padding:12px 16px;font-size:1em;line-height:2.2;margin-bottom:14px;word-break:keep-all;overflow-wrap:break-word">'+passHTML+'</div>':'')
+    +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">'+SYMS.map(s=>{const sc=SM[s]||{};return'<span style="display:flex;align-items:center;gap:4px;font-size:.72em;color:#666;padding:3px 9px;border:0.5px solid #e0e0e0;border-radius:4px"><span style="width:8px;height:8px;border-radius:2px;background:'+sc.bd+';display:inline-block"></span>('+s+') '+sc.lbl+'</span>';}).join('')+'</div>'
+    +(O.structure?'<div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">글의 구조 — Block Diagram</div><div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:16px;flex-wrap:wrap">'+blockCards+'</div>':'')
+    +(O.keyTopics?'<div style="display:grid;grid-template-columns:1fr 2fr 1.5fr;gap:8px;margin-bottom:16px">'
+    +[{lbl:'핵심 소재',val:keyword},{lbl:'주제 한 줄 요약',val:topicSummary},{lbl:'구조 유형',val:structureType}].map(({lbl,val})=>
+      '<div style="padding:9px 12px;background:#F0F0F2;border-radius:8px;border:0.5px solid #D2D2D7"><div style="font-size:.68em;font-weight:700;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">'+lbl+'</div>'+(IS?'<div style="border-bottom:1.5px solid #aaa;height:22px"></div>':'<div style="font-size:.88em;word-break:keep-all">'+val+'</div>')+'</div>'
+    ).join('')+'</div>':'')
+    +(O.sentences&&analysisHTML?'<div style="border-top:1.5px solid #D2D2D7;padding-top:14px"><div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">'+(IS?'구문 분석':'문장별 분석 — 끊어읽기 & 구문')+'</div>'+analysisHTML+'</div>':'')
+    +'<div class="pfoot" style="text-align:center;color:#999;font-size:.72em;font-style:italic;margin-top:18px;padding:8px 0 2px;border-top:0.5px solid #eee">'+OUTPUT_FOOTER_TEXT+'</div>'
+    +'<div class="np" style="margin-top:20px;text-align:center;padding-top:14px;border-top:1px solid #eee"><button onclick="window.print()" style="padding:10px 28px;font-size:14px;font-weight:500;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨 인쇄 / PDF 저장</button></div>'
+    +'</body></html>';
+}
+
+function buildAllHTML(slots,mode,opts){
+  const IS=mode==='student';
+  const activeSlots=slots.filter(s=>s.analysis&&s.status==='saved');
+  if(!activeSlots.length){alert('저장완료된 슬롯이 없습니다.');return;}
+  const htmlParts=activeSlots.map(slot=>buildHTML(slot,mode,opts));
+  const combined='<!DOCTYPE html><html><head><meta charset="utf-8"><title>전체_'+(IS?'학생용':'교사용')+'</title>'
+    +'<style>body{font-family:"Malgun Gothic",sans-serif;margin:0;padding:0;}'
+    +'@media print{.no-print{display:none!important;}.np{display:none!important;}}'
+    +'</style></head><body>'
+    +htmlParts.map((h,i)=>{
+      const body=h.replace(/<!DOCTYPE[^>]*>/i,'').replace(/<html[^>]*>/i,'').replace(/<\/html>/i,'')
+        .replace(/<head[\s\S]*?<\/head>/i,'').replace(/<\/?body[^>]*>/gi,'');
+      return'<div style="page-break-after:'+(i<htmlParts.length-1?'always':'auto')+';padding:20px 28px">'+body+'</div>';
+    }).join('')
+    +'<div class="no-print" style="position:fixed;bottom:20px;right:20px;">'
+    +'<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">🖨️ 인쇄 / PDF 저장</button></div>'
+    +'</body></html>';
+  const win=window.open('','_blank');
+  if(win){win.document.write(combined);win.document.close();}
+}
+
+/* ── 자료 보기 전용: 선택 지문들을 옵션대로 인쇄 ── */
+function printStudySelected(passages,mode,optsIn){
+  const IS=mode==='student';
+  const opts=optsIn||(IS
+    ?{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false}
+    :{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true});
+  const slots=passages.map(toStudySlot).filter(s=>{
+    const a=s&&s.analysis;return a&&Array.isArray(a.sentences)&&a.sentences.length>0;
+  });
+  if(!slots.length){alert('분석 데이터가 있는 지문이 없습니다.\n(인쇄는 문장 분석이 완료된 지문만 출력됩니다.)');return;}
+  const html=buildAllHTML(slots,mode,opts);
+  if(html)openPrintWindow(html);
 }
 
 /* ── 자료 보기 (StudyView) ── */
@@ -3123,6 +3259,8 @@ function StudyView({scriptUrl,studentName,goBack}){
   const [modalSearch,setModalSearch]=useState('');
   const [modalSrc,setModalSrc]=useState('');
   const [modalExpanded,setModalExpanded]=useState(''); // 'source' 또는 'source__chapter'
+  // ★ 출력 옵션(영역 선택) 모달 — {mode:'teacher'|'student', opts:{...}}
+  const [outputModal,setOutputModal]=useState(null);
   const toggleSel=(id)=>setSelIds(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});
   // ★ 교재/강 단위 일괄 선택·해제: 대상 id가 모두 선택돼 있으면 해제, 아니면 전체 선택
   const toggleBulk=(ids)=>setSelIds(prev=>{
@@ -3540,21 +3678,121 @@ button{display:none!important}
                   );
                 })}
               </div>
-              {/* 푸터: 인쇄/DOCX 액션 */}
+              {/* 푸터: 다음 단계(출력 옵션 = 영역 선택)로 진행 */}
               <div style={{borderTop:'1px solid #e6dcc6',padding:'11px 14px',background:'#fff',
-                display:'flex',gap:7,flexWrap:'wrap',justifyContent:'center'}}>
-                <button disabled={!cnt} onClick={()=>{setPrintJob({items:selectedItems,mode:'teacher'});setShowSelModal(false);}}
-                  style={{padding:'9px 14px',borderRadius:9,border:'none',fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
-                    background:cnt?'#7a1020':'#f0e7d4',color:cnt?'#fff':'#b8a988'}}>🖨 교사용 인쇄</button>
-                <button disabled={!cnt} onClick={()=>{setPrintJob({items:selectedItems,mode:'student'});setShowSelModal(false);}}
-                  style={{padding:'9px 14px',borderRadius:9,border:'none',fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
-                    background:cnt?'#C9A84C':'#f0e7d4',color:cnt?'#fff':'#b8a988'}}>🖨 학생용 인쇄</button>
-                <button disabled={!cnt} onClick={()=>buildStudyDOCX(selectedItems,'teacher')}
-                  style={{padding:'9px 14px',borderRadius:9,border:'1px solid '+(cnt?'#7a1020':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
-                    background:'#fff',color:cnt?'#7a1020':'#b8a988'}}>📄 교사용 DOCX</button>
-                <button disabled={!cnt} onClick={()=>buildStudyDOCX(selectedItems,'student')}
-                  style={{padding:'9px 14px',borderRadius:9,border:'1px solid '+(cnt?'#C9A84C':'#e6dcc6'),fontSize:12.5,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
-                    background:'#fff',color:cnt?'#8a6010':'#b8a988'}}>📄 학생용 DOCX</button>
+                display:'flex',gap:8,flexWrap:'wrap',justifyContent:'center',alignItems:'center'}}>
+                <span style={{fontSize:11.5,color:'#a89878',width:'100%',textAlign:'center',marginBottom:2}}>
+                  지문 선택 후 모드를 고르면 출력 영역(본문·구조·문장분석 등)을 정할 수 있어요
+                </span>
+                <button disabled={!cnt} onClick={()=>setOutputModal({mode:'teacher',
+                  opts:{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true}})}
+                  style={{padding:'10px 18px',borderRadius:9,border:'none',fontSize:13,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
+                    background:cnt?'#7a1020':'#f0e7d4',color:cnt?'#fff':'#b8a988'}}>👨‍🏫 교사용 출력 옵션 →</button>
+                <button disabled={!cnt} onClick={()=>setOutputModal({mode:'student',
+                  opts:{passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false}})}
+                  style={{padding:'10px 18px',borderRadius:9,border:'none',fontSize:13,fontWeight:700,cursor:cnt?'pointer':'not-allowed',
+                    background:cnt?'#C9A84C':'#f0e7d4',color:cnt?'#fff':'#b8a988'}}>🎓 학생용 출력 옵션 →</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+      {/* ★ 출력 옵션(영역 선택) 모달 — teacher.html stuModal 이식 */}
+      {outputModal&&(()=>{
+        const O=outputModal.opts;
+        const mode=outputModal.mode;
+        const setO=(patch)=>setOutputModal({...outputModal,opts:{...O,...patch}});
+        const items=[
+          {key:'passage',label:'지문 (전체 텍스트)'},
+          {key:'structure',label:'글의 구조 (블록 다이어그램)'},
+          {key:'keyTopics',label:'핵심 소재 / 주제 요약 / 구조 유형'},
+          {key:'sentences',label:'문장별 분석 (구문)'},
+        ];
+        const anyArea=O.passage||O.structure||O.keyTopics||O.sentences;
+        const selectedItems=passages.filter(p=>selIds.has(p.id));
+        const doPrint=()=>{
+          // 영역 옵션이 적용되려면 항상 'student' 모드로 빌드 (teacher.html과 동일).
+          // 교사용/학생용 차이는 opts.showAnswers로 표현됨.
+          printStudySelected(selectedItems,'student',O);
+          setOutputModal(null);setShowSelModal(false);
+        };
+        const doDOCX=()=>{
+          buildStudyDOCX(selectedItems,'student',O);
+          setOutputModal(null);setShowSelModal(false);
+        };
+        const TEACHER_PRESET={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:true};
+        const STUDENT_PRESET={passage:true,structure:true,keyTopics:true,sentences:true,hardOnly:false,showAnswers:false};
+        return(
+          <div onClick={()=>setOutputModal(null)}
+            style={{position:'fixed',inset:0,zIndex:300,background:'rgba(0,0,0,0.5)',
+              display:'flex',alignItems:'center',justifyContent:'center',padding:18}}>
+            <div onClick={e=>e.stopPropagation()}
+              style={{background:'#fff',borderRadius:14,padding:'22px 24px',maxWidth:460,width:'100%',
+                maxHeight:'90vh',overflow:'auto',boxShadow:'0 10px 44px rgba(0,0,0,0.3)'}}>
+              <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:'#7a1020'}}>⎙ 출력 옵션 — 영역 선택</div>
+              <div style={{fontSize:12,color:'#a89878',marginBottom:14}}>
+                {selectedItems.length}개 지문 · {mode==='teacher'?'교사용':'학생용'} — 출력할 영역을 고른 뒤 인쇄 또는 DOCX
+              </div>
+              {/* 프리셋 */}
+              <div style={{display:'flex',gap:8,marginBottom:14}}>
+                <button onClick={()=>setOutputModal({mode:'teacher',opts:{...TEACHER_PRESET}})}
+                  style={{flex:1,padding:'7px 0',fontSize:12.5,fontWeight:700,borderRadius:8,cursor:'pointer',
+                    background:mode==='teacher'?'#FBF3DE':'#fff',color:'#7a1020',border:'1px solid #7a1020'}}>👨‍🏫 교사용 (전체+정답)</button>
+                <button onClick={()=>setOutputModal({mode:'student',opts:{...STUDENT_PRESET}})}
+                  style={{flex:1,padding:'7px 0',fontSize:12.5,fontWeight:700,borderRadius:8,cursor:'pointer',
+                    background:mode==='student'?'#FDF8EC':'#fff',color:'#8a6010',border:'1px solid #C9A84C'}}>🎓 학생용 (복습용)</button>
+              </div>
+              {/* 영역 체크박스 */}
+              <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:16}}>
+                {items.map(it=>(
+                  <label key={it.key} style={{display:'flex',alignItems:'center',gap:9,padding:'9px 12px',
+                    border:'1px solid '+(O[it.key]?'#7a1020':'#e2d6bb'),
+                    background:O[it.key]?'#FBF3DE':'#fff',borderRadius:8,cursor:'pointer',fontSize:13}}>
+                    <input type="checkbox" checked={!!O[it.key]} onChange={e=>setO({[it.key]:e.target.checked})}
+                      style={{width:16,height:16,accentColor:'#7a1020',cursor:'pointer'}}/>
+                    <span style={{fontWeight:O[it.key]?700:400,color:O[it.key]?'#3a2a20':'#888'}}>{it.label}</span>
+                  </label>
+                ))}
+              </div>
+              {/* 문장별 분석 세부 옵션 */}
+              {O.sentences&&(
+                <div style={{padding:'11px 13px',background:'#faf8f3',borderRadius:8,marginBottom:11,border:'1px solid #eee4cf'}}>
+                  <div style={{fontSize:12,fontWeight:700,marginBottom:7,color:'#7a1020'}}>문장별 분석 범위</div>
+                  <label style={{display:'flex',alignItems:'center',gap:7,marginBottom:5,cursor:'pointer',fontSize:12.5}}>
+                    <input type="radio" name="hardOnly" checked={!O.hardOnly} onChange={()=>setO({hardOnly:false})} style={{accentColor:'#7a1020'}}/>
+                    <span>전체 문장 (모든 문장 포함)</span>
+                  </label>
+                  <label style={{display:'flex',alignItems:'center',gap:7,cursor:'pointer',fontSize:12.5}}>
+                    <input type="radio" name="hardOnly" checked={O.hardOnly} onChange={()=>setO({hardOnly:true})} style={{accentColor:'#7a1020'}}/>
+                    <span>어려운 문장만 (구문 분석 있는 문장만)</span>
+                  </label>
+                </div>
+              )}
+              {O.sentences&&(
+                <div style={{padding:'11px 13px',background:'#faf8f3',borderRadius:8,marginBottom:16,border:'1px solid #eee4cf'}}>
+                  <div style={{fontSize:12,fontWeight:700,marginBottom:7,color:'#7a1020'}}>해석 표시 방식</div>
+                  <label style={{display:'flex',alignItems:'center',gap:7,marginBottom:5,cursor:'pointer',fontSize:12.5}}>
+                    <input type="radio" name="showAns" checked={!O.showAnswers} onChange={()=>setO({showAnswers:false})} style={{accentColor:'#7a1020'}}/>
+                    <span>빈칸 (학생이 직접 작성)</span>
+                  </label>
+                  <label style={{display:'flex',alignItems:'center',gap:7,cursor:'pointer',fontSize:12.5}}>
+                    <input type="radio" name="showAns" checked={O.showAnswers} onChange={()=>setO({showAnswers:true})} style={{accentColor:'#7a1020'}}/>
+                    <span>정답 포함 (끊어읽기·해석 표시)</span>
+                  </label>
+                </div>
+              )}
+              {!anyArea&&<div style={{fontSize:12,color:'#c0392b',marginBottom:12,textAlign:'center'}}>출력할 영역을 1개 이상 선택하세요.</div>}
+              {/* 액션 */}
+              <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}>
+                <button onClick={()=>setOutputModal(null)}
+                  style={{padding:'9px 14px',fontSize:13,background:'#F5F0E6',color:'#8a6010',
+                    border:'1px solid #e2d6bb',borderRadius:8,cursor:'pointer'}}>← 뒤로</button>
+                <button disabled={!anyArea} onClick={doPrint}
+                  style={{padding:'9px 20px',fontSize:13,fontWeight:700,borderRadius:8,cursor:anyArea?'pointer':'not-allowed',
+                    background:anyArea?'#7a1020':'#f0e7d4',color:anyArea?'#fff':'#b8a988',border:'none'}}>🖨 인쇄 / PDF</button>
+                <button disabled={!anyArea} onClick={doDOCX}
+                  style={{padding:'9px 20px',fontSize:13,fontWeight:700,borderRadius:8,cursor:anyArea?'pointer':'not-allowed',
+                    background:anyArea?'#C9A84C':'#f0e7d4',color:anyArea?'#fff':'#b8a988',border:'none'}}>📄 DOCX</button>
               </div>
             </div>
           </div>
