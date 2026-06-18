@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이항대립 워크북 · 블록2 · 대단한영어</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--wine:#7a1020;--wine-soft:#9a2435;--gold:#C9A84C;--gold-soft:#e3cf95;--ink:#3a2a20;--ocol:#7a1020;--dcol:#3b6d5a;--paper:#fbf8f2;--line:#e0d6c0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;}
+.wrap{max-width:920px;margin:0 auto;padding:30px 24px 80px;}
+header{border-bottom:2px solid var(--ink);padding-bottom:16px;}
+.eyebrow{font-family:'Space Grotesk',sans-serif;letter-spacing:.28em;font-size:11px;font-weight:600;color:var(--dcol);text-transform:uppercase;margin-bottom:6px;}
+h1{font-size:26px;font-weight:900;letter-spacing:-.01em;line-height:1.2;}
+h1 .en{display:block;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:13px;letter-spacing:.04em;color:var(--dcol);margin-top:4px;}
+.meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:#7a6a5a;}
+.meta b{color:var(--ink);font-weight:700;}
+.toolbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--paper);padding:11px 0;margin:12px 0 4px;border-bottom:1px solid var(--line);}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;}
+.seg button{font-family:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--ink);padding:7px 14px;cursor:pointer;}
+.seg button.on{background:var(--dcol);color:#fff;}
+.seg.lvl button.on{background:var(--gold);color:var(--ink);}
+.btn-print{margin-left:auto;font-family:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:8px 15px;border-radius:999px;cursor:pointer;}
+.lvl-note{font-size:12px;color:#8a7a6a;width:100%;} .lvl-note b{color:var(--dcol);}
+.pnav{display:flex;gap:6px;align-items:center;margin:14px 0 2px;flex-wrap:wrap;}
+.pnav .lab{font-size:12px;color:#8a7a6a;margin-right:4px;}
+.navb{width:32px;height:32px;border:1.5px solid var(--line);border-radius:8px;background:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ink);cursor:pointer;}
+.navb.on{background:var(--dcol);color:#fff;border-color:var(--dcol);}
+.pcard{display:none;} .pcard.active{display:block;}
+.pmeta{display:flex;gap:9px;align-items:center;margin:18px 0 4px;flex-wrap:wrap;}
+.ptag{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#fff;background:var(--dcol);border-radius:4px;padding:2px 9px;}
+.pweek{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--dcol);border:1.5px solid var(--dcol);border-radius:4px;padding:1px 7px;}
+.psrc{font-size:12.5px;color:#7a6a5a;} .ptype{font-size:11px;color:#fff;background:var(--wine);border-radius:4px;padding:2px 8px;font-weight:700;}
+.plv{font-size:12px;letter-spacing:1px;} .plv.lv2{color:#c8941a;} .plv.lv3{color:#b3402a;}
+.ptitle{font-size:20px;font-weight:800;margin:2px 0 0;}
+.axisband{display:flex;align-items:center;gap:10px;margin:8px 0 0;}
+.axislabel{font-size:11px;font-weight:700;color:#8a7a6a;font-family:'Space Grotesk',sans-serif;letter-spacing:.1em;}
+.axisname{font-size:16px;font-weight:800;color:var(--ink);background:linear-gradient(transparent 62%, var(--gold-soft) 62%);padding:0 4px;}
+.passage{background:#fff;border:1px solid var(--line);border-left:5px solid var(--dcol);border-radius:4px;padding:18px 20px;margin:14px 0;}
+.passage .lbl{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--dcol);font-weight:600;text-transform:uppercase;margin-bottom:10px;}
+.passage .lbl-ko{font-family:'Noto Sans KR';letter-spacing:0;text-transform:none;color:#9a8a7a;font-weight:400;}
+.en-text{font-size:15.5px;line-height:2.05;color:#2a2018;}
+.snum{display:inline-block;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--dcol);margin-right:2px;}
+.snt.ins{background:#fff6f6;border-radius:4px;padding:1px 4px;}
+.instag{font-size:10px;font-weight:700;color:#fff;background:var(--wine);border-radius:3px;padding:1px 5px;}
+.step{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin:16px 0;}
+.step-h{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+.step-n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#fff;background:var(--dcol);border-radius:4px;padding:2px 9px;}
+.step-t{font-size:16.5px;font-weight:800;}
+.step-sub{font-size:13px;color:#7a6a5a;margin:2px 0 12px;}
+.write{border:0;border-bottom:1.5px solid var(--gold);background:none;min-height:32px;padding:4px 2px;font-family:inherit;font-size:15px;width:100%;color:var(--ink);}
+textarea.write{background:repeating-linear-gradient(transparent,transparent 31px,var(--line) 31px,var(--line) 32px);}
+.axisinput{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.ax{display:flex;align-items:center;gap:8px;}
+.axtag{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14px;color:#fff;border-radius:5px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.axtag.o{background:var(--ocol);} .axtag.d{background:var(--dcol);}
+.tbl{display:flex;gap:10px;margin-top:6px;}
+.col{flex:1;min-width:0;}
+.colhead{font-size:12.5px;font-weight:700;padding:7px 9px;border-radius:6px 6px 0 0;color:#fff;display:flex;align-items:center;gap:6px;line-height:1.3;}
+.colhead.o{background:var(--ocol);} .colhead.d{background:var(--dcol);} .colhead.blank{background:#9a8a7a;}
+.colhead .axtag{width:20px;height:20px;font-size:12px;background:rgba(255,255,255,.25);}
+.headbox{flex:1;border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:4px;padding:3px 6px;font-family:inherit;font-size:12.5px;}
+.headbox::placeholder{color:rgba(255,255,255,.7);}
+.cell{border:1px solid var(--line);border-top:0;padding:8px 9px;font-size:12.5px;min-height:38px;color:#3a2e22;}
+.cell.o{background:#fdf6f6;} .cell.d{background:#f5faf7;}
+.cell.filled{font-weight:500;}
+.cellbox{width:100%;border:0;background:none;font-family:inherit;font-size:12.5px;color:var(--ink);}
+.midnote{font-size:12px;color:#7a6a5a;margin-top:8px;}
+.answer{border:1px solid var(--gold);border-left:5px solid var(--gold);background:#fffdf6;border-radius:4px;padding:13px 16px;margin-top:12px;}
+.answer .h{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--dcol);text-transform:uppercase;margin-bottom:7px;font-family:'Space Grotesk',sans-serif;}
+.answer p{font-size:13.5px;margin:5px 0;color:#3a2e22;}
+.okey{font-weight:800;color:var(--ocol);} .dkey{font-weight:800;color:var(--dcol);}
+body.mode-student .teacher-only{display:none;}
+.only-beg,.only-mid,.only-adv{display:none;}
+body.lvl-beg .only-beg{display:block;} body.lvl-mid .only-mid{display:block;} body.lvl-adv .only-adv{display:block;}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:#9a8a7a;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+footer .brand{font-weight:800;color:var(--dcol);}
+.axfill{flex:1;border:1.5px solid var(--line);border-radius:6px;padding:6px 10px;font-size:13.5px;background:#fbf8f2;}
+.axfill.o{border-color:var(--ocol);background:#fdf6f6;} .axfill.d{border-color:var(--dcol);background:#f5faf7;}
+.extag{font-size:10px;font-weight:700;color:#fff;background:var(--gold);border-radius:3px;padding:1px 6px;margin-left:4px;}
+.only-beg-inline,.only-mid-inline,.only-adv-inline{display:none;}
+body.lvl-beg .only-beg-inline{display:flex;} body.lvl-mid .only-mid-inline{display:flex;} body.lvl-adv .only-adv-inline{display:flex;}
+.adv-axisrow{display:flex;gap:10px;margin-bottom:10px;}
+.adv-axis{flex:1;}
+.headbox-adv{width:100%;border:1.5px solid var(--line);border-radius:6px;padding:7px 10px;font-family:inherit;font-size:13px;font-weight:700;}
+.headbox-adv.o{border-color:var(--ocol);color:var(--ocol);} .headbox-adv.d{border-color:var(--dcol);color:var(--dcol);}
+.adv-sort{margin:6px 0;} .adv-sort-lab{font-size:12px;color:#7a6a5a;margin-bottom:6px;}
+.adv-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:14px;color:var(--ink);border:1.5px solid var(--line);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:#fff;}
+.canvas-b2{border:1.5px dashed var(--line);border-radius:8px;background:#fff;min-height:160px;padding:14px;margin-top:8px;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px;}
+.canvas-b2 .hint{font-size:12px;color:#b6a98a;}
+
+%PRINTMARK%.toolbar,.pnav{display:none;}body{background:#fff;font-size:11pt;}.wrap{max-width:none;padding:0;}.pcard{display:block !important;page-break-after:always;}.step,.passage,.answer,.tbl{break-inside:avoid;}.teacher-only{display:block !important;}body.mode-student .teacher-only{display:none !important;}}
+@media (max-width:640px){h1{font-size:22px;}.ptitle{font-size:17px;}.en-text{font-size:14.5px;}.tbl{flex-direction:column;}}
+</style></head>
+<body class="mode-student lvl-beg">
+<div class="wrap">
+<header>
+<div class="eyebrow">Binary Opposition Workbook · Block 2 · Suneung Final</div>
+<h1>두 축으로 읽기 — 블록2 · 이항대립 7선
+<span class="en">O vs △ Axis · 7 CSAT Passages</span></h1>
+<div class="meta">
+<span><b>대상</b> 고3 4~5등급 → 3등급</span>
+<span><b>축</b> 본성·이성·객관·개인·시장·관습·예측 7종</span>
+<span><b>훈련</b> 두 축 찾기 → O/△ 분류 → 전환점 → 문제 적용</span>
+</div>
+</header>
+
+<div class="toolbar">
+<div class="seg"><button id="bStu" class="on" onclick="setMode('student')">학생용</button><button id="bTea" onclick="setMode('teacher')">교사용</button></div>
+<div class="seg lvl"><button id="lBeg" class="on" onclick="setLvl('beg')">초급</button><button id="lMid" onclick="setLvl('mid')">중급</button><button id="lAdv" onclick="setLvl('adv')">고급</button></div>
+<button class="btn-print" onclick="window.print()">인쇄 / PDF</button>
+<div class="lvl-note" id="lvlNote"></div>
+</div>
+
+<div class="pnav"><span class="lab">지문</span><button class="navb on" onclick="goCard(0)">1</button><button class="navb" onclick="goCard(1)">2</button><button class="navb" onclick="goCard(2)">3</button><button class="navb" onclick="goCard(3)">4</button><button class="navb" onclick="goCard(4)">5</button><button class="navb" onclick="goCard(5)">6</button><button class="navb" onclick="goCard(6)">7</button></div>
+
+  <section class="pcard active" data-idx="0">
+    <div class="pmeta"><span class="ptag">지문 1</span><span class="pweek">W9</span><span class="psrc">2025학년도 6월 모평 34번</span><span class="ptype">빈칸추론</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">루소 — 인간은 만들어진다</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">본성 vs 양육</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> That people need other people is hardly news, but for Rousseau this dependence extended far beyond companionship or even love, into the very process of becoming human.</span> <span class="snt"><span class="snum">②</span> Rousseau believed that people are not born but made, every individual a bundle of potentials whose realization requires the active involvement of other people.</span> <span class="snt"><span class="snum">③</span> Self-development is a social process.</span> <span class="snt"><span class="snum">④</span> Self-sufficiency is an impossible fantasy.</span> <span class="snt"><span class="snum">⑤</span> Much of the time Rousseau wished passionately that it were not: Robinson Crusoe was a favorite book, and he yearned to be free from the pains and uncertainties of social life.</span> <span class="snt"><span class="snum">⑥</span> But his writings document with extraordinary clarity the shaping of the individual by his emotional attachments.</span> <span class="snt"><span class="snum">⑦</span> “Our sweetest existence is relative and collective, and our true self is not entirely within us.”</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">본성 — 타고난 고정값 / 자기충족</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">양육 — 환경이 만드는 가변값 / 사회적 형성</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">본성 — 타고난 고정값 / 자기충족</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">양육 — 환경이 만드는 가변값 / 사회적 형성</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 본성 — 타고난 고정값 / 자기충족</p><p><span class="dkey">△</span> 양육 — 환경이 만드는 가변값 / 사회적 형성</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 본성 — 타고난 고정값 / 자기충족</div><div class="cell filled o">④ 자기충족(self-sufficiency)은 불가능한 환상</div><div class="cell filled o">⑤ 로빈슨 크루소처럼 홀로 자유롭길 갈망(그러나 헛됨)</div><div class="cell filled o">'우리의 진정한 자아는 온전히 내 안에 있지 않다'(부정형)</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 양육 — 환경이 만드는 가변값 / 사회적 형성</div><div class="cell filled d">② 인간은 태어나는 게 아니라 만들어진다 — 타인의 개입 필요</div><div class="cell filled d">③ 자기발달은 사회적 과정</div><div class="cell filled d">⑥ 개인은 정서적 유대로 형성된다</div><div class="cell filled d">⑦ 가장 달콤한 존재는 관계적·집단적</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 본성 — 타고난 고정값 / 자기충족</div><div class="cell filled o">④ 자기충족(self-sufficiency)은 불가능한 환상 <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 양육 — 환경이 만드는 가변값 / 사회적 형성</div><div class="cell filled d">② 인간은 태어나는 게 아니라 만들어진다 — 타인의 개입 필요 <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span><span class="chip">⑦</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> ④ 자기충족(self-sufficiency)은 불가능한 환상 · ⑤ 로빈슨 크루소처럼 홀로 자유롭길 갈망(그러나 헛됨) · '우리의 진정한 자아는 온전히 내 안에 있지 않다'(부정형)</p>
+        <p><span class="dkey">△축</span> ② 인간은 태어나는 게 아니라 만들어진다 — 타인의 개입 필요 · ③ 자기발달은 사회적 과정 · ⑥ 개인은 정서적 유대로 형성된다 · ⑦ 가장 달콤한 존재는 관계적·집단적</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>④~⑤ (자기충족=환상) ↔ ⑥ 'But ... shaping by emotional attachments'</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 빈칸추론</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>빈칸은 △축(사회적 형성)을 가리킴. '진정한 자아는 온전히 내 안에 있지 않다' = 타인·관계로 만들어진다.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 인간은 본성으로 완결되는 게 아니라(O) 타인과의 관계 속에서 형성된다(△). 자기충족은 환상이고 자기발달은 사회적 과정이다.</p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="1">
+    <div class="pmeta"><span class="ptag">지문 2</span><span class="pweek">W9</span><span class="psrc">2024학년도 수능 33번</span><span class="ptype">빈칸추론</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">표정만으로는 알 수 없다</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">이성/정보 vs 경험/맥락</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> There have been psychological studies in which subjects were shown photographs of people's faces and asked to identify the expression or state of mind evinced.</span> <span class="snt"><span class="snum">②</span> The results are invariably very mixed.</span> <span class="snt"><span class="snum">③</span> In the 17th century the French painter and theorist Charles Le Brun drew a series of faces illustrating the various emotions that painters could be called upon to represent.</span> <span class="snt"><span class="snum">④</span> What is striking about them is that any number of them could be substituted for one another without loss.</span> <span class="snt"><span class="snum">⑤</span> What is missing in all this is any setting or context to make the emotion determinate.</span> <span class="snt"><span class="snum">⑥</span> We must know who this person is, who these other people are, what their relationship is, what is at stake in the scene, and the like.</span> <span class="snt"><span class="snum">⑦</span> In real life as well as in painting we do not come across just faces; we encounter people in particular situations and our understanding of people cannot somehow be precipitated and held isolated from the social and human circumstances in which they, and we, live and breathe and have our being.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">얼굴·표정 단독 정보(고립된 데이터)</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">맥락·상황·관계(겪는 경험)</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">얼굴·표정 단독 정보(고립된 데이터)</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">맥락·상황·관계(겪는 경험)</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 얼굴·표정 단독 정보(고립된 데이터)</p><p><span class="dkey">△</span> 맥락·상황·관계(겪는 경험)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 얼굴·표정 단독 정보(고립된 데이터)</div><div class="cell filled o">① 사진 속 얼굴/표정만 보고 감정 판단(실험)</div><div class="cell filled o">③ 르브룅이 그린 감정별 얼굴 그림</div><div class="cell filled o">④ 어느 것이든 서로 바꿔도 차이 없음(단독으론 불확정)</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 맥락·상황·관계(겪는 경험)</div><div class="cell filled d">⑤ 빠진 것 = 감정을 확정할 '맥락·상황'</div><div class="cell filled d">⑥ 인물·관계·상황을 알아야 한다</div><div class="cell filled d">⑦ 실제 삶에선 얼굴만이 아니라 '상황 속 사람'을 만난다</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 얼굴·표정 단독 정보(고립된 데이터)</div><div class="cell filled o">① 사진 속 얼굴/표정만 보고 감정 판단(실험) <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 맥락·상황·관계(겪는 경험)</div><div class="cell filled d">⑤ 빠진 것 = 감정을 확정할 '맥락·상황' <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span><span class="chip">⑦</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> ① 사진 속 얼굴/표정만 보고 감정 판단(실험) · ③ 르브룅이 그린 감정별 얼굴 그림 · ④ 어느 것이든 서로 바꿔도 차이 없음(단독으론 불확정)</p>
+        <p><span class="dkey">△축</span> ⑤ 빠진 것 = 감정을 확정할 '맥락·상황' · ⑥ 인물·관계·상황을 알아야 한다 · ⑦ 실제 삶에선 얼굴만이 아니라 '상황 속 사람'을 만난다</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>④ (얼굴 단독=불확정) ↔ ⑤ 'What is missing ... context'</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 빈칸추론</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>빈칸은 O축의 한계 = '얼굴 그림들은 서로 바꿔도 차이 없다(단독으론 의미 불확정)'. 맥락(△)이 있어야 감정이 확정됨.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 표정·얼굴이라는 고립된 정보(O)만으론 감정을 알 수 없고, 인물·관계·상황이라는 맥락(△) 속에서만 이해된다.</p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="2">
+    <div class="pmeta"><span class="ptag">지문 3</span><span class="pweek">W10</span><span class="psrc">2024년 3월 고3 36번</span><span class="ptype">글의 순서</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">재즈 vs 모차르트</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">관습/즉흥 vs 혁신/구성</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> Different creative pursuits require varying degrees of unconscious flexible thinking, in combination with varying degrees of the conscious ability to adjust it and shape it through analytical thinking.</span> <span class="snt"><span class="snum">②</span> In music, for example, at one end of the creative spectrum are improvisational artists, such as jazz musicians.</span> <span class="snt"><span class="snum">③</span> They have to be particularly talented at lowering their inhibitions and letting in their unconsciously generated ideas.</span> <span class="snt"><span class="snum">④</span> And although the process of learning the fundamentals of jazz would require a high degree of analytical thought, that thinking style is not as big a factor during the performance.</span> <span class="snt"><span class="snum">⑤</span> On the other end of the spectrum are those who compose complex forms, such as a symphony or concerto, that require not just imagination but also careful planning and exacting editing.</span> <span class="snt"><span class="snum">⑥</span> We know, for example, through his letters and the reports of others, that even Mozart's creations did not appear spontaneously, wholly formed in his consciousness, as the myths about him portray.</span> <span class="snt"><span class="snum">⑦</span> Instead, he spent long, hard hours analyzing and reworking the ideas that arose in his unconscious, much as a scientist does when producing a theory from a germ of insight.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">즉흥 — 무의식적 유연한 사고(재즈)</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">구성 — 의식적 계획·편집(작곡/모차르트)</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">즉흥 — 무의식적 유연한 사고(재즈)</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">구성 — 의식적 계획·편집(작곡/모차르트)</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 즉흥 — 무의식적 유연한 사고(재즈)</p><p><span class="dkey">△</span> 구성 — 의식적 계획·편집(작곡/모차르트)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 즉흥 — 무의식적 유연한 사고(재즈)</div><div class="cell filled o">② 즉흥 예술가(재즈)가 한쪽 끝</div><div class="cell filled o">③ 억제를 낮추고 무의식적 아이디어를 받아들임</div><div class="cell filled o">④ 연주 중엔 분석적 사고가 큰 요인이 아님</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 구성 — 의식적 계획·편집(작곡/모차르트)</div><div class="cell filled d">⑤ 반대쪽 끝 = 교향곡 등 복잡한 구성(계획·편집 필요)</div><div class="cell filled d">⑥ 모차르트조차 즉흥적으로 완성된 게 아니다</div><div class="cell filled d">⑦ 무의식의 아이디어를 오래 분석·재작업했다</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 즉흥 — 무의식적 유연한 사고(재즈)</div><div class="cell filled o">② 즉흥 예술가(재즈)가 한쪽 끝 <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 구성 — 의식적 계획·편집(작곡/모차르트)</div><div class="cell filled d">⑤ 반대쪽 끝 = 교향곡 등 복잡한 구성(계획·편집 필요) <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span><span class="chip">⑦</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> ② 즉흥 예술가(재즈)가 한쪽 끝 · ③ 억제를 낮추고 무의식적 아이디어를 받아들임 · ④ 연주 중엔 분석적 사고가 큰 요인이 아님</p>
+        <p><span class="dkey">△축</span> ⑤ 반대쪽 끝 = 교향곡 등 복잡한 구성(계획·편집 필요) · ⑥ 모차르트조차 즉흥적으로 완성된 게 아니다 · ⑦ 무의식의 아이디어를 오래 분석·재작업했다</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>④ (즉흥) ↔ ⑤ 'On the other end ... careful planning'</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 글의 순서</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>순서 배열의 핵심 = 축의 전개. 도입(①)→O축(재즈, ②③④)→△축(작곡/모차르트, ⑤⑥⑦). 'On the other end'가 △축 시작 신호.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 창작은 즉흥적·무의식적 사고(O, 재즈)와 의식적 계획·편집(△, 작곡)의 스펙트럼이며, 모차르트조차 후자에 가까웠다.</p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="3">
+    <div class="pmeta"><span class="ptag">지문 4</span><span class="pweek">W11</span><span class="psrc">2025학년도 9월 모평 39번</span><span class="ptype">문장삽입</span><span class="plv lv3">★★★</span></div>
+    <h2 class="ptitle">생태계 관리의 딜레마</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">예측가능 vs 불확실</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> To decide whether and how to intervene in ecosystems, protected area managers normally need a reasonably clear idea of what future ecosystems would be like if they did not intervene.</span> <span class="snt"><span class="snum">②</span> Management practices usually involve defining a more desirable future condition and implementing management actions designed to push or guide ecosystems toward that condition.</span> <span class="snt"><span class="snum">③</span> Managers need confidence in the likely outcomes of their interventions.</span> <span class="snt"><span class="snum">④</span> This traditional and inherently logical approach requires a high degree of predictive ability, and predictions must be developed at appropriate spatial and temporal scales, often localized and near-term.</span> <span class="snt ins"><span class="snum">⑤</span> <span class="instag">삽입</span> Unfortunately, at the scales, accuracy, and precision most useful to protected area management, the future not only promises to be unprecedented, but it also promises to be unpredictable.</span> <span class="snt"><span class="snum">⑥</span> To illustrate this, consider the uncertainties involved in predicting climatic changes, how ecosystems are likely to respond to climatic changes, and the likely efficacy of actions that might be taken to counter adverse effects of climatic changes.</span> <span class="snt"><span class="snum">⑦</span> Comparable uncertainties surround the nature and magnitude of future changes in other ecosystem stressors.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">예측 가능 — 전통적 관리가 전제하는 미래</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">불확실 — 전례없고 예측 불가한 미래</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">예측 가능 — 전통적 관리가 전제하는 미래</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">불확실 — 전례없고 예측 불가한 미래</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 예측 가능 — 전통적 관리가 전제하는 미래</p><p><span class="dkey">△</span> 불확실 — 전례없고 예측 불가한 미래</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 예측 가능 — 전통적 관리가 전제하는 미래</div><div class="cell filled o">① 개입 판단엔 '개입 안 하면 미래가 어떨지'를 알아야</div><div class="cell filled o">② 바람직한 미래 조건을 정해 그쪽으로 유도</div><div class="cell filled o">③④ 전통적 접근 = 높은 예측력을 요구(예측 가능 전제)</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 불확실 — 전례없고 예측 불가한 미래</div><div class="cell filled d">⑤(삽입) 그러나 미래는 전례없고 예측 불가</div><div class="cell filled d">⑥ 예시 — 기후변화·생태계 반응의 불확실성</div><div class="cell filled d">⑦ 다른 스트레스 요인의 미래도 비슷한 불확실</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 예측 가능 — 전통적 관리가 전제하는 미래</div><div class="cell filled o">① 개입 판단엔 '개입 안 하면 미래가 어떨지'를 알아야 <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 불확실 — 전례없고 예측 불가한 미래</div><div class="cell filled d">⑤(삽입) 그러나 미래는 전례없고 예측 불가 <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span><span class="chip">⑦</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> ① 개입 판단엔 '개입 안 하면 미래가 어떨지'를 알아야 · ② 바람직한 미래 조건을 정해 그쪽으로 유도 · ③④ 전통적 접근 = 높은 예측력을 요구(예측 가능 전제)</p>
+        <p><span class="dkey">△축</span> ⑤(삽입) 그러나 미래는 전례없고 예측 불가 · ⑥ 예시 — 기후변화·생태계 반응의 불확실성 · ⑦ 다른 스트레스 요인의 미래도 비슷한 불확실</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>③④ (예측 가능 전제) ↔ ⑤(삽입) 'Unfortunately ... unpredictable'</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 문장삽입</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>삽입 자리 = 축이 O(예측 가능)에서 △(예측 불가)로 꺾이는 지점. ④ 뒤, ⑥(예시) 앞. 'Unfortunately'가 반전 신호.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 전통적 생태계 관리는 예측 가능성을 전제하지만(O), 실제 미래는 전례없고 예측 불가하여(△) 그 접근이 흔들린다.</p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="4">
+    <div class="pmeta"><span class="ptag">지문 5</span><span class="pweek">W12</span><span class="psrc">2024년 3월 고3 41~42번</span><span class="ptype">장문(제목·어휘)</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">당신은 자기 삶의 서술자</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">객관 vs 주관</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> You are the narrator of your own life.</span> <span class="snt"><span class="snum">②</span> The tone and perspective with which you describe each experience generates feelings associated with that narration.</span> <span class="snt"><span class="snum">③</span> For example, if you find yourself constantly assuming, “This is hard,” or “It looks like this is going to turn out badly,” you'll generate anxious feelings.</span> <span class="snt"><span class="snum">④</span> It's time to restructure the way you think.</span> <span class="snt"><span class="snum">⑤</span> Underlying this narration are the beliefs that frame your experience and give it meaning.</span> <span class="snt"><span class="snum">⑥</span> On the surface are your automatic thoughts — short tapes that momentarily flash through your mind.</span> <span class="snt"><span class="snum">⑦</span> Automatic thoughts are bad habits that cloud fresh and positive experiences; they can turn a potentially good experience into one fraught with anxiety.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">객관 — 일어난 사건 그 자체</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">주관 — 사건을 서술하는 톤·관점(narration)</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">객관 — 일어난 사건 그 자체</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">주관 — 사건을 서술하는 톤·관점(narration)</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 객관 — 일어난 사건 그 자체</p><p><span class="dkey">△</span> 주관 — 사건을 서술하는 톤·관점(narration)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 객관 — 일어난 사건 그 자체</div><div class="cell filled o">① 당신은 자기 삶의 '서술자'</div><div class="cell filled o">(사건 자체 = 중립적 경험, 같은 경험)</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 주관 — 사건을 서술하는 톤·관점(narration)</div><div class="cell filled d">② 묘사하는 톤·관점이 감정을 생성</div><div class="cell filled d">③ '힘들다·잘 안 될 거야' 가정 → 불안 생성</div><div class="cell filled d">⑤ 서술 밑엔 경험에 의미를 부여하는 믿음</div><div class="cell filled d">⑥⑦ 자동적 사고가 경험을 흐리고 불안으로 물들임</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 객관 — 일어난 사건 그 자체</div><div class="cell filled o">① 당신은 자기 삶의 '서술자' <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 주관 — 사건을 서술하는 톤·관점(narration)</div><div class="cell filled d">② 묘사하는 톤·관점이 감정을 생성 <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span><span class="chip">⑦</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> ① 당신은 자기 삶의 '서술자' · (사건 자체 = 중립적 경험, 같은 경험)</p>
+        <p><span class="dkey">△축</span> ② 묘사하는 톤·관점이 감정을 생성 · ③ '힘들다·잘 안 될 거야' 가정 → 불안 생성 · ⑤ 서술 밑엔 경험에 의미를 부여하는 믿음 · ⑥⑦ 자동적 사고가 경험을 흐리고 불안으로 물들임</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>같은 사건(O) ↔ 그것을 어떻게 서술하느냐(△)에 따라 감정이 달라짐</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 장문(제목·어휘)</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>제목 = 자기 대화(self-talk) 재구성. 어휘 문제는 O/△ 흐름을 깨는 낱말(예: relieve↔정반대) 찾기. 같은 경험도 주관적 서술이 감정을 바꿈.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 객관적 사건 자체(O)가 아니라 그것을 서술하는 주관적 톤·관점(△)이 감정을 만들므로, 자기 대화를 재구성해야 한다.</p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="5">
+    <div class="pmeta"><span class="ptag">지문 6</span><span class="pweek">W12</span><span class="psrc">2024년 3월 고3 23번</span><span class="ptype">글의 주제</span><span class="plv lv3">★★★</span></div>
+    <h2 class="ptitle">사회적 죽음이 더 두렵다</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">개인 vs 공동체</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> Sociologist Brooke Harrington said if there was an equation of social science, it would be SD > PD, “social death is more frightening than physical death.”</span> <span class="snt"><span class="snum">②</span> This is why we feel deeply threatened when a new idea challenges the ones that have become part of our identity.</span> <span class="snt"><span class="snum">③</span> For some ideas, the ones that identify us as members of a group, we don't reason as individuals; we reason as a member of a tribe.</span> <span class="snt"><span class="snum">④</span> We want to seem trustworthy, and reputation management as a trustworthy individual often overrides most other concerns, even our own mortality.</span> <span class="snt"><span class="snum">⑤</span> So we carry with us an innate drive to form groups, join groups, remain in those groups, and oppose other groups.</span> <span class="snt"><span class="snum">⑥</span> But once you can identify them, you start favoring us; so much so that given a choice between an outcome that favors both groups a lot or one that favors both much less but still favors yours more than theirs, that's the one you will pick.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">개인 — 한 개인으로서의 이성적 추론</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">공동체 — 부족(집단) 일원으로서의 추론 / us vs them</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">개인 — 한 개인으로서의 이성적 추론</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">공동체 — 부족(집단) 일원으로서의 추론 / us vs them</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 개인 — 한 개인으로서의 이성적 추론</p><p><span class="dkey">△</span> 공동체 — 부족(집단) 일원으로서의 추론 / us vs them</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 개인 — 한 개인으로서의 이성적 추론</div><div class="cell filled o">(개인으로서 이성적·중립적 판단 — 이 글이 '아니다'라고 말하는 쪽)</div><div class="cell filled o">④ 개인의 평판 관리(단, 집단 정체성에 종속됨)</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 공동체 — 부족(집단) 일원으로서의 추론 / us vs them</div><div class="cell filled d">① 사회적 죽음 > 물리적 죽음</div><div class="cell filled d">② 정체성을 건드리는 새 생각에 위협을 느낌</div><div class="cell filled d">③ 집단 일원으로서 추론(개인이 아니라)</div><div class="cell filled d">⑤ 집단 형성·소속·타집단 반대의 본능</div><div class="cell filled d">⑥ us를 편애 — 우리가 더 유리한 쪽을 택함(us vs them)</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 개인 — 한 개인으로서의 이성적 추론</div><div class="cell filled o">(개인으로서 이성적·중립적 판단 — 이 글이 '아니다'라고 말하는 쪽) <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 공동체 — 부족(집단) 일원으로서의 추론 / us vs them</div><div class="cell filled d">① 사회적 죽음 > 물리적 죽음 <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> (개인으로서 이성적·중립적 판단 — 이 글이 '아니다'라고 말하는 쪽) · ④ 개인의 평판 관리(단, 집단 정체성에 종속됨)</p>
+        <p><span class="dkey">△축</span> ① 사회적 죽음 > 물리적 죽음 · ② 정체성을 건드리는 새 생각에 위협을 느낌 · ③ 집단 일원으로서 추론(개인이 아니라) · ⑤ 집단 형성·소속·타집단 반대의 본능 · ⑥ us를 편애 — 우리가 더 유리한 쪽을 택함(us vs them)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>③ 'we don't reason as individuals; we reason as a member of a tribe' (개인 ↔ 부족)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 글의 주제</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>주제 = 자신이 동일시하는 집단을 편애하는 경향. O(개인 이성)을 부정하고 △(부족 정체성)으로 추론한다는 게 핵심 축.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 사람은 개인으로서 이성적으로(O) 추론하기보다 자신이 속한 집단(부족)의 일원으로(△) 추론하며, 자기 집단을 편애한다.</p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="6">
+    <div class="pmeta"><span class="ptag">지문 7</span><span class="pweek">W12</span><span class="psrc">2024학년도 수능 23번</span><span class="ptype">글의 주제</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">생태계 서비스의 진짜 가치</h2>
+    <div class="axisband"><span class="axislabel">대립축</span><span class="axisname">시장 vs 정부/비시장</span></div>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 두 축(O / △)으로 나뉘는 지점을 찾으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> Managers of natural resources typically face market incentives that provide financial rewards for exploitation.</span> <span class="snt"><span class="snum">②</span> For example, owners of forest lands have a market incentive to cut down trees rather than manage the forest for carbon capture, wildlife habitat, flood protection, and other ecosystem services.</span> <span class="snt"><span class="snum">③</span> These services provide the owner with no financial benefits, and thus are unlikely to influence management decisions.</span> <span class="snt"><span class="snum">④</span> But the economic benefits provided by these services, based on their non-market values, may exceed the economic value of the timber.</span> <span class="snt"><span class="snum">⑤</span> For example, a United Nations initiative has estimated that the economic benefits of ecosystem services provided by tropical forests are over three times greater per hectare than the market benefits.</span> <span class="snt"><span class="snum">⑥</span> Thus cutting down the trees is economically inefficient, and markets are not sending the correct “signal” to favor ecosystem services over extractive uses.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">두 축 찾기</span></div>
+      <div class="step-sub">이 글이 대결시키는 두 개념은?</div>
+      <div class="axisinput only-beg-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">시장 — 재정적 보상이 이끄는 이용(벌목)</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">비시장 — 생태계 서비스의 비시장 가치(보존)</div></div>
+      </div>
+      <div class="axisinput only-mid-inline">
+        <div class="ax o"><span class="axtag o">O</span><div class="axfill o">시장 — 재정적 보상이 이끄는 이용(벌목)</div></div>
+        <div class="ax d"><span class="axtag d">△</span><div class="axfill d">비시장 — 생태계 서비스의 비시장 가치(보존)</div></div>
+      </div>
+      <div class="axisinput only-adv-inline">
+        <div class="ax o"><span class="axtag o">O</span><input class="write" placeholder="한쪽 축을 직접 적으세요"></div>
+        <div class="ax d"><span class="axtag d">△</span><input class="write" placeholder="다른 축을 직접 적으세요"></div>
+      </div>
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="okey">O</span> 시장 — 재정적 보상이 이끄는 이용(벌목)</p><p><span class="dkey">△</span> 비시장 — 생태계 서비스의 비시장 가치(보존)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">O / △ 분류표</span></div>
+      <div class="step-sub">각 문장을 O축과 △축으로 나눠 채우세요.</div>
+
+      <div class="only-beg">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 시장 — 재정적 보상이 이끄는 이용(벌목)</div><div class="cell filled o">① 자원 관리자는 '이용'에 재정 보상을 주는 시장 유인에 직면</div><div class="cell filled o">② 산주는 나무를 베려는 시장 유인(벌목)</div><div class="cell filled o">③ 생태계 서비스는 금전 이익이 없어 결정에 영향 못 줌</div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 비시장 — 생태계 서비스의 비시장 가치(보존)</div><div class="cell filled d">④ 그러나 비시장 가치 기반 경제 이익이 목재 가치를 넘을 수 있음</div><div class="cell filled d">⑤ UN 추정 — 열대림 생태계 서비스가 시장 이익의 3배 이상</div><div class="cell filled d">⑥ 따라서 벌목은 비효율적, 시장은 잘못된 신호를 보냄</div></div>
+        </div>
+        <p class="midnote">초급 — 분류가 다 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익히세요.</p>
+      </div>
+      <div class="only-mid">
+        <div class="tbl">
+          <div class="col"><div class="colhead o"><span class="axtag o">O</span> 시장 — 재정적 보상이 이끄는 이용(벌목)</div><div class="cell filled o">① 자원 관리자는 '이용'에 재정 보상을 주는 시장 유인에 직면 <span class="extag">예시</span></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell o"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+          <div class="col"><div class="colhead d"><span class="axtag d">△</span> 비시장 — 생태계 서비스의 비시장 가치(보존)</div><div class="cell filled d">④ 그러나 비시장 가치 기반 경제 이익이 목재 가치를 넘을 수 있음 <span class="extag">예시</span></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div><div class="cell d"><input class="cellbox" placeholder="문장 번호 + 내용"></div></div>
+        </div>
+        <p class="midnote">중급 — 각 축 <b>첫 줄만 예시</b>로 채워뒀습니다. 나머지 문장을 직접 분류해 채우세요.</p>
+      </div>
+      <div class="only-adv">
+        <div class="adv-axisrow">
+          <div class="adv-axis"><input class="headbox-adv o" placeholder="O축 이름 — 직접"></div>
+          <div class="adv-axis"><input class="headbox-adv d" placeholder="△축 이름 — 직접"></div>
+        </div>
+        <div class="adv-sort">
+          <div class="adv-sort-lab">문장 번호를 보고 O / △ 표시하며 직접 분류하세요</div>
+          <div class="adv-chips"><span class="chip">①</span><span class="chip">②</span><span class="chip">③</span><span class="chip">④</span><span class="chip">⑤</span><span class="chip">⑥</span></div>
+        </div>
+        <div class="canvas-b2"><span class="hint">위 번호들을 두 축으로 직접 나눠 적으세요. (백지 작도)</span></div>
+        <p class="midnote">고급 — 축 이름부터 스스로 정하고, 문장 번호를 전부 직접 분류합니다.</p>
+      </div>
+
+      <div class="answer teacher-only"><div class="h">모범 분류</div>
+        <p><span class="okey">O축</span> ① 자원 관리자는 '이용'에 재정 보상을 주는 시장 유인에 직면 · ② 산주는 나무를 베려는 시장 유인(벌목) · ③ 생태계 서비스는 금전 이익이 없어 결정에 영향 못 줌</p>
+        <p><span class="dkey">△축</span> ④ 그러나 비시장 가치 기반 경제 이익이 목재 가치를 넘을 수 있음 · ⑤ UN 추정 — 열대림 생태계 서비스가 시장 이익의 3배 이상 · ⑥ 따라서 벌목은 비효율적, 시장은 잘못된 신호를 보냄</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">축 전환점</span></div>
+      <div class="step-sub">글이 O에서 △로 꺾이는 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번에서 But/However로 전환">
+      <div class="answer teacher-only"><div class="h">해설</div><p>③ (시장=벌목 유인) ↔ ④ 'But ... non-market values'</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">문제 적용 — 글의 주제</span></div>
+      <div class="step-sub">잡은 축으로 이 유형을 풀어보세요.</div>
+      <textarea class="write" rows="2" placeholder="이 축이 정답을 어떻게 가리키나?"></textarea>
+      <div class="answer teacher-only"><div class="h">풀이 포인트</div><p>주제 = 생태계 서비스의 비시장 가치를 따져야 한다. O(시장 가치/벌목)와 △(비시장 가치/보존)의 대조가 글의 축. 'But'이 전환.</p>
+        <p style="margin-top:8px"><span class="okey">요지</span> 시장은 자원 이용(벌목)에 보상을 주지만(O), 생태계 서비스의 비시장 가치(△)가 목재 가치를 능가하므로 시장 신호는 틀렸다.</p></div>
+    </div>
+  </section>
+
+
+<footer><span class="brand">대단한영어 GREATENG</span><span>이항대립 워크북 · 블록2 기출 7선 · 포항 남구 대이로 105</span></footer>
+</div>
+<script>
+const NOTES={beg:'<b>초급</b> — O/△ 분류표가 채워져 있습니다. 어느 문장이 어느 축인지 눈으로 익힙니다.',mid:'<b>중급</b> — 빈 분류표에 직접 채웁니다. 축 이름은 제공.',adv:'<b>고급</b> — 두 축 이름부터 스스로 정하고 전부 분류합니다.'};
+function setMode(m){document.body.classList.remove('mode-student','mode-teacher');document.body.classList.add('mode-'+m);bStu.classList.toggle('on',m==='student');bTea.classList.toggle('on',m==='teacher');}
+function setLvl(l){document.body.classList.remove('lvl-beg','lvl-mid','lvl-adv');document.body.classList.add('lvl-'+l);lBeg.classList.toggle('on',l==='beg');lMid.classList.toggle('on',l==='mid');lAdv.classList.toggle('on',l==='adv');document.getElementById('lvlNote').innerHTML=NOTES[l];}
+function goCard(i){document.querySelectorAll('.pcard').forEach((c,j)=>c.classList.toggle('active',j===i));document.querySelectorAll('.navb').forEach((b,j)=>b.classList.toggle('on',j===i));window.scrollTo({top:0,behavior:'smooth'});}
+setLvl('beg');
+</script>
+</body></html>

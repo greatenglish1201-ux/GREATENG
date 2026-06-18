@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>흐름 독해 워크북 · 블록1 · 대단한영어</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--wine:#7a1020;--wine-soft:#9a2435;--gold:#C9A84C;--gold-soft:#e3cf95;--ink:#3a2a20;--sub:#3b6d5a;--paper:#fbf8f2;--line:#e0d6c0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;}
+.wrap{max-width:920px;margin:0 auto;padding:30px 24px 80px;}
+header{border-bottom:2px solid var(--ink);padding-bottom:16px;}
+.eyebrow{font-family:'Space Grotesk',sans-serif;letter-spacing:.28em;font-size:11px;font-weight:600;color:var(--wine);text-transform:uppercase;margin-bottom:6px;}
+h1{font-size:26px;font-weight:900;letter-spacing:-.01em;line-height:1.2;}
+h1 .en{display:block;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:13px;letter-spacing:.04em;color:var(--wine-soft);margin-top:4px;}
+.meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:#7a6a5a;}
+.meta b{color:var(--ink);font-weight:700;}
+.toolbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--paper);padding:11px 0;margin:12px 0 4px;border-bottom:1px solid var(--line);}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;}
+.seg button{font-family:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--ink);padding:7px 14px;cursor:pointer;}
+.seg button.on{background:var(--wine);color:#fff;}
+.seg.lvl button.on{background:var(--gold);color:var(--ink);}
+.btn-print{margin-left:auto;font-family:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:8px 15px;border-radius:999px;cursor:pointer;}
+.lvl-note{font-size:12px;color:#8a7a6a;width:100%;} .lvl-note b{color:var(--wine);}
+.pnav{display:flex;gap:6px;align-items:center;margin:14px 0 2px;flex-wrap:wrap;}
+.pnav .lab{font-size:12px;color:#8a7a6a;margin-right:4px;}
+.navb{width:32px;height:32px;border:1.5px solid var(--line);border-radius:8px;background:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ink);cursor:pointer;}
+.navb.on{background:var(--wine);color:#fff;border-color:var(--wine);}
+.pcard{display:none;} .pcard.active{display:block;}
+.pmeta{display:flex;gap:10px;align-items:center;margin:18px 0 4px;flex-wrap:wrap;}
+.ptag{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#fff;background:var(--wine);border-radius:4px;padding:2px 9px;}
+.psrc{font-size:12.5px;color:#7a6a5a;} .ptype{font-size:11px;color:#fff;background:var(--sub);border-radius:4px;padding:2px 8px;font-weight:700;}
+.plv{font-size:12px;letter-spacing:1px;} .plv.lv1{color:#3b8a5a;} .plv.lv2{color:#c8941a;} .plv.lv3{color:#b3402a;}
+.ptitle{font-size:20px;font-weight:800;margin:2px 0 0;}
+.passage{background:#fff;border:1px solid var(--line);border-left:5px solid var(--wine);border-radius:4px;padding:18px 20px;margin:14px 0;}
+.passage .lbl{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--wine);font-weight:600;text-transform:uppercase;margin-bottom:10px;}
+.passage .lbl-ko{font-family:'Noto Sans KR';letter-spacing:0;text-transform:none;color:#9a8a7a;font-weight:400;}
+.en-text{font-size:15.5px;line-height:2.05;color:#2a2018;}
+.snt{}
+.snum{display:inline-block;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--wine);margin-right:2px;}
+.step{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin:16px 0;}
+.step-h{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+.step-n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#fff;background:var(--wine);border-radius:4px;padding:2px 9px;}
+.step-t{font-size:16.5px;font-weight:800;}
+.step-sub{font-size:13px;color:#7a6a5a;margin:2px 0 12px;}
+.field-label{font-size:13px;font-weight:700;color:var(--wine);margin:10px 0 3px;}
+.write{border:0;border-bottom:1.5px solid var(--gold);background:none;min-height:32px;padding:4px 2px;font-family:inherit;font-size:15px;width:100%;color:var(--ink);}
+textarea.write{background:repeating-linear-gradient(transparent,transparent 31px,var(--line) 31px,var(--line) 32px);}
+.legend{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 10px;}
+.lg{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;}
+.lg.h{background:var(--wine);} .lg.s{background:var(--sub);}
+.lk{font-size:11px;color:#8a7a6a;margin-right:8px;}
+.tree{margin-top:6px;} .branch{margin:0 0 4px;}
+.node{display:flex;align-items:center;gap:8px;margin:6px 0;}
+.node .pin{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#fff;border-radius:3px;padding:2px 7px;flex:0 0 auto;}
+.node.head .pin{background:var(--wine);} .node.leaf .pin{background:var(--sub);}
+.numbox{width:42px;border:1.5px solid var(--line);border-radius:6px;background:#fff;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ink);font-size:14px;padding:5px 0;flex:0 0 auto;}
+.lblbox{flex:1;border:1.5px solid var(--line);border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:var(--ink);padding:5px 8px;min-width:0;}
+.node.head .numbox,.node.head .lblbox{border-color:var(--wine);}
+.leaves{margin-left:14px;padding-left:18px;border-left:2px solid var(--gold-soft);}
+.flow-break{display:flex;align-items:center;gap:10px;margin:12px 0;}
+.flow-break .ln{flex:1;height:0;border-top:2px dashed var(--wine-soft);}
+.flow-break .tx{font-size:11.5px;font-weight:800;color:var(--wine-soft);letter-spacing:.04em;white-space:nowrap;}
+.flow-break .brk{width:90px;border:0;border-bottom:1.5px solid var(--wine-soft);background:none;font-family:inherit;font-size:12px;text-align:center;color:var(--wine);}
+.midnote{font-size:12px;color:#7a6a5a;margin-top:8px;}
+.canvas{border:1.5px dashed var(--line);border-radius:8px;background:#fff;min-height:280px;padding:14px;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px;}
+.canvas .hint{font-size:12px;color:#b6a98a;}
+.answer{border:1px solid var(--gold);border-left:5px solid var(--gold);background:#fffdf6;border-radius:4px;padding:13px 16px;margin-top:12px;}
+.answer .h{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--wine);text-transform:uppercase;margin-bottom:7px;font-family:'Space Grotesk',sans-serif;}
+.answer p{font-size:13.5px;margin:5px 0;color:#3a2e22;} .answer .key{font-weight:800;color:var(--wine);}
+body.mode-student .teacher-only{display:none;}
+.only-beg,.only-mid,.only-adv{display:none;}
+body.lvl-beg .only-beg{display:block;} body.lvl-mid .only-mid{display:block;} body.lvl-adv .only-adv{display:block;}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:#9a8a7a;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+footer .brand{font-weight:800;color:var(--wine);}
+@media print{.toolbar,.pnav{display:none;}body{background:#fff;font-size:11pt;}.wrap{max-width:none;padding:0;}.pcard{display:block !important;page-break-after:always;}.step,.passage,.answer,.branch,.canvas{break-inside:avoid;}.teacher-only{display:block !important;}body.mode-student .teacher-only{display:none !important;}}
+@media (max-width:640px){h1{font-size:22px;}.ptitle{font-size:17px;}.en-text{font-size:14.5px;}}
+</style></head>
+<body class="mode-student lvl-beg">
+<div class="wrap">
+<header>
+<div class="eyebrow">Flow Reading Workbook · Block 1 · Suneung Final</div>
+<h1>흐름으로 읽기 — 블록1 · 기출 9선
+<span class="en">Build the Flow Tree · 9 CSAT Passages</span></h1>
+<div class="meta">
+<span><b>대상</b> 고3 4~5등급 → 3등급</span>
+<span><b>지문</b> 평가원·교육청 기출 9 (난이도 계단식)</span>
+<span><b>훈련</b> 소재·속성 → 트리 → 전환점 → 요지</span>
+</div>
+</header>
+
+<div class="toolbar">
+<div class="seg"><button id="bStu" class="on" onclick="setMode('student')">학생용</button><button id="bTea" onclick="setMode('teacher')">교사용</button></div>
+<div class="seg lvl"><button id="lBeg" class="on" onclick="setLvl('beg')">초급</button><button id="lMid" onclick="setLvl('mid')">중급</button><button id="lAdv" onclick="setLvl('adv')">고급</button></div>
+<button class="btn-print" onclick="window.print()">인쇄 / PDF</button>
+<div class="lvl-note" id="lvlNote"></div>
+</div>
+
+<div class="pnav"><span class="lab">지문</span><button class="navb on" onclick="goCard(0)">1</button><button class="navb" onclick="goCard(1)">2</button><button class="navb" onclick="goCard(2)">3</button><button class="navb" onclick="goCard(3)">4</button><button class="navb" onclick="goCard(4)">5</button><button class="navb" onclick="goCard(5)">6</button><button class="navb" onclick="goCard(6)">7</button><button class="navb" onclick="goCard(7)">8</button><button class="navb" onclick="goCard(8)">9</button></div>
+
+  <section class="pcard active" data-idx="0">
+    <div class="pmeta"><span class="ptag">지문 1</span><span class="psrc">2025학년도 수능 20번</span><span class="ptype">필자 주장</span><span class="plv lv1">★☆☆</span></div>
+    <h2 class="ptitle">게임을 학습 도구로</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> We almost universally accept that playing video games is at best a pleasant break from a student's learning and more often what prevents a student from accomplishing their goals.</span> <span class="snt"><span class="snum">②</span> Games catch and hold attention in a way that few things can.</span> <span class="snt"><span class="snum">③</span> And yet once they have our focus, they rarely seem to offer anything meaningful to help students grow in their lives outside the games.</span> <span class="snt"><span class="snum">④</span> While this may be true for many games, we are too easily ignoring a valuable tool that could be used to enhance productivity instead of derailing it.</span> <span class="snt"><span class="snum">⑤</span> Rather, it is desirable that we develop games that connect to the learning outcomes we want for our students.</span> <span class="snt"><span class="snum">⑥</span> This will enable educators to take advantage of games' attention commanding capacities and allow our students to enjoy their games while learning.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 비디오 게임과 학습</p><p><span class="key">속성</span> 게임은 학습 방해(통념) → 학습 도구로 개발하자(주장)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입(통념) — 게임은 학습의 방해물"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 부연 — 게임은 강력하게 주의를 끈다"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="③ 근거 — 그러나 의미 있는 성장은 못 준다"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ While this may be true / Rather</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="⑤ 새화제(주장) — 학습과 연결된 게임을 개발하자"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="④ 전환 — 가치 있는 도구를 간과하고 있다"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 재진술 — 즐기며 배우게 할 수 있다"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입(통념) — 게임은 학습의 방해물 ─ ② 부연 — 게임은 강력하게 주의를 끈다 · ③ 근거 — 그러나 의미 있는 성장은 못 준다</p>
+        <p><span class="key">전환</span> While this may be true / Rather</p>
+        <p><span class="key">줄기 B</span> ⑤ 새화제(주장) — 학습과 연결된 게임을 개발하자 ─ ④ 전환 — 가치 있는 도구를 간과하고 있다 · ⑥ 재진술 — 즐기며 배우게 할 수 있다</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — While this may be true / Rather">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'While this may be true ... Rather'. ①~③은 통념(게임=방해), ④부터 반전(학습 도구로 개발).</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">게임은 학습을 방해한다는 통념과 달리, 학습 성과와 연결된 게임을 개발해 그 집중력을 교육에 활용해야 한다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="1">
+    <div class="pmeta"><span class="ptag">지문 2</span><span class="psrc">2024학년도 수능 20번</span><span class="ptype">필자 주장</span><span class="plv lv1">★☆☆</span></div>
+    <h2 class="ptitle">가치를 행동으로, 그리고 공유</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> Values alone do not create and build culture.</span> <span class="snt"><span class="snum">②</span> Living your values only some of the time does not contribute to the creation and maintenance of culture.</span> <span class="snt"><span class="snum">③</span> Changing values into behaviors is only half the battle.</span> <span class="snt"><span class="snum">④</span> Certainly, this is a step in the right direction, but those behaviors must then be shared and distributed widely throughout the organization, along with a clear and concise description of what is expected.</span> <span class="snt"><span class="snum">⑤</span> It is not enough to simply talk about it.</span> <span class="snt"><span class="snum">⑥</span> It is critical to have a visual representation of the specific behaviors that leaders and all people managers can use to coach their people.</span> <span class="snt"><span class="snum">⑦</span> Just like a sports team has a playbook with specific plays designed to help them perform well and win, your company should have a playbook with the key shifts needed to transform your culture into action and turn your values into winning behaviors.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 조직 문화 형성</p><p><span class="key">속성</span> 가치 선언만으론 부족(양보) → 행동으로 바꿔 명시적으로 공유해야(주장)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입 — 가치만으로는 문화가 안 만들어진다"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 부연 — 가끔 실천해선 문화 유지 안 됨"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="③ 양보 — 가치를 행동으로 바꾸는 건 절반일 뿐"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ but / It is critical</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="④ 새화제(주장) — 행동을 조직 전체에 명시적으로 공유하라"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑤ 부연 — 말만으론 부족"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 근거 — 구체적 행동의 시각적 표현 필요"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑦ 비유·재진술 — 회사도 playbook이 있어야"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입 — 가치만으로는 문화가 안 만들어진다 ─ ② 부연 — 가끔 실천해선 문화 유지 안 됨 · ③ 양보 — 가치를 행동으로 바꾸는 건 절반일 뿐</p>
+        <p><span class="key">전환</span> but / It is critical</p>
+        <p><span class="key">줄기 B</span> ④ 새화제(주장) — 행동을 조직 전체에 명시적으로 공유하라 ─ ⑤ 부연 — 말만으론 부족 · ⑥ 근거 — 구체적 행동의 시각적 표현 필요 · ⑦ 비유·재진술 — 회사도 playbook이 있어야</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — but / It is critical">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'but those behaviors must then be shared'. ①~③ 가치→행동(양보), ④부터 '공유·명시'가 핵심 주장.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">가치를 행동으로 바꾸는 데 그치지 말고, 그 행동을 명확한 지침과 함께 조직 전체에 공유해야 문화가 형성된다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="2">
+    <div class="pmeta"><span class="ptag">지문 3</span><span class="psrc">2025학년도 9월 모평 20번</span><span class="ptype">필자 주장</span><span class="plv lv1">★☆☆</span></div>
+    <h2 class="ptitle">소셜미디어 시대의 책임</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> Truth is essential for progress and the development of knowledge, as it serves as the foundation upon which reliable and accurate understanding is built.</span> <span class="snt"><span class="snum">②</span> However, one of the greatest threats to the accumulation of knowledge can now be found on social media platforms.</span> <span class="snt"><span class="snum">③</span> As social media becomes a primary source of information for millions, its unregulated nature allows misinformation to spread rapidly.</span> <span class="snt"><span class="snum">④</span> Social media users may unknowingly participate in creating and circulating misinformation, which can influence elections, cause violence, and create widespread panic, as seen in various global incidents.</span> <span class="snt"><span class="snum">⑤</span> As creators and consumers, it is our responsibility to take on a greater role in the enhancement of fact-checking protocols in order to ensure accuracy.</span> <span class="snt"><span class="snum">⑥</span> It is critical that participants safeguard the reliability of information, supporting a more informed and rational public community.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 소셜미디어와 정보 신뢰성</p><p><span class="key">속성</span> 진실은 진보의 토대 → However 오정보 위협 → 사용자가 책임져야(주장)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입 — 진실은 지식·진보의 토대"></div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ However</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="② 대조/반전 — 그러나 소셜미디어가 그 위협"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="③ 부연 — 무규제로 오정보 빠르게 확산"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="④ 예시 — 선거·폭력·패닉 유발"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑤ 주장 — 사용자가 사실확인 책임"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 재진술 — 정보 신뢰성을 지켜야"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입 — 진실은 지식·진보의 토대</p>
+        <p><span class="key">전환</span> However</p>
+        <p><span class="key">줄기 B</span> ② 대조/반전 — 그러나 소셜미디어가 그 위협 ─ ③ 부연 — 무규제로 오정보 빠르게 확산 · ④ 예시 — 선거·폭력·패닉 유발 · ⑤ 주장 — 사용자가 사실확인 책임 · ⑥ 재진술 — 정보 신뢰성을 지켜야</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — However">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'However'. ①은 진실의 가치, ②부터 소셜미디어의 위협과 사용자 책임으로 전환.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">진실은 지식의 토대이지만 소셜미디어가 이를 위협하므로, 창작자이자 소비자인 우리가 정보의 정확성과 신뢰성을 지킬 책임을 져야 한다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="3">
+    <div class="pmeta"><span class="ptag">지문 4</span><span class="psrc">2025학년도 6월 모평 20번</span><span class="ptype">필자 주장</span><span class="plv lv1">★☆☆</span></div>
+    <h2 class="ptitle">AI 시대, 인간의 자리</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> As the world seems to be increasingly affected by the ever-expanding influence of machines in general and artificial intelligence (AI) specifically, many begin to imagine, with either fear or anticipation, a future with a diminished role for human decision making.</span> <span class="snt"><span class="snum">②</span> Whether it be due to the growing presence of AI assistants or the emergence of self-driving cars, the necessity of the role of humans as the decision makers would appear to be in decline.</span> <span class="snt"><span class="snum">③</span> After all, our capacity for making mistakes is well documented.</span> <span class="snt"><span class="snum">④</span> However, perhaps the saving grace of human determination is to be found here as well.</span> <span class="snt"><span class="snum">⑤</span> Little evidence exists that suggests modern AI's infallibility or predicts it in the future.</span> <span class="snt"><span class="snum">⑥</span> It is crucial that, in light of humanity's acceptance of our own fallibility, we utilize our capacity to overcome such failures to position ourselves as the overseers of AI's own growth and applications for the foreseeable future.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> AI와 인간의 의사결정</p><p><span class="key">속성</span> AI로 인간 역할 축소(통념) → However 인간이 오류 극복으로 AI 감독(주장)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입(통념) — AI로 인간의 결정 역할이 줄어든다"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 부연 — AI 비서·자율주행으로 역할 쇠퇴"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="③ 근거 — 인간은 실수를 많이 한다"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ However</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="④ 대조/반전(주장) — 그러나 인간의 결단에 구원이 있다"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑤ 근거 — AI의 무오류 증거는 없다"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 주장 — 오류 극복 능력으로 AI를 감독하자"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입(통념) — AI로 인간의 결정 역할이 줄어든다 ─ ② 부연 — AI 비서·자율주행으로 역할 쇠퇴 · ③ 근거 — 인간은 실수를 많이 한다</p>
+        <p><span class="key">전환</span> However</p>
+        <p><span class="key">줄기 B</span> ④ 대조/반전(주장) — 그러나 인간의 결단에 구원이 있다 ─ ⑤ 근거 — AI의 무오류 증거는 없다 · ⑥ 주장 — 오류 극복 능력으로 AI를 감독하자</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — However">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'However'. ①~③ 인간 역할 축소(통념), ④부터 인간이 AI 감독자라는 반전.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">AI로 인간의 역할이 축소된다는 통념과 달리, 인간은 자신의 오류를 극복하는 능력을 활용해 AI의 성장을 감독하는 위치에 서야 한다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="4">
+    <div class="pmeta"><span class="ptag">지문 5</span><span class="psrc">2024년 3월 고3 20번</span><span class="ptype">필자 주장</span><span class="plv lv1">★☆☆</span></div>
+    <h2 class="ptitle">성인 학습자의 교사 — 안내자</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> By definition, adult learners have a self-concept of being in charge of their own lives and have a need to be seen and treated as being capable of taking responsibility for their own learning.</span> <span class="snt"><span class="snum">②</span> As such, learners need to be given the freedom and autonomy to assume responsibility for their own choices and to be proactive in making decisions that contribute to their educational experiences.</span> <span class="snt"><span class="snum">③</span> Rather than perform the role of the “sage on the stage,” in working with adult learners, the instructor's role should be the “guide on the side” — a facilitator of learning, and a coach or mentor who works alongside their learners to promote achievement and academic success.</span> <span class="snt"><span class="snum">④</span> The facilitator role extends beyond course delivery, and includes the broader pedagogical tasks that will support learners on their growth such as helping them effectively manage their time; fostering engagement; assigning meaningful and relevant learning activities; and so on.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 성인 학습자 교육</p><p><span class="key">속성</span> 통념적 교사상(sage) → Rather than → 안내자(guide)로 전환(주장)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입 — 성인 학습자는 자기 삶의 주체"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 부연 — 자유·자율로 스스로 책임지게 해야"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ Rather than</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="③ 새화제(주장) — 교사는 '무대 위 현자'가 아닌 '곁의 안내자'"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="④ 부연·확장 — 시간관리·참여·활동 등 폭넓은 촉진 역할"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입 — 성인 학습자는 자기 삶의 주체 ─ ② 부연 — 자유·자율로 스스로 책임지게 해야</p>
+        <p><span class="key">전환</span> Rather than</p>
+        <p><span class="key">줄기 B</span> ③ 새화제(주장) — 교사는 '무대 위 현자'가 아닌 '곁의 안내자' ─ ④ 부연·확장 — 시간관리·참여·활동 등 폭넓은 촉진 역할</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — Rather than">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'Rather than ... sage on the stage ... guide on the side'. 통념적 교사상에서 안내자로 전환.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">성인 학습자는 자기 학습의 주체이므로, 교사는 지식을 일방 전달하는 현자가 아니라 곁에서 돕는 촉진자·안내자여야 한다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="5">
+    <div class="pmeta"><span class="ptag">지문 6</span><span class="psrc">2025학년도 9월 모평 24번</span><span class="ptype">글의 제목</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">사무실 디자인 — 돌고 도는</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> There are good reasons why open-office plans have gained currency, but open offices may not be the plan of choice for all times.</span> <span class="snt"><span class="snum">②</span> Instead, the right plan seems to be building a culture of change.</span> <span class="snt"><span class="snum">③</span> Overly rigid habits and conventions, no matter how well-considered or well-intentioned, threaten innovation.</span> <span class="snt"><span class="snum">④</span> The crucial take-away from analyzing office plans over time is that the answers keep changing.</span> <span class="snt"><span class="snum">⑤</span> It might seem that there is a straight line of progress, but it's a myth.</span> <span class="snt"><span class="snum">⑥</span> Surveying office spaces from the past eighty years, one can see a cycle that repeats.</span> <span class="snt"><span class="snum">⑦</span> Comparing the offices of the 1940s with contemporary office spaces shows that they have circled back around to essentially the same style, via a period in the 1980s when partitions and cubicles were more the norm.</span> <span class="snt"><span class="snum">⑧</span> The technologies and colors may differ, but the 1940s and 2000s plans are alike, right down to the pillars running down the middle.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 사무실 공간 설계</p><p><span class="key">속성</span> 직선적 발전(통념) → but myth → 변화의 문화·순환 반복(반전)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입 — 개방형 사무실이 늘 정답은 아니다"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 주장 — 정답은 '변화의 문화'를 만드는 것"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="③ 근거 — 굳은 관습은 혁신을 위협"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ but it's a myth</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="⑤ 대조/반전 — 직선적 발전은 착각, 실은 순환 반복"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="④ 부연 — 정답은 계속 바뀐다"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 근거 — 80년을 보면 반복되는 순환"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑦ 예시 — 1940년대와 2000년대가 닮음"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑧ 재진술 — 기술·색만 다를 뿐 구조는 같다"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입 — 개방형 사무실이 늘 정답은 아니다 ─ ② 주장 — 정답은 '변화의 문화'를 만드는 것 · ③ 근거 — 굳은 관습은 혁신을 위협</p>
+        <p><span class="key">전환</span> but it's a myth</p>
+        <p><span class="key">줄기 B</span> ⑤ 대조/반전 — 직선적 발전은 착각, 실은 순환 반복 ─ ④ 부연 — 정답은 계속 바뀐다 · ⑥ 근거 — 80년을 보면 반복되는 순환 · ⑦ 예시 — 1940년대와 2000년대가 닮음 · ⑧ 재진술 — 기술·색만 다를 뿐 구조는 같다</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — but it's a myth">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'but it's a myth'. 직선 발전이라는 통념을 깨고 '순환 반복'으로 반전. 제목은 '돌고 돈다'.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">사무실 디자인은 직선적으로 발전하는 게 아니라 순환 반복하므로, 특정 양식을 고집하기보다 변화에 열린 문화를 갖추는 것이 정답이다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="6">
+    <div class="pmeta"><span class="ptag">지문 7</span><span class="psrc">2025학년도 수능 23번</span><span class="ptype">글의 주제</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">산업화가 바꾼 시간·노동</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> The arrival of the Industrial Age changed the relationship among time, labor, and capital.</span> <span class="snt"><span class="snum">②</span> Factories could produce around the clock, and they could do so with greater speed and volume than ever before.</span> <span class="snt"><span class="snum">③</span> A machine that runs twelve hours a day will produce more widgets than one that runs for only eight hours per day — and a machine that runs twenty-four hours per day will produce the most widgets of all.</span> <span class="snt"><span class="snum">④</span> As such, at many factories, the workday is divided into eight-hour shifts, so that there will always be people on hand to keep the widget machines humming.</span> <span class="snt"><span class="snum">⑤</span> Industrialization raised the potential value of every single work hour — the more hours you worked, the more widgets you produced, and the more money you made — and thus wages became tied to effort and production.</span> <span class="snt"><span class="snum">⑥</span> Labor, previously guided by harvest cycles, became clock-oriented, and society started to reorganize around new principles of productivity.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 산업화와 노동시간</p><p><span class="key">속성</span> 산업화가 시간·노동·자본의 관계를 재편(인과적 전개)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입 — 산업화가 시간·노동·자본 관계를 바꿨다"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 부연 — 공장은 밤낮없이 더 빠르게 생산"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="③ 근거 — 오래 돌릴수록 더 많이 생산"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ As such / and thus</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="④ 확장 — 그래서 8시간 교대·시간당 가치 상승"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑤ 근거 — 일할수록 더 벌어 임금이 생산에 연동"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 재진술 — 수확 주기에서 시계 중심으로 재편"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입 — 산업화가 시간·노동·자본 관계를 바꿨다 ─ ② 부연 — 공장은 밤낮없이 더 빠르게 생산 · ③ 근거 — 오래 돌릴수록 더 많이 생산</p>
+        <p><span class="key">전환</span> As such / and thus</p>
+        <p><span class="key">줄기 B</span> ④ 확장 — 그래서 8시간 교대·시간당 가치 상승 ─ ⑤ 근거 — 일할수록 더 벌어 임금이 생산에 연동 · ⑥ 재진술 — 수확 주기에서 시계 중심으로 재편</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — As such / and thus">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'As such / and thus' 인과 연결. 통념-반전형이 아니라 '산업화 → 결과'의 인과 흐름. 머리는 ①, 나머지는 그 전개.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">산업화는 공장의 연속 생산을 가능케 하여 시간·노동·자본의 관계를 재편했고, 노동은 수확 주기에서 시계 중심의 생산성 원리로 바뀌었다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="7">
+    <div class="pmeta"><span class="ptag">지문 8</span><span class="psrc">2025학년도 6월 모평 23번</span><span class="ptype">글의 주제</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">광고 속 '자연'의 변질</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> While many city shoppers were clearly drawn to the notion of buying and eating foods associated with nature, the nature claimed by the ads was no longer the nature that created the foods.</span> <span class="snt"><span class="snum">②</span> Indeed, the nature claimed by many ads was associated with food products only by the ads' attachment.</span> <span class="snt"><span class="snum">③</span> This is clearly a case of what French sociologist Henri Lefebvre has called “the decline of the referentials,” or the tendency of words under the influence of capitalism to become separated from meaningful associations.</span> <span class="snt"><span class="snum">④</span> Increasingly, food ads helped shoppers become accustomed to new definitions of words such as “fresh” and “natural,” definitions that could well be considered opposite of their traditional meanings.</span> <span class="snt"><span class="snum">⑤</span> The new definitions better served the needs of the emerging industrial food system, which could not supply foods that matched customary meanings and expectations.</span> <span class="snt"><span class="snum">⑥</span> And they better met shoppers' desires, although with pretense.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 식품 광고와 언어의 의미</p><p><span class="key">속성</span> 자연을 표방하는 광고 → 실은 그 자연과 의미가 분리됨(대조)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입(대조) — 광고가 표방하는 '자연'은 실제 자연이 아니다"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 부연 — 광고의 부착으로만 연결될 뿐"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ no longer / Indeed</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="③ 새화제 — 자본주의하 단어가 의미와 분리됨(지시체의 쇠퇴)"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="④ 부연 — 'fresh·natural'이 전통 의미와 반대로"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑤ 근거 — 산업적 식품 체계의 필요에 맞춤"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 재진술 — 가식이지만 소비자 욕구도 충족"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입(대조) — 광고가 표방하는 '자연'은 실제 자연이 아니다 ─ ② 부연 — 광고의 부착으로만 연결될 뿐</p>
+        <p><span class="key">전환</span> no longer / Indeed</p>
+        <p><span class="key">줄기 B</span> ③ 새화제 — 자본주의하 단어가 의미와 분리됨(지시체의 쇠퇴) ─ ④ 부연 — 'fresh·natural'이 전통 의미와 반대로 · ⑤ 근거 — 산업적 식품 체계의 필요에 맞춤 · ⑥ 재진술 — 가식이지만 소비자 욕구도 충족</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — no longer / Indeed">
+      <div class="answer teacher-only"><div class="h">해설</div><p>전환점 = 'no longer ... / the decline of the referentials'. 자연 표방(겉) vs 의미 분리(실제)의 대조.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">식품 광고가 내세우는 '자연·신선'은 실제 자연과 분리된 채, 자본주의 속에서 전통적 의미를 잃고 산업 식품 체계에 맞게 재정의되었다.</span></p></div>
+    </div>
+  </section>
+
+  <section class="pcard" data-idx="8">
+    <div class="pmeta"><span class="ptag">지문 9</span><span class="psrc">2025학년도 6월 모평 21번</span><span class="ptype">함의추론</span><span class="plv lv2">★★☆</span></div>
+    <h2 class="ptitle">번아웃은 스펙트럼</h2>
+
+    <div class="passage">
+      <div class="lbl">Passage <span class="lbl-ko">— 문장 번호를 따라 흐름을 잡으세요</span></div>
+      <div class="en-text"><span class="snt"><span class="snum">①</span> To balance the need for breadth (everyone feels a bit burned out) and depth (some are so burned out, they can no longer do their jobs), we ought to think of burnout not as a state but as a spectrum.</span> <span class="snt"><span class="snum">②</span> In most public discussion of burnout, we talk about workers who “are burned out,” as if that status were black and white.</span> <span class="snt"><span class="snum">③</span> A black-and-white view cannot account for the variety of burnout experience, though.</span> <span class="snt"><span class="snum">④</span> If there is a clear line between burned out and not, as there is with a lightbulb, then we have no good way to categorize people who say they are burned out but still manage to do their work competently.</span> <span class="snt"><span class="snum">⑤</span> Thinking about burnout as a spectrum solves this problem; those who claim burnout but are not debilitated by it are simply dealing with a partial or less-severe form of it.</span> <span class="snt"><span class="snum">⑥</span> They are experiencing burnout without being burned out.</span> <span class="snt"><span class="snum">⑦</span> Burnout hasn't had the last word.</span> </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 1</span><span class="step-t">소재 &amp; 속성</span></div>
+      <div class="step-sub">첫 1~2문장만 읽고 한 줄로.</div>
+      <div class="field-label">핵심 소재</div><input class="write" placeholder="무엇에 대한 글인가?">
+      <div class="field-label">속성 / 첫 입장</div><input class="write" placeholder="어떤 입장으로 시작하나?">
+      <div class="answer teacher-only"><div class="h">모범답안</div>
+        <p><span class="key">소재</span> 번아웃의 정도</p><p><span class="key">속성</span> 흑백론(번아웃이다/아니다) → cannot account → 스펙트럼으로 봐야(반전)</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+      <div class="step-sub">머리 문장 아래 딸린 문장을 가지로. 흐름이 바뀌면 새 줄기.</div>
+      <div class="legend"><span class="lg h">머리</span><span class="lk">주제도입·대조반전·새화제</span><span class="lg s">딸림</span><span class="lk">부연·예시·근거·확장·재진술</span></div>
+
+      <div class="only-beg">
+        <div class="tree">
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="① 주제도입(주장) — 번아웃은 상태가 아니라 스펙트럼"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="② 통념 — 흔히 '번아웃이다/아니다'로 흑백 구분"></div>
+            </div>
+          </div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ though / cannot account</span><span class="ln"></span></div>
+          <div class="branch">
+            <div class="node head"><span class="pin">머리</span><input class="numbox"><input class="lblbox" value="③ 대조/반전 — 흑백론은 다양한 경험을 설명 못 함"></div>
+            <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="④ 근거 — 일은 하면서 번아웃이라는 사람은 분류 불가"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑤ 해결 — 스펙트럼으로 보면 부분적 번아웃"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑥ 재진술 — '완전히 소진'되지 않은 번아웃"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" value="⑦ 함의 — 번아웃이 끝(전부)은 아니다"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="only-mid">
+        <div class="tree">
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="번호+라벨"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+          <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input class="brk" placeholder="신호어"><span class="ln"></span></div>
+          <div class="branch"><div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="머리 라벨"></div>
+            <div class="leaves"><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div><div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div></div></div>
+        </div>
+        <p class="midnote">머리 문장을 먼저 찾고 딸린 문장을 채우세요. 가지가 모자라거나 남으면 직접 조정.</p>
+      </div>
+
+      <div class="only-adv"><div class="canvas"><span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span></div></div>
+
+      <div class="answer teacher-only"><div class="h">모범 트리</div>
+        <p><span class="key">줄기 A</span> ① 주제도입(주장) — 번아웃은 상태가 아니라 스펙트럼 ─ ② 통념 — 흔히 '번아웃이다/아니다'로 흑백 구분</p>
+        <p><span class="key">전환</span> though / cannot account</p>
+        <p><span class="key">줄기 B</span> ③ 대조/반전 — 흑백론은 다양한 경험을 설명 못 함 ─ ④ 근거 — 일은 하면서 번아웃이라는 사람은 분류 불가 · ⑤ 해결 — 스펙트럼으로 보면 부분적 번아웃 · ⑥ 재진술 — '완전히 소진'되지 않은 번아웃 · ⑦ 함의 — 번아웃이 끝(전부)은 아니다</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점</span></div>
+      <div class="step-sub">두 줄기가 갈리는 한 지점과 신호어.</div>
+      <input class="write" placeholder="예) ~번 — though / cannot account">
+      <div class="answer teacher-only"><div class="h">해설</div><p>밑줄 'Burnout hasn't had the last word' = 번아웃이라고 다 끝장난 건 아니다(부분적·경미한 번아웃도 있다). 전환점 = 'though / cannot account'.</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
+      <div class="step-sub">두 줄기의 머리 문장만 이어 한 문장으로.</div>
+      <textarea class="write" rows="2" placeholder="통념/양보 → 그러나 실제로는 …"></textarea>
+      <div class="answer teacher-only"><div class="h">모범 요지</div><p><span class="key">번아웃을 '있다/없다'의 흑백으로 보면 다양한 경험을 설명할 수 없으므로, 정도에 따른 스펙트럼으로 이해해야 한다.</span></p></div>
+    </div>
+  </section>
+
+
+<footer><span class="brand">대단한영어 GREATENG</span><span>흐름 독해 워크북 · 블록1 기출 9선 · 포항 남구 대이로 105</span></footer>
+</div>
+<script>
+const NOTES={beg:'<b>초급</b> — 트리 뼈대(머리·가지·전환선)를 제공합니다. 학생은 번호와 라벨만 채웁니다.',mid:'<b>중급</b> — 머리 칸만 제공. 딸린 문장은 학생이 가지에 직접 채웁니다.',adv:'<b>고급</b> — 백지에서 트리·전환점·요지를 통째로 작도합니다.'};
+function setMode(m){document.body.classList.remove('mode-student','mode-teacher');document.body.classList.add('mode-'+m);bStu.classList.toggle('on',m==='student');bTea.classList.toggle('on',m==='teacher');}
+function setLvl(l){document.body.classList.remove('lvl-beg','lvl-mid','lvl-adv');document.body.classList.add('lvl-'+l);lBeg.classList.toggle('on',l==='beg');lMid.classList.toggle('on',l==='mid');lAdv.classList.toggle('on',l==='adv');document.getElementById('lvlNote').innerHTML=NOTES[l];}
+function goCard(i){document.querySelectorAll('.pcard').forEach((c,j)=>c.classList.toggle('active',j===i));document.querySelectorAll('.navb').forEach((b,j)=>b.classList.toggle('on',j===i));window.scrollTo({top:0,behavior:'smooth'});}
+setLvl('beg');
+</script>
+</body></html>
