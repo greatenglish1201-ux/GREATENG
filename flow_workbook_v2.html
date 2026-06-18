@@ -11,8 +11,7 @@
     --gold:#C9A84C; --gold-soft:#e3cf95;
     --ink:#3a2a20; --paper:#fbf8f2; --paper-2:#f3ecdd;
     --line:#e0d6c0;
-    --head:#7a1020;     /* 머리 라벨 색 */
-    --sub:#5b8a72;      /* 딸림 라벨 색 */
+    --head:#7a1020; --sub:#5b8a72;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:16px;}
@@ -25,7 +24,6 @@
   .meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:#7a6a5a;}
   .meta b{color:var(--ink);font-weight:700;}
 
-  /* toolbar */
   .toolbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--paper);padding:12px 0;margin:14px 0 4px;border-bottom:1px solid var(--line);}
   .seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;}
   .seg button{font-family:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--ink);padding:7px 14px;cursor:pointer;transition:.15s;}
@@ -35,13 +33,11 @@
   .lvl-note{font-size:12px;color:#8a7a6a;width:100%;}
   .lvl-note b{color:var(--wine);}
 
-  /* passage */
   .passage{background:#fff;border:1px solid var(--line);border-left:5px solid var(--wine);border-radius:4px;padding:22px 24px;margin:22px 0;}
   .passage .lbl{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--wine);font-weight:600;text-transform:uppercase;margin-bottom:10px;}
   .en-p{font-size:16.5px;line-height:1.95;color:#2a2018;}
   .en-p .num{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;color:#fff;background:var(--ink);border-radius:3px;padding:1px 5px;margin-right:5px;vertical-align:middle;}
 
-  /* step */
   .step{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin:18px 0;}
   .step-h{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
   .step-n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#fff;background:var(--wine);border-radius:4px;padding:2px 9px;letter-spacing:.04em;}
@@ -51,59 +47,47 @@
   .write{border:0;border-bottom:1.5px solid var(--gold);background:none;min-height:32px;padding:4px 2px;font-family:inherit;font-size:15px;width:100%;color:var(--ink);}
   textarea.write{background:repeating-linear-gradient(transparent,transparent 31px,var(--line) 31px,var(--line) 32px);}
 
-  /* ── legend ── */
-  .legend{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px;}
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px;align-items:center;}
   .lg{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;}
-  .lg.h{background:var(--head);}
-  .lg.s{background:var(--sub);}
+  .lg.h{background:var(--head);} .lg.s{background:var(--sub);}
   .legend-key{font-size:11px;color:#8a7a6a;width:100%;margin-top:2px;}
-  .legend-key .dh{color:var(--head);font-weight:700;}
-  .legend-key .ds{color:var(--sub);font-weight:700;}
+  .legend-key .dh{color:var(--head);font-weight:700;} .legend-key .ds{color:var(--sub);font-weight:700;}
 
-  /* ── tagging table ── */
-  .tagtbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;}
-  .tagtbl th{font-size:10.5px;font-weight:700;color:#7a6a5a;padding:4px 2px;text-align:center;border-bottom:1.5px solid var(--ink);white-space:nowrap;}
-  .tagtbl th.head-col{color:var(--head);}
-  .tagtbl th.sub-col{color:var(--sub);}
-  .tagtbl th.sent-col{text-align:left;width:auto;}
-  .tagtbl td{padding:7px 2px;border-bottom:1px solid var(--line);vertical-align:top;}
-  .tagtbl td.s-no{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:#fff;background:var(--ink);border-radius:3px;padding:2px 5px;text-align:center;width:22px;}
-  .tagtbl td.s-txt{font-size:13px;line-height:1.5;color:#3a2e22;padding-left:8px;}
-  .tagtbl td.chk{text-align:center;width:30px;}
-  /* checkbox cell */
-  .box{display:inline-block;width:16px;height:16px;border:1.5px solid #b6a98a;border-radius:3px;cursor:pointer;background:#fff;vertical-align:middle;}
-  .box.on{background:var(--wine);border-color:var(--wine);position:relative;}
-  .box.on::after{content:"✓";color:#fff;font-size:12px;font-weight:700;position:absolute;top:-3px;left:2px;}
-  .box.headtype.on{background:var(--head);border-color:var(--head);}
-  .box.subtype.on{background:var(--sub);border-color:var(--sub);}
-  /* head marker bar (중급/고급) */
-  .headbar{width:4px;background:transparent;border-radius:2px;}
-  .headbar.show{background:var(--head);}
-  .lvl-mid .headcell, .lvl-adv .headcell{display:table-cell;}
-  .headcell{display:none;width:8px;padding:0 2px !important;}
+  /* ── TREE ── */
+  .tree{margin-top:10px;}
+  /* a branch group = one 묶음 */
+  .branch{position:relative;margin:0 0 4px;padding-left:4px;}
+  /* head node */
+  .node{display:flex;align-items:center;gap:8px;margin:6px 0;}
+  .node .pin{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#fff;border-radius:3px;padding:2px 7px;flex:0 0 auto;}
+  .node.head .pin{background:var(--head);}
+  .node.leaf .pin{background:var(--sub);}
+  .numbox{width:46px;border:1.5px solid var(--line);border-radius:6px;background:#fff;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ink);font-size:14px;padding:5px 0;flex:0 0 auto;}
+  .lblbox{flex:1;border:1.5px solid var(--line);border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:var(--ink);padding:5px 8px;min-width:0;}
+  .node.head .numbox,.node.head .lblbox{border-color:var(--head);}
+  .node.leaf{margin-left:30px;}
+  /* vertical connector for leaves under a head */
+  .leaves{position:relative;margin-left:14px;padding-left:18px;border-left:2px solid var(--gold-soft);}
+  .leaves .node.leaf{margin-left:0;}
+  .leaves .node.leaf::before{content:"";position:absolute;left:-18px;width:16px;border-top:2px solid var(--gold-soft);transform:translateY(13px);}
 
-  /* ── chunk boxes (초급: 미리 그려짐 / 고급: 비어있음) ── */
-  .chunks{margin-top:14px;}
-  .chunk{border:1.5px solid var(--gold);border-radius:8px;padding:12px 14px;margin:10px 0;background:var(--paper-2);}
-  .chunk .topic{font-weight:800;font-size:14px;color:var(--wine);margin-bottom:4px;}
-  .chunk .topic .badge{font-size:10px;font-weight:700;letter-spacing:.08em;background:var(--wine);color:#fff;border-radius:3px;padding:1px 6px;margin-right:6px;vertical-align:middle;}
-  .chunk .sub{font-size:12.5px;color:#5a4a3a;padding-left:6px;border-left:2px solid var(--gold-soft);margin:3px 0;}
-  .chunk.blank{background:#fff;border-style:dashed;min-height:90px;}
-  .chunk.blank .topic{color:#b6a98a;}
-  .blank-lines{background:repeating-linear-gradient(transparent,transparent 25px,var(--line) 25px,var(--line) 26px);min-height:78px;margin-top:6px;}
-  .flow-break{display:flex;align-items:center;gap:10px;margin:12px 0;}
+  .flow-break{display:flex;align-items:center;gap:10px;margin:14px 0;}
   .flow-break .ln{flex:1;height:0;border-top:2px dashed var(--wine-soft);}
   .flow-break .tx{font-size:11.5px;font-weight:800;color:var(--wine-soft);letter-spacing:.06em;}
+  .flow-break input{width:90px;border:0;border-bottom:1.5px solid var(--wine-soft);background:none;font-family:inherit;font-size:12px;text-align:center;color:var(--wine);}
+
+  /* blank canvas (고급) */
+  .canvas{border:1.5px dashed var(--line);border-radius:8px;background:#fff;min-height:280px;padding:14px;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px;}
+  .canvas .hint{font-size:12px;color:#b6a98a;}
 
   /* answer */
-  .answer{border:1px solid var(--gold);border-left:5px solid var(--gold);background:#fffdf6;border-radius:4px;padding:14px 18px;margin-top:12px;}
+  .answer{border:1px solid var(--gold);border-left:5px solid var(--gold);background:#fffdf6;border-radius:4px;padding:14px 18px;margin-top:14px;}
   .answer .h{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--wine);text-transform:uppercase;margin-bottom:8px;font-family:'Space Grotesk',sans-serif;}
   .answer p{font-size:13.5px;margin:5px 0;color:#3a2e22;}
   .answer .key{font-weight:800;color:var(--wine);}
 
-  /* ── mode / level visibility ── */
   body.mode-student .teacher-only{display:none;}
-  /* default level = beginner */
   .only-beg,.only-mid,.only-adv{display:none;}
   body.lvl-beg .only-beg{display:block;}
   body.lvl-mid .only-mid{display:block;}
@@ -116,15 +100,11 @@
     .toolbar{display:none;}
     body{background:#fff;font-size:11.5pt;}
     .wrap{max-width:none;padding:0;}
-    .step,.passage,.chunk,.answer,.chunks{break-inside:avoid;}
+    .step,.passage,.answer,.branch,.canvas{break-inside:avoid;}
     .teacher-only{display:block !important;}
     body.mode-student .teacher-only{display:none !important;}
   }
-  @media (max-width:640px){
-    h1{font-size:23px;}
-    .tagtbl th{font-size:9px;}
-    .tagtbl td.s-txt{font-size:12px;}
-  }
+  @media (max-width:640px){ h1{font-size:23px;} }
 </style>
 </head>
 <body class="mode-student lvl-beg">
@@ -133,12 +113,12 @@
   <header>
     <div class="eyebrow">Flow Reading · Final Workbook</div>
     <h1>흐름으로 읽기 — 1단계
-      <span class="en">Tag the Logic, Chunk the Flow</span>
+      <span class="en">Build the Flow Tree</span>
     </h1>
     <div class="meta">
       <span><b>대상</b> 고3 수능 파이널 (중하위권)</span>
       <span><b>샘플</b> 자작 지문 1 · 난이도 중</span>
-      <span><b>훈련</b> 관계 태깅으로 단락을 묶는다</span>
+      <span><b>훈련</b> 문장 관계를 트리로 작도</span>
     </div>
   </header>
 
@@ -186,96 +166,97 @@
     </div>
   </div>
 
-  <!-- STEP 2 : 관계 태깅 + 청킹 -->
+  <!-- STEP 2 : 트리 작도 -->
   <div class="step">
-    <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">관계 태깅 → 묶기</span></div>
-    <div class="step-sub">각 문장이 앞과 어떤 관계인지 한 칸만 체크. 라벨이 곧 '머리냐 딸림이냐'를 알려줍니다.</div>
+    <div class="step-h"><span class="step-n">STEP 2</span><span class="step-t">흐름 트리 작도</span></div>
+    <div class="step-sub">머리 문장 아래 딸린 문장을 가지로 연결. 흐름이 바뀌면 새 줄기.</div>
 
     <div class="legend">
-      <span class="lg h">주제도입</span><span class="lg h">대조/반전</span><span class="lg h">새화제</span>
-      <span class="lg s">부연</span><span class="lg s">예시</span><span class="lg s">근거</span><span class="lg s">확장</span><span class="lg s">재진술</span>
-      <div class="legend-key"><span class="dh">■ 머리</span> = 새 묶음을 연다 &nbsp;·&nbsp; <span class="ds">■ 딸림</span> = 바로 위 머리에 묶인다</div>
+      <span class="lg h">머리</span>
+      <span style="font-size:11px;color:#8a7a6a">주제도입 · 대조/반전 · 새화제</span>
+      <span class="lg s">딸림</span>
+      <span style="font-size:11px;color:#8a7a6a">부연 · 예시 · 근거 · 확장 · 재진술</span>
+      <div class="legend-key">각 칸에 <span class="dh">문장 번호</span> + <span class="ds">라벨</span>을 적습니다. 머리 = 새 묶음을 연다.</div>
     </div>
 
-    <table class="tagtbl">
-      <thead>
-        <tr>
-          <th class="headcell"></th>
-          <th></th><th class="sent-col">문장</th>
-          <th class="head-col">주제<br>도입</th><th class="head-col">대조<br>반전</th><th class="head-col">새<br>화제</th>
-          <th class="sub-col">부연</th><th class="sub-col">예시</th><th class="sub-col">근거</th><th class="sub-col">확장</th><th class="sub-col">재진술</th>
-        </tr>
-      </thead>
-      <tbody id="tagBody"><!-- rows injected --></tbody>
-    </table>
-
-    <!-- ── 묶기 영역: 난이도별 ── -->
-    <div class="chunks">
-
-      <!-- 초급: 묶음 틀 미리 제공 (배치만 보여줌, 라벨/요지는 학생이) -->
-      <div class="only-beg">
-        <div class="field-label">묶음 틀 (배치는 채워져 있습니다 — 라벨만 위에서 체크)</div>
-        <div class="chunk">
-          <div class="topic"><span class="badge">묶음 A · 머리</span>① ____________________</div>
-          <div class="sub">└ ② 딸림</div>
-          <div class="sub">└ ③ 딸림</div>
+    <!-- 초급: 뼈대 제공 -->
+    <div class="only-beg">
+      <div class="tree">
+        <div class="branch">
+          <div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="①"><input class="lblbox" placeholder="라벨: 주제도입"></div>
+          <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox" placeholder="②"><input class="lblbox" placeholder="라벨: 부연"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox" placeholder="③"><input class="lblbox" placeholder="라벨: 예시"></div>
+          </div>
         </div>
-        <div class="flow-break"><span class="ln"></span><span class="tx">④ 여기서 흐름 전환</span><span class="ln"></span></div>
-        <div class="chunk">
-          <div class="topic"><span class="badge">묶음 B · 머리</span>⑤ ____________________</div>
-          <div class="sub">└ ④ 전환 신호 · ⑥ 딸림 · ⑦ 딸림 · ⑧ 마무리</div>
+        <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸ ④</span><span class="ln"></span></div>
+        <div class="branch">
+          <div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="⑤"><input class="lblbox" placeholder="라벨: 새화제"></div>
+          <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox" placeholder="④"><input class="lblbox" placeholder="라벨: 대조/반전"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox" placeholder="⑥"><input class="lblbox" placeholder="라벨: 근거"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox" placeholder="⑦"><input class="lblbox" placeholder="라벨: 부연"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox" placeholder="⑧"><input class="lblbox" placeholder="라벨: 재진술"></div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- 중급: 박스 없음, 머리표시(│)는 태깅표 왼쪽에서 자동. 여기선 안내만 -->
-      <div class="only-mid">
-        <div class="field-label">묶기 (박스 없음 — 위 표 왼쪽 │ 표시가 '머리'입니다)</div>
-        <p style="font-size:12.5px;color:#7a6a5a;">머리 라벨(주제도입·대조반전·새화제)을 체크하면 그 문장 왼쪽에 <b style="color:var(--head)">│</b>가 생깁니다. │ 와 │ 사이가 한 묶음. 머리 문장 번호만 적어보세요.</p>
-        <div class="field-label">묶음 머리 문장 번호 (전환 순서대로)</div>
-        <input class="write" placeholder="예) ① → ⑤" />
-      </div>
-
-      <!-- 고급: 빈 박스에 직접 채우기 -->
-      <div class="only-adv">
-        <div class="field-label">묶기 (직접 — 문장 번호를 박스에 채워 묶음을 완성)</div>
-        <div class="chunk blank">
-          <div class="topic"><span class="badge">묶음 A</span>머리 + 딸림 문장 번호 / 한 줄 요약</div>
-          <div class="blank-lines"></div>
+    <!-- 중급: 머리 칸만 -->
+    <div class="only-mid">
+      <div class="tree">
+        <div class="branch">
+          <div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="라벨"></div>
+          <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox" placeholder="딸린 문장 번호 + 라벨"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div>
+          </div>
         </div>
-        <div class="flow-break"><span class="ln"></span><span class="tx">전환점 ?번</span><span class="ln"></span></div>
-        <div class="chunk blank">
-          <div class="topic"><span class="badge">묶음 B</span>머리 + 딸림 문장 번호 / 한 줄 요약</div>
-          <div class="blank-lines"></div>
+        <div class="flow-break"><span class="ln"></span><span class="tx">흐름 전환 ▸</span><input placeholder="?번"><span class="ln"></span></div>
+        <div class="branch">
+          <div class="node head"><span class="pin">머리</span><input class="numbox" placeholder="?"><input class="lblbox" placeholder="라벨"></div>
+          <div class="leaves">
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div>
+            <div class="node leaf"><span class="pin">딸림</span><input class="numbox"><input class="lblbox"></div>
+          </div>
         </div>
       </div>
+      <p style="font-size:12px;color:#7a6a5a;margin-top:8px;">머리 문장을 먼저 찾고, 딸린 문장을 가지에 채우세요. 가지 칸이 모자라거나 남으면 직접 조정.</p>
+    </div>
 
-    </div><!-- /chunks -->
+    <!-- 고급: 백지 -->
+    <div class="only-adv">
+      <div class="canvas">
+        <span class="hint">위 지문만 보고 트리를 직접 작도하세요. 머리(주제도입·대조반전·새화제) → 가지(딸림). 전환점에서 새 줄기.</span>
+      </div>
+    </div>
 
     <div class="answer teacher-only">
-      <div class="h">모범 태깅 &amp; 묶음</div>
-      <p><span class="key">묶음 A</span> ① 주제도입(통념) ▸ ② 부연 ▸ ③ 예시</p>
+      <div class="h">모범 트리</div>
+      <p><span class="key">줄기 A</span> ① 주제도입(통념) ─ ② 부연 ─ ③ 예시</p>
       <p><span class="key">전환</span> ④ 대조/반전 (However)</p>
-      <p><span class="key">묶음 B</span> ⑤ 새화제(진짜 주장) ▸ ⑥ 근거 ▸ ⑦ 부연 ▸ ⑧ 재진술(결론)</p>
+      <p><span class="key">줄기 B</span> ⑤ 새화제(주장) ─ ⑥ 근거 ─ ⑦ 부연 ─ ⑧ 재진술</p>
+      <p style="color:#7a6a5a;margin-top:6px;">④를 줄기 B의 첫 딸림(전환 신호)으로 붙여도, 독립 전환 마디로 둬도 무방. 핵심은 ①~③과 ⑤~⑧이 다른 줄기라는 인식.</p>
     </div>
   </div>
 
-  <!-- STEP 3 : 흐름 전환점 -->
+  <!-- STEP 3 -->
   <div class="step">
     <div class="step-h"><span class="step-n">STEP 3</span><span class="step-t">흐름 전환점 확인</span></div>
-    <div class="step-sub">묶음과 묶음이 갈리는 <b>한 지점</b>과 그 신호어.</div>
+    <div class="step-sub">두 줄기가 갈리는 <b>한 지점</b>과 신호어.</div>
     <div class="field-label">전환 문장 번호 / 신호어</div>
     <input class="write" placeholder="예) ④번 — However" />
     <div class="answer teacher-only">
       <div class="h">해설</div>
-      <p><span class="key">④번 However</span>. ①~③ '통념' → ④부터 '연구가 밝힌 진실'. 신호어를 만나는 순간 앞 묶음을 닫고 새 묶음을 연다.</p>
-      <p>중하위권 빈출 실수: ④를 단순 연결로 보고 통념·반박을 한 덩어리로 읽어 주장을 거꾸로 파악.</p>
+      <p><span class="key">④번 However</span>. ①~③ '통념' → ④부터 '연구가 밝힌 진실'. 신호어를 만나는 순간 줄기를 바꾼다.</p>
+      <p>중하위권 빈출 실수: ④를 단순 연결로 보고 통념·반박을 한 줄기로 묶어 주장을 거꾸로 파악.</p>
     </div>
   </div>
 
-  <!-- STEP 4 : 요지 -->
+  <!-- STEP 4 -->
   <div class="step">
     <div class="step-h"><span class="step-n">STEP 4</span><span class="step-t">요지 재구성</span></div>
-    <div class="step-sub">두 묶음의 <b>머리 문장만</b> 이어 한 문장으로.</div>
+    <div class="step-sub">두 줄기의 <b>머리 문장만</b> 이어 한 문장으로.</div>
     <textarea class="write" rows="2" placeholder="통념(~할 것이다) → 그러나 실제로는(~다)."></textarea>
     <div class="answer teacher-only">
       <div class="h">모범 요지</div>
@@ -291,48 +272,10 @@
 </div>
 
 <script>
-  // 8 sentences x label config
-  // headTypes first 3 columns, subTypes next 5
-  const SENTS = [
-    "선택지가 많을수록 고객이 더 행복할 것이라는 통념.",
-    "넓은 선택폭이 각자에게 꼭 맞는 상품을 찾게 해준다.",
-    "잼 30종 vs 6종 — 더 후해 보인다.",
-    "그러나 소비자 행동 연구는 다른 이야기를 한다.",
-    "선택지가 너무 많으면 만족이 아니라 압도감을 느낀다.",
-    "잼 6종 vs 24종 연구 — 6종일 때 구매율 ↑.",
-    "큰 진열은 시선은 끌지만 결정은 더 어렵게.",
-    "따라서 더 많이 주는 것이 늘 선물은 아니다."
-  ];
-  const HEAD = 3; // first 3 checkbox cols are head-types
-
-  const body = document.getElementById('tagBody');
-  SENTS.forEach((t,i)=>{
-    const tr=document.createElement('tr');
-    let cells = `<td class="headcell"><div class="headbar" data-row="${i}"></div></td>`;
-    cells += `<td class="s-no">${i+1}</td><td class="s-txt">${t}</td>`;
-    for(let c=0;c<8;c++){
-      const type = c<HEAD ? 'headtype':'subtype';
-      cells += `<td class="chk"><span class="box ${type}" data-row="${i}" data-col="${c}" onclick="pick(this)"></span></td>`;
-    }
-    tr.innerHTML=cells;
-    body.appendChild(tr);
-  });
-
-  function pick(el){
-    const row=el.dataset.row;
-    // single select per row
-    document.querySelectorAll(`.box[data-row="${row}"]`).forEach(b=>{ if(b!==el) b.classList.remove('on'); });
-    el.classList.toggle('on');
-    // head bar: show if a head-type col is selected
-    const bar=document.querySelector(`.headbar[data-row="${row}"]`);
-    const headOn=[...document.querySelectorAll(`.box.headtype[data-row="${row}"]`)].some(b=>b.classList.contains('on'));
-    bar.classList.toggle('show',headOn);
-  }
-
   const NOTES={
-    beg:'<b>초급</b> — 묶음 틀(배치)을 제공합니다. 학생은 관계 라벨만 체크하며 개념에 익숙해집니다.',
-    mid:'<b>중급</b> — 박스 없이, 머리 라벨을 고르면 │ 표시가 생겨 스스로 묶음을 인지합니다.',
-    adv:'<b>고급</b> — 빈 박스에 문장 번호를 직접 채워 묶음·전환·요지를 모두 스스로 완성합니다.'
+    beg:'<b>초급</b> — 트리 뼈대(머리·가지·전환선)를 제공합니다. 학생은 번호와 라벨만 채웁니다.',
+    mid:'<b>중급</b> — 머리 칸만 제공. 딸린 문장은 학생이 가지에 직접 채웁니다.',
+    adv:'<b>고급</b> — 백지에서 트리·전환점·요지를 통째로 작도합니다.'
   };
   function setMode(m){
     document.body.classList.remove('mode-student','mode-teacher');
