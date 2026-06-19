@@ -871,12 +871,14 @@ function App(){
         if(plan){
           const isShort=done<plan.target*0.9;
           setShortfallWarn({...plan, mode:isShort?'short':'praise', msg:isShort?pickMotivation():pickPraise()});
-          await new Promise(resolve=>{
-            warnResolveRef.current=()=>{
-              if(isShort&&plan.recommendCapped>0){ effectiveQCount=plan.recommendCapped; setQCount(plan.recommendCapped); }
-              resolve();
+          // 팝업 버튼 결과 대기. proceed=false면 출제 중단(직접 정하기).
+          const proceed=await new Promise(resolve=>{
+            warnResolveRef.current=(useRecommend)=>{
+              if(isShort&&useRecommend&&plan.recommendCapped>0){ effectiveQCount=plan.recommendCapped; setQCount(plan.recommendCapped); }
+              resolve(useRecommend!=='cancel');
             };
           });
+          if(!proceed){ setStarting(false); return; } // '직접 정하기' → 설정 화면으로 복귀
         }
       }catch(e){}
     }
@@ -2585,9 +2587,18 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             {shortfallWarn.msg}
           </div>
           </>}
-          <button onClick={()=>{const r=warnResolveRef.current; warnResolveRef.current=null; setShortfallWarn(null); if(r)r();}} style={{width:'100%',marginTop:18,padding:'14px',borderRadius:13,border:'none',background:shortfallWarn.mode==='praise'?'linear-gradient(135deg,#15803d,#16a34a)':'linear-gradient(135deg,#7a1020,#9a2030)',color:'#fff',fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 14px rgba(0,0,0,0.2)'}}>
-            {shortfallWarn.mode==='praise'?'확인, 오늘도 풀어볼게요! 💪':'확인했어요, 오늘 열심히 풀게요! 🔥'}
+          {shortfallWarn.mode==='praise'?
+          <button onClick={()=>{const r=warnResolveRef.current; warnResolveRef.current=null; setShortfallWarn(null); if(r)r(true);}} style={{width:'100%',marginTop:18,padding:'14px',borderRadius:13,border:'none',background:'linear-gradient(135deg,#15803d,#16a34a)',color:'#fff',fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 14px rgba(0,0,0,0.2)'}}>
+            확인, 오늘도 풀어볼게요! 💪
           </button>
+          :<div style={{marginTop:18,display:'flex',flexDirection:'column',gap:9}}>
+            <button onClick={()=>{const r=warnResolveRef.current; warnResolveRef.current=null; setShortfallWarn(null); if(r)r(true);}} style={{width:'100%',padding:'14px',borderRadius:13,border:'none',background:'linear-gradient(135deg,#7a1020,#9a2030)',color:'#fff',fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 14px rgba(122,16,32,0.3)'}}>
+              ✅ 추천대로 {shortfallWarn.recommendCapped}문항 풀기
+            </button>
+            <button onClick={()=>{const r=warnResolveRef.current; warnResolveRef.current=null; setShortfallWarn(null); if(r)r('cancel');}} style={{width:'100%',padding:'13px',borderRadius:13,border:'1.5px solid #C9A84C',background:'#fff',color:'#7a1020',fontSize:14,fontWeight:700,cursor:'pointer'}}>
+              ✏️ 직접 문제 수 정하기
+            </button>
+          </div>}
         </div>
       </div>}
       <div style={S.box}>
