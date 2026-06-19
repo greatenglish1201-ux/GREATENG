@@ -790,25 +790,43 @@ function App(){
   const [shortfallWarn,setShortfallWarn]=useState(null); // null | {target, done, short, days, msg}
   const warnResolveRef=useRef(null); // 모달 '확인' 클릭 대기용
   const DAILY_GOAL=30;
-  const MAX_DAILY=50; // 1회 자동조정/권장 상한
-  // 시작일 기준 부족분·오늘 권장량 계산 (경고 여부와 무관하게 항상 계산)
-  const computeStudyPlan=(startDate,doneCount)=>{
+  const MAX_DAILY=50; // 1회 권장 상한
+  // 학습 계획 계산 (시작일~오늘=경과분, 시작일~만료일=전체목표, 남은기간 안분)
+  const computeStudyPlan=(startDate,doneCount,expiry)=>{
     if(!startDate) return null;
     const sd=new Date(startDate);
     if(isNaN(sd)) return null;
     sd.setHours(0,0,0,0);
     const today=new Date(); today.setHours(0,0,0,0);
-    const days=Math.floor((today-sd)/86400000)+1; // 시작일 당일 포함
+    const days=Math.floor((today-sd)/86400000)+1; // 시작일 당일 포함(경과 일수)
     if(days<1) return null;
-    const target=days*DAILY_GOAL;
-    const short=Math.max(0,target-doneCount); // 부족분 (음수면 0)
-    // 오늘 권장 = 오늘치 30 + 밀린 부족분, 상한 MAX_DAILY
-    const recommend=Math.min(MAX_DAILY, DAILY_GOAL+short);
-    return {target,done:doneCount,short,days,recommend};
+    const target=days*DAILY_GOAL;            // 오늘까지 따라왔어야 할 양(미달 판정용)
+    const short=Math.max(0,target-doneCount);// 현 시점 부족분
+
+    // 만료일이 유효하고 아직 안 지났으면 → 마감까지 남은 기간에 안분
+    let recommend, totalTarget=null, remainDays=null, usingDeadline=false;
+    if(expiry){
+      const ed=new Date(expiry);
+      if(!isNaN(ed)){
+        ed.setHours(0,0,0,0);
+        const totalSpan=Math.floor((ed-sd)/86400000)+1; // 시작~마감 전체 일수
+        const remain=Math.floor((ed-today)/86400000)+1; // 오늘 포함 남은 일수
+        if(totalSpan>0 && remain>=1){
+          totalTarget=totalSpan*DAILY_GOAL;
+          remainDays=remain;
+          const left=Math.max(0,totalTarget-doneCount); // 마감까지 남은 총량
+          recommend=Math.min(MAX_DAILY, Math.max(DAILY_GOAL, Math.ceil(left/remain)));
+          usingDeadline=true;
+        }
+      }
+    }
+    // 만료일 없음/지남 → 폴백: 오늘치 30 + 부족분
+    if(recommend===undefined) recommend=Math.min(MAX_DAILY, DAILY_GOAL+short);
+
+    return {target,done:doneCount,short,days,recommend,totalTarget,remainDays,usingDeadline};
   };
-  // 경고 표시 여부: 목표의 90% 미만일 때만
-  const computeShortfall=(startDate,doneCount)=>{
-    const plan=computeStudyPlan(startDate,doneCount);
+  const computeShortfall=(startDate,doneCount,expiry)=>{
+    const plan=computeStudyPlan(startDate,doneCount,expiry);
     if(!plan) return null;
     if(doneCount>=plan.target*0.9) return null; // 10% 미만 미달이면 경고 없음
     return plan;
@@ -819,6 +837,17 @@ function App(){
     if(starting)return; // 중복 클릭 방지
     setStarting(true);
     setShortfallWarn(null);
+
+    // 출제할 지문 풀 확정 + GAS 문제 선로딩을 '먼저' 시작 (팝업 읽는 동안 백그라운드 로딩)
+    let pool=allPassages.filter(p=>selPassages.has(p.id));
+    if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
+    pool=shuffle(pool);
+    const gasIds=pool.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
+    const prefetchPromise=(gasIds.length&&scriptUrl)
+      ? Promise.all(gasIds.map(pid=>jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))))
+      : Promise.resolve(null);
+
+    let effectiveQCount=qCount; // 이번 회차에 실제 사용할 문제 수
     // 학생 본인: 시작일 기준 학습량 점검 → 팝업(미달 경고 / 칭찬) → 확인 눌러야 진행
     if(session?.role==='student'&&session?.startDate&&scriptUrl&&studentName){
       try{
@@ -833,27 +862,23 @@ function App(){
             if(line.split('|').length>=3) done++;
           });
         });
-        const plan=computeStudyPlan(session.startDate,done);
+        const plan=computeStudyPlan(session.startDate,done,session.expiry);
         if(plan){
           const isShort=done<plan.target*0.9;
           setShortfallWarn({...plan, mode:isShort?'short':'praise', msg:isShort?pickMotivation():pickPraise()});
           await new Promise(resolve=>{
-            warnResolveRef.current=()=>{ if(isShort&&plan.recommend>0) setQCount(plan.recommend); resolve(); };
+            warnResolveRef.current=()=>{
+              if(isShort&&plan.recommend>0){ effectiveQCount=plan.recommend; setQCount(plan.recommend); }
+              resolve();
+            };
           });
         }
       }catch(e){}
     }
     try{
-      let pool=allPassages.filter(p=>selPassages.has(p.id));
-      if(diffFilter!=='all')pool=pool.filter(p=>p.difficulty===diffFilter);
-      pool=shuffle(pool);
-
-      // 선택된 지문 전체를 조회 (균등 배분을 위해 전체 필요)
-      const gasIds=pool.filter(p=>!PASSAGE_IDS.has(p.id)).map(p=>p.id);
-      if(gasIds.length&&scriptUrl){
-        const fetched=await Promise.all(gasIds.map(pid=>
-          jsonpFetch(scriptUrl,{action:'getQuestions',pid}).catch(()=>({ok:false,questions:[]}))
-        ));
+      // 선로딩된 GAS 문제 결과를 pool에 병합 (팝업 읽는 동안 대부분 끝나 있음)
+      const fetched=await prefetchPromise;
+      if(fetched){
         gasIds.forEach((pid,i)=>{
           const idx=pool.findIndex(p=>p.id===pid);
           if(idx<0)return;
@@ -882,10 +907,10 @@ function App(){
       const picked=[];
       let round=0;
       let added=true;
-      while(picked.length<qCount && added){
+      while(picked.length<effectiveQCount && added){
         added=false;
         for(const entry of byPassage){
-          if(picked.length>=qCount) break;
+          if(picked.length>=effectiveQCount) break;
           if(entry.qs.length>round){
             picked.push(entry.qs[round]);
             added=true;
@@ -895,7 +920,7 @@ function App(){
       }
 
       // 출제 순서 랜덤화 (지문 묶음으로 몰리지 않게)
-      const qs=shuffle(picked).slice(0,Math.min(qCount,picked.length));
+      const qs=shuffle(picked).slice(0,Math.min(effectiveQCount,picked.length));
       if(!qs.length){ alert('출제할 수 있는 문제가 없습니다. 다른 교재나 유형을 선택해 주세요.'); return; }
       setQuestions(qs);setCurIdx(0);setUserAns({});setShowAns(false);setTimerKey(Date.now());setScreen('quiz');
     }catch(e){
@@ -1127,7 +1152,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
       if(result.ok){
-        onLogin({name:result.name||name.trim(),role:result.role||'student',startDate:result.startDate||'',adminPw:result.role==='admin'?pw:undefined});
+        onLogin({name:result.name||name.trim(),role:result.role||'student',startDate:result.startDate||'',expiry:result.expiry||'',adminPw:result.role==='admin'?pw:undefined});
       } else {
         setError(result.error||result.message||'로그인 실패');
       }
@@ -2548,8 +2573,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             <b style={{color:'#b91c1c',fontSize:15}}>약 {shortfallWarn.short}문항</b>이 부족합니다.
           </div>
           <div style={{fontSize:13.5,color:'#1e3a5f',fontWeight:700,marginTop:10,padding:'11px 14px',background:'#eff6ff',border:'1px solid #93c5fd',borderRadius:12,lineHeight:1.6}}>
-            📌 오늘 목표는 <b style={{fontSize:16,color:'#1d4ed8'}}>{30+shortfallWarn.short}문항</b>이에요!<br/>
-            <span style={{fontSize:11.5,color:'#64748b',fontWeight:500}}>한 번에 최대 50문항씩, 여러 번 나눠 풀면 돼요. (문제 수 자동 조정됨)</span>
+            📌 오늘은 <b style={{fontSize:16,color:'#1d4ed8'}}>{shortfallWarn.recommend}문항</b> 풀기를 권장해요!<br/>
+            <span style={{fontSize:11.5,color:'#64748b',fontWeight:500}}>{shortfallWarn.usingDeadline?`마감까지 ${shortfallWarn.remainDays}일 남았어요. 매일 ${shortfallWarn.recommend}문항씩 풀면 목표를 채울 수 있어요. (문제 수 자동 조정됨)`:'한 번에 최대 50문항씩, 여러 번 나눠 풀면 돼요. (문제 수 자동 조정됨)'}</span>
           </div>
           <div style={{fontSize:13.5,color:'#7a1020',fontWeight:700,marginTop:14,padding:'12px 14px',background:'linear-gradient(135deg,#fff8f0,#fff5f5)',border:'1px solid #C9A84C',borderRadius:12,lineHeight:1.6}}>
             {shortfallWarn.msg}
