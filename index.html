@@ -1157,6 +1157,33 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     setExamRange(new Set(set));
     try{localStorage.setItem(RANGE_KEY,JSON.stringify([...set]));}catch{}
   };
+  // ── 시험범위 프리셋(공용, GAS 저장) ──
+  const [presets,setPresets]=useState([]);
+  const [presetBusy,setPresetBusy]=useState(false);
+  const loadPresets=React.useCallback(()=>{
+    if(!scriptUrl)return;
+    jsonpFetch(scriptUrl,{action:'getPresets'})
+      .then(d=>{ if(d&&d.ok&&Array.isArray(d.presets))setPresets(d.presets); })
+      .catch(()=>{});
+  },[scriptUrl]);
+  React.useEffect(()=>{ loadPresets(); },[loadPresets]);
+  const applyPreset=(pr)=>{ if(pr&&Array.isArray(pr.ranges))saveRange(new Set(pr.ranges)); };
+  const savePresetToServer=(name,id)=>{
+    if(!scriptUrl)return;
+    setPresetBusy(true);
+    jsonpFetch(scriptUrl,{action:'savePreset',name,id:id||'',ranges_json:JSON.stringify([...examRange])})
+      .then(d=>{ if(d&&d.ok){ loadPresets(); setMsg('✅ 프리셋 저장됨'); } else setMsg('❌ 저장 실패: '+((d&&d.error)||'')); })
+      .catch(()=>setMsg('❌ 프리셋 저장 통신 실패'))
+      .finally(()=>setPresetBusy(false));
+  };
+  const deletePresetFromServer=(id)=>{
+    if(!scriptUrl||!id)return;
+    setPresetBusy(true);
+    jsonpFetch(scriptUrl,{action:'deletePreset',id})
+      .then(d=>{ if(d&&d.ok){ loadPresets(); setMsg('🗑 프리셋 삭제됨'); } else setMsg('❌ 삭제 실패'); })
+      .catch(()=>setMsg('❌ 프리셋 삭제 통신 실패'))
+      .finally(()=>setPresetBusy(false));
+  };
   // 출제DB 전체 pid를 한 번 받아 캐시 → 범위(prefix) 필터로 분모 구성
   const [allQPids,setAllQPids]=useState(null);
   React.useEffect(()=>{
@@ -1832,6 +1859,32 @@ ${ESC_}
                     <span>🎯 시험 범위 {examRange.size>0?<span style={{fontSize:11,color:'#7a1020'}}>({examRange.size}개 선택)</span>:<span style={{fontSize:11,color:'#9a8570'}}>전체</span>}</span>
                     <span style={{cursor:'pointer',color:'#C9A84C'}}>{rangeOpen?'▾ 닫기':'▸ 설정'}</span>
                   </div>
+                  {rangeOpen&&<div style={{padding:'10px 16px 0'}}>
+                    {/* 프리셋 바 (공용) */}
+                    <div style={{background:'#faf6ec',border:'1px solid #ecdfbf',borderRadius:10,padding:'9px 11px',marginBottom:10}}>
+                      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:presets.length?7:0,flexWrap:'wrap'}}>
+                        <span style={{fontSize:11.5,fontWeight:700,color:'#7a1020'}}>📁 프리셋</span>
+                        <span style={{fontSize:10.5,color:'#b09a6a'}}>자주 쓰는 시험 범위 저장·불러오기 (공용)</span>
+                        <button disabled={presetBusy||examRange.size===0} onClick={()=>{
+                          const nm=(prompt('현재 선택한 범위를 프리셋 이름으로 저장합니다.\\n예: 제철고1 1학기 중간','')||'').trim();
+                          if(!nm)return;
+                          const dup=presets.find(pr=>pr.name===nm);
+                          if(dup&&!confirm('같은 이름의 프리셋이 있습니다. 덮어쓸까요?\\n\\n“'+nm+'”'))return;
+                          savePresetToServer(nm,dup?dup.id:'');
+                        }} style={{marginLeft:'auto',fontSize:11,fontWeight:700,color:examRange.size===0?'#bbb':'#fff',background:examRange.size===0?'#e6dcc4':'#7a1020',border:'none',borderRadius:6,padding:'4px 10px',cursor:examRange.size===0?'default':'pointer'}}>＋ 현재 범위 저장</button>
+                      </div>
+                      {presets.length===0
+                        ?<div style={{fontSize:11,color:'#b09a6a'}}>저장된 프리셋이 없습니다. 범위를 고른 뒤 “현재 범위 저장”을 눌러보세요.</div>
+                        :<div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                          {presets.map(pr=>(
+                            <span key={pr.id} style={{display:'inline-flex',alignItems:'center',gap:5,background:'#fff',border:'1px solid #e0d3ae',borderRadius:16,padding:'3px 4px 3px 11px',fontSize:11.5}}>
+                              <span onClick={()=>applyPreset(pr)} title={(pr.ranges||[]).length+'개 항목 적용'} style={{cursor:'pointer',color:'#3a2a20',fontWeight:600}}>{pr.name} <span style={{color:'#bbb',fontWeight:400}}>({(pr.ranges||[]).length})</span></span>
+                              <span onClick={()=>{ if(confirm('프리셋 “'+pr.name+'” 삭제할까요?'))deletePresetFromServer(pr.id); }} style={{cursor:'pointer',color:'#c98',fontWeight:800,padding:'0 4px',borderRadius:10}}>✕</span>
+                            </span>
+                          ))}
+                        </div>}
+                    </div>
+                  </div>}
                   {rangeOpen&&(()=>{
                     if(!Array.isArray(allQPids))return <div style={{padding:'10px 16px',fontSize:11.5,color:'#C9A84C'}}>지문 목록 불러오는 중…</div>;
                     // 트리 빌드: 교재 → 강 → [문항] (passages.js 정적 + 출제DB 통합)
