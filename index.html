@@ -1165,6 +1165,18 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       .then(d=>setAllQPids((d&&d.ok&&d.pids)||[]))
       .catch(()=>setAllQPids([]));
   },[scriptUrl]);
+  // 범위 트리/분모용 통합 pid 풀: passages.js(정적) ∪ 출제DB(GAS).
+  // 정적은 allPassages 규칙과 동일하게 27STYD·27ST_E_test 제외(시트 전용).
+  const rangePidPool=useMemo(()=>{
+    const set=new Set();
+    try{ (typeof PASSAGES!=='undefined'?PASSAGES:[]).forEach(p=>{
+      const id=p&&p.id||''; if(!id)return;
+      if(id.startsWith('27STYD')||id.startsWith('27ST_E_test'))return;
+      set.add(id);
+    }); }catch{}
+    (Array.isArray(allQPids)?allQPids:[]).forEach(pid=>set.add(pid));
+    return [...set];
+  },[allQPids]);
   const [wrongSort,setWrongSort]=useState('count'); // 'count'=틀린 횟수순, 'ratio'=틀린 비율순
   // 화면·인쇄 공통 정렬 (어긋남 방지). sortMode 미지정 시 현재 wrongSort 사용.
   const sortWrongs=(arr,sortMode)=>{
@@ -1315,7 +1327,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
         }
       });
     });
-    const rangeAll=(examRange.size>0&&Array.isArray(allQPids))?allQPids.filter(inRangeChk):Object.keys(perPid);
+    const rangeAll=(examRange.size>0)?rangePidPool.filter(inRangeChk):Object.keys(perPid);
     const WZ=1.96;
     const wilsonLowerWrong=(wrong,n)=>{ if(n<=0)return 0; const phat=wrong/n,z2=WZ*WZ;
       return Math.max(0,((phat+z2/(2*n))-WZ*Math.sqrt((phat*(1-phat)+z2/(4*n))/n))/(1+z2/n)); };
@@ -1371,11 +1383,14 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     const pidLabelFor=(pid)=>{
       const bk=allBookIds.find(b=>String(pid).startsWith(b+'_'));
       if(!bk)return pid;
-      const rest=String(pid).slice(bk.length+1).split('_');
-      const ch=rest[0],no=rest[1];
-      const chL=ch?(isNaN(parseInt(ch))?ch+' ':parseInt(ch)+'강 '):'';
-      const noL=no?(parseInt(no)||no)+'번 ':'';
-      return bookLabel(bk)+' '+chL+noL+'지문';
+      const rest=String(pid).slice(bk.length+1);
+      const isMogo=bk.startsWith('MOGO_');
+      let ch='',no='';
+      if(isMogo){ no=rest; }
+      else{ const ps=rest.split('_'); ch=ps[0]||''; no=ps[1]||ps[0]||''; }
+      const chL=ch?((isNaN(parseInt(ch))?ch:parseInt(ch))+'강 '):'';
+      const noL=no?((isNaN(parseInt(no))?no:parseInt(no))+'번'):'';
+      return (bookLabel(bk)+' '+chL+noL).trim();
     };
     // 진짜 약점(지문) — Wilson+최근성 점수 기반
     const scoreColor=sc=>sc>=50?'#B3261E':sc>=30?'#B7791F':'#9a7040';
@@ -1523,11 +1538,14 @@ ${ESC_}
     const pidLabelFor=(pid)=>{
       const bk=allBookIds.find(b=>String(pid).startsWith(b+'_'));
       if(!bk)return pid;
-      const rest=String(pid).slice(bk.length+1).split('_');
-      const ch=rest[0],no=rest[1];
-      const chL=ch?(isNaN(parseInt(ch))?ch+' ':parseInt(ch)+'강 '):'';
-      const noL=no?(parseInt(no)||no)+'번 ':'';
-      return bookLabel(bk)+' '+chL+noL+'지문';
+      const rest=String(pid).slice(bk.length+1);
+      const isMogo=bk.startsWith('MOGO_');
+      let ch='',no='';
+      if(isMogo){ no=rest; }
+      else{ const ps=rest.split('_'); ch=ps[0]||''; no=ps[1]||ps[0]||''; }
+      const chL=ch?((isNaN(parseInt(ch))?ch:parseInt(ch))+'강 '):'';
+      const noL=no?((isNaN(parseInt(no))?no:parseInt(no))+'번'):'';
+      return (bookLabel(bk)+' '+chL+noL).trim();
     };
     const studs=(stats.studentStats||[]).filter(s=>s.name!=='관리자');
     const types=(stats.typeStats||[]);
@@ -1795,9 +1813,14 @@ ${ESC_}
               const lbl=(pid)=>{
                 const bk=allBks2.find(b=>pid.startsWith(b.id+'_'));
                 if(!bk)return pid;
-                const rest=pid.slice(bk.id.length+1).split('_');
-                const ch=rest.length>=2?rest[0]:''; const no=rest.length>=2?rest[1]:rest[0];
-                return (bk.label||bk.id)+(ch?(' '+ch+'강'):'')+' '+no+'번';
+                const rest=pid.slice(bk.id.length+1);
+                const isMogo=bk.id.startsWith('MOGO_');
+                let ch='',no='';
+                if(isMogo){ no=rest; }
+                else{ const ps=rest.split('_'); ch=ps[0]||''; no=ps[1]||ps[0]||''; }
+                const chL=ch?((isNaN(parseInt(ch))?ch:parseInt(ch))+'강 '):'';
+                const noL=no?((isNaN(parseInt(no))?no:parseInt(no))+'번'):'';
+                return ((bk.label||bk.id)+' '+chL+noL).trim();
               };
               const cardWrap={background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'};
               const head={padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20',display:'flex',justifyContent:'space-between',alignItems:'center'};
@@ -1811,9 +1834,9 @@ ${ESC_}
                   </div>
                   {rangeOpen&&(()=>{
                     if(!Array.isArray(allQPids))return <div style={{padding:'10px 16px',fontSize:11.5,color:'#C9A84C'}}>지문 목록 불러오는 중…</div>;
-                    // 트리 빌드: 교재 → 강 → [문항]
+                    // 트리 빌드: 교재 → 강 → [문항] (passages.js 정적 + 출제DB 통합)
                     const tree={}; const bookOrder=[];
-                    allQPids.forEach(pid=>{
+                    rangePidPool.forEach(pid=>{
                       const bk=definedBookId(pid); if(!bk)return;
                       const rest=pid.slice(bk.length+1);
                       const isMogo=bk.startsWith('MOGO_');
