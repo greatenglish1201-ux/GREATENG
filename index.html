@@ -170,6 +170,15 @@ const MOTIVATION_MSGS=[
   '딱 10분만 더 풀어볼까요? 그 10분이 모여 등급이 됩니다. ⌛',
 ];
 const pickMotivation=()=>MOTIVATION_MSGS[Math.floor(Math.random()*MOTIVATION_MSGS.length)];
+const PRAISE_MSGS=[
+  '꾸준함이 최고의 무기예요. 이대로만 가면 됩니다! 👍',
+  '학습량을 잘 채우고 있어요. 지금 페이스를 유지해요! 🌟',
+  '성실하게 잘하고 있어요. 실력은 이미 쌓이고 있습니다! 📈',
+  '목표만큼 풀고 있는 멋진 학생이네요. 오늘도 화이팅! 💯',
+  '좋은 습관이 자리잡았어요. 이 흐름 그대로 가요! 🔥',
+  '잘 따라오고 있어요! 오늘도 가볍게 한 세트 풀어볼까요? ✨',
+];
+const pickPraise=()=>PRAISE_MSGS[Math.floor(Math.random()*PRAISE_MSGS.length)];
 
 /* ── 유틸 ── */
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
@@ -810,25 +819,27 @@ function App(){
     if(starting)return; // 중복 클릭 방지
     setStarting(true);
     setShortfallWarn(null);
-    // 학생 본인: 누적 푼 문항 수 조회 → 시작일 기준 목표 미달 시 경고(안내성, 출제는 그대로 진행)
+    // 학생 본인: 시작일 기준 학습량 점검 → 팝업(미달 경고 / 칭찬) → 확인 눌러야 진행
     if(session?.role==='student'&&session?.startDate&&scriptUrl&&studentName){
       try{
         const d=await jsonpFetch(scriptUrl,{action:'getStats',student:studentName});
         const sess=(d&&d.sessionStats)||[];
-        // 시작일(당일 0시) 이후에 응시한 회차의 문항만 카운트
         const sd=new Date(session.startDate); sd.setHours(0,0,0,0);
         let done=0;
         sess.forEach(s=>{
           const sdate=new Date(String(s.date||'').replace(' ','T'));
-          if(isNaN(sdate)||sdate<sd) return; // 시작일 이전 회차 제외
+          if(isNaN(sdate)||sdate<sd) return;
           String(s.detail||'').split('||').filter(Boolean).forEach(line=>{
             if(line.split('|').length>=3) done++;
           });
         });
-        const w=computeShortfall(session.startDate,done);
-        if(w){
-          setShortfallWarn({...w,msg:pickMotivation()});
-          await new Promise(resolve=>{ warnResolveRef.current=resolve; });
+        const plan=computeStudyPlan(session.startDate,done);
+        if(plan){
+          const isShort=done<plan.target*0.9;
+          setShortfallWarn({...plan, mode:isShort?'short':'praise', msg:isShort?pickMotivation():pickPraise()});
+          await new Promise(resolve=>{
+            warnResolveRef.current=()=>{ if(isShort&&plan.recommend>0) setQCount(plan.recommend); resolve(); };
+          });
         }
       }catch(e){}
     }
@@ -909,29 +920,42 @@ function App(){
       .catch(()=>{});
   },[scriptUrl,studentName]);
 
-  // 로그인 직후 1회: 시작일 기준 오늘 권장 문항 수로 qCount 자동조정 (이후 학생 수동조정 가능)
-  const autoQtyDoneRef=useRef('');
+  // ── 학생 본인: 누적 풀이 데이터 로딩 (사각지대/권장량 계산용) ──
+  const [myPerPid,setMyPerPid]=useState({});
+  const [myDoneSince,setMyDoneSince]=useState(0);
+  const myStatsRef=useRef('');
   useEffect(()=>{
-    if(session?.role!=='student'||!session?.startDate||!scriptUrl||!studentName) return;
-    if(autoQtyDoneRef.current===studentName) return; // 이 학생에 대해 이미 조정함
-    autoQtyDoneRef.current=studentName;
+    if(session?.role!=='student'||!scriptUrl||!studentName){setMyPerPid({});setMyDoneSince(0);return;}
+    if(myStatsRef.current===studentName) return;
+    myStatsRef.current=studentName;
     jsonpFetch(scriptUrl,{action:'getStats',student:studentName})
       .then(d=>{
         const sess=(d&&d.sessionStats)||[];
-        const sd=new Date(session.startDate); sd.setHours(0,0,0,0);
-        let done=0;
+        const sd=session?.startDate?new Date(session.startDate):null; if(sd)sd.setHours(0,0,0,0);
+        const per={}; let since=0;
         sess.forEach(s=>{
           const sdate=new Date(String(s.date||'').replace(' ','T'));
-          if(isNaN(sdate)||sdate<sd) return;
+          const afterStart=sd?(!isNaN(sdate)&&sdate>=sd):true;
           String(s.detail||'').split('||').filter(Boolean).forEach(line=>{
-            if(line.split('|').length>=3) done++;
+            const p=line.split('|'); const pid=p[0]||''; if(p.length<3||!pid)return;
+            if(!per[pid])per[pid]={t:0,c:0};
+            per[pid].t++; if(p[2]==='O')per[pid].c++;
+            if(afterStart)since++;
           });
         });
-        const plan=computeStudyPlan(session.startDate,done);
-        if(plan&&plan.recommend>0) setQCount(plan.recommend);
+        setMyPerPid(per); setMyDoneSince(since);
       })
       .catch(()=>{});
   },[session,scriptUrl,studentName]);
+
+  // ── 학생용 시험범위 프리셋 로딩 (공용 프리셋, GAS) ──
+  const [stuPresets,setStuPresets]=useState([]);
+  useEffect(()=>{
+    if(!scriptUrl){setStuPresets([]);return;}
+    jsonpFetch(scriptUrl,{action:'getPresets'})
+      .then(d=>{ if(d&&d.ok&&Array.isArray(d.presets))setStuPresets(d.presets); })
+      .catch(()=>{});
+  },[scriptUrl]);
 
   // 🔁 오답 복습 — 누적 이력에서 (지문×유형)별 마지막 시도가 틀림(X)인 조합만 재출제 (최대 10문항)
   const [reviewLoading,setReviewLoading]=useState(false);
@@ -1041,7 +1065,7 @@ function App(){
     window.open(window.location.pathname+window.location.search,'_blank');
   }} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -2458,12 +2482,30 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,toggleP,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
   const [adminPwErr,setAdminPwErr]=useState('');
   const [mogoOpen,setMogoOpen]=useState(false);
+  // ── 학생용: 시험범위 프리셋 + 사각지대(5회 미만) 풀기 ──
+  const isStudent=session?.role==='student';
+  const [selPresetId,setSelPresetId]=useState('');
+  const presetMatch=(pid,ranges)=>{ for(const pre of (ranges||[])){ if(pid===pre||pid.startsWith(pre+'_'))return true; } return false; };
+  const applyPresetRange=(pr)=>{
+    if(!pr)return;
+    const ids=allPassages.filter(p=>presetMatch(p.id,pr.ranges)).map(p=>p.id);
+    setSelPassages(new Set(ids));
+  };
+  // 선택된 프리셋 범위에서 5회 미만 푼 지문만 자동 선택
+  const applyBlindspots=()=>{
+    const pr=(stuPresets||[]).find(x=>x.id===selPresetId);
+    if(!pr){ alert('먼저 시험 범위를 선택해주세요.'); return; }
+    const rangeIds=allPassages.filter(p=>presetMatch(p.id,pr.ranges)).map(p=>p.id);
+    const blind=rangeIds.filter(pid=>((myPerPid[pid]&&myPerPid[pid].t)||0)<5);
+    if(blind.length===0){ alert('이 범위는 모든 지문을 5회 이상 풀었어요! 잘하고 있어요 👍'); return; }
+    setSelPassages(new Set(blind));
+  };
   // 일반 교재는 탭, 모의고사(MOGO_)는 드롭다운으로 분리
   const normalBooks=books.filter(b=>!b.id.startsWith('MOGO_'));
   const mogoBooks=books.filter(b=>b.id.startsWith('MOGO_'));
@@ -2485,23 +2527,36 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
       <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
       {shortfallWarn&&<div style={{position:'fixed',inset:0,zIndex:9999,background:'rgba(20,10,8,0.62)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
         <div style={{width:'100%',maxWidth:380,background:'#fff',borderRadius:20,padding:'26px 24px 22px',boxShadow:'0 20px 60px rgba(0,0,0,0.35)',textAlign:'center'}}>
+          {shortfallWarn.mode==='praise'?<>
+          <div style={{fontSize:44,lineHeight:1,marginBottom:10}}>🎉</div>
+          <div style={{fontSize:18,fontWeight:800,color:'#16a34a',marginBottom:12}}>잘하고 있어요!</div>
+          <div style={{fontSize:13.5,color:'#3a2a20',lineHeight:1.7,background:'#f0fdf4',border:'1px solid #86efac',borderRadius:12,padding:'13px 14px',textAlign:'left'}}>
+            학습 시작 후 <b>{shortfallWarn.days}일</b> 동안<br/>
+            목표 <b>{shortfallWarn.target}문항</b> 중 <b style={{color:'#16a34a',fontSize:15}}>{shortfallWarn.done}문항</b>을 풀었어요.<br/>
+            하루 권장량은 <b>30문항</b>입니다.
+          </div>
+          <div style={{fontSize:13.5,color:'#15803d',fontWeight:700,marginTop:14,padding:'12px 14px',background:'linear-gradient(135deg,#f0fdf4,#fff8f0)',border:'1px solid #C9A84C',borderRadius:12,lineHeight:1.6}}>
+            {shortfallWarn.msg}
+          </div>
+          </>:<>
           <div style={{fontSize:44,lineHeight:1,marginBottom:10}}>⚠️</div>
           <div style={{fontSize:18,fontWeight:800,color:'#b91c1c',marginBottom:12}}>학습량이 많이 부족해요!</div>
           <div style={{fontSize:13.5,color:'#3a2a20',lineHeight:1.7,background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:12,padding:'13px 14px',textAlign:'left'}}>
             학습 시작 후 <b>{shortfallWarn.days}일</b> 동안<br/>
             하루 30문항이면 목표는 <b>{shortfallWarn.target}문항</b>이에요.<br/>
-            지금까지 <b>{shortfallWarn.done}문항</b>을 풀어서,<br/>
+            시작일 이후 <b>{shortfallWarn.done}문항</b>을 풀어서,<br/>
             <b style={{color:'#b91c1c',fontSize:15}}>약 {shortfallWarn.short}문항</b>이 부족합니다.
           </div>
           <div style={{fontSize:13.5,color:'#1e3a5f',fontWeight:700,marginTop:10,padding:'11px 14px',background:'#eff6ff',border:'1px solid #93c5fd',borderRadius:12,lineHeight:1.6}}>
-            📌 오늘은 <b style={{fontSize:16,color:'#1d4ed8'}}>{shortfallWarn.recommend}문항</b> 풀기를 권장해요!<br/>
-            <span style={{fontSize:11.5,color:'#64748b',fontWeight:500}}>(문제 수가 자동으로 맞춰졌어요 · 원하면 조절 가능)</span>
+            📌 오늘 목표는 <b style={{fontSize:16,color:'#1d4ed8'}}>{30+shortfallWarn.short}문항</b>이에요!<br/>
+            <span style={{fontSize:11.5,color:'#64748b',fontWeight:500}}>한 번에 최대 50문항씩, 여러 번 나눠 풀면 돼요. (문제 수 자동 조정됨)</span>
           </div>
           <div style={{fontSize:13.5,color:'#7a1020',fontWeight:700,marginTop:14,padding:'12px 14px',background:'linear-gradient(135deg,#fff8f0,#fff5f5)',border:'1px solid #C9A84C',borderRadius:12,lineHeight:1.6}}>
-            {shortfallWarn.msg||'문제를 푼 만큼 성적이 오릅니다! 💪'}
+            {shortfallWarn.msg}
           </div>
-          <button onClick={()=>{const r=warnResolveRef.current; warnResolveRef.current=null; setShortfallWarn(null); if(r)r();}} style={{width:'100%',marginTop:18,padding:'14px',borderRadius:13,border:'none',background:'linear-gradient(135deg,#7a1020,#9a2030)',color:'#fff',fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 14px rgba(122,16,32,0.3)'}}>
-            확인했어요, 오늘 열심히 풀게요! 🔥
+          </>}
+          <button onClick={()=>{const r=warnResolveRef.current; warnResolveRef.current=null; setShortfallWarn(null); if(r)r();}} style={{width:'100%',marginTop:18,padding:'14px',borderRadius:13,border:'none',background:shortfallWarn.mode==='praise'?'linear-gradient(135deg,#15803d,#16a34a)':'linear-gradient(135deg,#7a1020,#9a2030)',color:'#fff',fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 14px rgba(0,0,0,0.2)'}}>
+            {shortfallWarn.mode==='praise'?'확인, 오늘도 풀어볼게요! 💪':'확인했어요, 오늘 열심히 풀게요! 🔥'}
           </button>
         </div>
       </div>}
@@ -2845,6 +2900,22 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             </div>
           </div>
         </div>
+
+        {isStudent&&stuPresets.length>0&&<div style={{marginTop:14,padding:'13px 14px',borderRadius:13,background:'#faf6ef',border:'1px solid #e6dcc6'}}>
+          <div style={{fontSize:12.5,fontWeight:800,color:'#7a1020',marginBottom:8}}>📁 내 시험 범위</div>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+            <select value={selPresetId} onChange={e=>{const id=e.target.value;setSelPresetId(id);const pr=stuPresets.find(x=>x.id===id);if(pr)applyPresetRange(pr);}}
+              style={{flex:'1 1 160px',padding:'10px 12px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:13.5,background:'#fff',outline:'none',color:'#3a2a20'}}>
+              <option value="">시험 범위 선택…</option>
+              {stuPresets.map(pr=><option key={pr.id} value={pr.id}>{pr.name}</option>)}
+            </select>
+            <button onClick={applyBlindspots} disabled={!selPresetId}
+              style={{padding:'10px 14px',borderRadius:10,border:'none',background:selPresetId?'linear-gradient(135deg,#C9A84C,#b8943a)':'#e2d9c4',color:selPresetId?'#3a2a20':'#a99',fontSize:13,fontWeight:800,cursor:selPresetId?'pointer':'default',whiteSpace:'nowrap'}}>
+              🎯 사각지대 풀기
+            </button>
+          </div>
+          <div style={{fontSize:11,color:'#9a8570',marginTop:7,lineHeight:1.5}}>범위를 고르면 해당 지문이 선택돼요. <b>사각지대 풀기</b>를 누르면 아직 5회 미만으로 푼 지문만 골라줍니다.</div>
+        </div>}
 
         <button onClick={start} disabled={selPassages.size===0||starting} style={{width:'100%',padding:14,borderRadius:14,border:'none',background:starting?'#7a93d8':selPassages.size>0?'linear-gradient(135deg,#4f7df7,#3b5fe0)':'#cbd5e1',color:'#fff',fontSize:15.5,fontWeight:700,cursor:starting?'wait':selPassages.size>0?'pointer':'default',marginTop:14,boxShadow:selPassages.size>0&&!starting?'0 4px 14px rgba(79,125,247,0.3)':'none'}}>
           {starting?'⏳ 문제 출제 중... 잠시만 기다려주세요':selPassages.size>0?`시작하기 (${selPassages.size}개 지문)`:'지문을 선택해주세요'}
