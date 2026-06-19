@@ -1064,7 +1064,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
       if(result.ok){
-        onLogin({name:result.name||name.trim(),role:result.role||'student',adminPw:result.role==='admin'?pw:undefined});
+        onLogin({name:result.name||name.trim(),role:result.role||'student',startDate:result.startDate||'',adminPw:result.role==='admin'?pw:undefined});
       } else {
         setError(result.error||result.message||'로그인 실패');
       }
