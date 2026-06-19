@@ -790,8 +790,12 @@ function App(){
   const [shortfallWarn,setShortfallWarn]=useState(null); // null | {target, done, short, days, msg}
   const warnResolveRef=useRef(null); // 모달 '확인' 클릭 대기용
   const DAILY_GOAL=30;
-  const MAX_DAILY=50; // 1회 권장 상한
-  // 학습 계획 계산 (시작일~오늘=경과분, 시작일~만료일=전체목표, 남은기간 안분)
+  const MAX_DAILY=50; // 1회 출제 상한
+  // 학습 계획 계산
+  //  - target: 시작일~오늘 경과분(×30), 미달 판정용
+  //  - short: 현 시점 부족분
+  //  - recommend: 오늘 권장(정확값) = 30 + 올림(부족분/남은일수), 상한 없음
+  //  - recommendCapped: 1회 출제용 = min(recommend, 50)
   const computeStudyPlan=(startDate,doneCount,expiry)=>{
     if(!startDate) return null;
     const sd=new Date(startDate);
@@ -800,30 +804,31 @@ function App(){
     const today=new Date(); today.setHours(0,0,0,0);
     const days=Math.floor((today-sd)/86400000)+1; // 시작일 당일 포함(경과 일수)
     if(days<1) return null;
-    const target=days*DAILY_GOAL;            // 오늘까지 따라왔어야 할 양(미달 판정용)
-    const short=Math.max(0,target-doneCount);// 현 시점 부족분
+    const target=days*DAILY_GOAL;
+    const short=Math.max(0,target-doneCount); // 현 시점 부족분
 
-    // 만료일이 유효하고 아직 안 지났으면 → 마감까지 남은 기간에 안분
-    let recommend, totalTarget=null, remainDays=null, usingDeadline=false;
+    let recommend, remainDays=null, usingDeadline=false;
     if(expiry){
       const ed=new Date(expiry);
       if(!isNaN(ed)){
         ed.setHours(0,0,0,0);
-        const totalSpan=Math.floor((ed-sd)/86400000)+1; // 시작~마감 전체 일수
-        const remain=Math.floor((ed-today)/86400000)+1; // 오늘 포함 남은 일수
-        if(totalSpan>0 && remain>=1){
-          totalTarget=totalSpan*DAILY_GOAL;
+        // 시험 직전 5일은 다른 과목 대비 기간 → 목표 마감을 만료일 5일 전으로 당김
+        const goalEnd=new Date(ed.getTime()-5*86400000);
+        const remain=Math.floor((goalEnd-today)/86400000)+1; // 오늘 포함 남은 일수
+        if(remain>=1){
           remainDays=remain;
-          const left=Math.max(0,totalTarget-doneCount); // 마감까지 남은 총량
-          recommend=Math.min(MAX_DAILY, Math.max(DAILY_GOAL, Math.ceil(left/remain)));
+          // 오늘 권장 = 오늘치 30 + (밀린 부족분 × 1.5)를 남은 기간에 분배
+          recommend=DAILY_GOAL+Math.ceil(short*1.5/remain);
           usingDeadline=true;
         }
       }
     }
-    // 만료일 없음/지남 → 폴백: 오늘치 30 + 부족분
-    if(recommend===undefined) recommend=Math.min(MAX_DAILY, DAILY_GOAL+short);
+    // 만료일 없음/지남 → 하루 30 고정 (나눌 기준 없음)
+    if(recommend===undefined) recommend=DAILY_GOAL;
 
-    return {target,done:doneCount,short,days,recommend,totalTarget,remainDays,usingDeadline};
+    const recommendCapped=Math.min(MAX_DAILY,recommend);
+    const overCap=recommend>MAX_DAILY; // 권장이 1회 상한을 넘는지
+    return {target,done:doneCount,short,days,recommend,recommendCapped,overCap,remainDays,usingDeadline};
   };
   const computeShortfall=(startDate,doneCount,expiry)=>{
     const plan=computeStudyPlan(startDate,doneCount,expiry);
@@ -868,7 +873,7 @@ function App(){
           setShortfallWarn({...plan, mode:isShort?'short':'praise', msg:isShort?pickMotivation():pickPraise()});
           await new Promise(resolve=>{
             warnResolveRef.current=()=>{
-              if(isShort&&plan.recommend>0){ effectiveQCount=plan.recommend; setQCount(plan.recommend); }
+              if(isShort&&plan.recommendCapped>0){ effectiveQCount=plan.recommendCapped; setQCount(plan.recommendCapped); }
               resolve();
             };
           });
@@ -2573,8 +2578,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
             <b style={{color:'#b91c1c',fontSize:15}}>약 {shortfallWarn.short}문항</b>이 부족합니다.
           </div>
           <div style={{fontSize:13.5,color:'#1e3a5f',fontWeight:700,marginTop:10,padding:'11px 14px',background:'#eff6ff',border:'1px solid #93c5fd',borderRadius:12,lineHeight:1.6}}>
-            📌 오늘은 <b style={{fontSize:16,color:'#1d4ed8'}}>{shortfallWarn.recommend}문항</b> 풀기를 권장해요!<br/>
-            <span style={{fontSize:11.5,color:'#64748b',fontWeight:500}}>{shortfallWarn.usingDeadline?`마감까지 ${shortfallWarn.remainDays}일 남았어요. 매일 ${shortfallWarn.recommend}문항씩 풀면 목표를 채울 수 있어요. (문제 수 자동 조정됨)`:'한 번에 최대 50문항씩, 여러 번 나눠 풀면 돼요. (문제 수 자동 조정됨)'}</span>
+            📌 오늘은 <b style={{fontSize:16,color:'#1d4ed8'}}>{shortfallWarn.recommend}문항</b> 풀어야 페이스가 유지돼요!<br/>
+            <span style={{fontSize:11.5,color:'#64748b',fontWeight:500}}>{shortfallWarn.overCap?`한 번에 최대 50문항씩 출제돼요. 50문항 풀고, 이어서 더 풀어 ${shortfallWarn.recommend}문항을 채워요! (문제 수 자동 조정됨)`:'문제 수가 자동으로 맞춰졌어요.'}</span>
           </div>
           <div style={{fontSize:13.5,color:'#7a1020',fontWeight:700,marginTop:14,padding:'12px 14px',background:'linear-gradient(135deg,#fff8f0,#fff5f5)',border:'1px solid #C9A84C',borderRadius:12,lineHeight:1.6}}>
             {shortfallWarn.msg}
