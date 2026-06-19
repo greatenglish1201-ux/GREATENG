@@ -2631,7 +2631,7 @@ function App(){
         const vs=(p.vocab_sets||[])[p.vocab_sel??0]||{items:[],answer:1};
         const gItems=p.grammar_items?.length?p.grammar_items:gs.items;
         const vItems=p.vocab_items?.length?p.vocab_items:vs.items;
-        return{id:p.id||metaId,difficulty:p.difficulty||s.meta.difficulty,title:p.title||'',
+        return{id:p.id||metaId,difficulty:s.meta.difficulty||p.difficulty,title:p.title||'',
           sentences:s.analysis?.sentences?.length?s.analysis.sentences:p.sentences||[],
           abstract:p.abstract||'',
           topic_options:p.topic_options,topic_answer:p.topic_answer,
@@ -2699,7 +2699,7 @@ function App(){
       chapter:slot.meta.chapter||'',
       chapter_org:slot.meta.chapterOrg||'',
       number:slot.meta.number||'',
-      difficulty:p.difficulty||slot.meta.difficulty||'',
+      difficulty:slot.meta.difficulty||p.difficulty||'',
       title:p.title||slot.analysis?.title||'',
       abstract:p.abstract||slot.analysis?.abstract||'',
       sentences_json:JSON.stringify(sentences),
