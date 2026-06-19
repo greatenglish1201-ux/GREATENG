@@ -1914,8 +1914,12 @@ ${ESC_}
                       }
                       saveRange(ns);
                     };
+                    const allExpanded=bookOrder.length>0&&bookOrder.every(bk=>rangeExpBook.has(bk));
                     return <div style={{padding:'10px 16px',maxHeight:340,overflow:'auto'}}>
-                      <div style={{fontSize:11.5,color:'#9a8570',marginBottom:8}}>커버리지·약점 분석 기준 범위. 교재·강·문항 단위로 선택할 수 있고, <b>선택한 것만</b> 포함됩니다.</div>
+                      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8,gap:8}}>
+                        <span style={{fontSize:11.5,color:'#9a8570'}}>커버리지·약점 분석 기준 범위. <b>선택한 것만</b> 포함됩니다.</span>
+                        <button onClick={()=>{ setRangeExpBook(allExpanded?new Set():new Set(bookOrder)); }} style={{flexShrink:0,fontSize:11,fontWeight:700,color:'#7a1020',background:'#f6efe0',border:'1px solid #e6dcc4',borderRadius:6,padding:'4px 10px',cursor:'pointer'}}>{allExpanded?'▲ 모두 접기':'▼ 모두 펼치기'}</button>
+                      </div>
                       {bookOrder.map(bk=>{
                         const label=bookLabel(bk);
                         const bookOn=sel(bk);
