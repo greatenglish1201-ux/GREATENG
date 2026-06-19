@@ -1914,11 +1914,23 @@ ${ESC_}
                       }
                       saveRange(ns);
                     };
-                    const allExpanded=bookOrder.length>0&&bookOrder.every(bk=>rangeExpBook.has(bk));
+                    const allBooksExp=bookOrder.length>0&&bookOrder.every(bk=>rangeExpBook.has(bk));
+                    const allChapKeys=[]; bookOrder.forEach(bk=>Object.keys(tree[bk]).forEach(cKey=>allChapKeys.push(bk+'|'+cKey)));
+                    const allItemsExp=allBooksExp&&allChapKeys.length>0&&allChapKeys.every(k=>rangeExpChap.has(k));
+                    const btnStyle={flexShrink:0,fontSize:11,fontWeight:700,color:'#7a1020',background:'#f6efe0',border:'1px solid #e6dcc4',borderRadius:6,padding:'4px 9px',cursor:'pointer'};
                     return <div style={{padding:'10px 16px',maxHeight:340,overflow:'auto'}}>
-                      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8,gap:8}}>
+                      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8,gap:6,flexWrap:'wrap'}}>
                         <span style={{fontSize:11.5,color:'#9a8570'}}>커버리지·약점 분석 기준 범위. <b>선택한 것만</b> 포함됩니다.</span>
-                        <button onClick={()=>{ setRangeExpBook(allExpanded?new Set():new Set(bookOrder)); }} style={{flexShrink:0,fontSize:11,fontWeight:700,color:'#7a1020',background:'#f6efe0',border:'1px solid #e6dcc4',borderRadius:6,padding:'4px 10px',cursor:'pointer'}}>{allExpanded?'▲ 모두 접기':'▼ 모두 펼치기'}</button>
+                        <span style={{display:'flex',gap:5,flexShrink:0}}>
+                          <button onClick={()=>{
+                            if(allBooksExp&&!allItemsExp){ setRangeExpBook(new Set()); }
+                            else { setRangeExpBook(new Set(bookOrder)); setRangeExpChap(new Set()); }
+                          }} style={btnStyle}>{allBooksExp&&!allItemsExp?'▲ 접기':'▼ 강까지'}</button>
+                          <button onClick={()=>{
+                            if(allItemsExp){ setRangeExpBook(new Set()); setRangeExpChap(new Set()); }
+                            else { setRangeExpBook(new Set(bookOrder)); setRangeExpChap(new Set(allChapKeys)); }
+                          }} style={btnStyle}>{allItemsExp?'▲ 접기':'▼ 문항까지'}</button>
+                        </span>
                       </div>
                       {bookOrder.map(bk=>{
                         const label=bookLabel(bk);
