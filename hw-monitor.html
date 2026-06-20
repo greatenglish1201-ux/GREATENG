@@ -170,6 +170,11 @@
     <div id="insp-wordwrite" style="background:#eef4fb; border:1px solid #cdddf2; border-radius:10px; padding:10px 13px; margin-bottom:18px; font-size:13px;"></div>
 
     <div style="border-top:2px solid var(--cream-deep); margin-top:6px; padding-top:16px; margin-bottom:18px;">
+      <button id="insp-grade-toggle" onclick="toggleGrades()" style="width:100%; background:var(--wine); color:#fff; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:800; cursor:pointer;">📈 성적 추이 보기</button>
+      <div id="insp-grade-box" style="display:none; margin-top:14px;"></div>
+    </div>
+
+    <div style="border-top:2px solid var(--cream-deep); margin-top:6px; padding-top:16px; margin-bottom:18px;">
       <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:10px;">📢 학부모 리포트</div>
       <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
         <select id="insp-report-period" style="padding:9px 11px;">
@@ -319,6 +324,11 @@
     document.getElementById('insp-days').innerHTML = '<div class="loading">불러오는 중...</div>';
     document.getElementById('insp-photos').innerHTML = '<div class="loading">불러오는 중...</div>';
     document.getElementById('insp-wordwrite').innerHTML = '';
+    // 성적 추이 접기 + 초기화
+    const gbox = document.getElementById('insp-grade-box');
+    const gtog = document.getElementById('insp-grade-toggle');
+    if(gbox){ gbox.style.display = 'none'; gbox.innerHTML = ''; gbox._loaded = false; }
+    if(gtog) gtog.textContent = '📈 성적 추이 보기';
     const rt = document.getElementById('insp-report-text'); if(rt) rt.value = '';
     const cb = document.getElementById('insp-copy-btn'); if(cb) cb.style.display = 'none';
     // 기간 버튼 기본 30일 활성화
@@ -405,6 +415,168 @@
 
   function closeInspect(){ document.getElementById('inspect').style.display = 'none'; }
 
+  // ===== 성적 추이 =====
+  function toggleGrades(){
+    const box = document.getElementById('insp-grade-box');
+    const tog = document.getElementById('insp-grade-toggle');
+    const open = box.style.display === 'none' || !box.style.display;
+    box.style.display = open ? 'block' : 'none';
+    tog.textContent = open ? '📈 성적 추이 접기' : '📈 성적 추이 보기';
+    if(open && !box._loaded){ loadGrades(_inspCurName); box._loaded = true; }
+  }
+
+  async function loadGrades(name){
+    const box = document.getElementById('insp-grade-box');
+    box.innerHTML = '<div class="loading">성적 불러오는 중...</div>';
+    const d = await jsonp('type=adminGrades&name=' + encodeURIComponent(name));
+    if(!d){ box.innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
+    let h = '';
+    // 모의고사
+    h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:4px 0 8px;">📊 모의고사</div>';
+    if((d.mock||[]).length){
+      h += renderMockChart(d.mock) + renderMockTable(d.mock);
+    } else {
+      h += '<div class="muted" style="margin-bottom:14px;">모의고사 성적이 없습니다.</div>';
+    }
+    // 내신
+    h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신</div>';
+    if((d.naesin||[]).length){
+      h += renderNaesinChart(d.naesin) + renderNaesinTable(d.naesin);
+    } else {
+      h += '<div class="muted">내신 성적이 없습니다.</div>';
+    }
+    box.innerHTML = h;
+  }
+
+  // 공통 SVG 라인차트 빌더
+  // series: [{label, color, values:[{x, y, show}], yMin, yMax, invert}]
+  // xLabels: 가로축 라벨 배열
+  function buildLineChart(xLabels, series, opts){
+    opts = opts || {};
+    const W = 600, H = 200, padL = 38, padR = 16, padT = 16, padB = 36;
+    const n = xLabels.length;
+    if(n === 0) return '';
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const xAt = (i)=> n===1 ? padL+innerW/2 : padL + innerW * i/(n-1);
+    let svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%; height:auto; background:#fff; border:1px solid var(--cream-deep); border-radius:10px;">';
+    // 가로 격자
+    for(let g=0; g<=4; g++){
+      const y = padT + innerH*g/4;
+      svg += '<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="#eee" stroke-width="1"/>';
+    }
+    // x 라벨
+    xLabels.forEach((lb,i)=>{
+      svg += '<text x="'+xAt(i)+'" y="'+(H-padB+16)+'" font-size="10" fill="#888" text-anchor="middle">'+esc(lb)+'</text>';
+    });
+    // 각 시리즈
+    series.forEach(s=>{
+      const yMin = s.yMin, yMax = s.yMax;
+      const yAt = (v)=>{
+        let t = (v - yMin) / (yMax - yMin || 1);
+        if(s.invert) t = 1 - t;
+        return padT + innerH * (1 - t);
+      };
+      // 선
+      let pts = [];
+      s.values.forEach(p=>{ if(p.y!=null) pts.push(xAt(p.x)+','+yAt(p.y)); });
+      if(pts.length >= 2){
+        svg += '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+s.color+'" stroke-width="2.5"/>';
+      }
+      // 점 + 값
+      s.values.forEach(p=>{
+        if(p.y==null) return;
+        const cx = xAt(p.x), cy = yAt(p.y);
+        svg += '<circle cx="'+cx+'" cy="'+cy+'" r="3.5" fill="'+s.color+'"/>';
+        if(p.show!=null) svg += '<text x="'+cx+'" y="'+(cy-8)+'" font-size="10" font-weight="700" fill="'+s.color+'" text-anchor="middle">'+esc(String(p.show))+'</text>';
+      });
+    });
+    svg += '</svg>';
+    // 범례
+    let leg = '<div style="display:flex; gap:14px; flex-wrap:wrap; margin:6px 0 10px; font-size:11.5px;">';
+    series.forEach(s=>{ leg += '<span style="display:inline-flex; align-items:center; gap:4px;"><i style="width:11px; height:3px; background:'+s.color+'; display:inline-block; border-radius:2px;"></i>'+esc(s.label)+(s.invert?' (낮을수록↑)':'')+'</span>'; });
+    leg += '</div>';
+    return svg + leg;
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+  // 모의고사 차트: 등급(1~9, 역축) + 백분위(0~100)
+  function renderMockChart(rows){
+    const xLabels = rows.map(r=> (r.grade_year? r.grade_year.replace('학년','')+'-':'') + (r.month||r.date||''));
+    const gradeSeries = {
+      label:'등급', color:'#7a1020', yMin:1, yMax:9, invert:true,
+      values: rows.map((r,i)=> ({ x:i, y:r.grade, show: r.grade!=null? r.grade+'등급':null }))
+    };
+    const pctSeries = {
+      label:'백분위', color:'#C9A84C', yMin:0, yMax:100, invert:false,
+      values: rows.map((r,i)=> ({ x:i, y:r.percentile, show: r.percentile!=null? r.percentile:null }))
+    };
+    // 등급·백분위 둘 다 있으면 둘 다, 아니면 있는 것만
+    const hasGrade = rows.some(r=>r.grade!=null);
+    const hasPct = rows.some(r=>r.percentile!=null);
+    const series = [];
+    if(hasGrade) series.push(gradeSeries);
+    if(hasPct) series.push(pctSeries);
+    if(!series.length) return '';
+    return buildLineChart(xLabels, series);
+  }
+
+  function renderMockTable(rows){
+    let h = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
+    h += '<thead><tr style="background:#f3ece0;">'
+      + ['시행','과목','원점수','등급','백분위'].map(t=>'<th style="padding:6px 8px; border:1px solid #e8ddc9; white-space:nowrap;">'+t+'</th>').join('')
+      + '</tr></thead><tbody>';
+    rows.slice().reverse().forEach(r=>{
+      const when = (r.grade_year?esc(r.grade_year)+' ':'') + esc(r.month||r.date||'');
+      h += '<tr>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; white-space:nowrap;">'+when+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+esc(r.subject||'')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+(r.raw!=null?r.raw:'-')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--wine);">'+(r.grade!=null?r.grade+'등급':'-')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+(r.percentile!=null?r.percentile:'-')+'</td>'
+        + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    return h;
+  }
+
+  // 내신 차트: 점수(0~100) + 등급(1~9 역축)
+  function renderNaesinChart(rows){
+    const xLabels = rows.map(r=> (r.year||'') + ' ' + (r.term||'') + (r.exam?(' '+r.exam):''));
+    const hasScore = rows.some(r=>r.score!=null);
+    const hasGrade = rows.some(r=>r.grade!=null);
+    const series = [];
+    if(hasScore) series.push({
+      label:'점수', color:'#1f4e79', yMin:0, yMax:100, invert:false,
+      values: rows.map((r,i)=> ({ x:i, y:r.score, show: r.score!=null? r.score:null }))
+    });
+    if(hasGrade) series.push({
+      label:'등급', color:'#7a1020', yMin:1, yMax:9, invert:true,
+      values: rows.map((r,i)=> ({ x:i, y:r.grade, show: r.grade!=null? r.grade+'등급':null }))
+    });
+    if(!series.length) return '';
+    return buildLineChart(xLabels, series);
+  }
+
+  function renderNaesinTable(rows){
+    let h = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
+    h += '<thead><tr style="background:#f3ece0;">'
+      + ['시험','과목','점수','석차','등급'].map(t=>'<th style="padding:6px 8px; border:1px solid #e8ddc9; white-space:nowrap;">'+t+'</th>').join('')
+      + '</tr></thead><tbody>';
+    rows.slice().reverse().forEach(r=>{
+      const when = esc((r.year||'')+' '+(r.grade_year||'')+' '+(r.term||'')+' '+(r.exam||''));
+      h += '<tr>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; white-space:nowrap;">'+when+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+esc(r.subject||'')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+(r.score!=null?r.score:'-')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+esc(r.rank||'-')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--wine);">'+(r.grade!=null?r.grade+'등급':'-')+'</td>'
+        + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    return h;
+  }
+
   // ===== 학부모 리포트 생성 (시트 수식과 동일) =====
   let _inspName = '';
   function genReport(){
@@ -420,17 +592,17 @@
     });
   }
 
-  // 선생님 총평 (시트 C6 수식과 동일 분기)
+  // 선생님 총평 (시트 C6 수식과 동일 분기) — 한글 라벨 + 다듬은 문구
   function teacherComment(c, l, m){
     const total = c + l + m;
-    if(total === 0) return '데이터 없음';
-    if(m/total >= 0.2) return '🚨 [관심 요망] 숙제 미제출 비율이 높습니다(20% 이상). 아이가 학습에 어려움을 겪지 않도록 가정의 각별한 관심과 독려 부탁드립니다.';
-    if(l/total >= 0.3) return '⛔ [습관 개선] 지연 제출이 30%를 넘었습니다. 몰아서 하는 숙제는 학습 효과가 낮으므로, 매일 꾸준히 하는 습관을 가질 수 있도록 지도 부탁드립니다.';
-    if(m >= 2) return '⚠️ 숙제 미제출이 종종 발생하고 있습니다. 기한 내 제출하는 습관을 들일 수 있도록 가정에서도 독려해 주시기를 바랍니다.';
-    if(m === 1) return '💡 아깝게 미제출이 1회 있네요! 다음에는 100% 제출로 \'Perfect\'를 달성할 수 있도록 많은 격려 부탁드립니다.';
-    if((m + l) === 0) return '👑 [Perfect] 지각/미제출 0회! 완벽한 성실함을 보여주었습니다. 아이에게 아낌없는 칭찬과 박수를 보내주세요!';
-    if(l/total < 0.05) return '💎 [Excellent] 미제출 0회! 지연 제출 5% 미만으로 매우 훌륭합니다. 성실한 학습 태도를 많이 칭찬해 주세요!';
-    return '✅ 숙제는 빠짐없이 제출하고 있으나, 기한 엄수까지 챙긴다면 더욱 완벽하겠습니다. 가정의 관심 부탁드립니다.';
+    if(total === 0) return '해당 기간 동안 집계된 숙제 데이터가 없습니다.';
+    if(m/total >= 0.2) return '[관심 필요]\n최근 숙제 미제출이 다소 잦은 편입니다. 학습의 흐름이 끊기지 않으려면 꾸준한 제출이 중요한 시기인 만큼, 가정에서도 한 번씩 챙겨주시면 큰 힘이 되겠습니다.';
+    if(l/total >= 0.3) return '[습관 형성]\n숙제는 대부분 해오고 있으나 기한을 넘겨 제출하는 경우가 많습니다. 미뤄서 한 번에 하기보다 매일 조금씩 나누어 하는 편이 학습 효과가 훨씬 높으니, 규칙적인 학습 습관을 함께 잡아가면 좋겠습니다.';
+    if(m >= 2) return '[보완 권장]\n전반적으로 성실하게 임하고 있으나, 간혹 미제출이 있습니다. 기한 내 제출하는 습관이 자리 잡으면 더욱 안정적으로 학습할 수 있을 것입니다. 가정에서도 가볍게 독려해 주시기를 부탁드립니다.';
+    if(m === 1) return '[양호]\n거의 모든 숙제를 빠짐없이 해오고 있습니다. 아쉽게 한 번의 미제출이 있었는데, 다음 달에는 완벽한 제출을 기대해 봅니다. 작은 격려가 큰 동기가 됩니다.';
+    if((m + l) === 0) return '[최우수]\n한 달간 단 한 번의 지각이나 미제출 없이 모든 숙제를 완수했습니다. 성실함이 돋보이는 한 달이었습니다. 가정에서도 아낌없는 칭찬 부탁드립니다.';
+    if(l/total < 0.05) return '[우수]\n미제출 없이 거의 모든 숙제를 기한 내에 제출했습니다. 흐트러짐 없는 학습 태도가 인상적입니다. 이런 꾸준함이 실력으로 이어지고 있으니 많이 격려해 주십시오.';
+    return '[성실]\n숙제는 빠짐없이 해오고 있습니다. 여기에 기한까지 지키는 습관이 더해진다면 한층 완성도 높은 학습이 될 것입니다. 가정에서의 작은 관심을 부탁드립니다.';
   }
 
   function fmtDate(d){
@@ -445,22 +617,22 @@
     const name = d.name;
     const c = d.submitted, l = d.late, m = d.missed, ww = d.wordWrite;
     const days = d.days || 30;
+    const total = c + l + m;
+    const rate = total ? Math.round((c + l) / total * 100) : 0;
     const today = new Date();
     const start = new Date(today.getTime() - days*86400000);
     const end = new Date(today.getTime() - 1*86400000);
     const s = fmtDate(start), e = fmtDate(end);
     const comment = teacherComment(c, l, m);
-    return `[📢 ${name} 학생 학습 리포트]\n`
-      + `📅 기간: ${s.full} ~ ${e.md}\n\n`
+    return `[${name} 학생 학습 리포트]\n`
+      + `기간: ${s.full} ~ ${e.md}\n\n`
       + `안녕하세요, 대단한영어입니다.\n`
       + `${name} 학생의 학습 종합 분석 결과를 안내해 드립니다.\n\n`
-      + `📊 [숙제 누적 데이터]\n`
-      + `▪ 제출 ${c}회\n`
-      + `▪ 지연제출 ${l}회\n`
-      + `▪ 미제출 ${m}회\n\n`
-      + `🗣️ [선생님 총평]\n`
+      + `[숙제 누적 데이터]\n`
+      + `▪ 제출률 ${rate}% (제출 ${c} · 지연 ${l} · 미제출 ${m})\n\n`
+      + `[선생님 총평]\n`
       + `${comment}\n\n`
-      + `📝 [단어 재시 횟수]\n`
+      + `[단어 재시 횟수]\n`
       + `▪ 단어시험 재시 ${ww}회\n\n`
       + `${name} 학생이 앞으로도 성실히 학습에 임할 수 있도록, 가정에서도 따뜻한 관심과 격려 부탁드립니다.`;
   }
