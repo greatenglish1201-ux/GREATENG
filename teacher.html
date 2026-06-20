@@ -2324,7 +2324,7 @@ Return JSON only, EXACTLY this structure:
           <button onClick={()=>autoAuthor(p)} disabled={!!genLoading} title="주제·요약·무관문장 3종 자동 생성 (확인 후 시트 저장)"
             style={{padding:'4px 12px',fontSize:12,background:genLoading?'#E8E8ED':'#FBF3DE',color:genLoading?'#86868B':'#8a6010',
               border:'0.5px solid #C9A84C',borderRadius:6,cursor:genLoading?'wait':'pointer',fontWeight:700,whiteSpace:'nowrap'}}>
-            {genLoading?'⏳ 생성중...':'⚡ 자동출제 3종'}
+            {genLoading?'⏳ 생성중...':'자동출제 3종'}
           </button>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
             <span style={{fontSize:11,color:'#888',whiteSpace:'nowrap'}}>제목</span>
@@ -2818,7 +2818,7 @@ function App(){
       setQSaveAll(st=>({...st,done:st.done+1}));
     }
     setQSaveAll({run:false,done:0,total:0});
-    alert(`💾 문제만 저장 완료\n성공 ${ok}개 / 실패 ${fails.length}개`+(fails.length?'\n\n'+fails.join('\n'):''));
+    alert(`문제만 저장 완료\n성공 ${ok}개 / 실패 ${fails.length}개`+(fails.length?'\n\n'+fails.join('\n'):''));
   },[slots,appsUrl,buildSlotPayload,qSaveAll.run]);
 
   const saveAllToSheet=useCallback(async()=>{
@@ -3231,10 +3231,10 @@ function App(){
 
           {viewMode!=='authoring'&&<button onClick={loadFromSheet} disabled={sheetLoading}
             style={{background:'#E8F1FD',color:'#0058B0',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetLoading?'로딩...':'📊 LOAD'}</button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetLoading?'로딩...':'LOAD'}</button>}
           {viewMode!=='authoring'&&<button onClick={saveAllToSheet} disabled={sheetSaving}
             style={{background:sheetSaving?'#E8E8ED':'#F2EBFB',color:'#5E2E9E',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetSaving?'저장중...':'📊 SAVE'}</button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>{sheetSaving?'저장중...':'SAVE'}</button>}
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(true)} disabled={sheetSaving}
             title="저장된 슬롯 모두 공개"
             style={{background:'#ECECFB',color:'#3D3CA8',border:'none',
@@ -3334,7 +3334,7 @@ function App(){
                         <input type="checkbox" checked={!!loadSel[p.id]} onChange={()=>{}} style={{width:14,height:14,accentColor:'#185FA5',flexShrink:0}}/>
                         <span style={{fontSize:11,fontFamily:'monospace',color:'#185FA5',flex:1}}>{p.id}</span>
                         {p.title&&<span style={{fontSize:11.5,color:'#555',flex:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.title}</span>}
-                        {!hasFlow&&<span style={{fontSize:10,padding:'2px 6px',borderRadius:10,flexShrink:0,background:'#F2EBFB',color:'#5E2E9E',fontWeight:600}}>✎ 저작</span>}
+                        {!hasFlow&&<span style={{fontSize:10,padding:'2px 6px',borderRadius:10,flexShrink:0,background:'#F2EBFB',color:'#5E2E9E',fontWeight:600}}>저작</span>}
                         <span style={{fontSize:10,padding:'2px 7px',borderRadius:10,flexShrink:0,background:diffBg,color:diffC,fontWeight:600}}>{diff}</span>
                       </div>);
                     })}
@@ -3396,7 +3396,7 @@ function App(){
         const bookLabel=(src)=>allBooks2.find(b=>b.id===src)?.label||src;
         return(<div style={{background:'#fff',borderBottom:'0.5px solid #D2D2D7',padding:'14px 20px',maxHeight:500,overflow:'auto'}}>
           <div style={{display:'flex',gap:8,marginBottom:10,alignItems:'center',flexWrap:'wrap'}}>
-            <span style={{fontSize:13,fontWeight:600}}>📊 시트 불러오기 — {srcList.length}개 교재 ({filtered.length}문항)</span>
+            <span style={{fontSize:13,fontWeight:600}}>시트 불러오기 — {srcList.length}개 교재 ({filtered.length}문항)</span>
             <select value={sheetLoadSrc} onChange={e=>{setSheetLoadSrc(e.target.value);setExpandedChapter('');}}
               style={{padding:'4px 8px',fontSize:12,borderRadius:5,border:'0.5px solid #ccc'}}>
               <option value="">전체 교재</option>
@@ -3589,7 +3589,7 @@ function App(){
                   border:'0.5px solid #ddd',borderRadius:6,cursor:'pointer'}}>취소</button>
               <button onClick={()=>{setStuOpts(O);setStuOptsState(O);flash('✓ 학생용 디폴트 저장됨');}}
                 style={{padding:'8px 14px',fontSize:13,fontWeight:600,background:'#fff',color:'#185FA5',
-                  border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>💾 디폴트 저장</button>
+                  border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>디폴트 저장</button>
               <button onClick={doPDF}
                 style={{padding:'8px 18px',fontSize:13,fontWeight:600,background:'#E8F1FD',color:'#0058B0',
                   border:'none',borderRadius:6,cursor:'pointer'}}>PDF</button>
@@ -3629,7 +3629,7 @@ function App(){
               padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>⤓ 백업 다운로드</button>
             <label style={{background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,
               padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500,display:'inline-block'}}>
-              📂 복원
+              복원
               <input type="file" accept=".json" style={{display:'none'}} onChange={(e)=>{
                 const file=e.target.files?.[0];
                 if(!file)return;
@@ -3670,9 +3670,9 @@ function App(){
             <button onClick={()=>setShowSet(false)} style={{background:'rgba(255,255,255,.1)',
               color:'#ccc',border:'none',borderRadius:6,padding:'7px 12px',fontSize:12.5,cursor:'pointer'}}>닫기</button>
           </div>
-          {/* 교재 관리는 📚 교재관리 버튼 모달로 이동 */}
+          {/* 교재 관리는 교재관리 버튼 모달로 이동 */}
           <div style={{display:'none'}}>
-            <div style={{color:'#a5d6f5',fontSize:12.5,fontWeight:600,marginBottom:8}}>📚 교재 관리</div>
+            <div style={{color:'#a5d6f5',fontSize:12.5,fontWeight:600,marginBottom:8}}>교재 관리</div>
             <div style={{display:'flex',flexDirection:'column',gap:4,marginBottom:8}}>
               {allBooks.map((b,i)=>(
                 <div key={b.id} style={{display:'flex',gap:6,alignItems:'center',fontSize:12}}>
@@ -3790,7 +3790,7 @@ function App(){
           onClick={()=>setShowBookMgr(false)}>
           <div style={{background:'#3A3A3C',borderRadius:12,padding:'20px 24px',minWidth:480,maxWidth:600,maxHeight:'80vh',overflowY:'auto'}}
             onClick={e=>e.stopPropagation()}>
-            <div style={{color:'#a5d6f5',fontSize:14,fontWeight:700,marginBottom:12}}>📚 교재 관리</div>
+            <div style={{color:'#a5d6f5',fontSize:14,fontWeight:700,marginBottom:12}}>교재 관리</div>
             <div style={{display:'flex',flexDirection:'column',gap:4,marginBottom:12}}>
               {allBooks.map((b,i)=>(
                 <div key={b.id} style={{display:'flex',gap:8,alignItems:'center',fontSize:12,padding:'4px 0',borderBottom:'1px solid rgba(255,255,255,.08)'}}>
@@ -3960,7 +3960,7 @@ function App(){
               </optgroup>
             ))}
           </select>
-          <button onClick={()=>setShowBookMgr(true)} style={{padding:'5px 9px',fontSize:11,background:'#E8E8ED',border:'none',borderRadius:7,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,color:'#3A3A3C',fontWeight:500}}>📚 교재관리</button>
+          <button onClick={()=>setShowBookMgr(true)} style={{padding:'5px 9px',fontSize:11,background:'#E8E8ED',border:'none',borderRadius:7,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,color:'#3A3A3C',fontWeight:500}}>교재관리</button>
           <div style={{flex:1,minWidth:4}}/>
           <button onClick={()=>setFilterHot(f=>!f)} title={filterHot?'전체보기':'출제예상만 보기'}
             style={{padding:'4px 9px',fontSize:11,fontWeight:600,borderRadius:6,border:'none',flexShrink:0,
@@ -3978,13 +3978,13 @@ function App(){
             style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
               background:authorAll.run?'#E8E8ED':keyOk?'#FBF3DE':'#E8E8ED',color:authorAll.run?'#86868B':keyOk?'#8a6010':'#86868B',
               border:authorAll.run?'none':'0.5px solid #C9A84C',borderRadius:7,cursor:authorAll.run||!keyOk?'default':'pointer',whiteSpace:'nowrap'}}>
-            {authorAll.run?`⏳ ${authorAll.done}/${authorAll.total}`:'⚡ 출제 3종'}
+            {authorAll.run?`⏳ ${authorAll.done}/${authorAll.total}`:'출제 3종'}
           </button>
           <button onClick={saveQuestionsOnlyAll} disabled={qSaveAll.run} title="출제DB(문제)만 일괄 저장 — 지문DB는 건너뛰어 빠름 (시트에 지문이 저장된 슬롯 대상)"
             style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
               background:qSaveAll.run?'#E8E8ED':'#EAF5EC',color:qSaveAll.run?'#86868B':'#1E6B30',
               border:qSaveAll.run?'none':'0.5px solid #9CCBA5',borderRadius:7,cursor:qSaveAll.run?'default':'pointer',whiteSpace:'nowrap'}}>
-            {qSaveAll.run?`⏳ ${qSaveAll.done}/${qSaveAll.total}`:'💾 문제만'}
+            {qSaveAll.run?`⏳ ${qSaveAll.done}/${qSaveAll.total}`:'문제만'}
           </button>
           <button onClick={()=>{const allOpen=slots.every(s=>s.open);setSlots(prev=>{const next=prev.map(s=>({...s,open:!allOpen}));saveSlots(next);return next;})}}
             style={{padding:'4px 10px',fontSize:11,background:'#fff',color:'#0058B0',border:'1px solid #ddd',
@@ -4148,7 +4148,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             <span title={'출제 유형: '+at.join(' · ')}
               style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:10,flexShrink:0,
                 background:'#F2EBFB',color:'#5E2E9E',border:'0.5px solid #E3D3F7',cursor:'help',whiteSpace:'nowrap'}}>
-              ✎ {at.length}</span>
+              {at.length}</span>
           ):null;})()}
           {slot.status==='saved'&&(
             <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
@@ -4203,7 +4203,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
           </select>
           {slot.analysis&&<SlotOutputMenu slot={slot} onStuOutput={onStuOutput}/>}
-          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>✎ 저작</button>}
+          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>저작</button>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
@@ -4507,7 +4507,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {['analyzed','confirmed','saved'].includes(slot.status)&&onSheetSave&&(
               <button onClick={onSheetSave} disabled={sheetSaving} style={{padding:'7px 18px',fontSize:13,fontWeight:600,
                 background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:sheetSaving?'wait':'pointer'}}>
-                {sheetSaving?'저장중...':'📊 시트 저장'}
+                {sheetSaving?'저장중...':'시트 저장'}
               </button>
             )}
             {slot.status==='saved'&&onTogglePublic&&(
@@ -4523,7 +4523,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
                 color:'#534AB7',border:'0.5px solid #534AB7',borderRadius:6,cursor:'pointer'}}>↺ 재분석</button>
             )}
             {slot.analysis&&(
-              <button onClick={onAuthor} style={{padding:'7px 10px',fontSize:12.5,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,cursor:'pointer',fontWeight:600}}>✎ 저작</button>
+              <button onClick={onAuthor} style={{padding:'7px 10px',fontSize:12.5,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,cursor:'pointer',fontWeight:600}}>저작</button>
             )}
             <div style={{flex:1}}/>
             <button onClick={onToggle} title="접기"
