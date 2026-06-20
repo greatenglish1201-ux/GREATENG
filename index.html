@@ -926,9 +926,10 @@ function App(){
   // ── 학생 본인: 누적 풀이 데이터 로딩 (사각지대/권장량 계산용) ──
   const [myPerPid,setMyPerPid]=useState({});
   const [myDoneSince,setMyDoneSince]=useState(0);
+  const [myStatsReady,setMyStatsReady]=useState(false);
   const myStatsRef=useRef('');
   useEffect(()=>{
-    if(session?.role!=='student'||!scriptUrl||!studentName){setMyPerPid({});setMyDoneSince(0);return;}
+    if(session?.role!=='student'||!scriptUrl||!studentName){setMyPerPid({});setMyDoneSince(0);setMyStatsReady(false);return;}
     if(myStatsRef.current===studentName) return;
     myStatsRef.current=studentName;
     jsonpFetch(scriptUrl,{action:'getStats',student:studentName})
@@ -946,9 +947,9 @@ function App(){
             if(afterStart)since++;
           });
         });
-        setMyPerPid(per); setMyDoneSince(since);
+        setMyPerPid(per); setMyDoneSince(since); setMyStatsReady(true);
       })
-      .catch(()=>{});
+      .catch(()=>{ setMyStatsReady(true); }); // 실패해도 버튼은 풀어줌(기록 없음으로 간주)
   },[session,scriptUrl,studentName]);
 
   // ── 학생용 시험범위 프리셋 로딩 (공용 프리셋, GAS) ──
@@ -960,13 +961,13 @@ function App(){
       .catch(()=>{});
   },[scriptUrl]);
 
-  // 메인(setup) 첫 진입 시 1회: 학습량 점검 팝업. '직접 설정하기' 누르면 그 세션 동안 자유.
-  const introWarnRef=useRef('');
+  // 메인(setup) 첫 진입 시 1회: 학습량 점검 팝업. 한 번 본 뒤에는 로그아웃 전까지 다시 안 뜸.
   useEffect(()=>{
     if(screen!=='setup') return;
     if(session?.role!=='student'||!session?.startDate||!scriptUrl||!studentName) return;
-    if(introWarnRef.current===studentName) return; // 이 세션에서 이미 띄움
-    introWarnRef.current=studentName;
+    const seenKey='greateng_intro_seen_'+studentName;
+    try{ if(sessionStorage.getItem(seenKey)==='1') return; }catch(e){}
+    try{ sessionStorage.setItem(seenKey,'1'); }catch(e){}
     jsonpFetch(scriptUrl,{action:'getStats',student:studentName})
       .then(d=>{
         const sess=(d&&d.sessionStats)||[];
@@ -983,7 +984,6 @@ function App(){
         if(!plan) return;
         const isShort=done<plan.target*0.9;
         setShortfallWarn({...plan, mode:isShort?'short':'praise', msg:isShort?pickMotivation():pickPraise()});
-        // 버튼 결과: 'recommend'면 문제 수 추천값 세팅 / 그 외(cancel·확인)는 그냥 닫기
         warnResolveRef.current=(choice)=>{
           if(isShort && choice===true && plan.recommendCapped>0) setQCount(plan.recommendCapped);
           setShortfallWarn(null); warnResolveRef.current=null;
@@ -1100,7 +1100,7 @@ function App(){
     window.open(window.location.pathname+window.location.search,'_blank');
   }} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{try{sessionStorage.removeItem('greateng_intro_seen_'+studentName);}catch(e){}sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
 
@@ -2517,7 +2517,7 @@ function QuickSelectBar(props){
   );
 }
 
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -2535,11 +2535,19 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
   // 선택된 프리셋 범위에서 5회 미만 푼 지문만 자동 선택
   const applyBlindspots=()=>{
     const pr=(stuPresets||[]).find(x=>x.id===selPresetId);
-    if(!pr){ alert('먼저 시험 범위를 선택해주세요.'); return; }
+    if(!pr){ alert('⚠️ 먼저 위에서 "내 시험 범위"를 선택해주세요.\n범위를 골라야 사각지대를 찾을 수 있어요.'); return; }
+    if(!myStatsReady){ alert('잠시만요! 학습 기록을 불러오는 중이에요. 2~3초 후 다시 눌러주세요.'); return; }
     const rangeIds=allPassages.filter(p=>presetMatch(p.id,pr.ranges)).map(p=>p.id);
+    if(rangeIds.length===0){ alert('이 시험 범위에 해당하는 지문을 찾지 못했어요. 범위를 다시 확인해주세요.'); return; }
     const blind=rangeIds.filter(pid=>((myPerPid[pid]&&myPerPid[pid].t)||0)<5);
-    if(blind.length===0){ alert('이 범위는 모든 지문을 5회 이상 풀었어요! 잘하고 있어요 👍'); return; }
+    if(blind.length===0){ alert('🎉 이 범위는 모든 지문을 5회 이상 풀었어요!\n사각지대가 없습니다. 잘하고 있어요 👍'); return; }
     setSelPassages(new Set(blind));
+    const typeCnt=Math.max(1,selectedTypes.size);
+    const maxQ=blind.length*typeCnt; // 이론상 최대(지문수×선택유형수)
+    const qtyNote = maxQ<qCount
+      ? `\n\n⚠️ 현재 문제 수는 ${qCount}개로 설정돼 있지만, 사각지대 지문이 적어 최대 약 ${maxQ}문항까지 나올 수 있어요. (설정보다 적게 출제될 수 있어요)`
+      : `\n\n현재 설정된 ${qCount}문항을 풀 수 있어요.`;
+    alert(`🎯 사각지대 ${blind.length}개 지문을 골랐어요!${qtyNote}\n\n아래 "시작하기"를 누르면 풀 수 있어요.`);
   };
   // 일반 교재는 탭, 모의고사(MOGO_)는 드롭다운으로 분리
   const normalBooks=books.filter(b=>!b.id.startsWith('MOGO_'));
@@ -2694,19 +2702,25 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
         </div>
 
         {isStudent&&stuPresets.length>0&&<div style={{marginBottom:14,padding:'13px 14px',borderRadius:13,background:'#faf6ef',border:'1px solid #e6dcc6'}}>
-          <div style={{fontSize:12.5,fontWeight:800,color:'#7a1020',marginBottom:8}}>📁 내 시험 범위</div>
+          <div style={{fontSize:12.5,fontWeight:800,color:'#7a1020',marginBottom:8}}>📁 내 시험 범위 <span style={{fontWeight:600,color:'#9a8570',fontSize:11}}>(사각지대 풀기는 범위 선택 필수)</span></div>
           <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
             <select value={selPresetId} onChange={e=>{const id=e.target.value;setSelPresetId(id);const pr=stuPresets.find(x=>x.id===id);if(pr)applyPresetRange(pr);}}
-              style={{flex:'1 1 160px',padding:'10px 12px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:13.5,background:'#fff',outline:'none',color:'#3a2a20'}}>
-              <option value="">시험 범위 선택…</option>
+              style={{flex:'1 1 160px',padding:'10px 12px',borderRadius:10,border:selPresetId?'1px solid #e6dcc6':'1.5px solid #C9A84C',fontSize:13.5,background:'#fff',outline:'none',color:'#3a2a20'}}>
+              <option value="">① 시험 범위 선택…</option>
               {stuPresets.map(pr=><option key={pr.id} value={pr.id}>{pr.name}</option>)}
             </select>
-            <button onClick={applyBlindspots} disabled={!selPresetId}
-              style={{padding:'10px 14px',borderRadius:10,border:'none',background:selPresetId?'linear-gradient(135deg,#C9A84C,#b8943a)':'#e2d9c4',color:selPresetId?'#3a2a20':'#a99',fontSize:13,fontWeight:800,cursor:selPresetId?'pointer':'default',whiteSpace:'nowrap'}}>
-              🎯 사각지대 풀기
+            <button onClick={applyBlindspots} disabled={!selPresetId||!myStatsReady}
+              style={{padding:'10px 14px',borderRadius:10,border:'none',background:(selPresetId&&myStatsReady)?'linear-gradient(135deg,#C9A84C,#b8943a)':'#e2d9c4',color:(selPresetId&&myStatsReady)?'#3a2a20':'#a99',fontSize:13,fontWeight:800,cursor:(selPresetId&&myStatsReady)?'pointer':'default',whiteSpace:'nowrap'}}>
+              🎯 ② 사각지대 풀기
             </button>
           </div>
-          <div style={{fontSize:11,color:'#9a8570',marginTop:7,lineHeight:1.5}}>범위를 고르면 해당 지문이 선택돼요. <b>사각지대 풀기</b>를 누르면 아직 5회 미만으로 푼 지문만 골라줍니다.</div>
+          <div style={{fontSize:11,color:'#9a8570',marginTop:7,lineHeight:1.5}}>
+            {!selPresetId
+              ? '먼저 ① 시험 범위를 고르세요. 범위를 고르면 해당 지문이 자동 선택돼요.'
+              : !myStatsReady
+                ? '학습 기록 불러오는 중… 잠시 후 사각지대 풀기를 누를 수 있어요.'
+                : <span><b>② 사각지대 풀기</b>를 누르면 아직 5회 미만으로 푼 지문만 골라줘요. 그대로 풀려면 바로 ③ 시작하기를 누르세요.</span>}
+          </div>
         </div>}
         <div style={S.card}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',margin:'0 0 10px',gap:8,flexWrap:'wrap'}}>
