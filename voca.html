@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>대단한영어 멤버스</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root {
             /* index 브랜드 계열 — 정제된 톤 */
             --wine: #8e1530; --wine-deep: #6f0f24;
@@ -18,8 +19,13 @@
             /* 기능 유형색 (차분하게 조정 — 고급 톤) */
             --obj-blue: #3a6ea5; --subj-green: #3a8a5c; --ee-purple: #7a5a9a; --ex-orange: #c06a2c;
             --red: #B3261E; --navy: #3a2a20;
+            /* hw-monitor 통일 토큰 */
+            --ink-2:#515154; --ink-3:#86868b;
+            --line:#f0f0f2; --line-2:#e6e6ea; --fill:#f5f5f7;
+            --r:18px;
+            --shadow:0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05), 0 12px 32px rgba(0,0,0,.04);
         }
-        body { font-family: 'Pretendard', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f7f4ef; background-attachment: fixed; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; letter-spacing:-0.01em; }
+        body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', sans-serif; background: #f7f4ef; background-attachment: fixed; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; letter-spacing:-0.01em; }
 
         /* ===== 학생 화면 ===== */
         .card { background: var(--paper); width: 100%; max-width: 480px; padding: 32px; border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 28px rgba(44,36,32,0.07); text-align: center; height: fit-content; margin-top: 20px; position: relative; border: 1px solid rgba(0,0,0,0.04); overflow: hidden; }
@@ -104,7 +110,64 @@
         #adm-status-msg { font-size: 13px; text-align: center; margin-top: 15px; color: var(--ink-soft); font-weight: 600; }
         .admin-box input[type="range"] { width: 100%; height: 5px; cursor: pointer; accent-color: var(--wine); }
         .num-input { width: 55px; padding: 5px 8px; border: 1px solid var(--cream-deep); border-radius: 7px; text-align: right; font-size: 14px; font-weight: 700; color: var(--ink); margin-left: 10px; margin-bottom:0; }
-        .admin-back-btn { font-size: 13px; background:#eee; color:#555; border:none; border-radius:10px; padding:8px 16px; cursor:pointer; font-weight:700; margin-bottom: 20px; }
+        .admin-back-btn { font-size: 13px; background: var(--fill); color: var(--ink-2); border:none; border-radius:10px; padding:9px 16px; cursor:pointer; font-weight:600; margin-bottom: 18px; transition:background .15s ease; }
+        .admin-back-btn:hover { background: var(--line-2); }
+
+        /* ===== 관리자: 폭 확대 + 2단 레이아웃 ===== */
+        .admin-box { max-width: 980px; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+        .admin-grid > .section { margin-bottom: 0; }
+        .admin-col { display: flex; flex-direction: column; gap: 16px; }
+        .admin-full { grid-column: 1 / -1; }
+        @media (max-width: 760px) {
+            .admin-grid { grid-template-columns: 1fr; }
+            .admin-box { padding: 24px 20px; }
+        }
+
+        /* ===== 가로 버튼 통일 (hw-monitor pill 체계) ===== */
+        /* pill형: 선택/해제, 프리셋, 개수, 유닛 전체선택 등 */
+        .select-all-btn, .preset-btn {
+            background: var(--fill); color: var(--ink-2);
+            border: none; border-radius: 980px; padding: 9px 15px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            letter-spacing: -0.01em; transition: background .15s ease, color .15s ease, transform .1s ease;
+        }
+        .select-all-btn:hover, .preset-btn:hover { background: var(--line-2); }
+        .select-all-btn:active, .preset-btn:active { transform: scale(0.96); }
+        .preset-btn { flex: 1; min-width: 70px; }
+        .preset-btn.active { background: var(--wine); color: #fff; }
+        .preset-btn:active { transform: scale(0.96); }
+        /* 직접설정 버튼도 동일 톤으로 (인라인 스타일 덮어쓰기) */
+        .preset-btn[onclick*="manual"] { background: var(--fill) !important; color: var(--ink-2) !important; border: none !important; }
+        .preset-btn[onclick*="manual"].active { background: var(--wine) !important; color: #fff !important; }
+
+        /* 개수 프리셋 (60/80/120/160) */
+        .qty-btn {
+            flex: 1; background: var(--fill); color: var(--ink-2);
+            border: none; border-radius: 980px; padding: 11px 4px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: background .15s ease, transform .1s ease;
+        }
+        .qty-btn:hover { background: var(--line-2); }
+        .qty-btn:active { transform: scale(0.96); }
+        .qty-btn.active { background: var(--wine); color: #fff; }
+
+        /* 유닛/문항 그리드 아이템 */
+        .btn-item { background: #fff; border: 1px solid var(--line-2); padding: 11px; border-radius: 11px; font-size: 13px; text-align: center; cursor: pointer; user-select: none; -webkit-user-select: none; transition: border-color .15s ease, background .15s ease; font-weight: 500; }
+        .btn-item:hover { border-color: var(--wine); }
+        .btn-item.active { background: var(--wine) !important; color: #fff !important; border-color: var(--wine); }
+
+        /* 장바구니 담기 / 인쇄 등 보조 액션 (fill 톤 통일) */
+        .add-btn, .btn-print, .btn-wrong-print {
+            background: var(--fill); color: var(--ink-2);
+            border-radius: 12px; font-weight: 600; transition: background .15s ease;
+        }
+        .add-btn { width: 100%; padding: 13px; margin-top: 14px; font-size: 14px; }
+        .add-btn:hover, .btn-print:hover, .btn-wrong-print:hover { background: var(--line-2); }
+
+        /* 섹션 내부 회색 박스 톤 통일 */
+        .admin-box .section { border-radius: var(--r); }
+        #unit-area, #detail-area { background: var(--fill) !important; border: 1px solid var(--line) !important; border-radius: 14px !important; }
     </style>
 </head>
 <body>
@@ -412,6 +475,8 @@
             </div>
         </div>
 
+        <div class="admin-grid">
+        <div class="admin-col">
         <div class="section">
             <span class="label">1. 학생 선택 (여러 명 체크 → 일괄 배정)</span>
             <div style="display:flex; gap:8px; margin-bottom:8px;">
@@ -453,7 +518,9 @@
                 <button class="add-btn" onclick="ADMIN.addDetailsToBasket()">🛒 선택 문항만 장바구니 담기</button>
             </div>
         </div>
+        </div><!-- /.admin-col (left) -->
 
+        <div class="admin-col">
         <div class="section">
             <div style="display: flex; justify-content: space-between;">
                 <span class="label">4. 최종 출제 구성 (게이지 조절)</span>
@@ -540,6 +607,8 @@
                 <input type="range" id="ex-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--ex-orange);" oninput="ADMIN.syncSlider('ex-obj')">
             </div>
         </div>
+        </div><!-- /.admin-col (right) -->
+        </div><!-- /.admin-grid -->
 
         <button class="btn-save" onclick="ADMIN.saveToSheet()">선택한 학생 전체에 배정 저장</button>
         <div style="display:flex; gap:8px; margin-top:10px; margin-bottom:14px; align-items:center;">
