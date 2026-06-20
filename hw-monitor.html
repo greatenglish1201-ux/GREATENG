@@ -27,6 +27,10 @@
   .btn{ border:none; border-radius:10px; padding:10px 15px; font-size:14px; font-weight:700; cursor:pointer; }
   .btn-primary{ background:var(--ink); color:var(--gold); }
   .btn-line{ background:#fff; border:1px solid var(--cream-deep); color:var(--ink-soft); }
+  .period-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer; }
+  .period-btn.active{ background:var(--ink); color:var(--gold); border-color:var(--ink); }
+  .insp-period-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:6px 12px; font-size:12.5px; font-weight:700; cursor:pointer; }
+  .insp-period-btn.active{ background:var(--wine); color:#fff; border-color:var(--wine); }
   .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
   select,input{ padding:9px 11px; border:1px solid #ddd; border-radius:9px; font-size:14px; }
   .loading{ color:#999; font-size:13px; padding:8px 0; }
@@ -95,7 +99,15 @@
 
   <!-- 한 달 전체 격자 -->
   <div class="card">
-    <h2>📅 전체 현황 (최근 30일)</h2>
+    <h2>📅 전체 현황</h2>
+    <div class="controls" style="margin-bottom:12px;">
+      <span style="font-size:13px; font-weight:700; color:var(--ink-soft);">기간:</span>
+      <button class="period-btn" data-days="14" onclick="setPeriod(14)">14일</button>
+      <button class="period-btn" data-days="30" onclick="setPeriod(30)">30일</button>
+      <button class="period-btn" data-days="60" onclick="setPeriod(60)">60일</button>
+      <button class="period-btn" data-days="180" onclick="setPeriod(180)">180일</button>
+      <button class="period-btn" data-days="365" onclick="setPeriod(365)">1년</button>
+    </div>
     <div class="controls">
       <button class="btn btn-primary" onclick="loadAll()">🔄 새로고침</button>
       <span class="muted" id="grid-info"></span>
@@ -113,7 +125,7 @@
 
   <!-- 제출률 순위 -->
   <div class="card">
-    <h2>📊 제출률 (최근 30일)</h2>
+    <h2>📊 제출률 <span id="rate-period-label" style="font-size:13px; color:var(--ink-soft); font-weight:600;">(최근 14일)</span></h2>
     <div id="rate-area"><div class="loading">불러오는 중...</div></div>
   </div>
 
@@ -139,13 +151,19 @@
       <span onclick="closeInspect()" style="font-size:28px; color:#999; cursor:pointer; padding:0 6px;">&times;</span>
     </div>
     <div id="insp-summary" style="margin-bottom:14px;"></div>
-    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📅 14일 현황</div>
+
+    <div style="display:flex; gap:6px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
+      <span style="font-size:12.5px; font-weight:700; color:var(--ink-soft);">기간:</span>
+      <button class="insp-period-btn" data-days="14" onclick="setInspPeriod(14)">14일</button>
+      <button class="insp-period-btn" data-days="30" onclick="setInspPeriod(30)">30일</button>
+      <button class="insp-period-btn" data-days="60" onclick="setInspPeriod(60)">60일</button>
+      <button class="insp-period-btn" data-days="90" onclick="setInspPeriod(90)">90일</button>
+    </div>
+    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📅 제출 현황</div>
     <div id="insp-days" style="margin-bottom:14px;"></div>
     <div id="insp-wordwrite" style="background:#eef4fb; border:1px solid #cdddf2; border-radius:10px; padding:10px 13px; margin-bottom:18px; font-size:13px;"></div>
-    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📷 제출 사진 (최신순)</div>
-    <div id="insp-photos"><div class="loading">불러오는 중...</div></div>
 
-    <div style="border-top:2px solid var(--cream-deep); margin-top:20px; padding-top:16px;">
+    <div style="border-top:2px solid var(--cream-deep); margin-top:6px; padding-top:16px; margin-bottom:18px;">
       <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:10px;">📢 학부모 리포트</div>
       <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
         <select id="insp-report-period" style="padding:9px 11px;">
@@ -159,6 +177,9 @@
       <textarea id="insp-report-text" readonly placeholder="리포트 생성을 누르면 학부모 전송용 텍스트가 만들어집니다." style="width:100%; min-height:220px; padding:13px; border:1px solid #ddd; border-radius:10px; font-size:13px; line-height:1.7; resize:vertical; font-family:inherit;"></textarea>
       <div id="insp-copy-msg" style="font-size:12.5px; color:var(--ok); text-align:center; min-height:16px; margin-top:5px;"></div>
     </div>
+
+    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📷 제출 사진 (최신순)</div>
+    <div id="insp-photos"><div class="loading">불러오는 중...</div></div>
   </div>
 </div>
 
@@ -190,6 +211,17 @@
   let statusByStudent = {}; // 격자용: 이름 → {date:status}
   let allDates = [];
   let studentMeta = {};     // 이름 → {grade,course,klass,school}
+  let curDays = 14;         // 기본 14일
+
+  function setPeriod(days){
+    curDays = days;
+    document.querySelectorAll('.period-btn').forEach(b=>{
+      b.classList.toggle('active', parseInt(b.dataset.days) === days);
+    });
+    const lbl = document.getElementById('rate-period-label');
+    if(lbl) lbl.textContent = '(최근 ' + (days===365?'1년':days+'일') + ')';
+    loadAll();
+  }
 
   async function loadAll(){
     document.getElementById('today-box').innerHTML = '<div class="loading">불러오는 중...</div>';
@@ -201,7 +233,7 @@
     studentMeta = {};
     if(ros && ros.students){ ros.students.forEach(s=> studentMeta[s.name] = s); }
 
-    const ov = await jsonp('type=adminOverview');
+    const ov = await jsonp('type=adminOverview&days=' + curDays);
     if(!ov){ document.getElementById('today-box').innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
     overviewCache = ov;
     renderToday(ov);
@@ -217,23 +249,49 @@
     return parts.join(' · ');
   }
 
+  let _inspCurName = '';
+  let inspDays = 30; // 개별 점검 기본 30일
+
+  function setInspPeriod(days){
+    inspDays = days;
+    document.querySelectorAll('.insp-period-btn').forEach(b=>{
+      b.classList.toggle('active', parseInt(b.dataset.days) === days);
+    });
+    if(_inspCurName) loadInspDays(_inspCurName);
+  }
+
   async function openInspect(name){
+    _inspCurName = name;
     document.getElementById('inspect').style.display = 'block';
     document.getElementById('insp-name').textContent = name;
     document.getElementById('insp-meta').textContent = metaLine(name);
     document.getElementById('insp-summary').innerHTML = '';
     document.getElementById('insp-days').innerHTML = '<div class="loading">불러오는 중...</div>';
     document.getElementById('insp-photos').innerHTML = '<div class="loading">불러오는 중...</div>';
+    document.getElementById('insp-wordwrite').innerHTML = '';
     const rt = document.getElementById('insp-report-text'); if(rt) rt.value = '';
     const cb = document.getElementById('insp-copy-btn'); if(cb) cb.style.display = 'none';
+    // 기간 버튼 기본 30일 활성화
+    document.querySelectorAll('.insp-period-btn').forEach(b=>{
+      b.classList.toggle('active', parseInt(b.dataset.days) === inspDays);
+    });
     window.scrollTo(0,0);
 
-    // 14일 현황
-    const st = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(name));
+    await loadInspDays(name);
+
+    // 사진 전부 (기간 무관 전체)
+    const ph = await jsonp('type=adminSubmissions&name=' + encodeURIComponent(name));
+    renderInspectPhotos(ph);
+    renderWordWriteDates(ph);
+  }
+
+  // 현황 + 요약 (기간별)
+  async function loadInspDays(name){
+    document.getElementById('insp-days').innerHTML = '<div class="loading">불러오는 중...</div>';
+    const st = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(name) + '&days=' + inspDays);
     const days = (st && st.days) || [];
     renderInspectDays(days);
 
-    // 요약 카운트
     let sub=0,late=0,miss=0,pre=0;
     days.forEach(d=>{ if(d.status==='제출')sub++; else if(d.status==='지연제출')late++; else if(d.status==='미제출')miss++; else if(d.status==='선제출')pre++; });
     const total = sub+late+miss+pre;
@@ -243,12 +301,7 @@
       + '<span style="background:var(--ok-bg); color:var(--ok); padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">제출 '+sub+'</span>'
       + '<span style="background:var(--late-bg); color:var(--late); padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">지연 '+late+'</span>'
       + '<span style="background:var(--miss-bg); color:var(--miss); padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">미제출 '+miss+'</span>'
-      + '<span style="background:#eee; color:#333; padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">14일 제출률 '+pct+'%</span></div>';
-
-    // 사진 전부
-    const ph = await jsonp('type=adminSubmissions&name=' + encodeURIComponent(name));
-    renderInspectPhotos(ph);
-    renderWordWriteDates(ph);
+      + '<span style="background:#eee; color:#333; padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">제출률 '+pct+'%</span></div>';
   }
 
   // 단어쓰기 추가 제출 날짜만 간단히 표시
@@ -411,7 +464,7 @@
   async function buildGrid(ov){
     const area = document.getElementById('grid-area');
     document.getElementById('grid-info').textContent = '불러오는 중...';
-    const g = await jsonp('type=adminGrid');
+    const g = await jsonp('type=adminGrid&days=' + curDays);
     if(!g || !g.rows){ area.innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
 
     allDates = g.dates || [];
@@ -500,7 +553,7 @@
   }
 
   // 시작
-  loadAll();
+  setPeriod(14);
 </script>
 </body>
 </html>
