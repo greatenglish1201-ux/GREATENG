@@ -269,7 +269,7 @@
 
             <!-- 사진 -->
             <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 사진</label>
-            <input type="file" id="hw-photo" accept="image/*" capture="environment" onchange="hw_preview()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
+            <input type="file" id="hw-photo" accept="image/*" onchange="hw_preview()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
             <img id="hw-preview-img" style="display:none; max-width:100%; border-radius:10px; margin-bottom:10px;">
 
             <button class="btn" id="hw-submit-btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:15px;" onclick="hw_submit()">제출하기</button>
