@@ -223,7 +223,7 @@
 <div class="card" id="student-screen" style="position:relative;">
     <!-- 우측 상단: 로그아웃(로그인 후) + 톱니바퀴(관리자 인증 시) -->
     <button id="logout-btn" onclick="hw_logout()" title="로그아웃" style="display:none; position:absolute; top:14px; right:14px; height:34px; padding:0 13px; border-radius:17px; background:#fff; color:var(--ink-soft); border:1px solid var(--cream-deep); font-size:12.5px; font-weight:700; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.08);">로그아웃</button>
-    <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--gold); border:none; font-size:17px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.15); align-items:center; justify-content:center;"> </button>
+    <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--wine); color:#fff; border:none; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(142,21,48,0.3); align-items:center; justify-content:center;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 
     <div id="login-area">
         <div id="login-header">
@@ -262,6 +262,7 @@
             </div>
         </div>
 
+        <!-- 관리자 비밀번호 변경 모달 -->
         <!-- ===== 로그인 후 홈 (인사 + 2카드) — 평소 숨김 ===== -->
         <div id="student-home" style="display:none; text-align:left;">
             <div style="padding-left:13px; border-left:2.5px solid var(--wine); margin:4px 0 20px;">
@@ -517,22 +518,27 @@
 <div id="admin-screen">
     <div class="admin-box">
         <button class="admin-back-btn" onclick="exitAdmin()">← 학생 화면으로</button>
+        <button onclick="openPwModal()" style="position:absolute; top:18px; right:18px; height:34px; padding:0 14px; border-radius:17px; background:#fff; color:var(--ink-soft); border:none; box-shadow:inset 0 0 0 0.5px rgba(0,0,0,0.18); font-size:12.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; z-index:3;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            비밀번호
+        </button>
         <div class="main-title">
             <p>Dae-dan-han Premium System</p>
             <h2>대단한영어 <span>멤버스</span></h2>
         </div>
 
-        <div class="section" style="background:#fdf7f0; border-color:#e8d8b8; padding:14px 18px;">
-            <button onclick="hw_togglePwBox()" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:15px; font-weight:800; color:var(--ink);">
-                <span>관리자 비밀번호 변경</span>
-                <span id="pw-box-arrow" style="color:var(--gold); font-size:13px;">▼</span>
+        <!-- 시험 결과 (최근 미션별 합격/불합격) -->
+        <div class="section">
+            <button onclick="toggleExamResults()" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:15px; font-weight:800; color:var(--ink);">
+                <span>시험 결과</span>
+                <span id="exam-results-arrow" style="color:var(--gold); font-size:13px;">▼</span>
             </button>
-            <div id="pw-box" style="display:none; flex-direction:column; gap:8px; margin-top:14px;">
-                <input type="password" id="pw-cur" placeholder="현재 비밀번호" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
-                <input type="password" id="pw-next" placeholder="새 비밀번호 (4자 이상)" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
-                <input type="password" id="pw-next2" placeholder="새 비밀번호 확인" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
-                <button class="btn" style="background:var(--ink); color:var(--gold); padding:13px;" onclick="hw_changePw()">비밀번호 변경</button>
-                <div id="pw-change-msg" style="font-size:13px; text-align:center; min-height:18px;"></div>
+            <div id="exam-results-box" style="display:none; margin-top:14px;">
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <select id="exam-result-student" style="flex:1; padding:11px; font-size:14px; border:2px solid #e8d8b8; border-radius:10px;"><option value="">학생 선택</option></select>
+                    <button class="btn" style="flex:0 0 auto; background:var(--wine); color:#fff; padding:11px 18px; font-size:14px;" onclick="loadExamResults()">조회</button>
+                </div>
+                <div id="exam-result-list"></div>
             </div>
         </div>
 
@@ -712,6 +718,23 @@
     </div>
 </div>
 
+<!-- 관리자 비밀번호 변경 모달 (최상위 — 부모 display:none 영향 안 받게) -->
+<div id="pw-change-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; padding:26px 22px; width:84%; max-width:340px; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+        <h3 style="margin:0 0 16px; color:var(--wine); font-size:17px; text-align:center;">관리자 비밀번호 변경</h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+            <input type="password" id="pw-cur" placeholder="현재 비밀번호" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
+            <input type="password" id="pw-next" placeholder="새 비밀번호 (4자 이상)" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
+            <input type="password" id="pw-next2" placeholder="새 비밀번호 확인" autocomplete="off" spellcheck="false" style="padding:12px; border:2px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box;">
+            <div id="pw-change-msg" style="font-size:13px; text-align:center; min-height:18px;"></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+            <button class="btn" style="background:#eee; color:#555; padding:13px; flex:1;" onclick="closePwModal()">취소</button>
+            <button class="btn" style="background:var(--ink); color:var(--gold); padding:13px; flex:2;" onclick="hw_changePw()">변경</button>
+        </div>
+    </div>
+</div>
+
 <script>/* ============================================================
        공통 상수 (학생/관리자 동일 시트·GAS 공유)
        ============================================================ */
@@ -862,14 +885,6 @@
     function hw_closeAdminModal(){
         document.getElementById('admin-pw-modal').style.display = 'none';
     }
-    function hw_togglePwBox(){
-        const box = document.getElementById('pw-box');
-        const arrow = document.getElementById('pw-box-arrow');
-        const open = box.style.display === 'none' || !box.style.display;
-        box.style.display = open ? 'flex' : 'none';
-        if(arrow) arrow.textContent = open ? '▲' : '▼';
-    }
-
     // ===== 숙제 현황 모니터링 =====
     function hw_toggleMonitor(){
         const box = document.getElementById('hw-mon-box');
@@ -986,6 +1001,7 @@
                 document.getElementById('pw-cur').value = '';
                 document.getElementById('pw-next').value = '';
                 document.getElementById('pw-next2').value = '';
+                setTimeout(closePwModal, 1200);
             } else {
                 m.style.color = '#e74c3c'; m.textContent = (data && data.msg) || '변경 실패';
             }
@@ -997,10 +1013,135 @@
         document.body.appendChild(s);
         setTimeout(()=>{ if(done) return; cleanup(); m.style.color='#e74c3c'; m.textContent='서버 연결 실패'; }, 8000);
     }
+
+    // ── 비밀번호 변경 모달 ──
+    function openPwModal(){
+        const msg=document.getElementById('pw-change-msg'); if(msg) msg.textContent='';
+        ['pw-cur','pw-next','pw-next2'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+        document.getElementById('pw-change-modal').style.display='flex';
+    }
+    function closePwModal(){ document.getElementById('pw-change-modal').style.display='none'; }
+
+    // ── 시험 결과 (관리자) ──
+    function toggleExamResults(){
+        const box=document.getElementById('exam-results-box');
+        const arr=document.getElementById('exam-results-arrow');
+        const open = box.style.display==='none' || !box.style.display;
+        box.style.display = open ? 'block' : 'none';
+        if(arr) arr.textContent = open ? '▲' : '▼';
+    }
+    // 학생 드롭다운 채우기 (sharedDB 명단 활용)
+    function populateExamResultStudents(){
+        const sel=document.getElementById('exam-result-student');
+        if(!sel) return;
+        let names=[];
+        try { names = (sharedRoster && sharedRoster.length) ? sharedRoster.slice() : []; } catch(e){}
+        // sharedRoster 없으면 getList 호출
+        if(!names.length){
+            fetch(APP_URL + "?type=getList&t=" + Date.now())
+              .then(r=>r.json()).then(list=>{
+                  fillExamStudentSelect(list||[]);
+              }).catch(()=>{});
+            return;
+        }
+        fillExamStudentSelect(names);
+    }
+    function fillExamStudentSelect(names){
+        const sel=document.getElementById('exam-result-student');
+        if(!sel) return;
+        const cur=sel.value;
+        sel.innerHTML='<option value="">학생 선택</option>';
+        names.map(n=>String(n||'').trim()).filter(Boolean).forEach(n=>{
+            const o=document.createElement('option'); o.value=n; o.textContent=n; sel.appendChild(o);
+        });
+        if(cur) sel.value=cur;
+    }
+    // 결과 조회: 시험기록(미션별) + 불합격 시 단어쓰기 사진
+    function loadExamResults(){
+        const name=document.getElementById('exam-result-student').value;
+        const listEl=document.getElementById('exam-result-list');
+        if(!name){ listEl.innerHTML='<p style="color:#e74c3c; font-size:13px;">학생을 선택하세요.</p>'; return; }
+        listEl.innerHTML='<p style="color:var(--ink-soft); font-size:13px;">불러오는 중...</p>';
+
+        const cbName='examRes_'+Date.now();
+        let done=false;
+        const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName]=(data)=>{
+            done=true; cleanup();
+            renderExamResults(name, (data && data.missions) || []);
+        };
+        const s=document.createElement('script');
+        s.id=cbName;
+        s.src=APP_URL + "?type=adminExamResults&name=" + encodeURIComponent(name) + "&limit=7&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); listEl.innerHTML='<p style="color:#e74c3c; font-size:13px;">불러오기 실패</p>'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done)return; cleanup(); listEl.innerHTML='<p style="color:#e74c3c; font-size:13px;">시간 초과</p>'; }, 10000);
+    }
+    function renderExamResults(name, missions){
+        const listEl=document.getElementById('exam-result-list');
+        if(!missions.length){ listEl.innerHTML='<p style="color:var(--ink-soft); font-size:13px;">시험 기록이 없습니다.</p>'; return; }
+        let html='';
+        missions.forEach(m=>{
+            const pass = m.result==='합격';
+            const badge = pass
+                ? '<span style="background:#dcfce7; color:#166534; font-size:11px; font-weight:700; padding:3px 9px; border-radius:8px;">합격</span>'
+                : '<span style="background:#fee2e2; color:#991b1b; font-size:11px; font-weight:700; padding:3px 9px; border-radius:8px;">불합격</span>';
+            const detail = pass
+                ? (m.passAttempt + '번 만에 합격')
+                : (m.attempts + '회 응시 후 불합격');
+            const dateShort = (m.lastDate||'').split(' ')[0];
+            html += '<div style="border:1px solid #eee; border-radius:12px; padding:13px 15px; margin-bottom:9px;">';
+            html += '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">';
+            html += '<div><div style="font-size:14px; font-weight:700; color:var(--ink);">'+ (m.range||'(범위)') +'</div>';
+            html += '<div style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">'+ (m.assignDate||dateShort) +' · '+ detail +'</div></div>';
+            html += badge + '</div>';
+            // 불합격이면 단어쓰기 사진 영역 (lazy)
+            if(!pass){
+                const slot='ww_'+Math.random().toString(36).slice(2,8);
+                html += '<div id="'+slot+'" style="margin-top:10px; padding-top:10px; border-top:1px dashed #eee; font-size:12px; color:var(--ink-soft);">단어쓰기 확인 중...</div>';
+                setTimeout(()=>loadWordWritePhotos(name, slot), 50);
+            }
+            html += '</div>';
+        });
+        listEl.innerHTML=html;
+    }
+    // 불합격 미션: 그 학생의 최근 단어쓰기 제출(사진) 조회 — 숙제점검 GAS adminSubmissions
+    function loadWordWritePhotos(name, slotId){
+        const cbName='ww_'+Date.now()+'_'+Math.floor(Math.random()*1000);
+        let done=false;
+        const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName]=(data)=>{
+            done=true; cleanup();
+            const el=document.getElementById(slotId);
+            if(!el) return;
+            const items=((data && data.items) || []).filter(it=> (it.type||'').indexOf('단어쓰기')>=0);
+            if(!items.length){ el.innerHTML='<span style="color:#b45309;">⚠ 단어쓰기 제출 없음</span>'; return; }
+            let h='<div style="color:#166534; margin-bottom:6px;">단어쓰기 '+items.length+'건</div><div style="display:flex; gap:6px; flex-wrap:wrap;">';
+            items.slice(0,6).forEach(it=>{
+                const thumb=it.thumb||'';
+                const url=it.photoUrl||'#';
+                if(thumb){
+                    h+='<a href="'+url+'" target="_blank" rel="noopener" style="display:block;"><img src="'+thumb+'" style="width:54px; height:54px; object-fit:cover; border-radius:8px; border:1px solid #e8d8b8;" loading="lazy"></a>';
+                } else {
+                    h+='<a href="'+url+'" target="_blank" rel="noopener" style="font-size:11px; color:var(--wine);">사진</a>';
+                }
+            });
+            h+='</div>';
+            el.innerHTML=h;
+        };
+        const s=document.createElement('script');
+        s.id=cbName;
+        s.src=HW_URL + "?type=adminSubmissions&name=" + encodeURIComponent(name) + "&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); const el=document.getElementById(slotId); if(el) el.innerHTML='<span style="color:#e74c3c;">단어쓰기 조회 실패</span>'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done)return; cleanup(); const el=document.getElementById(slotId); if(el) el.innerHTML='<span style="color:#999;">단어쓰기 조회 시간초과</span>'; }, 10000);
+    }
+
     function enterAdmin() {
         document.getElementById('student-screen').style.display = "none";
         document.getElementById('admin-screen').style.display = "flex";
         ADMIN.init();
+        populateExamResultStudents();
     }
     function exitAdmin() {
         document.getElementById('admin-screen').style.display = "none";
