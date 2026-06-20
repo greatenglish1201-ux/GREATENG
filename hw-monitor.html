@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대단한영어 멤버스 · 숙제 현황</title>
+<style>
+  :root{
+    --wine:#7a1020; --gold:#C9A84C; --ink:#3a2a20; --ink-soft:#6b5a4d;
+    --cream:#f7f3ec; --cream-deep:#e8ddc9; --navy:#1f4e79;
+    --ok:#274e13; --ok-bg:#d9ead3; --late:#7f6000; --late-bg:#fff2cc;
+    --miss:#cc0000; --miss-bg:#f4cccc; --pre-bg:#cfe8d6; --exam-bg:#ddebf7;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Malgun Gothic',sans-serif;
+    background:linear-gradient(160deg,#1a0005,#3d0010); color:#2a2a2a; padding:18px;
+    min-height:100vh;
+  }
+  .wrap{ max-width:1100px; margin:0 auto; }
+  header.top{ text-align:center; color:#fff; margin-bottom:20px; }
+  header.top h1{ margin:0; font-size:23px; font-weight:900; letter-spacing:1px; }
+  header.top h1 span{ color:var(--gold); }
+  header.top p{ margin:4px 0 0; font-size:12px; color:#e8d8b8; font-style:italic; letter-spacing:1px; }
+  .card{ background:#fff; border-radius:16px; padding:18px; margin-bottom:16px; box-shadow:0 6px 22px rgba(0,0,0,0.22); }
+  .card h2{ margin:0 0 14px; font-size:16px; color:var(--wine); display:flex; align-items:center; gap:7px; }
+  .btn{ border:none; border-radius:10px; padding:10px 15px; font-size:14px; font-weight:700; cursor:pointer; }
+  .btn-primary{ background:var(--ink); color:var(--gold); }
+  .btn-line{ background:#fff; border:1px solid var(--cream-deep); color:var(--ink-soft); }
+  .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
+  select,input{ padding:9px 11px; border:1px solid #ddd; border-radius:9px; font-size:14px; }
+  .loading{ color:#999; font-size:13px; padding:8px 0; }
+
+  /* 오늘 미제출 */
+  .miss-box{ border-radius:12px; padding:13px 15px; }
+  .miss-box.has{ background:var(--miss-bg); border:1px solid #f0a8a8; }
+  .miss-box.none{ background:var(--ok-bg); border:1px solid #bfe6cf; }
+  .miss-title{ font-weight:800; font-size:15px; margin-bottom:6px; }
+  .miss-names{ font-size:13.5px; line-height:1.7; }
+
+  /* 격자 */
+  .grid-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table.grid{ border-collapse:collapse; font-size:11px; white-space:nowrap; }
+  table.grid th, table.grid td{ border:1px solid #eee; padding:4px 5px; text-align:center; }
+  table.grid th.name, table.grid td.name{ position:sticky; left:0; background:#faf7f1; font-weight:700; text-align:left; min-width:62px; z-index:2; }
+  table.grid thead th{ background:#f3ece0; color:var(--ink); font-weight:700; position:sticky; top:0; }
+  td.s-제출{ background:var(--ok-bg); color:var(--ok); }
+  td.s-지연제출{ background:var(--late-bg); color:var(--late); }
+  td.s-미제출{ background:var(--miss-bg); color:var(--miss); font-weight:700; }
+  td.s-선제출{ background:var(--pre-bg); color:var(--ok); }
+  td.s-시험{ background:var(--exam-bg); color:var(--navy); }
+  td.s-휴일{ background:#eee; color:#888; }
+  td.clickable{ cursor:pointer; }
+  td.clickable:hover{ outline:2px solid var(--wine); outline-offset:-2px; }
+
+  /* 제출률 */
+  .rate-row{ display:flex; align-items:center; gap:10px; padding:8px 11px; border-radius:9px; background:#f7f7f9; margin-bottom:5px; font-size:13px; }
+  .rate-bar{ flex:1; height:9px; background:#eee; border-radius:5px; overflow:hidden; }
+  .rate-fill{ height:100%; background:linear-gradient(90deg,var(--wine),var(--gold)); }
+  .rate-pct{ font-weight:800; min-width:42px; text-align:right; }
+
+  /* 사진 */
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+  .photo-card{ border:1px solid #eee; border-radius:11px; overflow:hidden; background:#fafafa; }
+  .photo-card img{ width:100%; height:150px; object-fit:cover; display:block; cursor:pointer; background:#eee; }
+  .photo-meta{ padding:8px 10px; font-size:12px; }
+  .photo-meta .pm-name{ font-weight:800; color:var(--wine); }
+  .photo-meta .pm-src{ color:#555; margin-top:2px; line-height:1.4; }
+  .photo-meta .pm-ts{ color:#999; font-size:11px; margin-top:3px; }
+  .no-photo{ height:150px; display:flex; align-items:center; justify-content:center; color:#bbb; font-size:12px; background:#f0f0f0; }
+
+  /* 라이트박스 */
+  #lightbox{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+  #lightbox img{ max-width:96%; max-height:90%; border-radius:8px; }
+  #lightbox .close{ position:absolute; top:16px; right:20px; color:#fff; font-size:30px; cursor:pointer; }
+
+  .muted{ color:#999; font-size:13px; }
+  .legend{ display:flex; gap:12px; flex-wrap:wrap; font-size:11.5px; color:#666; margin-top:10px; }
+  .legend span{ display:inline-flex; align-items:center; gap:4px; }
+  .dot{ width:11px; height:11px; border-radius:3px; display:inline-block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>대단한영어 <span>멤버스</span> · 숙제 현황</h1>
+    <p>탁월함이 습관이 되도록</p>
+  </header>
+
+  <!-- 오늘 미제출자 -->
+  <div class="card">
+    <h2>⚠️ 오늘 미제출</h2>
+    <div id="today-box"><div class="loading">불러오는 중...</div></div>
+  </div>
+
+  <!-- 한 달 전체 격자 -->
+  <div class="card">
+    <h2>📅 전체 현황 (최근 30일)</h2>
+    <div class="controls">
+      <button class="btn btn-primary" onclick="loadAll()">🔄 새로고침</button>
+      <span class="muted" id="grid-info"></span>
+    </div>
+    <div class="grid-scroll"><div id="grid-area"><div class="loading">불러오는 중...</div></div></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--ok-bg)"></i>제출</span>
+      <span><i class="dot" style="background:var(--late-bg)"></i>지연</span>
+      <span><i class="dot" style="background:var(--miss-bg)"></i>미제출</span>
+      <span><i class="dot" style="background:var(--pre-bg)"></i>선제출</span>
+      <span><i class="dot" style="background:var(--exam-bg)"></i>시험</span>
+      <span class="muted">· 칸을 누르면 그날 제출 사진 확인</span>
+    </div>
+  </div>
+
+  <!-- 제출률 순위 -->
+  <div class="card">
+    <h2>📊 제출률 (최근 30일)</h2>
+    <div id="rate-area"><div class="loading">불러오는 중...</div></div>
+  </div>
+
+  <!-- 사진 확인 -->
+  <div class="card">
+    <h2>📷 제출 사진 확인</h2>
+    <div class="controls">
+      <select id="photo-student"><option value="">전체 학생</option></select>
+      <button class="btn btn-primary" onclick="loadPhotos()">사진 불러오기</button>
+      <span class="muted">엉뚱한 사진 검증용 · 최신순 최대 100건</span>
+    </div>
+    <div id="photo-area"><div class="muted">학생을 선택하거나 '사진 불러오기'를 누르세요.</div></div>
+  </div>
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'">
+  <span class="close">&times;</span>
+  <img id="lightbox-img" src="" alt="제출 사진">
+</div>
+
+<script>
+  const HW_URL = "https://script.google.com/macros/s/AKfycbwu_6vMigAhIXq8o-4mda7Gyd1dfiC5nSsT0Ei9Ckwlwuc_OGMAEb9FybGB6lOJcsbL/exec";
+
+  // JSONP 헬퍼
+  function jsonp(params){
+    return new Promise((resolve)=>{
+      const cb = 'cb_' + Math.random().toString(36).slice(2);
+      let done = false;
+      const cleanup = ()=>{ try{ delete window[cb]; }catch(e){ window[cb]=undefined; } const s=document.getElementById(cb); if(s) s.remove(); };
+      window[cb] = (data)=>{ done=true; cleanup(); resolve(data); };
+      const s = document.createElement('script');
+      s.id = cb;
+      s.src = HW_URL + '?' + params + '&callback=' + cb + '&t=' + Date.now();
+      s.onerror = ()=>{ if(done) return; cleanup(); resolve(null); };
+      document.body.appendChild(s);
+      setTimeout(()=>{ if(done) return; cleanup(); resolve(null); }, 12000);
+    });
+  }
+
+  let overviewCache = null;
+  let statusByStudent = {}; // 격자용: 이름 → {date:status}
+  let allDates = [];
+
+  async function loadAll(){
+    document.getElementById('today-box').innerHTML = '<div class="loading">불러오는 중...</div>';
+    document.getElementById('grid-area').innerHTML = '<div class="loading">불러오는 중...</div>';
+    document.getElementById('rate-area').innerHTML = '<div class="loading">불러오는 중...</div>';
+
+    const ov = await jsonp('type=adminOverview');
+    if(!ov){ document.getElementById('today-box').innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
+    overviewCache = ov;
+    renderToday(ov);
+    renderRates(ov);
+    fillPhotoStudents(ov);
+    await buildGrid(ov);
+  }
+
+  function renderToday(ov){
+    const box = document.getElementById('today-box');
+    const m = ov.todayMisses || [];
+    if(m.length){
+      box.className = '';
+      box.innerHTML = '<div class="miss-box has"><div class="miss-title" style="color:var(--miss)">오늘 ' + m.length + '명 미제출</div><div class="miss-names">' + m.join(', ') + '</div></div>';
+    } else {
+      box.innerHTML = '<div class="miss-box none"><div class="miss-title" style="color:var(--ok)">✅ 오늘 미제출자 없음</div></div>';
+    }
+  }
+
+  function renderRates(ov){
+    const area = document.getElementById('rate-area');
+    const studs = (ov.students||[]).map(s=>{
+      const total = s.submitted + s.late + s.missed + s.pre;
+      const done = s.submitted + s.late + s.pre; // 낸 것(지연·선제출 포함)
+      const pct = total ? Math.round(done/total*100) : 0;
+      return Object.assign({}, s, { pct, total });
+    }).sort((a,b)=> a.pct - b.pct); // 낮은 순(주의 학생 위로)
+    if(!studs.length){ area.innerHTML = '<span class="muted">데이터 없음</span>'; return; }
+    let h = '';
+    studs.forEach(s=>{
+      h += '<div class="rate-row"><span style="font-weight:700; min-width:60px;">'+s.name+'</span>'
+        + '<div class="rate-bar"><div class="rate-fill" style="width:'+s.pct+'%"></div></div>'
+        + '<span class="rate-pct" style="color:'+(s.pct<70?'#cc0000':'#274e13')+'">'+s.pct+'%</span></div>';
+    });
+    area.innerHTML = h;
+  }
+
+  // 격자: overview엔 30일 카운트만 있어 날짜별 상태가 없으므로, 학생별 status를 개별 조회
+  async function buildGrid(ov){
+    const area = document.getElementById('grid-area');
+    const names = (ov.students||[]).map(s=>s.name);
+    if(!names.length){ area.innerHTML = '<span class="muted">학생 없음</span>'; return; }
+    document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · 불러오는 중...';
+
+    statusByStudent = {};
+    const dateSet = new Set();
+    // 학생별 14일 status 조회 (homeworkStatus 재사용) — 순차
+    for(let i=0;i<names.length;i++){
+      const d = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(names[i]));
+      const days = (d && d.days) || [];
+      statusByStudent[names[i]] = {};
+      days.forEach(x=>{ statusByStudent[names[i]][x.date] = x.status; dateSet.add(x.date); });
+      document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · ' + (i+1) + '/' + names.length;
+    }
+    allDates = Array.from(dateSet).sort();
+    renderGrid(names);
+    document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · ' + allDates.length + '일';
+  }
+
+  function renderGrid(names){
+    const area = document.getElementById('grid-area');
+    if(!allDates.length){ area.innerHTML = '<span class="muted">현황 데이터 없음</span>'; return; }
+    let h = '<table class="grid"><thead><tr><th class="name">학생</th>';
+    allDates.forEach(dt=>{
+      const [y,m,d] = dt.split('-');
+      h += '<th>'+parseInt(m)+'/'+parseInt(d)+'</th>';
+    });
+    h += '</tr></thead><tbody>';
+    names.forEach(nm=>{
+      h += '<tr><td class="name">'+nm+'</td>';
+      allDates.forEach(dt=>{
+        const st = (statusByStudent[nm] && statusByStudent[nm][dt]) || '';
+        const cls = st ? ('s-'+st) : '';
+        const click = st ? ' clickable' : '';
+        const mark = st==='제출'?'O':st==='미제출'?'X':st==='지연제출'?'△':st==='선제출'?'◎':st==='시험'?'시':st==='휴일'?'-':'';
+        h += '<td class="'+cls+click+'" onclick="openDay(\''+nm+'\',\''+dt+'\')">'+mark+'</td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody></table>';
+    area.innerHTML = h;
+  }
+
+  // 격자 칸 클릭 → 그 학생/날짜 사진
+  async function openDay(name, date){
+    document.getElementById('photo-student').value = '';
+    const area = document.getElementById('photo-area');
+    area.innerHTML = '<div class="loading">' + name + ' · ' + date + ' 사진 불러오는 중...</div>';
+    const d = await jsonp('type=adminSubmissions&name=' + encodeURIComponent(name) + '&date=' + encodeURIComponent(date));
+    renderPhotos(d, name + ' · ' + date);
+    document.querySelector('.card:last-of-type').scrollIntoView({behavior:'smooth'});
+  }
+
+  function fillPhotoStudents(ov){
+    const sel = document.getElementById('photo-student');
+    sel.innerHTML = '<option value="">전체 학생</option>';
+    (ov.students||[]).forEach(s=> sel.add(new Option(s.name, s.name)));
+  }
+
+  async function loadPhotos(){
+    const name = document.getElementById('photo-student').value;
+    const area = document.getElementById('photo-area');
+    area.innerHTML = '<div class="loading">사진 불러오는 중...</div>';
+    const d = await jsonp('type=adminSubmissions' + (name ? '&name=' + encodeURIComponent(name) : ''));
+    renderPhotos(d, name || '전체');
+  }
+
+  function renderPhotos(d, label){
+    const area = document.getElementById('photo-area');
+    const items = (d && d.items) || [];
+    if(!items.length){ area.innerHTML = '<span class="muted">' + label + ' — 제출 사진이 없습니다.</span>'; return; }
+    let h = '<div class="muted" style="margin-bottom:10px;">' + label + ' · ' + items.length + '건</div><div class="photo-grid">';
+    items.forEach(it=>{
+      const img = it.thumb
+        ? '<img src="'+it.thumb+'" referrerpolicy="no-referrer" onclick="zoom(\''+(it.fileId?('https://drive.google.com/thumbnail?id='+it.fileId+'&sz=w1200'):it.thumb)+'\')" onerror="this.parentNode.innerHTML=\'&lt;div class=&quot;no-photo&quot;&gt;사진 열기 실패&lt;/div&gt;\'">'
+        : '<div class="no-photo">사진 없음</div>';
+      h += '<div class="photo-card">'+img
+        + '<div class="photo-meta"><div class="pm-name">'+it.name+'</div>'
+        + '<div class="pm-src">'+(it.src||'')+(it.type?(' · '+it.type):'')+'</div>'
+        + '<div class="pm-ts">'+(it.due||'')+(it.ts?(' (제출 '+it.ts+')'):'')+'</div></div></div>';
+    });
+    h += '</div>';
+    area.innerHTML = h;
+  }
+
+  function zoom(url){
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox').style.display = 'flex';
+  }
+
+  // 시작
+  loadAll();
+</script>
+</body>
+</html>
