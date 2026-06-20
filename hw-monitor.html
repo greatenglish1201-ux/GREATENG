@@ -31,6 +31,8 @@
   .period-btn.active{ background:var(--ink); color:var(--gold); border-color:var(--ink); }
   .insp-period-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:6px 12px; font-size:12.5px; font-weight:700; cursor:pointer; }
   .insp-period-btn.active{ background:var(--wine); color:#fff; border-color:var(--wine); }
+  .class-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer; }
+  .class-btn.active{ background:var(--gold); color:var(--ink); border-color:var(--gold); }
   .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
   select,input{ padding:9px 11px; border:1px solid #ddd; border-radius:9px; font-size:14px; }
   .loading{ color:#999; font-size:13px; padding:8px 0; }
@@ -107,6 +109,10 @@
       <button class="period-btn" data-days="60" onclick="setPeriod(60)">60일</button>
       <button class="period-btn" data-days="180" onclick="setPeriod(180)">180일</button>
       <button class="period-btn" data-days="365" onclick="setPeriod(365)">1년</button>
+    </div>
+    <div class="controls" id="class-filter-row" style="margin-bottom:12px;">
+      <span style="font-size:13px; font-weight:700; color:var(--ink-soft);">클래스:</span>
+      <!-- 클래스 버튼은 JS로 동적 생성 -->
     </div>
     <div class="controls">
       <button class="btn btn-primary" onclick="loadAll()">🔄 새로고침</button>
@@ -212,6 +218,49 @@
   let allDates = [];
   let studentMeta = {};     // 이름 → {grade,course,klass,school}
   let curDays = 14;         // 기본 14일
+  let curClass = '';        // '' = 전체
+
+  // 클래스 버튼 생성 (명단 메타에서 클래스 종류 수집, 과정순 정렬)
+  function buildClassButtons(){
+    const row = document.getElementById('class-filter-row');
+    // 기존 버튼 제거(라벨만 남김)
+    row.querySelectorAll('.class-btn').forEach(b=>b.remove());
+    // 클래스 수집
+    const order = ['고3','제철고1','예비고','중등기초','중2'];
+    const seen = new Set();
+    Object.values(studentMeta).forEach(s=>{ if(s.klass) seen.add(s.klass); });
+    const classes = Array.from(seen).sort((a,b)=>{
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      return (ia<0?99:ia) - (ib<0?99:ib);
+    });
+    // 전체 버튼 + 각 클래스
+    const mk = (label, val)=>{
+      const b = document.createElement('button');
+      b.className = 'class-btn' + (curClass===val ? ' active' : '');
+      b.textContent = label;
+      b.onclick = ()=> setClass(val);
+      row.appendChild(b);
+    };
+    mk('전체', '');
+    classes.forEach(c=> mk(c, c));
+  }
+
+  function setClass(val){
+    curClass = val;
+    document.querySelectorAll('#class-filter-row .class-btn').forEach(b=>{
+      b.classList.toggle('active', (b.textContent==='전체'?'':b.textContent) === val);
+    });
+    // 다시 렌더 (재호출 없이 캐시로 필터)
+    if(overviewCache){ renderToday(overviewCache); renderRates(overviewCache); }
+    if(allGridNames.length) renderGrid(allGridNames);
+  }
+
+  // 클래스 필터 통과 여부
+  function inClass(name){
+    if(!curClass) return true;
+    const m = studentMeta[name];
+    return m && m.klass === curClass;
+  }
 
   function setPeriod(days){
     curDays = days;
@@ -232,6 +281,7 @@
     const ros = await jsonp('type=roster');
     studentMeta = {};
     if(ros && ros.students){ ros.students.forEach(s=> studentMeta[s.name] = s); }
+    buildClassButtons();
 
     const ov = await jsonp('type=adminOverview&days=' + curDays);
     if(!ov){ document.getElementById('today-box').innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
@@ -433,7 +483,7 @@
 
   function renderToday(ov){
     const box = document.getElementById('today-box');
-    const m = ov.todayMisses || [];
+    const m = (ov.todayMisses || []).filter(inClass);
     if(m.length){
       box.className = '';
       box.innerHTML = '<div class="miss-box has"><div class="miss-title" style="color:var(--miss)">오늘 ' + m.length + '명 미제출</div><div class="miss-names">' + m.join(', ') + '</div></div>';
@@ -444,7 +494,7 @@
 
   function renderRates(ov){
     const area = document.getElementById('rate-area');
-    const studs = (ov.students||[]).map(s=>{
+    const studs = (ov.students||[]).filter(s=> inClass(s.name)).map(s=>{
       const total = s.submitted + s.late + s.missed + s.pre;
       const done = s.submitted + s.late + s.pre; // 낸 것(지연·선제출 포함)
       const pct = total ? Math.round(done/total*100) : 0;
@@ -460,6 +510,8 @@
     area.innerHTML = h;
   }
 
+  let allGridNames = [];
+
   // 격자: adminGrid 한 번 호출로 전체 받기 (로딩 최적화)
   async function buildGrid(ov){
     const area = document.getElementById('grid-area');
@@ -469,28 +521,30 @@
 
     allDates = g.dates || [];
     statusByStudent = {};
-    const names = [];
+    allGridNames = [];
     g.rows.forEach(row=>{
-      names.push(row.name);
+      allGridNames.push(row.name);
       statusByStudent[row.name] = {};
       (allDates).forEach((dt,i)=>{ statusByStudent[row.name][dt] = row.statuses[i] || ''; });
     });
 
-    if(!names.length){ area.innerHTML = '<span class="muted">학생 없음</span>'; return; }
-    renderGrid(names);
-    document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · ' + allDates.length + '일';
+    if(!allGridNames.length){ area.innerHTML = '<span class="muted">학생 없음</span>'; return; }
+    renderGrid(allGridNames);
   }
 
   function renderGrid(names){
     const area = document.getElementById('grid-area');
     if(!allDates.length){ area.innerHTML = '<span class="muted">현황 데이터 없음</span>'; return; }
+    const filtered = names.filter(inClass);
+    document.getElementById('grid-info').textContent = '학생 ' + filtered.length + '명 · ' + allDates.length + '일' + (curClass?(' · '+curClass):'');
+    if(!filtered.length){ area.innerHTML = '<span class="muted">해당 클래스 학생이 없습니다.</span>'; return; }
     let h = '<table class="grid"><thead><tr><th class="name">학생</th>';
     allDates.forEach(dt=>{
       const [y,m,d] = dt.split('-');
       h += '<th>'+parseInt(m)+'/'+parseInt(d)+'</th>';
     });
     h += '</tr></thead><tbody>';
-    names.forEach(nm=>{
+    filtered.forEach(nm=>{
       h += '<tr><td class="name" style="cursor:pointer; color:var(--wine);" onclick="openInspect(\''+nm+'\')">'+nm+' 🔍</td>';
       allDates.forEach(dt=>{
         const st = (statusByStudent[nm] && statusByStudent[nm][dt]) || '';
