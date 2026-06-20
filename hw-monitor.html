@@ -4,86 +4,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대단한영어 멤버스 · 숙제 현황</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
-    --wine:#7a1020; --gold:#C9A84C; --ink:#3a2a20; --ink-soft:#6b5a4d;
-    --cream:#f7f3ec; --cream-deep:#e8ddc9; --navy:#1f4e79;
-    --ok:#274e13; --ok-bg:#d9ead3; --late:#7f6000; --late-bg:#fff2cc;
-    --miss:#cc0000; --miss-bg:#f4cccc; --pre-bg:#cfe8d6; --exam-bg:#ddebf7;
+    --wine:#9a1b3a; --wine-deep:#7c1430; --gold:#b08a3e;
+    --bg:#fbfbfd; --card:#ffffff;
+    --ink:#1d1d1f; --ink-2:#515154; --ink-3:#86868b;
+    --line:#f0f0f2; --line-2:#e6e6ea; --fill:#f5f5f7;
+    --ok:#2f7d3b; --ok-bg:#e9f4ea;
+    --late:#9a6a13; --late-bg:#fbf2dd;
+    --miss:#c8102e; --miss-bg:#fcebed;
+    --pre-bg:#e9f4ea; --exam:#2b5b8a; --exam-bg:#e8eff7;
+    --navy:#2b5b8a;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05), 0 12px 32px rgba(0,0,0,.04);
+    --shadow-lg:0 4px 12px rgba(0,0,0,.06), 0 20px 48px rgba(0,0,0,.12);
+    --r:18px;
+    /* 구버전 변수 호환 별칭 */
+    --ink-soft:var(--ink-3); --cream-deep:var(--line-2); --cream:var(--fill); --blue:var(--navy);
   }
   *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
   body{
-    margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Malgun Gothic',sans-serif;
-    background:linear-gradient(160deg,#1a0005,#3d0010); color:#2a2a2a; padding:18px;
+    margin:0;
+    font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    padding:32px 18px 60px;
     min-height:100vh;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.01em;
   }
-  .wrap{ max-width:1100px; margin:0 auto; }
-  header.top{ text-align:center; color:#fff; margin-bottom:20px; }
-  header.top h1{ margin:0; font-size:23px; font-weight:900; letter-spacing:1px; }
-  header.top h1 span{ color:var(--gold); }
-  header.top p{ margin:4px 0 0; font-size:12px; color:#e8d8b8; font-style:italic; letter-spacing:1px; }
-  .card{ background:#fff; border-radius:16px; padding:18px; margin-bottom:16px; box-shadow:0 6px 22px rgba(0,0,0,0.22); }
-  .card h2{ margin:0 0 14px; font-size:16px; color:var(--wine); display:flex; align-items:center; gap:7px; }
-  .btn{ border:none; border-radius:10px; padding:10px 15px; font-size:14px; font-weight:700; cursor:pointer; }
-  .btn-primary{ background:var(--ink); color:var(--gold); }
-  .btn-line{ background:#fff; border:1px solid var(--cream-deep); color:var(--ink-soft); }
-  .period-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer; }
-  .period-btn.active{ background:var(--ink); color:var(--gold); border-color:var(--ink); }
-  .insp-period-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:6px 12px; font-size:12.5px; font-weight:700; cursor:pointer; }
-  .insp-period-btn.active{ background:var(--wine); color:#fff; border-color:var(--wine); }
-  .class-btn{ border:1px solid var(--cream-deep); background:#fff; color:var(--ink-soft); border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer; }
-  .class-btn.active{ background:var(--gold); color:var(--ink); border-color:var(--gold); }
+  .wrap{ max-width:1080px; margin:0 auto; }
+
+  header.top{ text-align:center; margin-bottom:32px; }
+  header.top h1{
+    margin:0; font-size:26px; font-weight:700; color:var(--ink);
+    letter-spacing:-0.03em;
+  }
+  header.top h1 span{ color:var(--wine); font-weight:700; }
+  header.top p{
+    margin:7px 0 0; font-size:13px; color:var(--ink-3); font-weight:500;
+    letter-spacing:0.02em;
+  }
+
+  .card{
+    background:var(--card); border-radius:var(--r); padding:24px;
+    margin-bottom:18px; box-shadow:var(--shadow);
+    border:1px solid rgba(0,0,0,.02);
+  }
+  .card h2{
+    margin:0 0 18px; font-size:17px; font-weight:600; color:var(--ink);
+    display:flex; align-items:center; gap:10px; letter-spacing:-0.02em;
+  }
+  .card h2::before{
+    content:""; width:4px; height:17px; background:var(--wine);
+    border-radius:980px; flex-shrink:0;
+  }
+
+  .btn{
+    border:none; border-radius:11px; padding:11px 17px; font-size:14px;
+    font-weight:600; cursor:pointer; letter-spacing:-0.01em;
+    transition:transform .12s ease, opacity .12s ease, background .15s ease;
+    font-family:inherit;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:var(--wine); color:#fff; }
+  .btn-primary:hover{ background:var(--wine-deep); }
+  .btn-line{ background:var(--fill); color:var(--ink-2); }
+  .btn-line:hover{ background:var(--line-2); }
+
+  .period-btn,.insp-period-btn,.class-btn{
+    border:none; background:var(--fill); color:var(--ink-2);
+    border-radius:980px; padding:8px 15px; font-size:13px; font-weight:600;
+    cursor:pointer; letter-spacing:-0.01em; font-family:inherit;
+    transition:background .15s ease, color .15s ease, transform .1s ease;
+  }
+  .period-btn:active,.insp-period-btn:active,.class-btn:active{ transform:scale(0.95); }
+  .period-btn.active{ background:var(--ink); color:#fff; }
+  .insp-period-btn{ padding:7px 14px; font-size:12.5px; }
+  .insp-period-btn.active{ background:var(--wine); color:#fff; }
+  .class-btn.active{ background:var(--wine); color:#fff; }
+
   .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
-  select,input{ padding:9px 11px; border:1px solid #ddd; border-radius:9px; font-size:14px; }
-  .loading{ color:#999; font-size:13px; padding:8px 0; }
+  select,input{
+    padding:10px 13px; border:1px solid var(--line-2); border-radius:11px;
+    font-size:14px; font-family:inherit; color:var(--ink); background:#fff;
+    letter-spacing:-0.01em; outline:none; transition:border-color .15s ease;
+  }
+  select:focus,input:focus{ border-color:var(--wine); }
+  .loading{ color:var(--ink-3); font-size:13px; padding:10px 0; }
 
   /* 오늘 미제출 */
-  .miss-box{ border-radius:12px; padding:13px 15px; }
-  .miss-box.has{ background:var(--miss-bg); border:1px solid #f0a8a8; }
-  .miss-box.none{ background:var(--ok-bg); border:1px solid #bfe6cf; }
-  .miss-title{ font-weight:800; font-size:15px; margin-bottom:6px; }
-  .miss-names{ font-size:13.5px; line-height:1.7; }
+  .miss-box{ border-radius:14px; padding:16px 18px; }
+  .miss-box.has{ background:var(--miss-bg); }
+  .miss-box.none{ background:var(--ok-bg); }
+  .miss-title{ font-weight:600; font-size:15px; margin-bottom:6px; letter-spacing:-0.02em; }
+  .miss-names{ font-size:14px; line-height:1.7; font-weight:500; }
 
   /* 격자 */
-  .grid-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  table.grid{ border-collapse:collapse; font-size:16px; white-space:nowrap; }
-  table.grid th, table.grid td{ border:1px solid #eee; padding:7px 9px; text-align:center; min-width:38px; }
-  table.grid th.name, table.grid td.name{ position:sticky; left:0; background:#faf7f1; font-weight:700; text-align:left; min-width:90px; z-index:2; }
-  table.grid thead th{ background:#f3ece0; color:var(--ink); font-weight:700; position:sticky; top:0; }
+  .grid-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:12px; }
+  table.grid{ border-collapse:separate; border-spacing:0; font-size:15px; white-space:nowrap; }
+  table.grid th, table.grid td{
+    border-bottom:1px solid var(--line); border-right:1px solid var(--line);
+    padding:9px 11px; text-align:center; min-width:40px; font-weight:500;
+  }
+  table.grid th.name, table.grid td.name{
+    position:sticky; left:0; background:#fff; font-weight:600; text-align:left;
+    min-width:96px; z-index:2; letter-spacing:-0.02em;
+  }
+  table.grid thead th{
+    background:var(--fill); color:var(--ink-2); font-weight:600;
+    position:sticky; top:0; font-size:13px;
+  }
+  table.grid thead th:first-child{ border-top-left-radius:12px; }
+  table.grid thead th:last-child{ border-top-right-radius:12px; }
   td.s-제출{ background:var(--ok-bg); color:var(--ok); }
   td.s-지연제출{ background:var(--late-bg); color:var(--late); }
   td.s-미제출{ background:var(--miss-bg); color:var(--miss); font-weight:700; }
   td.s-선제출{ background:var(--pre-bg); color:var(--ok); }
-  td.s-시험{ background:var(--exam-bg); color:var(--navy); }
-  td.s-휴일{ background:#eee; color:#888; }
+  td.s-시험{ background:var(--exam-bg); color:var(--exam); }
+  td.s-휴일{ background:var(--fill); color:var(--ink-3); }
   td.clickable{ cursor:pointer; }
-  td.clickable:hover{ outline:2px solid var(--wine); outline-offset:-2px; }
+  td.clickable:hover{ box-shadow:inset 0 0 0 2px var(--wine); }
 
   /* 제출률 */
-  .rate-row{ display:flex; align-items:center; gap:10px; padding:8px 11px; border-radius:9px; background:#f7f7f9; margin-bottom:5px; font-size:13px; }
-  .rate-bar{ flex:1; height:9px; background:#eee; border-radius:5px; overflow:hidden; }
-  .rate-fill{ height:100%; background:linear-gradient(90deg,var(--wine),var(--gold)); }
-  .rate-pct{ font-weight:800; min-width:42px; text-align:right; }
+  .rate-row{
+    display:flex; align-items:center; gap:12px; padding:11px 14px;
+    border-radius:12px; background:var(--fill); margin-bottom:7px; font-size:14px;
+  }
+  .rate-bar{ flex:1; height:7px; background:rgba(0,0,0,.07); border-radius:980px; overflow:hidden; }
+  .rate-fill{ height:100%; background:var(--wine); border-radius:980px; transition:width .4s ease; }
+  .rate-pct{ font-weight:700; min-width:44px; text-align:right; letter-spacing:-0.02em; }
 
   /* 사진 */
-  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
-  .photo-card{ border:1px solid #eee; border-radius:11px; overflow:hidden; background:#fafafa; }
-  .photo-card img{ width:100%; height:150px; object-fit:cover; display:block; cursor:pointer; background:#eee; }
-  .photo-meta{ padding:8px 10px; font-size:12px; }
-  .photo-meta .pm-name{ font-weight:800; color:var(--wine); }
-  .photo-meta .pm-src{ color:#555; margin-top:2px; line-height:1.4; }
-  .photo-meta .pm-ts{ color:#999; font-size:11px; margin-top:3px; }
-  .no-photo{ height:150px; display:flex; align-items:center; justify-content:center; color:#bbb; font-size:12px; background:#f0f0f0; }
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); gap:14px; }
+  .photo-card{
+    border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    background:#fff; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .photo-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
+  .photo-card img{ width:100%; height:158px; object-fit:cover; display:block; cursor:pointer; background:var(--fill); }
+  .photo-meta{ padding:10px 12px; font-size:12px; }
+  .photo-meta .pm-name{ font-weight:600; color:var(--wine); }
+  .photo-meta .pm-src{ color:var(--ink-2); margin-top:3px; line-height:1.45; font-weight:500; }
+  .photo-meta .pm-ts{ color:var(--ink-3); font-size:11px; margin-top:4px; }
+  .no-photo{ height:158px; display:flex; align-items:center; justify-content:center; color:var(--ink-3); font-size:12px; background:var(--fill); }
 
   /* 라이트박스 */
-  #lightbox{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px; }
-  #lightbox img{ max-width:96%; max-height:90%; border-radius:8px; }
-  #lightbox .close{ position:absolute; top:16px; right:20px; color:#fff; font-size:30px; cursor:pointer; }
+  #lightbox{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.9); z-index:9999; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+  #lightbox img{ max-width:96%; max-height:90%; border-radius:14px; }
+  #lightbox .close{ position:absolute; top:20px; right:24px; color:#fff; font-size:32px; cursor:pointer; opacity:.8; }
 
-  .muted{ color:#999; font-size:13px; }
-  .legend{ display:flex; gap:12px; flex-wrap:wrap; font-size:11.5px; color:#666; margin-top:10px; }
-  .legend span{ display:inline-flex; align-items:center; gap:4px; }
-  .dot{ width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .muted{ color:var(--ink-3); font-size:13px; }
+  .legend{ display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--ink-3); margin-top:14px; }
+  .legend span{ display:inline-flex; align-items:center; gap:5px; font-weight:500; }
+  .dot{ width:11px; height:11px; border-radius:4px; display:inline-block; }
+
+  /* 모달 */
+  #inspect{ backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 </head>
 <body>
@@ -95,13 +174,13 @@
 
   <!-- 오늘 미제출자 -->
   <div class="card">
-    <h2>⚠️ 오늘 미제출</h2>
+    <h2>오늘 미제출</h2>
     <div id="today-box"><div class="loading">불러오는 중...</div></div>
   </div>
 
   <!-- 한 달 전체 격자 -->
   <div class="card">
-    <h2>📅 전체 현황</h2>
+    <h2>전체 현황</h2>
     <div class="controls" style="margin-bottom:12px;">
       <span style="font-size:13px; font-weight:700; color:var(--ink-soft);">기간:</span>
       <button class="period-btn" data-days="14" onclick="setPeriod(14)">14일</button>
@@ -115,7 +194,7 @@
       <!-- 클래스 버튼은 JS로 동적 생성 -->
     </div>
     <div class="controls">
-      <button class="btn btn-primary" onclick="loadAll()">🔄 새로고침</button>
+      <button class="btn btn-primary" onclick="loadAll()">새로고침</button>
       <span class="muted" id="grid-info"></span>
     </div>
     <div class="grid-scroll"><div id="grid-area"><div class="loading">불러오는 중...</div></div></div>
@@ -131,13 +210,13 @@
 
   <!-- 제출률 순위 -->
   <div class="card">
-    <h2>📊 제출률 <span id="rate-period-label" style="font-size:13px; color:var(--ink-soft); font-weight:600;">(최근 14일)</span></h2>
+    <h2>제출률 <span id="rate-period-label" style="font-size:13px; color:var(--ink-soft); font-weight:600;">(최근 14일)</span></h2>
     <div id="rate-area"><div class="loading">불러오는 중...</div></div>
   </div>
 
   <!-- 사진 확인 -->
   <div class="card">
-    <h2>📷 제출 사진 확인</h2>
+    <h2>제출 사진 확인</h2>
     <div class="controls">
       <select id="photo-student"><option value="">전체 학생</option></select>
       <button class="btn btn-primary" onclick="loadPhotos()">사진 불러오기</button>
@@ -147,14 +226,14 @@
   </div>
 </div>
 
-<div id="inspect" style="display:none; position:fixed; inset:0; background:rgba(20,5,10,0.6); z-index:9000; overflow-y:auto; padding:20px;">
-  <div style="max-width:760px; margin:0 auto; background:#fff; border-radius:18px; padding:20px; box-shadow:0 12px 50px rgba(0,0,0,0.4);">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+<div id="inspect" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9000; overflow-y:auto; padding:24px 18px;">
+  <div style="max-width:760px; margin:0 auto; background:#fff; border-radius:22px; padding:26px; box-shadow:var(--shadow-lg);">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:18px;">
       <div>
-        <div id="insp-name" style="font-size:22px; font-weight:900; color:var(--wine);">학생</div>
-        <div id="insp-meta" style="font-size:13px; color:var(--ink-soft); margin-top:3px;"></div>
+        <div id="insp-name" style="font-size:24px; font-weight:700; color:var(--ink); letter-spacing:-0.03em;">학생</div>
+        <div id="insp-meta" style="font-size:13px; color:var(--ink-3); margin-top:4px; font-weight:500;"></div>
       </div>
-      <span onclick="closeInspect()" style="font-size:28px; color:#999; cursor:pointer; padding:0 6px;">&times;</span>
+      <span onclick="closeInspect()" style="font-size:26px; color:var(--ink-3); cursor:pointer; line-height:1; padding:2px 6px;">&times;</span>
     </div>
     <div id="insp-summary" style="margin-bottom:14px;"></div>
 
@@ -165,17 +244,17 @@
       <button class="insp-period-btn" data-days="60" onclick="setInspPeriod(60)">60일</button>
       <button class="insp-period-btn" data-days="90" onclick="setInspPeriod(90)">90일</button>
     </div>
-    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📅 제출 현황</div>
+    <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px; letter-spacing:-0.02em;">제출 현황</div>
     <div id="insp-days" style="margin-bottom:14px;"></div>
     <div id="insp-wordwrite" style="background:#eef4fb; border:1px solid #cdddf2; border-radius:10px; padding:10px 13px; margin-bottom:18px; font-size:13px;"></div>
 
     <div style="border-top:2px solid var(--cream-deep); margin-top:6px; padding-top:16px; margin-bottom:18px;">
-      <button id="insp-grade-toggle" onclick="toggleGrades()" style="width:100%; background:var(--wine); color:#fff; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:800; cursor:pointer;">📈 성적 추이 보기</button>
+      <button id="insp-grade-toggle" onclick="toggleGrades()" style="width:100%; background:var(--fill); color:var(--ink); border:none; border-radius:12px; padding:14px; font-size:14px; font-weight:600; cursor:pointer; letter-spacing:-0.01em;">성적 추이 보기</button>
       <div id="insp-grade-box" style="display:none; margin-top:14px;"></div>
     </div>
 
     <div style="border-top:2px solid var(--cream-deep); margin-top:6px; padding-top:16px; margin-bottom:18px;">
-      <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:10px;">📢 학부모 리포트</div>
+      <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px; letter-spacing:-0.02em;">학부모 리포트</div>
       <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
         <select id="insp-report-period" style="padding:9px 11px;">
           <option value="30">최근 30일</option>
@@ -189,7 +268,7 @@
       <div id="insp-copy-msg" style="font-size:12.5px; color:var(--ok); text-align:center; min-height:16px; margin-top:5px;"></div>
     </div>
 
-    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📷 제출 사진 (최신순)</div>
+    <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px; letter-spacing:-0.02em;">제출 사진</div>
     <div id="insp-photos"><div class="loading">불러오는 중...</div></div>
   </div>
 </div>
@@ -328,7 +407,7 @@
     const gbox = document.getElementById('insp-grade-box');
     const gtog = document.getElementById('insp-grade-toggle');
     if(gbox){ gbox.style.display = 'none'; gbox.innerHTML = ''; gbox._loaded = false; }
-    if(gtog) gtog.textContent = '📈 성적 추이 보기';
+    if(gtog) gtog.textContent = '성적 추이 보기';
     const rt = document.getElementById('insp-report-text'); if(rt) rt.value = '';
     const cb = document.getElementById('insp-copy-btn'); if(cb) cb.style.display = 'none';
     // 기간 버튼 기본 30일 활성화
@@ -379,7 +458,7 @@
       return;
     }
     const pretty = uniq.map(x=>{ const [y,m,dd]=x.split('-'); return parseInt(m)+'/'+parseInt(dd); });
-    el.innerHTML = '<span style="font-weight:700; color:var(--navy);">📝 단어쓰기 추가 제출 ('+uniq.length+'회): </span>' + pretty.join(', ');
+    el.innerHTML = '<span style="font-weight:700; color:var(--navy);">단어쓰기 추가 제출 ('+uniq.length+'회): </span>' + pretty.join(', ');
   }
 
   function renderInspectDays(days){
@@ -421,7 +500,7 @@
     const tog = document.getElementById('insp-grade-toggle');
     const open = box.style.display === 'none' || !box.style.display;
     box.style.display = open ? 'block' : 'none';
-    tog.textContent = open ? '📈 성적 추이 접기' : '📈 성적 추이 보기';
+    tog.textContent = open ? '성적 추이 접기' : '성적 추이 보기';
     if(open && !box._loaded){ loadGrades(_inspCurName); box._loaded = true; }
   }
 
@@ -432,7 +511,7 @@
     if(!d){ box.innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
     let h = '';
     // 모의고사
-    h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:4px 0 8px;">📊 모의고사</div>';
+    h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:4px 0 8px;">모의고사</div>';
     if((d.mock||[]).length){
       h += renderMockChart(d.mock) + renderMockTable(d.mock);
     } else {
@@ -446,15 +525,15 @@
 
     if(naesin.length){
       if(high.length){
-        h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신 — 고등</div>';
+        h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">내신 · 고등</div>';
         h += renderNaesinHighChart(high) + renderNaesinHighTable(high);
       }
       if(mid.length){
-        h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신 — 중등</div>';
+        h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">내신 · 중등</div>';
         h += renderNaesinMidChart(mid) + renderNaesinMidTable(mid);
       }
     } else {
-      h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신</div>';
+      h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">내신</div>';
       h += '<div class="muted">내신 성적이 없습니다.</div>';
     }
     box.innerHTML = h;
@@ -717,7 +796,7 @@
     if(!studs.length){ area.innerHTML = '<span class="muted">데이터 없음</span>'; return; }
     let h = '';
     studs.forEach(s=>{
-      h += '<div class="rate-row"><span style="font-weight:700; min-width:60px; cursor:pointer; color:var(--wine);" onclick="openInspect(\''+s.name+'\')">'+s.name+' 🔍</span>'
+      h += '<div class="rate-row"><span style="font-weight:700; min-width:60px; cursor:pointer; color:var(--wine);" onclick="openInspect(\''+s.name+'\')">'+s.name+' ›</span>'
         + '<div class="rate-bar"><div class="rate-fill" style="width:'+s.pct+'%"></div></div>'
         + '<span class="rate-pct" style="color:'+(s.pct<70?'#cc0000':'#274e13')+'">'+s.pct+'%</span></div>';
     });
@@ -759,7 +838,7 @@
     });
     h += '</tr></thead><tbody>';
     filtered.forEach(nm=>{
-      h += '<tr><td class="name" style="cursor:pointer; color:var(--wine);" onclick="openInspect(\''+nm+'\')">'+nm+' 🔍</td>';
+      h += '<tr><td class="name" style="cursor:pointer; color:var(--wine);" onclick="openInspect(\''+nm+'\')">'+nm+' ›</td>';
       allDates.forEach(dt=>{
         const st = (statusByStudent[nm] && statusByStudent[nm][dt]) || '';
         const cls = st ? ('s-'+st) : '';
