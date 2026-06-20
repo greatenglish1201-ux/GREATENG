@@ -308,8 +308,13 @@
             <div id="hw-date-box" style="display:none; background:#fff7e6; border:1px solid var(--gold,#C9A84C); border-radius:10px; padding:10px; margin-bottom:14px; text-align:center; font-weight:700; color:var(--ink,#3a2a20);">선택한 숙제 날짜:<span id="hw-date-label"></span>
             </div>
 
+            <!-- 출처 자유 입력 (맨 위, 쓰면 아래 드롭다운 생략) -->
+            <label style="font-weight:700; font-size:13px; color:var(--wine);">출처 직접 쓰기 <span style="font-weight:500; color:var(--ink-soft);">(여기 쓰면 아래는 안 골라도 돼요)</span></label>
+            <input type="text" id="hw-free-src" oninput="hw_onFreeSrc()" placeholder="예) 수특영독 3강 12번, 모의고사 3월 31번" style="padding:13px; font-size:15px; margin:6px 0 14px; width:100%; box-sizing:border-box;">
+
+            <div id="hw-dropdown-wrap">
             <!-- 출처 -->
-            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">출처</label>
+            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">또는 골라서 입력</label>
             <select id="hw-src" onchange="hw_onSrcChange()" style="padding:11px; font-size:15px; margin:5px 0 8px; width:100%;">
                 <option value="모의고사">모의고사</option>
                 <option value="미리수능 기초독해">미리수능 기초독해</option>
@@ -391,6 +396,7 @@
             <div id="hw-src-custom" style="display:none; margin-bottom:8px;">
                 <input type="text" id="hw-custom-src" placeholder="출처 직접 입력" style="padding:10px; font-size:14px; width:100%;">
             </div>
+            </div><!-- /#hw-dropdown-wrap -->
 
             <!-- 숙제 구분 (가로 버튼) -->
             <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 구분</label>
@@ -1319,6 +1325,8 @@
     function hw_showPanel(){
         document.getElementById('hw-panel').style.display = 'block';
         hw_toggleMain(true);
+        const fsel = document.getElementById('hw-free-src'); if(fsel){ fsel.value = ''; }
+        hw_onFreeSrc();
         const preWrap = document.getElementById('hw-pre-wrap');
         if(preWrap) preWrap.style.display = 'none';
         hwSelectedType = '';
@@ -1572,7 +1580,24 @@
         reader.readAsDataURL(f);
     }
 
+    // 자유 입력 시 아래 드롭다운 영역 흐리게 (안 골라도 됨을 시각적으로)
+    function hw_onFreeSrc(){
+        const free = (document.getElementById('hw-free-src')?.value || '').trim();
+        const wrap = document.getElementById('hw-dropdown-wrap');
+        if(!wrap) return;
+        if(free){
+            wrap.style.opacity = '0.4';
+            wrap.style.pointerEvents = 'none';
+        } else {
+            wrap.style.opacity = '1';
+            wrap.style.pointerEvents = 'auto';
+        }
+    }
+
     function hw_buildSrc(){
+        // 자유 입력이 있으면 그것을 출처로 사용
+        const free = (document.getElementById('hw-free-src')?.value || '').trim();
+        if(free) return free;
         const v = document.getElementById('hw-src').value;
         if(v==='__custom__'){
             return document.getElementById('hw-custom-src').value.trim();
@@ -1624,25 +1649,30 @@
 
         if(!hwSelectedDate) missing.push('숙제 날짜');
 
-        const srcSel = document.getElementById('hw-src').value;
-        if(!srcSel) missing.push('출처');
+        const freeSrc = (document.getElementById('hw-free-src')?.value || '').trim();
+        if(freeSrc){
+            // 자유 입력 사용 → 출처 드롭다운 검증 전부 생략 (날짜·구분·사진만 확인)
+        } else {
+            const srcSel = document.getElementById('hw-src').value;
+            if(!srcSel) missing.push('출처');
 
-        if(srcSel==='모의고사'){
-            if(!document.getElementById('hw-mock-grade').value) missing.push('모의고사 학년');
-            if(!document.getElementById('hw-mock-year').value) missing.push('모의고사 년도');
-            if(!document.getElementById('hw-mock-month').value) missing.push('모의고사 월');
-            if(!document.getElementById('hw-mock-no').value) missing.push('모의고사 문항');
-        } else if(srcSel==='교과서'){
-            let pub = document.getElementById('hw-tb-pub').value;
-            if(pub==='__custom__') pub = document.getElementById('hw-tb-pub-custom').value.trim();
-            if(!pub) missing.push('출판사(저자)');
-            if(!document.getElementById('hw-tb-lesson').value) missing.push('과');
-            if(!document.getElementById('hw-tb-no').value) missing.push('번');
-        } else if(srcSel==='__custom__'){
-            if(!document.getElementById('hw-custom-src').value.trim()) missing.push('출처 내용');
-        } else if(srcSel){
-            if(!document.getElementById('hw-normal-lesson').value) missing.push('강');
-            if(!document.getElementById('hw-normal-no').value) missing.push('번');
+            if(srcSel==='모의고사'){
+                if(!document.getElementById('hw-mock-grade').value) missing.push('모의고사 학년');
+                if(!document.getElementById('hw-mock-year').value) missing.push('모의고사 년도');
+                if(!document.getElementById('hw-mock-month').value) missing.push('모의고사 월');
+                if(!document.getElementById('hw-mock-no').value) missing.push('모의고사 문항');
+            } else if(srcSel==='교과서'){
+                let pub = document.getElementById('hw-tb-pub').value;
+                if(pub==='__custom__') pub = document.getElementById('hw-tb-pub-custom').value.trim();
+                if(!pub) missing.push('출판사(저자)');
+                if(!document.getElementById('hw-tb-lesson').value) missing.push('과');
+                if(!document.getElementById('hw-tb-no').value) missing.push('번');
+            } else if(srcSel==='__custom__'){
+                if(!document.getElementById('hw-custom-src').value.trim()) missing.push('출처 내용');
+            } else if(srcSel){
+                if(!document.getElementById('hw-normal-lesson').value) missing.push('강');
+                if(!document.getElementById('hw-normal-no').value) missing.push('번');
+            }
         }
 
         const type = hw_buildType();
@@ -1684,6 +1714,8 @@
             document.getElementById('hw-photo').value = '';
             document.getElementById('hw-preview-img').style.display = 'none';
             hwCompressedDataUrl = '';
+            const fs2 = document.getElementById('hw-free-src'); if(fs2){ fs2.value = ''; }
+            hw_onFreeSrc();
             setTimeout(hw_loadStatus, 3000);
         }).catch((err)=>{
             msg.style.color = '#e74c3c';
