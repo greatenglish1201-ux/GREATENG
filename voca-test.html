@@ -1031,12 +1031,28 @@
     }
 
     // ── 시험범위 프리셋 가져오기 (index 로그인 GAS getPresets) ──
-    // 교재 코드 → voca 단어 교재명 매핑 (index BOOK_DEFS 기준)
+    // 교재 코드 → voca 단어 교재명 후보들. 실제 단어 DB(db)에 있는 이름으로 자동 매칭.
     const PRESET_BOOK_MAP = {
-        '27STYD': '27영어독해연습',
-        '27ST_E': '27수특영어',
-        'ABSO_TYPE': '절대유형'
+        '27STYD':    ['수능독해연습', '수특영독', '수특영어독해', '27영어독해연습'],
+        '27ST_E':    ['수특영어', '27수특영어'],
+        'ABSO_TYPE': ['절대유형']
     };
+    // 단어 DB에 실제 존재하는 교재명 중 후보와 맞는 것을 고름 (없으면 첫 후보)
+    function resolveBookName(code){
+        const cands = PRESET_BOOK_MAP[code] || [];
+        if(!cands.length) return null;
+        let dbBooks = [];
+        try { dbBooks = [...new Set(db.map(x=>String(x.book||'').trim()))].filter(Boolean); } catch(e){}
+        // 1) 후보가 DB에 그대로 있으면 그것
+        for(const c of cands){ if(dbBooks.includes(c)) return c; }
+        // 2) DB 교재명이 후보를 포함/유사하면 그것
+        for(const c of cands){
+            const hit = dbBooks.find(b=> b.indexOf(c)>=0 || c.indexOf(b)>=0 );
+            if(hit) return hit;
+        }
+        // 3) 못 찾으면 첫 후보 (그래도 담기게)
+        return cands[0];
+    }
     let _presetCache = null;
     function openPresetModal(){
         document.getElementById('preset-modal').style.display='flex';
@@ -1092,7 +1108,8 @@
                 if(!code && (rid===c || rid.startsWith(c+'_'))) code=c;
             });
             if(!code){ skipped.push(rid); return; }
-            const bookName = PRESET_BOOK_MAP[code];
+            const bookName = resolveBookName(code);
+            if(!bookName){ skipped.push(rid); return; }
             // 코드 뒤: _강_번호 또는 _강
             const rest = rid.slice(code.length).replace(/^_/,'');  // "11_003" 또는 "11"
             const m = rest.match(/^(\d+)/);
