@@ -534,11 +534,17 @@
                 <span id="exam-results-arrow" style="color:var(--gold); font-size:13px;">▼</span>
             </button>
             <div id="exam-results-box" style="display:none; margin-top:14px;">
-                <div style="display:flex; gap:8px; margin-bottom:12px;">
-                    <select id="exam-result-student" style="flex:1 1 auto; min-width:0; width:100%; padding:11px; font-size:14px; border:2px solid #e8d8b8; border-radius:10px; background:#fff;"><option value="">학생 선택</option></select>
-                    <button class="btn" style="flex:0 0 88px; background:var(--wine); color:#fff; padding:11px 0; font-size:14px;" onclick="loadExamResults()">조회</button>
+                <div style="display:flex; gap:14px; align-items:flex-start;">
+                    <!-- 왼쪽: 클래스별 학생 명단 -->
+                    <div id="exam-roster-panel" style="flex:0 0 200px; max-width:200px; border:1px solid #eee; border-radius:12px; padding:8px; max-height:520px; overflow-y:auto;">
+                        <div style="font-size:12px; color:var(--ink-soft); padding:6px 6px 8px;">명단 불러오는 중...</div>
+                    </div>
+                    <!-- 오른쪽: 선택 학생 결과 -->
+                    <div style="flex:1; min-width:0;">
+                        <div id="exam-result-name" style="font-size:15px; font-weight:800; color:var(--ink); margin-bottom:10px; display:none;"></div>
+                        <div id="exam-result-list"><p style="color:var(--ink-soft); font-size:13px; padding:8px 2px;">왼쪽에서 학생 이름을 선택하세요.</p></div>
+                    </div>
                 </div>
-                <div id="exam-result-list"></div>
             </div>
         </div>
 
@@ -1030,44 +1036,87 @@
         box.style.display = open ? 'block' : 'none';
         if(arr) arr.textContent = open ? '▲' : '▼';
     }
-    // 학생 드롭다운 채우기 (sharedDB 명단 활용)
-    let examRosterCache = null;
+    // 클래스별 학생 명단 (숙제점검 roster — 클래스 정보 포함)
+    let examRosterCache = null;   // [{name, klass}, ...]
     function populateExamResultStudents(){
-        const sel=document.getElementById('exam-result-student');
-        if(!sel) return;
-        // 캐시 있으면 바로
-        if(examRosterCache && examRosterCache.length){ fillExamStudentSelect(examRosterCache); return; }
-        // ADMIN이 이미 받아뒀으면 재사용
-        try { if(window.ADMIN && ADMIN._roster && ADMIN._roster.length){ examRosterCache=ADMIN._roster.slice(); fillExamStudentSelect(examRosterCache); return; } } catch(e){}
-        // 독립 JSONP로 학생 명단 직접 받기 (getList)
+        const panel=document.getElementById('exam-roster-panel');
+        if(!panel) return;
+        if(examRosterCache && examRosterCache.length){ renderRosterPanel(examRosterCache); return; }
+        // 숙제점검 GAS roster — students[]에 klass 포함
         const cbName='examRoster_'+Date.now();
         let done=false;
         const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
-        window[cbName]=(list)=>{
+        window[cbName]=(data)=>{
             done=true; cleanup();
-            examRosterCache = Array.isArray(list) ? list : ((list && list.names) || []);
-            fillExamStudentSelect(examRosterCache);
+            const students=(data && data.students) || [];
+            if(students.length){
+                examRosterCache = students.map(s=>({ name:String(s.name||'').trim(), klass:String(s.klass||'').trim() })).filter(s=>s.name);
+            } else {
+                // roster가 names만 줄 때 폴백
+                const names=(data && data.names) || [];
+                examRosterCache = names.map(n=>({ name:String(n||'').trim(), klass:'' })).filter(s=>s.name);
+            }
+            renderRosterPanel(examRosterCache);
         };
         const s=document.createElement('script');
         s.id=cbName;
-        s.src=APP_URL + "?type=getList&callback=" + cbName + "&t=" + Date.now();
-        s.onerror=()=>{ if(done)return; cleanup(); const l=document.getElementById('exam-result-list'); if(l) l.innerHTML='<p style="color:#e74c3c; font-size:13px;">학생 명단 로딩 실패</p>'; };
+        s.src=HW_URL + "?type=roster&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); panel.innerHTML='<div style="font-size:12px; color:#e74c3c; padding:8px;">명단 로딩 실패</div>'; };
         document.body.appendChild(s);
-        setTimeout(()=>{ if(done)return; cleanup(); }, 8000);
+        setTimeout(()=>{ if(done)return; cleanup(); panel.innerHTML='<div style="font-size:12px; color:#e74c3c; padding:8px;">명단 시간 초과</div>'; }, 8000);
     }
-    function fillExamStudentSelect(names){
-        const sel=document.getElementById('exam-result-student');
-        if(!sel) return;
-        const cur=sel.value;
-        sel.innerHTML='<option value="">학생 선택</option>';
-        names.map(n=>String(n||'').trim()).filter(Boolean).forEach(n=>{
-            const o=document.createElement('option'); o.value=n; o.textContent=n; sel.appendChild(o);
+    // 클래스별로 묶어 접기/펼치기 패널 렌더 (클래스 없으면 '기타')
+    function renderRosterPanel(students){
+        const panel=document.getElementById('exam-roster-panel');
+        if(!panel) return;
+        // 클래스별 그룹화
+        const groups={};
+        students.forEach(s=>{
+            const key = s.klass || '__기타__';
+            if(!groups[key]) groups[key]=[];
+            groups[key].push(s.name);
         });
-        if(cur) sel.value=cur;
+        // 클래스 이름 정렬 (기타는 맨 뒤)
+        const keys=Object.keys(groups).sort((a,b)=>{
+            if(a==='__기타__') return 1; if(b==='__기타__') return -1;
+            return a.localeCompare(b,'ko');
+        });
+        let html='';
+        keys.forEach((key,gi)=>{
+            const label = key==='__기타__' ? '기타' : key;
+            const names = groups[key].sort((a,b)=>a.localeCompare(b,'ko'));
+            const gid='rg_'+gi;
+            html += '<div style="margin-bottom:4px;">';
+            html += '<button type="button" onclick="toggleRosterGroup(\''+gid+'\',this)" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#faf6ee; border:none; border-radius:8px; padding:8px 10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--ink);">';
+            html += '<span>'+label+' <span style="color:var(--ink-soft); font-weight:600;">('+names.length+')</span></span>';
+            html += '<span id="'+gid+'_arr" style="color:var(--gold); font-size:11px;">▼</span></button>';
+            html += '<div id="'+gid+'" style="display:'+(gi===0?'block':'none')+'; padding:4px 2px;">';
+            names.forEach(n=>{
+                const safe=n.replace(/'/g,"\\'");
+                html += '<button type="button" onclick="selectExamStudent(\''+safe+'\',this)" style="display:block; width:100%; text-align:left; background:none; border:none; border-radius:7px; padding:8px 10px; cursor:pointer; font-size:13.5px; color:#334155;" onmouseover="this.style.background=\'#f3eee3\'" onmouseout="if(!this.dataset.sel)this.style.background=\'none\'">'+n+'</button>';
+            });
+            html += '</div></div>';
+        });
+        panel.innerHTML = html || '<div style="font-size:12px; color:var(--ink-soft); padding:8px;">학생이 없습니다.</div>';
+    }
+    function toggleRosterGroup(gid, btn){
+        const box=document.getElementById(gid);
+        const arr=document.getElementById(gid+'_arr');
+        const open = box.style.display==='none' || !box.style.display;
+        box.style.display = open ? 'block' : 'none';
+        if(arr) arr.textContent = open ? '▲' : '▼';
+    }
+    let _selExamBtn=null;
+    function selectExamStudent(name, btn){
+        // 이전 선택 해제
+        if(_selExamBtn){ delete _selExamBtn.dataset.sel; _selExamBtn.style.background='none'; _selExamBtn.style.fontWeight='400'; _selExamBtn.style.color='#334155'; }
+        if(btn){ btn.dataset.sel='1'; btn.style.background='#f0e4d0'; btn.style.fontWeight='800'; btn.style.color='var(--wine)'; _selExamBtn=btn; }
+        const nameEl=document.getElementById('exam-result-name');
+        if(nameEl){ nameEl.textContent=name; nameEl.style.display='block'; }
+        loadExamResults(name);
     }
     // 결과 조회: 시험기록(미션별) + 불합격 시 단어쓰기 사진
-    function loadExamResults(){
-        const name=document.getElementById('exam-result-student').value;
+    function loadExamResults(name){
         const listEl=document.getElementById('exam-result-list');
         if(!name){ listEl.innerHTML='<p style="color:#e74c3c; font-size:13px;">학생을 선택하세요.</p>'; return; }
         listEl.innerHTML='<p style="color:var(--ink-soft); font-size:13px;">불러오는 중...</p>';
@@ -2582,8 +2631,6 @@
                 psel.add(new Option(n, n));
             });
             this.onStudentCheck();
-            // 시험 결과 학생 드롭다운도 같은 명단으로 채움
-            try { fillExamStudentSelect(this._roster); } catch(e){}
         },
 
         getCheckedStudents: function(){
