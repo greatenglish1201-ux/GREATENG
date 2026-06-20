@@ -1144,38 +1144,61 @@
         // 연·월·일이 다 안 잡히면(예: "2026."만) 날짜 미상
         return '날짜 미상';
     }
-    // 범위 정리: "수특영어2027|Part II 주제·소재편|21,22,...,30" → {book, part, nums}
+    // 범위 정리: "절대유형 11 ALL;절대유형 12 ALL;절대유형 21 ALL;..."
+    //   → 교재명 한 번 + 강 번호만 압축. main:"절대유형 11~13, 21~25강", sub:"전체"
     function fmtRange(s){
         s = String(s||'').trim();
         if(!s) return {main:'(범위)', sub:''};
-        const parts = s.split('|').map(x=>x.trim()).filter(x=>x!=='');
-        if(!parts.length) return {main:s, sub:''};
-        const book = parts[0]||'';
-        // 마지막 칸 = 세부 범위 (ALL / 숫자나열). 중간 칸들 = 강/파트.
-        let last = parts.length>1 ? parts[parts.length-1] : '';
-        const mids = parts.slice(1, parts.length-1);   // 교재와 세부 사이 = 강/파트
-        // 교재 + 강/파트 = 메인 (크게)
-        const main = [book].concat(mids).join(' ').trim() || book;
-        // 세부(sub): ALL → '전체', 숫자나열 → 압축
-        let sub = '';
-        const lastUpper = last.toUpperCase();
-        if(last==='' ){
-            sub = '';
-        } else if(lastUpper==='ALL' || last==='전체'){
-            sub = '전체';
-        } else {
-            const arr = last.split(',').map(x=>x.trim()).filter(x=>/^\d+$/.test(x)).map(Number);
-            if(arr.length>=4){
-                const isSeq = arr.every((v,i)=> i===0 || v===arr[i-1]+1);
-                sub = (isSeq ? (arr[0]+'~'+arr[arr.length-1]) : (arr.slice(0,3).join(',')+'…')) + ' ('+arr.length+'개)';
+
+        // 세미콜론으로 여러 강이 묶인 경우
+        const chunks = s.split(';').map(x=>x.trim()).filter(Boolean);
+        let book = '';
+        const gangs = [];           // 강 번호(숫자) 모음
+        let allFlag = false;        // ALL/전체 여부
+        let leftover = [];          // 숫자로 안 떨어지는 기타 텍스트
+
+        chunks.forEach(ch=>{
+            // 파이프(|)도 공백으로 통일
+            const t = ch.replace(/\|/g, ' ').replace(/\s+/g,' ').trim();
+            // "절대유형 11 ALL" → 교재(앞 텍스트) + 숫자 + ALL
+            const m = t.match(/^(.*?)(\d+)\s*(강)?\s*(ALL|all|전체)?$/);
+            if(m){
+                const bk = (m[1]||'').replace(/강$/,'').trim();
+                if(bk && !book) book = bk;
+                gangs.push(parseInt(m[2]));
+                if(m[4]) allFlag = true;
             } else {
-                sub = last;
+                // 숫자 없는 형태(예: "오답노트전체") — 교재로
+                if(!book) book = t;
+                else leftover.push(t);
             }
+        });
+
+        if(!gangs.length){
+            // 강 번호가 없으면 원문 정리해서 표시
+            const mainTxt = book || s.replace(/;/g,', ');
+            const isAll = /ALL|all|전체/.test(s);
+            return {main: mainTxt.replace(/(ALL|all|전체)/g,'').trim() || mainTxt, sub: isAll?'전체':''};
         }
-        return {main, sub};
+
+        // 강 번호 압축: 연속이면 11~13, 끊기면 구간별로
+        gangs.sort((a,b)=>a-b);
+        const uniq = [...new Set(gangs)];
+        const ranges = [];
+        let start = uniq[0], prev = uniq[0];
+        for(let i=1;i<uniq.length;i++){
+            if(uniq[i]===prev+1){ prev=uniq[i]; }
+            else { ranges.push(start===prev? (''+start) : (start+'~'+prev)); start=uniq[i]; prev=uniq[i]; }
+        }
+        ranges.push(start===prev? (''+start) : (start+'~'+prev));
+
+        const main = (book? book+' ' : '') + ranges.join(', ') + '강';
+        return { main: main, sub: allFlag ? '전체' : '' };
     }
     function renderExamResults(name, missions){
         const listEl=document.getElementById('exam-result-list');
+        // 오답노트 시험은 제외
+        missions = (missions||[]).filter(m=> String(m.range||'').indexOf('오답노트')<0 );
         if(!missions.length){ listEl.innerHTML='<p style="color:var(--ink-soft); font-size:13px;">시험 기록이 없습니다.</p>'; return; }
         let html='';
         missions.forEach(m=>{
