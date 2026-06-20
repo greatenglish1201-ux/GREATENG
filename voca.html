@@ -151,6 +151,9 @@
         .qty-btn:hover { background: var(--line-2); }
         .qty-btn:active { transform: scale(0.96); }
         .qty-btn.active { background: var(--wine); color: #fff; }
+        .qty-max { color: var(--gold-hover); box-shadow: inset 0 0 0 1.5px var(--gold); }
+        .qty-max:hover { background: #faf3e3; }
+        .qty-max.active { background: var(--wine); color: #fff; box-shadow: none; }
 
         /* 유닛/문항 그리드 아이템 */
         .btn-item { background: #fff; border: 1px solid var(--line-2); padding: 11px; border-radius: 11px; font-size: 13px; text-align: center; cursor: pointer; user-select: none; -webkit-user-select: none; transition: border-color .15s ease, background .15s ease; font-weight: 500; }
@@ -168,6 +171,26 @@
         /* 섹션 내부 회색 박스 톤 통일 */
         .admin-box .section { border-radius: var(--r); }
         #unit-area, #detail-area { background: var(--fill) !important; border: 1px solid var(--line) !important; border-radius: 14px !important; }
+
+        /* ===== 하단 액션 버튼 통일 (저장 제외 전부 동일 회색) ===== */
+        .admin-actions { margin-top: 12px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .admin-actions .aa-row { display: flex; gap: 10px; }
+        .admin-actions .aa-btn, .admin-actions .aa-select {
+            flex: 1; height: 48px; padding: 0 14px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; font-family: inherit;
+            letter-spacing: -0.01em; box-sizing: border-box;
+        }
+        .admin-actions .aa-btn {
+            background: var(--fill); color: var(--ink-2); border: none;
+            cursor: pointer; transition: background .15s ease, transform .1s ease;
+        }
+        .admin-actions .aa-btn:hover { background: var(--line-2); }
+        .admin-actions .aa-btn:active { transform: scale(0.98); }
+        .admin-actions .aa-select {
+            background: #fff; color: var(--ink); border: 1.5px solid var(--line-2);
+            cursor: pointer; text-align: left; margin-bottom: 0;
+        }
+        .admin-actions .aa-select:focus { border-color: var(--wine); outline: none; }
     </style>
 </head>
 <body>
@@ -540,11 +563,16 @@
                             <input type="number" id="target-num" class="num-input" min="0" value="120" oninput="ADMIN.onTargetInput()" style="color:var(--wine); width:64px;"> <span style="font-size:13px; margin-left:3px; font-weight:bold;">개</span>
                         </div>
                     </div>
-                    <div style="display:flex; gap:6px; margin-bottom:10px;">
+                    <div style="display:flex; gap:6px; margin-bottom:6px;">
                         <button onclick="ADMIN.setTarget(60)" class="qty-btn" data-q="60">60</button>
                         <button onclick="ADMIN.setTarget(80)" class="qty-btn" data-q="80">80</button>
                         <button onclick="ADMIN.setTarget(120)" class="qty-btn" data-q="120">120</button>
                         <button onclick="ADMIN.setTarget(160)" class="qty-btn" data-q="160">160</button>
+                    </div>
+                    <div style="display:flex; gap:6px; margin-bottom:10px;">
+                        <button onclick="ADMIN.setTarget(200)" class="qty-btn" data-q="200">200</button>
+                        <button onclick="ADMIN.setTarget(300)" class="qty-btn" data-q="300">300</button>
+                        <button onclick="ADMIN.setTargetMax()" class="qty-btn qty-max" data-q="max">MAX</button>
                     </div>
                     <input type="range" id="target-val" min="0" max="0" value="120" oninput="ADMIN.onTargetSlider()" style="accent-color:var(--wine);">
                     <div style="font-size:11px; color:#999; margin-top:4px;">전체 풀(Pool)보다 크면 풀 개수만큼만 출제됩니다.</div>
@@ -610,16 +638,19 @@
         </div><!-- /.admin-col (right) -->
         </div><!-- /.admin-grid -->
 
+        <!-- ===== 하단 액션 (저장=와인 / 나머지=동일 회색 줄맞춤) ===== -->
         <button class="btn-save" onclick="ADMIN.saveToSheet()">선택한 학생 전체에 배정 저장</button>
-        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom:14px; align-items:center;">
-            <select id="adm-preview-sel" style="flex:1; padding:11px; font-size:14px;">
-                <option value="">미리보기할 학생 선택</option>
-            </select>
-            <button class="btn" style="background:var(--wine); color:#fff; padding:11px 14px; white-space:nowrap; font-size:14px;" onclick="previewAsStudent()">화면 확인</button>
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-print" onclick="alert('인쇄 준비중')">배정 시험지 인쇄</button>
-            <button class="btn-wrong-print" onclick="alert('오답노트 준비중')">오답노트 인쇄</button>
+        <div class="admin-actions">
+            <div class="aa-row">
+                <select id="adm-preview-sel" class="aa-select">
+                    <option value="">미리보기할 학생 선택</option>
+                </select>
+                <button class="aa-btn" onclick="previewAsStudent()">화면 확인</button>
+            </div>
+            <div class="aa-row">
+                <button class="aa-btn" onclick="alert('인쇄 준비중')">배정 시험지 인쇄</button>
+                <button class="aa-btn" onclick="alert('오답노트 준비중')">오답노트 인쇄</button>
+            </div>
         </div>
         <div id="adm-status-msg">시스템 준비됨</div>
     </div>
@@ -2149,6 +2180,7 @@
                 const res = await fetch(APP_URL + "?type=adminGetLast&name=" + encodeURIComponent(name) + "&t=" + Date.now());
                 const data = await res.json();
                 if(data.config && data.config.book) {
+                    this._lastLoadedConfig = data.config; // 복원용 저장
                     let range = data.config.book.split(';').map(r => {
                         const p = r.split('|');
                         const book = p[0] || "";
@@ -2162,8 +2194,10 @@
                         return base;
                     }).join(', ');
                     let dateStr = data.config.assignDate ? (" <span style='color:#888;'>(" + data.config.assignDate.split(' ')[0] + ")</span>") : "";
-                    msg.innerHTML = "📌 지난 배정: <span style='color:var(--navy);'>" + range + "</span>" + dateStr;
+                    msg.innerHTML = "📌 지난 배정: <span style='color:var(--navy);'>" + range + "</span>" + dateStr
+                        + "<button onclick=\"ADMIN.restoreLastConfig()\" style=\"display:block; width:100%; margin-top:9px; background:var(--gold); color:#fff; border:none; border-radius:980px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; letter-spacing:-0.01em;\">↩️ 이 범위·개수·유형 그대로 담기</button>";
                 } else {
+                    this._lastLoadedConfig = null;
                     msg.style.color = "#888";
                     msg.innerText = "지난 배정 기록이 없습니다. (첫 배정)";
                 }
@@ -2319,11 +2353,22 @@
             return t;
         },
         _highlightQtyBtn: function(val) {
+            const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
             document.querySelectorAll('.qty-btn').forEach(b => {
-                b.classList.toggle('active', parseInt(b.dataset.q) === val);
+                if (b.dataset.q === 'max') {
+                    // MAX: 풀이 있고 현재 목표가 풀 전체와 같으면 활성
+                    b.classList.toggle('active', pool > 0 && val === pool);
+                } else {
+                    b.classList.toggle('active', parseInt(b.dataset.q) === val);
+                }
             });
         },
         _targetTouched: false,
+        setTargetMax: function() {
+            const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
+            if (pool === 0) { alert("먼저 범위를 장바구니에 담아주세요!"); return; }
+            this.setTarget(pool);
+        },
         setTarget: function(n) {
             this._targetTouched = true;
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
@@ -2395,6 +2440,55 @@
         },
 
         clearBasket: function() { this.basket = []; this._targetTouched = false; this.renderBasket(); },
+
+        // 지난 배정(범위+개수+유형) 그대로 복원
+        restoreLastConfig: function() {
+            const c = this._lastLoadedConfig;
+            if (!c || !c.book) { alert("복원할 지난 배정이 없습니다."); return; }
+            // 1) 범위(basket) 복원
+            this.basket = c.book.split(';').filter(s => s.trim()).map(seg => {
+                const p = seg.split('|');
+                const book = p[0] || "", unit = p[1] || "", detail = p[2] || "ALL";
+                let desc;
+                if (detail && detail !== 'ALL') {
+                    desc = `${book} U${unit} (${detail.split(',').length}개)`;
+                } else {
+                    desc = `${book} U${unit}`;
+                }
+                return { label: `${book}|${unit}|${detail}`, desc: desc };
+            });
+            this.renderBasket(); // → updateCount()가 pool/슬라이더 max 재설정 + 값 0 리셋
+
+            // 2) 개수(출제 목표) 복원
+            const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
+            const ek = parseInt(c.ek) || 0, keObj = parseInt(c.keObj) || 0, keSubj = parseInt(c.keSubj) || 0;
+            const ee = parseInt(c.ee) || 0, ex = parseInt(c.ex) || 0;
+            const sum = ek + keObj + keSubj + ee + ex;
+            this._targetTouched = true;
+            let target = sum > 0 ? sum : Math.min(120, pool);
+            if (pool > 0 && target > pool) target = pool;
+            document.getElementById('target-num').value = target;
+            document.getElementById('target-val').value = Math.min(target, pool);
+            this._highlightQtyBtn(target);
+
+            // 3) 유형 분배 복원 (config 필드 → DOM id 매핑)
+            const map = { 'ek': ek, 'ke-obj': keObj, 'ke-subj': keSubj, 'ee-obj': ee, 'ex-obj': ex };
+            for (const id in map) {
+                let v = map[id];
+                const slider = document.getElementById(id + '-val');
+                const max = parseInt(slider.max) || 0;
+                if (v > max) v = max; // pool 축소 시 안전 클램프
+                slider.value = v;
+                document.getElementById(id + '-num').value = v;
+            }
+            const finalSum = ek + keObj + keSubj + ee + ex;
+            document.getElementById('total-val').value = Math.min(finalSum, pool);
+            document.getElementById('total-num').value = Math.min(finalSum, pool);
+
+            // 프리셋 버튼 활성표시 해제(직접 복원이므로)
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('adm-status-msg').innerText = "지난 배정 복원됨 — 범위·개수·유형이 채워졌습니다.";
+        },
 
         // 현재 장바구니 Pool에서 영영(ee)/예문(ex) 보유 단어 수 집계
         _poolStats: function() {
