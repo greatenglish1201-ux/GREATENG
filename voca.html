@@ -7,26 +7,27 @@
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root {
-            /* index 브랜드 계열 */
-            --wine: #7a1020; --wine-deep: #5e0c18;
-            --gold: #C9A84C; --gold-soft: #b89a48; --gold-hover: #b8962e;
-            --ink: #3a2a20; --ink-soft: #9a8570;
-            --cream: #FBF3DE; --cream-deep: #f0e7d4; --paper: #fffdf8;
-            --black: #2a2018; --dark-gray: #5a4a3c;
+            /* index 브랜드 계열 — 정제된 톤 */
+            --wine: #8e1530; --wine-deep: #6f0f24;
+            --gold: #b89544; --gold-soft: #b89a48; --gold-hover: #a8842e;
+            --ink: #2c2420; --ink-soft: #8a7d70;
+            --cream: #faf6ee; --cream-deep: #ece3d4; --paper: #ffffff;
+            --black: #241d17; --dark-gray: #5a4a3c;
             --bg-gray: #f0f0f0; --card-bg: #ffffff; --gray: #faf7f0;
             --blue: #185FA5;
             /* 기능 유형색 (차분하게 조정 — 고급 톤) */
             --obj-blue: #3a6ea5; --subj-green: #3a8a5c; --ee-purple: #7a5a9a; --ex-orange: #c06a2c;
             --red: #B3261E; --navy: #3a2a20;
         }
-        body { font-family: 'Pretendard', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: linear-gradient(160deg,#fffdf8,#f6efe0); background-attachment: fixed; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; }
+        body { font-family: 'Pretendard', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f7f4ef; background-attachment: fixed; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; letter-spacing:-0.01em; }
 
         /* ===== 학생 화면 ===== */
-        .card { background: var(--paper); width: 100%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 18px 50px rgba(122,16,32,0.10), 0 2px 8px rgba(58,42,32,0.06); text-align: center; height: fit-content; margin-top: 20px; position: relative; border: 1px solid var(--cream-deep); overflow: hidden; }
-        .card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background: linear-gradient(90deg,#7a1020,#C9A84C); }
-        .logo-img { width: 96px; height: 96px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 18px; box-shadow: 0 0 30px rgba(201,168,76,0.35), 0 4px 18px rgba(122,16,32,0.18); }
-        .btn { width: 100%; padding: 17px; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; color: white; margin-top: 10px; transition: 0.25s; letter-spacing: -0.2px; }
-        input[type="text"], input[type="password"], select { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #ddd; font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; }
+        .card { background: var(--paper); width: 100%; max-width: 480px; padding: 32px; border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 28px rgba(44,36,32,0.07); text-align: center; height: fit-content; margin-top: 20px; position: relative; border: 1px solid rgba(0,0,0,0.04); overflow: hidden; }
+        .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--wine); }
+        .logo-img { width: 84px; height: 84px; border-radius: 50%; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(44,36,32,0.12); }
+        .btn { width: 100%; padding: 17px; border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; color: white; margin-top: 10px; transition: 0.2s; letter-spacing: -0.02em; }
+        input[type="text"], input[type="password"], select { width: 100%; padding: 17px; border-radius: 14px; border: 1.5px solid var(--cream-deep); font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; transition: border-color 0.15s; }
+        input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--wine); }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--blue); }
         .chk-label { font-size: 15px; color: #333; display: inline-flex; align-items: center; cursor: pointer; text-align: left; }
         #test-area, #result-area, #info-box { display: none; }
@@ -61,12 +62,12 @@
         .modal-btns { display:flex; gap:8px; }
         .modal-btns button { flex:1; padding:10px; border-radius:10px; font-size:13px; cursor:pointer; font-weight:600; }
         .modal-cancel { border:1px solid #e2e8f0; background:#fff; color:#64748b; }
-        .modal-ok { border:none; background: linear-gradient(135deg,#4f7df7,#3b5fe0); color:#fff; font-weight:700; }
+        .modal-ok { border:none; background: var(--wine); color:#fff; font-weight:700; }
 
         /* ===== 관리자 화면 ===== */
         #admin-screen { display:none; width:100%; justify-content:center; }
         .admin-box { background: var(--paper); color: var(--black); padding: 35px; border-radius: 26px; width: 100%; max-width: 650px; box-shadow: 0 18px 50px rgba(122,16,32,0.10), 0 2px 8px rgba(58,42,32,0.06); border: 1px solid var(--cream-deep); border-top: none; height: fit-content; margin-top: 20px; position: relative; overflow: hidden; }
-        .admin-box::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background: linear-gradient(90deg,#7a1020,#C9A84C); }
+        .admin-box::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--wine); }
         .admin-box .main-title { text-align: center; margin-bottom: 35px; }
         .admin-box .main-title h2 { font-size: 30px; font-weight: 800; color: var(--wine); margin: 0; letter-spacing: -1px; }
         .admin-box .main-title h2 span { color: var(--gold); }
@@ -91,10 +92,10 @@
         .preset-btn:hover { opacity: 0.85; }
         .qty-btn { flex:1; background:#fff; color:var(--ink); border:1.5px solid var(--cream-deep); border-radius:8px; padding:10px 4px; font-size:14px; font-weight:800; cursor:pointer; transition:0.2s; }
         .qty-btn:hover { border-color:var(--gold); }
-        .qty-btn.active { background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; border-color:transparent; }
+        .qty-btn.active { background:var(--wine); color:#fff; border-color:transparent; }
         .basket { background: #fff; border: 1px dashed var(--gold); padding: 15px; border-radius: 15px; margin: 10px 0; min-height: 50px;}
         .basket-item { background: #f8f9fa; padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 13px; }
-        .btn-save { width: 100%; padding: 21px; background: linear-gradient(135deg,#7a1020,#C9A84C); color: white; border-radius: 16px; font-size: 19px; font-weight: 800; letter-spacing:-0.3px; box-shadow: 0 6px 20px rgba(122,16,32,0.25); margin-bottom: 15px; }
+        .btn-save { width: 100%; padding: 21px; background: var(--wine); color: white; border-radius: 16px; font-size: 19px; font-weight: 800; letter-spacing:-0.3px; box-shadow: 0 2px 10px rgba(44,36,32,0.12); margin-bottom: 15px; }
         #adm-status-msg { font-size: 13px; text-align: center; margin-top: 15px; color: var(--navy); font-weight: bold; }
         .admin-box input[type="range"] { width: 100%; height: 6px; cursor: pointer; accent-color: var(--gold); }
         .num-input { width: 55px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; text-align: right; font-size: 14px; font-weight: bold; color: var(--black); margin-left: 10px; margin-bottom:0; }
@@ -118,7 +119,7 @@
 
         <!-- ===== 📸 숙제 제출 (상단 배치) ===== -->
         <div id="hw-entry" style="display:none; margin-bottom:22px;">
-            <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:16px; font-size:16px; font-weight:800; box-shadow:0 4px 14px rgba(122,16,32,0.25);" onclick="hw_open()">📸 숙제 제출하기</button>
+            <button class="btn" style="background:var(--wine); color:#fff; padding:16px; font-size:16px; font-weight:800; box-shadow:0 2px 8px rgba(44,36,32,0.12);" onclick="hw_open()">📸 숙제 제출하기</button>
         </div>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
@@ -272,7 +273,7 @@
             <input type="file" id="hw-photo" accept="image/*" onchange="hw_preview()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
             <img id="hw-preview-img" style="display:none; max-width:100%; border-radius:10px; margin-bottom:10px;">
 
-            <button class="btn" id="hw-submit-btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:15px;" onclick="hw_submit()">제출하기</button>
+            <button class="btn" id="hw-submit-btn" style="background:var(--wine); color:#fff; padding:15px;" onclick="hw_submit()">제출하기</button>
             <div id="hw-msg" style="text-align:center; font-size:13px; margin-top:8px; color:var(--ink-soft,#3a2a20);"></div>
         </div>
 
@@ -296,7 +297,7 @@
                 </select>
                 <div style="display:flex; gap:8px;">
                     <button class="btn" style="background:#eee; color:#555; padding:13px; flex:1;" onclick="hw_gcCancel()">취소</button>
-                    <button class="btn" style="background:linear-gradient(135deg,#7a1020,#C9A84C); color:#fff; padding:13px; flex:2;" onclick="hw_gcSave()">저장</button>
+                    <button class="btn" style="background:var(--wine); color:#fff; padding:13px; flex:2;" onclick="hw_gcSave()">저장</button>
                 </div>
             </div>
         </div>
