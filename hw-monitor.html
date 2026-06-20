@@ -40,9 +40,9 @@
 
   /* 격자 */
   .grid-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  table.grid{ border-collapse:collapse; font-size:11px; white-space:nowrap; }
-  table.grid th, table.grid td{ border:1px solid #eee; padding:4px 5px; text-align:center; }
-  table.grid th.name, table.grid td.name{ position:sticky; left:0; background:#faf7f1; font-weight:700; text-align:left; min-width:62px; z-index:2; }
+  table.grid{ border-collapse:collapse; font-size:16px; white-space:nowrap; }
+  table.grid th, table.grid td{ border:1px solid #eee; padding:7px 9px; text-align:center; min-width:38px; }
+  table.grid th.name, table.grid td.name{ position:sticky; left:0; background:#faf7f1; font-weight:700; text-align:left; min-width:90px; z-index:2; }
   table.grid thead th{ background:#f3ece0; color:var(--ink); font-weight:700; position:sticky; top:0; }
   td.s-제출{ background:var(--ok-bg); color:var(--ok); }
   td.s-지연제출{ background:var(--late-bg); color:var(--late); }
@@ -129,6 +129,23 @@
   </div>
 </div>
 
+<div id="inspect" style="display:none; position:fixed; inset:0; background:rgba(20,5,10,0.6); z-index:9000; overflow-y:auto; padding:20px;">
+  <div style="max-width:760px; margin:0 auto; background:#fff; border-radius:18px; padding:20px; box-shadow:0 12px 50px rgba(0,0,0,0.4);">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+      <div>
+        <div id="insp-name" style="font-size:22px; font-weight:900; color:var(--wine);">학생</div>
+        <div id="insp-meta" style="font-size:13px; color:var(--ink-soft); margin-top:3px;"></div>
+      </div>
+      <span onclick="closeInspect()" style="font-size:28px; color:#999; cursor:pointer; padding:0 6px;">&times;</span>
+    </div>
+    <div id="insp-summary" style="margin-bottom:14px;"></div>
+    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📅 14일 현황</div>
+    <div id="insp-days" style="margin-bottom:18px;"></div>
+    <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">📷 제출 사진 (최신순)</div>
+    <div id="insp-photos"><div class="loading">불러오는 중...</div></div>
+  </div>
+</div>
+
 <div id="lightbox" onclick="this.style.display='none'">
   <span class="close">&times;</span>
   <img id="lightbox-img" src="" alt="제출 사진">
@@ -156,11 +173,17 @@
   let overviewCache = null;
   let statusByStudent = {}; // 격자용: 이름 → {date:status}
   let allDates = [];
+  let studentMeta = {};     // 이름 → {grade,course,klass,school}
 
   async function loadAll(){
     document.getElementById('today-box').innerHTML = '<div class="loading">불러오는 중...</div>';
     document.getElementById('grid-area').innerHTML = '<div class="loading">불러오는 중...</div>';
     document.getElementById('rate-area').innerHTML = '<div class="loading">불러오는 중...</div>';
+
+    // 명단 메타 로드 (과정/클래스/학교)
+    const ros = await jsonp('type=roster');
+    studentMeta = {};
+    if(ros && ros.students){ ros.students.forEach(s=> studentMeta[s.name] = s); }
 
     const ov = await jsonp('type=adminOverview');
     if(!ov){ document.getElementById('today-box').innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
@@ -170,6 +193,77 @@
     fillPhotoStudents(ov);
     await buildGrid(ov);
   }
+
+  // ===== 개인 점검 모달 =====
+  function metaLine(nm){
+    const m = studentMeta[nm] || {};
+    const parts = [m.klass, m.course, m.school, m.grade].filter(Boolean);
+    return parts.join(' · ');
+  }
+
+  async function openInspect(name){
+    document.getElementById('inspect').style.display = 'block';
+    document.getElementById('insp-name').textContent = name;
+    document.getElementById('insp-meta').textContent = metaLine(name);
+    document.getElementById('insp-summary').innerHTML = '';
+    document.getElementById('insp-days').innerHTML = '<div class="loading">불러오는 중...</div>';
+    document.getElementById('insp-photos').innerHTML = '<div class="loading">불러오는 중...</div>';
+    window.scrollTo(0,0);
+
+    // 14일 현황
+    const st = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(name));
+    const days = (st && st.days) || [];
+    renderInspectDays(days);
+
+    // 요약 카운트
+    let sub=0,late=0,miss=0,pre=0;
+    days.forEach(d=>{ if(d.status==='제출')sub++; else if(d.status==='지연제출')late++; else if(d.status==='미제출')miss++; else if(d.status==='선제출')pre++; });
+    const total = sub+late+miss+pre;
+    const pct = total ? Math.round((sub+late+pre)/total*100) : 0;
+    document.getElementById('insp-summary').innerHTML =
+      '<div style="display:flex; gap:8px; flex-wrap:wrap;">'
+      + '<span style="background:var(--ok-bg); color:var(--ok); padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">제출 '+sub+'</span>'
+      + '<span style="background:var(--late-bg); color:var(--late); padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">지연 '+late+'</span>'
+      + '<span style="background:var(--miss-bg); color:var(--miss); padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">미제출 '+miss+'</span>'
+      + '<span style="background:#eee; color:#333; padding:7px 13px; border-radius:9px; font-weight:700; font-size:13px;">14일 제출률 '+pct+'%</span></div>';
+
+    // 사진 전부
+    const ph = await jsonp('type=adminSubmissions&name=' + encodeURIComponent(name));
+    renderInspectPhotos(ph);
+  }
+
+  function renderInspectDays(days){
+    const el = document.getElementById('insp-days');
+    if(!days.length){ el.innerHTML = '<span class="muted">현황 없음</span>'; return; }
+    const color = (st)=> st==='제출'?'var(--ok-bg)':st==='지연제출'?'var(--late-bg)':st==='미제출'?'var(--miss-bg)':st==='선제출'?'var(--pre-bg)':st==='시험'?'var(--exam-bg)':'#eee';
+    let h = '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
+    days.forEach(d=>{
+      const [y,m,dd] = d.date.split('-');
+      h += '<div style="min-width:58px; text-align:center; padding:8px 4px; border-radius:9px; background:'+color(d.status)+'; font-size:12px; font-weight:700;">'
+        + parseInt(m)+'/'+parseInt(dd)+'<br><span style="font-size:11px;">'+(d.status||'-')+'</span></div>';
+    });
+    h += '</div>';
+    el.innerHTML = h;
+  }
+
+  function renderInspectPhotos(d){
+    const el = document.getElementById('insp-photos');
+    const items = (d && d.items) || [];
+    if(!items.length){ el.innerHTML = '<span class="muted">제출 사진이 없습니다.</span>'; return; }
+    let h = '<div class="photo-grid">';
+    items.forEach(it=>{
+      const img = it.thumb
+        ? '<img src="'+it.thumb+'" referrerpolicy="no-referrer" onclick="zoom(\''+(it.fileId?('https://drive.google.com/thumbnail?id='+it.fileId+'&sz=w1200'):it.thumb)+'\')" onerror="this.parentNode.innerHTML=\'&lt;div class=&quot;no-photo&quot;&gt;사진 열기 실패&lt;/div&gt;\'">'
+        : '<div class="no-photo">사진 없음</div>';
+      h += '<div class="photo-card">'+img
+        + '<div class="photo-meta"><div class="pm-src">'+(it.src||'')+(it.type?(' · '+it.type):'')+'</div>'
+        + '<div class="pm-ts">'+(it.due||'')+(it.ts?(' (제출 '+it.ts+')'):'')+'</div></div></div>';
+    });
+    h += '</div>';
+    el.innerHTML = h;
+  }
+
+  function closeInspect(){ document.getElementById('inspect').style.display = 'none'; }
 
   function renderToday(ov){
     const box = document.getElementById('today-box');
@@ -193,7 +287,7 @@
     if(!studs.length){ area.innerHTML = '<span class="muted">데이터 없음</span>'; return; }
     let h = '';
     studs.forEach(s=>{
-      h += '<div class="rate-row"><span style="font-weight:700; min-width:60px;">'+s.name+'</span>'
+      h += '<div class="rate-row"><span style="font-weight:700; min-width:60px; cursor:pointer; color:var(--wine);" onclick="openInspect(\''+s.name+'\')">'+s.name+' 🔍</span>'
         + '<div class="rate-bar"><div class="rate-fill" style="width:'+s.pct+'%"></div></div>'
         + '<span class="rate-pct" style="color:'+(s.pct<70?'#cc0000':'#274e13')+'">'+s.pct+'%</span></div>';
     });
@@ -232,7 +326,7 @@
     });
     h += '</tr></thead><tbody>';
     names.forEach(nm=>{
-      h += '<tr><td class="name">'+nm+'</td>';
+      h += '<tr><td class="name" style="cursor:pointer; color:var(--wine);" onclick="openInspect(\''+nm+'\')">'+nm+' 🔍</td>';
       allDates.forEach(dt=>{
         const st = (statusByStudent[nm] && statusByStudent[nm][dt]) || '';
         const cls = st ? ('s-'+st) : '';
