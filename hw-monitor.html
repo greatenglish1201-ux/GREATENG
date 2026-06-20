@@ -407,24 +407,23 @@
     area.innerHTML = h;
   }
 
-  // 격자: overview엔 30일 카운트만 있어 날짜별 상태가 없으므로, 학생별 status를 개별 조회
+  // 격자: adminGrid 한 번 호출로 전체 받기 (로딩 최적화)
   async function buildGrid(ov){
     const area = document.getElementById('grid-area');
-    const names = (ov.students||[]).map(s=>s.name);
-    if(!names.length){ area.innerHTML = '<span class="muted">학생 없음</span>'; return; }
-    document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · 불러오는 중...';
+    document.getElementById('grid-info').textContent = '불러오는 중...';
+    const g = await jsonp('type=adminGrid');
+    if(!g || !g.rows){ area.innerHTML = '<span class="muted">불러오기 실패</span>'; return; }
 
+    allDates = g.dates || [];
     statusByStudent = {};
-    const dateSet = new Set();
-    // 학생별 14일 status 조회 (homeworkStatus 재사용) — 순차
-    for(let i=0;i<names.length;i++){
-      const d = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(names[i]));
-      const days = (d && d.days) || [];
-      statusByStudent[names[i]] = {};
-      days.forEach(x=>{ statusByStudent[names[i]][x.date] = x.status; dateSet.add(x.date); });
-      document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · ' + (i+1) + '/' + names.length;
-    }
-    allDates = Array.from(dateSet).sort();
+    const names = [];
+    g.rows.forEach(row=>{
+      names.push(row.name);
+      statusByStudent[row.name] = {};
+      (allDates).forEach((dt,i)=>{ statusByStudent[row.name][dt] = row.statuses[i] || ''; });
+    });
+
+    if(!names.length){ area.innerHTML = '<span class="muted">학생 없음</span>'; return; }
     renderGrid(names);
     document.getElementById('grid-info').textContent = '학생 ' + names.length + '명 · ' + allDates.length + '일';
   }
