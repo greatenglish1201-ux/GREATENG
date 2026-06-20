@@ -11,14 +11,17 @@
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+body{font-family:'Pretendard Variable','Pretendard','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
   background:#f2f3f7;color:#1a1a1a;font-size:16px;line-height:1.65;
-  -webkit-text-size-adjust:100%}
+  -webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;letter-spacing:-0.01em}
 input,select,textarea{font-family:inherit}
 input:focus,select:focus,textarea:focus{outline:none}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#c7c7cc;border-radius:980px}
+::-webkit-scrollbar-thumb:hover{background:#aeaeb2}
+::-webkit-scrollbar-track{background:transparent}
 @media(max-width:430px){body{font-size:13px}}
 @media(min-width:431px) and (max-width:834px){body{font-size:14px}}
 @media(min-width:835px) and (max-width:1194px){body{font-size:15px}}

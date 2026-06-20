@@ -86,6 +86,7 @@
     { name:"출제 허브",     url:"exam-analysis.html",      desc:"기출 분석 · 예상문제 생성",            icon:"\ud83c\udfaf", color:"#7a5a9a" },
     { name:"학교 정보",     url:"pohang_highschools.html", desc:"포항 학교 지도 · 입시 정보",          icon:"\ud83c\udfeb", color:"#3a8a5c" },
     { name:"수능대비반",    url:"suneung_2026.html",       desc:"고3 수능대비반 안내 페이지",          icon:"\ud83c\udf93", color:"#c06a2c" },
+    { name:"애널리틱스",    url:"https://analytics.google.com/analytics/web/#/a398325140p542064683/reports/intelligenthome", desc:"방문자 · 트래픽 통계 (GA4)", icon:"\ud83d\udcc8", color:"#d4a017" },
     /* ▼ 새 페이지는 이 아래에 추가 ▼ */
 
   ];
@@ -103,7 +104,7 @@
   grid.innerHTML = PAGES.map(function(p){
     const color = p.color || 'var(--wine)';
     const soft = (p.color ? softBg(p.color) : '#f3eee5');
-    return '<a class="tile" href="'+esc(p.url)+'" style="--accent:'+color+'; --accent-soft:'+soft+';">'
+    return '<a class="tile" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+'; --accent-soft:'+soft+';">'
       + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
       + '<h2>'+esc(p.name)+'</h2>'
       + '<p>'+esc(p.desc||'')+'</p>'
