@@ -1138,27 +1138,41 @@
     // 날짜 정리: "2026. 06. 18. 07:57:32" → "2026.06.18"
     function fmtExamDate(s){
         s = String(s||'').trim();
-        if(!s) return '';
+        if(!s) return '날짜 미상';
         const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
         if(m) return m[1]+'.'+('0'+m[2]).slice(-2)+'.'+('0'+m[3]).slice(-2);
-        return s.split(' ')[0].replace(/\.$/,'');
+        // 연·월·일이 다 안 잡히면(예: "2026."만) 날짜 미상
+        return '날짜 미상';
     }
     // 범위 정리: "수특영어2027|Part II 주제·소재편|21,22,...,30" → {book, part, nums}
     function fmtRange(s){
         s = String(s||'').trim();
-        if(!s) return {book:'(범위)', part:'', nums:''};
-        const parts = s.split('|').map(x=>x.trim());
+        if(!s) return {main:'(범위)', sub:''};
+        const parts = s.split('|').map(x=>x.trim()).filter(x=>x!=='');
+        if(!parts.length) return {main:s, sub:''};
         const book = parts[0]||'';
-        const part = parts.length>2 ? parts[1] : '';
-        let nums = parts.length>1 ? parts[parts.length-1] : '';
-        // 숫자 나열이 길면 압축: 21,22,...,30 → 21~30 (10개)
-        const arr = nums.split(',').map(x=>x.trim()).filter(x=>/^\d+$/.test(x)).map(Number);
-        if(arr.length>=4){
-            const isSeq = arr.every((v,i)=> i===0 || v===arr[i-1]+1);
-            nums = isSeq ? (arr[0]+'~'+arr[arr.length-1]) : (arr.slice(0,3).join(',')+'…');
-            nums += ' ('+arr.length+'개)';
+        // 마지막 칸 = 세부 범위 (ALL / 숫자나열). 중간 칸들 = 강/파트.
+        let last = parts.length>1 ? parts[parts.length-1] : '';
+        const mids = parts.slice(1, parts.length-1);   // 교재와 세부 사이 = 강/파트
+        // 교재 + 강/파트 = 메인 (크게)
+        const main = [book].concat(mids).join(' ').trim() || book;
+        // 세부(sub): ALL → '전체', 숫자나열 → 압축
+        let sub = '';
+        const lastUpper = last.toUpperCase();
+        if(last==='' ){
+            sub = '';
+        } else if(lastUpper==='ALL' || last==='전체'){
+            sub = '전체';
+        } else {
+            const arr = last.split(',').map(x=>x.trim()).filter(x=>/^\d+$/.test(x)).map(Number);
+            if(arr.length>=4){
+                const isSeq = arr.every((v,i)=> i===0 || v===arr[i-1]+1);
+                sub = (isSeq ? (arr[0]+'~'+arr[arr.length-1]) : (arr.slice(0,3).join(',')+'…')) + ' ('+arr.length+'개)';
+            } else {
+                sub = last;
+            }
         }
-        return {book, part, nums: nums||(parts.length>1?parts[parts.length-1]:'')};
+        return {main, sub};
     }
     function renderExamResults(name, missions){
         const listEl=document.getElementById('exam-result-list');
@@ -1174,8 +1188,9 @@
                 : (m.attempts + '회 응시 후 불합격');
             const detailColor = pass ? '#16a34a' : '#dc2626';
             const detailBg = pass ? '#f0fdf4' : '#fef2f2';
-            const dateShort = (m.lastDate||'').split(' ')[0];
-            const dateStr = fmtExamDate(m.assignDate||dateShort);
+            // 배정날짜가 완전하면 그것, 아니면 시험친 시각(lastDate) 시도
+            let dateStr = fmtExamDate(m.assignDate);
+            if(dateStr==='날짜 미상') dateStr = fmtExamDate(m.lastDate);
             const rg = fmtRange(m.range);
             html += '<div style="border:1px solid #eee; border-radius:12px; padding:14px 16px; margin-bottom:10px;">';
             html += '<div style="display:flex; align-items:stretch; gap:14px;">';
@@ -1185,10 +1200,10 @@
             html += '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+ badge;
             html += '<span style="font-size:14px; font-weight:800; color:'+detailColor+'; background:'+detailBg+'; padding:5px 11px; border-radius:9px;">'+ detail +'</span></div>';
             html += '</div>';
-            // 오른쪽: 범위 (교재/파트 작게, 범위숫자 강조)
+            // 오른쪽: 범위 (교재+강 크게, 세부는 작게)
             html += '<div style="flex:0 0 44%; max-width:44%; display:flex; flex-direction:column; justify-content:center; gap:3px; padding-left:14px; border-left:1px solid #f0f0f0; text-align:right;">';
-            if(rg.book) html += '<div style="font-size:11.5px; color:var(--ink-soft); font-weight:600; word-break:keep-all;">'+ rg.book + (rg.part? ' · '+rg.part : '') +'</div>';
-            html += '<div style="font-size:15px; font-weight:800; color:var(--wine); word-break:keep-all;">'+ (rg.nums||rg.book) +'</div>';
+            html += '<div style="font-size:15px; font-weight:800; color:var(--wine); word-break:keep-all;">'+ rg.main +'</div>';
+            if(rg.sub) html += '<div style="font-size:12px; color:var(--ink-soft); font-weight:600; word-break:keep-all;">'+ rg.sub +'</div>';
             html += '</div>';
             html += '</div>';
             // 불합격이면 단어쓰기 사진 영역 (lazy)
