@@ -535,8 +535,8 @@
             </button>
             <div id="exam-results-box" style="display:none; margin-top:14px;">
                 <div style="display:flex; gap:8px; margin-bottom:12px;">
-                    <select id="exam-result-student" style="flex:1; padding:11px; font-size:14px; border:2px solid #e8d8b8; border-radius:10px;"><option value="">학생 선택</option></select>
-                    <button class="btn" style="flex:0 0 auto; background:var(--wine); color:#fff; padding:11px 18px; font-size:14px;" onclick="loadExamResults()">조회</button>
+                    <select id="exam-result-student" style="flex:1 1 auto; min-width:0; width:100%; padding:11px; font-size:14px; border:2px solid #e8d8b8; border-radius:10px; background:#fff;"><option value="">학생 선택</option></select>
+                    <button class="btn" style="flex:0 0 88px; background:var(--wine); color:#fff; padding:11px 0; font-size:14px;" onclick="loadExamResults()">조회</button>
                 </div>
                 <div id="exam-result-list"></div>
             </div>
@@ -1031,22 +1031,27 @@
         if(arr) arr.textContent = open ? '▲' : '▼';
     }
     // 학생 드롭다운 채우기 (sharedDB 명단 활용)
+    let examRosterCache = null;
     function populateExamResultStudents(){
         const sel=document.getElementById('exam-result-student');
         if(!sel) return;
-        // ADMIN이 이미 받아둔 학생 명단 재사용
-        let names=[];
-        try { names = (window.ADMIN && ADMIN._roster && ADMIN._roster.length) ? ADMIN._roster.slice() : []; } catch(e){}
-        if(names.length){ fillExamStudentSelect(names); return; }
-        // 아직 로딩 안 됐으면 직접 getList (JSONP — fetch는 CORS로 막힐 수 있음)
+        // 캐시 있으면 바로
+        if(examRosterCache && examRosterCache.length){ fillExamStudentSelect(examRosterCache); return; }
+        // ADMIN이 이미 받아뒀으면 재사용
+        try { if(window.ADMIN && ADMIN._roster && ADMIN._roster.length){ examRosterCache=ADMIN._roster.slice(); fillExamStudentSelect(examRosterCache); return; } } catch(e){}
+        // 독립 JSONP로 학생 명단 직접 받기 (getList)
         const cbName='examRoster_'+Date.now();
         let done=false;
         const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
-        window[cbName]=(list)=>{ done=true; cleanup(); fillExamStudentSelect(list||[]); };
+        window[cbName]=(list)=>{
+            done=true; cleanup();
+            examRosterCache = Array.isArray(list) ? list : ((list && list.names) || []);
+            fillExamStudentSelect(examRosterCache);
+        };
         const s=document.createElement('script');
         s.id=cbName;
         s.src=APP_URL + "?type=getList&callback=" + cbName + "&t=" + Date.now();
-        s.onerror=()=>{ if(done)return; cleanup(); };
+        s.onerror=()=>{ if(done)return; cleanup(); const l=document.getElementById('exam-result-list'); if(l) l.innerHTML='<p style="color:#e74c3c; font-size:13px;">학생 명단 로딩 실패</p>'; };
         document.body.appendChild(s);
         setTimeout(()=>{ if(done)return; cleanup(); }, 8000);
     }
