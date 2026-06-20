@@ -862,7 +862,7 @@ body{background:#fff;padding:16px;}
 }
 </style></head><body>${el.outerHTML}
 <div class="no-print" style="position:fixed;bottom:20px;right:20px;">
-<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">🖨️ 인쇄 / PDF 저장</button>
+<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">인쇄 / PDF 저장</button>
 </div></body></html>`;
   return html;
 }
@@ -891,7 +891,7 @@ body{background:#fff;padding:16px;}
 }
 </style></head><body>${parts.map((h,i)=>`<div style="page-break-after:${i<parts.length-1?'always':'auto'}">${h}</div>`).join('')}
 <div class="no-print" style="position:fixed;bottom:20px;right:20px;">
-<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">🖨️ 인쇄 / PDF 저장</button>
+<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">인쇄 / PDF 저장</button>
 </div></body></html>`;
 }
 
@@ -916,7 +916,7 @@ function buildAllHTML(slots,mode,opts){
       return'<div style="page-break-after:'+(i<htmlParts.length-1?'always':'auto')+';padding:20px 28px">'+body+'</div>';
     }).join('')
     +'<div class="no-print" style="position:fixed;bottom:20px;right:20px;">'
-    +'<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">🖨️ 인쇄 / PDF 저장</button></div>'
+    +'<button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">인쇄 / PDF 저장</button></div>'
     +'</body></html>';
   const win=window.open('','_blank');
   if(win){win.document.write(combined);win.document.close();}
@@ -999,7 +999,7 @@ function buildHTML(slot,mode,opts){
     ).join('')+'</div>':'')
     +(O.sentences&&analysisHTML?'<div style="border-top:1.5px solid #D2D2D7;padding-top:14px"><div style="font-size:.72em;font-weight:700;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">'+(IS?'구문 분석':'문장별 분석 — 끊어읽기 & 구문')+'</div>'+analysisHTML+'</div>':'')
     +'<div class="pfoot" style="text-align:center;color:#999;font-size:.72em;font-style:italic;margin-top:18px;padding:8px 0 2px;border-top:0.5px solid #eee">'+OUTPUT_FOOTER_TEXT+'</div>'
-    +'<div class="np" style="margin-top:20px;text-align:center;padding-top:14px;border-top:1px solid #eee"><button onclick="window.print()" style="padding:10px 28px;font-size:14px;font-weight:500;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨 인쇄 / PDF 저장</button></div>'
+    +'<div class="np" style="margin-top:20px;text-align:center;padding-top:14px;border-top:1px solid #eee"><button onclick="window.print()" style="padding:10px 28px;font-size:14px;font-weight:500;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer">인쇄 / PDF 저장</button></div>'
     +'</body></html>';
 }
 
@@ -2229,7 +2229,7 @@ Return JSON only, EXACTLY this structure:
           {n>1?`✓ ${n}개 지문 자동 감지됨 — 순서대로 자동 분석합니다`:`지문 1개 감지됨`}
         </div>;})()} 
         {err&&<div style={{color:'#E24B4A',fontSize:12,marginBottom:8}}>{err}</div>}
-        {!apiKey&&<div style={{color:'#856404',background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:7,padding:'8px 12px',fontSize:12,marginBottom:10}}>⚠ 상단 ⚙ 설정에서 API Key를 먼저 입력해주세요.</div>}
+        {!apiKey&&<div style={{color:'#856404',background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:7,padding:'8px 12px',fontSize:12,marginBottom:10}}>상단 설정에서 API Key를 먼저 입력해주세요.</div>}
         <button onClick={analyze} disabled={!rawText.trim()} style={{width:'100%',padding:'11px',background:'#E8F1FD',color:'#0058B0',border:'none',borderRadius:8,fontSize:14,fontWeight:600,cursor:'pointer'}}>분석 시작 ↗</button>
       </div>
     </div>
@@ -2287,8 +2287,8 @@ Return JSON only, EXACTLY this structure:
           </div>
           <div style={{display:'flex',gap:6}}>
 
-            <button onClick={saveCurrentTabToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 단일유형저장'}</button>
-            <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 전체유형저장'}</button>
+            <button onClick={saveCurrentTabToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'단일유형저장'}</button>
+            <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'전체유형저장'}</button>
           </div>
         </div>
         <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center',marginBottom:12}}>
@@ -2338,7 +2338,7 @@ Return JSON only, EXACTLY this structure:
           <div style={{...card,padding:'12px',overflowY:'auto',maxHeight:540}}><RightPanel p={p}/></div>
         </div>}
         {p&&<div style={{...card,padding:'12px',marginTop:12}}>
-          <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>📖 해설 (모든 유형 공통 · 학생 채점 후 표시)</div>
+          <div style={{fontSize:11,fontWeight:600,color:'#888',marginBottom:6}}>해설 (모든 유형 공통 · 학생 채점 후 표시)</div>
           <textarea defaultValue={p.explanation||''} key={'expl_'+(p.id||'')}
             onBlur={e=>upP({explanation:e.target.value})}
             placeholder="이 문제의 정답 근거·해설을 입력하세요. (비워두면 학생 화면에 해설이 표시되지 않습니다)"
@@ -2355,8 +2355,8 @@ Return JSON only, EXACTLY this structure:
         <div style={{display:'flex',gap:6}}>
           <button onClick={()=>setStep('edit')} style={{padding:'5px 12px',fontSize:12,border:'0.5px solid #D2D2D7',borderRadius:7,cursor:'pointer'}}>← 편집</button>
           <button onClick={()=>{const t=buildOutput();setOutText(t);navigator.clipboard.writeText(t);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:'5px 14px',fontSize:12,background:'#E4F5E9',color:'#1E6B30',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{copied?'복사됨 ✓':'복사'}</button>
-          <button onClick={saveCurrentTabToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 단일유형저장'}</button>
-          <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'📊 전체유형저장'}</button>
+          <button onClick={saveCurrentTabToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'단일유형저장'}</button>
+          <button onClick={saveCurrentQuestionsToSheet} disabled={sheetSaving} style={{padding:'5px 14px',fontSize:12,background:sheetSaving?'#E8E8ED':'#F2EBFB',color:sheetSaving?'#86868B':'#5E2E9E',border:'none',borderRadius:7,cursor:'pointer',fontWeight:500}}>{sheetSaving?'저장중...':'전체유형저장'}</button>
         </div>
       </div>
       <div style={card}>
@@ -3221,7 +3221,7 @@ function App(){
                   background:viewMode===m?'#fff':'transparent',
                   color:viewMode===m?'#0058B0':'#6C6C70',
                   border:'none',borderRadius:5,cursor:'pointer'}}>
-                {m==='teacher'?'교사용':m==='student'?'학생용':'✏ 출제 저작'}
+                {m==='teacher'?'교사용':m==='student'?'학생용':'출제 저작'}
               </button>
             ))}
           </div>
@@ -3238,11 +3238,11 @@ function App(){
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(true)} disabled={sheetSaving}
             title="저장된 슬롯 모두 공개"
             style={{background:'#ECECFB',color:'#3D3CA8',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>🌐 ALL</button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>전체공개</button>}
           {viewMode!=='authoring'&&<button onClick={()=>bulkTogglePublic(false)} disabled={sheetSaving}
             title="저장된 슬롯 모두 비공개"
             style={{background:'#F0F0F2',color:'#3A3A3C',border:'none',
-              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>🔒 ALL</button>}
+              borderRadius:6,padding:'2px 6px',fontSize:9.5,fontWeight:600,cursor:'pointer',lineHeight:'1.4'}}>전체비공개</button>}
           {viewMode!=='authoring'&&<div style={{position:'relative',display:'inline-flex',alignItems:'center'}}>
             <button onClick={()=>setGhDd(p=>!p)}
               style={{background:'#F0F0F2',color:'#1D1D1F',border:'none',borderRadius:6,padding:'2px 8px',fontSize:9.5,fontWeight:600,cursor:'pointer',display:'inline-flex',alignItems:'center',gap:3,lineHeight:'1.4'}}>
@@ -3255,7 +3255,7 @@ function App(){
               </button>
               <button onClick={()=>{saveMainToGitHub();setGhDd(false);}} disabled={mainGhSaving}
                 style={{width:'100%',padding:'9px 14px',background:'none',color:'#4ade80',border:'none',borderBottom:'1px solid rgba(255,255,255,.08)',cursor:'pointer',fontSize:12,fontWeight:600,textAlign:'left',display:'flex',alignItems:'center',gap:7}}>
-                📤 {mainGhSaving?'저장중...':'SAVE (passages.js)'}
+                {mainGhSaving?'저장중...':'SAVE (passages.js)'}
               </button>
               <button onClick={()=>{
                 const data={te_slots:localStorage.getItem('te_slots'),te_claude_key:localStorage.getItem('te_claude_key'),te_apps_script_url:localStorage.getItem('te_apps_script_url'),gh_token:localStorage.getItem('gh_token'),gh_repo:localStorage.getItem('gh_repo'),backup_date:new Date().toISOString()};
@@ -3273,7 +3273,7 @@ function App(){
             <button onClick={()=>window.scrollTo({top:0,behavior:'smooth'})} title="맨 위로"
               style={{background:'#fff',color:'#1D1D1F',border:'0.5px solid #D2D2D7',borderRadius:'50%',width:40,height:40,fontSize:18,fontWeight:700,cursor:'pointer',boxShadow:'0 2px 10px rgba(0,0,0,.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>↑</button>
             <button onClick={()=>{const allOpen=slots.every(s=>s.open);setSlots(prev=>{const next=prev.map(s=>({...s,open:!allOpen}));saveSlots(next);return next;});}} title={slots.every(s=>s.open)?'전체 접기':'전체 펼치기'}
-              style={{background:'#E8F1FD',color:'#0058B0',border:'none',borderRadius:'50%',width:40,height:40,fontSize:16,cursor:'pointer',boxShadow:'0 2px 10px rgba(0,0,0,.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>{slots.every(s=>s.open)?'📁':'📂'}</button>
+              style={{background:'#E8F1FD',color:'#0058B0',border:'none',borderRadius:'50%',width:40,height:40,fontSize:16,cursor:'pointer',boxShadow:'0 2px 10px rgba(0,0,0,.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>{slots.every(s=>s.open)?'▾':'▸'}</button>
           </div>
           <div style={{position:'relative',display:'inline-flex',alignItems:'center'}}>
             <button onClick={()=>setStuModal({kind:'all',slot:null,opts:{...stuOpts}})}
@@ -3282,7 +3282,7 @@ function App(){
           </div>
           <button onClick={()=>{if(confirm('초기화?')){const f=Array.from({length:12},(_,i)=>makeSlot(i));setSlots(f);saveSlots(f);}}}
             style={{background:'#FDEBEA',color:'#B3261E',border:'none',
-              borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>🗑</button>
+              borderRadius:6,padding:'4px 9px',fontSize:13,cursor:'pointer'}}>✕</button>
 
           <button onClick={()=>setShowSet(v=>!v)} style={{background:'rgba(255,255,255,.15)',
             color:'#fff',border:'none',borderRadius:6,padding:'2px 6px',fontSize:9.5,cursor:'pointer'}}>⚙</button>
@@ -3293,7 +3293,7 @@ function App(){
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.55)',zIndex:200,display:'flex',alignItems:'flex-start',justifyContent:'center',paddingTop:60,overflow:'auto'}}>
           <div style={{background:'#fff',borderRadius:12,width:'min(540px,95vw)',maxHeight:'80vh',display:'flex',flexDirection:'column',overflow:'hidden',boxShadow:'0 8px 32px rgba(0,0,0,.25)'}}>
             <div style={{background:'#1D1D1F',padding:'14px 18px',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
-              <span style={{color:'#fff',fontWeight:700,fontSize:15}}>📂 지문 불러오기</span>
+              <span style={{color:'#fff',fontWeight:700,fontSize:15}}>지문 불러오기</span>
               <button onClick={()=>setShowLoad(false)} style={{background:'rgba(255,255,255,.15)',color:'#fff',border:'none',borderRadius:6,padding:'4px 10px',fontSize:13,cursor:'pointer'}}>✕</button>
             </div>
             <div style={{padding:'12px 16px',borderBottom:'1px solid #eee',flexShrink:0,display:'flex',gap:8,flexWrap:'wrap'}}>
@@ -3425,7 +3425,7 @@ function App(){
                     onChange={e=>{e.stopPropagation();toggleGroup(sg.passages);}}
                     onClick={e=>e.stopPropagation()} style={{cursor:'pointer',width:16,height:16}}/>
                   <span style={{fontSize:13,fontWeight:700,color:'#185FA5',flex:1}}>
-                    📚 {bookLabel(sg.source)} <span style={{fontSize:11,color:'#888',fontWeight:400}}>({sg.passages.length}문항{srcSelN>0?` · 선택 ${srcSelN}`:''})</span>
+                    {bookLabel(sg.source)} <span style={{fontSize:11,color:'#888',fontWeight:400}}>({sg.passages.length}문항{srcSelN>0?` · 선택 ${srcSelN}`:''})</span>
                   </span>
                   <span style={{fontSize:11,color:'#aaa'}}>{isSrcExpanded?'▲':'▼'}</span>
                 </div>
@@ -3465,7 +3465,7 @@ function App(){
                         <button onClick={()=>setExpandedChapter(isExpanded?sg.source:chExpKey)}
                           style={{padding:'3px 8px',fontSize:10,background:isExpanded?'#185FA5':'#fff',
                             color:isExpanded?'#fff':'#185FA5',border:'0.5px solid #185FA5',borderRadius:4,cursor:'pointer'}}>
-                          {isExpanded?'▲ 접기':'📋 세부'}
+                          {isExpanded?'▲ 접기':'세부 ▾'}
                         </button>
                       </div>
                       {isExpanded&&(
@@ -3541,10 +3541,10 @@ function App(){
             <div style={{display:'flex',gap:8,marginBottom:14}}>
               <button onClick={()=>setStuModal({...stuModal,opts:{...TEACHER_PRESET}})}
                 style={{flex:1,padding:'7px 0',fontSize:12.5,fontWeight:600,background:'#E6F1FB',color:'#185FA5',
-                  border:'1px solid #185FA5',borderRadius:7,cursor:'pointer'}}>👨‍🏫 교사용 (전체+정답)</button>
+                  border:'1px solid #185FA5',borderRadius:7,cursor:'pointer'}}>교사용 (전체+정답)</button>
               <button onClick={()=>setStuModal({...stuModal,opts:{...getStuOpts()}})}
                 style={{flex:1,padding:'7px 0',fontSize:12.5,fontWeight:600,background:'#E1F5EE',color:'#1a5c3a',
-                  border:'1px solid #2d8a60',borderRadius:7,cursor:'pointer'}}>🎓 학생용 (복습 디폴트)</button>
+                  border:'1px solid #2d8a60',borderRadius:7,cursor:'pointer'}}>학생용 (복습 디폴트)</button>
             </div>
             <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:18}}>
               {items.map(it=>(
@@ -3592,10 +3592,10 @@ function App(){
                   border:'1px solid #185FA5',borderRadius:6,cursor:'pointer'}}>💾 디폴트 저장</button>
               <button onClick={doPDF}
                 style={{padding:'8px 18px',fontSize:13,fontWeight:600,background:'#E8F1FD',color:'#0058B0',
-                  border:'none',borderRadius:6,cursor:'pointer'}}>📄 PDF</button>
+                  border:'none',borderRadius:6,cursor:'pointer'}}>PDF</button>
               <button onClick={doDOCX}
                 style={{padding:'8px 18px',fontSize:13,fontWeight:600,background:'#F2EBFB',color:'#5E2E9E',
-                  border:'none',borderRadius:6,cursor:'pointer'}}>📝 DOCX</button>
+                  border:'none',borderRadius:6,cursor:'pointer'}}>DOCX</button>
             </div>
           </div>
         </div>);
@@ -3683,7 +3683,7 @@ function App(){
                     <button onClick={()=>{
                       const next=customBooks.filter(x=>x.id!==b.id);
                       setCustomBooks(next);saveCustomBooks(next);
-                    }} style={{background:'#FDEBEA',color:'#B3261E',border:'none',borderRadius:4,padding:'2px 7px',fontSize:11,cursor:'pointer'}}>🗑</button>
+                    }} style={{background:'#FDEBEA',color:'#B3261E',border:'none',borderRadius:4,padding:'2px 7px',fontSize:11,cursor:'pointer'}}>✕</button>
                   )}
                 </div>
               ))}
@@ -3798,7 +3798,7 @@ function App(){
                   <span style={{color:'#88aacc',flex:1}}>{b.label}</span>
                   <span style={{color:'#666',fontSize:11,minWidth:60}}>{b.storage}</span>
                   {!BOOK_DEFS.find(x=>x.id===b.id)
-                    ?<button onClick={()=>{const next=customBooks.filter(x=>x.id!==b.id);setCustomBooks(next);saveCustomBooks(next);}} style={{background:'#FDEBEA',color:'#B3261E',border:'none',borderRadius:4,padding:'2px 8px',fontSize:11,cursor:'pointer'}}>🗑</button>
+                    ?<button onClick={()=>{const next=customBooks.filter(x=>x.id!==b.id);setCustomBooks(next);saveCustomBooks(next);}} style={{background:'#FDEBEA',color:'#B3261E',border:'none',borderRadius:4,padding:'2px 8px',fontSize:11,cursor:'pointer'}}>✕</button>
                     :<span style={{fontSize:10,color:'#555',minWidth:30}}>기본</span>}
                 </div>
               ))}
@@ -3972,7 +3972,7 @@ function App(){
             style={{padding:'5px 12px',fontSize:12,fontWeight:600,flexShrink:0,
               background:pending>0&&keyOk?'#E8F1FD':'#E8E8ED',color:pending>0&&keyOk?'#0058B0':'#86868B',
               border:'none',borderRadius:7,cursor:pending>0&&keyOk?'pointer':'default',whiteSpace:'nowrap'}}>
-            🔍 분석 {pending}
+            분석 {pending}
           </button>
           <button onClick={autoAuthorAll} disabled={authorAll.run||!keyOk} title="분석 완료 슬롯 전체에 주제·요약·무관 자동 생성 (확인 후 시트 저장)"
             style={{padding:'5px 12px',fontSize:12,fontWeight:700,flexShrink:0,
@@ -4211,7 +4211,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           {(slot.text||slot.passageData||slot.analysis)&&(
             <button onClick={onClear} title="슬롯 비우기"
               style={{width:28,height:28,padding:0,fontSize:15,color:'#B3261E',background:'#FDEBEA',
-                border:'none',borderRadius:5,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>🗑</button>
+                border:'none',borderRadius:5,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
           )}
           <button onClick={onToggle} title={slot.open?'접기':'펼치기'}
             style={{width:28,height:28,padding:0,fontSize:15,fontWeight:700,borderRadius:5,border:'none',
