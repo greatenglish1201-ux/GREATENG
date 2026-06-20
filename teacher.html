@@ -4112,7 +4112,7 @@ function App(){
 
 function SlotOutputMenu({slot,onStuOutput}){
   return<button onClick={()=>onStuOutput&&onStuOutput('single')}
-    style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2'}}>
+    style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:700,whiteSpace:'nowrap',lineHeight:'1.2'}}>
     ⎙ 출력</button>;
 }
 
@@ -4142,17 +4142,17 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
               color:slot.isHot?'#e53935':'#ccc',cursor:'pointer',flexShrink:0,lineHeight:1,
               display:'flex',alignItems:'center',justifyContent:'center'}}>
             {slot.isHot?'★':'☆'}</button>
-          <span style={{fontSize:10,fontWeight:700,padding:'2px 7px',borderRadius:4,
+          <span style={{fontSize:11,fontWeight:700,padding:'3px 8px',borderRadius:5,
             background:st.bg,color:st.color}}>{st.label}</span>
           {(()=>{const at=authoredTypes(slot.passageData);return at.length?(
             <span title={'출제 유형: '+at.join(' · ')}
-              style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:10,flexShrink:0,
+              style={{fontSize:11,fontWeight:700,padding:'3px 8px',borderRadius:10,flexShrink:0,
                 background:'#F2EBFB',color:'#5E2E9E',border:'0.5px solid #E3D3F7',cursor:'help',whiteSpace:'nowrap'}}>
               {at.length}</span>
           ):null;})()}
           {slot.status==='saved'&&(
             <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
-              style={{fontSize:11,fontWeight:700,padding:'2px 6px',borderRadius:4,flexShrink:0,
+              style={{fontSize:11,fontWeight:700,padding:'3px 7px',borderRadius:5,flexShrink:0,
                 background:slot.isPublic?'#ECECFB':'#e9ecef',
                 color:slot.isPublic?'#3D3CA8':'#888',
                 border:slot.isPublic?'none':'0.5px solid #ccc'}}>
@@ -4203,7 +4203,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
           </select>
           {slot.analysis&&<SlotOutputMenu slot={slot} onStuOutput={onStuOutput}/>}
-          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>저작</button>}
+          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:5,cursor:'pointer',fontWeight:700,whiteSpace:'nowrap'}}>저작</button>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
