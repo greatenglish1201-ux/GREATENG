@@ -1034,17 +1034,21 @@
     function populateExamResultStudents(){
         const sel=document.getElementById('exam-result-student');
         if(!sel) return;
+        // ADMIN이 이미 받아둔 학생 명단 재사용
         let names=[];
-        try { names = (sharedRoster && sharedRoster.length) ? sharedRoster.slice() : []; } catch(e){}
-        // sharedRoster 없으면 getList 호출
-        if(!names.length){
-            fetch(APP_URL + "?type=getList&t=" + Date.now())
-              .then(r=>r.json()).then(list=>{
-                  fillExamStudentSelect(list||[]);
-              }).catch(()=>{});
-            return;
-        }
-        fillExamStudentSelect(names);
+        try { names = (window.ADMIN && ADMIN._roster && ADMIN._roster.length) ? ADMIN._roster.slice() : []; } catch(e){}
+        if(names.length){ fillExamStudentSelect(names); return; }
+        // 아직 로딩 안 됐으면 직접 getList (JSONP — fetch는 CORS로 막힐 수 있음)
+        const cbName='examRoster_'+Date.now();
+        let done=false;
+        const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName]=(list)=>{ done=true; cleanup(); fillExamStudentSelect(list||[]); };
+        const s=document.createElement('script');
+        s.id=cbName;
+        s.src=APP_URL + "?type=getList&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done)return; cleanup(); }, 8000);
     }
     function fillExamStudentSelect(names){
         const sel=document.getElementById('exam-result-student');
@@ -2535,6 +2539,8 @@
                 psel.add(new Option(n, n));
             });
             this.onStudentCheck();
+            // 시험 결과 학생 드롭다운도 같은 명단으로 채움
+            try { fillExamStudentSelect(this._roster); } catch(e){}
         },
 
         getCheckedStudents: function(){
