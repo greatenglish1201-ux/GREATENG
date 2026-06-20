@@ -476,7 +476,7 @@ const STATUS={
   analyzing:{label:'분석중',color:'#0058B0',bg:'#E8F1FD'},
   analyzed:{label:'분석완료',color:'#1E6B30',bg:'#E4F5E9'},
   confirmed:{label:'흐름확정',color:'#5E2E9E',bg:'#F2EBFB'},
-  saved:{label:'저장완료',color:'#fff',bg:'#8e1530'},
+  saved:{label:'저장완료',color:'#8e1530',bg:'#f7e9ed'},
 };
 const DIFF_STYLE={
   상:{color:'#c0392b',bg:'#FDECEA'},
@@ -4112,8 +4112,8 @@ function App(){
 
 function SlotOutputMenu({slot,onStuOutput}){
   return<button onClick={()=>onStuOutput&&onStuOutput('single')}
-    style={{padding:'3px 8px',fontSize:11,background:'#f0f0f2',color:'#515154',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2'}}>
-    ⎙ 출력</button>;
+    style={{padding:'3px 8px',fontSize:11,background:'#f0f0f2',color:'#515154',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2',display:'inline-flex',alignItems:'center'}}>
+    출력</button>;
 }
 
 const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic,onToggleHot}){
@@ -4130,7 +4130,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
   return(
     <div id={`slot-card-${slot.id}`} style={{background:'#fff',borderRadius:12,border:'0.5px solid #D2D2D7',
       marginBottom:12,overflow:'hidden',
-      boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 2px #8e1530':'none'}}>
+      boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 1.5px #d8a9b5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #E8E8ED':'none',
         background:slot.status==='saved'?'#fbf4f6':'#fff'}}>
         <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',minWidth:0}}>
@@ -4139,7 +4139,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             fontSize:11,fontWeight:700,flexShrink:0}}>{slot.id+1}</div>
           <button onClick={onToggleHot} title={slot.isHot?'출제예상 해제':'출제예상 마킹'}
             style={{width:18,height:18,padding:0,fontSize:16,border:'none',background:'transparent',
-              color:slot.isHot?'#d4a017':'#ccc',cursor:'pointer',flexShrink:0,lineHeight:1,
+              color:slot.isHot?'#c8901a':'#d4d4d8',cursor:'pointer',flexShrink:0,lineHeight:1,
               display:'flex',alignItems:'center',justifyContent:'center'}}>
             {slot.isHot?'★':'☆'}</button>
           <span style={{fontSize:11,fontWeight:700,padding:'3px 8px',borderRadius:5,
@@ -4153,8 +4153,8 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           {slot.status==='saved'&&(
             <span title={slot.isPublic?'학생에게 공개됨':'비공개'}
               style={{fontSize:11,fontWeight:600,padding:'3px 8px',borderRadius:5,flexShrink:0,
-                background:slot.isPublic?'#e9f4ea':'#f0f0f2',
-                color:slot.isPublic?'#2f7d3b':'#86868b'}}>
+                background:slot.isPublic?'#f7e9ed':'#f0f0f2',
+                color:slot.isPublic?'#a13a52':'#86868b'}}>
               {slot.isPublic?'공개':'비공개'}
             </span>
           )}
@@ -4202,7 +4202,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
             {DIFFS.map(d=><option key={d} value={d}>{d}</option>)}
           </select>
           {slot.analysis&&<SlotOutputMenu slot={slot} onStuOutput={onStuOutput}/>}
-          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#f0f0f2',color:'#515154',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>저작</button>}
+          {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#e8eef6',color:'#2b5b8a',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2',display:'inline-flex',alignItems:'center'}}>출제</button>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
