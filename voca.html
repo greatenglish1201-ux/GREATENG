@@ -32,6 +32,16 @@
         .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--wine); }
         .logo-img { width: 84px; height: 84px; border-radius: 50%; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(44,36,32,0.12); }
         .btn { width: 100%; padding: 17px; border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; color: white; margin-top: 10px; transition: 0.2s; letter-spacing: -0.02em; }
+        /* ===== 학생 화면 의미별 버튼 (메인=와인 / 긍정=초록 / 주의=빨강 / 보조=회색) ===== */
+        .btn-main   { background: var(--wine); color:#fff; }
+        .btn-main:hover   { background: var(--wine-deep); }
+        .btn-pos    { background: #3a8a5c; color:#fff; }   /* 차분한 초록 — 긍정 행동 */
+        .btn-pos:hover    { background: #327a50; }
+        .btn-warn   { background: #b5485a; color:#fff; }   /* 차분한 빨강 — 주의/복습 유도 */
+        .btn-warn:hover   { background: #a23e4f; }
+        .btn-sub    { background: #f0ece4; color: var(--dark-gray); }   /* 보조 — 회색(크림톤) */
+        .btn-sub:hover    { background: #e6e0d4; }
+        .btn-main:active, .btn-pos:active, .btn-warn:active, .btn-sub:active { transform: scale(0.985); }
         input[type="text"], input[type="password"], select { width: 100%; padding: 17px; border-radius: 14px; border: 1.5px solid var(--cream-deep); font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; transition: border-color 0.15s; }
         input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--wine); }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--blue); }
@@ -210,11 +220,11 @@
 
         <!-- ===== 📸 숙제 제출 (상단 배치) ===== -->
         <div id="hw-entry" style="display:none; margin-bottom:22px;">
-            <button class="btn" style="background:var(--wine); color:#fff; padding:16px; font-size:16px; font-weight:800; box-shadow:0 2px 8px rgba(44,36,32,0.12);" onclick="hw_open()">📸 숙제 제출하기</button>
+            <button class="btn btn-main" style="padding:16px; font-size:16px; font-weight:800; box-shadow:0 2px 8px rgba(44,36,32,0.12);" onclick="hw_open()">📸 숙제 제출하기</button>
         </div>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
-        <button class="btn" style="background:var(--ink); color:#fff;" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
+        <button class="btn btn-main" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
         <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
 
         <!-- 관리자 비번 모달 (이름칸에 '관리자' 입력 시 표시) -->
@@ -233,8 +243,8 @@
         <div id="info-box" style="margin-top:20px; background:#eef2ff; padding:20px; border-radius:15px; text-align:left;">
             <p id="info-msg" style="margin:0; line-height:1.6; font-size:15px;"></p>
             <div class="btn-group">
-                <button id="start-mission-btn" class="btn" style="background:var(--blue); display:none;" onclick="startTest()">오늘의 미션 시작하기</button>
-                <button id="db-wrong-btn" class="btn" style="background:#b5485a; display:none;" onclick="startAccumulatedWrongTest()">누적 오답 훈련하기</button>
+                <button id="start-mission-btn" class="btn btn-main" style="display:none;" onclick="startTest()">오늘의 미션 시작하기</button>
+                <button id="db-wrong-btn" class="btn btn-warn" style="display:none;" onclick="startAccumulatedWrongTest()">누적 오답 훈련하기</button>
             </div>
         </div>
 
@@ -364,7 +374,7 @@
             <input type="file" id="hw-photo" accept="image/*" onchange="hw_preview()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
             <img id="hw-preview-img" style="display:none; max-width:100%; border-radius:10px; margin-bottom:10px;">
 
-            <button class="btn" id="hw-submit-btn" style="background:var(--wine); color:#fff; padding:15px;" onclick="hw_submit()">제출하기</button>
+            <button class="btn btn-main" id="hw-submit-btn" style="padding:15px;" onclick="hw_submit()">제출하기</button>
             <div id="hw-msg" style="text-align:center; font-size:13px; margin-top:8px; color:var(--ink-soft,#3a2a20);"></div>
         </div>
 
@@ -419,7 +429,7 @@
                     <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ex"> 예문 빈칸</label>
                 </div>
             </div>
-            <button class="btn" style="background: var(--ink); color: white; padding:15px;" onclick="startPractice()">무한 학습 시작하기</button>
+            <button class="btn btn-main" style="padding:15px;" onclick="startPractice()">무한 학습 시작하기</button>
         </div>
     </div>
 
@@ -436,7 +446,7 @@
             <div id="hint-text" class="hint-text">💡 힌트: </div>
             <input type="text" id="answer-input" placeholder="영어 스펠링을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) submitSubj()">
             <div style="font-size:13px; color:var(--blue); margin-bottom:10px; font-weight:bold; text-align:center;">안내: 물결(~)이나 빈칸 빼고 알파벳만 다 적어도 정답 인정!</div>
-            <button class="btn" style="background:var(--black); color:var(--gold);" onclick="submitSubj()">제출 및 다음 (엔터)</button>
+            <button class="btn btn-main" onclick="submitSubj()">제출 및 다음 (엔터)</button>
         </div>
         <div id="type-obj-area" style="display:none;"></div>
     </div>
@@ -447,10 +457,10 @@
         <div id="pass-fail-msg" class="pass-fail-text"></div>
         <p id="saving-msg" style="color:var(--blue); font-weight:bold;">데이터를 안전하게 저장하고 있습니다...</p>
         <div class="btn-group">
-            <button class="btn" id="btn-copy-wrong" style="background:#27ae60; color:white; display:none;" onclick="copyWrongWords()">📋 틀린 단어 복사하기</button>
-            <button class="btn" id="btn-review-wrong" style="background:#e74c3c; color:white; display:none;" onclick="reviewWrong()">🚨 방금 틀린 문제 바로 복습하기</button>
-            <button class="btn" id="btn-retest" style="background:#eee; color:#555; display:none;" onclick="handleRetest()">🔄 이전 범위 그대로 다시 풀기</button>
-            <button class="btn" style="background:var(--gold); color:var(--black);" onclick="resetTest()">처음으로 돌아가기</button>
+            <button class="btn btn-pos" id="btn-copy-wrong" style="display:none;" onclick="copyWrongWords()">📋 틀린 단어 복사하기</button>
+            <button class="btn btn-warn" id="btn-review-wrong" style="display:none;" onclick="reviewWrong()">🚨 방금 틀린 문제 바로 복습하기</button>
+            <button class="btn btn-sub" id="btn-retest" style="display:none;" onclick="handleRetest()">🔄 이전 범위 그대로 다시 풀기</button>
+            <button class="btn btn-sub" onclick="resetTest()">처음으로 돌아가기</button>
         </div>
     </div>
 </div>
@@ -1957,7 +1967,7 @@
             const feedbackEl = document.getElementById('practice-feedback');
             feedbackEl.style.display = 'block';
 
-            let nextBtnHtml = `<button class="btn" style="background:var(--blue); margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️</button>`;
+            let nextBtnHtml = `<button class="btn btn-pos" style="margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️</button>`;
 
             if (ans === q.a) {
                 btnEl.style.background = '#27ae60'; btnEl.style.color = 'white';
@@ -1993,7 +2003,7 @@
             const feedbackEl = document.getElementById('practice-feedback');
             feedbackEl.style.display = 'block';
 
-            let nextBtnHtml = `<button class="btn" style="background:var(--blue); margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️ (엔터)</button>`;
+            let nextBtnHtml = `<button class="btn btn-pos" style="margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️ (엔터)</button>`;
 
             if(cleanVal === cleanAns && cleanAns !== "") {
                 feedbackEl.innerHTML = `⭕ 정답입니다! ${nextBtnHtml}`;
