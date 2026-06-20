@@ -4128,11 +4128,11 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
   const df=DIFF_STYLE[slot.meta.difficulty]||DIFF_STYLE['중'];
 
   return(
-    <div id={`slot-card-${slot.id}`} style={{background:'#fff',borderRadius:12,border:'0.5px solid #D2D2D7',
+    <div id={`slot-card-${slot.id}`} style={{background:slot.isHot?'#fdf8ec':'#fff',borderRadius:12,border:'0.5px solid #D2D2D7',
       marginBottom:12,overflow:'hidden',
-      boxShadow:slot.isHot?'0 0 0 2px #E8490F':slot.status==='saved'?'0 0 0 1.5px #d8a9b5':'none'}}>
+      boxShadow:slot.isHot?'0 0 0 2px #c8901a':slot.status==='saved'?'0 0 0 1.5px #d8a9b5':'none'}}>
       <div style={{borderBottom:slot.open&&(slot.text||slot.analysis)?'0.5px solid #E8E8ED':'none',
-        background:slot.status==='saved'?'#fbf4f6':'#fff'}}>
+        background:slot.isHot?'#faf2dd':slot.status==='saved'?'#fbf4f6':'#fff'}}>
         <div style={{padding:'9px 12px',display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',minWidth:0}}>
           <div style={{width:22,height:22,borderRadius:'50%',background:st.bg,color:st.color,
             display:'flex',alignItems:'center',justifyContent:'center',
