@@ -587,6 +587,7 @@
 
         <div class="section">
             <span class="label">2. 단어 교재 및 유닛 선택</span>
+            <button onclick="openPresetModal()" style="width:100%; margin-bottom:10px; padding:11px; background:#fdf7ee; color:var(--wine); border:1.5px solid #e8d8b8; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>시험범위 프리셋에서 가져오기</button>
             <select id="book-sel" onchange="ADMIN.loadUnits()" style="margin-bottom: 10px;"><option value="">단어 교재 선택</option></select>
             <div id="unit-area" style="display:none; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -724,7 +725,16 @@
     </div>
 </div>
 
-<!-- 관리자 비밀번호 변경 모달 (최상위 — 부모 display:none 영향 안 받게) -->
+<!-- 시험범위 프리셋 가져오기 모달 -->
+<div id="preset-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; padding:24px 22px; width:88%; max-width:420px; max-height:80vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+        <h3 style="margin:0 0 6px; color:var(--wine); font-size:17px; text-align:center;">시험범위 프리셋</h3>
+        <p style="margin:0 0 16px; font-size:12px; color:#888; text-align:center;">선택하면 강 단위로 장바구니에 담깁니다<br>(세부 문항 설정은 강 전체로 적용)</p>
+        <div id="preset-list"><p style="color:#888; font-size:13px; text-align:center; padding:10px;">불러오는 중...</p></div>
+        <button class="btn" style="background:#eee; color:#555; padding:12px; width:100%; margin-top:12px;" onclick="closePresetModal()">닫기</button>
+    </div>
+</div>
+
 <div id="pw-change-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
     <div style="background:#fff; border-radius:16px; padding:26px 22px; width:84%; max-width:340px; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
         <h3 style="margin:0 0 16px; color:var(--wine); font-size:17px; text-align:center;">관리자 비밀번호 변경</h3>
@@ -1018,6 +1028,102 @@
         s.onerror = ()=>{ if(done) return; cleanup(); m.style.color='#e74c3c'; m.textContent='서버 연결 실패'; };
         document.body.appendChild(s);
         setTimeout(()=>{ if(done) return; cleanup(); m.style.color='#e74c3c'; m.textContent='서버 연결 실패'; }, 8000);
+    }
+
+    // ── 시험범위 프리셋 가져오기 (index 로그인 GAS getPresets) ──
+    // 교재 코드 → voca 단어 교재명 매핑 (index BOOK_DEFS 기준)
+    const PRESET_BOOK_MAP = {
+        '27STYD': '27영어독해연습',
+        '27ST_E': '27수특영어',
+        'ABSO_TYPE': '절대유형'
+    };
+    let _presetCache = null;
+    function openPresetModal(){
+        document.getElementById('preset-modal').style.display='flex';
+        const listEl=document.getElementById('preset-list');
+        if(_presetCache){ renderPresetList(_presetCache); return; }
+        listEl.innerHTML='<p style="color:#888; font-size:13px; text-align:center; padding:10px;">불러오는 중...</p>';
+        const cbName='vPresets_'+Date.now();
+        let done=false;
+        const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName]=(data)=>{
+            done=true; cleanup();
+            const presets=(data && data.ok && Array.isArray(data.presets)) ? data.presets : [];
+            _presetCache=presets;
+            renderPresetList(presets);
+        };
+        const s=document.createElement('script');
+        s.id=cbName;
+        s.src=LOGIN_URL + "?action=getPresets&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); listEl.innerHTML='<p style="color:#e74c3c; font-size:13px; text-align:center; padding:10px;">프리셋 로딩 실패</p>'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done)return; cleanup(); listEl.innerHTML='<p style="color:#e74c3c; font-size:13px; text-align:center; padding:10px;">시간 초과</p>'; }, 9000);
+    }
+    function closePresetModal(){ document.getElementById('preset-modal').style.display='none'; }
+    function renderPresetList(presets){
+        const listEl=document.getElementById('preset-list');
+        if(!presets.length){ listEl.innerHTML='<p style="color:#888; font-size:13px; text-align:center; padding:10px;">저장된 프리셋이 없습니다.</p>'; return; }
+        let html='';
+        presets.forEach((pr,i)=>{
+            const conv = presetToUnits(pr.ranges||[]);
+            const cnt = conv.units.length;
+            const preview = conv.units.slice(0,6).map(u=>u.book+' '+u.unit).join(', ') + (cnt>6?' 외':'');
+            html += '<div style="border:1px solid #eee; border-radius:10px; padding:12px 14px; margin-bottom:8px;">';
+            html += '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">';
+            html += '<div style="font-size:14px; font-weight:700; color:var(--ink);">'+ (pr.name||'(이름없음)') +'</div>';
+            html += '<button onclick="applyPresetToBasket('+i+')" style="flex:0 0 auto; background:var(--wine); color:#fff; border:none; border-radius:8px; padding:7px 14px; font-size:13px; font-weight:700; cursor:pointer;">담기</button></div>';
+            if(cnt) html += '<div style="font-size:11.5px; color:var(--ink-soft); margin-top:6px;">'+ cnt +'개 강 · '+ preview +'</div>';
+            else html += '<div style="font-size:11.5px; color:#e74c3c; margin-top:6px;">단어 DB에 맞는 강이 없습니다</div>';
+            html += '</div>';
+        });
+        listEl.innerHTML=html;
+    }
+    // 지문 ID 배열 → 강 단위 유닛 목록 (세부문항 무시, 중복 제거)
+    function presetToUnits(ranges){
+        const seen={};
+        const units=[];
+        const skipped=[];
+        (ranges||[]).forEach(rid=>{
+            rid=String(rid||'').trim();
+            if(!rid) return;
+            // 교재 코드 추출: 알려진 코드 중 prefix 매칭 (긴 것 우선)
+            let code=null;
+            Object.keys(PRESET_BOOK_MAP).sort((a,b)=>b.length-a.length).forEach(c=>{
+                if(!code && (rid===c || rid.startsWith(c+'_'))) code=c;
+            });
+            if(!code){ skipped.push(rid); return; }
+            const bookName = PRESET_BOOK_MAP[code];
+            // 코드 뒤: _강_번호 또는 _강
+            const rest = rid.slice(code.length).replace(/^_/,'');  // "11_003" 또는 "11"
+            const m = rest.match(/^(\d+)/);
+            if(!m){ skipped.push(rid); return; }
+            const gang = parseInt(m[1]);   // 강 번호
+            const unit = gang + '강';
+            const key = bookName + '||' + unit;
+            if(!seen[key]){ seen[key]=true; units.push({book:bookName, unit:unit, gang:gang}); }
+        });
+        units.sort((a,b)=> a.book===b.book ? a.gang-b.gang : a.book.localeCompare(b.book,'ko'));
+        return {units, skipped};
+    }
+    // 프리셋을 장바구니에 담기 (강 단위 ALL)
+    function applyPresetToBasket(idx){
+        const pr=(_presetCache||[])[idx];
+        if(!pr){ return; }
+        const conv=presetToUnits(pr.ranges||[]);
+        if(!conv.units.length){ alert('이 프리셋에는 단어 DB에 맞는 강이 없습니다.'); return; }
+        let added=0;
+        conv.units.forEach(u=>{
+            const label = u.book + '|' + u.unit + '|ALL';
+            if(!ADMIN.basket.some(i=>i.label===label)){
+                ADMIN.basket.push({ label: label, desc: u.book + ' ' + u.unit });
+                added++;
+            }
+        });
+        ADMIN.renderBasket();
+        closePresetModal();
+        const skipMsg = conv.skipped.length ? ('\n(단어 DB에 없는 ' + conv.skipped.length + '개 항목은 제외됨)') : '';
+        const adm=document.getElementById('adm-status-msg');
+        if(adm) adm.innerText = '프리셋 "'+(pr.name||'')+'"에서 '+added+'개 강 담음' + (conv.skipped.length?(' · '+conv.skipped.length+'개 제외'):'');
     }
 
     // ── 비밀번호 변경 모달 ──
