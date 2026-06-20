@@ -438,11 +438,23 @@
     } else {
       h += '<div class="muted" style="margin-bottom:14px;">모의고사 성적이 없습니다.</div>';
     }
-    // 내신
-    h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신</div>';
-    if((d.naesin||[]).length){
-      h += renderNaesinChart(d.naesin) + renderNaesinTable(d.naesin);
+    // 내신 — 과정(고등/중등)으로 분리
+    const naesin = d.naesin || [];
+    const isMid = (c)=> String(c||'').includes('중');
+    const high = naesin.filter(r=> !isMid(r.course));
+    const mid  = naesin.filter(r=> isMid(r.course));
+
+    if(naesin.length){
+      if(high.length){
+        h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신 — 고등</div>';
+        h += renderNaesinHighChart(high) + renderNaesinHighTable(high);
+      }
+      if(mid.length){
+        h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신 — 중등</div>';
+        h += renderNaesinMidChart(mid) + renderNaesinMidTable(mid);
+      }
     } else {
+      h += '<div style="font-size:13px; font-weight:800; color:var(--wine); margin:18px 0 8px;">📚 내신</div>';
       h += '<div class="muted">내신 성적이 없습니다.</div>';
     }
     box.innerHTML = h;
@@ -540,8 +552,8 @@
     return h;
   }
 
-  // 내신 차트: 점수(0~100) + 등급(1~9 역축)
-  function renderNaesinChart(rows){
+  // 내신 고등: 점수(0~100) + 등급(1~9 역축)
+  function renderNaesinHighChart(rows){
     const xLabels = rows.map(r=> (r.year||'') + ' ' + (r.term||'') + (r.exam?(' '+r.exam):''));
     const hasScore = rows.some(r=>r.score!=null);
     const hasGrade = rows.some(r=>r.grade!=null);
@@ -558,7 +570,7 @@
     return buildLineChart(xLabels, series);
   }
 
-  function renderNaesinTable(rows){
+  function renderNaesinHighTable(rows){
     let h = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
     h += '<thead><tr style="background:#f3ece0;">'
       + ['시험','과목','점수','석차','등급'].map(t=>'<th style="padding:6px 8px; border:1px solid #e8ddc9; white-space:nowrap;">'+t+'</th>').join('')
@@ -571,6 +583,36 @@
         + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+(r.score!=null?r.score:'-')+'</td>'
         + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+esc(r.rank||'-')+'</td>'
         + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--wine);">'+(r.grade!=null?r.grade+'등급':'-')+'</td>'
+        + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    return h;
+  }
+
+  // 내신 중등: 점수만 그래프(성취도 A~E는 글자라 표에만)
+  function renderNaesinMidChart(rows){
+    const xLabels = rows.map(r=> (r.year||'') + ' ' + (r.term||'') + (r.exam?(' '+r.exam):''));
+    const hasScore = rows.some(r=>r.score!=null);
+    if(!hasScore) return '';
+    const series = [{
+      label:'점수', color:'#1f4e79', yMin:0, yMax:100, invert:false,
+      values: rows.map((r,i)=> ({ x:i, y:r.score, show: r.score!=null? r.score:null }))
+    }];
+    return buildLineChart(xLabels, series);
+  }
+
+  function renderNaesinMidTable(rows){
+    let h = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
+    h += '<thead><tr style="background:#f3ece0;">'
+      + ['시험','과목','점수','성취도'].map(t=>'<th style="padding:6px 8px; border:1px solid #e8ddc9; white-space:nowrap;">'+t+'</th>').join('')
+      + '</tr></thead><tbody>';
+    rows.slice().reverse().forEach(r=>{
+      const when = esc((r.year||'')+' '+(r.grade_year||'')+' '+(r.term||'')+' '+(r.exam||''));
+      h += '<tr>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; white-space:nowrap;">'+when+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+esc(r.subject||'')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center;">'+(r.score!=null?r.score:'-')+'</td>'
+        + '<td style="padding:6px 8px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--wine);">'+esc(r.gradeRaw||'-')+'</td>'
         + '</tr>';
     });
     h += '</tbody></table></div>';
