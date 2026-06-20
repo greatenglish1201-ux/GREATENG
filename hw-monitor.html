@@ -118,23 +118,14 @@
   }
   table.grid thead th:first-child{ border-top-left-radius:12px; }
   table.grid thead th:last-child{ border-top-right-radius:12px; }
-  td.s-제출{ background:var(--ok-bg); color:var(--ok); }
-  td.s-지연제출{ background:var(--late-bg); color:var(--late); }
-  td.s-미제출{ background:var(--miss-bg); color:var(--miss); font-weight:700; }
-  td.s-선제출{ background:var(--pre-bg); color:var(--ok); }
-  td.s-시험{ background:var(--exam-bg); color:var(--exam); }
-  td.s-휴일{ background:var(--fill); color:var(--ink-3); }
+  td.s-제출{ background:#c8ebcf; color:#176b29; }
+  td.s-지연제출{ background:#fde6b0; color:#8a5a00; }
+  td.s-미제출{ background:#f8c4cb; color:#b3122a; font-weight:700; }
+  td.s-선제출{ background:#bfe6f0; color:#0f6680; }
+  td.s-시험{ background:#cdddf5; color:#234e84; }
+  td.s-휴일{ background:#e8e8ec; color:#86868b; }
   td.clickable{ cursor:pointer; }
   td.clickable:hover{ box-shadow:inset 0 0 0 2px var(--wine); }
-
-  /* 제출률 */
-  .rate-row{
-    display:flex; align-items:center; gap:12px; padding:11px 14px;
-    border-radius:12px; background:var(--fill); margin-bottom:7px; font-size:14px;
-  }
-  .rate-bar{ flex:1; height:7px; background:rgba(0,0,0,.07); border-radius:980px; overflow:hidden; }
-  .rate-fill{ height:100%; background:var(--wine); border-radius:980px; transition:width .4s ease; }
-  .rate-pct{ font-weight:700; min-width:44px; text-align:right; letter-spacing:-0.02em; }
 
   /* 사진 */
   .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); gap:14px; }
@@ -199,19 +190,20 @@
     </div>
     <div class="grid-scroll"><div id="grid-area"><div class="loading">불러오는 중...</div></div></div>
     <div class="legend">
-      <span><i class="dot" style="background:var(--ok-bg)"></i>제출</span>
-      <span><i class="dot" style="background:var(--late-bg)"></i>지연</span>
-      <span><i class="dot" style="background:var(--miss-bg)"></i>미제출</span>
-      <span><i class="dot" style="background:var(--pre-bg)"></i>선제출</span>
-      <span><i class="dot" style="background:var(--exam-bg)"></i>시험</span>
+      <span><i class="dot" style="background:#c8ebcf"></i>제출</span>
+      <span><i class="dot" style="background:#fde6b0"></i>지연</span>
+      <span><i class="dot" style="background:#f8c4cb"></i>미제출</span>
+      <span><i class="dot" style="background:#bfe6f0"></i>선제출</span>
+      <span><i class="dot" style="background:#cdddf5"></i>시험</span>
       <span class="muted">· 칸을 누르면 그날 제출 사진 확인</span>
     </div>
-  </div>
 
-  <!-- 제출률 순위 -->
-  <div class="card">
-    <h2>제출률 <span id="rate-period-label" style="font-size:13px; color:var(--ink-soft); font-weight:600;">(최근 14일)</span></h2>
-    <div id="rate-area"><div class="loading">불러오는 중...</div></div>
+    <div style="border-top:1px solid var(--line); margin-top:22px; padding-top:20px;">
+      <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:12px; letter-spacing:-0.02em; display:flex; align-items:center; gap:8px;">
+        제출률 <span id="rate-period-label" style="font-size:13px; color:var(--ink-3); font-weight:500;">최근 14일</span>
+      </div>
+      <div id="rate-area"><div class="loading">불러오는 중...</div></div>
+    </div>
   </div>
 
   <!-- 사진 확인 -->
@@ -352,7 +344,7 @@
       b.classList.toggle('active', parseInt(b.dataset.days) === days);
     });
     const lbl = document.getElementById('rate-period-label');
-    if(lbl) lbl.textContent = '(최근 ' + (days===365?'1년':days+'일') + ')';
+    if(lbl) lbl.textContent = '최근 ' + (days===365?'1년':days+'일');
     loadAll();
   }
 
@@ -794,12 +786,14 @@
       return Object.assign({}, s, { pct, total });
     }).sort((a,b)=> a.pct - b.pct); // 낮은 순(주의 학생 위로)
     if(!studs.length){ area.innerHTML = '<span class="muted">데이터 없음</span>'; return; }
-    let h = '';
+    let h = '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px;">';
     studs.forEach(s=>{
-      h += '<div class="rate-row"><span style="font-weight:700; min-width:60px; cursor:pointer; color:var(--wine);" onclick="openInspect(\''+s.name+'\')">'+s.name+' ›</span>'
-        + '<div class="rate-bar"><div class="rate-fill" style="width:'+s.pct+'%"></div></div>'
-        + '<span class="rate-pct" style="color:'+(s.pct<70?'#cc0000':'#274e13')+'">'+s.pct+'%</span></div>';
+      const low = s.pct < 70;
+      h += '<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 13px; border-radius:11px; background:var(--fill);">'
+        + '<span style="font-weight:600; cursor:pointer; color:var(--ink); letter-spacing:-0.01em;" onclick="openInspect(\''+s.name+'\')">'+s.name+' ›</span>'
+        + '<span style="font-weight:700; letter-spacing:-0.02em; color:'+(low?'var(--miss)':'var(--ink-2)')+'">'+s.pct+'%</span></div>';
     });
+    h += '</div>';
     area.innerHTML = h;
   }
 
@@ -850,8 +844,10 @@
     });
     h += '</tbody></table>';
     area.innerHTML = h;
+    // 최신 날짜가 바로 보이도록 가로 스크롤을 오른쪽 끝으로
+    const scroller = area.closest('.grid-scroll');
+    if(scroller){ requestAnimationFrame(()=>{ scroller.scrollLeft = scroller.scrollWidth; }); }
   }
-
   // 격자 칸 클릭 → 그 학생/날짜 사진
   async function openDay(name, date){
     document.getElementById('photo-student').value = '';
