@@ -6,8 +6,7 @@
     <title>대단한영어 멤버스</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-    <style>
-        :root {
+    <style>:root {
             /* index 브랜드 계열 — 정제된 톤 */
             --wine: #8e1530; --wine-deep: #6f0f24;
             --gold: #b89544; --gold-soft: #b89a48; --gold-hover: #a8842e;
@@ -23,7 +22,7 @@
             --ink-2:#515154; --ink-3:#86868b;
             --line:#f0f0f2; --line-2:#e6e6ea; --fill:#f5f5f7;
             --r:18px;
-            --shadow:0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05), 0 12px 32px rgba(0,0,0,.04);
+            --shadow:0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05), 0 12px 32px rgba(0,0,0,.04); --wine-tint:#8e15300d;
         }
         body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', sans-serif; background: #f7f4ef; background-attachment: fixed; padding: 15px; display: flex; justify-content: center; min-height: 100vh; margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; letter-spacing:-0.01em; }
 
@@ -31,32 +30,34 @@
         .card { background: var(--paper); width: 100%; max-width: 480px; padding: 32px; border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 28px rgba(44,36,32,0.07); text-align: center; height: fit-content; margin-top: 20px; position: relative; border: 1px solid rgba(0,0,0,0.04); overflow: hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--wine); }
         .logo-img { width: 84px; height: 84px; border-radius: 50%; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(44,36,32,0.12); }
-        .btn { width: 100%; padding: 17px; border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; color: white; margin-top: 10px; transition: 0.2s; letter-spacing: -0.02em; }
-        /* ===== 학생 화면 의미별 버튼 (메인=와인 / 긍정=초록 / 주의=빨강 / 보조=회색) ===== */
-        .btn-main   { background: var(--wine); color:#fff; }
+        .btn { width: 100%; padding: 13px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; color: white; margin-top: 10px; transition: 0.18s; letter-spacing: -0.02em; }
+        /* ===== 학생 화면 버튼 — teacher 톤 (애플 + 와인 포인트) ===== */
+        /* 메인: 와인 솔리드 */
+        .btn-main   { background: var(--wine); color:#fff; box-shadow:none; }
         .btn-main:hover   { background: var(--wine-deep); }
-        .btn-pos    { background: #3a8a5c; color:#fff; }   /* 차분한 초록 — 긍정 행동 */
-        .btn-pos:hover    { background: #327a50; }
-        .btn-warn   { background: #b5485a; color:#fff; }   /* 차분한 빨강 — 주의/복습 유도 */
-        .btn-warn:hover   { background: #a23e4f; }
-        .btn-sub    { background: #f0ece4; color: var(--dark-gray); }   /* 보조 — 회색(크림톤) */
-        .btn-sub:hover    { background: #e6e0d4; }
-        .btn-main:active, .btn-pos:active, .btn-warn:active, .btn-sub:active { transform: scale(0.985); }
+        /* 긍정/주의/보조: 모두 흰 바탕 + 회색 테두리 (teacher처럼 절제). 글자색만 의미 구분 */
+        .btn-pos    { background:#fff; color: var(--ink); box-shadow: inset 0 0 0 0.5px #D2D2D7; }
+        .btn-pos:hover    { background:#fafafa; box-shadow: inset 0 0 0 0.5px var(--wine); color: var(--wine); }
+        .btn-warn   { background:#fff; color: var(--wine); box-shadow: inset 0 0 0 1px var(--wine); }
+        .btn-warn:hover   { background: var(--wine); color:#fff; }
+        .btn-sub    { background:#fff; color: var(--ink-soft); box-shadow: inset 0 0 0 0.5px #D2D2D7; }
+        .btn-sub:hover    { background:#fafafa; color: var(--ink); }
+        .btn-main:active, .btn-pos:active, .btn-warn:active, .btn-sub:active { transform: scale(0.99); }
         input[type="text"], input[type="password"], select { width: 100%; padding: 17px; border-radius: 14px; border: 1.5px solid var(--cream-deep); font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; transition: border-color 0.15s; }
         input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--wine); }
-        input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--blue); }
+        input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--wine); }
         .chk-label { font-size: 15px; color: #333; display: inline-flex; align-items: center; cursor: pointer; text-align: left; }
         #test-area, #result-area, #info-box { display: none; }
-        .q-text { font-size: 32px; font-weight: bold; color: #333; margin: 25px 0; }
-        .q-text.long-text { font-size: 18px; line-height: 1.5; font-weight: 600; text-align: left; padding: 15px; background: #f9f9f9; border-radius: 10px; border-left: 4px solid var(--gold);}
-        #status-msg { font-size: 14px; color: var(--blue); font-weight: bold; margin-top: 15px; }
-        .progress { font-size: 16px; color: #666; font-weight: bold; margin-bottom: 0; }
-        .score-text { font-size: 32px; color: var(--blue); font-weight: 900; margin: 20px 10px; }
+        .q-text { font-size: 30px; font-weight: 700; color: var(--ink); margin: 25px 0; letter-spacing:-0.02em; }
+        .q-text.long-text { font-size: 18px; line-height: 1.55; font-weight: 600; text-align: left; padding: 15px; background: #faf9f7; border-radius: 10px; border-left: 3px solid var(--wine);}
+        #status-msg { font-size: 14px; color: var(--wine); font-weight: 600; margin-top: 15px; }
+        .progress { font-size: 15px; color: var(--ink-soft); font-weight: 600; margin-bottom: 0; }
+        .score-text { font-size: 32px; color: var(--wine); font-weight: 900; margin: 20px 10px; }
         .pass-fail-text { font-size: 28px; font-weight: 900; margin-bottom: 20px; }
-        .choice-btn { width: 100%; padding: 14px; margin-bottom: 8px; border: 2px solid #eee; border-radius: 12px; background: white; font-size: 16px; font-weight: bold; color: #333; cursor: pointer; transition: all 0.2s ease; text-align: left; box-sizing: border-box; }
-        .choice-btn:hover { border-color: var(--blue); background: #f0f4ff; color: var(--blue); }
+        .choice-btn { width: 100%; padding: 13px 14px; margin-bottom: 7px; border: none; box-shadow: inset 0 0 0 0.5px #D2D2D7; border-radius: 10px; background: #fff; font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; transition: all 0.15s ease; text-align: left; box-sizing: border-box; letter-spacing:-0.01em; }
+        .choice-btn:hover { box-shadow: inset 0 0 0 1px var(--wine); background: var(--wine-tint, #8e15300d); color: var(--wine); }
         .choice-btn .number { display: inline-block; width: 24px; color: var(--gold); font-weight: 900; }
-        .hint-text { font-size: 20px; color: var(--blue); font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
+        .hint-text { font-size: 19px; color: var(--wine); font-weight: 700; margin-bottom: 15px; letter-spacing: 2px; }
         .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .timer-text { font-size: 20px; font-weight: 900; color: #e74c3c; }
@@ -126,7 +127,7 @@
         /* ===== 관리자: 폭 확대 + 2단 레이아웃 ===== */
         .admin-box { max-width: 980px; }
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
-        .admin-grid > .section { margin-bottom: 0; }
+        .admin-grid >.section { margin-bottom: 0; }
         .admin-col { display: flex; flex-direction: column; gap: 16px; }
         .admin-full { grid-column: 1 / -1; }
         @media (max-width: 760px) {
@@ -200,8 +201,7 @@
             background: #fff; color: var(--ink); border: 1.5px solid var(--line-2);
             cursor: pointer; text-align: left; margin-bottom: 0;
         }
-        .admin-actions .aa-select:focus { border-color: var(--wine); outline: none; }
-    </style>
+        .admin-actions .aa-select:focus { border-color: var(--wine); outline: none; }</style>
 </head>
 <body>
 <datalist id="tickmarks"></datalist>
@@ -210,7 +210,7 @@
 <div class="card" id="student-screen" style="position:relative;">
     <!-- 우측 상단: 로그아웃(로그인 후) + 톱니바퀴(관리자 인증 시) -->
     <button id="logout-btn" onclick="hw_logout()" title="로그아웃" style="display:none; position:absolute; top:14px; right:14px; height:34px; padding:0 13px; border-radius:17px; background:#fff; color:var(--ink-soft); border:1px solid var(--cream-deep); font-size:12.5px; font-weight:700; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.08);">로그아웃</button>
-    <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--gold); border:none; font-size:17px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.15); align-items:center; justify-content:center;">⚙️</button>
+    <button id="admin-gear-btn" onclick="goAdminDirect()" title="관리자 패널" style="display:none; position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--gold); border:none; font-size:17px; cursor:pointer; z-index:5; box-shadow:0 2px 8px rgba(0,0,0,0.15); align-items:center; justify-content:center;"> </button>
 
     <div id="login-area">
         <img src="https://blogpfthumb-phinf.pstatic.net/MjAyNjAxMjdfMTQ2/MDAxNzY5NDc1NTg2NTA2.RGaQ1FbeDkcaIdgepLKoIDC67xifSDwcoY4gngjS7ckg.9MSrjL1e8x_H-gntnEgClaVdAGKTvQ7E33h5o8HccGEg.PNG/Gemini_Generated_Image_jtthmajtthmajtth.png" class="logo-img" alt="대단한영어 멤버스">
@@ -218,9 +218,9 @@
         <p style="margin:0 0 4px; font-size:13px; color:var(--gold-soft); font-weight:700; letter-spacing:1.5px;">MEMBERS</p>
         <p style="margin:0 0 22px; font-size:12px; color:var(--ink-soft); font-weight:600; letter-spacing:0.5px; font-style:italic;">탁월함이 습관이 되도록</p>
 
-        <!-- ===== 📸 숙제 제출 (상단 배치) ===== -->
+        <!-- ===== 숙제 제출 (상단 배치) ===== -->
         <div id="hw-entry" style="display:none; margin-bottom:22px;">
-            <button class="btn btn-main" style="padding:16px; font-size:16px; font-weight:800; box-shadow:0 2px 8px rgba(44,36,32,0.12);" onclick="hw_open()">📸 숙제 제출하기</button>
+            <button class="btn btn-main" style="padding:16px; font-size:16px; font-weight:800; box-shadow:0 2px 8px rgba(44,36,32,0.12);" onclick="hw_open()">숙제 제출하기</button>
         </div>
 
         <input type="text" id="st-name" placeholder="이름을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
@@ -230,7 +230,7 @@
         <!-- 관리자 비번 모달 (이름칸에 '관리자' 입력 시 표시) -->
         <div id="admin-pw-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
             <div style="background:#fff; border-radius:16px; padding:26px 22px; width:84%; max-width:320px; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
-                <h3 style="margin:0 0 16px; color:var(--wine); font-size:17px; text-align:center;">🔒 관리자 인증</h3>
+                <h3 style="margin:0 0 16px; color:var(--wine); font-size:17px; text-align:center;">관리자 인증</h3>
                 <input type="password" id="admin-pw-input" placeholder="비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') tryGoAdmin()" style="width:100%; box-sizing:border-box; margin-bottom:8px;">
                 <p id="admin-pw-err" class="modal-err" style="display:none; text-align:center; color:#e74c3c; font-size:12.5px; margin:4px 0;"></p>
                 <div style="display:flex; gap:8px; margin-top:8px;">
@@ -250,30 +250,29 @@
 
         <div id="hw-panel" style="display:none; margin-top:16px; background:#fff; border:2px solid var(--wine,#7a1020); border-radius:15px; padding:18px; text-align:left;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h3 style="margin:0; color:var(--wine,#7a1020); font-size:18px;">📸 숙제 제출</h3>
+                <h3 style="margin:0; color:var(--wine,#7a1020); font-size:18px;">숙제 제출</h3>
                 <div style="display:flex; align-items:center; gap:6px;">
-                    <button onclick="hw_goHome()" title="홈" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:13px; cursor:pointer; color:#888; padding:5px 9px;">🏠 홈</button>
+                    <button onclick="hw_goHome()" title="홈" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:13px; cursor:pointer; color:#888; padding:5px 9px;">홈</button>
                     <button onclick="hw_resetGradeCourse()" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:11px; cursor:pointer; color:#888; padding:5px 8px;">학년·과정</button>
                     <button onclick="hw_logout()" title="로그아웃" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:13px; cursor:pointer; color:#888; padding:5px 9px;">로그아웃</button>
                 </div>
             </div>
 
             <!-- 14일 제출현황 -->
-            <div style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20); margin-bottom:6px;">📅 최근 14일 — 안 낸 날짜를 누르세요</div>
+            <div style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20); margin-bottom:6px;">최근 14일 — 안 낸 날짜를 누르세요</div>
             <div id="hw-status-grid" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
                 <span style="color:#999; font-size:13px;">현황 불러오는 중...</span>
             </div>
 
             <!-- 선제출 (미리 내기) -->
-            <button type="button" id="hw-pre-btn" onclick="hw_togglePre()" style="width:100%; background:#eef2ff; color:#3a4a7a; border:1px dashed #aab4d4; border-radius:10px; padding:9px; font-size:12.5px; font-weight:700; cursor:pointer; margin-bottom:12px;">📅 여행·일정으로 미리 낼래요 (선제출)</button>
+            <button type="button" id="hw-pre-btn" onclick="hw_togglePre()" style="width:100%; background:#eef2ff; color:#3a4a7a; border:1px dashed #aab4d4; border-radius:10px; padding:9px; font-size:12.5px; font-weight:700; cursor:pointer; margin-bottom:12px;">여행·일정으로 미리 낼래요 (선제출)</button>
             <div id="hw-pre-wrap" style="display:none; margin-bottom:12px;">
                 <div style="font-size:12px; color:#3a4a7a; font-weight:700; margin-bottom:6px;">앞으로 7일 — 미리 낼 날짜를 누르세요</div>
                 <div id="hw-pre-grid" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
             </div>
 
             <!-- 선택된 숙제 날짜 -->
-            <div id="hw-date-box" style="display:none; background:#fff7e6; border:1px solid var(--gold,#C9A84C); border-radius:10px; padding:10px; margin-bottom:14px; text-align:center; font-weight:700; color:var(--ink,#3a2a20);">
-                선택한 숙제 날짜: <span id="hw-date-label"></span>
+            <div id="hw-date-box" style="display:none; background:#fff7e6; border:1px solid var(--gold,#C9A84C); border-radius:10px; padding:10px; margin-bottom:14px; text-align:center; font-weight:700; color:var(--ink,#3a2a20);">선택한 숙제 날짜:<span id="hw-date-label"></span>
             </div>
 
             <!-- 출처 -->
@@ -407,26 +406,26 @@
         <iframe name="hw_iframe" id="hw_iframe" style="display:none;"></iframe>
 
         <div class="practice-section" id="practice-area" style="display:none;">
-            <h3 style="margin: 0 0 5px 0; color: var(--black);">자율 무한 반복 학습 ♾️</h3>
+            <h3 style="margin: 0 0 5px 0; color: var(--black);">자율 무한 반복 학습</h3>
             <p style="font-size: 13px; color: #666; margin-bottom: 15px;">범위와 유형을 골라 무한으로 복습합니다.</p>
 
             <select id="sel-book" onchange="updateUnits()" style="padding: 12px; font-size:15px; margin-bottom: 10px;"></select>
 
             <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-weight: bold; font-size: 14px; color: var(--blue);">📖 범위 선택 (복수 선택 가능)</label>
+                <label style="font-weight: bold; font-size: 14px; color: var(--ink);">범위 선택 (복수 선택 가능)</label>
                 <div id="unit-checkboxes" style="max-height: 150px; overflow-y: auto; border: 2px solid #ddd; border-radius: 10px; padding: 12px; background: white; margin-top: 5px;">
                     <span style="color:#999; font-size:13px;">(교재를 먼저 선택하세요)</span>
                 </div>
             </div>
 
             <div style="text-align: left; margin-bottom: 20px;">
-                <label style="font-weight: bold; font-size: 14px; color: var(--blue);">📝 문제 유형 선택</label>
+                <label style="font-weight: bold; font-size: 14px; color: var(--ink);">문제 유형 선택</label>
                 <div style="border: 2px solid #ddd; border-radius: 10px; padding: 12px; background: white; margin-top: 5px; display:flex; flex-wrap:wrap; gap:12px;">
-                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ek" checked> 뜻 고르기</label>
-                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ke" checked> 단어 고르기</label>
-                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-subj"> 스펠링 쓰기</label>
-                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ee"> 영영풀이</label>
-                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ex"> 예문 빈칸</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ek" checked>뜻 고르기</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ke" checked>단어 고르기</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-subj">스펠링 쓰기</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ee">영영풀이</label>
+                    <label class="chk-label" style="width: 45%;"><input type="checkbox" id="chk-type-ex">예문 빈칸</label>
                 </div>
             </div>
             <button class="btn btn-main" style="padding:15px;" onclick="startPractice()">무한 학습 시작하기</button>
@@ -436,30 +435,30 @@
     <div id="test-area">
         <div class="header-bar">
             <div class="progress" id="progress-text">1 / 20</div>
-            <button id="practice-exit-btn" style="display:none; background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="exitTest()">그만하기 ⏹️</button>
-            <div class="timer-text" id="timer-display">⏱ 00:00</div>
+            <button id="practice-exit-btn" style="display:none; background:#fff; color:var(--ink-soft); box-shadow:inset 0 0 0 0.5px #D2D2D7; border:none; padding:7px 13px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer;" onclick="exitTest()">그만하기</button>
+            <div class="timer-text" id="timer-display">00:00</div>
         </div>
         <div id="test-type-label" class="test-type-label">유형</div>
         <div class="q-text" id="question-text">Apple</div>
         <div id="practice-feedback"></div>
         <div id="type-subj-area" style="display:none;">
-            <div id="hint-text" class="hint-text">💡 힌트: </div>
+            <div id="hint-text" class="hint-text">힌트:</div>
             <input type="text" id="answer-input" placeholder="영어 스펠링을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) submitSubj()">
-            <div style="font-size:13px; color:var(--blue); margin-bottom:10px; font-weight:bold; text-align:center;">안내: 물결(~)이나 빈칸 빼고 알파벳만 다 적어도 정답 인정!</div>
+            <div style="font-size:13px; color:var(--ink-soft); margin-bottom:10px; font-weight:600; text-align:center;">안내: 물결(~)이나 빈칸 빼고 알파벳만 다 적어도 정답 인정!</div>
             <button class="btn btn-main" onclick="submitSubj()">제출 및 다음 (엔터)</button>
         </div>
         <div id="type-obj-area" style="display:none;"></div>
     </div>
 
     <div id="result-area">
-        <h2 style="color: var(--black);">테스트 완료! 🎉</h2>
+        <h2 style="color: var(--black);">테스트 완료!</h2>
         <div class="score-text" id="final-score">0 / 0 (0점)</div>
         <div id="pass-fail-msg" class="pass-fail-text"></div>
-        <p id="saving-msg" style="color:var(--blue); font-weight:bold;">데이터를 안전하게 저장하고 있습니다...</p>
+        <p id="saving-msg" style="color:var(--wine); font-weight:600;">데이터를 안전하게 저장하고 있습니다...</p>
         <div class="btn-group">
-            <button class="btn btn-pos" id="btn-copy-wrong" style="display:none;" onclick="copyWrongWords()">📋 틀린 단어 복사하기</button>
-            <button class="btn btn-warn" id="btn-review-wrong" style="display:none;" onclick="reviewWrong()">🚨 방금 틀린 문제 바로 복습하기</button>
-            <button class="btn btn-sub" id="btn-retest" style="display:none;" onclick="handleRetest()">🔄 이전 범위 그대로 다시 풀기</button>
+            <button class="btn btn-pos" id="btn-copy-wrong" style="display:none;" onclick="copyWrongWords()">틀린 단어 복사하기</button>
+            <button class="btn btn-warn" id="btn-review-wrong" style="display:none;" onclick="reviewWrong()">방금 틀린 문제 바로 복습하기</button>
+            <button class="btn btn-sub" id="btn-retest" style="display:none;" onclick="handleRetest()">이전 범위 그대로 다시 풀기</button>
             <button class="btn btn-sub" onclick="resetTest()">처음으로 돌아가기</button>
         </div>
     </div>
@@ -476,7 +475,7 @@
 
         <div class="section" style="background:#fdf7f0; border-color:#e8d8b8; padding:14px 18px;">
             <button onclick="hw_togglePwBox()" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:15px; font-weight:800; color:var(--ink);">
-                <span>🔒 관리자 비밀번호 변경</span>
+                <span>관리자 비밀번호 변경</span>
                 <span id="pw-box-arrow" style="color:var(--gold); font-size:13px;">▼</span>
             </button>
             <div id="pw-box" style="display:none; flex-direction:column; gap:8px; margin-top:14px;">
@@ -490,11 +489,11 @@
 
         <div class="section">
             <button onclick="hw_toggleMonitor()" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:15px; font-weight:800; color:var(--ink);">
-                <span>📋 숙제 현황</span>
+                <span>숙제 현황</span>
                 <span id="hw-mon-arrow" style="color:var(--blue,#1f4e79); font-size:13px;">▼</span>
             </button>
             <div id="hw-mon-box" style="display:none; margin-top:14px;">
-                <a href="hw-monitor.html" target="_blank" style="display:block; text-align:center; background:var(--wine); color:#fff; padding:13px; border-radius:12px; text-decoration:none; font-weight:600; font-size:14px; margin-bottom:12px;">🖥️ 전체 현황 새 창에서 크게 보기 (사진 확인)</a>
+                <a href="hw-monitor.html" target="_blank" style="display:block; text-align:center; background:var(--wine); color:#fff; padding:13px; border-radius:12px; text-decoration:none; font-weight:600; font-size:14px; margin-bottom:12px;">전체 현황 새 창에서 크게 보기 (사진 확인)</a>
                 <button class="btn" style="background:var(--wine); color:#fff; padding:11px; margin-bottom:12px; font-size:14px;" onclick="hw_loadOverview()">현황 불러오기</button>
                 <div id="hw-mon-today" style="margin-bottom:14px;"></div>
                 <div id="hw-mon-table"></div>
@@ -533,9 +532,9 @@
                     <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">유닛 다중 선택</span>
                     <button class="select-all-btn" onclick="ADMIN.toggleAllUnits()">전체 선택/해제</button>
                 </div>
-                <div style="font-size: 11px; color: #999; margin-bottom: 10px;">💡 연속 선택: 첫 강 클릭 후 <b>Shift</b> 누른 채 끝 강 클릭</div>
+                <div style="font-size: 11px; color: #999; margin-bottom: 10px;">연속 선택: 첫 강 클릭 후 <b>Shift</b> 누른 채 끝 강 클릭</div>
                 <div id="unit-grid" class="btn-grid" style="max-height: 180px; overflow-y: auto; padding-right: 5px;"></div>
-                <button class="add-btn" onclick="ADMIN.addUnitsToBasket()">🛒 선택 유닛 장바구니 담기</button>
+                <button class="add-btn" onclick="ADMIN.addUnitsToBasket()">선택 유닛 장바구니 담기</button>
             </div>
         </div>
 
@@ -548,7 +547,7 @@
                     <button class="select-all-btn" onclick="ADMIN.toggleAllDetails()">전체 선택/해제</button>
                 </div>
                 <div id="detail-grid" class="btn-grid" style="max-height: 150px; overflow-y: auto; padding-right: 5px;"></div>
-                <button class="add-btn" onclick="ADMIN.addDetailsToBasket()">🛒 선택 문항만 장바구니 담기</button>
+                <button class="add-btn" onclick="ADMIN.addDetailsToBasket()">선택 문항만 장바구니 담기</button>
             </div>
         </div>
         </div><!-- /.admin-col (left) -->
@@ -562,13 +561,11 @@
             <div id="basket" class="basket"></div>
 
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                <div style="text-align: center; font-size: 15px; font-weight: bold; color: #666; margin-bottom: 12px;">
-                    전체 풀(Pool): <span id="pool-text" style="color: var(--navy);">0</span>개 단어
-                </div>
+                <div style="text-align: center; font-size: 15px; font-weight: bold; color: #666; margin-bottom: 12px;">전체 풀(Pool):<span id="pool-text" style="color: var(--navy);">0</span>개 단어</div>
 
                 <div style="background:#faf7f0; border:1px solid var(--cream-deep); border-radius:14px; padding:14px; margin-bottom:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span style="font-size:14px; font-weight:800; color:var(--ink);">🎯 출제 개수</span>
+                        <span style="font-size:14px; font-weight:800; color:var(--ink);">출제 개수</span>
                         <div style="display:flex; align-items:center;">
                             <input type="number" id="target-num" class="num-input" min="0" value="120" oninput="ADMIN.onTargetInput()" style="color:var(--wine); width:64px;"> <span style="font-size:13px; margin-left:3px; font-weight:bold;">개</span>
                         </div>
@@ -666,8 +663,7 @@
     </div>
 </div>
 
-<script>
-    /* ============================================================
+<script>/* ============================================================
        공통 상수 (학생/관리자 동일 시트·GAS 공유)
        ============================================================ */
     const APP_URL = "https://script.google.com/macros/s/AKfycbwGq_DTjgzjJbacIodVE859aa_Ke4LxL28-sIbv-nRkecAaJefL179BKN4Jgr2F9xXKRw/exec";
@@ -680,7 +676,7 @@
        ============================================================ */
     function parseCSV(str) {
         let result = []; let row = []; let col = ''; let quote = false;
-        for (let i = 0; i < str.length; i++) {
+        for (let i = 0; i< str.length; i++) {
             let char = str[i]; let nextChar = str[i + 1];
             if (quote) {
                 if (char === '"' && nextChar === '"') { col += '"'; i++; }
@@ -695,24 +691,24 @@
                 } else { col += char; }
             }
         }
-        if (col !== '' || row.length > 0) { row.push(col); result.push(row); }
+        if (col !== '' || row.length >0) { row.push(col); result.push(row); }
         if (result.length === 0) return [];
 
-        let header = result.shift().map(h => (h||'').replace(/\s+/g, '').toLowerCase());
+        let header = result.shift().map(h =>(h||'').replace(/\s+/g, '').toLowerCase());
 
-        let idxB = header.findIndex(h => h.includes('교재') || h.includes('book'));
-        let idxU = header.findIndex(h => h.includes('unit') || h.includes('day') || h.includes('유닛'));
-        let idxNo = header.findIndex(h => h.includes('번호') || h.includes('문항') || h.includes('no'));
-        let idxD = header.findIndex(h => h.includes('세부') || h.includes('detail'));
-        let idxEng = header.findIndex(h => h.includes('단어') || h.includes('eng') || h.includes('voca'));
-        let idxKor = header.findIndex(h => h.includes('뜻') || h.includes('의미') || h.includes('kor'));
-        let idxEE = header.findIndex(h => h.includes('영영') || h.includes('ee') || h.includes('def'));
-        let idxEX = header.findIndex(h => h.includes('예문') || h.includes('ex') || h.includes('sen'));
+        let idxB = header.findIndex(h =>h.includes('교재') || h.includes('book'));
+        let idxU = header.findIndex(h =>h.includes('unit') || h.includes('day') || h.includes('유닛'));
+        let idxNo = header.findIndex(h =>h.includes('번호') || h.includes('문항') || h.includes('no'));
+        let idxD = header.findIndex(h =>h.includes('세부') || h.includes('detail'));
+        let idxEng = header.findIndex(h =>h.includes('단어') || h.includes('eng') || h.includes('voca'));
+        let idxKor = header.findIndex(h =>h.includes('뜻') || h.includes('의미') || h.includes('kor'));
+        let idxEE = header.findIndex(h =>h.includes('영영') || h.includes('ee') || h.includes('def'));
+        let idxEX = header.findIndex(h =>h.includes('예문') || h.includes('ex') || h.includes('sen'));
 
         if(idxB === -1) idxB = 0; if(idxU === -1) idxU = 1; if(idxD === -1) idxD = 2;
         if(idxEng === -1) idxEng = 3; if(idxKor === -1) idxKor = 4;
 
-        return result.map(c => {
+        return result.map(c =>{
             let b = (c[idxB]||"").replace(/\s+/g, '').toUpperCase();
             let u = (c[idxU]||"").trim(); let d = (idxD !== -1 ? c[idxD] : "").trim();
             // day(unit)가 비어 있으면 '번호'(문항) 열을 unit으로 사용 — 모의고사·수특 문항 분류
@@ -727,7 +723,7 @@
 
             if (u.includes('_')) { let parts = u.split('_'); u = parts[0].trim(); if (!d) { d = parts.slice(1).join('_').trim(); } }
             return { book: b, unit: u, detail: d, eng: eng, kor: kor, ee: ee, ex: ex };
-        }).filter(x => x.book && x.eng && x.kor && x.book.length < 40 && !x.book.includes("<!DOCTYPE"));
+        }).filter(x =>x.book && x.eng && x.kor && x.book.length< 40 && !x.book.includes("<!DOCTYPE"));
     }
 
     /* ============================================================
@@ -747,7 +743,7 @@
         return db;
     }
 
-    window.onload = async () => {
+    window.onload = async () =>{
         try {
             await loadSharedDB();
             document.getElementById('status-msg').innerText = "시스템 준비 완료";
@@ -843,14 +839,14 @@
         const misses = data.todayMisses || [];
         if(misses.length){
             todayEl.innerHTML = `<div style="background:#fdeaea; border:1px solid #f4c7c7; border-radius:10px; padding:11px 13px;">
-                <div style="font-weight:800; color:#cc0000; font-size:14px; margin-bottom:5px;">⚠️ 오늘 미제출 ${misses.length}명</div>
+                <div style="font-weight:800; color:#cc0000; font-size:14px; margin-bottom:5px;">오늘 미제출 ${misses.length}명</div>
                 <div style="font-size:13px; color:#a33; line-height:1.6;">${misses.join(', ')}</div></div>`;
         } else {
-            todayEl.innerHTML = `<div style="background:#eafaf0; border:1px solid #bfe6cf; border-radius:10px; padding:11px 13px; font-weight:700; color:#274e13; font-size:14px;">✅ 오늘 미제출자 없음</div>`;
+            todayEl.innerHTML = `<div style="background:#eafaf0; border:1px solid #bfe6cf; border-radius:10px; padding:11px 13px; font-weight:700; color:#274e13; font-size:14px;">오늘 미제출자 없음</div>`;
         }
 
         // 학생별 7일 카운트 표 (미제출 많은 순)
-        const rows = data.students.slice().sort((a,b)=> b.missed - a.missed);
+        const rows = data.students.slice().sort((a,b)=>b.missed - a.missed);
         let html = `<div style="font-size:12px; color:#888; margin:12px 0 6px;">최근 7일 (제출/지연/미제출)</div>
             <div style="display:flex; flex-direction:column; gap:4px;">`;
         rows.forEach(s=>{
@@ -858,9 +854,7 @@
             html += `<div style="display:flex; align-items:center; justify-content:space-between; padding:8px 11px; border-radius:8px; background:${warn?'#fdeaea':'#f7f7f9'}; font-size:13px;">
                 <span style="font-weight:700; color:${warn?'#cc0000':'#333'};">${s.name}</span>
                 <span style="font-size:12px; color:#555;">
-                    <span style="color:#274e13;">제출 ${s.submitted}</span> ·
-                    <span style="color:#7f6000;">지연 ${s.late}</span> ·
-                    <span style="color:#cc0000; font-weight:700;">미제출 ${s.missed}</span>
+                    <span style="color:#274e13;">제출 ${s.submitted}</span>·<span style="color:#7f6000;">지연 ${s.late}</span>·<span style="color:#cc0000; font-weight:700;">미제출 ${s.missed}</span>
                 </span></div>`;
         });
         html += `</div>`;
@@ -868,8 +862,8 @@
 
         // 상세 셀렉트 채우기
         stsel.innerHTML = '<option value="">학생 선택</option>';
-        data.students.forEach(s=> stsel.add(new Option(s.name, s.name)));
-        stsel.onchange = ()=> hw_loadStudentDetail(stsel.value);
+        data.students.forEach(s=>stsel.add(new Option(s.name, s.name)));
+        stsel.onchange = ()=>hw_loadStudentDetail(stsel.value);
     }
 
     function hw_loadStudentDetail(name){
@@ -883,12 +877,11 @@
             done = true; cleanup();
             const days = (data && data.days) || [];
             if(!days.length){ el.innerHTML = '<span style="color:#888; font-size:13px;">현황 없음</span>'; return; }
-            const color = (st)=> st==='제출'?'#d9ead3':st==='지연제출'?'#fff2cc':st==='미제출'?'#f4cccc':st==='선제출'?'#d9ead3':st==='시험'?'#ddebf7':'#eee';
+            const color = (st)=>st==='제출'?'#d9ead3':st==='지연제출'?'#fff2cc':st==='미제출'?'#f4cccc':st==='선제출'?'#d9ead3':st==='시험'?'#ddebf7':'#eee';
             let h = '<div style="display:flex; flex-wrap:wrap; gap:5px;">';
             days.forEach(d=>{
                 const [y,m,dd] = d.date.split('-');
-                h += `<div style="min-width:48px; text-align:center; padding:6px 3px; border-radius:7px; background:${color(d.status)}; font-size:11px;">
-                    ${parseInt(m)}/${parseInt(dd)}<br><span style="font-size:10px; font-weight:700;">${d.status||'-'}</span></div>`;
+                h += `<div style="min-width:48px; text-align:center; padding:6px 3px; border-radius:7px; background:${color(d.status)}; font-size:11px;">${parseInt(m)}/${parseInt(dd)}<br><span style="font-size:10px; font-weight:700;">${d.status||'-'}</span></div>`;
             });
             h += '</div>';
             el.innerHTML = h;
@@ -909,7 +902,7 @@
         m.style.color = '#e74c3c';
         if(!cur || !next){ m.textContent = '모든 칸을 입력하세요.'; return; }
         if(next !== next2){ m.textContent = '새 비밀번호가 일치하지 않습니다.'; return; }
-        if(next.length < 4){ m.textContent = '새 비밀번호는 4자 이상이어야 합니다.'; return; }
+        if(next.length< 4){ m.textContent = '새 비밀번호는 4자 이상이어야 합니다.'; return; }
         m.style.color = '#666'; m.textContent = '변경 중...';
 
         const cbName = 'hwPwSet_' + Date.now();
@@ -918,7 +911,7 @@
         window[cbName] = (data)=>{
             done = true; cleanup();
             if(data && data.ok){
-                m.style.color = '#274e13'; m.textContent = '✅ 비밀번호가 변경되었습니다.';
+                m.style.color = '#274e13'; m.textContent = '비밀번호가 변경되었습니다.';
                 document.getElementById('pw-cur').value = '';
                 document.getElementById('pw-next').value = '';
                 document.getElementById('pw-next2').value = '';
@@ -960,7 +953,7 @@
         document.getElementById('student-screen').style.display = "block";
         document.getElementById('st-name').value = name;
         // 미리보기 안내
-        document.getElementById('status-msg').innerText = "👀 [" + name + "] 미리보기 — 우측 상단 ⚙️로 관리자 복귀";
+        document.getElementById('status-msg').innerText = " [" + name + "] 미리보기 — 우측 상단 로 관리자 복귀";
         checkConfig();
     }
     function updateAdminQuickBtn() {
@@ -985,9 +978,9 @@
 
     function initPracticeUI() {
         // 교재 셀렉트만 미리 채워둠 (노출은 이름 확인 후 checkConfig에서)
-        let books = [...new Set(db.map(x => x.book))].filter(Boolean);
+        let books = [...new Set(db.map(x =>x.book))].filter(Boolean);
         let selBook = document.getElementById('sel-book');
-        selBook.innerHTML = '<option value="">교재를 선택하세요</option>' + books.map(b => `<option value="${b}">${b}</option>`).join('');
+        selBook.innerHTML = '<option value="">교재를 선택하세요</option>' + books.map(b =>`<option value="${b}">${b}</option>`).join('');
         updateUnits();
     }
 
@@ -1000,11 +993,11 @@
             return;
         }
 
-        let items = [...new Set(db.filter(x => x.book === book).map(x => {
+        let items = [...new Set(db.filter(x =>x.book === book).map(x =>{
             return x.detail ? x.unit + "::" + x.detail : x.unit;
         }))].filter(Boolean);
 
-        items.sort((a, b) => {
+        items.sort((a, b) =>{
             let partsA = a.split("::"); let partsB = b.split("::");
             let numA = parseInt(partsA[0].replace(/[^0-9]/g, '')) || 0;
             let numB = parseInt(partsB[0].replace(/[^0-9]/g, '')) || 0;
@@ -1015,11 +1008,11 @@
             return detA - detB;
         });
 
-        let html = `<label class="chk-label" style="display:block; margin-bottom:8px; font-weight:bold; color:var(--blue);"><input type="checkbox" id="chk-all-units" onchange="toggleAllUnits(this)" checked> 전체 선택</label><hr style="border:0; border-top:1px dashed #ddd; margin:8px 0;">`;
+        let html = `<label class="chk-label" style="display:block; margin-bottom:8px; font-weight:600; color:var(--ink-soft);"><input type="checkbox" id="chk-all-units" onchange="toggleAllUnits(this)" checked>전체 선택</label><hr style="border:0; border-top:1px dashed #ddd; margin:8px 0;">`;
 
-        items.forEach((item, i) => {
+        items.forEach((item, i) =>{
             let displayTxt = item.includes("::") ? item.replace("::", " - ") : item;
-            html += `<label class="chk-label" style="display:inline-block; width:48%; margin-bottom:8px;"><input type="checkbox" class="chk-unit" value="${item}" checked onchange="checkUnitAllState()"> ${displayTxt}</label>`;
+            html += `<label class="chk-label" style="display:inline-block; width:48%; margin-bottom:8px;"><input type="checkbox" class="chk-unit" value="${item}" checked onchange="checkUnitAllState()">${displayTxt}</label>`;
         });
 
         unitContainer.innerHTML = html;
@@ -1027,12 +1020,12 @@
 
     function toggleAllUnits(source) {
         let checkboxes = document.querySelectorAll('.chk-unit');
-        checkboxes.forEach(cb => cb.checked = source.checked);
+        checkboxes.forEach(cb =>cb.checked = source.checked);
     }
 
     function checkUnitAllState() {
         let checkboxes = document.querySelectorAll('.chk-unit');
-        let allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        let allChecked = Array.from(checkboxes).every(cb =>cb.checked);
         document.getElementById('chk-all-units').checked = allChecked;
     }
 
@@ -1040,7 +1033,7 @@
         let book = document.getElementById('sel-book').value;
         if(!book) return alert("교재를 선택해주세요.");
 
-        let selectedItems = Array.from(document.querySelectorAll('.chk-unit:checked')).map(cb => cb.value);
+        let selectedItems = Array.from(document.querySelectorAll('.chk-unit:checked')).map(cb =>cb.value);
         if(selectedItems.length === 0) return alert("최소 1개 이상의 범위를 체크해주세요.");
 
         let doEK = document.getElementById('chk-type-ek').checked;
@@ -1053,7 +1046,7 @@
             return alert("최소 1개 이상의 문제 유형을 체크해주세요.");
         }
 
-        let filtered = db.filter(x => {
+        let filtered = db.filter(x =>{
             if (x.book !== book) return false;
             let itemKey = x.detail ? x.unit + "::" + x.detail : x.unit;
             return selectedItems.includes(itemKey);
@@ -1065,25 +1058,25 @@
         isPracticeMode = true;
         questionList = [];
 
-        filtered.forEach(w => {
+        filtered.forEach(w =>{
             if (doEK) {
-                let wrongKor = [...new Set(db.map(x => x.kor).filter(k => k !== w.kor && k.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                let wrongKor = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
                 questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrongKor].sort(()=>Math.random()-0.5) });
             }
             if (doKE) {
-                let wrongEng = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                let wrongEng = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
                 questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrongEng].sort(()=>Math.random()-0.5) });
             }
             if (doSUBJ) {
                 questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor });
             }
             if (doEE && w.ee && w.ee.trim() !== '') {
-                let wrongEng = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                let wrongEng = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
                 questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrongEng].sort(()=>Math.random()-0.5) });
             }
             if (doEX && w.ex && w.ex.trim() !== '') {
-                let wrong = [...new Set(db.map(x => x.eng).filter(e => e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 4);
-                questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+                let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 4);
+                questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
             }
         });
 
@@ -1118,7 +1111,7 @@
             accumulatedWrongWords = data.wrongWords || [];
 
             let hasMission = !!data.config;
-            let hasWrong = accumulatedWrongWords.length > 0;
+            let hasWrong = accumulatedWrongWords.length >0;
 
             if (!hasMission && !hasWrong) {
                 alert("현재 배정된 미션이 없습니다.\n무한복습 · 누적복습으로 단어 학습을 이어가세요!");
@@ -1143,9 +1136,9 @@
                 let totalEK = parseInt(config.ek) || 0, totalKeObj = parseInt(config.keObj) || 0, totalKeSubj = parseInt(config.keSubj) || 0;
                 let totalEE = parseInt(config.ee) || 0, totalEX = parseInt(config.ex) || 0;
                 let totalQ = totalEK + totalKeObj + totalKeSubj + totalEE + totalEX;
-                let rangeText = config.book.split(';').map(r => r.split('|').slice(0,2).join(' ')).join(', ');
+                let rangeText = config.book.split(';').map(r =>r.split('|').slice(0,2).join(' ')).join(', ');
 
-                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>범위: " + rangeText + "<br>출제: 총 " + totalQ + "문제<br>(영한 " + totalEK + " / 한영 " + totalKeObj + " / 스펠링 " + totalKeSubj + " / 영영 " + totalEE + " / 예문 " + totalEX + ")<br><br><span style='color:#0000FF; font-weight:bold;'>90% 이상이면 합격! 합격할 때까지 응시할 수 있어요.</span>";
+                document.getElementById('info-msg').innerHTML = "반갑습니다 학생!<br><br>범위: " + rangeText + "<br>출제: 총 " + totalQ + "문제<br>(영한 " + totalEK + " / 한영 " + totalKeObj + " / 스펠링 " + totalKeSubj + " / 영영 " + totalEE + " / 예문 " + totalEX + ")<br><br><span style='color:var(--wine); font-weight:bold;'>90% 이상이면 합격! 합격할 때까지 응시할 수 있어요.</span>";
                 missionBtn.style.display = 'block';
                 document.getElementById('info-box').style.display = 'block';
             } else {
@@ -1156,7 +1149,7 @@
             }
 
             if (hasWrong) {
-                wrongBtn.style.display = 'block'; wrongBtn.innerText = "🚨 누적 오답 훈련하기 (" + accumulatedWrongWords.length + "개)";
+                wrongBtn.style.display = 'block'; wrongBtn.innerText = " 누적 오답 훈련하기 (" + accumulatedWrongWords.length + "개)";
             } else { wrongBtn.style.display = 'none'; }
             document.getElementById('practice-area').style.display = 'block';
             if(!previewMode){
@@ -1176,7 +1169,7 @@
         if(lo) lo.style.display = 'inline-block';
     }
 
-    /* ===== 📸 숙제 제출 기능 (신규 — 기존 단어장 로직과 분리) ===== */
+    /* ===== 숙제 제출 기능 (신규 — 기존 단어장 로직과 분리) ===== */
     const HW_GRADE_OPTS = ['1학년','2학년','3학년'];
     const HW_COURSE_OPTS = ['중등부','고등부'];
 
@@ -1200,7 +1193,7 @@
         return new Promise((resolve)=>{
             const decide = (names)=>{
                 const nk = hw_normName(name);
-                resolve(names.some(n => hw_normName(n) === nk));
+                resolve(names.some(n =>hw_normName(n) === nk));
             };
             if(hwRosterCache){ decide(hwRosterCache); return; }
             const cbName = 'hwRoster_' + Date.now();
@@ -1223,7 +1216,7 @@
     function hw_toggleMain(hide){
         const ids = ['st-name','status-msg','info-box','practice-area','hw-entry'];
         ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display = hide ? 'none' : ''; });
-        document.querySelectorAll('#login-area > button').forEach(b=>{
+        document.querySelectorAll('#login-area >button').forEach(b=>{
             if(b.getAttribute('onclick')==='checkConfig()') b.style.display = hide ? 'none' : '';
         });
         if(!hide){
@@ -1251,27 +1244,27 @@
         const ySel = document.getElementById('hw-mock-year');
         const mSel = document.getElementById('hw-mock-month');
         const nSel = document.getElementById('hw-mock-no');
-        if(ySel && ySel.options.length <= 1){
+        if(ySel && ySel.options.length<= 1){
             const cur = new Date().getFullYear();
             for(let y=cur; y>=1994; y--){ ySel.add(new Option(String(y), y)); }
             ySel.value = String(cur);  // 올해 기본 선택
         }
-        if(mSel.options.length <= 1){
+        if(mSel.options.length<= 1){
             for(let m=1;m<=12;m++){ mSel.add(new Option(m+'월', m)); }
         }
-        if(nSel.options.length <= 1){
+        if(nSel.options.length<= 1){
             for(let n=1;n<=45;n++){ nSel.add(new Option(n+'번', n)); }
         }
         // 일반교재 강(1~30)·번(1~30)
         const nl = document.getElementById('hw-normal-lesson');
         const nn = document.getElementById('hw-normal-no');
-        if(nl && nl.options.length <= 1){ for(let i=1;i<=30;i++){ nl.add(new Option(i+'강', i)); } }
-        if(nn && nn.options.length <= 1){ for(let i=1;i<=30;i++){ nn.add(new Option(i+'번', i)); } }
+        if(nl && nl.options.length<= 1){ for(let i=1;i<=30;i++){ nl.add(new Option(i+'강', i)); } }
+        if(nn && nn.options.length<= 1){ for(let i=1;i<=30;i++){ nn.add(new Option(i+'번', i)); } }
         // 교과서 과(1~30)·번(1~30)
         const tl = document.getElementById('hw-tb-lesson');
         const tn = document.getElementById('hw-tb-no');
-        if(tl && tl.options.length <= 1){ for(let i=1;i<=30;i++){ tl.add(new Option(i+'과', i)); } }
-        if(tn && tn.options.length <= 1){ for(let i=1;i<=30;i++){ tn.add(new Option(i+'번', i)); } }
+        if(tl && tl.options.length<= 1){ for(let i=1;i<=30;i++){ tl.add(new Option(i+'과', i)); } }
+        if(tn && tn.options.length<= 1){ for(let i=1;i<=30;i++){ tn.add(new Option(i+'번', i)); } }
     }
 
     function hw_gcSave(){
@@ -1396,7 +1389,7 @@
             el.style.cssText = `flex:0 0 auto; min-width:58px; text-align:center; padding:7px 4px; border-radius:9px; background:${st.bg}; color:${st.fg}; font-size:12px; font-weight:700; cursor:${submittable?'pointer':'default'}; border:2px solid transparent;`;
             el.innerHTML = `${md}<br><span style="font-size:10px;">${st.label}</span>`;
             if(submittable){
-                el.onclick = ()=> hw_pickDate(d.date, el);
+                el.onclick = ()=>hw_pickDate(d.date, el);
             }
             grid.appendChild(el);
         });
@@ -1414,7 +1407,7 @@
             const el = document.createElement('div');
             el.style.cssText = 'flex:0 0 auto; min-width:54px; text-align:center; padding:7px 4px; border-radius:9px; background:#fafafa; color:#555; font-size:12px; font-weight:700; cursor:pointer; border:2px solid transparent;';
             el.textContent = md;
-            el.onclick = ()=> hw_pickDate(iso, el);
+            el.onclick = ()=>hw_pickDate(iso, el);
             grid.appendChild(el);
         }
     }
@@ -1422,7 +1415,7 @@
     function hw_pickDate(iso, el){
         hwSelectedDate = iso;
         // 하이라이트 (현황+선제출 그리드 모두 해제 후 선택)
-        document.querySelectorAll('#hw-status-grid > div, #hw-pre-grid > div').forEach(x=> x.style.border='2px solid transparent');
+        document.querySelectorAll('#hw-status-grid >div, #hw-pre-grid >div').forEach(x=>x.style.border='2px solid transparent');
         if(el) el.style.border = '2px solid #7a1020';
         const [y,m,dd] = iso.split('-').map(Number);
         document.getElementById('hw-date-label').textContent = `${y}. ${m}. ${dd}`;
@@ -1448,7 +1441,7 @@
             const el = document.createElement('div');
             el.style.cssText = 'flex:0 0 auto; min-width:54px; text-align:center; padding:7px 4px; border-radius:9px; background:#eef2ff; color:#3a4a7a; font-size:12px; font-weight:700; cursor:pointer; border:2px solid transparent;';
             el.innerHTML = `${md}<br><span style="font-size:10px;">미리</span>`;
-            el.onclick = ()=> hw_pickDate(iso, el);
+            el.onclick = ()=>hw_pickDate(iso, el);
             grid.appendChild(el);
         }
     }
@@ -1464,7 +1457,7 @@
             img.onload = ()=>{
                 const maxW = 1200;
                 let w = img.width, h = img.height;
-                if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+                if(w >maxW){ h = Math.round(h * maxW / w); w = maxW; }
                 const cv = document.createElement('canvas');
                 cv.width = w; cv.height = h;
                 cv.getContext('2d').drawImage(img, 0, 0, w, h);
@@ -1585,7 +1578,7 @@
             body: JSON.stringify(payload)
         }).then(()=>{
             msg.style.color = '#274e13';
-            msg.innerHTML = '✅ 제출 완료! (현황 반영까지 잠시 걸려요)';
+            msg.innerHTML = '제출 완료! (현황 반영까지 잠시 걸려요)';
             btn.disabled = false;
             document.getElementById('hw-photo').value = '';
             document.getElementById('hw-preview-img').style.display = 'none';
@@ -1617,38 +1610,38 @@
         isPracticeMode = false;
         let pool = [];
 
-        config.book.split(';').forEach(m => {
+        config.book.split(';').forEach(m =>{
             const parts = m.split('|');
             const b = parts[0] ? parts[0].trim() : "";
             const u = parts[1] ? parts[1].trim() : "";
             const dStr = parts[2] ? parts[2].trim() : "ALL";
 
-            const matched = db.filter(w => {
+            const matched = db.filter(w =>{
                 const bookMatch = w.book === b;
                 const unitMatch = w.unit === u;
                 let detailMatch = false;
                 if (dStr === 'ALL' || dStr === '' || !dStr) { detailMatch = true; }
-                else { detailMatch = dStr.split(',').map(d => d.trim()).includes(w.detail); }
+                else { detailMatch = dStr.split(',').map(d =>d.trim()).includes(w.detail); }
                 return bookMatch && unitMatch && detailMatch;
             });
             pool = pool.concat(matched);
         });
 
-        pool = [...new Map(pool.map(item => [item.eng + item.kor, item])).values()];
+        pool = [...new Map(pool.map(item =>[item.eng + item.kor, item])).values()];
 
         let numEK = parseInt(config.ek) || 0; let numKeObj = parseInt(config.keObj) || 0;
         let numKeSubj = parseInt(config.keSubj) || 0; let numEE = parseInt(config.ee) || 0; let numEX = parseInt(config.ex) || 0;
 
-        let shuffledPool = pool.sort(() => Math.random() - 0.5);
+        let shuffledPool = pool.sort(() =>Math.random() - 0.5);
 
-        let eePool = shuffledPool.filter(w => w.ee && w.ee.trim() !== "");
-        let exPool = shuffledPool.filter(w => w.ex && w.ex.trim() !== "");
+        let eePool = shuffledPool.filter(w =>w.ee && w.ee.trim() !== "");
+        let exPool = shuffledPool.filter(w =>w.ex && w.ex.trim() !== "");
 
         let eeWords = eePool.slice(0, numEE);
         let exWords = exPool.slice(0, numEX);
 
-        let usedEngs = [...eeWords, ...exWords].map(w => w.eng);
-        let remainPool = shuffledPool.filter(w => !usedEngs.includes(w.eng));
+        let usedEngs = [...eeWords, ...exWords].map(w =>w.eng);
+        let remainPool = shuffledPool.filter(w =>!usedEngs.includes(w.eng));
 
         let ekWords = remainPool.slice(0, numEK);
         let keObjWords = remainPool.slice(numEK, numEK + numKeObj);
@@ -1656,25 +1649,25 @@
 
         questionList = [];
 
-        ekWords.forEach(w => {
-            let wrong = [...new Set(db.map(x => x.kor).filter(k => k !== w.kor && k.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-            questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() => Math.random() - 0.5) });
+        ekWords.forEach(w =>{
+            let wrong = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() =>Math.random() - 0.5) });
         });
-        keObjWords.forEach(w => {
-            let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-            questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+        keObjWords.forEach(w =>{
+            let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
         });
-        keSubjWords.forEach(w => { questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor }); });
-        eeWords.forEach(w => {
-            let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-            questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+        keSubjWords.forEach(w =>{ questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor }); });
+        eeWords.forEach(w =>{
+            let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
         });
-        exWords.forEach(w => {
-            let wrong = [...new Set(db.map(x => x.eng).filter(e => e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-            questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+        exWords.forEach(w =>{
+            let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+            questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
         });
 
-        questionList = questionList.sort(() => Math.random() - 0.5);
+        questionList = questionList.sort(() =>Math.random() - 0.5);
         if (questionList.length === 0) return alert("해당 범위에 단어가 없습니다.");
         beginTestingUI();
     }
@@ -1695,7 +1688,7 @@
             let tEX = parseInt(config.ex) || 0;
             totalQ = tEK + tKeObj + tKeSubj + tEE + tEX;
 
-            if (totalQ > 0) {
+            if (totalQ >0) {
                 probEX = tEX / totalQ;
                 probEE = tEE / totalQ;
                 probEK = tEK / totalQ;
@@ -1707,23 +1700,23 @@
         if (totalQ === 0) { probEK = 0.5; probSUBJ = 0.5; }
 
         let fullWrongWords = [];
-        accumulatedWrongWords.forEach(w => {
-            let matches = db.filter(x => x.eng.trim().toLowerCase() === w.eng.trim().toLowerCase() && x.kor.trim() === w.kor.trim());
+        accumulatedWrongWords.forEach(w =>{
+            let matches = db.filter(x =>x.eng.trim().toLowerCase() === w.eng.trim().toLowerCase() && x.kor.trim() === w.kor.trim());
             let bestMatch = matches[0];
 
-            if (matches.length > 1) {
+            if (matches.length >1) {
                 if (config) {
                     let assignedRanges = config.book.split(';');
                     for(let m of assignedRanges) {
                         let parts = m.split('|');
                         let b = parts[0] ? parts[0].trim() : "";
                         let u = parts[1] ? parts[1].trim() : "";
-                        let exact = matches.find(x => x.book === b && x.unit === u);
+                        let exact = matches.find(x =>x.book === b && x.unit === u);
                         if(exact) { bestMatch = exact; break; }
                     }
                 }
-                if (probEX > 0 && (!bestMatch || !bestMatch.ex || bestMatch.ex.trim() === "")) {
-                    let matchWithEx = matches.find(x => x.ex && x.ex.trim() !== "");
+                if (probEX >0 && (!bestMatch || !bestMatch.ex || bestMatch.ex.trim() === "")) {
+                    let matchWithEx = matches.find(x =>x.ex && x.ex.trim() !== "");
                     if (matchWithEx) bestMatch = matchWithEx;
                 }
             }
@@ -1732,7 +1725,7 @@
             else fullWrongWords.push({ eng: w.eng, kor: w.kor, ex: "", ee: "" });
         });
 
-        fullWrongWords.sort(() => Math.random() - 0.5).forEach((w) => {
+        fullWrongWords.sort(() =>Math.random() - 0.5).forEach((w) =>{
             let hasEx = w.ex && w.ex.trim() !== "";
             let hasEe = w.ee && w.ee.trim() !== "";
             let rand = Math.random();
@@ -1744,29 +1737,29 @@
 
             let typeToMake;
 
-            if (rand < thresholdEX) typeToMake = "EX";
-            else if (rand < thresholdEE) typeToMake = "EE";
-            else if (rand < thresholdEK) typeToMake = "EK";
-            else if (rand < thresholdKeObj) typeToMake = "KE-OBJ";
+            if (rand< thresholdEX) typeToMake = "EX";
+            else if (rand< thresholdEE) typeToMake = "EE";
+            else if (rand< thresholdEK) typeToMake = "EK";
+            else if (rand< thresholdKeObj) typeToMake = "KE-OBJ";
             else typeToMake = "SUBJ";
 
             if (typeToMake === "EX" && !hasEx) typeToMake = "EK";
             if (typeToMake === "EE" && !hasEe) typeToMake = "EK";
 
             if (typeToMake === "EX") {
-                let wrong = [...new Set(db.map(x => x.eng).filter(e => e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-                questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+                let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e.toLowerCase() !== w.eng.toLowerCase() && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'EX-OBJ', q: w.ex, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
             } else if (typeToMake === "EE") {
-                let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-                questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+                let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
             } else if (typeToMake === "KE-OBJ") {
-                let wrong = [...new Set(db.map(x => x.eng).filter(e => e !== w.eng && e.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-                questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() => Math.random() - 0.5) });
+                let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
             } else if (typeToMake === "SUBJ") {
                 questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor });
             } else {
-                let wrong = [...new Set(db.map(x => x.kor).filter(k => k !== w.kor && k.trim() !== ""))].sort(() => Math.random() - 0.5).slice(0, 6);
-                questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() => Math.random() - 0.5) });
+                let wrong = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+                questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() =>Math.random() - 0.5) });
             }
         });
 
@@ -1787,8 +1780,8 @@
     function copyWrongWords() {
         if (currentWrongObjects.length === 0) return alert("틀린 단어가 없습니다.");
 
-        let textToCopy = "🚨 나의 오답 노트 🚨\n\n";
-        currentWrongObjects.forEach(q => { textToCopy += `${q.eng} : ${q.kor}\n`; });
+        let textToCopy = " 나의 오답 노트 \n\n";
+        currentWrongObjects.forEach(q =>{ textToCopy += `${q.eng} : ${q.kor}\n`; });
 
         const textArea = document.createElement("textarea");
         textArea.value = textToCopy;
@@ -1796,7 +1789,7 @@
         document.body.appendChild(textArea);
         textArea.focus(); textArea.select(); textArea.setSelectionRange(0, 99999);
 
-        try { document.execCommand('copy'); alert("📋 틀린 단어가 복사되었습니다!\n메모장이나 카톡에 붙여넣기 해보세요."); }
+        try { document.execCommand('copy'); alert("틀린 단어가 복사되었습니다!\n메모장이나 카톡에 붙여넣기 해보세요."); }
         catch (err) { alert("복사에 실패했습니다. 다른 브라우저를 이용해주세요."); }
         document.body.removeChild(textArea);
     }
@@ -1811,23 +1804,23 @@
 
         if (isPracticeMode) {
             clearInterval(timerInterval);
-            document.getElementById('timer-display').innerText = "♾️ 무한모드";
+            document.getElementById('timer-display').innerText = "무한모드";
             document.getElementById('timer-display').style.color = "#8e44ad";
             document.getElementById('practice-exit-btn').style.display = "block";
         } else {
             document.getElementById('practice-exit-btn').style.display = "block";
             document.getElementById('timer-display').style.color = "#e74c3c";
             remainingTime = 0;
-            questionList.forEach(q => {
+            questionList.forEach(q =>{
                 if (q.type === 'KE-SUBJ') { remainingTime += SEC_SUBJ; }
                 else if (q.type === 'EE-OBJ' || q.type === 'EX-OBJ') { remainingTime += SEC_LONG_OBJ; }
                 else { remainingTime += SEC_OBJ; }
             });
 
             updateTimerDisplay();
-            timerInterval = setInterval(() => {
+            timerInterval = setInterval(() =>{
                 remainingTime--; updateTimerDisplay();
-                if (remainingTime <= 0) { clearInterval(timerInterval); alert("시간 초과!"); endTest(); }
+                if (remainingTime<= 0) { clearInterval(timerInterval); alert("시간 초과!"); endTest(); }
             }, 1000);
         }
         showQuestion();
@@ -1835,7 +1828,7 @@
 
     function updateTimerDisplay() {
         let m = Math.floor(remainingTime / 60).toString().padStart(2, '0'), s = (remainingTime % 60).toString().padStart(2, '0');
-        document.getElementById('timer-display').innerText = "⏱ " + m + ":" + s;
+        document.getElementById('timer-display').innerText = m + ":" + s;
     }
 
     function showQuestion() {
@@ -1871,18 +1864,18 @@
 
                         const irregulars = { 'stress':'stress|stresses|stressed|stressing', 'work':'work|works|worked|working', 'move':'move|moves|moved|moving', 'turn':'turn|turns|turned|turning', 'look':'look|looks|looked|looking', 'take':'take|takes|took|taking|taken', 'keep':'keep|keeps|kept|keeping', 'catch':'catch|catches|caught|catching', 'bring':'bring|brings|brought|bringing', 'buy':'buy|buys|bought|buying', 'think':'think|thinks|thought|thinking', 'seek':'seek|seeks|sought|seeking', 'make':'make|makes|made|making', 'find':'find|finds|found|finding', 'lead':'lead|leads|led|leading', 'leave':'leave|leaves|left|leaving', 'feel':'feel|feels|felt|feeling', 'hold':'hold|holds|held|holding', 'stand':'stand|stands|stood|standing', 'understand':'understand|understands|understood|understanding', 'write':'write|writes|wrote|written|writing', 'speak':'speak|speaks|spoke|spoken|speaking', 'choose':'choose|chooses|chose|chosen|choosing', 'drive':'drive|drives|drove|driven|driving', 'know':'know|knows|knew|known|knowing', 'throw':'throw|throws|threw|thrown|throwing', 'draw':'draw|draws|drew|drawn|drawing', 'fly':'fly|flies|flew|flown|flying', 'grow':'grow|grows|grew|grown|growing', 'see':'see|sees|saw|seen|seeing', 'go':'go|goes|went|gone|going', 'do':'do|does|did|done|doing', 'have':'have|has|had|having', 'be':'am|is|are|was|were|been|being', 'come':'come|comes|came|coming', 'become':'become|becomes|became|becoming', 'run':'run|runs|ran|running', 'begin':'begin|begins|began|begun|beginning', 'drink':'drink|drinks|drank|drunk|drinking', 'sing':'sing|sings|sang|sung|singing', 'give':'give|gives|gave|given|giving', 'forgive':'forgive|forgives|forgave|forgiven|forgiving', 'get':'get|gets|got|gotten|getting', 'forget':'forget|forgets|forgot|forgotten|forgetting', 'fall':'fall|falls|fell|fallen|falling', 'eat':'eat|eats|ate|eaten|eating', 'break':'break|breaks|broke|broken|breaking', 'hide':'hide|hides|hid|hidden|hiding', 'ride':'ride|rides|rode|ridden|riding', 'strike':'strike|strikes|struck|striking', 'build':'build|builds|built|building', 'spend':'spend|spends|spent|spending', 'send':'send|sends|sent|sending', 'lend':'lend|lends|lent|lending', 'lose':'lose|loses|lost|losing', 'sell':'sell|sells|sold|selling', 'tell':'tell|tells|told|telling', 'pay':'pay|pays|paid|paying', 'say':'say|says|said|saying', 'lie':'lie|lies|lay|lain|lying', 'lay':'lay|lays|laid|laying', 'bear':'bear|bears|bore|born|borne|bearing', 'wear':'wear|wears|wore|worn|wearing', 'tear':'tear|tears|tore|torn|tearing', 'set':'set|sets|setting', 'put':'put|puts|putting', 'cut':'cut|cuts|cutting', 'hit':'hit|hits|hitting', 'let':'let|lets|letting', 'read':'read|reads|reading', 'cost':'cost|costs|costing', 'mean':'mean|means|meant|meaning', 'meet':'meet|meets|met|meeting', 'win':'win|wins|won|winning', 'teach':'teach|teaches|taught|teaching', 'fight':'fight|fights|fought|fighting', 'shoot':'shoot|shoots|shot|shooting', 'sleep':'sleep|sleeps|slept|sleeping', 'wake':'wake|wakes|woke|woken|waking', 'steal':'steal|steals|stole|stolen|stealing', 'sweep':'sweep|sweeps|swept|sweeping', 'bind':'bind|binds|bound|binding', 'grind':'grind|grinds|ground|grinding', 'wind':'wind|winds|wound|winding', 'ring':'ring|rings|rang|rung|ringing', 'shrink':'shrink|shrinks|shrank|shrunk|shrinking', 'sink':'sink|sinks|sank|sunk|sinking', 'stink':'stink|stinks|stank|stunk|stinking', 'spring':'spring|springs|sprang|sprung|springing', 'swear':'swear|swears|swore|sworn|swearing', 'swing':'swing|swings|swung|swinging'};
 
-                        const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const escapeRegExp = (string) =>string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
                         let firstWordRegexStr;
                         if (irregulars[fwLower]) {
                             firstWordRegexStr = "(?:" + irregulars[fwLower] + ")";
                         } else {
-                            let root = firstWord.length > 3 ? firstWord.substring(0, firstWord.length - 1) : firstWord;
+                            let root = firstWord.length >3 ? firstWord.substring(0, firstWord.length - 1) : firstWord;
                             firstWordRegexStr = "(?:" + escapeRegExp(root) + "[a-zA-Z]*)";
                         }
 
                         let targetRegex;
-                        if (restOfPhrase.length > 0) {
+                        if (restOfPhrase.length >0) {
                             let restRegexStr = escapeRegExp(restOfPhrase);
 
                             restRegexStr = restRegexStr.replace(/someone's/gi, "(?:someone's|my|your|his|her|its|our|their)");
@@ -1928,8 +1921,8 @@
             const objArea = document.getElementById('type-obj-area');
             objArea.style.display = 'block'; objArea.innerHTML = '';
 
-            (q.choices || []).forEach((c, i) => {
-                const b = document.createElement('button'); b.className = 'choice-btn'; b.innerHTML = "<span class='number'>" + (i + 1) + ".</span> " + (c || "");
+            (q.choices || []).forEach((c, i) =>{
+                const b = document.createElement('button'); b.className = 'choice-btn'; b.innerHTML = "<span class='number'>" + (i + 1) + ".</span>" + (c || "");
                 b.onclick = function() { submitObj(c, this); };
                 objArea.appendChild(b);
             });
@@ -1945,10 +1938,10 @@
                 } else { hintStr += c; isFirst = true; }
             }
             let shapeHint = rawWord.replace(/[a-zA-Z]/g, '○');
-            document.getElementById('hint-text').innerText = "💡 힌트: " + hintStr;
+            document.getElementById('hint-text').innerText = "힌트: " + hintStr;
             document.getElementById('answer-input').value = "";
             document.getElementById('answer-input').placeholder = "정답 모양: " + shapeHint;
-            setTimeout(() => { document.getElementById('answer-input').focus(); }, 100);
+            setTimeout(() =>{ document.getElementById('answer-input').focus(); }, 100);
         }
     }
 
@@ -1967,18 +1960,18 @@
             const feedbackEl = document.getElementById('practice-feedback');
             feedbackEl.style.display = 'block';
 
-            let nextBtnHtml = `<button class="btn btn-pos" style="margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️</button>`;
+            let nextBtnHtml = `<button class="btn btn-pos" style="margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제</button>`;
 
             if (ans === q.a) {
                 btnEl.style.background = '#27ae60'; btnEl.style.color = 'white';
-                feedbackEl.innerHTML = `⭕ 정답입니다! ${nextBtnHtml}`;
+                feedbackEl.innerHTML = ` 정답입니다! ${nextBtnHtml}`;
                 feedbackEl.style.color = "#27ae60"; feedbackEl.style.background = "#e8f8f5";
             } else {
                 btnEl.style.background = '#e74c3c'; btnEl.style.color = 'white';
-                feedbackEl.innerHTML = `❌ 오답!<br><span style="color:#e74c3c; font-size:24px;">정답: ${q.a}</span> ${nextBtnHtml}`;
+                feedbackEl.innerHTML = ` 오답!<br><span style="color:#e74c3c; font-size:24px;">정답: ${q.a}</span>${nextBtnHtml}`;
                 feedbackEl.style.color = "#c0392b"; feedbackEl.style.background = "#fdedec";
 
-                document.querySelectorAll('.choice-btn').forEach(b => {
+                document.querySelectorAll('.choice-btn').forEach(b =>{
                     if(b.innerText.includes(q.a)) { b.style.border = "3px solid #27ae60"; b.style.background = "#e8f8f5"; }
                 });
             }
@@ -2003,13 +1996,13 @@
             const feedbackEl = document.getElementById('practice-feedback');
             feedbackEl.style.display = 'block';
 
-            let nextBtnHtml = `<button class="btn btn-pos" style="margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 ➡️ (엔터)</button>`;
+            let nextBtnHtml = `<button class="btn btn-pos" style="margin-top:15px; padding:12px; font-size:16px;" onclick="moveToNextPractice()">다음 문제 (엔터)</button>`;
 
             if(cleanVal === cleanAns && cleanAns !== "") {
-                feedbackEl.innerHTML = `⭕ 정답입니다! ${nextBtnHtml}`;
+                feedbackEl.innerHTML = ` 정답입니다! ${nextBtnHtml}`;
                 feedbackEl.style.color = "#27ae60"; feedbackEl.style.background = "#e8f8f5";
             } else {
-                feedbackEl.innerHTML = `❌ 오답!<br><span style="color:#e74c3c; font-size:24px;">정답: ${q.a}</span> ${nextBtnHtml}`;
+                feedbackEl.innerHTML = ` 오답!<br><span style="color:#e74c3c; font-size:24px;">정답: ${q.a}</span>${nextBtnHtml}`;
                 feedbackEl.style.color = "#c0392b"; feedbackEl.style.background = "#fdedec";
             }
         } else {
@@ -2020,11 +2013,11 @@
 
     function next() {
         currentIdx++;
-        if(currentIdx < questionList.length) {
+        if(currentIdx< questionList.length) {
             showQuestion();
         } else {
             if (isPracticeMode) {
-                questionList = questionList.sort(() => Math.random() - 0.5);
+                questionList = questionList.sort(() =>Math.random() - 0.5);
                 currentIdx = 0;
                 showQuestion();
             } else {
@@ -2044,17 +2037,17 @@
         const msgEl = document.getElementById('pass-fail-msg');
         const isRegular = (!isAccumulatedMode && config);
         if (isPass) {
-            msgEl.innerHTML = "합격 축하합니다! 🎉" + (isRegular ? "<br><span style='font-size:15px; font-weight:600; color:#555;'>추가 단어 학습은 무한복습 · 누적복습으로 이어가세요.</span>" : "");
-            msgEl.style.color = "var(--blue)";
+            msgEl.innerHTML = "합격 축하합니다! " + (isRegular ? "<br><span style='font-size:15px; font-weight:600; color:#555;'>추가 단어 학습은 무한복습 · 누적복습으로 이어가세요.</span>" : "");
+            msgEl.style.color = "var(--wine)";
         } else {
-            msgEl.innerHTML = "불합격 💡 (90% 미만)" + (isRegular ? "<br><span style='font-size:15px; font-weight:600; color:#e74c3c;'>합격할 때까지 다시 응시할 수 있어요.</span>" : "");
+            msgEl.innerHTML = "불합격 (90% 미만)" + (isRegular ? "<br><span style='font-size:15px; font-weight:600; color:#e74c3c;'>합격할 때까지 다시 응시할 수 있어요.</span>" : "");
             msgEl.style.color = "#e74c3c";
         }
 
         let modeStr = "누적오답훈련"; let currentRange = "오답노트전체";
         if (!isAccumulatedMode && config) { modeStr = config.testMode || config.type || "정기시험"; currentRange = config.book; }
 
-        if (currentWrongObjects.length > 0) {
+        if (currentWrongObjects.length >0) {
             document.getElementById('btn-review-wrong').style.display = 'block';
             document.getElementById('btn-copy-wrong').style.display = 'block';
         } else {
@@ -2066,15 +2059,15 @@
 
         if (isAccumulatedMode) {
             // 누적복습: 시험기록에 안 남김. 맞힌 단어만 오답노트에서 졸업 처리.
-            const payloadCorrect = currentCorrectObjects.map(q => ({ eng: q.eng, kor: q.kor }));
+            const payloadCorrect = currentCorrectObjects.map(q =>({ eng: q.eng, kor: q.kor }));
             const payload = { type: "reviewResult", name: stName, correctWords: payloadCorrect };
-            fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "복습 반영 완료! (맞힌 단어는 오답노트에서 제외)"; });
+            fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() =>{ document.getElementById('saving-msg').innerText = "복습 반영 완료! (맞힌 단어는 오답노트에서 제외)"; });
         } else {
             // 정규미션·재시: 기존대로 성적·오답 기록. assignDate로 GAS가 회차 계산.
-            const payloadWrongWords = currentWrongObjects.map(q => ({ eng: q.eng, kor: q.kor }));
+            const payloadWrongWords = currentWrongObjects.map(q =>({ eng: q.eng, kor: q.kor }));
             const assignDate = (config && config.assignDate) ? config.assignDate : "";
             const payload = { type: "saveRecord", date: new Date().toLocaleDateString('ko-KR'), name: stName, testType: modeStr, range: currentRange, score: score, total: total, wrongWords: payloadWrongWords, assignDate: assignDate };
-            fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() => { document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
+            fetch(APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).then(() =>{ document.getElementById('saving-msg').innerText = "데이터 저장 완료!"; });
         }
     }
 
@@ -2123,16 +2116,16 @@
         init: async function() {
             this._targetTouched = false;
             // 교재 목록 (공유 db 사용 — 다시 fetch 안 함)
-            const books = [...new Set(db.map(x => x.book))].sort();
+            const books = [...new Set(db.map(x =>x.book))].sort();
             const bSel = document.getElementById('book-sel');
             bSel.innerHTML = '<option value="">단어 교재 선택</option>';
-            books.forEach(b => { bSel.add(new Option(b, b)); });
+            books.forEach(b =>{ bSel.add(new Option(b, b)); });
 
             // 학생 명단 로딩
             try {
                 const stRes = await fetch(APP_URL + "?type=getList&t=" + Date.now());
                 const stList = await stRes.json();
-                this._roster = stList.map(n => String(n||'').trim()).filter(Boolean);
+                this._roster = stList.map(n =>String(n||'').trim()).filter(Boolean);
                 this.renderStudentChecks();
             } catch(e) {
                 document.getElementById('adm-status-msg').innerText = "학생 명단 로딩 실패";
@@ -2150,7 +2143,7 @@
                 const id = 'stchk_' + i;
                 const lbl = document.createElement('label');
                 lbl.style.cssText = 'display:inline-flex; align-items:center; gap:5px; background:#f7f7f9; border:1px solid #e3e3ea; border-radius:8px; padding:7px 11px; font-size:14px; cursor:pointer;';
-                lbl.innerHTML = `<input type="checkbox" class="adm-st-chk" value="${n.replace(/"/g,'&quot;')}" onchange="ADMIN.onStudentCheck()" style="cursor:pointer;"> ${n}`;
+                lbl.innerHTML = `<input type="checkbox" class="adm-st-chk" value="${n.replace(/"/g,'&quot;')}" onchange="ADMIN.onStudentCheck()" style="cursor:pointer;">${n}`;
                 wrap.appendChild(lbl);
                 psel.add(new Option(n, n));
             });
@@ -2169,13 +2162,13 @@
             if(checked.length === 1){
                 this.loadStudentConfig(checked[0]);
             } else {
-                msg.innerText = checked.length > 1 ? "여러 학생 선택됨 — 동일 범위로 일괄 배정됩니다." : "";
+                msg.innerText = checked.length >1 ? "여러 학생 선택됨 — 동일 범위로 일괄 배정됩니다." : "";
                 msg.style.color = "var(--navy)";
             }
         },
 
         checkAll: function(on){
-            document.querySelectorAll('.adm-st-chk').forEach(c=> c.checked = on);
+            document.querySelectorAll('.adm-st-chk').forEach(c=>c.checked = on);
             this.onStudentCheck();
         },
 
@@ -2191,7 +2184,7 @@
                 const data = await res.json();
                 if(data.config && data.config.book) {
                     this._lastLoadedConfig = data.config; // 복원용 저장
-                    let range = data.config.book.split(';').map(r => {
+                    let range = data.config.book.split(';').map(r =>{
                         const p = r.split('|');
                         const book = p[0] || "";
                         const unit = p[1] || "";
@@ -2199,13 +2192,13 @@
                         let base = (book + " " + unit).trim();
                         // 세부가 ALL/빈값이면 생략, 특정 문항이면 표시
                         if (detail && detail !== 'ALL') {
-                            base += " <span style='color:var(--ex-orange);'>[" + detail + "]</span>";
+                            base += "<span style='color:var(--ex-orange);'>[" + detail + "]</span>";
                         }
                         return base;
                     }).join(', ');
-                    let dateStr = data.config.assignDate ? (" <span style='color:#888;'>(" + data.config.assignDate.split(' ')[0] + ")</span>") : "";
-                    msg.innerHTML = "📌 지난 배정: <span style='color:var(--navy);'>" + range + "</span>" + dateStr
-                        + "<button onclick=\"ADMIN.restoreLastConfig()\" style=\"display:block; width:100%; margin-top:9px; background:var(--gold); color:#fff; border:none; border-radius:980px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; letter-spacing:-0.01em;\">↩️ 이 범위·개수·유형 그대로 담기</button>";
+                    let dateStr = data.config.assignDate ? ("<span style='color:#888;'>(" + data.config.assignDate.split(' ')[0] + ")</span>") : "";
+                    msg.innerHTML = " 지난 배정:<span style='color:var(--navy);'>" + range + "</span>" + dateStr
+                        + "<button onclick=\"ADMIN.restoreLastConfig()\" style=\"display:block; width:100%; margin-top:9px; background:var(--gold); color:#fff; border:none; border-radius:980px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; letter-spacing:-0.01em;\">↩ 이 범위·개수·유형 그대로 담기</button>";
                 } else {
                     this._lastLoadedConfig = null;
                     msg.style.color = "#888";
@@ -2222,25 +2215,25 @@
             const grid = document.getElementById('unit-grid');
             if(!book) { document.getElementById('unit-area').style.display = 'none'; return; }
             document.getElementById('unit-area').style.display = 'block';
-            const units = [...new Set(db.filter(x => x.book === book).map(x => x.unit))].sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric: true}));
+            const units = [...new Set(db.filter(x =>x.book === book).map(x =>x.unit))].sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric: true}));
             this._lastUnitIdx = null; // Shift 범위선택 기준점 초기화
-            grid.innerHTML = units.map((u, i) => `<div class="btn-item unit-btn" data-idx="${i}" onclick="ADMIN.unitClick(${i}, event)">${u}</div>`).join('');
+            grid.innerHTML = units.map((u, i) =>`<div class="btn-item unit-btn" data-idx="${i}" onclick="ADMIN.unitClick(${i}, event)">${u}</div>`).join('');
 
             const dSel = document.getElementById('detail-unit-sel');
             dSel.innerHTML = '<option value="">세부 문항 유닛 선택</option>';
-            units.forEach(u => dSel.add(new Option(u, u)));
+            units.forEach(u =>dSel.add(new Option(u, u)));
         },
 
         _lastUnitIdx: null,
         unitClick: function(idx, event) {
             event = event || window.event;
             const btns = Array.from(document.querySelectorAll('.unit-btn'))
-                .sort((a,b)=> parseInt(a.dataset.idx) - parseInt(b.dataset.idx));
+                .sort((a,b)=>parseInt(a.dataset.idx) - parseInt(b.dataset.idx));
             if (event && event.shiftKey && this._lastUnitIdx !== null) {
                 // Shift 클릭: 직전 클릭 지점 ~ 현재 사이 전부 선택
                 const start = Math.min(this._lastUnitIdx, idx);
                 const end = Math.max(this._lastUnitIdx, idx);
-                for (let i = start; i <= end; i++) {
+                for (let i = start; i<= end; i++) {
                     if (btns[i]) btns[i].classList.add('active');
                 }
                 // Shift 드래그로 생긴 텍스트 선택 해제
@@ -2254,16 +2247,16 @@
 
         toggleAllUnits: function() {
             const btns = document.querySelectorAll('.unit-btn');
-            const all = Array.from(btns).every(b => b.classList.contains('active'));
-            btns.forEach(b => all ? b.classList.remove('active') : b.classList.add('active'));
+            const all = Array.from(btns).every(b =>b.classList.contains('active'));
+            btns.forEach(b =>all ? b.classList.remove('active') : b.classList.add('active'));
         },
 
         addUnitsToBasket: function() {
             const book = document.getElementById('book-sel').value;
             const btns = document.querySelectorAll('.unit-btn.active');
-            btns.forEach(b => {
+            btns.forEach(b =>{
                 const u = b.innerText; const label = `${book}|${u}|ALL`;
-                if(!this.basket.some(i => i.label === label)) this.basket.push({ label: label, desc: `${book} U${u}` });
+                if(!this.basket.some(i =>i.label === label)) this.basket.push({ label: label, desc: `${book} U${u}` });
                 b.classList.remove('active');
             });
             this.renderBasket();
@@ -2275,20 +2268,20 @@
             const grid = document.getElementById('detail-grid');
             if(!unit) { document.getElementById('detail-area').style.display='none'; return; }
             document.getElementById('detail-area').style.display='block';
-            const details = [...new Set(db.filter(x => x.book === book && x.unit === unit).map(x => x.detail))].filter(d=>d);
-            grid.innerHTML = details.map(d => `<div class="btn-item d-btn" onclick="this.classList.toggle('active')">${d}</div>`).join('');
+            const details = [...new Set(db.filter(x =>x.book === book && x.unit === unit).map(x =>x.detail))].filter(d=>d);
+            grid.innerHTML = details.map(d =>`<div class="btn-item d-btn" onclick="this.classList.toggle('active')">${d}</div>`).join('');
         },
 
         toggleAllDetails: function() {
             const btns = document.querySelectorAll('.d-btn');
-            const all = Array.from(btns).every(b => b.classList.contains('active'));
-            btns.forEach(b => all ? b.classList.remove('active') : b.classList.add('active'));
+            const all = Array.from(btns).every(b =>b.classList.contains('active'));
+            btns.forEach(b =>all ? b.classList.remove('active') : b.classList.add('active'));
         },
 
         addDetailsToBasket: function() {
             const book = document.getElementById('book-sel').value;
             const unit = document.getElementById('detail-unit-sel').value;
-            const checked = Array.from(document.querySelectorAll('.d-btn.active')).map(b => b.innerText);
+            const checked = Array.from(document.querySelectorAll('.d-btn.active')).map(b =>b.innerText);
             if (checked.length === 0) return alert("문항을 선택해주세요!");
             const label = `${book}|${unit}|${checked.join(',')}`;
             this.basket.push({ label: label, desc: `${book} U${unit} (${checked.length}개)` });
@@ -2297,7 +2290,7 @@
 
         renderBasket: function() {
             const el = document.getElementById('basket');
-            el.innerHTML = this.basket.map((i, idx) => `<div class="basket-item"><span>${i.desc}</span><span onclick="ADMIN.removeBasketItem(${idx})" style="color:var(--red); cursor:pointer;">×</span></div>`).join('');
+            el.innerHTML = this.basket.map((i, idx) =>`<div class="basket-item"><span>${i.desc}</span><span onclick="ADMIN.removeBasketItem(${idx})" style="color:var(--red); cursor:pointer;">×</span></div>`).join('');
             this.updateCount();
         },
 
@@ -2308,18 +2301,18 @@
 
         updateCount: function() {
             let count = 0;
-            this.basket.forEach(b => {
+            this.basket.forEach(b =>{
                 const p = b.label.split('|');
-                let m = db.filter(w => w.book === p[0] && w.unit === p[1]);
+                let m = db.filter(w =>w.book === p[0] && w.unit === p[1]);
                 if(p[2] !== 'ALL') {
-                    const dts = p[2].split(','); m = m.filter(w => dts.includes(w.detail));
+                    const dts = p[2].split(','); m = m.filter(w =>dts.includes(w.detail));
                 }
                 count += m.length;
             });
             document.getElementById('pool-text').innerText = count;
 
             const ids = ['ek', 'ke-obj', 'ke-subj', 'ee-obj', 'ex-obj'];
-            ids.forEach(id => {
+            ids.forEach(id =>{
                 const slider = document.getElementById(id + '-val');
                 slider.max = count;
                 slider.value = 0;
@@ -2336,7 +2329,7 @@
                 curTarget = 120;
             } else if (this._targetTouched) {
                 // 관리자가 직접 정한 값 유지 (단 Pool 초과 시 제한)
-                if (curTarget > count) curTarget = count;
+                if (curTarget >count) curTarget = count;
             } else {
                 // 아직 손대지 않음: 120 기본 (Pool이 120 미만이면 Pool)
                 curTarget = Math.min(120, count);
@@ -2350,7 +2343,7 @@
             document.getElementById('total-num').value = 0;
 
             const dl = document.getElementById('tickmarks'); dl.innerHTML = '';
-            for(let i = 0; i <= count; i += 10) {
+            for(let i = 0; i<= count; i += 10) {
                 let op = document.createElement('option'); op.value = i; dl.appendChild(op);
             }
         },
@@ -2359,15 +2352,15 @@
         _effectiveTarget: function() {
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
             let t = parseInt(document.getElementById('target-num').value) || 0;
-            if (t > pool) t = pool;   // Pool 초과 시 Pool만큼만
+            if (t >pool) t = pool;   // Pool 초과 시 Pool만큼만
             return t;
         },
         _highlightQtyBtn: function(val) {
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
-            document.querySelectorAll('.qty-btn').forEach(b => {
+            document.querySelectorAll('.qty-btn').forEach(b =>{
                 if (b.dataset.q === 'max') {
                     // MAX: 풀이 있고 현재 목표가 풀 전체와 같으면 활성
-                    b.classList.toggle('active', pool > 0 && val === pool);
+                    b.classList.toggle('active', pool >0 && val === pool);
                 } else {
                     b.classList.toggle('active', parseInt(b.dataset.q) === val);
                 }
@@ -2382,7 +2375,7 @@
         setTarget: function(n) {
             this._targetTouched = true;
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
-            let t = (pool > 0 && n > pool) ? pool : n;
+            let t = (pool >0 && n >pool) ? pool : n;
             document.getElementById('target-num').value = t;
             document.getElementById('target-val').value = t;
             this._highlightQtyBtn(t);
@@ -2391,7 +2384,7 @@
             this._targetTouched = true;
             const pool = parseInt(document.getElementById('pool-text').innerText) || 0;
             let t = parseInt(document.getElementById('target-num').value) || 0;
-            if (pool > 0 && t > pool) { t = pool; document.getElementById('target-num').value = t; }
+            if (pool >0 && t >pool) { t = pool; document.getElementById('target-num').value = t; }
             document.getElementById('target-val').value = t;
             this._highlightQtyBtn(t);
         },
@@ -2412,7 +2405,7 @@
             let el = document.getElementById(type + '-num');
             let val = parseInt(el.value) || 0;
             let max = parseInt(document.getElementById(type + '-val').max);
-            if (val > max) val = max; el.value = val;
+            if (val >max) val = max; el.value = val;
             document.getElementById(type + '-val').value = val;
             this.handleSubChange(type);
         },
@@ -2426,25 +2419,25 @@
                 'ee-obj': parseInt(document.getElementById('ee-obj-val').value) || 0,
                 'ex-obj': parseInt(document.getElementById('ex-obj-val').value) || 0
             };
-            let sum = Object.values(vals).reduce((a, b) => a + b, 0);
+            let sum = Object.values(vals).reduce((a, b) =>a + b, 0);
 
-            if (sum > poolMax) {
+            if (sum >poolMax) {
                 let over = sum - poolMax;
                 if (source !== 'ek' && vals['ek'] >= over) {
                     vals['ek'] -= over; over = 0;
                 }
-                let targets = ['ek', 'ke-obj', 'ke-subj', 'ee-obj', 'ex-obj'].filter(id => id !== source);
+                let targets = ['ek', 'ke-obj', 'ke-subj', 'ee-obj', 'ex-obj'].filter(id =>id !== source);
                 for(let id of targets) {
-                    if (over <= 0) break;
+                    if (over<= 0) break;
                     let diff = Math.min(vals[id], over); vals[id] -= diff; over -= diff;
                 }
-                if (over > 0) { vals[source] -= over; }
+                if (over >0) { vals[source] -= over; }
             }
             for (let id in vals) {
                 document.getElementById(id + '-val').value = vals[id];
                 document.getElementById(id + '-num').value = vals[id];
             }
-            let finalSum = Object.values(vals).reduce((a, b) => a + b, 0);
+            let finalSum = Object.values(vals).reduce((a, b) =>a + b, 0);
             document.getElementById('total-val').value = finalSum;
             document.getElementById('total-num').value = finalSum;
         },
@@ -2456,7 +2449,7 @@
             const c = this._lastLoadedConfig;
             if (!c || !c.book) { alert("복원할 지난 배정이 없습니다."); return; }
             // 1) 범위(basket) 복원
-            this.basket = c.book.split(';').filter(s => s.trim()).map(seg => {
+            this.basket = c.book.split(';').filter(s =>s.trim()).map(seg =>{
                 const p = seg.split('|');
                 const book = p[0] || "", unit = p[1] || "", detail = p[2] || "ALL";
                 let desc;
@@ -2475,8 +2468,8 @@
             const ee = parseInt(c.ee) || 0, ex = parseInt(c.ex) || 0;
             const sum = ek + keObj + keSubj + ee + ex;
             this._targetTouched = true;
-            let target = sum > 0 ? sum : Math.min(120, pool);
-            if (pool > 0 && target > pool) target = pool;
+            let target = sum >0 ? sum : Math.min(120, pool);
+            if (pool >0 && target >pool) target = pool;
             document.getElementById('target-num').value = target;
             document.getElementById('target-val').value = Math.min(target, pool);
             this._highlightQtyBtn(target);
@@ -2487,7 +2480,7 @@
                 let v = map[id];
                 const slider = document.getElementById(id + '-val');
                 const max = parseInt(slider.max) || 0;
-                if (v > max) v = max; // pool 축소 시 안전 클램프
+                if (v >max) v = max; // pool 축소 시 안전 클램프
                 slider.value = v;
                 document.getElementById(id + '-num').value = v;
             }
@@ -2496,18 +2489,18 @@
             document.getElementById('total-num').value = Math.min(finalSum, pool);
 
             // 프리셋 버튼 활성표시 해제(직접 복원이므로)
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.preset-btn').forEach(b =>b.classList.remove('active'));
             document.getElementById('adm-status-msg').innerText = "지난 배정 복원됨 — 범위·개수·유형이 채워졌습니다.";
         },
 
         // 현재 장바구니 Pool에서 영영(ee)/예문(ex) 보유 단어 수 집계
         _poolStats: function() {
             let total = 0, eeCount = 0, exCount = 0;
-            this.basket.forEach(b => {
+            this.basket.forEach(b =>{
                 const p = b.label.split('|');
-                let m = db.filter(w => w.book === p[0] && w.unit === p[1]);
-                if(p[2] !== 'ALL') { const dts = p[2].split(','); m = m.filter(w => dts.includes(w.detail)); }
-                m.forEach(w => {
+                let m = db.filter(w =>w.book === p[0] && w.unit === p[1]);
+                if(p[2] !== 'ALL') { const dts = p[2].split(','); m = m.filter(w =>dts.includes(w.detail)); }
+                m.forEach(w =>{
                     total++;
                     if (w.ee && w.ee.trim() !== "") eeCount++;
                     if (w.ex && w.ex.trim() !== "") exCount++;
@@ -2548,7 +2541,7 @@
                 let left = target - assigned;
                 const fillOrder = ['ek','ke-obj','ke-subj'];
                 let fi = 0;
-                while (left > 0) { v[fillOrder[fi % 3]]++; left--; fi++; }
+                while (left >0) { v[fillOrder[fi % 3]]++; left--; fi++; }
             }
             else if (kind === 'ee-ex') {
                 // 영영풀이 + 예문 반반. 각자 가용한도 내에서, 부족분은 서로 보완 후 영한/한영으로.
@@ -2558,10 +2551,10 @@
                 v['ex-obj'] = Math.min(halfEx, exMax);
                 // 한쪽이 부족하면 다른 쪽으로 채워봄 (가용한도 내)
                 let left = target - v['ee-obj'] - v['ex-obj'];
-                if (left > 0 && v['ex-obj'] < exMax) { let add = Math.min(left, exMax - v['ex-obj']); v['ex-obj'] += add; left -= add; }
-                if (left > 0 && v['ee-obj'] < eeMax) { let add = Math.min(left, eeMax - v['ee-obj']); v['ee-obj'] += add; left -= add; }
+                if (left >0 && v['ex-obj']< exMax) { let add = Math.min(left, exMax - v['ex-obj']); v['ex-obj'] += add; left -= add; }
+                if (left >0 && v['ee-obj']< eeMax) { let add = Math.min(left, eeMax - v['ee-obj']); v['ee-obj'] += add; left -= add; }
                 // 그래도 남으면 영한/한영으로 (데이터 한계)
-                if (left > 0) {
+                if (left >0) {
                     v.ek = Math.ceil(left / 2);
                     v['ke-obj'] = left - v.ek;
                 }
@@ -2574,7 +2567,7 @@
             // pool 초과 방지 보정
             let poolMax = parseInt(document.getElementById('pool-text').innerText) || 0;
             let sum = Object.values(v).reduce((a,b)=>a+b,0);
-            if (sum > poolMax) { let over = sum - poolMax; v.ek = Math.max(0, v.ek - over); }
+            if (sum >poolMax) { let over = sum - poolMax; v.ek = Math.max(0, v.ek - over); }
             for (let id in v) {
                 const slider = document.getElementById(id + '-val');
                 const num = document.getElementById(id + '-num');
@@ -2590,7 +2583,7 @@
             const names = this.getCheckedStudents();
             if(names.length === 0 || this.basket.length === 0) return alert("학생을 체크하고 범위를 담아주세요!");
             const common = {
-                book: this.basket.map(i => i.label).join(';'),
+                book: this.basket.map(i =>i.label).join(';'),
                 testMode: document.getElementById('exam-mode-sel').value,
                 ek: document.getElementById('ek-num').value,
                 keObj: document.getElementById('ke-obj-num').value,
@@ -2607,7 +2600,6 @@
             alert(names.length + "명 배정 완료!\n(" + names.join(', ') + ")\n\n범위는 유지됩니다 — 다른 학생을 체크해 또 배정하세요.");
             document.getElementById('adm-status-msg').innerText = "저장 완료! (" + names.length + "명) 범위 유지 중";
         }
-    };
-</script>
+    };</script>
 </body>
 </html>
