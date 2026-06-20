@@ -53,6 +53,11 @@
         input[type="text"], input[type="password"], select { width: 100%; padding: 17px; border-radius: 14px; border: 1.5px solid var(--cream-deep); font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; transition: border-color 0.15s; }
         input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--wine); }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--wine); }
+        /* 로그인 영역 정돈 */
+        #login-fields input[type="text"], #login-fields input[type="password"] { margin-bottom: 10px; text-align: center; }
+        .login-remember { display:flex; align-items:center; justify-content:center; gap:0; margin:4px 0 0; font-size:13px; font-weight:600; color:var(--ink); cursor:pointer; user-select:none; }
+        .login-remember input[type="checkbox"] { width:17px; height:17px; margin:0 8px 0 0; }
+        .login-submit { margin-top:16px; }
         .chk-label { font-size: 15px; color: #333; display: inline-flex; align-items: center; cursor: pointer; text-align: left; }
         #test-area, #result-area, #info-box { display: none; }
         .q-text { font-size: 30px; font-weight: 700; color: var(--ink); margin: 25px 0; letter-spacing:-0.02em; }
@@ -234,8 +239,13 @@
         </div>
 
         <div id="login-fields">
-            <input type="text" id="st-name" placeholder="이름을 입력하세요" autocomplete="off" onkeyup="if(event.keyCode==13) checkConfig()">
-            <button class="btn btn-main" onclick="checkConfig()">학생 정보 확인 (미션 시작)</button>
+            <input type="text" id="st-name" placeholder="이름" autocomplete="off" onkeyup="if(event.keyCode==13){ var p=document.getElementById('st-pw'); if(p) p.focus(); }">
+            <input type="password" id="st-pw" placeholder="비밀번호" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeyup="if(event.keyCode==13) checkConfig()">
+            <label for="st-remember" class="login-remember">
+                <input type="checkbox" id="st-remember">
+                <span>자동 로그인 <span style="color:var(--ink-soft); font-weight:500;">· 내 기기에서만</span></span>
+            </label>
+            <button class="btn btn-main login-submit" onclick="checkConfig()">로그인</button>
             <div id="status-msg">DB 연동 중... 잠시만 기다려주세요</div>
         </div>
 
@@ -708,6 +718,8 @@
     const APP_URL = "https://script.google.com/macros/s/AKfycbwGq_DTjgzjJbacIodVE859aa_Ke4LxL28-sIbv-nRkecAaJefL179BKN4Jgr2F9xXKRw/exec";
     // 숙제 제출 전용 GAS (숙제점검 시트 — 단어장 GAS와 별개)
     const HW_URL = "https://script.google.com/macros/s/AKfycbwu_6vMigAhIXq8o-4mda7Gyd1dfiC5nSsT0Ei9Ckwlwuc_OGMAEb9FybGB6lOJcsbL/exec";
+    // 학생 인증 전용 GAS (index와 공유하는 「학생」 시트 — 이름+비번 login)
+    const LOGIN_URL = "https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec";
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-3vzDLmtDUF_45xjQurffz8gFpzZN-3IYaZECeafSsAQ3XgjeGCeEr1f0zDP5faY31iagIMZrfm67/pub?gid=0&single=true&output=csv";
 
     /* ============================================================
@@ -793,12 +805,20 @@
                 hwGrade  = localStorage.getItem('hw_grade_test')  || hwGrade;
                 hwCourse = localStorage.getItem('hw_course_test') || hwCourse;
             } catch(e){}
-            // 저장된 이름이 있으면 자동 로그인 (개인 폰)
-            let savedName = '';
+            // 저장된 로그인 정보 (자동 로그인 체크한 기기만)
+            let savedName = '', savedPw = '', remember = '';
+            try { remember = localStorage.getItem('voca_remember_test') || ''; } catch(e){}
             try { savedName = localStorage.getItem('voca_name_test') || ''; } catch(e){}
-            if(savedName){
+            try { savedPw = localStorage.getItem('voca_pw_test') || ''; } catch(e){}
+            if(remember && savedName){
                 document.getElementById('st-name').value = savedName;
-                checkConfig();
+                const pwEl = document.getElementById('st-pw');
+                const rmEl = document.getElementById('st-remember');
+                if(rmEl) rmEl.checked = true;
+                if(savedPw && pwEl){
+                    pwEl.value = savedPw;
+                    checkConfig();   // 이름·비번 기억된 경우 자동 로그인
+                }
             }
         } catch(e) {
             document.getElementById('status-msg').innerText = e.message || "DB 로드 실패";
@@ -1148,14 +1168,25 @@
             document.getElementById('admin-pw-modal').style.display = 'flex';
             return;
         }
-        document.getElementById('status-msg').innerText = "정보를 확인 중입니다...";
-        // 숙제점검 명단 검증 (없는 이름 차단)
-        const ok = await hw_checkRoster(stName);
-        if(!ok){
+        const stPw = (document.getElementById('st-pw')?.value || '').trim();
+        if(!stPw){
             document.getElementById('status-msg').innerText = "";
-            alert('등록되지 않은 이름입니다.\n이름을 정확히 입력했는지 확인하거나 선생님께 문의하세요.');
+            alert('비밀번호를 입력하세요.');
             return;
         }
+        document.getElementById('status-msg').innerText = "로그인 중입니다...";
+        // index 「학생」 시트 인증 (이름+비번, 만료일 무시)
+        const auth = await voca_login(stName, stPw);
+        if(!auth.ok){
+            document.getElementById('status-msg').innerText = "";
+            alert(auth.error || '로그인에 실패했습니다.');
+            return;
+        }
+        // 인증 통과 — 학습기간 정보 보관 (알림창 등 추후 활용)
+        try {
+            window.stStartDate = auth.startDate || '';
+            window.stExpiry = auth.expiry || '';
+        } catch(e){}
         try {
             const res = await fetch(APP_URL + "?name=" + encodeURIComponent(stName) + "&t=" + Date.now());
             const data = await res.json();
@@ -1237,7 +1268,20 @@
         if(meta) meta.innerText = metaParts.join(' · ');
         document.getElementById('student-home').style.display = 'block';
         // 이름 기억 (개인 폰)
-        try { localStorage.setItem('voca_name_test', stName || ''); } catch(e){}
+        // 자동 로그인: 체크 시에만 이름·비번 기억 (학생 기기 설정에 따름)
+        try {
+            const remember = document.getElementById('st-remember')?.checked;
+            if(remember){
+                localStorage.setItem('voca_name_test', stName || '');
+                const pw=(document.getElementById('st-pw')?.value||'').trim();
+                if(pw) localStorage.setItem('voca_pw_test', pw);
+                localStorage.setItem('voca_remember_test', '1');
+            } else {
+                localStorage.removeItem('voca_name_test');
+                localStorage.removeItem('voca_pw_test');
+                localStorage.removeItem('voca_remember_test');
+            }
+        } catch(e){}
     }
 
     // 홈 카드: 단어 미션 → 미션 정보/시작 영역 펼침
@@ -1309,8 +1353,41 @@
         });
     }
 
+    // 학생 인증: index 「학생」 시트 login 호출 (이름+비번)
+    // 만료일은 무시 — 비번만 맞으면 통과. 비번 틀림/미등록은 차단.
+    function voca_login(name, password){
+        return new Promise((resolve)=>{
+            const cbName = 'vocaLogin_' + Date.now();
+            let done = false;
+            const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+            window[cbName] = (data)=>{
+                done = true; cleanup();
+                data = data || {};
+                if(data.ok){
+                    resolve({ ok:true, name:data.name||name, startDate:data.startDate||'', expiry:data.expiry||'' });
+                    return;
+                }
+                // 만료된 계정은 voca에서는 통과 (단어시험 기한일 뿐, 학원 등록과 무관)
+                const err = String(data.error||'');
+                if(err.indexOf('만료') >= 0){
+                    resolve({ ok:true, name:name, expired:true });
+                    return;
+                }
+                resolve({ ok:false, error: err || '로그인 실패' });
+            };
+            const s = document.createElement('script');
+            s.id = cbName;
+            s.src = LOGIN_URL + "?action=login&name=" + encodeURIComponent(name)
+                  + "&password=" + encodeURIComponent(password)
+                  + "&callback=" + cbName + "&t=" + Date.now();
+            s.onerror = ()=>{ if(done) return; cleanup(); resolve({ ok:false, error:'서버 연결 실패. 잠시 후 다시 시도해주세요.' }); };
+            document.body.appendChild(s);
+            setTimeout(()=>{ if(done) return; cleanup(); resolve({ ok:false, error:'응답 시간 초과. 잠시 후 다시 시도해주세요.' }); }, 10000);
+        });
+    }
+
     function hw_toggleMain(hide){
-        const ids = ['st-name','status-msg','info-box','practice-area','hw-entry'];
+        const ids = ['st-name','st-pw','status-msg','info-box','practice-area','hw-entry'];
         ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display = hide ? 'none' : ''; });
         document.querySelectorAll('#login-area >button').forEach(b=>{
             if(b.getAttribute('onclick')==='checkConfig()') b.style.display = hide ? 'none' : '';
@@ -1412,6 +1489,8 @@
         if(!confirm('로그아웃 하시겠어요?')) return;
         previewMode = false;
         try { localStorage.removeItem('voca_name_test'); } catch(e){}
+        try { localStorage.removeItem('voca_pw_test'); } catch(e){}
+        try { localStorage.removeItem('voca_remember_test'); } catch(e){}
         location.reload();
     }
 
