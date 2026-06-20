@@ -1086,6 +1086,31 @@
         document.body.appendChild(s);
         setTimeout(()=>{ if(done)return; cleanup(); listEl.innerHTML='<p style="color:#e74c3c; font-size:13px;">시간 초과</p>'; }, 10000);
     }
+    // 날짜 정리: "2026. 06. 18. 07:57:32" → "2026.06.18"
+    function fmtExamDate(s){
+        s = String(s||'').trim();
+        if(!s) return '';
+        const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+        if(m) return m[1]+'.'+('0'+m[2]).slice(-2)+'.'+('0'+m[3]).slice(-2);
+        return s.split(' ')[0].replace(/\.$/,'');
+    }
+    // 범위 정리: "수특영어2027|Part II 주제·소재편|21,22,...,30" → {book, part, nums}
+    function fmtRange(s){
+        s = String(s||'').trim();
+        if(!s) return {book:'(범위)', part:'', nums:''};
+        const parts = s.split('|').map(x=>x.trim());
+        const book = parts[0]||'';
+        const part = parts.length>2 ? parts[1] : '';
+        let nums = parts.length>1 ? parts[parts.length-1] : '';
+        // 숫자 나열이 길면 압축: 21,22,...,30 → 21~30 (10개)
+        const arr = nums.split(',').map(x=>x.trim()).filter(x=>/^\d+$/.test(x)).map(Number);
+        if(arr.length>=4){
+            const isSeq = arr.every((v,i)=> i===0 || v===arr[i-1]+1);
+            nums = isSeq ? (arr[0]+'~'+arr[arr.length-1]) : (arr.slice(0,3).join(',')+'…');
+            nums += ' ('+arr.length+'개)';
+        }
+        return {book, part, nums: nums||(parts.length>1?parts[parts.length-1]:'')};
+    }
     function renderExamResults(name, missions){
         const listEl=document.getElementById('exam-result-list');
         if(!missions.length){ listEl.innerHTML='<p style="color:var(--ink-soft); font-size:13px;">시험 기록이 없습니다.</p>'; return; }
@@ -1101,18 +1126,20 @@
             const detailColor = pass ? '#16a34a' : '#dc2626';
             const detailBg = pass ? '#f0fdf4' : '#fef2f2';
             const dateShort = (m.lastDate||'').split(' ')[0];
-            const dateStr = (m.assignDate||dateShort);
+            const dateStr = fmtExamDate(m.assignDate||dateShort);
+            const rg = fmtRange(m.range);
             html += '<div style="border:1px solid #eee; border-radius:12px; padding:14px 16px; margin-bottom:10px;">';
             html += '<div style="display:flex; align-items:stretch; gap:14px;">';
             // 왼쪽: 날짜 + 회차 + 합격여부
-            html += '<div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:8px;">';
+            html += '<div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:9px;">';
             html += '<div style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#475569;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>'+ dateStr +'</div>';
             html += '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+ badge;
             html += '<span style="font-size:14px; font-weight:800; color:'+detailColor+'; background:'+detailBg+'; padding:5px 11px; border-radius:9px;">'+ detail +'</span></div>';
             html += '</div>';
-            // 오른쪽: 범위
-            html += '<div style="flex:0 0 auto; max-width:42%; display:flex; align-items:center; padding-left:14px; border-left:1px solid #f0f0f0;">';
-            html += '<div style="font-size:15px; font-weight:800; color:var(--wine); text-align:right; word-break:keep-all;">'+ (m.range||'(범위)') +'</div>';
+            // 오른쪽: 범위 (교재/파트 작게, 범위숫자 강조)
+            html += '<div style="flex:0 0 44%; max-width:44%; display:flex; flex-direction:column; justify-content:center; gap:3px; padding-left:14px; border-left:1px solid #f0f0f0; text-align:right;">';
+            if(rg.book) html += '<div style="font-size:11.5px; color:var(--ink-soft); font-weight:600; word-break:keep-all;">'+ rg.book + (rg.part? ' · '+rg.part : '') +'</div>';
+            html += '<div style="font-size:15px; font-weight:800; color:var(--wine); word-break:keep-all;">'+ (rg.nums||rg.book) +'</div>';
             html += '</div>';
             html += '</div>';
             // 불합격이면 단어쓰기 사진 영역 (lazy)
