@@ -386,6 +386,25 @@
             </div>
         </div>
 
+        <div class="section" style="background:#f0f6ff; border-color:#cdddf2;">
+            <button onclick="hw_toggleMonitor()" style="width:100%; background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:15px; font-weight:800; color:var(--ink);">
+                <span>📋 숙제 현황</span>
+                <span id="hw-mon-arrow" style="color:var(--blue,#1f4e79); font-size:13px;">▼</span>
+            </button>
+            <div id="hw-mon-box" style="display:none; margin-top:14px;">
+                <button class="btn" style="background:var(--blue); color:#fff; padding:11px; margin-bottom:12px;" onclick="hw_loadOverview()">🔄 현황 불러오기</button>
+                <div id="hw-mon-today" style="margin-bottom:14px;"></div>
+                <div id="hw-mon-table"></div>
+                <div style="border-top:1px dashed #cdddf2; margin-top:14px; padding-top:12px;">
+                    <div style="font-size:13px; font-weight:700; color:var(--ink); margin-bottom:7px;">학생별 14일 상세</div>
+                    <select id="hw-mon-stsel" style="width:100%; padding:11px; font-size:14px; margin-bottom:8px;">
+                        <option value="">학생 선택</option>
+                    </select>
+                    <div id="hw-mon-detail"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="section">
             <span class="label">1. 학생 선택 (여러 명 체크 → 일괄 배정)</span>
             <div style="display:flex; gap:8px; margin-bottom:8px;">
@@ -666,6 +685,105 @@
         box.style.display = open ? 'flex' : 'none';
         if(arrow) arrow.textContent = open ? '▲' : '▼';
     }
+
+    // ===== 숙제 현황 모니터링 =====
+    function hw_toggleMonitor(){
+        const box = document.getElementById('hw-mon-box');
+        const arrow = document.getElementById('hw-mon-arrow');
+        const open = box.style.display === 'none' || !box.style.display;
+        box.style.display = open ? 'block' : 'none';
+        if(arrow) arrow.textContent = open ? '▲' : '▼';
+        if(open && !box._loaded){ hw_loadOverview(); box._loaded = true; }
+    }
+
+    function hw_loadOverview(){
+        const todayEl = document.getElementById('hw-mon-today');
+        const tableEl = document.getElementById('hw-mon-table');
+        todayEl.innerHTML = '<span style="color:#888; font-size:13px;">불러오는 중...</span>';
+        tableEl.innerHTML = '';
+        const cbName = 'hwOv_' + Date.now();
+        let done = false;
+        const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName] = (data)=>{
+            done = true; cleanup();
+            hw_renderOverview(data);
+        };
+        const s = document.createElement('script');
+        s.id = cbName;
+        s.src = HW_URL + "?type=adminOverview&callback=" + cbName + "&t=" + Date.now();
+        s.onerror = ()=>{ if(done) return; cleanup(); todayEl.innerHTML = '<span style="color:#e74c3c;">불러오기 실패</span>'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done) return; cleanup(); todayEl.innerHTML = '<span style="color:#e74c3c;">시간 초과</span>'; }, 10000);
+    }
+
+    function hw_renderOverview(data){
+        const todayEl = document.getElementById('hw-mon-today');
+        const tableEl = document.getElementById('hw-mon-table');
+        const stsel = document.getElementById('hw-mon-stsel');
+        if(!data || !data.students){ todayEl.innerHTML = '데이터 없음'; return; }
+
+        // 오늘 미제출자
+        const misses = data.todayMisses || [];
+        if(misses.length){
+            todayEl.innerHTML = `<div style="background:#fdeaea; border:1px solid #f4c7c7; border-radius:10px; padding:11px 13px;">
+                <div style="font-weight:800; color:#cc0000; font-size:14px; margin-bottom:5px;">⚠️ 오늘 미제출 ${misses.length}명</div>
+                <div style="font-size:13px; color:#a33; line-height:1.6;">${misses.join(', ')}</div></div>`;
+        } else {
+            todayEl.innerHTML = `<div style="background:#eafaf0; border:1px solid #bfe6cf; border-radius:10px; padding:11px 13px; font-weight:700; color:#274e13; font-size:14px;">✅ 오늘 미제출자 없음</div>`;
+        }
+
+        // 학생별 7일 카운트 표 (미제출 많은 순)
+        const rows = data.students.slice().sort((a,b)=> b.missed - a.missed);
+        let html = `<div style="font-size:12px; color:#888; margin:12px 0 6px;">최근 7일 (제출/지연/미제출)</div>
+            <div style="display:flex; flex-direction:column; gap:4px;">`;
+        rows.forEach(s=>{
+            const warn = s.missed >= 2;
+            html += `<div style="display:flex; align-items:center; justify-content:space-between; padding:8px 11px; border-radius:8px; background:${warn?'#fdeaea':'#f7f7f9'}; font-size:13px;">
+                <span style="font-weight:700; color:${warn?'#cc0000':'#333'};">${s.name}</span>
+                <span style="font-size:12px; color:#555;">
+                    <span style="color:#274e13;">제출 ${s.submitted}</span> ·
+                    <span style="color:#7f6000;">지연 ${s.late}</span> ·
+                    <span style="color:#cc0000; font-weight:700;">미제출 ${s.missed}</span>
+                </span></div>`;
+        });
+        html += `</div>`;
+        tableEl.innerHTML = html;
+
+        // 상세 셀렉트 채우기
+        stsel.innerHTML = '<option value="">학생 선택</option>';
+        data.students.forEach(s=> stsel.add(new Option(s.name, s.name)));
+        stsel.onchange = ()=> hw_loadStudentDetail(stsel.value);
+    }
+
+    function hw_loadStudentDetail(name){
+        const el = document.getElementById('hw-mon-detail');
+        if(!name){ el.innerHTML = ''; return; }
+        el.innerHTML = '<span style="color:#888; font-size:13px;">불러오는 중...</span>';
+        const cbName = 'hwDet_' + Date.now();
+        let done = false;
+        const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName] = (data)=>{
+            done = true; cleanup();
+            const days = (data && data.days) || [];
+            if(!days.length){ el.innerHTML = '<span style="color:#888; font-size:13px;">현황 없음</span>'; return; }
+            const color = (st)=> st==='제출'?'#d9ead3':st==='지연제출'?'#fff2cc':st==='미제출'?'#f4cccc':st==='선제출'?'#d9ead3':st==='시험'?'#ddebf7':'#eee';
+            let h = '<div style="display:flex; flex-wrap:wrap; gap:5px;">';
+            days.forEach(d=>{
+                const [y,m,dd] = d.date.split('-');
+                h += `<div style="min-width:48px; text-align:center; padding:6px 3px; border-radius:7px; background:${color(d.status)}; font-size:11px;">
+                    ${parseInt(m)}/${parseInt(dd)}<br><span style="font-size:10px; font-weight:700;">${d.status||'-'}</span></div>`;
+            });
+            h += '</div>';
+            el.innerHTML = h;
+        };
+        const s = document.createElement('script');
+        s.id = cbName;
+        s.src = HW_URL + "?type=homeworkStatus&name=" + encodeURIComponent(name) + "&callback=" + cbName + "&t=" + Date.now();
+        s.onerror = ()=>{ if(done) return; cleanup(); el.innerHTML = '<span style="color:#e74c3c;">불러오기 실패</span>'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done) return; cleanup(); el.innerHTML = '<span style="color:#e74c3c;">시간 초과</span>'; }, 10000);
+    }
+
     function hw_changePw(){
         const cur = document.getElementById('pw-cur').value;
         const next = document.getElementById('pw-next').value;
