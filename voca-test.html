@@ -1054,10 +1054,43 @@
         return cands[0];
     }
     let _presetCache = null;
+    let _passageChaptersByCode = null;  // { 'ABSO_TYPE': Set(11,12,...), '27STYD': Set(...) }
+    // index getPassages로 교재별 실제 강(chapter) 목록 수집
+    function loadPassageChapters(cb){
+        if(_passageChaptersByCode){ cb(); return; }
+        const cbName='vPassages_'+Date.now();
+        let done=false;
+        const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName]=(data)=>{
+            done=true; cleanup();
+            const map={};
+            const arr = (data && (data.passages || data.rows || data.data)) || (Array.isArray(data)?data:[]);
+            (arr||[]).forEach(p=>{
+                const id = String(p.id||'').trim();
+                if(!id) return;
+                // id = SOURCE_CHAPTER_NUMBER. 교재 코드 매칭
+                Object.keys(PRESET_BOOK_MAP).sort((a,b)=>b.length-a.length).forEach(code=>{
+                    if(id===code || id.startsWith(code+'_')){
+                        const rest=id.slice(code.length).replace(/^_/,'');
+                        const m=rest.match(/^(\d+)/);
+                        if(m){ if(!map[code]) map[code]=new Set(); map[code].add(parseInt(m[1])); }
+                    }
+                });
+            });
+            _passageChaptersByCode=map;
+            cb();
+        };
+        const s=document.createElement('script');
+        s.id=cbName;
+        s.src=LOGIN_URL + "?action=getPassages&public_only=true&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); _passageChaptersByCode={}; cb(); };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done)return; cleanup(); _passageChaptersByCode={}; cb(); }, 10000);
+    }
     function openPresetModal(){
         document.getElementById('preset-modal').style.display='flex';
         const listEl=document.getElementById('preset-list');
-        if(_presetCache){ renderPresetList(_presetCache); return; }
+        if(_presetCache){ loadPassageChapters(()=>renderPresetList(_presetCache)); return; }
         listEl.innerHTML='<p style="color:#888; font-size:13px; text-align:center; padding:10px;">불러오는 중...</p>';
         const cbName='vPresets_'+Date.now();
         let done=false;
@@ -1066,7 +1099,8 @@
             done=true; cleanup();
             const presets=(data && data.ok && Array.isArray(data.presets)) ? data.presets : [];
             _presetCache=presets;
-            renderPresetList(presets);
+            // 지문 강 목록까지 받은 뒤 렌더 (교재 전체 프리셋 정확히 풀기 위해)
+            loadPassageChapters(()=>renderPresetList(presets));
         };
         const s=document.createElement('script');
         s.id=cbName;
@@ -1114,12 +1148,16 @@
             const rest = rid.slice(code.length).replace(/^_/,'');  // "11_003" / "11" / ""
             const m = rest.match(/^(\d+)/);
             if(!m){
-                // 강 번호 없음 = "교재 전체" → 단어 DB에서 그 교재의 모든 유닛 담기
+                // 강 번호 없음 = "교재 전체" → index 지문에 실제 있는 강 ∩ 단어 DB
                 let dbUnits=[];
                 try { dbUnits=[...new Set(db.filter(x=>String(x.book||'').trim()===bookName).map(x=>String(x.unit||'').trim()))].filter(Boolean); } catch(e){}
                 if(!dbUnits.length){ skipped.push(rid); return; }
+                // index 지문에 있는 강 집합
+                const idxChaps = (_passageChaptersByCode && _passageChaptersByCode[code]) ? _passageChaptersByCode[code] : null;
                 dbUnits.forEach(u=>{
                     const gnum = parseInt((String(u).match(/\d+/)||[9999])[0]);
+                    // index 지문 강 목록이 있으면 거기 포함된 강만
+                    if(idxChaps && idxChaps.size && !idxChaps.has(gnum)) return;
                     const key = bookName + '||' + u;
                     if(!seen[key]){ seen[key]=true; units.push({book:bookName, unit:u, gang:gnum}); }
                 });
