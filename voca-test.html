@@ -213,7 +213,18 @@
             background: #fff; color: var(--ink); border: 1.5px solid var(--line-2);
             cursor: pointer; text-align: left; margin-bottom: 0;
         }
-        .admin-actions .aa-select:focus { border-color: var(--wine); outline: none; }</style>
+        .admin-actions .aa-select:focus { border-color: var(--wine); outline: none; }
+        /* ===== 14일 숙제점검 그리드 ===== */
+        table.hwgrid{ border-collapse:separate; border-spacing:0; font-size:13px; white-space:nowrap; }
+        table.hwgrid th, table.hwgrid td{ border-bottom:1px solid #eee; border-right:1px solid #f0f0f0; padding:7px 6px; text-align:center; min-width:30px; }
+        table.hwgrid th.hname, table.hwgrid td.hname{ position:sticky; left:0; background:#fff; text-align:left; font-weight:700; min-width:64px; z-index:1; border-right:1px solid #e8d8b8; }
+        table.hwgrid thead th{ background:#faf6ee; font-weight:700; color:var(--ink); position:sticky; top:0; }
+        table.hwgrid td.s-제출{ background:#c8ebcf; color:#176b29; }
+        table.hwgrid td.s-지연제출{ background:#fde6b0; color:#8a5a00; }
+        table.hwgrid td.s-미제출{ background:#f8c4cb; color:#b3122a; font-weight:700; }
+        table.hwgrid td.s-선제출{ background:#bfe6f0; color:#0f6680; }
+        table.hwgrid td.s-시험{ background:#cdddf5; color:#234e84; }
+        table.hwgrid td.s-휴일{ background:#e8e8ec; color:#86868b; }</style>
 </head>
 <body>
 <div style="position:fixed; top:0; left:0; right:0; z-index:99999; background:#b08a3e; color:#fff; text-align:center; font-size:12px; font-weight:700; padding:5px; font-family:'Pretendard Variable',Pretendard,sans-serif; letter-spacing:0.3px;">TEST 환경 — 설정은 운영과 분리됩니다</div>
@@ -555,9 +566,12 @@
             </button>
             <div id="hw-mon-box" style="display:none; margin-top:14px;">
                 <a href="hw-monitor.html" target="_blank" style="display:block; text-align:center; background:var(--wine); color:#fff; padding:13px; border-radius:12px; text-decoration:none; font-weight:600; font-size:14px; margin-bottom:12px;">전체 현황 새 창에서 크게 보기 (사진 확인)</a>
-                <button class="btn" style="background:var(--wine); color:#fff; padding:11px; margin-bottom:12px; font-size:14px;" onclick="hw_loadOverview()">현황 불러오기</button>
+                <button class="btn" style="background:var(--wine); color:#fff; padding:11px; margin-bottom:12px; font-size:14px;" onclick="hw_loadGrid14()">14일 숙제점검 불러오기</button>
                 <div id="hw-mon-today" style="margin-bottom:14px;"></div>
-                <div id="hw-mon-table"></div>
+                <div id="hw-grid-info" style="font-size:12px; color:#888; margin-bottom:6px;"></div>
+                <div id="hw-grid-scroll" style="overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px;">
+                    <div id="hw-grid-area"></div>
+                </div>
                 <div style="border-top:1px dashed #cdddf2; margin-top:14px; padding-top:12px;">
                     <div style="font-size:13px; font-weight:700; color:var(--ink); margin-bottom:7px;">학생별 14일 상세</div>
                     <select id="hw-mon-stsel" style="width:100%; padding:11px; font-size:14px; margin-bottom:8px;">
@@ -911,8 +925,79 @@
         if(open && !box._loaded){ hw_loadOverview(); box._loaded = true; }
     }
 
-    function hw_loadOverview(){
+    // ── 14일 숙제점검 그리드 (hw-monitor의 adminGrid 이식) ──
+    function hw_loadGrid14(){
+        const info = document.getElementById('hw-grid-info');
+        const area = document.getElementById('hw-grid-area');
         const todayEl = document.getElementById('hw-mon-today');
+        info.textContent = '불러오는 중...';
+        area.innerHTML = '';
+        // 오늘 미제출자도 같이 (adminOverview)
+        hw_loadOverviewToday();
+        const cbName = 'hwGrid_' + Date.now();
+        let done = false;
+        const cleanup = ()=>{ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName] = (data)=>{ done = true; cleanup(); hw_renderGrid14(data); };
+        const s = document.createElement('script');
+        s.id = cbName;
+        s.src = HW_URL + "?type=adminGrid&days=14&callback=" + cbName + "&t=" + Date.now();
+        s.onerror = ()=>{ if(done) return; cleanup(); info.textContent=''; area.innerHTML='<span style="color:#e74c3c; font-size:13px;">불러오기 실패</span>'; };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done) return; cleanup(); info.textContent=''; area.innerHTML='<span style="color:#e74c3c; font-size:13px;">시간 초과</span>'; }, 12000);
+    }
+    // 오늘 미제출자만 따로 (today 박스)
+    function hw_loadOverviewToday(){
+        const todayEl = document.getElementById('hw-mon-today');
+        const cbName = 'hwTd_' + Date.now();
+        let done=false;
+        const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
+        window[cbName]=(data)=>{ done=true; cleanup();
+            const misses=(data && data.todayMisses) || [];
+            if(misses.length){
+                todayEl.innerHTML = '<div style="background:#fdeaea; border:1px solid #f4c7c7; border-radius:10px; padding:11px 13px;"><div style="font-weight:800; color:#cc0000; font-size:14px; margin-bottom:5px;">오늘 미제출 '+misses.length+'명</div><div style="font-size:13px; color:#a33; line-height:1.6;">'+misses.join(', ')+'</div></div>';
+            } else {
+                todayEl.innerHTML = '<div style="background:#eafaf0; border:1px solid #bfe6cf; border-radius:10px; padding:11px 13px; font-weight:700; color:#274e13; font-size:14px;">오늘 미제출자 없음</div>';
+            }
+        };
+        const s=document.createElement('script'); s.id=cbName;
+        s.src=HW_URL + "?type=adminOverview&days=14&callback=" + cbName + "&t=" + Date.now();
+        s.onerror=()=>{ if(done)return; cleanup(); };
+        document.body.appendChild(s);
+        setTimeout(()=>{ if(done)return; cleanup(); }, 10000);
+    }
+    function hw_renderGrid14(g){
+        const info = document.getElementById('hw-grid-info');
+        const area = document.getElementById('hw-grid-area');
+        if(!g || !g.rows || !g.dates){ info.textContent=''; area.innerHTML='<span style="color:#888; font-size:13px;">데이터 없음</span>'; return; }
+        const dates = g.dates || [];
+        const rows = g.rows || [];
+        if(!rows.length || !dates.length){ info.textContent=''; area.innerHTML='<span style="color:#888; font-size:13px;">현황 데이터 없음</span>'; return; }
+        info.textContent = '학생 ' + rows.length + '명 · ' + dates.length + '일 (O 제출·X 미제출·△ 지연·◎ 선제출)';
+        let h = '<table class="hwgrid"><thead><tr><th class="hname">학생</th>';
+        dates.forEach(dt=>{ const p=dt.split('-'); h += '<th>'+parseInt(p[1])+'/'+parseInt(p[2])+'</th>'; });
+        h += '</tr></thead><tbody>';
+        rows.forEach(row=>{
+            const nm = row.name;
+            const safe = String(nm).replace(/'/g,"\\'");
+            h += '<tr><td class="hname" style="cursor:pointer; color:var(--wine);" onclick="hw_loadStudentDetail(\''+safe+'\')">'+nm+' ›</td>';
+            dates.forEach((dt,i)=>{
+                const st = (row.statuses && row.statuses[i]) || '';
+                const cls = st ? ('s-'+st) : '';
+                const mark = st==='제출'?'O':st==='미제출'?'X':st==='지연제출'?'△':st==='선제출'?'◎':st==='시험'?'시':st==='휴일'?'-':'';
+                h += '<td class="'+cls+'">'+mark+'</td>';
+            });
+            h += '</tr>';
+        });
+        h += '</tbody></table>';
+        area.innerHTML = h;
+        // 최신 날짜가 보이도록 오른쪽 끝으로 스크롤
+        const scroller = document.getElementById('hw-grid-scroll');
+        if(scroller){ requestAnimationFrame(()=>{ scroller.scrollLeft = scroller.scrollWidth; }); }
+        // 상세 셀렉트 채우기
+        const stsel = document.getElementById('hw-mon-stsel');
+        if(stsel){ stsel.innerHTML='<option value="">학생 선택</option>'; rows.forEach(r=>stsel.add(new Option(r.name, r.name))); stsel.onchange=()=>hw_loadStudentDetail(stsel.value); }
+    }
+    function hw_loadOverview(){        const todayEl = document.getElementById('hw-mon-today');
         const tableEl = document.getElementById('hw-mon-table');
         todayEl.innerHTML = '<span style="color:#888; font-size:13px;">불러오는 중...</span>';
         tableEl.innerHTML = '';
