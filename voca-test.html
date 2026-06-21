@@ -1132,6 +1132,8 @@
     const BOOK_CAT_KEY = 'voca_book_categories';   // {교재명: 카테고리}
     const BOOK_ORDER_KEY = 'voca_book_order';       // {catOrder:[...], bookOrder:{cat:[books]}}
     let _bookCatEditMode = false;
+    let _bookCatExpandAll = false;
+    function toggleBookCatExpandAll(){ _bookCatExpandAll=!_bookCatExpandAll; if(_lastBookList) renderBookCatPanel(_lastBookList); }
     let _lastBookList = null;
     function loadBookCats(){ try{ return JSON.parse(localStorage.getItem(BOOK_CAT_KEY))||{}; }catch(e){ return {}; } }
     function saveBookCats(o){ try{ localStorage.setItem(BOOK_CAT_KEY, JSON.stringify(o)); }catch(e){} }
@@ -1179,14 +1181,16 @@
         BOOK_CATEGORIES.forEach(c=>{ if(!cats.includes(c)) cats.push(c); });
         cats=cats.filter(c=>BOOK_CATEGORIES.includes(c));
 
-        // 편집 토글 버튼
-        let html='<div style="display:flex; justify-content:flex-end; margin-bottom:6px;">';
+        // 전체 펼침/접기 + 편집 토글 버튼
+        let html='<div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px;">';
+        html+='<button type="button" onclick="toggleBookCatExpandAll()" style="font-size:11px; font-weight:700; padding:4px 9px; border-radius:7px; border:1px solid #e8d8b8; background:#fff; color:var(--ink-soft); cursor:pointer;">'+(_bookCatExpandAll?'전체 접기':'전체 펼치기')+'</button>';
         html+='<button type="button" onclick="toggleBookCatEdit()" style="font-size:11px; font-weight:700; padding:4px 9px; border-radius:7px; border:1px solid '+(_bookCatEditMode?'var(--wine)':'#e8d8b8')+'; background:'+(_bookCatEditMode?'var(--wine)':'#fff')+'; color:'+(_bookCatEditMode?'#fff':'var(--ink-soft)')+'; cursor:pointer;">'+(_bookCatEditMode?'완료':'분류 편집')+'</button></div>';
 
         cats.forEach((cat,ci)=>{
             const list=booksInCat(cat);
             if(!list.length && !_bookCatEditMode) return;   // 편집모드 아니면 빈 카테고리 숨김
             const cid='bc_'+ci;
+            const isOpen = (ci===0 || _bookCatEditMode || _bookCatExpandAll);
             html+='<div style="margin-bottom:4px;">';
             html+='<div style="display:flex; align-items:center; gap:4px;">';
             if(_bookCatEditMode){
@@ -1196,15 +1200,16 @@
                 html+='<button type="button" onclick="moveBookCat(\''+sc+'\',1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #e8d8b8; background:#fff; border-radius:4px; cursor:pointer;">▼</button>';
                 html+='</div>';
             }
-            html+='<button type="button" onclick="toggleBookCatGroup(\''+cid+'\',this)" style="flex:1; display:flex; align-items:center; justify-content:space-between; background:#faf6ee; border:none; border-radius:8px; padding:8px 10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--ink);">';
-            html+='<span>'+cat+' <span style="color:var(--ink-soft); font-weight:600;">('+list.length+')</span></span>';
-            html+='<span id="'+cid+'_arr" style="color:var(--gold); font-size:11px;">'+(ci===0||_bookCatEditMode?'▲':'▼')+'</span></button>';
+            // 카테고리 헤더 — 와인색 배경으로 진하게 구분
+            html+='<button type="button" onclick="toggleBookCatGroup(\''+cid+'\',this)" style="flex:1; display:flex; align-items:center; justify-content:space-between; background:#f3e3e6; border:none; border-left:3px solid var(--wine); border-radius:8px; padding:9px 11px; cursor:pointer; font-size:13px; font-weight:800; color:var(--wine);">';
+            html+='<span>'+cat+' <span style="color:#b08a8f; font-weight:600;">('+list.length+')</span></span>';
+            html+='<span id="'+cid+'_arr" style="color:var(--wine); font-size:11px;">'+(isOpen?'▲':'▼')+'</span></button>';
             html+='</div>';
-            html+='<div id="'+cid+'" style="display:'+(ci===0||_bookCatEditMode?'block':'none')+'; padding:4px 2px;">';
+            html+='<div id="'+cid+'" style="display:'+(isOpen?'block':'none')+'; padding:4px 2px 4px 6px;">';
             list.forEach(bk=>{
                 const sb=bk.replace(/'/g,"\\'");
                 const sc=cat.replace(/'/g,"\\'");
-                html+='<div style="display:flex; align-items:center; gap:4px;">';
+                html+='<div style="display:flex; align-items:center; gap:5px; min-width:0; padding:3px 2px;">';
                 if(_bookCatEditMode){
                     html+='<div style="display:flex; flex-direction:column; gap:1px;">';
                     html+='<button type="button" onclick="moveBookInCat(\''+sc+'\',\''+sb+'\',-1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #eee; background:#fff; border-radius:4px; cursor:pointer;">▲</button>';
@@ -1212,8 +1217,8 @@
                     html+='</div>';
                     // 카테고리 변경 드롭다운
                     let opts=BOOK_CATEGORIES.map(c=>'<option value="'+c+'"'+(c===cat?' selected':'')+'>'+c+'</option>').join('');
-                    html+='<span style="flex:1; font-size:13px; color:#334155;">'+bk+'</span>';
-                    html+='<select onchange="setBookCat(\''+sb+'\',this.value)" style="font-size:11px; padding:3px 4px; border:1px solid #e8d8b8; border-radius:6px;">'+opts+'</select>';
+                    html+='<span style="flex:1 1 auto; min-width:0; font-size:13px; color:#334155; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+bk+'</span>';
+                    html+='<select onchange="setBookCat(\''+sb+'\',this.value)" style="flex:0 0 86px; width:86px; font-size:11px; padding:4px 4px; border:1px solid #e8d8b8; border-radius:6px;">'+opts+'</select>';
                 } else {
                     html+='<button type="button" onclick="selectBook(\''+sb+'\',this)" style="flex:1; text-align:left; background:none; border:none; border-radius:7px; padding:8px 10px; cursor:pointer; font-size:13.5px; color:#334155;" onmouseover="this.style.background=\'#f3eee3\'" onmouseout="if(!this.dataset.sel)this.style.background=\'none\'">'+bk+'</button>';
                 }
