@@ -296,6 +296,32 @@ body{font-size:15px}
 </head>
 <body>
 
+<!-- ===== 공통 상단 네비게이션 ===== -->
+<nav class="gnav">
+  <div class="gnav-inner">
+    <a class="gnav-brand" href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">대단한영어</a>
+    <div class="gnav-links">
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">학원안내</a>
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/suneung_2026.html">수능대비반</a>
+      <a class="active" href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">학교정보</a>
+    </div>
+  </div>
+</nav>
+<style>
+  .gnav{background:#0d1b2a;border-bottom:1px solid rgba(245,158,11,.4);position:sticky;top:0;z-index:9999}
+  .gnav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:11px 20px;gap:10px}
+  .gnav-brand{font-weight:800;font-size:16px;color:#f59e0b;text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+  .gnav-links{display:flex;gap:4px}
+  .gnav-links a{font-size:13px;font-weight:600;color:rgba(255,255,255,.72);text-decoration:none;padding:7px 12px;border-radius:8px;white-space:nowrap;transition:all .15s}
+  .gnav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .gnav-links a.active{color:#0d1b2a;background:linear-gradient(135deg,#fbbf24,#f59e0b);font-weight:700}
+  @media(max-width:430px){
+    .gnav-brand{font-size:14px}
+    .gnav-links a{font-size:12px;padding:6px 9px}
+    .gnav-inner{padding:10px 14px}
+  }
+</style>
+
 <header>
   <div style="display:flex;align-items:center">
     <div><a href="https://blog.naver.com/pkf78" target="_blank" style="text-decoration:none"><div class="logo">대단한영어</div></a></div>
@@ -1290,6 +1316,35 @@ function geSkip(){try{localStorage.setItem('ge_skip',Date.now()+86400000);}catch
 (function(){try{var v=localStorage.getItem('ge_skip');if(v&&Date.now()<parseInt(v)){var el=document.getElementById('ge-ov');if(el&&el.parentNode)el.parentNode.removeChild(el);}}catch(e){}})();
 </script>
 
+<!-- ===== 함께 보면 좋은 페이지 ===== -->
+<section style="padding:44px 20px 54px;background:var(--surface)">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="text-align:center;font-size:12px;letter-spacing:.2em;font-weight:700;color:var(--gold);margin-bottom:18px">함께 보면 좋은 페이지</div>
+    <div class="seealso">
+      <a class="sa-card" href="https://greatenglish1201-ux.github.io/GREATENG/suneung_2026.html">
+        <div class="sa-ic">🎯</div>
+        <div class="sa-tx"><b>고3 수능대비반</b><span>2027학년도 수능영어 파이널 · 7월 개강 안내</span></div>
+        <div class="sa-arrow">→</div>
+      </a>
+      <a class="sa-card" href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">
+        <div class="sa-ic">📖</div>
+        <div class="sa-tx"><b>학원 안내</b><span>수업이 진행되는 방식과 우리 학원의 특별함</span></div>
+        <div class="sa-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+<style>
+  .seealso{display:flex;flex-direction:column;gap:13px}
+  .sa-card{display:flex;align-items:center;gap:15px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;text-decoration:none;box-shadow:0 8px 24px rgba(13,27,42,.07);transition:transform .15s,box-shadow .15s}
+  .sa-card:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(13,27,42,.13)}
+  .sa-ic{flex:none;width:46px;height:46px;border-radius:13px;background:linear-gradient(150deg,#1a3a5c,#0d1b2a);display:grid;place-items:center;font-size:22px}
+  .sa-tx{flex:1;display:flex;flex-direction:column;gap:3px}
+  .sa-tx b{font-size:16px;color:var(--text);font-weight:800}
+  .sa-tx span{font-size:13px;color:var(--muted);line-height:1.5}
+  .sa-arrow{flex:none;color:var(--gold);font-size:20px;font-weight:900}
+  @media(min-width:680px){.seealso{flex-direction:row}.sa-card{flex:1}}
+</style>
 </body>
 </html>
 

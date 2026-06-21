@@ -457,6 +457,32 @@
 </head>
 <body>
 
+<!-- ===== 공통 상단 네비게이션 ===== -->
+<nav class="gnav">
+  <div class="gnav-inner">
+    <a class="gnav-brand" href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">대단한영어</a>
+    <div class="gnav-links">
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">학원안내</a>
+      <a class="active" href="https://greatenglish1201-ux.github.io/GREATENG/suneung_2026.html">수능대비반</a>
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">학교정보</a>
+    </div>
+  </div>
+</nav>
+<style>
+  .gnav{background:#5a0a16;border-bottom:1px solid rgba(201,168,76,.4);position:sticky;top:0;z-index:999}
+  .gnav-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:11px 20px;gap:10px}
+  .gnav-brand{font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;color:#e3cd8a;text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+  .gnav-links{display:flex;gap:4px}
+  .gnav-links a{font-size:13px;font-weight:600;color:rgba(255,255,255,.72);text-decoration:none;padding:7px 12px;border-radius:8px;white-space:nowrap;transition:all .15s}
+  .gnav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .gnav-links a.active{color:#5a0a16;background:linear-gradient(135deg,#e3cd8a,#C9A84C);font-weight:700}
+  @media(max-width:430px){
+    .gnav-brand{font-size:14px}
+    .gnav-links a{font-size:12px;padding:6px 9px}
+    .gnav-inner{padding:10px 14px}
+  }
+</style>
+
 <!-- HERO -->
 <header class="hero">
   <div class="hero-inner">
@@ -704,6 +730,36 @@
     <a class="btn btn-primary" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener"><span class="btn-num">2</span>네이버 톡톡으로 신청</a>
   </div>
 </div>
+
+<!-- ===== 함께 보면 좋은 페이지 ===== -->
+<section style="padding:0 22px">
+  <div class="wrap" style="padding:48px 0 8px">
+    <span class="kicker" style="text-align:center;display:block">함께 보면 좋은 페이지</span>
+    <div class="seealso">
+      <a class="sa-card" href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">
+        <div class="sa-ic">📖</div>
+        <div class="sa-tx"><b>학원 안내</b><span>수업이 진행되는 방식과 우리 학원의 특별함</span></div>
+        <div class="sa-arrow">→</div>
+      </a>
+      <a class="sa-card" href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">
+        <div class="sa-ic">🏫</div>
+        <div class="sa-tx"><b>포항 학교 정보</b><span>우리 아이 학교, 어디로 갈까 — 28개교 정보 지도</span></div>
+        <div class="sa-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+<style>
+  .seealso{margin-top:22px;display:flex;flex-direction:column;gap:13px}
+  .sa-card{display:flex;align-items:center;gap:15px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;text-decoration:none;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s}
+  .sa-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .sa-ic{flex:none;width:46px;height:46px;border-radius:13px;background:linear-gradient(150deg,var(--wine),var(--wine-deep));display:grid;place-items:center;font-size:22px}
+  .sa-tx{flex:1;display:flex;flex-direction:column;gap:3px}
+  .sa-tx b{font-family:'Noto Serif KR',serif;font-size:16px;color:var(--ink);font-weight:700}
+  .sa-tx span{font-size:13px;color:var(--ink-soft);line-height:1.5}
+  .sa-arrow{flex:none;color:var(--gold);font-size:20px;font-weight:900}
+  @media(min-width:680px){.seealso{flex-direction:row}.sa-card{flex:1}}
+</style>
 
 <!-- FOOTER -->
 <footer class="rv">
