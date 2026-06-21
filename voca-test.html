@@ -224,7 +224,26 @@
         table.hwgrid td.s-미제출{ background:#f8c4cb; color:#b3122a; font-weight:700; }
         table.hwgrid td.s-선제출{ background:#bfe6f0; color:#0f6680; }
         table.hwgrid td.s-시험{ background:#cdddf5; color:#234e84; }
-        table.hwgrid td.s-휴일{ background:#e8e8ec; color:#86868b; }</style>
+        table.hwgrid td.s-휴일{ background:#e8e8ec; color:#86868b; }
+        /* ===== 출제 구성 애플 스타일 ===== */
+        .comp-card{ background:#fbfaf8; border:1px solid #efe9e0; border-radius:16px; padding:16px; }
+        .comp-num{ font-variant-numeric:tabular-nums; text-align:right; border:1px solid #e2dccf; border-radius:9px; padding:7px 9px; font-size:14px; font-weight:700; background:#fff; transition:border-color .15s; -webkit-appearance:none; -moz-appearance:textfield; }
+        .comp-num:focus{ outline:none; border-color:var(--wine); }
+        .qty-pill{ flex:1; padding:10px 0; font-size:13.5px; font-weight:700; border-radius:11px; border:1px solid #e6ddcd; background:#fff; color:#6b6256; cursor:pointer; transition:all .14s; }
+        .qty-pill:hover{ border-color:var(--gold); }
+        .qty-pill.active{ background:var(--wine); color:#fff; border-color:var(--wine); box-shadow:0 2px 7px rgba(122,16,32,.2); }
+        .qty-pill.qty-max.active{ background:var(--gold); border-color:var(--gold); box-shadow:0 2px 7px rgba(176,138,62,.25); }
+        .type-pill{ padding:9px 15px; font-size:13px; font-weight:700; border-radius:999px; border:1px solid #e6ddcd; background:#fff; color:#6b6256; cursor:pointer; transition:all .14s; }
+        .type-pill:hover{ border-color:var(--gold); }
+        .type-pill.active{ background:var(--wine); color:#fff; border-color:var(--wine); }
+        /* 모던 슬라이더 */
+        input[type=range].comp-range{ -webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:999px; background:#ece6dc; outline:none; }
+        input[type=range].comp-range::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; border:none; box-shadow:0 1px 4px rgba(0,0,0,.25); cursor:pointer; }
+        input[type=range].comp-range::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:#fff; border:none; box-shadow:0 1px 4px rgba(0,0,0,.25); cursor:pointer; }
+        input[type=range].comp-range:disabled{ opacity:.55; }
+        .type-row{ display:flex; align-items:center; gap:9px; margin-bottom:6px; }
+        .type-dot{ width:9px; height:9px; border-radius:50%; flex:0 0 9px; }
+        .type-label{ flex:1; font-size:13px; font-weight:600; color:#43403b; }</style>
 </head>
 <body>
 <div style="position:fixed; top:0; left:0; right:0; z-index:99999; background:#b08a3e; color:#fff; text-align:center; font-size:12px; font-weight:700; padding:5px; font-family:'Pretendard Variable',Pretendard,sans-serif; letter-spacing:0.3px;">TEST 환경 — 설정은 운영과 분리됩니다</div>
@@ -647,86 +666,81 @@
             </div>
             <div id="basket" class="basket"></div>
 
-            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                <div style="text-align: center; font-size: 15px; font-weight: bold; color: #666; margin-bottom: 12px;">전체 풀(Pool):<span id="pool-text" style="color: var(--navy);">0</span>개 단어</div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0ece3;">
+                <div style="text-align:center; font-size:13px; font-weight:600; color:#8a8478; margin-bottom:14px;">전체 풀 <span id="pool-text" style="color:var(--wine); font-weight:800;">0</span>개 단어</div>
 
-                <div style="background:#faf7f0; border:1px solid var(--cream-deep); border-radius:14px; padding:14px; margin-bottom:16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span style="font-size:14px; font-weight:800; color:var(--ink);">출제 개수</span>
-                        <div style="display:flex; align-items:center;">
-                            <input type="number" id="target-num" class="num-input" min="0" value="120" oninput="ADMIN.onTargetInput()" style="color:var(--wine); width:64px;"> <span style="font-size:13px; margin-left:3px; font-weight:bold;">개</span>
+                <div class="comp-card" style="margin-bottom:18px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-size:15px; font-weight:800; color:var(--ink);">출제 개수</span>
+                        <div style="display:flex; align-items:center; gap:4px;">
+                            <input type="number" id="target-num" class="comp-num" min="0" value="120" oninput="ADMIN.onTargetInput()" style="color:var(--wine); width:62px;"> <span style="font-size:13px; font-weight:700; color:#8a8478;">개</span>
                         </div>
                     </div>
-                    <div style="display:flex; gap:6px; margin-bottom:6px;">
-                        <button onclick="ADMIN.setTarget(60)" class="qty-btn" data-q="60">60</button>
-                        <button onclick="ADMIN.setTarget(80)" class="qty-btn" data-q="80">80</button>
-                        <button onclick="ADMIN.setTarget(120)" class="qty-btn" data-q="120">120</button>
-                        <button onclick="ADMIN.setTarget(160)" class="qty-btn" data-q="160">160</button>
+                    <div style="display:flex; gap:7px; margin-bottom:7px;">
+                        <button onclick="ADMIN.setTarget(60)" class="qty-btn qty-pill" data-q="60">60</button>
+                        <button onclick="ADMIN.setTarget(80)" class="qty-btn qty-pill" data-q="80">80</button>
+                        <button onclick="ADMIN.setTarget(120)" class="qty-btn qty-pill" data-q="120">120</button>
+                        <button onclick="ADMIN.setTarget(160)" class="qty-btn qty-pill" data-q="160">160</button>
                     </div>
-                    <div style="display:flex; gap:6px; margin-bottom:10px;">
-                        <button onclick="ADMIN.setTarget(200)" class="qty-btn" data-q="200">200</button>
-                        <button onclick="ADMIN.setTarget(300)" class="qty-btn" data-q="300">300</button>
-                        <button onclick="ADMIN.setTargetMax()" class="qty-btn qty-max" data-q="max">MAX</button>
+                    <div style="display:flex; gap:7px; margin-bottom:14px;">
+                        <button onclick="ADMIN.setTarget(200)" class="qty-btn qty-pill" data-q="200">200</button>
+                        <button onclick="ADMIN.setTarget(300)" class="qty-btn qty-pill" data-q="300">300</button>
+                        <button onclick="ADMIN.setTargetMax()" class="qty-btn qty-pill qty-max" data-q="max">MAX</button>
                     </div>
-                    <input type="range" id="target-val" min="0" max="0" value="120" oninput="ADMIN.onTargetSlider()" style="accent-color:var(--wine);">
-                    <div style="font-size:11px; color:#999; margin-top:4px;">전체 풀(Pool)보다 크면 풀 개수만큼만 출제됩니다.</div>
+                    <input type="range" id="target-val" class="comp-range" min="0" max="0" value="120" oninput="ADMIN.onTargetSlider()" style="accent-color:var(--wine);">
+                    <div style="font-size:11px; color:#aaa; margin-top:8px;">전체 풀보다 크면 풀 개수만큼만 출제됩니다.</div>
                 </div>
 
-                <div style="font-size:12px; color:var(--ink-soft); font-weight:700; margin-bottom:8px;">유형 분배 (위 개수를 나눔)</div>
-                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px;">
-                    <button onclick="ADMIN.applyPreset('ek-ke')" class="preset-btn">영한 반반</button>
-                    <button onclick="ADMIN.applyPreset('even')" class="preset-btn">균등 분배</button>
-                    <button onclick="ADMIN.applyPreset('ee-ex')" class="preset-btn">영영+예문 반반</button>
-                    <button onclick="ADMIN.applyPreset('manual')" class="preset-btn" style="background:#fff; color:#777; border:1px solid #ddd;">직접 설정</button>
+                <div style="font-size:12px; color:#8a8478; font-weight:700; margin-bottom:9px;">유형 분배 <span style="font-weight:500; color:#b0a99c;">(위 개수를 나눔)</span></div>
+                <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px;">
+                    <button onclick="ADMIN.applyPreset('ek-ke')" class="preset-btn type-pill">영한 반반</button>
+                    <button onclick="ADMIN.applyPreset('even')" class="preset-btn type-pill">균등 분배</button>
+                    <button onclick="ADMIN.applyPreset('ee-ex')" class="preset-btn type-pill">영영+예문 반반</button>
+                    <button onclick="ADMIN.applyPreset('manual')" class="preset-btn type-pill">직접 설정</button>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 14px; font-weight: bold; color: var(--black);">합산 출제 문항</span>
-                    <div style="display: flex; align-items: center;">
-                        <input type="number" id="total-num" class="num-input" value="0" readonly style="background:#eee;"> <span style="font-size:14px; margin-left:3px; font-weight:bold;">개</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;">
+                    <span style="font-size:14px; font-weight:800; color:var(--ink);">합산 출제 문항</span>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <input type="number" id="total-num" class="comp-num" value="0" readonly style="background:#f3f0ea; color:#6b6256; width:62px;"> <span style="font-size:13px; font-weight:700; color:#8a8478;">개</span>
                     </div>
                 </div>
-                <input type="range" id="total-val" min="0" max="0" step="1" value="0" style="margin-bottom: 25px; accent-color: var(--black);" disabled>
+                <input type="range" id="total-val" class="comp-range" min="0" max="0" step="1" value="0" style="margin-bottom:22px;" disabled>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">1. 영-한 (객관식)</span>
-                    <div style="display: flex; align-items: center;">
-                        <input type="number" id="ek-num" class="num-input" style="color: var(--gold);" min="0" value="0" oninput="ADMIN.syncInput('ek')">
-                    </div>
+                <div class="type-row">
+                    <span class="type-dot" style="background:var(--gold);"></span>
+                    <span class="type-label">1. 영-한 <span style="color:#a8a296; font-weight:500;">(객관식)</span></span>
+                    <input type="number" id="ek-num" class="comp-num" style="color:var(--gold); width:54px;" min="0" value="0" oninput="ADMIN.syncInput('ek')">
                 </div>
-                <input type="range" id="ek-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px;" oninput="ADMIN.syncSlider('ek')">
+                <input type="range" id="ek-val" class="comp-range" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom:16px; accent-color:var(--gold);" oninput="ADMIN.syncSlider('ek')">
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">2. 한-영 (객관식)</span>
-                    <div style="display: flex; align-items: center;">
-                        <input type="number" id="ke-obj-num" class="num-input" style="color: var(--obj-blue);" min="0" value="0" oninput="ADMIN.syncInput('ke-obj')">
-                    </div>
+                <div class="type-row">
+                    <span class="type-dot" style="background:var(--obj-blue);"></span>
+                    <span class="type-label">2. 한-영 <span style="color:#a8a296; font-weight:500;">(객관식)</span></span>
+                    <input type="number" id="ke-obj-num" class="comp-num" style="color:var(--obj-blue); width:54px;" min="0" value="0" oninput="ADMIN.syncInput('ke-obj')">
                 </div>
-                <input type="range" id="ke-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--obj-blue);" oninput="ADMIN.syncSlider('ke-obj')">
+                <input type="range" id="ke-obj-val" class="comp-range" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom:16px; accent-color:var(--obj-blue);" oninput="ADMIN.syncSlider('ke-obj')">
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">3. 한-영 (스펠링 쓰기)</span>
-                    <div style="display: flex; align-items: center;">
-                        <input type="number" id="ke-subj-num" class="num-input" style="color: var(--subj-green);" min="0" value="0" oninput="ADMIN.syncInput('ke-subj')">
-                    </div>
+                <div class="type-row">
+                    <span class="type-dot" style="background:var(--subj-green);"></span>
+                    <span class="type-label">3. 한-영 <span style="color:#a8a296; font-weight:500;">(스펠링 쓰기)</span></span>
+                    <input type="number" id="ke-subj-num" class="comp-num" style="color:var(--subj-green); width:54px;" min="0" value="0" oninput="ADMIN.syncInput('ke-subj')">
                 </div>
-                <input type="range" id="ke-subj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--subj-green);" oninput="ADMIN.syncSlider('ke-subj')">
+                <input type="range" id="ke-subj-val" class="comp-range" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom:16px; accent-color:var(--subj-green);" oninput="ADMIN.syncSlider('ke-subj')">
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">4. 영영풀이 (객관식)</span>
-                    <div style="display: flex; align-items: center;">
-                        <input type="number" id="ee-obj-num" class="num-input" style="color: var(--ee-purple);" min="0" value="0" oninput="ADMIN.syncInput('ee-obj')">
-                    </div>
+                <div class="type-row">
+                    <span class="type-dot" style="background:var(--ee-purple);"></span>
+                    <span class="type-label">4. 영영풀이 <span style="color:#a8a296; font-weight:500;">(객관식)</span></span>
+                    <input type="number" id="ee-obj-num" class="comp-num" style="color:var(--ee-purple); width:54px;" min="0" value="0" oninput="ADMIN.syncInput('ee-obj')">
                 </div>
-                <input type="range" id="ee-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--ee-purple);" oninput="ADMIN.syncSlider('ee-obj')">
+                <input type="range" id="ee-obj-val" class="comp-range" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom:16px; accent-color:var(--ee-purple);" oninput="ADMIN.syncSlider('ee-obj')">
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">5. 예문 빈칸 (객관식)</span>
-                    <div style="display: flex; align-items: center;">
-                        <input type="number" id="ex-obj-num" class="num-input" style="color: var(--ex-orange);" min="0" value="0" oninput="ADMIN.syncInput('ex-obj')">
-                    </div>
+                <div class="type-row">
+                    <span class="type-dot" style="background:var(--ex-orange);"></span>
+                    <span class="type-label">5. 예문 빈칸 <span style="color:#a8a296; font-weight:500;">(객관식)</span></span>
+                    <input type="number" id="ex-obj-num" class="comp-num" style="color:var(--ex-orange); width:54px;" min="0" value="0" oninput="ADMIN.syncInput('ex-obj')">
                 </div>
-                <input type="range" id="ex-obj-val" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom: 15px; accent-color: var(--ex-orange);" oninput="ADMIN.syncSlider('ex-obj')">
+                <input type="range" id="ex-obj-val" class="comp-range" min="0" max="0" step="1" value="0" list="tickmarks" style="margin-bottom:15px; accent-color:var(--ex-orange);" oninput="ADMIN.syncSlider('ex-obj')">
             </div>
         </div>
         </div><!-- /.admin-col (right) -->
