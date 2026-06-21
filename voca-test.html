@@ -1110,12 +1110,28 @@
             if(!code){ skipped.push(rid); return; }
             const bookName = resolveBookName(code);
             if(!bookName){ skipped.push(rid); return; }
-            // 코드 뒤: _강_번호 또는 _강
-            const rest = rid.slice(code.length).replace(/^_/,'');  // "11_003" 또는 "11"
+            // 코드 뒤: _강_번호 또는 _강, 또는 비어있음(교재 전체)
+            const rest = rid.slice(code.length).replace(/^_/,'');  // "11_003" / "11" / ""
             const m = rest.match(/^(\d+)/);
-            if(!m){ skipped.push(rid); return; }
+            if(!m){
+                // 강 번호 없음 = "교재 전체" → 단어 DB에서 그 교재의 모든 유닛 담기
+                let dbUnits=[];
+                try { dbUnits=[...new Set(db.filter(x=>String(x.book||'').trim()===bookName).map(x=>String(x.unit||'').trim()))].filter(Boolean); } catch(e){}
+                if(!dbUnits.length){ skipped.push(rid); return; }
+                dbUnits.forEach(u=>{
+                    const gnum = parseInt((String(u).match(/\d+/)||[9999])[0]);
+                    const key = bookName + '||' + u;
+                    if(!seen[key]){ seen[key]=true; units.push({book:bookName, unit:u, gang:gnum}); }
+                });
+                return;
+            }
             const gang = parseInt(m[1]);   // 강 번호
-            const unit = gang + '강';
+            // 단어 DB에서 그 강 번호에 해당하는 실제 유닛명 찾기 (없으면 "N강")
+            let unit = gang + '강';
+            try {
+                const found = db.find(x=> String(x.book||'').trim()===bookName && parseInt((String(x.unit||'').match(/\d+/)||[-1])[0])===gang );
+                if(found) unit = String(found.unit).trim();
+            } catch(e){}
             const key = bookName + '||' + unit;
             if(!seen[key]){ seen[key]=true; units.push({book:bookName, unit:unit, gang:gang}); }
         });
