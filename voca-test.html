@@ -610,7 +610,10 @@
         <div class="section">
             <span class="label">2. 단어 교재 및 유닛 선택</span>
             <button onclick="openPresetModal()" style="width:100%; margin-bottom:10px; padding:11px; background:#fdf7ee; color:var(--wine); border:1.5px solid #e8d8b8; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>시험범위 프리셋에서 가져오기</button>
-            <select id="book-sel" onchange="ADMIN.loadUnits()" style="margin-bottom: 10px;"><option value="">단어 교재 선택</option></select>
+            <select id="book-sel" onchange="ADMIN.loadUnits()" style="display:none;"><option value="">단어 교재 선택</option></select>
+            <div id="book-cat-panel" style="border:1px solid #eee; border-radius:12px; padding:8px; margin-bottom:10px; max-height:340px; overflow-y:auto;">
+                <div style="font-size:12px; color:var(--ink-soft); padding:6px;">교재 불러오는 중...</div>
+            </div>
             <div id="unit-area" style="display:none; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span style="font-size: 13px; font-weight: bold; color: var(--dark-gray);">유닛 다중 선택</span>
@@ -1124,6 +1127,119 @@
         document.body.appendChild(s);
         setTimeout(()=>{ if(done)return; cleanup(); _passageChaptersByCode={}; cb(); }, 10000);
     }
+    // ── 단어 교재 카테고리 분류 (학원단어장/부교재/교과서/모의고사/기타) ──
+    const BOOK_CATEGORIES = ['학원단어장','부교재','교과서','모의고사','기타'];
+    const BOOK_CAT_KEY = 'voca_book_categories';   // {교재명: 카테고리}
+    const BOOK_ORDER_KEY = 'voca_book_order';       // {catOrder:[...], bookOrder:{cat:[books]}}
+    let _bookCatEditMode = false;
+    let _lastBookList = null;
+    function loadBookCats(){ try{ return JSON.parse(localStorage.getItem(BOOK_CAT_KEY))||{}; }catch(e){ return {}; } }
+    function saveBookCats(o){ try{ localStorage.setItem(BOOK_CAT_KEY, JSON.stringify(o)); }catch(e){} }
+    function loadBookOrder(){ try{ return JSON.parse(localStorage.getItem(BOOK_ORDER_KEY))||{catOrder:[],bookOrder:{}}; }catch(e){ return {catOrder:[],bookOrder:{}}; } }
+    function saveBookOrder(o){ try{ localStorage.setItem(BOOK_ORDER_KEY, JSON.stringify(o)); }catch(e){} }
+    function bookCatOf(book){ const m=loadBookCats(); return m[book] || '기타'; }
+    function setBookCat(book, cat){ const m=loadBookCats(); m[book]=cat; saveBookCats(m); if(_lastBookList) renderBookCatPanel(_lastBookList); }
+    function toggleBookCatEdit(){ _bookCatEditMode=!_bookCatEditMode; if(_lastBookList) renderBookCatPanel(_lastBookList); }
+
+    function moveBookCat(cat, dir){
+        const o=loadBookOrder();
+        let order=(o.catOrder&&o.catOrder.length)?o.catOrder.slice():BOOK_CATEGORIES.slice();
+        BOOK_CATEGORIES.forEach(c=>{ if(!order.includes(c)) order.push(c); });
+        let i=order.indexOf(cat); if(i<0) return;
+        const j=i+dir; if(j<0||j>=order.length) return;
+        const t=order[i]; order[i]=order[j]; order[j]=t;
+        o.catOrder=order; saveBookOrder(o);
+        if(_lastBookList) renderBookCatPanel(_lastBookList);
+    }
+    function moveBookInCat(cat, book, dir){
+        const o=loadBookOrder(); if(!o.bookOrder) o.bookOrder={};
+        let arr=(o.bookOrder[cat]&&o.bookOrder[cat].length)?o.bookOrder[cat].slice():booksInCat(cat);
+        booksInCat(cat).forEach(b=>{ if(!arr.includes(b)) arr.push(b); });
+        let i=arr.indexOf(book); if(i<0) return;
+        const j=i+dir; if(j<0||j>=arr.length) return;
+        const t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+        o.bookOrder[cat]=arr; saveBookOrder(o);
+        if(_lastBookList) renderBookCatPanel(_lastBookList);
+    }
+    function booksInCat(cat){
+        if(!_lastBookList) return [];
+        const o=loadBookOrder();
+        let names=_lastBookList.filter(b=>bookCatOf(b)===cat);
+        const saved=((o.bookOrder||{})[cat]||[]).filter(b=>names.includes(b));
+        const rest=names.filter(b=>!saved.includes(b)).sort((a,b)=>a.localeCompare(b,'ko'));
+        return saved.concat(rest);
+    }
+    function renderBookCatPanel(books){
+        const panel=document.getElementById('book-cat-panel');
+        if(!panel) return;
+        _lastBookList = books;
+        const o=loadBookOrder();
+        // 카테고리 순서: 저장 우선, 없으면 기본 순서
+        let cats=(o.catOrder&&o.catOrder.length)?o.catOrder.slice():BOOK_CATEGORIES.slice();
+        BOOK_CATEGORIES.forEach(c=>{ if(!cats.includes(c)) cats.push(c); });
+        cats=cats.filter(c=>BOOK_CATEGORIES.includes(c));
+
+        // 편집 토글 버튼
+        let html='<div style="display:flex; justify-content:flex-end; margin-bottom:6px;">';
+        html+='<button type="button" onclick="toggleBookCatEdit()" style="font-size:11px; font-weight:700; padding:4px 9px; border-radius:7px; border:1px solid '+(_bookCatEditMode?'var(--wine)':'#e8d8b8')+'; background:'+(_bookCatEditMode?'var(--wine)':'#fff')+'; color:'+(_bookCatEditMode?'#fff':'var(--ink-soft)')+'; cursor:pointer;">'+(_bookCatEditMode?'완료':'분류 편집')+'</button></div>';
+
+        cats.forEach((cat,ci)=>{
+            const list=booksInCat(cat);
+            if(!list.length && !_bookCatEditMode) return;   // 편집모드 아니면 빈 카테고리 숨김
+            const cid='bc_'+ci;
+            html+='<div style="margin-bottom:4px;">';
+            html+='<div style="display:flex; align-items:center; gap:4px;">';
+            if(_bookCatEditMode){
+                const sc=cat.replace(/'/g,"\\'");
+                html+='<div style="display:flex; flex-direction:column; gap:1px;">';
+                html+='<button type="button" onclick="moveBookCat(\''+sc+'\',-1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #e8d8b8; background:#fff; border-radius:4px; cursor:pointer;">▲</button>';
+                html+='<button type="button" onclick="moveBookCat(\''+sc+'\',1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #e8d8b8; background:#fff; border-radius:4px; cursor:pointer;">▼</button>';
+                html+='</div>';
+            }
+            html+='<button type="button" onclick="toggleBookCatGroup(\''+cid+'\',this)" style="flex:1; display:flex; align-items:center; justify-content:space-between; background:#faf6ee; border:none; border-radius:8px; padding:8px 10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--ink);">';
+            html+='<span>'+cat+' <span style="color:var(--ink-soft); font-weight:600;">('+list.length+')</span></span>';
+            html+='<span id="'+cid+'_arr" style="color:var(--gold); font-size:11px;">'+(ci===0||_bookCatEditMode?'▲':'▼')+'</span></button>';
+            html+='</div>';
+            html+='<div id="'+cid+'" style="display:'+(ci===0||_bookCatEditMode?'block':'none')+'; padding:4px 2px;">';
+            list.forEach(bk=>{
+                const sb=bk.replace(/'/g,"\\'");
+                const sc=cat.replace(/'/g,"\\'");
+                html+='<div style="display:flex; align-items:center; gap:4px;">';
+                if(_bookCatEditMode){
+                    html+='<div style="display:flex; flex-direction:column; gap:1px;">';
+                    html+='<button type="button" onclick="moveBookInCat(\''+sc+'\',\''+sb+'\',-1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #eee; background:#fff; border-radius:4px; cursor:pointer;">▲</button>';
+                    html+='<button type="button" onclick="moveBookInCat(\''+sc+'\',\''+sb+'\',1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #eee; background:#fff; border-radius:4px; cursor:pointer;">▼</button>';
+                    html+='</div>';
+                    // 카테고리 변경 드롭다운
+                    let opts=BOOK_CATEGORIES.map(c=>'<option value="'+c+'"'+(c===cat?' selected':'')+'>'+c+'</option>').join('');
+                    html+='<span style="flex:1; font-size:13px; color:#334155;">'+bk+'</span>';
+                    html+='<select onchange="setBookCat(\''+sb+'\',this.value)" style="font-size:11px; padding:3px 4px; border:1px solid #e8d8b8; border-radius:6px;">'+opts+'</select>';
+                } else {
+                    html+='<button type="button" onclick="selectBook(\''+sb+'\',this)" style="flex:1; text-align:left; background:none; border:none; border-radius:7px; padding:8px 10px; cursor:pointer; font-size:13.5px; color:#334155;" onmouseover="this.style.background=\'#f3eee3\'" onmouseout="if(!this.dataset.sel)this.style.background=\'none\'">'+bk+'</button>';
+                }
+                html+='</div>';
+            });
+            if(!list.length) html+='<div style="font-size:11px; color:#bbb; padding:6px 10px;">교재 없음</div>';
+            html+='</div></div>';
+        });
+        panel.innerHTML=html;
+    }
+    function toggleBookCatGroup(cid, btn){
+        const box=document.getElementById(cid); const arr=document.getElementById(cid+'_arr');
+        const open=box.style.display==='none'||!box.style.display;
+        box.style.display=open?'block':'none';
+        if(arr) arr.textContent=open?'▲':'▼';
+    }
+    let _selBookBtn=null;
+    function selectBook(book, btn){
+        if(_selBookBtn){ delete _selBookBtn.dataset.sel; _selBookBtn.style.background='none'; _selBookBtn.style.fontWeight='400'; _selBookBtn.style.color='#334155'; }
+        if(btn){ btn.dataset.sel='1'; btn.style.background='#f0e4d0'; btn.style.fontWeight='800'; btn.style.color='var(--wine)'; _selBookBtn=btn; }
+        // 기존 드롭다운 값 설정 + 유닛 로드 (기존 로직 재사용)
+        const sel=document.getElementById('book-sel');
+        if(sel){ sel.value=book; }
+        ADMIN.loadUnits();
+    }
+
     function openPresetModal(){
         document.getElementById('preset-modal').style.display='flex';
         const listEl=document.getElementById('preset-list');
@@ -2971,6 +3087,8 @@
             const bSel = document.getElementById('book-sel');
             bSel.innerHTML = '<option value="">단어 교재 선택</option>';
             books.forEach(b =>{ bSel.add(new Option(b, b)); });
+            // 카테고리별 교재 리스트 렌더
+            renderBookCatPanel(books);
 
             // 학생 명단 로딩
             try {
