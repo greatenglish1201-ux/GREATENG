@@ -1433,11 +1433,12 @@
             let h='<div style="color:#166534; margin-bottom:6px;">단어쓰기 '+items.length+'건</div><div style="display:flex; gap:6px; flex-wrap:wrap;">';
             items.slice(0,6).forEach(it=>{
                 const thumb=it.thumb||'';
-                const url=it.photoUrl||'#';
+                // 원본 큰 이미지: fileId가 있으면 드라이브 썸네일(고화질), 없으면 photoUrl/thumb
+                const big = it.fileId ? ('https://drive.google.com/thumbnail?id='+it.fileId+'&sz=w1200') : (it.photoUrl||thumb||'#');
                 if(thumb){
-                    h+='<a href="'+url+'" target="_blank" rel="noopener" style="display:block;"><img src="'+thumb+'" style="width:54px; height:54px; object-fit:cover; border-radius:8px; border:1px solid #e8d8b8;" loading="lazy"></a>';
-                } else {
-                    h+='<a href="'+url+'" target="_blank" rel="noopener" style="font-size:11px; color:var(--wine);">사진</a>';
+                    h+='<a href="'+big+'" target="_blank" rel="noopener noreferrer"><img src="'+thumb+'" referrerpolicy="no-referrer" style="width:54px; height:54px; object-fit:cover; border-radius:8px; border:1px solid #e8d8b8;" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></a>';
+                } else if(big && big!=='#'){
+                    h+='<a href="'+big+'" target="_blank" rel="noopener noreferrer" style="font-size:11px; color:var(--wine);">사진 '+(it.fileId?'':'(링크)')+'</a>';
                 }
             });
             h+='</div>';
