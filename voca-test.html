@@ -1245,10 +1245,79 @@
         document.body.appendChild(s);
         setTimeout(()=>{ if(done)return; cleanup(); panel.innerHTML='<div style="font-size:12px; color:#e74c3c; padding:8px;">명단 시간 초과</div>'; }, 8000);
     }
+    // ── 명단 순서 사용자화 (localStorage 저장) ──
+    let _rosterEditMode = false;
+    const ROSTER_ORDER_KEY = 'voca_roster_order';   // {classOrder:[...], studentOrder:{klass:[names]}}
+    function loadRosterOrder(){
+        try { return JSON.parse(localStorage.getItem(ROSTER_ORDER_KEY)) || {classOrder:[], studentOrder:{}}; }
+        catch(e){ return {classOrder:[], studentOrder:{}}; }
+    }
+    function saveRosterOrder(o){
+        try { localStorage.setItem(ROSTER_ORDER_KEY, JSON.stringify(o)); } catch(e){}
+    }
+    let _lastRosterStudents = null;   // 마지막 렌더한 명단 (재렌더용)
+    function toggleRosterEdit(){
+        _rosterEditMode = !_rosterEditMode;
+        if(_lastRosterStudents) renderRosterPanel(_lastRosterStudents);
+    }
+    // 배열에서 idx 항목을 dir(-1 위/+1 아래)로 이동
+    function moveInArray(arr, idx, dir){
+        const j = idx + dir;
+        if(j<0 || j>=arr.length) return arr;
+        const t = arr[idx]; arr[idx]=arr[j]; arr[j]=t;
+        return arr;
+    }
+    function moveClass(klass, dir){
+        const o = loadRosterOrder();
+        // 저장된 순서 없으면 현재 표시 순서로 초기화
+        let order = (o.classOrder && o.classOrder.length) ? o.classOrder.slice() : currentClassKeys();
+        // 표시중인데 order에 없는 클래스 보강
+        currentClassKeys().forEach(k=>{ if(!order.includes(k)) order.push(k); });
+        let idx = order.indexOf(klass);
+        if(idx<0){ return; }
+        moveInArray(order, idx, dir);
+        o.classOrder = order;
+        saveRosterOrder(o);
+        if(_lastRosterStudents) renderRosterPanel(_lastRosterStudents);
+    }
+    function moveStudent(klass, name, dir){
+        const o = loadRosterOrder();
+        if(!o.studentOrder) o.studentOrder={};
+        let arr = (o.studentOrder[klass] && o.studentOrder[klass].length) ? o.studentOrder[klass].slice() : currentStudentNames(klass);
+        currentStudentNames(klass).forEach(n=>{ if(!arr.includes(n)) arr.push(n); });
+        let idx = arr.indexOf(name);
+        if(idx<0){ return; }
+        moveInArray(arr, idx, dir);
+        o.studentOrder[klass] = arr;
+        saveRosterOrder(o);
+        if(_lastRosterStudents) renderRosterPanel(_lastRosterStudents);
+    }
+    // 현재 명단의 클래스 키 순서(저장된 순서 반영된 현재 표시 순서)
+    function currentClassKeys(){
+        if(!_lastRosterStudents) return [];
+        const ord = loadRosterOrder();
+        const groups={};
+        _lastRosterStudents.forEach(s=>{ const k=s.klass||'__기타__'; if(!groups[k])groups[k]=1; });
+        let keys=Object.keys(groups);
+        const saved=(ord.classOrder||[]).filter(k=>groups[k]);
+        const rest=keys.filter(k=>!saved.includes(k)).sort((a,b)=>{ if(a==='__기타__')return 1; if(b==='__기타__')return -1; return a.localeCompare(b,'ko'); });
+        keys=saved.concat(rest);
+        return keys.filter(k=>k!=='__기타__').concat(keys.includes('__기타__')?['__기타__']:[]);
+    }
+    function currentStudentNames(klass){
+        if(!_lastRosterStudents) return [];
+        const ord = loadRosterOrder();
+        let names=_lastRosterStudents.filter(s=>(s.klass||'__기타__')===klass).map(s=>s.name);
+        const saved=((ord.studentOrder||{})[klass]||[]).filter(n=>names.includes(n));
+        const rest=names.filter(n=>!saved.includes(n)).sort((a,b)=>a.localeCompare(b,'ko'));
+        return saved.concat(rest);
+    }
     // 클래스별로 묶어 접기/펼치기 패널 렌더 (클래스 없으면 '기타')
     function renderRosterPanel(students){
         const panel=document.getElementById('exam-roster-panel');
         if(!panel) return;
+        _lastRosterStudents = students;
+        const ord = loadRosterOrder();
         // 클래스별 그룹화
         const groups={};
         students.forEach(s=>{
@@ -1256,28 +1325,64 @@
             if(!groups[key]) groups[key]=[];
             groups[key].push(s.name);
         });
-        // 클래스 이름 정렬 (기타는 맨 뒤)
-        const keys=Object.keys(groups).sort((a,b)=>{
+        // 클래스 순서: 저장된 순서 우선, 없으면 가나다 (기타는 맨 뒤). 저장순서에 새 클래스는 뒤에 붙임.
+        let keys=Object.keys(groups);
+        const savedClassOrder = (ord.classOrder||[]).filter(k=>groups[k]);
+        const remaining = keys.filter(k=>!savedClassOrder.includes(k)).sort((a,b)=>{
             if(a==='__기타__') return 1; if(b==='__기타__') return -1;
             return a.localeCompare(b,'ko');
         });
-        let html='';
+        keys = savedClassOrder.concat(remaining);
+        // 기타는 항상 맨 뒤로
+        keys = keys.filter(k=>k!=='__기타__').concat(keys.includes('__기타__')?['__기타__']:[]);
+
+        // 편집 토글 버튼
+        let html='<div style="display:flex; justify-content:flex-end; margin-bottom:6px;">';
+        html += '<button type="button" onclick="toggleRosterEdit()" style="font-size:11px; font-weight:700; padding:4px 9px; border-radius:7px; border:1px solid '+(_rosterEditMode?'var(--wine)':'#e8d8b8')+'; background:'+(_rosterEditMode?'var(--wine)':'#fff')+'; color:'+(_rosterEditMode?'#fff':'var(--ink-soft)')+'; cursor:pointer;">'+(_rosterEditMode?'완료':'순서 편집')+'</button></div>';
+
         keys.forEach((key,gi)=>{
             const label = key==='__기타__' ? '기타' : key;
-            const names = groups[key].sort((a,b)=>a.localeCompare(b,'ko'));
+            // 학생 순서: 저장된 순서 우선, 없으면 가나다. 새 학생은 뒤에.
+            let names = groups[key].slice();
+            const savedStu = ((ord.studentOrder||{})[key]||[]).filter(n=>names.includes(n));
+            const restStu = names.filter(n=>!savedStu.includes(n)).sort((a,b)=>a.localeCompare(b,'ko'));
+            names = savedStu.concat(restStu);
             const gid='rg_'+gi;
             html += '<div style="margin-bottom:4px;">';
-            html += '<button type="button" onclick="toggleRosterGroup(\''+gid+'\',this)" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#faf6ee; border:none; border-radius:8px; padding:8px 10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--ink);">';
+            // 클래스 헤더 (편집모드면 ▲▼ 추가)
+            html += '<div style="display:flex; align-items:center; gap:4px;">';
+            if(_rosterEditMode){
+                const safeK=key.replace(/'/g,"\\'");
+                html += '<div style="display:flex; flex-direction:column; gap:1px;">';
+                html += '<button type="button" onclick="moveClass(\''+safeK+'\',-1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #e8d8b8; background:#fff; border-radius:4px; cursor:pointer;">▲</button>';
+                html += '<button type="button" onclick="moveClass(\''+safeK+'\',1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #e8d8b8; background:#fff; border-radius:4px; cursor:pointer;">▼</button>';
+                html += '</div>';
+            }
+            html += '<button type="button" onclick="toggleRosterGroup(\''+gid+'\',this)" style="flex:1; display:flex; align-items:center; justify-content:space-between; background:#faf6ee; border:none; border-radius:8px; padding:8px 10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--ink);">';
             html += '<span>'+label+' <span style="color:var(--ink-soft); font-weight:600;">('+names.length+')</span></span>';
-            html += '<span id="'+gid+'_arr" style="color:var(--gold); font-size:11px;">▼</span></button>';
-            html += '<div id="'+gid+'" style="display:'+(gi===0?'block':'none')+'; padding:4px 2px;">';
+            html += '<span id="'+gid+'_arr" style="color:var(--gold); font-size:11px;">'+(gi===0||_rosterEditMode?'▲':'▼')+'</span></button>';
+            html += '</div>';
+            html += '<div id="'+gid+'" style="display:'+(gi===0||_rosterEditMode?'block':'none')+'; padding:4px 2px;">';
             names.forEach(n=>{
                 const safe=n.replace(/'/g,"\\'");
-                html += '<button type="button" onclick="selectExamStudent(\''+safe+'\',this)" style="display:block; width:100%; text-align:left; background:none; border:none; border-radius:7px; padding:8px 10px; cursor:pointer; font-size:13.5px; color:#334155;" onmouseover="this.style.background=\'#f3eee3\'" onmouseout="if(!this.dataset.sel)this.style.background=\'none\'">'+n+'</button>';
+                const safeK=key.replace(/'/g,"\\'");
+                html += '<div style="display:flex; align-items:center; gap:4px;">';
+                if(_rosterEditMode){
+                    html += '<div style="display:flex; flex-direction:column; gap:1px;">';
+                    html += '<button type="button" onclick="moveStudent(\''+safeK+'\',\''+safe+'\',-1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #eee; background:#fff; border-radius:4px; cursor:pointer;">▲</button>';
+                    html += '<button type="button" onclick="moveStudent(\''+safeK+'\',\''+safe+'\',1)" style="font-size:9px; line-height:1; padding:1px 4px; border:1px solid #eee; background:#fff; border-radius:4px; cursor:pointer;">▼</button>';
+                    html += '</div>';
+                }
+                if(_rosterEditMode){
+                    html += '<div style="flex:1; padding:8px 10px; font-size:13.5px; color:#334155;">'+n+'</div>';
+                } else {
+                    html += '<button type="button" onclick="selectExamStudent(\''+safe+'\',this)" style="flex:1; text-align:left; background:none; border:none; border-radius:7px; padding:8px 10px; cursor:pointer; font-size:13.5px; color:#334155;" onmouseover="this.style.background=\'#f3eee3\'" onmouseout="if(!this.dataset.sel)this.style.background=\'none\'">'+n+'</button>';
+                }
+                html += '</div>';
             });
             html += '</div></div>';
         });
-        panel.innerHTML = html || '<div style="font-size:12px; color:var(--ink-soft); padding:8px;">학생이 없습니다.</div>';
+        panel.innerHTML = html;
     }
     function toggleRosterGroup(gid, btn){
         const box=document.getElementById(gid);
