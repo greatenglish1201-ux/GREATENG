@@ -1033,7 +1033,7 @@
     // ── 시험범위 프리셋 가져오기 (index 로그인 GAS getPresets) ──
     // 교재 코드 → voca 단어 교재명 후보들. 실제 단어 DB(db)에 있는 이름으로 자동 매칭.
     const PRESET_BOOK_MAP = {
-        '27STYD':    ['수능독해연습', '수특영독', '수특영어독해', '27영어독해연습'],
+        '27STYD':    ['수특영독2027', '수능독해연습', '수특영독', '수특영어독해', '27영어독해연습'],
         '27ST_E':    ['수특영어', '27수특영어'],
         'ABSO_TYPE': ['절대유형']
     };
@@ -1155,7 +1155,10 @@
                 // index 지문에 있는 강 집합
                 const idxChaps = (_passageChaptersByCode && _passageChaptersByCode[code]) ? _passageChaptersByCode[code] : null;
                 dbUnits.forEach(u=>{
-                    const gnum = parseInt((String(u).match(/\d+/)||[9999])[0]);
+                    // "01강","11강"처럼 순수 '숫자+강' 유닛만 인정 (Mini Test 등 제외)
+                    const gm = String(u).match(/^0*(\d+)\s*강$/);
+                    if(!gm) return;
+                    const gnum = parseInt(gm[1]);
                     // index 지문 강 목록이 있으면 거기 포함된 강만
                     if(idxChaps && idxChaps.size && !idxChaps.has(gnum)) return;
                     const key = bookName + '||' + u;
