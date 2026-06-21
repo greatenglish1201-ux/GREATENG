@@ -3456,7 +3456,9 @@
             const ee = parseInt(c.ee) || 0, ex = parseInt(c.ex) || 0;
             const sum = ek + keObj + keSubj + ee + ex;
             this._targetTouched = true;
-            let target = sum >0 ? sum : Math.min(120, pool);
+            // 저장된 개수(target) 우선, 없으면 유형 분배 합 또는 기본값
+            const savedTarget = parseInt(c.target) || 0;
+            let target = savedTarget > 0 ? savedTarget : (sum > 0 ? sum : Math.min(120, pool));
             if (pool >0 && target >pool) target = pool;
             document.getElementById('target-num').value = target;
             document.getElementById('target-val').value = Math.min(target, pool);
@@ -3573,6 +3575,7 @@
             const common = {
                 book: this.basket.map(i =>i.label).join(';'),
                 testMode: document.getElementById('exam-mode-sel').value,
+                target: document.getElementById('target-num').value,
                 ek: document.getElementById('ek-num').value,
                 keObj: document.getElementById('ke-obj-num').value,
                 keSubj: document.getElementById('ke-subj-num').value,
