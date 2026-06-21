@@ -1155,8 +1155,8 @@
                 // index 지문에 있는 강 집합
                 const idxChaps = (_passageChaptersByCode && _passageChaptersByCode[code]) ? _passageChaptersByCode[code] : null;
                 dbUnits.forEach(u=>{
-                    // "01강","11강"처럼 순수 '숫자+강' 유닛만 인정 (Mini Test 등 제외)
-                    const gm = String(u).match(/^0*(\d+)\s*강$/);
+                    // 숫자로 시작하는 유닛만 강으로 인정: "11","11강","01강" OK / "Mini Test 1" 제외
+                    const gm = String(u).trim().match(/^0*(\d+)/);
                     if(!gm) return;
                     const gnum = parseInt(gm[1]);
                     // index 지문 강 목록이 있으면 거기 포함된 강만
