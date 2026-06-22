@@ -1600,6 +1600,25 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       const noL=no?((isNaN(parseInt(no))?no:parseInt(no))+'번'):'';
       return (bookLabel(bk)+' '+chL+noL).trim();
     };
+    // 인쇄용: pid 목록을 '교재+강' 단위로 묶어 번호 모음 → [{head, nums}]
+    const groupByLessonP=(pids)=>{
+      const groups=new Map();
+      pids.forEach(pid=>{
+        const bk=allBookIds.find(b=>String(pid).startsWith(b+'_'));
+        if(!bk){ groups.set(pid,{head:pid,nums:[]}); return; }
+        const rest=String(pid).slice(bk.length+1);
+        const isMogo=bk.startsWith('MOGO_');
+        let ch='',no='';
+        if(isMogo){ no=rest; } else { const ps=rest.split('_'); ch=ps[0]||''; no=ps[1]||ps[0]||''; }
+        const chL=ch?((isNaN(parseInt(ch))?ch:parseInt(ch))+'강'):'';
+        const head=(bookLabel(bk)+' '+chL).trim();
+        const noL=no?(isNaN(parseInt(no))?no:parseInt(no)):'';
+        if(!groups.has(head)) groups.set(head,{head,nums:[]});
+        if(noL!=='') groups.get(head).nums.push(noL);
+      });
+      const sortNums=(a,b)=>{ const na=typeof a==='number',nb=typeof b==='number'; if(na&&nb)return a-b; if(na)return -1; if(nb)return 1; return String(a).localeCompare(String(b)); };
+      return [...groups.values()].map(g=>({head:g.head, nums:g.nums.sort(sortNums).map(n=>n+'번').join(', ')}));
+    };
     // 진짜 약점(지문) — Wilson+최근성 점수 기반
     const scoreColor=sc=>sc>=50?'#B3261E':sc>=30?'#B7791F':'#9a7040';
     const weakPidHtml=(Wk&&Wk.weakPid.length)?`<table style="width:100%;border-collapse:collapse">${Wk.weakPid.map((w,i)=>{
@@ -1614,8 +1633,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     // 사각지대(안 본 지문) — 0회/1회
     const blindHtml=(Wk&&(Wk.zero.length||Wk.once.length))?`<div style="font-size:12px;line-height:1.7">
       <div style="margin-bottom:4px"><b style="color:#7a1020">커버리지 ${Wk.covPct}%</b> <span style="color:#999">(범위 ${Wk.rangeAll.length}개 중 ${Wk.covered}개 학습)</span></div>
-      ${Wk.zero.length?`<div style="margin-bottom:4px"><span style="color:#B3261E;font-weight:700">한 번도 안 푼 지문 (${Wk.zero.length})</span><br/>${Wk.zero.slice(0,30).map(p=>`<span style="display:inline-block;background:#fdecec;color:#B3261E;border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;font-size:11px">${esc(pidLabelFor(p))}</span>`).join('')}${Wk.zero.length>30?` <span style="color:#999;font-size:11px">외 ${Wk.zero.length-30}개</span>`:''}</div>`:''}
-      ${Wk.once.length?`<div><span style="color:#92670a;font-weight:700">1회만 푼 지문 (${Wk.once.length})</span><br/>${Wk.once.slice(0,30).map(p=>`<span style="display:inline-block;background:#fdf6e3;color:#92670a;border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;font-size:11px">${esc(pidLabelFor(p))}</span>`).join('')}${Wk.once.length>30?` <span style="color:#999;font-size:11px">외 ${Wk.once.length-30}개</span>`:''}</div>`:''}
+      ${Wk.zero.length?`<div style="margin-bottom:6px"><span style="color:#B3261E;font-weight:700">한 번도 안 푼 지문 (${Wk.zero.length}문항)</span><br/>${groupByLessonP(Wk.zero).map(g=>`<div style="font-size:11.5px;line-height:1.6"><b style="color:#B3261E">${esc(g.head)}</b>${g.nums?`<span style="color:#555">: ${esc(g.nums)}</span>`:''}</div>`).join('')}</div>`:''}
+      ${Wk.once.length?`<div><span style="color:#92670a;font-weight:700">적게 푼 지문 (${Wk.once.length}문항)</span><br/>${groupByLessonP(Wk.once).map(g=>`<div style="font-size:11.5px;line-height:1.6"><b style="color:#92670a">${esc(g.head)}</b>${g.nums?`<span style="color:#555">: ${esc(g.nums)}</span>`:''}</div>`).join('')}</div>`:''}
     </div>`:'';
     const weakHtml=weakTypes.length?`<div style="background:#FBF3DE;border:1px solid #e6c97a;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#5a3a10;line-height:1.7"><b style="color:#7a1020">⚠ 집중 보완 추천 유형</b><br/>${weakTypes.map(t=>`${esc(t.type)} <b style="color:${rateColor(t.rate)}">${esc(t.rate)}%</b>`).join(' · ')}</div>`:'';
 
@@ -2044,6 +2063,26 @@ ${ESC_}
                 const noL=no?((isNaN(parseInt(no))?no:parseInt(no))+'번'):'';
                 return ((bk.label||bk.id)+' '+chL+noL).trim();
               };
+              // pid 목록을 '교재+강' 단위로 묶어 번호를 모음 → [{head:'27수특영어 21강', nums:'1, 2, 3'}, ...]
+              const groupByLesson=(pids)=>{
+                const groups=new Map();
+                pids.forEach(pid=>{
+                  const bk=allBks2.find(b=>pid.startsWith(b.id+'_'));
+                  if(!bk){ groups.set(pid,{head:pid,nums:[]}); return; }
+                  const rest=pid.slice(bk.id.length+1);
+                  const isMogo=bk.id.startsWith('MOGO_');
+                  let ch='',no='';
+                  if(isMogo){ no=rest; } else { const ps=rest.split('_'); ch=ps[0]||''; no=ps[1]||ps[0]||''; }
+                  const chL=ch?((isNaN(parseInt(ch))?ch:parseInt(ch))+'강'):'';
+                  const head=((bk.label||bk.id)+' '+chL).trim();
+                  const noL=no?(isNaN(parseInt(no))?no:parseInt(no)):'';
+                  if(!groups.has(head)) groups.set(head,{head,nums:[]});
+                  if(noL!=='') groups.get(head).nums.push(noL);
+                });
+                // 번호 정렬(숫자 우선, GATE 등 문자열은 뒤로)
+                const sortNums=(a,b)=>{ const na=typeof a==='number',nb=typeof b==='number'; if(na&&nb)return a-b; if(na)return -1; if(nb)return 1; return String(a).localeCompare(String(b)); };
+                return [...groups.values()].map(g=>({head:g.head, nums:g.nums.sort(sortNums).map(n=>n+'번').join(', ')}));
+              };
               const cardWrap={background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'};
               const head={padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20',display:'flex',justifyContent:'space-between',alignItems:'center'};
               const chip=(t,c,bg)=><span style={{display:'inline-block',fontSize:11,fontWeight:700,color:c,background:bg,borderRadius:6,padding:'2px 8px',margin:'3px 4px 0 0'}}>{t}</span>;
@@ -2188,18 +2227,23 @@ ${ESC_}
                     </div>
                   </div>
                   <div style={{padding:'10px 16px'}}>
-                    {zero.length===0&&once.length===0
+                    {(()=>{
+                      const lessonRow=(g,color)=><div key={g.head} style={{fontSize:11.5,lineHeight:1.65,marginBottom:1}}>
+                        <b style={{color}}>{g.head}</b>{g.nums?<span style={{color:'#555'}}>: {g.nums}</span>:null}
+                      </div>;
+                      return zero.length===0&&once.length===0
                       ?<div style={{fontSize:12,color:'#16a34a'}}>범위 내 지문을 모두 {blindLowThreshold}회 넘게 학습했습니다. 👍</div>
                       :<div>
-                        {zero.length>0&&<div style={{marginBottom:8}}>
-                          <div style={{fontSize:11.5,fontWeight:700,color:'#dc2626',marginBottom:2}}>한 번도 안 푼 지문 ({zero.length})</div>
-                          <div>{zero.slice(0,30).map(pid=>chip(lbl(pid),'#dc2626','#fdecec'))}{zero.length>30&&<span style={{fontSize:11,color:'#9a8570'}}> 외 {zero.length-30}개</span>}</div>
+                        {zero.length>0&&<div style={{marginBottom:10}}>
+                          <div style={{fontSize:11.5,fontWeight:800,color:'#dc2626',marginBottom:3}}>한 번도 안 푼 지문 ({zero.length}문항)</div>
+                          {groupByLesson(zero).map(g=>lessonRow(g,'#dc2626'))}
                         </div>}
                         {once.length>0&&<div>
-                          <div style={{fontSize:11.5,fontWeight:700,color:'#b8860b',marginBottom:2}}>{blindLowThreshold}회 이하 푼 지문 ({once.length})</div>
-                          <div>{once.slice(0,30).map(pid=>chip(lbl(pid),'#92670a','#fdf6e3'))}{once.length>30&&<span style={{fontSize:11,color:'#9a8570'}}> 외 {once.length-30}개</span>}</div>
+                          <div style={{fontSize:11.5,fontWeight:800,color:'#b8860b',marginBottom:3}}>{blindLowThreshold}회 이하 푼 지문 ({once.length}문항)</div>
+                          {groupByLesson(once).map(g=>lessonRow(g,'#92670a'))}
                         </div>}
-                      </div>}
+                      </div>;
+                    })()}
                   </div>
                 </div>
                 {/* 진짜 약점 카드 (지문/유형 탭) */}
