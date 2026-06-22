@@ -54,13 +54,14 @@
     content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
   }
-  .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
-  .hcta{display:inline-flex;align-items:center;gap:6px;text-decoration:none;
-    padding:13px 20px;border-radius:12px;font-size:15px;font-weight:700;
-    transition:transform .15s ease}
-  .hcta:hover{transform:translateY(-2px)}
-  .hcta.guide{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
-  .hcta.apply{background:var(--gold);color:var(--ink);box-shadow:0 8px 22px rgba(201,168,76,.35)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .hcta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+    padding:13px 24px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
+    transition:transform .15s ease,opacity .15s ease}
+  .hcta:hover{transform:translateY(-1px);opacity:.92}
+  .hcta:active{transform:translateY(0)}
+  .hcta.apply{background:var(--gold);color:var(--ink)}
+  .hcta.guide{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
   .hero-tagline{
     font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
     font-size:20px;color:var(--gold-soft);margin-bottom:10px;letter-spacing:.01em;
@@ -259,38 +260,57 @@
   /* ── 상담 가이드 ── */
   .guide-sec{margin:40px 0 8px;scroll-margin-top:12px}
   .guide-head{text-align:center;margin-bottom:22px}
-  .guide-eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;
+  .guide-eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;
     color:var(--wine);background:rgba(122,16,32,.08);padding:5px 12px;border-radius:20px;margin-bottom:12px}
-  .guide-head h2{font-size:24px;font-weight:800;color:var(--ink);margin:0 0 10px}
+  .guide-head h2{font-size:24px;font-weight:700;color:var(--ink);margin:0 0 10px;letter-spacing:-0.02em}
   .guide-intro{font-size:14px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto}
   .guide-acc{display:flex;flex-direction:column;gap:10px}
   .gitem{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .gitem summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
-    padding:16px 18px;font-size:15.5px;font-weight:700;color:var(--ink);user-select:none}
+    padding:16px 18px;font-size:15px;font-weight:600;color:var(--ink);user-select:none;letter-spacing:-0.01em}
   .gitem summary::-webkit-details-marker{display:none}
-  .gitem summary::after{content:"+";margin-left:auto;font-size:20px;font-weight:400;color:var(--muted);transition:transform .2s}
-  .gitem[open] summary::after{content:"−"}
-  .g-no{width:24px;height:24px;border-radius:50%;flex-shrink:0;background:var(--wine);color:#fff;
-    font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
-  .g-tag{font-size:11px;font-weight:700;color:var(--gold);background:rgba(201,168,76,.14);padding:3px 8px;border-radius:12px}
-  .g-tag.warn{color:var(--wine);background:rgba(122,16,32,.1)}
+  .gitem summary::after{content:"";margin-left:auto;width:8px;height:8px;flex-shrink:0;
+    border-right:1.5px solid var(--ink-3,#86868b);border-bottom:1.5px solid var(--ink-3,#86868b);
+    transform:rotate(45deg);transition:transform .2s ease}
+  .gitem[open] summary::after{transform:rotate(-135deg)}
+  .g-no{width:22px;height:22px;border-radius:50%;flex-shrink:0;background:var(--fill,#f3eee5);color:var(--wine);
+    font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .g-tag{font-size:11px;font-weight:600;color:var(--ink-3,#86868b);background:transparent;border:1px solid var(--line);padding:2px 8px;border-radius:980px}
+  .g-tag.warn{color:var(--wine);border-color:rgba(122,16,32,.25)}
   .g-body{padding:0 18px 18px 18px}
   .g-body p{font-size:14px;color:var(--ink);line-height:1.7;margin:0 0 10px}
   .g-body p:last-child{margin-bottom:0}
-  .g-body b{color:var(--wine)}
+  .g-body b{color:var(--ink);font-weight:600}
   /* 시간표·교육비 표 */
   .fee-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
-  .fee-table th{background:var(--navy);color:#fff;font-weight:700;padding:11px 10px;text-align:left;font-size:13px}
+  .fee-table th{background:var(--paper-2,#eef1f6);color:var(--ink-2,#515154);font-weight:600;padding:11px 12px;text-align:left;font-size:12.5px;letter-spacing:-0.01em}
   .fee-table th:first-child{border-top-left-radius:10px}
   .fee-table th:last-child{border-top-right-radius:10px}
-  .fee-table td{padding:12px 10px;border-bottom:1px solid var(--line);color:var(--ink)}
-  .fee-table td:last-child{font-weight:800;color:var(--wine);white-space:nowrap}
+  .fee-table td{padding:13px 12px;border-bottom:1px solid var(--line);color:var(--ink)}
+  .fee-table td:last-child{font-weight:600;color:var(--ink);white-space:nowrap}
   .fee-table tr:last-child td{border-bottom:none}
   .fee-note{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.6}
+  /* 관리자 편집 모드 */
+  .fee-table input.fe{width:100%;box-sizing:border-box;padding:7px 8px;border:1px solid var(--line);
+    border-radius:7px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fffdf8}
+  .fee-table input.fe:focus{outline:none;border-color:var(--gold)}
+  .fee-table input.fe-num{max-width:100px}
+  .fe-del{margin-left:6px;border:none;background:rgba(122,16,32,.1);color:var(--wine);
+    width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;vertical-align:middle}
+  .fe-del:hover{background:rgba(122,16,32,.2)}
+  .fee-adminbar{display:none;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .fab{border:none;padding:9px 16px;border-radius:980px;font-size:13.5px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;font-family:inherit;transition:opacity .15s ease}
+  .fab-add{background:var(--fill,#f3eee5);color:var(--ink)}
+  .fab-copy{background:var(--gold);color:var(--ink)}
+  .fab-done{background:var(--ink);color:#fff;margin-left:auto}
+  .fab:hover{opacity:.85}
+  #feeAdminDot{display:inline-block;margin-left:8px;color:var(--muted);opacity:.35;cursor:pointer;
+    font-weight:700;padding:0 6px;user-select:none}
+  #feeAdminDot:hover{opacity:.7}
   @media(max-width:480px){
     .fee-table th{display:none}
     .fee-table td{display:flex;justify-content:space-between;border:none;padding:7px 0}
-    .fee-table td::before{content:attr(data-l);font-weight:700;color:var(--muted);font-size:13px}
+    .fee-table td::before{content:attr(data-l);font-weight:600;color:var(--muted);font-size:13px}
     .fee-table tr{display:block;padding:12px 0;border-bottom:1px solid var(--line)}
     .fee-table tr:last-child{border-bottom:none}
   }
@@ -444,8 +464,8 @@
     <h1>중등·고등 영어,<br><span class="hl">수업과 시험 대비</span>를 이렇게 합니다</h1>
     <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
     <div class="hero-cta">
-      <a class="hcta guide" href="#guide">📋 상담 전 꼭 읽어주세요</a>
-      <a class="hcta apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">📝 네이버 톡톡으로 상담 신청</a>
+      <a class="hcta apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">상담 신청하기</a>
+      <a class="hcta guide" href="#guide">상담 가이드 먼저 보기</a>
     </div>
   </div>
 </header>
@@ -737,6 +757,11 @@
             <tbody id="feeBody"><!-- JS 자동 생성 --></tbody>
           </table>
           <p class="fee-note">※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.</p>
+          <div class="fee-adminbar" id="feeAdminBar">
+            <button class="fab fab-add" id="feeAddBtn">+ 반 추가</button>
+            <button class="fab fab-copy" id="feeCopyBtn">수정된 코드 복사</button>
+            <button class="fab fab-done" id="feeDoneBtn">편집 종료</button>
+          </div>
         </div>
       </details>
 
@@ -782,6 +807,7 @@
   <div class="brand-name"><b>대단한영어</b> · 포항 남구 영어 전문 학원</div>
   <div class="brand-addr">포항시 남구 대이로 105, 아이코아빌딩 5층 501호<br><span>이동플렉스 맞은편</span></div>
   <a class="brand-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">학원 블로그 바로가기</a>
+  <span id="feeAdminDot" title="관리자">·</span>
 </footer>
 
 <script>
@@ -790,7 +816,14 @@
      · 반을 추가하려면 { } 한 줄을 복사해 아래에 붙이고 내용만 바꾸면 됩니다.
      · 반을 빼려면 해당 { } 줄을 지우면 됩니다.
      · fee 는 숫자만 적으면 자동으로 "원"이 붙습니다.
+
+     ※ 코드를 직접 안 고쳐도, 페이지 하단의 작은 점(·)을 눌러
+       관리자 비밀번호를 넣으면 화면에서 바로 편집할 수 있습니다.
   ════════════════════════════════════════════ */
+
+  /* 관리자 비밀번호 — 바꾸려면 따옴표 안만 고치세요 */
+  const ADMIN_PW = "admin4625";
+
   const TUITION = [
     { name:"중등 기초", days:"화 · 목", time:"오후 5:30 ~ 7:00",  fee:300000 },
     { name:"중등 심화", days:"수 · 금", time:"오후 5:30 ~ 7:00",  fee:350000 },
@@ -800,18 +833,91 @@
   ];
   /* ▲▲▲  여기까지만 고치면 됩니다  ▲▲▲ */
 
-  (function renderFee(){
-    const body = document.getElementById('feeBody');
-    if(!body) return;
-    body.innerHTML = TUITION.map(r=>
-      `<tr><td data-l="대상">${r.name}</td><td data-l="요일">${r.days}</td>`+
-      `<td data-l="시간">${r.time}</td>`+
-      `<td data-l="교육비">${Number(r.fee).toLocaleString()}원</td></tr>`
-    ).join('');
-  })();
+  /* 화면에 보여줄 현재 데이터 (편집 시 이 값이 바뀜) */
+  let feeData = TUITION.map(r=>({...r}));
+  let editMode = false;
+
+  const feeBody = document.getElementById('feeBody');
+  const esc = s => String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+  function renderFee(){
+    if(!feeBody) return;
+    if(!editMode){
+      feeBody.innerHTML = feeData.map(r=>
+        `<tr><td data-l="대상">${esc(r.name)}</td><td data-l="요일">${esc(r.days)}</td>`+
+        `<td data-l="시간">${esc(r.time)}</td>`+
+        `<td data-l="교육비">${Number(r.fee).toLocaleString()}원</td></tr>`
+      ).join('');
+    } else {
+      feeBody.innerHTML = feeData.map((r,i)=>
+        `<tr>`+
+        `<td data-l="대상"><input class="fe" data-i="${i}" data-k="name" value="${esc(r.name)}"></td>`+
+        `<td data-l="요일"><input class="fe" data-i="${i}" data-k="days" value="${esc(r.days)}"></td>`+
+        `<td data-l="시간"><input class="fe" data-i="${i}" data-k="time" value="${esc(r.time)}"></td>`+
+        `<td data-l="교육비"><input class="fe fe-num" data-i="${i}" data-k="fee" type="number" value="${Number(r.fee)}"> <button class="fe-del" data-i="${i}" title="이 반 삭제">✕</button></td>`+
+        `</tr>`
+      ).join('');
+      // 입력 변경 반영
+      feeBody.querySelectorAll('.fe').forEach(inp=>{
+        inp.addEventListener('input',e=>{
+          const i=+e.target.dataset.i, k=e.target.dataset.k;
+          feeData[i][k] = (k==='fee') ? (parseInt(e.target.value,10)||0) : e.target.value;
+        });
+      });
+      feeBody.querySelectorAll('.fe-del').forEach(btn=>{
+        btn.addEventListener('click',e=>{
+          const i=+e.target.dataset.i;
+          feeData.splice(i,1);
+          renderFee();
+        });
+      });
+    }
+  }
+  renderFee();
+
+  /* ── 관리자 편집 모드 ── */
+  function enterEdit(){
+    editMode = true;
+    renderFee();
+    document.getElementById('feeAdminBar').style.display = 'flex';
+  }
+  function exitEdit(){
+    editMode = false;
+    feeData = TUITION.map(r=>({...r})); // 원래대로 복원(복사 안 한 변경은 버림)
+    renderFee();
+    document.getElementById('feeAdminBar').style.display = 'none';
+  }
+  // 점(·) 클릭 → 비번 확인
+  document.getElementById('feeAdminDot').addEventListener('click',()=>{
+    const pw = prompt('관리자 비밀번호를 입력하세요');
+    if(pw===null) return;
+    if(pw===ADMIN_PW){ enterEdit(); }
+    else { alert('비밀번호가 올바르지 않습니다.'); }
+  });
+  // 반 추가
+  document.getElementById('feeAddBtn').addEventListener('click',()=>{
+    feeData.push({ name:"새 반", days:"화 · 목", time:"오후 0:00 ~ 0:00", fee:0 });
+    renderFee();
+  });
+  // 코드 복사
+  document.getElementById('feeCopyBtn').addEventListener('click',()=>{
+    const lines = feeData.map(r=>
+      `    { name:"${r.name}", days:"${r.days}", time:"${r.time}", fee:${Number(r.fee)||0} },`
+    ).join('\n');
+    const code = `  const TUITION = [\n${lines}\n  ];`;
+    navigator.clipboard.writeText(code).then(()=>{
+      alert('새 시간표 코드가 복사되었습니다.\n\nGitHub에서 parent_guide.html 을 열고,\n기존 "const TUITION = [ ... ];" 부분을 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
+    }).catch(()=>{
+      // 클립보드 막힌 환경 대비: 코드를 보여줌
+      prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
+    });
+  });
+  // 편집 종료
+  document.getElementById('feeDoneBtn').addEventListener('click', exitEdit);
 </script>
 
 <script>
+  const tabs = document.querySelectorAll('.tab');
   const panels = document.querySelectorAll('.panel');
   tabs.forEach(tab=>{
     tab.addEventListener('click',()=>{
