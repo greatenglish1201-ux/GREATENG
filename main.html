@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대단한영어 | 포항 남구 중·고등 입시영어 전문 학원</title>
-<meta name="description" content="포항 남구 대잠동 중·고등 입시영어 전문 학원. 고려대 영어교육과·맥쿼리 TESOL 석사 원장이 직접 개발한 데이터 기반 학습 관리 시스템으로 학교별 맞춤 내신·수능을 대비합니다.">
+<meta name="description" content="대단한영어 — 포항 남구 대이로 중·고등 입시영어 전문 학원. 고려대 영어교육과·맥쿼리 TESOL 석사 원장이 직접 개발한 데이터 기반 학습 관리 시스템으로 학교별 맞춤 내신·수능을 대비합니다.">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <!-- Google tag (gtag.js) -->
@@ -51,7 +51,29 @@
     padding:14px 22px;background:rgba(14,22,38,.92);backdrop-filter:saturate(150%) blur(12px);
     border-bottom:1px solid rgba(201,168,76,.18)}
   .gnav-brand{font-size:16px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:-0.02em}
-  .gnav-brand b{color:var(--gold-soft)}
+  .gnav-brand b{
+    position:relative;display:inline-block;font-weight:800;
+    background:linear-gradient(92deg,
+      #b8943f 0%, #e7cd86 24%, #fff4d6 40%, #e7cd86 54%,
+      #c2a259 72%, #f0dca0 88%, #d9bd72 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+  .gnav-brand b::after{
+    content:"대단한영어";position:absolute;inset:0;
+    background:linear-gradient(105deg,
+      transparent 0%, transparent 40%,
+      rgba(255,255,255,.9) 49%, rgba(255,255,255,.98) 50%,
+      rgba(255,255,255,.9) 51%, transparent 60%, transparent 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    background-size:220% 100%;background-position:120% 0;
+    animation:hlShine 4.5s ease-in-out 1.1s 2;
+    pointer-events:none;
+  }
+  @media(prefers-reduced-motion:reduce){
+    .gnav-brand b::after{animation:none;display:none}
+  }
   .gnav-links{display:flex;align-items:center;gap:18px}
   .gnav-links a{font-size:13.5px;font-weight:600;color:rgba(255,255,255,.78);text-decoration:none;letter-spacing:-0.01em}
   .gnav-links a:hover{color:#fff}
@@ -78,8 +100,43 @@
   .hero-in{max-width:880px;margin:0 auto;position:relative}
   .hero-eyebrow{font-size:13px;font-weight:600;letter-spacing:0.04em;color:var(--gold-soft);
     font-style:italic;margin-bottom:18px}
-  .hero h1{font-size:38px;font-weight:700;line-height:1.22;letter-spacing:-0.03em;margin:0 0 18px}
-  .hero h1 .hl{color:var(--gold-soft)}
+  .hero h1{font-size:clamp(34px,6vw,52px);font-weight:800;line-height:1.16;letter-spacing:-0.035em;margin:0 0 18px}
+  .hero h1 .hl{
+    position:relative;display:block;font-weight:800;
+    font-size:1.32em;letter-spacing:-0.04em;line-height:1.05;
+    margin-bottom:.34em;
+    /* 골드 메탈릭 그라데이션 (정적 광택) */
+    background:linear-gradient(92deg,
+      #b8943f 0%, #e7cd86 22%, #fff4d6 38%, #e7cd86 52%,
+      #c2a259 70%, #f0dca0 86%, #d9bd72 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.3));
+  }
+  .hero h1 .hsub{
+    display:block;font-size:.66em;font-weight:600;
+    color:rgba(255,255,255,.72);letter-spacing:-0.02em;
+  }
+  /* 샤인 스윕 - 빛줄기가 글자 위를 한 번 스쳐감 */
+  .hero h1 .hl::after{
+    content:"대단한영어";position:absolute;inset:0;
+    background:linear-gradient(105deg,
+      transparent 0%, transparent 38%,
+      rgba(255,255,255,.85) 48%, rgba(255,255,255,.95) 50%,
+      rgba(255,255,255,.85) 52%, transparent 62%, transparent 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    background-size:220% 100%;background-position:120% 0;
+    animation:hlShine 4.5s ease-in-out 1.1s 2;
+    pointer-events:none;
+  }
+  @keyframes hlShine{
+    0%{background-position:120% 0}
+    18%,100%{background-position:-60% 0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero h1 .hl::after{animation:none;display:none}
+  }
   .hero p{font-size:17.5px;color:rgba(255,255,255,.82);max-width:600px;line-height:1.62;letter-spacing:-0.015em;margin:0 0 28px}
   .hero-cta{display:flex;flex-wrap:wrap;gap:11px}
   .hbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
@@ -88,7 +145,7 @@
   .hbtn:hover{transform:translateY(-1px);opacity:.93}
   .hbtn.primary{background:var(--gold);color:var(--ink)}
   .hbtn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
-  @media(max-width:560px){.hero{padding:54px 22px 60px}.hero h1{font-size:29px}.hero p{font-size:16px}}
+  @media(max-width:560px){.hero{padding:54px 22px 60px}.hero p{font-size:16px}}
 
   /* ── 공통 섹션 ── */
   .sec{max-width:880px;margin:0 auto;padding:64px 22px}
@@ -202,6 +259,7 @@
   <a class="gnav-brand" href="main.html"><b>대단한영어</b><span class="sub"> · GREATENG</span></a>
   <div class="gnav-links">
     <a href="parent_guide.html">수업안내</a>
+    <a href="summer.html">여름특강</a>
     <a href="suneung_2026.html">수능대비반</a>
     <a href="pohang_highschools.html">학교정보</a>
     <a class="gnav-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">내신자료</a>
@@ -211,9 +269,9 @@
 <!-- 히어로 -->
 <header class="hero">
   <div class="hero-in">
-    <div class="hero-eyebrow">Excellence as a Habit</div>
-    <h1>포항 입시영어,<br><span class="hl">데이터로 관리하는</span> 학원입니다</h1>
-    <p>포항 남구 대잠동의 중·고등 입시영어 전문 학원. 원장이 직접 개발한 학습 관리 시스템으로, 학교별 시험에 딱 맞춘 대비를 합니다.</p>
+    <div class="hero-eyebrow">GREATENG · Excellence as a Habit</div>
+    <h1><span class="hl">대단한영어</span><span class="hsub">포항 입시영어의 기준</span></h1>
+    <p>포항 남구의 중·고등 입시영어 전문 학원. 원장이 직접 개발한 학습 관리 시스템으로, 학교별 시험에 딱 맞춘 대비를 합니다.</p>
     <div class="hero-cta">
       <a class="hbtn primary" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">상담 신청하기</a>
       <a class="hbtn ghost" href="parent_guide.html">수업 자세히 보기</a>
@@ -355,6 +413,12 @@
       <h3>수업과 시험 대비</h3>
       <p>중등·고등 수업이 어떻게 진행되고 학교 시험은 어떻게 대비하는지, 시간표·교육비와 함께 안내합니다.</p>
       <div class="hc-go">자세히 보기 →</div>
+    </a>
+    <a class="hcard" href="summer.html" style="--accent:#a31f38">
+      <div class="hc-label">2026 여름방학</div>
+      <h3>여름방학 집중 특강</h3>
+      <p>방학 동안 한 단계 끌어올리는 주말 집중 과정. 고등 수능 어법반과 중등 2학기 내신 대비반을 운영합니다.</p>
+      <div class="hc-go">특강 보기 →</div>
     </a>
     <a class="hcard" href="suneung_2026.html" style="--accent:#c06a2c">
       <div class="hc-label">고3 수능 파이널</div>
