@@ -52,10 +52,23 @@
     border-bottom:1px solid rgba(201,168,76,.18)}
   .gnav-brand{font-size:16px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:-0.02em}
   .gnav-brand b{color:var(--gold-soft)}
-  .gnav-links{display:flex;gap:18px}
+  .gnav-links{display:flex;align-items:center;gap:18px}
   .gnav-links a{font-size:13.5px;font-weight:600;color:rgba(255,255,255,.78);text-decoration:none;letter-spacing:-0.01em}
   .gnav-links a:hover{color:#fff}
-  @media(max-width:560px){.gnav-links{gap:13px}.gnav-links a{font-size:12.5px}}
+  .gnav-blog{display:inline-flex;align-items:center;gap:5px;color:rgba(255,255,255,.92) !important;
+    border:1px solid rgba(255,255,255,.28);padding:6px 14px;border-radius:980px;
+    font-weight:600;transition:background .15s ease,border-color .15s ease;white-space:nowrap}
+  .gnav-blog::before{content:"";width:6px;height:6px;border-radius:50%;background:#03c75a;flex-shrink:0}
+  .gnav-blog:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.45)}
+  .gnav-brand .sub{color:var(--gold-soft)}
+  @media(max-width:560px){
+    .gnav{padding:12px 16px}
+    .gnav-brand{font-size:15px}
+    .gnav-brand .sub{display:none}
+    .gnav-links{gap:11px}
+    .gnav-links a{font-size:12px}
+    .gnav-blog{padding:5px 11px}
+  }
 
   /* ── 히어로 ── */
   .hero{position:relative;background:linear-gradient(165deg,var(--navy),var(--navy-2) 60%,var(--navy-3));
@@ -133,13 +146,16 @@
   .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
   @media(max-width:760px){.rev-grid{grid-template-columns:1fr}}
   .rev-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px 24px;
-    display:flex;flex-direction:column}
+    display:flex;flex-direction:column;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+  .rev-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(28,36,51,.1);border-color:rgba(122,16,32,.3)}
   .rev-badge{display:inline-block;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:-0.01em;
     color:var(--wine);background:rgba(122,16,32,.08);padding:5px 12px;border-radius:980px;margin-bottom:16px}
   .rev-quote{font-size:17px;font-weight:700;letter-spacing:-0.022em;line-height:1.4;color:var(--ink);margin:0 0 12px}
   .rev-body{font-size:14px;color:var(--muted);line-height:1.6;letter-spacing:-0.014em;margin:0 0 18px;flex:1}
-  .rev-who{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
+  .rev-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;
     padding-top:14px;border-top:1px solid var(--line)}
+  .rev-who{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+  .rev-more{font-size:12.5px;font-weight:600;color:var(--wine);white-space:nowrap}
 
   /* ── 페이지 허브 ── */
   .hub{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
@@ -183,11 +199,12 @@
 <body>
 
 <nav class="gnav">
-  <a class="gnav-brand" href="main.html"><b>대단한영어</b> · GREATENG</a>
+  <a class="gnav-brand" href="main.html"><b>대단한영어</b><span class="sub"> · GREATENG</span></a>
   <div class="gnav-links">
     <a href="parent_guide.html">학원안내</a>
     <a href="suneung_2026.html">수능대비반</a>
     <a href="pohang_highschools.html">학교정보</a>
+    <a class="gnav-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">내신자료</a>
   </div>
 </nav>
 
@@ -294,26 +311,35 @@
     <p class="lead">영어가 발목을 잡았던 학생들이 대단한영어를 만나 입시의 마지막 퍼즐을 맞췄습니다. 실제 졸업생들의 이야기입니다.</p>
 
     <div class="rev-grid">
-      <article class="rev-card">
+      <a class="rev-card" href="https://blog.naver.com/pkf78/224172610683" target="_blank" rel="noopener">
         <div class="rev-badge">서울대 수리과학부</div>
         <p class="rev-quote">"수학 천재가 수학을 망쳤을 때, 영어가 구원했습니다."</p>
         <p class="rev-body">경북 수능 수석. 수학은 압도적이었지만 영어가 약점이었던 학생. 부족했던 영어 기초를 완벽하게 잡아내 서울대 합격의 마지막 퍼즐을 맞췄습니다.</p>
-        <div class="rev-who">손OO · 제철고 졸업</div>
-      </article>
+        <div class="rev-foot">
+          <span class="rev-who">손OO · 제철고 졸업</span>
+          <span class="rev-more">자세히 보기 →</span>
+        </div>
+      </a>
 
-      <article class="rev-card">
+      <a class="rev-card" href="https://blog.naver.com/pkf78/224167306191" target="_blank" rel="noopener">
         <div class="rev-badge">성균관대 합격</div>
         <p class="rev-quote">"6등급에서 시작해, 3년 뒤 성균관대에 합격했습니다."</p>
         <p class="rev-body">제철고 1학년 영어 6등급. 시키는 것만 해도 성적이 오르는 촘촘한 관리와, 배경지식까지 넓혀주는 수업으로 마지막 내신 2등급까지 끌어올렸습니다.</p>
-        <div class="rev-who">정OO · 제철고 졸업</div>
-      </article>
+        <div class="rev-foot">
+          <span class="rev-who">정OO · 제철고 졸업</span>
+          <span class="rev-more">자세히 보기 →</span>
+        </div>
+      </a>
 
-      <article class="rev-card">
+      <a class="rev-card" href="https://blog.naver.com/pkf78/224169151857" target="_blank" rel="noopener">
         <div class="rev-badge">서울대 · 고려대 동시합격</div>
         <p class="rev-quote">"이과 최상위권, 영어 약점을 논리 독해로 메웠습니다."</p>
         <p class="rev-body">서울에서 유학 온 제철고 학생. 수학은 강했지만 영어가 부족했던 학생이, 영어를 공식처럼 명쾌하게 설명받으며 서울대 물리교육과·고려대 물리학과에 동시 합격했습니다.</p>
-        <div class="rev-who">서OO · 제철고 졸업</div>
-      </article>
+        <div class="rev-foot">
+          <span class="rev-who">서OO · 제철고 졸업</span>
+          <span class="rev-more">자세히 보기 →</span>
+        </div>
+      </a>
     </div>
   </div>
 </section>
