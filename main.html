@@ -128,6 +128,19 @@
   .cert-thumb span{display:block;text-align:center;font-size:12.5px;color:rgba(255,255,255,.72);
     margin-top:9px;letter-spacing:-0.01em}
 
+  /* ── 합격 후기 ── */
+  .reviews{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  @media(max-width:760px){.rev-grid{grid-template-columns:1fr}}
+  .rev-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px 24px;
+    display:flex;flex-direction:column}
+  .rev-badge{display:inline-block;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:-0.01em;
+    color:var(--wine);background:rgba(122,16,32,.08);padding:5px 12px;border-radius:980px;margin-bottom:16px}
+  .rev-quote{font-size:17px;font-weight:700;letter-spacing:-0.022em;line-height:1.4;color:var(--ink);margin:0 0 12px}
+  .rev-body{font-size:14px;color:var(--muted);line-height:1.6;letter-spacing:-0.014em;margin:0 0 18px;flex:1}
+  .rev-who{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;
+    padding-top:14px;border-top:1px solid var(--line)}
+
   /* ── 페이지 허브 ── */
   .hub{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
   @media(max-width:720px){.hub{grid-template-columns:1fr}}
@@ -269,6 +282,38 @@
         <img src="image/cert_teacher.jpg" alt="중등학교 정교사 외국어(영어) 교원자격증" loading="lazy">
         <span>정교사(영어) 자격증</span>
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- 합격 후기 -->
+<section class="reviews">
+  <div class="sec">
+    <div class="sec-eyebrow">합격 후기</div>
+    <h2>결과로 증명합니다</h2>
+    <p class="lead">영어가 발목을 잡았던 학생들이 대단한영어를 만나 입시의 마지막 퍼즐을 맞췄습니다. 실제 졸업생들의 이야기입니다.</p>
+
+    <div class="rev-grid">
+      <article class="rev-card">
+        <div class="rev-badge">서울대 수리과학부</div>
+        <p class="rev-quote">"수학 천재가 수학을 망쳤을 때, 영어가 구원했습니다."</p>
+        <p class="rev-body">경북 수능 수석. 수학은 압도적이었지만 영어가 약점이었던 학생. 부족했던 영어 기초를 완벽하게 잡아내 서울대 합격의 마지막 퍼즐을 맞췄습니다.</p>
+        <div class="rev-who">손OO · 제철고 졸업</div>
+      </article>
+
+      <article class="rev-card">
+        <div class="rev-badge">성균관대 합격</div>
+        <p class="rev-quote">"6등급에서 시작해, 3년 뒤 성균관대에 합격했습니다."</p>
+        <p class="rev-body">제철고 1학년 영어 6등급. 시키는 것만 해도 성적이 오르는 촘촘한 관리와, 배경지식까지 넓혀주는 수업으로 마지막 내신 2등급까지 끌어올렸습니다.</p>
+        <div class="rev-who">정OO · 제철고 졸업</div>
+      </article>
+
+      <article class="rev-card">
+        <div class="rev-badge">서울대 · 고려대 동시합격</div>
+        <p class="rev-quote">"이과 최상위권, 영어 약점을 논리 독해로 메웠습니다."</p>
+        <p class="rev-body">서울에서 유학 온 제철고 학생. 수학은 강했지만 영어가 부족했던 학생이, 영어를 공식처럼 명쾌하게 설명받으며 서울대 물리교육과·고려대 물리학과에 동시 합격했습니다.</p>
+        <div class="rev-who">서OO · 제철고 졸업</div>
+      </article>
     </div>
   </div>
 </section>
