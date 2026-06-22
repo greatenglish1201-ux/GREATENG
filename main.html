@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대단한영어 | 포항 남구 중·고등 입시영어 전문 학원</title>
+<meta name="description" content="포항 남구 대잠동 중·고등 입시영어 전문 학원. 고려대 영어교육과·맥쿼리 TESOL 석사 원장이 직접 개발한 데이터 기반 학습 관리 시스템으로 학교별 맞춤 내신·수능을 대비합니다.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-12E7VM1SQ8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-12E7VM1SQ8');
+</script>
+<style>
+  :root{
+    --navy:#0e1626;
+    --navy-2:#16223a;
+    --navy-3:#1f2f4d;
+    --wine:#7a1020;
+    --wine-deep:#5a0b18;
+    --gold:#C9A84C;
+    --gold-soft:#e3cd8a;
+    --gold-deep:#9a7f33;
+    --ink:#1c2433;
+    --paper:#f7f8fa;
+    --paper-2:#eef1f6;
+    --line:#dde2ec;
+    --muted:#5c6678;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro KR","Apple SD Gothic Neo",system-ui,"Malgun Gothic",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.65;
+    letter-spacing:-0.014em;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+  a{color:inherit}
+
+  /* ── 상단 네비 ── */
+  .gnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 22px;background:rgba(14,22,38,.92);backdrop-filter:saturate(150%) blur(12px);
+    border-bottom:1px solid rgba(201,168,76,.18)}
+  .gnav-brand{font-size:16px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:-0.02em}
+  .gnav-brand b{color:var(--gold-soft)}
+  .gnav-links{display:flex;gap:18px}
+  .gnav-links a{font-size:13.5px;font-weight:600;color:rgba(255,255,255,.78);text-decoration:none;letter-spacing:-0.01em}
+  .gnav-links a:hover{color:#fff}
+  @media(max-width:560px){.gnav-links{gap:13px}.gnav-links a{font-size:12.5px}}
+
+  /* ── 히어로 ── */
+  .hero{position:relative;background:linear-gradient(165deg,var(--navy),var(--navy-2) 60%,var(--navy-3));
+    color:#fff;padding:72px 22px 80px;overflow:hidden}
+  .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  .hero-in{max-width:880px;margin:0 auto;position:relative}
+  .hero-eyebrow{font-size:13px;font-weight:600;letter-spacing:0.04em;color:var(--gold-soft);
+    font-style:italic;margin-bottom:18px}
+  .hero h1{font-size:38px;font-weight:700;line-height:1.22;letter-spacing:-0.03em;margin:0 0 18px}
+  .hero h1 .hl{color:var(--gold-soft)}
+  .hero p{font-size:17.5px;color:rgba(255,255,255,.82);max-width:600px;line-height:1.62;letter-spacing:-0.015em;margin:0 0 28px}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:11px}
+  .hbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+    padding:14px 26px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
+    transition:transform .15s ease,opacity .15s ease}
+  .hbtn:hover{transform:translateY(-1px);opacity:.93}
+  .hbtn.primary{background:var(--gold);color:var(--ink)}
+  .hbtn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+  @media(max-width:560px){.hero{padding:54px 22px 60px}.hero h1{font-size:29px}.hero p{font-size:16px}}
+
+  /* ── 공통 섹션 ── */
+  .sec{max-width:880px;margin:0 auto;padding:64px 22px}
+  .sec-eyebrow{font-size:12.5px;font-weight:600;letter-spacing:0.05em;color:var(--wine);
+    background:rgba(122,16,32,.07);display:inline-block;padding:5px 13px;border-radius:980px;margin-bottom:14px}
+  .sec h2{font-size:27px;font-weight:700;letter-spacing:-0.025em;margin:0 0 14px;color:var(--ink)}
+  .sec .lead{font-size:16.5px;color:var(--muted);line-height:1.65;letter-spacing:-0.014em;max-width:620px;margin:0}
+
+  /* ── 소개 / 차별점 ── */
+  .intro{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .feat{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:34px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}}
+  .fcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .fcard h3{font-size:17px;font-weight:700;letter-spacing:-0.02em;margin:0 0 8px;color:var(--ink)}
+  .fcard p{font-size:14.5px;color:var(--muted);line-height:1.62;margin:0;letter-spacing:-0.014em}
+  .fcard .fk{font-size:12px;font-weight:600;letter-spacing:0.04em;color:var(--gold-deep);margin-bottom:12px}
+
+  /* ── 원장 ── */
+  .director{background:linear-gradient(165deg,var(--navy),var(--navy-2));color:#fff}
+  .director .sec-eyebrow{color:var(--gold-soft);background:rgba(201,168,76,.14)}
+  .director h2{color:#fff}
+  .director .lead{color:rgba(255,255,255,.78)}
+  .creds{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .cred{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.25);border-radius:14px;
+    padding:16px 20px;flex:1;min-width:200px}
+  .cred b{display:block;font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;letter-spacing:-0.01em}
+  .cred span{font-size:13px;color:rgba(255,255,255,.6)}
+  /* 학력·자격·경력 */
+  .prof{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:32px}
+  @media(max-width:640px){.prof{grid-template-columns:1fr;gap:26px}}
+  .prof-h{font-size:12.5px;font-weight:600;letter-spacing:0.05em;color:var(--gold-soft);
+    padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid rgba(201,168,76,.25)}
+  .prof-list{list-style:none;margin:0;padding:0}
+  .prof-list li{font-size:14.5px;color:rgba(255,255,255,.82);line-height:1.5;margin-bottom:10px;letter-spacing:-0.01em}
+  .prof-list li:last-child{margin-bottom:0}
+  .prof-list b{color:#fff;font-weight:700}
+  .prof-timeline{list-style:none;margin:0;padding:0}
+  .prof-timeline li{display:flex;gap:14px;font-size:14px;color:rgba(255,255,255,.82);
+    line-height:1.45;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07);letter-spacing:-0.01em}
+  .prof-timeline li:last-child{border-bottom:none}
+  .prof-timeline .yr{flex-shrink:0;font-size:13px;font-weight:700;color:var(--gold-soft);min-width:38px}
+  /* 증빙 자료 */
+  .certs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+  @media(max-width:560px){.certs{grid-template-columns:1fr 1fr}}
+  .cert-thumb{display:block;text-decoration:none;background:rgba(255,255,255,.04);
+    border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:10px;transition:transform .15s ease,border-color .15s ease}
+  .cert-thumb:hover{transform:translateY(-2px);border-color:rgba(201,168,76,.5)}
+  .cert-thumb img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:7px;
+    background:#fff;display:block}
+  .cert-thumb span{display:block;text-align:center;font-size:12.5px;color:rgba(255,255,255,.72);
+    margin-top:9px;letter-spacing:-0.01em}
+
+  /* ── 페이지 허브 ── */
+  .hub{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  @media(max-width:720px){.hub{grid-template-columns:1fr}}
+  .hcard{display:block;text-decoration:none;background:#fff;border:1px solid var(--line);
+    border-radius:18px;padding:26px 24px;transition:transform .16s ease,box-shadow .16s ease;
+    position:relative;overflow:hidden}
+  .hcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--wine))}
+  .hcard:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(28,36,51,.1)}
+  .hcard .hc-label{font-size:11.5px;font-weight:600;letter-spacing:0.05em;color:var(--accent,var(--wine));margin-bottom:10px}
+  .hcard h3{font-size:18px;font-weight:700;letter-spacing:-0.02em;margin:0 0 7px;color:var(--ink)}
+  .hcard p{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 14px;letter-spacing:-0.014em}
+  .hcard .hc-go{font-size:13.5px;font-weight:600;color:var(--accent,var(--wine))}
+
+  /* ── 상담 CTA ── */
+  .cta{background:linear-gradient(165deg,var(--wine),var(--wine-deep));color:#fff;text-align:center;
+    padding:66px 22px}
+  .cta h2{font-size:27px;font-weight:700;letter-spacing:-0.025em;margin:0 0 12px}
+  .cta p{font-size:16px;color:rgba(255,255,255,.85);max-width:520px;margin:0 auto 12px;line-height:1.6;letter-spacing:-0.014em}
+  .cta .small{font-size:13.5px;color:rgba(255,255,255,.62);margin-bottom:26px;line-height:1.55}
+  .cta-btns{display:flex;flex-wrap:wrap;gap:11px;justify-content:center}
+  .cbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+    padding:14px 28px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
+    transition:transform .15s ease,opacity .15s ease}
+  .cbtn:hover{transform:translateY(-1px);opacity:.93}
+  .cbtn.gold{background:var(--gold);color:var(--ink)}
+  .cbtn.line{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}
+
+  /* ── 푸터 ── */
+  .foot{background:var(--navy);color:#fff;text-align:center;padding:40px 22px}
+  .foot-name{font-size:15px;margin-bottom:10px}
+  .foot-name b{color:var(--gold-soft)}
+  .foot-addr{font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:10px}
+  .foot-addr span{color:var(--gold-soft);font-weight:600}
+  .foot-info{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;letter-spacing:-0.01em}
+  .foot-blog{display:inline-block;font-size:13px;font-weight:700;color:#03c75a;
+    border:1px solid #03c75a;border-radius:980px;padding:8px 18px;text-decoration:none;transition:all .15s ease}
+  .foot-blog:hover{background:#03c75a;color:#fff}
+</style>
+</head>
+<body>
+
+<nav class="gnav">
+  <a class="gnav-brand" href="main.html"><b>대단한영어</b> · GREATENG</a>
+  <div class="gnav-links">
+    <a href="parent_guide.html">학원안내</a>
+    <a href="suneung_2026.html">수능대비반</a>
+    <a href="pohang_highschools.html">학교정보</a>
+  </div>
+</nav>
+
+<!-- 히어로 -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-eyebrow">Excellence as a Habit</div>
+    <h1>포항 입시영어,<br><span class="hl">데이터로 관리하는</span> 학원입니다</h1>
+    <p>포항 남구 대잠동의 중·고등 입시영어 전문 학원. 원장이 직접 개발한 학습 관리 시스템으로, 학교별 시험에 딱 맞춘 대비를 합니다.</p>
+    <div class="hero-cta">
+      <a class="hbtn primary" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">상담 신청하기</a>
+      <a class="hbtn ghost" href="parent_guide.html">수업 자세히 보기</a>
+    </div>
+  </div>
+</header>
+
+<!-- 학원 소개 / 차별점 -->
+<section class="intro">
+  <div class="sec">
+    <div class="sec-eyebrow">우리 학원은</div>
+    <h2>무작정 반복이 아니라, 정밀하게 관리합니다</h2>
+    <p class="lead">대단한영어는 입시 영어와 성적 향상에 집중하는 전문 학원입니다. 지문의 구조를 읽어내는 정밀 독해를 중심으로, 데이터에 기반해 학생 한 명 한 명을 관리합니다.</p>
+    <div class="feat">
+      <div class="fcard">
+        <div class="fk">자체 출제 시스템</div>
+        <h3>학교별 맞춤 대비</h3>
+        <p>원장이 직접 개발한 출제 플랫폼으로, 우리 아이 학교 시험에 맞춘 변형문제를 실시간으로 제공합니다.</p>
+      </div>
+      <div class="fcard">
+        <div class="fk">학습 데이터 분석</div>
+        <h3>약점을 정확히 진단</h3>
+        <p>학생별 풀이 결과가 누적되어, 어떤 유형에 약한지 데이터로 진단하고 반복 훈련으로 채워나갑니다.</p>
+      </div>
+      <div class="fcard">
+        <div class="fk">정밀 독해 수업</div>
+        <h3>고난도까지 대비</h3>
+        <p>단순 해석을 넘어 글의 논리와 구조를 분석하는 독해 훈련으로, 수능·내신 고난도 문항까지 대비합니다.</p>
+      </div>
+      <div class="fcard">
+        <div class="fk">매일 관리</div>
+        <h3>빠짐없는 점검</h3>
+        <p>매일 숙제 제출과 단어 점검을 온라인으로 확인합니다. 틀린 단어는 완전히 외울 때까지 반복합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 원장 -->
+<section class="director">
+  <div class="sec">
+    <div class="sec-eyebrow">원장 직강</div>
+    <h2>전문성과 경력을 모두 갖췄습니다</h2>
+    <p class="lead">강의부터 관리까지, 원장이 직접 책임집니다. 검증된 교육 배경과 십수 년의 입시 강의 경력으로 학생을 끝까지 관리합니다.</p>
+
+    <div class="prof">
+      <div class="prof-col">
+        <div class="prof-h">학력</div>
+        <ul class="prof-list">
+          <li><b>고려대학교</b> 영어교육과 학사 졸업</li>
+          <li><b>호주 맥쿼리대학교</b> 대학원 TESOL(영어교육) 석사 졸업</li>
+        </ul>
+        <div class="prof-h" style="margin-top:22px">자격</div>
+        <ul class="prof-list">
+          <li>중등학교 정교사 자격 · 외국어(영어)</li>
+        </ul>
+      </div>
+
+      <div class="prof-col">
+        <div class="prof-h">강의 경력</div>
+        <ul class="prof-timeline">
+          <li><span class="yr">2010</span> 포스텍 생명공학연구소 영어논문쓰기 연구원</li>
+          <li><span class="yr">2013</span> 포항 세명고 방학 수능특강 강의</li>
+          <li><span class="yr">2014</span> 칠곡 석적고 명품 수능특강 강의</li>
+          <li><span class="yr">2014</span> 포항 고대학원 재수 종합반 강의</li>
+          <li><span class="yr">2015</span> 포항 예술고 수능 특별반 강의</li>
+          <li><span class="yr">2016</span> 포항 대단한영어 원장</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="prof-h" style="margin-top:36px">증빙 자료</div>
+    <div class="certs">
+      <a class="cert-thumb" href="image/cert_bachelor.jpg" target="_blank" rel="noopener">
+        <img src="image/cert_bachelor.jpg" alt="고려대학교 영어교육과 학사 학위증" loading="lazy">
+        <span>고려대 학사 학위증</span>
+      </a>
+      <a class="cert-thumb" href="image/cert_master.jpg" target="_blank" rel="noopener">
+        <img src="image/cert_master.jpg" alt="맥쿼리대학교 TESOL 석사 졸업장" loading="lazy">
+        <span>맥쿼리대 TESOL 석사</span>
+      </a>
+      <a class="cert-thumb" href="image/cert_teacher.jpg" target="_blank" rel="noopener">
+        <img src="image/cert_teacher.jpg" alt="중등학교 정교사 외국어(영어) 교원자격증" loading="lazy">
+        <span>정교사(영어) 자격증</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 페이지 허브 -->
+<section class="sec">
+  <div class="sec-eyebrow">더 알아보기</div>
+  <h2>필요한 정보를 확인하세요</h2>
+  <p class="lead">수업 방식부터 학교 정보, 고3 수능 과정까지. 궁금한 내용을 자세히 안내해 드립니다.</p>
+  <div class="hub">
+    <a class="hcard" href="parent_guide.html" style="--accent:#7a1020">
+      <div class="hc-label">학원 안내</div>
+      <h3>수업과 시험 대비</h3>
+      <p>중등·고등 수업이 어떻게 진행되고 학교 시험은 어떻게 대비하는지, 시간표·교육비와 함께 안내합니다.</p>
+      <div class="hc-go">자세히 보기 →</div>
+    </a>
+    <a class="hcard" href="suneung_2026.html" style="--accent:#c06a2c">
+      <div class="hc-label">고3 수능 파이널</div>
+      <h3>2027 수능대비반</h3>
+      <p>흐름 독해를 중심으로 수능 영어를 체계적으로 마무리하는 고3 파이널 과정. 7월 개강 안내입니다.</p>
+      <div class="hc-go">과정 보기 →</div>
+    </a>
+    <a class="hcard" href="pohang_highschools.html" style="--accent:#3a8a5c">
+      <div class="hc-label">학교 정보</div>
+      <h3>포항 고교 지도</h3>
+      <p>포항 지역 고등학교 정보를 지도와 함께 한눈에. 우리 아이 학교 선택에 도움이 되는 입시 정보입니다.</p>
+      <div class="hc-go">정보 보기 →</div>
+    </a>
+  </div>
+</section>
+
+<!-- 상담 CTA -->
+<section class="cta">
+  <h2>우리 아이에게 맞는지 궁금하신가요?</h2>
+  <p>상담을 통해 자녀의 현재 수준과 학습 방향을 함께 짚어드립니다.</p>
+  <p class="small">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>네이버 톡톡으로 신청해 주시면 원장이 직접 답변드립니다.</p>
+  <div class="cta-btns">
+    <a class="cbtn gold" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡으로 상담 신청</a>
+    <a class="cbtn line" href="parent_guide.html#guide">상담 가이드 먼저 보기</a>
+  </div>
+</section>
+
+<!-- 푸터 -->
+<footer class="foot">
+  <div class="foot-name"><b>대단한영어</b> · 포항 남구 영어 전문 학원</div>
+  <div class="foot-addr">포항시 남구 대이로 105, 아이코아빌딩 5층 501호<br><span>이동플렉스 맞은편</span></div>
+  <div class="foot-info">대표전화 054-272-7870 · 사업자등록번호 329-94-00142</div>
+  <a class="foot-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">학원 블로그 바로가기</a>
+</footer>
+
+</body>
+</html>
