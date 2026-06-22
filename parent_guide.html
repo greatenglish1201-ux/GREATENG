@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대단한영어 — 학부모님께 드리는 수업 안내</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-12E7VM1SQ8"></script>
 <script>
@@ -32,11 +34,14 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{
-    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro KR","SF Pro Text","Apple SD Gothic Neo",system-ui,"Malgun Gothic",sans-serif;
     background:var(--paper);
     color:var(--ink);
-    line-height:1.7;
+    line-height:1.65;
+    letter-spacing:-0.014em;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
   }
   .wrap{max-width:760px;margin:0 auto;padding:0 20px}
 
@@ -71,11 +76,11 @@
     font-weight:600;text-transform:uppercase;margin-bottom:14px;
   }
   .hero h1{
-    font-size:30px;font-weight:800;line-height:1.35;letter-spacing:-.02em;
+    font-size:34px;font-weight:700;line-height:1.25;letter-spacing:-0.03em;
     margin-bottom:14px;
   }
   .hero h1 .hl{color:var(--gold-soft)}
-  .hero p{font-size:16px;color:rgba(255,255,255,.86);max-width:540px}
+  .hero p{font-size:17px;color:rgba(255,255,255,.82);max-width:540px;letter-spacing:-0.015em;line-height:1.6}
 
   /* ── Tabs ── */
   .tabbar{
@@ -108,7 +113,7 @@
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
   .lead{
-    font-size:17px;color:var(--ink);font-weight:600;
+    font-size:16.5px;color:var(--ink);font-weight:500;line-height:1.6;letter-spacing:-0.016em;
     padding:18px 20px;margin-bottom:26px;
     background:var(--paper-2);border-radius:14px;
     border-left:4px solid var(--navy-3);
@@ -124,8 +129,8 @@
     color:var(--navy-3);background:rgba(31,47,77,.07);
     padding:4px 11px;border-radius:20px;margin-bottom:12px;
   }
-  .card h3{font-size:19px;font-weight:800;letter-spacing:-.01em;margin-bottom:10px;color:var(--ink)}
-  .card p{font-size:15.5px;color:#3c4658;margin-bottom:10px}
+  .card h3{font-size:19px;font-weight:700;letter-spacing:-0.022em;margin-bottom:10px;color:var(--ink)}
+  .card p{font-size:15px;color:#3c4658;margin-bottom:10px;line-height:1.6;letter-spacing:-0.014em}
   .card p:last-child{margin-bottom:0}
   .card ul{list-style:none;margin-top:6px}
   .card li{
@@ -174,7 +179,7 @@
     background:var(--gold);padding:5px 12px;border-radius:20px;
     display:inline-block;margin-bottom:12px;
   }
-  .system h3{font-size:19px;font-weight:800;margin-bottom:10px;color:#fff}
+  .system h3{font-size:19px;font-weight:700;letter-spacing:-0.022em;margin-bottom:10px;color:#fff}
   .system p{font-size:15.5px;color:rgba(255,255,255,.85)}
   .system .hit{
     margin-top:14px;display:flex;align-items:baseline;gap:10px;
@@ -190,7 +195,7 @@
   .daily-ic{font-size:26px;flex-shrink:0;line-height:1.2}
   .daily-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--gold-deep);
     text-transform:uppercase;margin-bottom:6px}
-  .daily-tx h3{font-size:18px;font-weight:800;margin-bottom:8px}
+  .daily-tx h3{font-size:18px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
   .daily-tx p{font-size:15px;color:#3c4658}
   .daily-tx p b{color:var(--navy-3)}
 
@@ -214,7 +219,7 @@
     border-radius:14px;padding:20px 22px;margin-top:16px}
   .voca-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--gold-deep);
     text-transform:uppercase;margin-bottom:6px}
-  .voca-tx h3{font-size:18px;font-weight:800;margin-bottom:8px}
+  .voca-tx h3{font-size:18px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
   .voca-tx p{font-size:15px;color:#3c4658}
   .voca-tx p b{color:var(--navy-3)}
   .voca-app{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;max-width:340px;margin:0 auto;width:100%}
@@ -243,7 +248,7 @@
     border:1px solid rgba(201,168,76,.25);
   }
   .director .badge{font-size:12px;letter-spacing:.16em;color:var(--gold-soft);font-weight:600;margin-bottom:10px}
-  .director h3{font-size:20px;font-weight:800;margin-bottom:14px}
+  .director h3{font-size:20px;font-weight:700;letter-spacing:-0.022em;margin-bottom:14px}
   .director .creds{display:flex;flex-wrap:wrap;gap:10px}
   .director .cred{
     background:rgba(255,255,255,.1);border:1px solid rgba(227,205,138,.3);
@@ -263,7 +268,7 @@
   .guide-eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;
     color:var(--wine);background:rgba(122,16,32,.08);padding:5px 12px;border-radius:20px;margin-bottom:12px}
   .guide-head h2{font-size:24px;font-weight:700;color:var(--ink);margin:0 0 10px;letter-spacing:-0.02em}
-  .guide-intro{font-size:14px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto}
+  .guide-intro{font-size:14.5px;color:var(--muted);line-height:1.65;letter-spacing:-0.014em;max-width:600px;margin:0 auto}
   .guide-acc{display:flex;flex-direction:column;gap:10px}
   .gitem{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .gitem summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
@@ -278,7 +283,7 @@
   .g-tag{font-size:11px;font-weight:600;color:var(--ink-3,#86868b);background:transparent;border:1px solid var(--line);padding:2px 8px;border-radius:980px}
   .g-tag.warn{color:var(--wine);border-color:rgba(122,16,32,.25)}
   .g-body{padding:0 18px 18px 18px}
-  .g-body p{font-size:14px;color:var(--ink);line-height:1.7;margin:0 0 10px}
+  .g-body p{font-size:14.5px;color:var(--ink);line-height:1.65;letter-spacing:-0.014em;margin:0 0 10px}
   .g-body p:last-child{margin-bottom:0}
   .g-body b{color:var(--ink);font-weight:600}
   /* 시간표·교육비 표 */
@@ -323,7 +328,7 @@
 
   /* ── CTA ── */
   .cta{text-align:center;padding:36px 0 56px}
-  .cta h3{font-size:22px;font-weight:800;margin-bottom:8px}
+  .cta h3{font-size:23px;font-weight:700;letter-spacing:-0.025em;margin-bottom:8px}
   .cta p{color:var(--muted);font-size:15px;margin-bottom:18px}
   .cta-notice{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px;
     background:var(--paper-2);border-radius:10px;padding:12px 14px}
@@ -420,7 +425,7 @@
   .sim-btn.next.restart{background:var(--gold);color:var(--ink)}
 
   @media (max-width:480px){
-    .hero h1{font-size:24px}
+    .hero h1{font-size:27px;letter-spacing:-0.03em}
     .tab{font-size:14px;padding:11px 6px}
     .card h3,.system h3{font-size:17px}
   }
