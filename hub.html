@@ -49,6 +49,25 @@
   .tile p{ margin:0; font-size:13px; color:var(--ink-3); line-height:1.5; font-weight:500; }
   .tile .go{ margin-top:14px; font-size:13px; font-weight:600; color:var(--wine); }
   footer{ text-align:center; margin-top:40px; font-size:12px; color:var(--ink-3); }
+  /* 카드 순서 정렬 */
+  .sort-ctrl{ display:flex; flex-direction:column; align-items:flex-end; gap:10px; margin-bottom:16px; }
+  .sort-btn{ border:1px solid var(--line); background:var(--card); color:var(--ink-2);
+    font-size:13px; font-weight:600; padding:8px 16px; border-radius:980px; cursor:pointer;
+    font-family:inherit; transition:background .15s ease; }
+  .sort-btn:hover{ background:var(--fill); }
+  .sort-bar{ display:none; align-items:center; gap:12px; width:100%;
+    background:var(--fill); border:1px solid var(--line); border-radius:14px; padding:12px 16px; }
+  .sort-bar.active{ display:flex; }
+  .sort-bar span{ font-size:13px; color:var(--ink-2); flex:1; }
+  .sort-save{ border:none; background:var(--wine); color:#fff; font-size:13px; font-weight:600;
+    padding:9px 16px; border-radius:980px; cursor:pointer; font-family:inherit; white-space:nowrap; transition:opacity .15s ease; }
+  .sort-save:hover{ opacity:.88; }
+  .tile.sortable{ cursor:grab; user-select:none; }
+  .tile.sortable:active{ cursor:grabbing; }
+  .tile.dragging{ opacity:.4; }
+  .tile.drag-over{ outline:2px dashed var(--wine); outline-offset:3px; }
+  .drag-grip{ position:absolute; top:14px; right:16px; font-size:18px; color:var(--ink-3); letter-spacing:-2px; }
+  @media (max-width:560px){ .sort-bar{ flex-direction:column; align-items:stretch; } .sort-bar span{ text-align:center; } }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 </head>
@@ -59,6 +78,13 @@
     <h1>관리자 허브</h1>
     <p>모든 도구를 한곳에서</p>
   </header>
+  <div class="sort-ctrl">
+    <button id="sortToggle" class="sort-btn">카드 순서 바꾸기</button>
+    <div id="sortBar" class="sort-bar">
+      <span>카드를 끌어서 순서를 바꾼 뒤 저장하세요</span>
+      <button id="sortSave" class="sort-save">순서 저장 (코드 복사)</button>
+    </div>
+  </div>
   <div class="grid" id="grid"></div>
   <footer>대단한영어 · 탁월함이 습관이 되도록</footer>
 </div>
@@ -102,17 +128,92 @@
   }
   function esc(s){ return String(s).replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
+  /* 현재 순서를 담는 작업용 배열 */
+  let order = PAGES.map((p,i)=>i);
+  let sortMode = false;
+
   const grid = document.getElementById('grid');
-  grid.innerHTML = PAGES.map(function(p){
-    const color = p.color || 'var(--wine)';
-    const soft = (p.color ? softBg(p.color) : '#f3eee5');
-    return '<a class="tile" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+'; --accent-soft:'+soft+';">'
-      + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
-      + '<h2>'+esc(p.name)+'</h2>'
-      + '<p>'+esc(p.desc||'')+'</p>'
-      + '<div class="go">열기 →</div>'
-      + '</a>';
-  }).join('');
+
+  function render(){
+    grid.innerHTML = order.map(function(idx){
+      const p = PAGES[idx];
+      const color = p.color || 'var(--wine)';
+      const soft = (p.color ? softBg(p.color) : '#f3eee5');
+      if(sortMode){
+        // 정렬 모드: 링크 비활성 + 드래그 가능
+        return '<div class="tile sortable" draggable="true" data-idx="'+idx+'" style="--accent:'+color+'; --accent-soft:'+soft+';">'
+          + '<div class="drag-grip">⠿</div>'
+          + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
+          + '<h2>'+esc(p.name)+'</h2>'
+          + '<p>'+esc(p.desc||'')+'</p>'
+          + '</div>';
+      }
+      return '<a class="tile" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+'; --accent-soft:'+soft+';">'
+        + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
+        + '<h2>'+esc(p.name)+'</h2>'
+        + '<p>'+esc(p.desc||'')+'</p>'
+        + '<div class="go">열기 →</div>'
+        + '</a>';
+    }).join('');
+    if(sortMode) bindDrag();
+  }
+
+  /* 드래그 정렬 */
+  let dragFrom = null;
+  function bindDrag(){
+    const tiles = grid.querySelectorAll('.sortable');
+    tiles.forEach(function(t){
+      t.addEventListener('dragstart', function(e){
+        dragFrom = +t.dataset.idx;
+        t.classList.add('dragging');
+        e.dataTransfer.effectAllowed='move';
+      });
+      t.addEventListener('dragend', function(){ t.classList.remove('dragging'); });
+      t.addEventListener('dragover', function(e){ e.preventDefault();
+        const over = grid.querySelector('.drag-over');
+        if(over && over!==t) over.classList.remove('drag-over');
+        t.classList.add('drag-over');
+      });
+      t.addEventListener('dragleave', function(){ t.classList.remove('drag-over'); });
+      t.addEventListener('drop', function(e){
+        e.preventDefault();
+        t.classList.remove('drag-over');
+        const to = +t.dataset.idx;
+        if(dragFrom===null || dragFrom===to) return;
+        const fromPos = order.indexOf(dragFrom);
+        const toPos = order.indexOf(to);
+        order.splice(toPos,0, order.splice(fromPos,1)[0]);
+        render();
+      });
+    });
+  }
+
+  /* 정렬 모드 토글 */
+  document.getElementById('sortToggle').addEventListener('click', function(){
+    sortMode = !sortMode;
+    document.getElementById('sortBar').classList.toggle('active', sortMode);
+    this.textContent = sortMode ? '정렬 끝내기' : '카드 순서 바꾸기';
+    render();
+  });
+
+  /* 순서 저장 (코드 복사) */
+  document.getElementById('sortSave').addEventListener('click', function(){
+    const lines = order.map(function(idx){
+      const p = PAGES[idx];
+      const parts = ['name:"'+p.name+'"','url:"'+p.url+'"','desc:"'+(p.desc||'')+'"'];
+      if(p.icon) parts.push('icon:"'+p.icon+'"');
+      if(p.color) parts.push('color:"'+p.color+'"');
+      return '    { '+parts.join(', ')+' },';
+    }).join('\n');
+    const code = '  const PAGES = [\n'+lines+'\n  ];';
+    navigator.clipboard.writeText(code).then(function(){
+      alert('새 순서 코드가 복사되었습니다.\n\nGitHub에서 hub.html 을 열고,\n기존 "const PAGES = [ ... ];" 부분을 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
+    }).catch(function(){
+      prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
+    });
+  });
+
+  render();
 </script>
 </body>
 </html>
