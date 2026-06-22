@@ -54,6 +54,13 @@
     content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
   }
+  .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .hcta{display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+    padding:13px 20px;border-radius:12px;font-size:15px;font-weight:700;
+    transition:transform .15s ease}
+  .hcta:hover{transform:translateY(-2px)}
+  .hcta.guide{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+  .hcta.apply{background:var(--gold);color:var(--ink);box-shadow:0 8px 22px rgba(201,168,76,.35)}
   .hero-tagline{
     font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
     font-size:20px;color:var(--gold-soft);margin-bottom:10px;letter-spacing:.01em;
@@ -248,6 +255,45 @@
     background:linear-gradient(160deg,var(--navy-2),var(--navy));
     border:1px solid rgba(201,168,76,.3);border-radius:16px;
     padding:18px 20px;margin:24px 0 8px;transition:transform .15s ease}
+
+  /* ── 상담 가이드 ── */
+  .guide-sec{margin:40px 0 8px;scroll-margin-top:12px}
+  .guide-head{text-align:center;margin-bottom:22px}
+  .guide-eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;
+    color:var(--wine);background:rgba(122,16,32,.08);padding:5px 12px;border-radius:20px;margin-bottom:12px}
+  .guide-head h2{font-size:24px;font-weight:800;color:var(--ink);margin:0 0 10px}
+  .guide-intro{font-size:14px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto}
+  .guide-acc{display:flex;flex-direction:column;gap:10px}
+  .gitem{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .gitem summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+    padding:16px 18px;font-size:15.5px;font-weight:700;color:var(--ink);user-select:none}
+  .gitem summary::-webkit-details-marker{display:none}
+  .gitem summary::after{content:"+";margin-left:auto;font-size:20px;font-weight:400;color:var(--muted);transition:transform .2s}
+  .gitem[open] summary::after{content:"−"}
+  .g-no{width:24px;height:24px;border-radius:50%;flex-shrink:0;background:var(--wine);color:#fff;
+    font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .g-tag{font-size:11px;font-weight:700;color:var(--gold);background:rgba(201,168,76,.14);padding:3px 8px;border-radius:12px}
+  .g-tag.warn{color:var(--wine);background:rgba(122,16,32,.1)}
+  .g-body{padding:0 18px 18px 18px}
+  .g-body p{font-size:14px;color:var(--ink);line-height:1.7;margin:0 0 10px}
+  .g-body p:last-child{margin-bottom:0}
+  .g-body b{color:var(--wine)}
+  /* 시간표·교육비 표 */
+  .fee-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+  .fee-table th{background:var(--navy);color:#fff;font-weight:700;padding:11px 10px;text-align:left;font-size:13px}
+  .fee-table th:first-child{border-top-left-radius:10px}
+  .fee-table th:last-child{border-top-right-radius:10px}
+  .fee-table td{padding:12px 10px;border-bottom:1px solid var(--line);color:var(--ink)}
+  .fee-table td:last-child{font-weight:800;color:var(--wine);white-space:nowrap}
+  .fee-table tr:last-child td{border-bottom:none}
+  .fee-note{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.6}
+  @media(max-width:480px){
+    .fee-table th{display:none}
+    .fee-table td{display:flex;justify-content:space-between;border:none;padding:7px 0}
+    .fee-table td::before{content:attr(data-l);font-weight:700;color:var(--muted);font-size:13px}
+    .fee-table tr{display:block;padding:12px 0;border-bottom:1px solid var(--line)}
+    .fee-table tr:last-child{border-bottom:none}
+  }
   .crosslink:hover{transform:translateY(-2px)}
   .cl-ic{font-size:26px;flex-shrink:0}
   .cl-tx{flex:1}
@@ -397,6 +443,10 @@
     <div class="eyebrow">대단한영어 · 포항</div>
     <h1>중등·고등 영어,<br><span class="hl">수업과 시험 대비</span>를 이렇게 합니다</h1>
     <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
+    <div class="hero-cta">
+      <a class="hcta guide" href="#guide">📋 상담 전 꼭 읽어주세요</a>
+      <a class="hcta apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">📝 네이버 톡톡으로 상담 신청</a>
+    </div>
   </div>
 </header>
 
@@ -635,13 +685,78 @@
     </div>
   </div>
 
+  <!-- ───────── 상담 가이드 ───────── -->
+  <section class="guide-sec" id="guide">
+    <div class="guide-head">
+      <div class="guide-eyebrow">상담 예약 전 필독</div>
+      <h2>상담 가이드</h2>
+      <p class="guide-intro">대단한영어는 철저한 관리와 입시 전문 교수법에 집중하는 학원입니다. 본원의 교육 철학을 신뢰하고 맡겨주실 준비가 된 가정과 함께하기 위해, 상담 예약 전 아래 내용을 꼭 읽어주시기 바랍니다.</p>
+    </div>
+
+    <div class="guide-acc">
+      <details class="gitem" open>
+        <summary><span class="g-no">1</span>교육 철학 및 커리큘럼<span class="g-tag">가장 중요</span></summary>
+        <div class="g-body">
+          <p>본원은 <b>입시 영어와 성적 향상</b>에 초점을 맞춘 곳입니다. 회화 중심이거나 부드러운 분위기의 어학원 시스템을 기대하신다면 본원과 맞지 않으므로, 전문 어학원을 권해드립니다.</p>
+          <p>단어 암기 방식, 수업 방향, 진도 속도 등은 검증된 자체 커리큘럼에 따라 운영하며, 개인 요구에 맞춘 수정은 어렵습니다. 확고한 교육 방식이 따로 있으시다면 가정 지도를 권합니다. 저희는 원장의 철학과 시스템을 <b>전적으로 신뢰하고 맡겨주실 가정</b>의 아이들을 책임집니다.</p>
+        </div>
+      </details>
+
+      <details class="gitem">
+        <summary><span class="g-no">2</span>입시 최적화 교수 시스템</summary>
+        <div class="g-body">
+          <p><b>논리 독해 중심 자체 제작 교재</b> — 단순 해석을 넘어 지문의 유기적 연결과 글의 구조를 분석하는 교수법을 위해 교재를 직접 연구·제작합니다.</p>
+          <p><b>중등부 특화 Mastery Curriculum</b> — 논리 독해와 함께 고등 내신·수능의 기반이 되는 문법을 완벽히 마스터하는 자체 시스템을 병행합니다.</p>
+        </div>
+      </details>
+
+      <details class="gitem">
+        <summary><span class="g-no">3</span>매일 숙제 및 성취도 점검</summary>
+        <div class="g-body">
+          <p><b>실시간 이행도 체크</b> — 자체 모니터링 프로그램으로 무한반복 숙제 이행과 성취도를 실시간 확인합니다.</p>
+          <p><b>data-driven 피드백</b> — 학습 데이터를 바탕으로 아이의 상태와 성장 추이를 원장이 직접 정기 안내합니다.</p>
+          <p><b>원장 직접 검수</b> — 단어 테스트 통과 후에도 1:1 구두 테스트를 진행하며, 기준 미달 시 완벽해질 때까지 재시험합니다.</p>
+        </div>
+      </details>
+
+      <details class="gitem">
+        <summary><span class="g-no">4</span>상담 예약 · 노쇼 규정<span class="g-tag warn">필독</span></summary>
+        <div class="g-body">
+          <p>재원생의 학습권 보장을 위해 <b>100% 사전 예약제</b>로만 상담을 진행합니다. 상담 시간은 한 학부모님을 위해 비워둔 원장의 귀한 시간입니다.</p>
+          <p>사전 통보 없는 노쇼나 예약 직전 일방적 취소 발생 시, <b>향후 모든 상담 및 입학 대기 신청이 영구 제한</b>됩니다. 피치 못할 사정은 반드시 최소 하루 전 미리 연락 주시기 바랍니다.</p>
+        </div>
+      </details>
+
+      <details class="gitem">
+        <summary><span class="g-no">5</span>시간표 및 교육비</summary>
+        <div class="g-body">
+          <table class="fee-table" id="feeTable">
+            <thead>
+              <tr><th>대상</th><th>요일</th><th>수업 시간</th><th>교육비</th></tr>
+            </thead>
+            <tbody id="feeBody"><!-- JS 자동 생성 --></tbody>
+          </table>
+          <p class="fee-note">※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.</p>
+        </div>
+      </details>
+
+      <details class="gitem">
+        <summary><span class="g-no">6</span>상담 신청 방법</summary>
+        <div class="g-body">
+          <p>민감한 개인정보를 제외하고 효율적인 상담을 위해 네이버 톡톡을 활용합니다.</p>
+          <p>① 아래 <b>네이버 톡톡</b> 버튼 클릭 → ② 채팅창의 <b>상담 신청서</b> 양식 작성 → ③ 확인 후 수업 종료 후 순차적으로 연락드려 일정을 확정합니다.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
   <!-- ───────── CTA ───────── -->
   <div class="cta">
     <h3>우리 아이에게 맞는지 궁금하신가요?</h3>
     <p>상담을 통해 자녀의 현재 수준과 학습 방향을 함께 짚어드립니다.</p>
     <div class="cta-notice">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>아래 순서로 신청해 주시면 원장이 직접 빠르고 친절하게 답변드립니다.</div>
     <div class="cta-steps">
-      <a class="cta-step guide" href="https://blog.naver.com/pkf78/224202820359" target="_blank" rel="noopener">
+      <a class="cta-step guide" href="#guide">
         <span class="num">1</span>
         <span class="lbl">학원 상담 가이드 먼저 읽기</span>
       </a>
@@ -670,7 +785,33 @@
 </footer>
 
 <script>
-  const tabs = document.querySelectorAll('.tab');
+  /* ════════════════════════════════════════════
+     ▼▼▼  시간표·교육비 수정은 여기만 고치세요  ▼▼▼
+     · 반을 추가하려면 { } 한 줄을 복사해 아래에 붙이고 내용만 바꾸면 됩니다.
+     · 반을 빼려면 해당 { } 줄을 지우면 됩니다.
+     · fee 는 숫자만 적으면 자동으로 "원"이 붙습니다.
+  ════════════════════════════════════════════ */
+  const TUITION = [
+    { name:"중등 기초", days:"화 · 목", time:"오후 5:30 ~ 7:00",  fee:300000 },
+    { name:"중등 심화", days:"수 · 금", time:"오후 5:30 ~ 7:00",  fee:350000 },
+    { name:"예비고",   days:"화 · 목", time:"오후 7:00 ~ 8:30",  fee:350000 },
+    { name:"고등 A",   days:"수 · 금", time:"오후 7:00 ~ 8:30",  fee:350000 },
+    { name:"고등 B",   days:"화 · 목", time:"오후 8:30 ~ 10:00", fee:400000 },
+  ];
+  /* ▲▲▲  여기까지만 고치면 됩니다  ▲▲▲ */
+
+  (function renderFee(){
+    const body = document.getElementById('feeBody');
+    if(!body) return;
+    body.innerHTML = TUITION.map(r=>
+      `<tr><td data-l="대상">${r.name}</td><td data-l="요일">${r.days}</td>`+
+      `<td data-l="시간">${r.time}</td>`+
+      `<td data-l="교육비">${Number(r.fee).toLocaleString()}원</td></tr>`
+    ).join('');
+  })();
+</script>
+
+<script>
   const panels = document.querySelectorAll('.panel');
   tabs.forEach(tab=>{
     tab.addEventListener('click',()=>{
