@@ -1252,6 +1252,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   // 학생 추가/편집 폼
   const [form,setForm]=useState({name:'',password:'',expiry:'',startDate:'',active:true});
   const [editName,setEditName]=useState(null);
+  const [blindLowThreshold,setBlindLowThreshold]=useState(1); // 관리자: '적게 푼' 기준 (N회 이하)
   // 결과 필터
   const [selectedStudent,setSelectedStudent]=useState(''); // '' = 전체
   const [stats,setStats]=useState(null);
@@ -1520,7 +1521,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     const weakPid=calcWeak(perPid,rangeAll.filter(pid=>perPid[pid]),5);
     const weakType=calcWeak(perType,Object.keys(perType),3);
     const zero=rangeAll.filter(pid=>!perPid[pid]);
-    const once=rangeAll.filter(pid=>perPid[pid]&&perPid[pid].t===1);
+    const once=rangeAll.filter(pid=>perPid[pid]&&perPid[pid].t>0&&perPid[pid].t<=blindLowThreshold);
     const covered=rangeAll.length-zero.length;
     const covPct=rangeAll.length?Math.round(covered/rangeAll.length*100):0;
     return {perPid,perType,rangeAll,weakPid,weakType,zero,once,covered,covPct};
@@ -2175,18 +2176,27 @@ ${ESC_}
                 <div style={cardWrap}>
                   <div style={head}>
                     <span>📍 사각지대 (안 본 지문)</span>
-                    <span style={{fontSize:12,fontWeight:800,color:covPct>=80?'#16a34a':covPct>=50?'#f59e0b':'#dc2626'}}>커버 {covPct}% · {covered}/{rangeAll.length}</span>
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <select value={blindLowThreshold} onChange={e=>setBlindLowThreshold(parseInt(e.target.value))}
+                        style={{padding:'3px 6px',borderRadius:7,border:'1px solid #e6dcc6',fontSize:11,background:'#fff',color:'#3a2a20',cursor:'pointer'}}>
+                        <option value={1}>적게 푼 기준: 1회 이하</option>
+                        <option value={3}>적게 푼 기준: 3회 이하</option>
+                        <option value={5}>적게 푼 기준: 5회 이하</option>
+                        <option value={10}>적게 푼 기준: 10회 이하</option>
+                      </select>
+                      <span style={{fontSize:12,fontWeight:800,color:covPct>=80?'#16a34a':covPct>=50?'#f59e0b':'#dc2626'}}>커버 {covPct}% · {covered}/{rangeAll.length}</span>
+                    </div>
                   </div>
                   <div style={{padding:'10px 16px'}}>
                     {zero.length===0&&once.length===0
-                      ?<div style={{fontSize:12,color:'#16a34a'}}>범위 내 지문을 모두 2회 이상 학습했습니다. 👍</div>
+                      ?<div style={{fontSize:12,color:'#16a34a'}}>범위 내 지문을 모두 {blindLowThreshold}회 넘게 학습했습니다. 👍</div>
                       :<div>
                         {zero.length>0&&<div style={{marginBottom:8}}>
                           <div style={{fontSize:11.5,fontWeight:700,color:'#dc2626',marginBottom:2}}>한 번도 안 푼 지문 ({zero.length})</div>
                           <div>{zero.slice(0,30).map(pid=>chip(lbl(pid),'#dc2626','#fdecec'))}{zero.length>30&&<span style={{fontSize:11,color:'#9a8570'}}> 외 {zero.length-30}개</span>}</div>
                         </div>}
                         {once.length>0&&<div>
-                          <div style={{fontSize:11.5,fontWeight:700,color:'#b8860b',marginBottom:2}}>1회만 푼 지문 ({once.length})</div>
+                          <div style={{fontSize:11.5,fontWeight:700,color:'#b8860b',marginBottom:2}}>{blindLowThreshold}회 이하 푼 지문 ({once.length})</div>
                           <div>{once.slice(0,30).map(pid=>chip(lbl(pid),'#92670a','#fdf6e3'))}{once.length>30&&<span style={{fontSize:11,color:'#9a8570'}}> 외 {once.length-30}개</span>}</div>
                         </div>}
                       </div>}
@@ -2526,6 +2536,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
   // ── 학생용: 시험범위 프리셋 + 사각지대(5회 미만) 풀기 ──
   const isStudent=session?.role==='student';
   const [selPresetId,setSelPresetId]=useState('');
+  const [blindThreshold,setBlindThreshold]=useState(5); // 사각지대 기준: N회 미만
   const presetMatch=(pid,ranges)=>{ for(const pre of (ranges||[])){ if(pid===pre||pid.startsWith(pre+'_'))return true; } return false; };
   const applyPresetRange=(pr)=>{
     if(!pr)return;
@@ -2539,8 +2550,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
     if(!myStatsReady){ alert('잠시만요! 학습 기록을 불러오는 중이에요. 2~3초 후 다시 눌러주세요.'); return; }
     const rangeIds=allPassages.filter(p=>presetMatch(p.id,pr.ranges)).map(p=>p.id);
     if(rangeIds.length===0){ alert('이 시험 범위에 해당하는 지문을 찾지 못했어요. 범위를 다시 확인해주세요.'); return; }
-    const blind=rangeIds.filter(pid=>((myPerPid[pid]&&myPerPid[pid].t)||0)<5);
-    if(blind.length===0){ alert('🎉 이 범위는 모든 지문을 5회 이상 풀었어요!\n사각지대가 없습니다. 잘하고 있어요 👍'); return; }
+    const blind=rangeIds.filter(pid=>((myPerPid[pid]&&myPerPid[pid].t)||0)<blindThreshold);
+    if(blind.length===0){ alert(`🎉 이 범위는 모든 지문을 ${blindThreshold}회 이상 풀었어요!\n사각지대가 없습니다. 잘하고 있어요 👍`); return; }
     setSelPassages(new Set(blind));
     const typeCnt=Math.max(1,selectedTypes.size);
     const maxQ=blind.length*typeCnt; // 이론상 최대(지문수×선택유형수)
@@ -2708,6 +2719,13 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
               style={{flex:'1 1 160px',padding:'10px 12px',borderRadius:10,border:selPresetId?'1px solid #e6dcc6':'1.5px solid #C9A84C',fontSize:13.5,background:'#fff',outline:'none',color:'#3a2a20'}}>
               <option value="">① 시험 범위 선택…</option>
               {stuPresets.map(pr=><option key={pr.id} value={pr.id}>{pr.name}</option>)}
+            </select>
+            <select value={blindThreshold} onChange={e=>setBlindThreshold(parseInt(e.target.value))} disabled={!selPresetId||!myStatsReady}
+              style={{padding:'10px 8px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:12.5,background:'#fff',outline:'none',color:'#3a2a20',cursor:(selPresetId&&myStatsReady)?'pointer':'default'}}>
+              <option value={1}>1회 미만</option>
+              <option value={3}>3회 미만</option>
+              <option value={5}>5회 미만</option>
+              <option value={10}>10회 미만</option>
             </select>
             <button onClick={applyBlindspots} disabled={!selPresetId||!myStatsReady}
               style={{padding:'10px 14px',borderRadius:10,border:'none',background:(selPresetId&&myStatsReady)?'linear-gradient(135deg,#C9A84C,#b8943a)':'#e2d9c4',color:(selPresetId&&myStatsReady)?'#3a2a20':'#a99',fontSize:13,fontWeight:800,cursor:(selPresetId&&myStatsReady)?'pointer':'default',whiteSpace:'nowrap'}}>
