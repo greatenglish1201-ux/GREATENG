@@ -303,7 +303,13 @@
   .fe-del{margin-left:6px;border:none;background:rgba(122,16,32,.1);color:var(--wine);
     width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;vertical-align:middle}
   .fe-del:hover{background:rgba(122,16,32,.2)}
-  .fee-adminbar{display:none;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .fee-adminbar{display:none;flex-direction:column;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .fee-pwbox{display:flex;align-items:center;gap:10px}
+  .fee-pwbox label{font-size:13px;font-weight:600;color:var(--ink-2,#515154);letter-spacing:-0.01em;white-space:nowrap}
+  .fee-pwbox input{flex:1;max-width:220px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    font-size:13.5px;font-family:inherit;color:var(--ink);background:#fffdf8}
+  .fee-pwbox input:focus{outline:none;border-color:var(--gold)}
+  .fee-adminbtns{display:flex;gap:8px;flex-wrap:wrap}
   .fab{border:none;padding:9px 16px;border-radius:980px;font-size:13.5px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;font-family:inherit;transition:opacity .15s ease}
   .fab-add{background:var(--fill,#f3eee5);color:var(--ink)}
   .fab-copy{background:var(--gold);color:var(--ink)}
@@ -763,9 +769,15 @@
           </table>
           <p class="fee-note">※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.</p>
           <div class="fee-adminbar" id="feeAdminBar">
-            <button class="fab fab-add" id="feeAddBtn">+ 반 추가</button>
-            <button class="fab fab-copy" id="feeCopyBtn">수정된 코드 복사</button>
-            <button class="fab fab-done" id="feeDoneBtn">편집 종료</button>
+            <div class="fee-pwbox">
+              <label for="feePwInput">관리자 비밀번호</label>
+              <input type="text" id="feePwInput" autocomplete="off">
+            </div>
+            <div class="fee-adminbtns">
+              <button class="fab fab-add" id="feeAddBtn">+ 반 추가</button>
+              <button class="fab fab-copy" id="feeCopyBtn">수정된 코드 복사</button>
+              <button class="fab fab-done" id="feeDoneBtn">편집 종료</button>
+            </div>
           </div>
         </div>
       </details>
@@ -840,6 +852,7 @@
 
   /* 화면에 보여줄 현재 데이터 (편집 시 이 값이 바뀜) */
   let feeData = TUITION.map(r=>({...r}));
+  let curPw = ADMIN_PW;
   let editMode = false;
 
   const feeBody = document.getElementById('feeBody');
@@ -883,7 +896,10 @@
   /* ── 관리자 편집 모드 ── */
   function enterEdit(){
     editMode = true;
+    curPw = ADMIN_PW;
     renderFee();
+    const pwInput = document.getElementById('feePwInput');
+    if(pwInput){ pwInput.value = curPw; }
     document.getElementById('feeAdminBar').style.display = 'flex';
   }
   function exitEdit(){
@@ -904,16 +920,23 @@
     feeData.push({ name:"새 반", days:"화 · 목", time:"오후 0:00 ~ 0:00", fee:0 });
     renderFee();
   });
-  // 코드 복사
+  // 비밀번호 입력 반영
+  (function(){
+    const pwInput = document.getElementById('feePwInput');
+    if(pwInput){
+      pwInput.addEventListener('input', e=>{ curPw = e.target.value; });
+    }
+  })();
+  // 코드 복사 (비밀번호 + 시간표 함께)
   document.getElementById('feeCopyBtn').addEventListener('click',()=>{
+    const pw = (curPw||'').replace(/"/g,'\\"');
     const lines = feeData.map(r=>
       `    { name:"${r.name}", days:"${r.days}", time:"${r.time}", fee:${Number(r.fee)||0} },`
     ).join('\n');
-    const code = `  const TUITION = [\n${lines}\n  ];`;
+    const code = `  const ADMIN_PW = "${pw}";\n\n  const TUITION = [\n${lines}\n  ];`;
     navigator.clipboard.writeText(code).then(()=>{
-      alert('새 시간표 코드가 복사되었습니다.\n\nGitHub에서 parent_guide.html 을 열고,\n기존 "const TUITION = [ ... ];" 부분을 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
+      alert('새 코드(비밀번호 + 시간표)가 복사되었습니다.\n\nGitHub에서 parent_guide.html 을 열고,\n기존 \'const ADMIN_PW = "..."; \' 부터\n\'const TUITION = [ ... ];\' 까지를 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
     }).catch(()=>{
-      // 클립보드 막힌 환경 대비: 코드를 보여줌
       prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
     });
   });
