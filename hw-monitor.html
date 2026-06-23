@@ -154,6 +154,17 @@
   /* 모달 */
   #inspect{ backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+  /* 제출 기록 로그 표 */
+  table.logtbl{ width:100%; border-collapse:collapse; font-size:13px; white-space:nowrap; }
+  table.logtbl th, table.logtbl td{ padding:8px 12px; border-bottom:1px solid var(--line,#eee); text-align:left; }
+  table.logtbl thead th{ background:var(--fill,#f7f4ef); font-weight:700; color:var(--ink,#3a2a20); position:sticky; top:0; }
+  table.logtbl tbody tr:hover{ background:var(--fill,#faf7f2); }
+  table.logtbl .lt-ts{ color:var(--ink-3,#888); font-variant-numeric:tabular-nums; }
+  table.logtbl .lt-name{ font-weight:700; color:var(--ink,#3a2a20); }
+  table.logtbl .lt-grade{ color:var(--ink-3,#888); text-align:center; }
+  table.logtbl .lt-due{ color:var(--navy,#2a4a6a); font-variant-numeric:tabular-nums; }
+  table.logtbl .lt-content{ color:var(--wine,#7a1020); font-weight:600; white-space:normal; }
 </style>
 </head>
 <body>
@@ -215,6 +226,17 @@
       <span class="muted">엉뚱한 사진 검증용 · 최신순 최대 100건</span>
     </div>
     <div id="photo-area"><div class="muted">학생을 선택하거나 '사진 불러오기'를 누르세요.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>제출 기록 (실시간 로그)</h2>
+    <div class="controls">
+      <select id="log-student"><option value="">전체 학생</option></select>
+      <button class="btn btn-primary" onclick="loadSubmitLog()">기록 불러오기</button>
+      <span class="muted">시트 원본 — 제출시각·이름·학년·날짜·내용 · 최신순</span>
+    </div>
+    <div id="log-info" class="muted" style="margin-bottom:8px;"></div>
+    <div id="log-area" style="overflow-x:auto;"><div class="muted">'기록 불러오기'를 누르세요.</div></div>
   </div>
 </div>
 
@@ -862,6 +884,47 @@
     const sel = document.getElementById('photo-student');
     sel.innerHTML = '<option value="">전체 학생</option>';
     (ov.students||[]).forEach(s=> sel.add(new Option(s.name, s.name)));
+  }
+
+  // ── 제출 기록 로그 (시트 원본 표) ──
+  let _gradeByName = {};   // 이름→학년 (roster에서)
+  async function loadSubmitLog(){
+    const area = document.getElementById('log-area');
+    const info = document.getElementById('log-info');
+    const name = document.getElementById('log-student').value;
+    area.innerHTML = '<div class="loading">불러오는 중...</div>';
+    info.textContent = '';
+    // 학년 매핑용 roster (한 번만)
+    if(!Object.keys(_gradeByName).length){
+      const ros = await jsonp('type=roster');
+      ((ros && ros.students) || []).forEach(s=>{ if(s.name) _gradeByName[s.name] = s.grade || ''; });
+    }
+    const d = await jsonp('type=adminSubmissions' + (name ? '&name=' + encodeURIComponent(name) : ''));
+    const items = (d && d.items) || [];
+    if(!items.length){ info.textContent=''; area.innerHTML = '<span class="muted">제출 기록이 없습니다.</span>'; return; }
+    // 제출시각(ts) 최신순 정렬
+    const rows = items.slice().sort((a,b)=> String(b.ts||'').localeCompare(String(a.ts||'')) );
+    info.textContent = (name||'전체') + ' · ' + rows.length + '건';
+    let h = '<table class="logtbl"><thead><tr>'
+      + '<th>제출 시각</th><th>이름</th><th>학년</th><th>숙제 날짜</th><th>내용</th></tr></thead><tbody>';
+    rows.forEach(it=>{
+      const grade = it.grade || _gradeByName[it.name] || '';
+      const content = (it.src||'') + (it.type && it.type!=='숙제' ? (' · '+it.type) : '');
+      h += '<tr>'
+        + '<td class="lt-ts">'+(it.ts||'-')+'</td>'
+        + '<td class="lt-name">'+(it.name||'-')+'</td>'
+        + '<td class="lt-grade">'+(grade||'-')+'</td>'
+        + '<td class="lt-due">'+(it.due||'-')+'</td>'
+        + '<td class="lt-content">'+(content||'-')+'</td></tr>';
+    });
+    h += '</tbody></table>';
+    area.innerHTML = h;
+    // 학생 선택 드롭다운 채우기 (한 번)
+    const sel = document.getElementById('log-student');
+    if(sel.options.length<=1){
+      const names = [...new Set(items.map(it=>it.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+      names.forEach(n=> sel.add(new Option(n,n)));
+    }
   }
 
   async function loadPhotos(){
