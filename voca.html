@@ -579,7 +579,10 @@
                 <div style="border:1px solid #eee; border-radius:12px; padding:12px; margin-bottom:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <span style="font-size:14px; font-weight:800; color:var(--ink);">전체 단어시험 현황 <span style="font-size:11.5px; color:var(--ink-soft); font-weight:500;">(최근 8회)</span></span>
-                        <button onclick="loadExamGrid()" style="font-size:12px; font-weight:700; padding:6px 12px; border-radius:8px; border:none; background:var(--wine); color:#fff; cursor:pointer;">불러오기</button>
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="loadExamGrid()" style="font-size:12px; font-weight:700; padding:6px 12px; border-radius:8px; border:none; background:var(--wine); color:#fff; cursor:pointer;">불러오기</button>
+                            <button onclick="loadExamGrid(true)" title="최신 데이터로 다시 불러오기" style="font-size:12px; font-weight:700; padding:6px 10px; border-radius:8px; border:1px solid #e8d8b8; background:#fff; color:var(--ink-soft); cursor:pointer;">↻ 새로고침</button>
+                        </div>
                     </div>
                     <div id="exam-grid-info" style="font-size:11.5px; color:#999; margin-bottom:6px;"></div>
                     <div id="exam-grid-scroll" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
@@ -1609,9 +1612,17 @@
     }
     // 결과 조회: 시험기록(미션별) + 불합격 시 단어쓰기 사진
     // ── 전체 단어시험 현황 그리드 (방법 A: 학생마다 불러 합치기, GAS 수정 없음) ──
-    function loadExamGrid(){
+    let examGridCache = null;   // {ts, students, results}
+    function loadExamGrid(force){
         const info=document.getElementById('exam-grid-info');
         const area=document.getElementById('exam-grid-area');
+        // 캐시가 있고 강제 새로고침이 아니면 즉시 표시 (5분 이내)
+        if(!force && examGridCache && (Date.now()-examGridCache.ts < 5*60*1000)){
+            renderExamGrid(examGridCache.students, examGridCache.results);
+            const mins=Math.floor((Date.now()-examGridCache.ts)/60000);
+            info.textContent = info.textContent + '  ·  ' + (mins<1?'방금':mins+'분 전') + ' 기준 (새로고침하려면 다시 불러오기)';
+            return;
+        }
         info.textContent='불러오는 중...';
         area.innerHTML='<p style="color:var(--ink-soft); font-size:12.5px; padding:6px;">학생별 결과 수집 중...</p>';
         // 명단 먼저 (클래스 순서 반영 위해 examRosterCache 우선)
@@ -1627,12 +1638,12 @@
                 const cleanup=()=>{ try{delete window[cb];}catch(e){window[cb]=undefined;} const s=document.getElementById(cb); if(s) s.remove(); };
                 window[cb]=(data)=>{ fin=true; cleanup(); resolve((data&&data.missions)||[]); };
                 const s=document.createElement('script'); s.id=cb;
-                s.src=APP_URL + "?type=adminExamResults&name=" + encodeURIComponent(name) + "&limit=10&callback=" + cb + "&t=" + Date.now();
+                s.src=APP_URL + "?type=adminExamResults&name=" + encodeURIComponent(name) + "&limit=8&callback=" + cb + "&t=" + Date.now();
                 s.onerror=()=>{ if(fin)return; cleanup(); resolve([]); };
                 document.body.appendChild(s);
                 setTimeout(()=>{ if(fin)return; cleanup(); resolve([]); }, 12000);
             });
-            // 동시 과부하 방지: 4개씩 묶어 처리
+            // 동시 처리: 8개씩 병렬 (속도 개선)
             const queue=names.slice();
             const worker=async()=>{
                 while(queue.length){
@@ -1642,7 +1653,11 @@
                     info.textContent = names.length + '명 중 ' + done + '명 완료...';
                 }
             };
-            Promise.all([worker(),worker(),worker(),worker()]).then(()=>{
+            const workers=[];
+            const POOL=8;
+            for(let i=0;i<POOL;i++) workers.push(worker());
+            Promise.all(workers).then(()=>{
+                examGridCache = { ts: Date.now(), students: students, results: results };
                 renderExamGrid(students, results);
             });
         };
