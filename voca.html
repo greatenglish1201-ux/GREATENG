@@ -2021,13 +2021,23 @@
 
     async function checkConfig() {
         stName = document.getElementById('st-name').value.trim(); if(!stName) return;
-        // 이름칸에 '관리자' 입력 시 → 관리자 비번 모달
+        // 이름칸에 '관리자' 입력 시 → 관리자 인증
         if(stName === '관리자'){
             document.getElementById('st-name').value = '';
             stName = '';
             document.getElementById('admin-pw-err').style.display = 'none';
+            // 학생 비번칸에 이미 비번을 입력했으면 → 모달 없이 바로 검증
+            const typedPw = (document.getElementById('st-pw')?.value || '').trim();
+            if(typedPw){
+                document.getElementById('st-pw').value = '';
+                document.getElementById('admin-pw-input').value = typedPw;
+                tryGoAdmin();   // 그 비번으로 바로 인증
+                return;
+            }
+            // 비번칸이 비어있으면 모달로 비번 입력받기
             document.getElementById('admin-pw-input').value = '';
             document.getElementById('admin-pw-modal').style.display = 'flex';
+            setTimeout(()=>{ const el=document.getElementById('admin-pw-input'); if(el) el.focus(); }, 100);
             return;
         }
         const stPw = (document.getElementById('st-pw')?.value || '').trim();
