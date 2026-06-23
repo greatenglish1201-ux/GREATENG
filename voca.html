@@ -1675,9 +1675,39 @@
             setTimeout(()=>{ if(fin)return; cleanup(); }, 8000);
         }
     }
+    // 명단 '순서 편집'과 동일한 순서로 students 정렬 (전체 그리드용)
+    function sortStudentsByRosterOrder(students){
+        const ord = loadRosterOrder();
+        const groups={};
+        students.forEach(s=>{ const k=s.klass||'__기타__'; if(!groups[k])groups[k]=[]; groups[k].push(s); });
+        // 클래스 순서
+        let keys=Object.keys(groups);
+        const savedClassOrder=(ord.classOrder||[]).filter(k=>groups[k]);
+        const remaining=keys.filter(k=>!savedClassOrder.includes(k)).sort((a,b)=>{
+            if(a==='__기타__')return 1; if(b==='__기타__')return -1; return a.localeCompare(b,'ko');
+        });
+        keys=savedClassOrder.concat(remaining);
+        keys=keys.filter(k=>k!=='__기타__').concat(keys.includes('__기타__')?['__기타__']:[]);
+        // 각 클래스 안 학생 순서
+        const out=[];
+        keys.forEach(k=>{
+            let arr=groups[k].slice();
+            const savedStu=((ord.studentOrder||{})[k]||[]);
+            arr.sort((a,b)=>{
+                const ia=savedStu.indexOf(a.name), ib=savedStu.indexOf(b.name);
+                if(ia>=0 && ib>=0) return ia-ib;       // 둘 다 저장순서에 있으면 그 순서
+                if(ia>=0) return -1; if(ib>=0) return 1; // 저장된 게 앞
+                return a.name.localeCompare(b.name,'ko'); // 나머지는 가나다
+            });
+            out.push(...arr);
+        });
+        return out;
+    }
     function renderExamGrid(students, results){
         const info=document.getElementById('exam-grid-info');
         const area=document.getElementById('exam-grid-area');
+        // 명단 '순서 편집'과 같은 순서로 정렬 (한 곳에서 정한 순서가 그리드에도 반영)
+        students = sortStudentsByRosterOrder(students);
         // 각 학생 미션: 오답노트 제외 + 날짜순 최신 8개
         const perStudent={};
         let maxCols=0;
