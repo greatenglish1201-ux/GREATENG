@@ -447,10 +447,10 @@
             </div>
             <input type="text" id="hw-type-custom" placeholder="숙제 구분 직접 입력" style="display:none; padding:10px; font-size:14px; width:100%; margin-bottom:8px;">
 
-            <!-- 사진 -->
-            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 사진</label>
-            <input type="file" id="hw-photo" accept="image/*" onchange="hw_preview()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
-            <img id="hw-preview-img" style="display:none; max-width:100%; border-radius:10px; margin-bottom:10px;">
+            <!-- 사진 (여러 장) -->
+            <label style="font-weight:700; font-size:13px; color:var(--ink-soft,#3a2a20);">숙제 사진 <span style="color:#aaa; font-weight:500;">(여러 장 가능)</span></label>
+            <input type="file" id="hw-photo" accept="image/*" multiple onchange="hw_addPhotos()" style="padding:8px 0; font-size:14px; width:100%; margin:5px 0 8px;">
+            <div id="hw-photo-grid" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;"></div>
 
             <button class="btn btn-main" id="hw-submit-btn" style="padding:15px;" onclick="hw_submit()">제출하기</button>
             <div id="hw-msg" style="text-align:center; font-size:13px; margin-top:8px; color:var(--ink-soft,#3a2a20);"></div>
@@ -2383,27 +2383,53 @@
 
     // 사진 미리보기 + 압축 보관
     let hwCompressedDataUrl = '';
-    function hw_preview(){
-        const f = document.getElementById('hw-photo').files[0];
-        if(!f) return;
-        const reader = new FileReader();
-        reader.onload = (ev)=>{
-            const img = new Image();
-            img.onload = ()=>{
-                const maxW = 1200;
-                let w = img.width, h = img.height;
-                if(w >maxW){ h = Math.round(h * maxW / w); w = maxW; }
-                const cv = document.createElement('canvas');
-                cv.width = w; cv.height = h;
-                cv.getContext('2d').drawImage(img, 0, 0, w, h);
-                hwCompressedDataUrl = cv.toDataURL('image/jpeg', 0.7);
-                const pv = document.getElementById('hw-preview-img');
-                pv.src = hwCompressedDataUrl;
-                pv.style.display = 'block';
+    // 여러 장 누적: 압축된 dataURL 배열
+    let hwPhotoList = [];
+    function hw_addPhotos(){
+        const input = document.getElementById('hw-photo');
+        const files = Array.from(input.files || []);
+        if(!files.length) return;
+        let pending = files.length;
+        files.forEach(f=>{
+            const reader = new FileReader();
+            reader.onload = (ev)=>{
+                const img = new Image();
+                img.onload = ()=>{
+                    const maxW = 1200;
+                    let w = img.width, h = img.height;
+                    if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+                    const cv = document.createElement('canvas');
+                    cv.width = w; cv.height = h;
+                    cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                    hwPhotoList.push(cv.toDataURL('image/jpeg', 0.7));
+                    pending--;
+                    if(pending<=0) hw_renderPhotoGrid();
+                };
+                img.onerror = ()=>{ pending--; if(pending<=0) hw_renderPhotoGrid(); };
+                img.src = ev.target.result;
             };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(f);
+            reader.onerror = ()=>{ pending--; if(pending<=0) hw_renderPhotoGrid(); };
+            reader.readAsDataURL(f);
+        });
+        input.value = '';   // 같은 파일 다시 고를 수 있게 초기화
+    }
+    function hw_renderPhotoGrid(){
+        const grid = document.getElementById('hw-photo-grid');
+        if(!grid) return;
+        if(!hwPhotoList.length){ grid.innerHTML=''; return; }
+        let h = '';
+        hwPhotoList.forEach((url, i)=>{
+            h += '<div style="position:relative; width:74px; height:74px;">';
+            h += '<img src="'+url+'" style="width:74px; height:74px; object-fit:cover; border-radius:9px; border:1px solid #e8d8b8;">';
+            h += '<button type="button" onclick="hw_removePhoto('+i+')" style="position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#cc0000; color:#fff; border:none; font-size:13px; line-height:1; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.3);">×</button>';
+            h += '</div>';
+        });
+        h += '<div style="width:74px; height:74px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:11px; border:1px dashed #ddd; border-radius:9px;">'+hwPhotoList.length+'장</div>';
+        grid.innerHTML = h;
+    }
+    function hw_removePhoto(i){
+        hwPhotoList.splice(i, 1);
+        hw_renderPhotoGrid();
     }
 
     // 자유 입력 시 아래 드롭다운 영역 흐리게 (안 골라도 됨을 시각적으로)
@@ -2504,7 +2530,7 @@
         const type = hw_buildType();
         if(!type) missing.push('숙제 구분');
 
-        if(!hwCompressedDataUrl) missing.push('사진');
+        if(!hwPhotoList.length) missing.push('사진');
 
         if(missing.length){
             alert('아래 항목을 선택/입력해주세요:\n\n· ' + missing.join('\n· '));
@@ -2520,34 +2546,46 @@
         const btn = document.getElementById('hw-submit-btn');
         btn.disabled = true;
         msg.style.color = 'var(--ink-soft,#3a2a20)';
-        msg.textContent = '전송 중...';
+        const photos = hwPhotoList.slice();
+        const total = photos.length;
+        msg.textContent = '전송 중... (0/' + total + ')';
 
-        const payload = {
-            name: stName, grade: hwGrade, due: dueStr, src: src,
-            course: hwCourse, type: type, image: hwCompressedDataUrl, mime: 'image/jpeg'
+        // 여러 장: 같은 숙제 정보로 각 사진을 순차 전송 (GAS는 한 장씩 받음 — 수정 불필요)
+        let sent = 0;
+        const sendOne = (idx)=>{
+            if(idx >= total){
+                // 전부 완료
+                msg.style.color = '#274e13';
+                msg.innerHTML = '제출 완료! (' + total + '장 · 현황 반영까지 잠시 걸려요)';
+                btn.disabled = false;
+                hwPhotoList = [];
+                hw_renderPhotoGrid();
+                const fs2 = document.getElementById('hw-free-src'); if(fs2){ fs2.value = ''; }
+                hw_onFreeSrc();
+                setTimeout(hw_loadStatus, 3000);
+                return;
+            }
+            const payload = {
+                name: stName, grade: hwGrade, due: dueStr, src: src,
+                course: hwCourse, type: type, image: photos[idx], mime: 'image/jpeg'
+            };
+            fetch(HW_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            }).then(()=>{
+                sent++;
+                msg.textContent = '전송 중... (' + sent + '/' + total + ')';
+                sendOne(idx + 1);
+            }).catch((err)=>{
+                msg.style.color = '#e74c3c';
+                msg.textContent = (sent>0 ? (sent+'장 전송됨, ') : '') + (idx+1) + '번째 사진 전송 실패';
+                btn.disabled = false;
+            });
         };
-
-        // 단어장이 이미 쓰는 검증된 방식: fetch + no-cors + JSON body
-        fetch(HW_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        }).then(()=>{
-            msg.style.color = '#274e13';
-            msg.innerHTML = '제출 완료! (현황 반영까지 잠시 걸려요)';
-            btn.disabled = false;
-            document.getElementById('hw-photo').value = '';
-            document.getElementById('hw-preview-img').style.display = 'none';
-            hwCompressedDataUrl = '';
-            const fs2 = document.getElementById('hw-free-src'); if(fs2){ fs2.value = ''; }
-            hw_onFreeSrc();
-            setTimeout(hw_loadStatus, 3000);
-        }).catch((err)=>{
-            msg.style.color = '#e74c3c';
-            msg.textContent = '전송 실패: 다시 시도해주세요';
-            btn.disabled = false;
-        });
+        sendOne(0);
+        return;
     }
 
     async function handleStart(mode) {
