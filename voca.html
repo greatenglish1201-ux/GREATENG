@@ -564,14 +564,19 @@
             </button>
             <div id="exam-results-box" style="display:block; margin-top:14px;">
                 <div style="display:flex; gap:14px; align-items:flex-start;">
-                    <!-- 왼쪽: 클래스별 학생 명단 -->
-                    <div id="exam-roster-panel" style="flex:0 0 200px; max-width:200px; border:1px solid #eee; border-radius:12px; padding:8px; max-height:520px; overflow-y:auto;">
+                    <!-- 1열: 클래스별 학생 명단 -->
+                    <div id="exam-roster-panel" style="flex:0 0 190px; max-width:190px; border:1px solid #eee; border-radius:12px; padding:8px; max-height:520px; overflow-y:auto;">
                         <div style="font-size:12px; color:var(--ink-soft); padding:6px 6px 8px;">명단 불러오는 중...</div>
                     </div>
-                    <!-- 오른쪽: 선택 학생 결과 -->
-                    <div style="flex:1; min-width:0;">
+                    <!-- 2열: 선택 학생 시험 결과 -->
+                    <div style="flex:1 1 auto; min-width:0;">
                         <div id="exam-result-name" style="font-size:15px; font-weight:800; color:var(--ink); margin-bottom:10px; display:none;"></div>
                         <div id="exam-result-list"><p style="color:var(--ink-soft); font-size:13px; padding:8px 2px;">왼쪽에서 학생 이름을 선택하세요.</p></div>
+                    </div>
+                    <!-- 3열: 단어쓰기 제출 기록 -->
+                    <div style="flex:0 0 220px; max-width:220px; border-left:1px solid #f0f0f0; padding-left:14px; min-width:0;">
+                        <div style="font-size:13px; font-weight:800; color:var(--wine); margin-bottom:10px;">단어쓰기 제출</div>
+                        <div id="exam-wordwrite-panel"><p style="color:var(--ink-soft); font-size:12px;">학생을 선택하세요.</p></div>
                     </div>
                 </div>
             </div>
@@ -1577,6 +1582,7 @@
         const nameEl=document.getElementById('exam-result-name');
         if(nameEl){ nameEl.textContent=name; nameEl.style.display='block'; }
         loadExamResults(name);
+        loadWordWritePanel(name);
     }
     // 결과 조회: 시험기록(미션별) + 불합격 시 단어쓰기 사진
     function loadExamResults(name){
@@ -1692,47 +1698,49 @@
             if(rg.sub) html += '<div style="font-size:12px; color:var(--ink-soft); font-weight:600; word-break:keep-all;">'+ rg.sub +'</div>';
             html += '</div>';
             html += '</div>';
-            // 불합격이면 단어쓰기 사진 영역 (lazy)
-            if(!pass){
-                const slot='ww_'+Math.random().toString(36).slice(2,8);
-                html += '<div id="'+slot+'" style="margin-top:11px; padding-top:11px; border-top:1px dashed #eee; font-size:12px; color:var(--ink-soft);">단어쓰기 확인 중...</div>';
-                setTimeout(()=>loadWordWritePhotos(name, slot), 50);
-            }
             html += '</div>';
         });
         listEl.innerHTML=html;
     }
-    // 불합격 미션: 그 학생의 최근 단어쓰기 제출(사진) 조회 — 숙제점검 GAS adminSubmissions
-    function loadWordWritePhotos(name, slotId){
-        const cbName='ww_'+Date.now()+'_'+Math.floor(Math.random()*1000);
+    // 단어쓰기 제출 기록 (3열 패널) — 시각+날짜+이미지, 중복 제거
+    function loadWordWritePanel(name){
+        const el=document.getElementById('exam-wordwrite-panel');
+        if(!el) return;
+        el.innerHTML='<p style="color:var(--ink-soft); font-size:12px;">불러오는 중...</p>';
+        const cbName='wwp_'+Date.now()+'_'+Math.floor(Math.random()*1000);
         let done=false;
         const cleanup=()=>{ try{delete window[cbName];}catch(e){window[cbName]=undefined;} const s=document.getElementById(cbName); if(s) s.remove(); };
         window[cbName]=(data)=>{
             done=true; cleanup();
-            const el=document.getElementById(slotId);
             if(!el) return;
-            const items=((data && data.items) || []).filter(it=> (it.type||'').indexOf('단어쓰기')>=0);
-            if(!items.length){ el.innerHTML='<span style="color:#b45309;">⚠ 단어쓰기 제출 없음</span>'; return; }
-            let h='<div style="color:#166534; margin-bottom:6px;">단어쓰기 '+items.length+'건</div><div style="display:flex; gap:6px; flex-wrap:wrap;">';
-            items.slice(0,6).forEach(it=>{
+            let items=((data && data.items) || []).filter(it=> (it.type||'').indexOf('단어쓰기')>=0);
+            if(!items.length){ el.innerHTML='<p style="color:var(--ink-soft); font-size:12px;">단어쓰기 제출 없음</p>'; return; }
+            // 중복 제거 (fileId 기준)
+            const seen={}; items=items.filter(it=>{ const k=it.fileId||it.thumb||(it.ts+it.due); if(seen[k])return false; seen[k]=true; return true; });
+            // 제출시각 최신순
+            items.sort((a,b)=> String(b.ts||'').localeCompare(String(a.ts||'')));
+            let h='<div style="font-size:11.5px; color:var(--ink-soft); margin-bottom:8px;">총 '+items.length+'건</div>';
+            items.forEach(it=>{
                 const thumb=it.thumb||'';
-                // 원본 큰 이미지: fileId가 있으면 드라이브 썸네일(고화질), 없으면 photoUrl/thumb
                 const big = it.fileId ? ('https://drive.google.com/thumbnail?id='+it.fileId+'&sz=w1200') : (it.photoUrl||thumb||'#');
+                h+='<div style="margin-bottom:11px; padding-bottom:11px; border-bottom:1px solid #f3f0ea;">';
+                h+='<div style="font-size:11px; color:#888; margin-bottom:1px;">제출 '+(it.ts||'-')+'</div>';
+                if(it.due) h+='<div style="font-size:11.5px; color:var(--navy,#2a4a6a); font-weight:600; margin-bottom:5px;">숙제일 '+it.due+'</div>';
                 if(thumb){
-                    h+='<a href="'+big+'" target="_blank" rel="noopener noreferrer"><img src="'+thumb+'" referrerpolicy="no-referrer" style="width:54px; height:54px; object-fit:cover; border-radius:8px; border:1px solid #e8d8b8;" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></a>';
+                    h+='<a href="'+big+'" target="_blank" rel="noopener noreferrer"><img src="'+thumb+'" referrerpolicy="no-referrer" style="width:72px; height:72px; object-fit:cover; border-radius:8px; border:1px solid #e8d8b8;" loading="lazy" onerror="this.style.display=\'none\'"></a>';
                 } else if(big && big!=='#'){
-                    h+='<a href="'+big+'" target="_blank" rel="noopener noreferrer" style="font-size:11px; color:var(--wine);">사진 '+(it.fileId?'':'(링크)')+'</a>';
+                    h+='<a href="'+big+'" target="_blank" rel="noopener noreferrer" style="font-size:11px; color:var(--wine);">사진 보기</a>';
                 }
+                h+='</div>';
             });
-            h+='</div>';
             el.innerHTML=h;
         };
         const s=document.createElement('script');
         s.id=cbName;
         s.src=HW_URL + "?type=adminSubmissions&name=" + encodeURIComponent(name) + "&callback=" + cbName + "&t=" + Date.now();
-        s.onerror=()=>{ if(done)return; cleanup(); const el=document.getElementById(slotId); if(el) el.innerHTML='<span style="color:#e74c3c;">단어쓰기 조회 실패</span>'; };
+        s.onerror=()=>{ if(done)return; cleanup(); if(el) el.innerHTML='<p style="color:#e74c3c; font-size:12px;">조회 실패</p>'; };
         document.body.appendChild(s);
-        setTimeout(()=>{ if(done)return; cleanup(); const el=document.getElementById(slotId); if(el) el.innerHTML='<span style="color:#999;">단어쓰기 조회 시간초과</span>'; }, 10000);
+        setTimeout(()=>{ if(done)return; cleanup(); if(el) el.innerHTML='<p style="color:#999; font-size:12px;">시간 초과</p>'; }, 10000);
     }
 
     function enterAdmin() {
