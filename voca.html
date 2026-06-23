@@ -231,8 +231,11 @@
         table.examgrid th.ename, table.examgrid td.ename{ position:sticky; left:0; background:#fff; text-align:left; font-weight:700; min-width:62px; z-index:1; border-right:1px solid #e8d8b8; cursor:pointer; }
         table.examgrid td.ename:hover{ color:var(--wine); }
         table.examgrid thead th{ background:#faf6ee; font-weight:700; color:var(--ink); position:sticky; top:0; }
-        table.examgrid td.eg-pass{ background:#e7f6ec; color:#176b29; }
-        table.examgrid td.eg-fail{ background:#fdeaec; color:#b3122a; font-weight:700; }
+        table.examgrid thead th.egcol{ background:var(--wine); color:#fff; font-weight:800; font-size:12.5px; letter-spacing:-0.3px; }
+        table.examgrid td.eg-pass{ background:#e7f6ec; color:#176b29; }       /* 한 번에 합격 */
+        table.examgrid td.eg-retry{ background:#fef3d4; color:#9a6a00; font-weight:700; } /* 재시 합격 (다른 색) */
+        table.examgrid td.eg-fail{ background:#fdeaec; color:#b3122a; font-weight:700; }  /* 불합격 */
+        table.examgrid td .eg-mark{ font-size:15px; font-weight:800; line-height:1.1; }
         table.examgrid td .eg-date{ display:block; font-size:9.5px; color:#999; font-weight:500; margin-top:1px; }
         /* ===== 출제 구성 애플 스타일 ===== */
         .comp-card{ background:#fbfaf8; border:1px solid #efe9e0; border-radius:16px; padding:16px; }
@@ -1674,9 +1677,9 @@
             if(ms.length>maxCols) maxCols=ms.length;
         });
         if(!maxCols){ info.textContent=''; area.innerHTML='<p style="color:var(--ink-soft); font-size:12.5px;">시험 기록이 있는 학생이 없습니다.</p>'; return; }
-        info.textContent = students.length + '명 · 최근 ' + maxCols + '회 (O 합격·X 불합격, 숫자=응시횟수)';
+        info.textContent = students.length + '명 · 최근 ' + maxCols + '회 (O 한번에 합격 · O2 재시 합격 · X 불합격)';
         let h='<table class="examgrid"><thead><tr><th class="ename">학생</th>';
-        for(let i=0;i<maxCols;i++) h += '<th>'+(i+1)+'회전</th>';
+        for(let i=0;i<maxCols;i++) h += '<th class="egcol">'+(i+1)+'회전</th>';
         h += '</tr></thead><tbody>';
         students.forEach(st=>{
             const nm=st.name;
@@ -1688,12 +1691,14 @@
             for(let i=0;i<maxCols;i++){
                 const m=ms[i];
                 if(!m){ h += '<td></td>'; continue; }
-                const pass = (parseInt(m.passAttempt)||0) > 0;
-                const cls = pass ? 'eg-pass' : 'eg-fail';
-                const mark = pass ? ('O'+(m.passAttempt>1?m.passAttempt:'')) : 'X';
+                const attempt = parseInt(m.passAttempt)||0;
+                const pass = attempt > 0;
+                const retry = attempt > 1;   // 2번 이상 만에 합격 = 재시
+                const cls = !pass ? 'eg-fail' : (retry ? 'eg-retry' : 'eg-pass');
+                const mark = pass ? ('O'+(retry?attempt:'')) : 'X';
                 const date = (m._dk && m._dk!=='날짜 미상') ? m._dk.slice(5) : '';  // MM.DD
                 const rangeTitle = (m.range||'').replace(/"/g,'');
-                h += '<td class="'+cls+'" title="'+rangeTitle+'">'+mark+'<span class="eg-date">'+date+'</span></td>';
+                h += '<td class="'+cls+'" title="'+rangeTitle+'"><span class="eg-mark">'+mark+'</span><span class="eg-date">'+date+'</span></td>';
             }
             h += '</tr>';
         });
