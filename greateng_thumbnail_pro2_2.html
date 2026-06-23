@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700&family=Black+Han+Sans&family=Gothic+A1:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -406,6 +407,7 @@ const ACCENT_COLORS=[
 ];
 
 const FONTS=[
+  {val:"'Pretendard Variable',Pretendard,sans-serif", label:'Pretendard'},
   {val:"'Noto Sans KR',sans-serif",    label:'Noto Sans KR'},
   {val:"'Nanum Gothic',sans-serif",    label:'나눔고딕'},
   {val:"'Nanum Myeongjo',serif",       label:'나눔명조'},
@@ -646,14 +648,14 @@ PALETTES.forEach((p,i)=>{
   palDiv.appendChild(d);
 });
 
-// 폰트 셀렉트 생성
+// 폰트 셀렉트 생성 (썸네일 모드는 Noto Sans KR 기본 유지)
 ['badge','school','box','c1','c2','c3','bot','cred'].forEach(key=>{
   const sel=document.getElementById('font-'+key);
   if(!sel)return;
   FONTS.forEach((f,i)=>{
     const opt=document.createElement('option');
     opt.value=f.val;opt.textContent=f.label;
-    if(i===0)opt.selected=true;
+    if(i===1)opt.selected=true;
     sel.appendChild(opt);
   });
 });
@@ -950,7 +952,7 @@ function renderW(){
   const bw=852,bh=138,bx=(W-bw)/2,by=H-36-bh;
   rr(ctx,bx,by,bw,bh,bh/2,gold2(ctx,bx,by,bw,bh),'');
   ctx.fillStyle=p.bot;
-  ctx.font="900 54px 'Noto Sans KR', sans-serif";
+  ctx.font="800 54px 'Pretendard Variable',Pretendard,sans-serif";
   ctx.fillText(btn, W/2, by+bh*0.63);
 }
 
