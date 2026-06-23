@@ -6,7 +6,7 @@
 <title>대단한영어 썸네일 생성기 Pro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700&family=Black+Han+Sans&family=Gothic+A1:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Black+Han+Sans&family=Gothic+A1:wght@400;700;900&family=Lora:ital,wght@1,400;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -164,7 +164,7 @@ canvas#cvw{display:block;width:100%;aspect-ratio:1020/1410}
         <div class="sec-label">한글 메인 카피</div>
         <div class="field"><label>1번째 줄</label><input type="text" id="w-kr1" value="여름방학," oninput="renderW()"></div>
         <div class="field"><label>2번째 줄</label><input type="text" id="w-kr2" value="실력이 도약합니다" oninput="renderW()"></div>
-        <div class="sl-row"><label>글자 크기</label><input type="range" min="60" max="140" value="104" id="w-krfs" oninput="document.getElementById('w-krfv').value=this.value;renderW()"><input type="number" class="sl-num" id="w-krfv" value="104" min="60" max="140" oninput="document.getElementById('w-krfs').value=this.value;renderW()"></div>
+        <div class="sl-row"><label>글자 크기</label><input type="range" min="60" max="140" value="110" id="w-krfs" oninput="document.getElementById('w-krfv').value=this.value;renderW()"><input type="number" class="sl-num" id="w-krfv" value="110" min="60" max="140" oninput="document.getElementById('w-krfs').value=this.value;renderW()"></div>
         <div class="field"><label>폰트</label><select id="w-krfont" onchange="renderW()"></select></div>
       </div>
       <div class="global-sec">
@@ -884,13 +884,13 @@ WPAL.forEach((p,i)=>{
   palDivW.appendChild(d);
 });
 
-// 위젯 폰트 셀렉트
+// 위젯 폰트 셀렉트 (기본: 나눔명조 — 기존 배너 실제 폰트 NanumMyeongjo ExtraBold)
 (function(){
   const sel=document.getElementById('w-krfont');
   FONTS.forEach((f,i)=>{
     const o=document.createElement('option');
     o.value=f.val; o.textContent=f.label;
-    if(i===0)o.selected=true;
+    if(f.label==='나눔명조')o.selected=true;
     sel.appendChild(o);
   });
 })();
@@ -917,43 +917,49 @@ function renderW(){
     ctx.strokeStyle='#C9A84C'; ctx.lineWidth=3;
     ctx.strokeRect(18,18,W-36,H-36);
   }
-  // 방패
+  // 방패 (기존 실측: 폭409, 상단y93, 중심x510)
   const shW=parseInt(document.getElementById('w-shw').value);
   const shY=parseInt(document.getElementById('w-shy').value);
-  let afterShield=shY+260;
   if(shieldReady){
     const ratio=shieldImg.height/shieldImg.width;
     const shH=shW*ratio;
     ctx.drawImage(shieldImg,(W-shW)/2,shY,shW,shH);
-    afterShield=shY+shH;
   }
-  // 영문 태그라인 (세리프 이탤릭) — 기존 배너: 가는 세리프, 높이 ~98px
-  const eng=document.getElementById('w-eng').value.trim();
-  let ey=afterShield+105;
-  ctx.fillStyle='#E3CD8A';
-  ctx.font="italic 400 82px 'Noto Serif KR', serif";
   ctx.textAlign='center';
-  ctx.fillText(eng, W/2, ey);
-  // 영문 밑줄
-  ctx.strokeStyle='#E3CD8A'; ctx.lineWidth=3;
-  ctx.beginPath(); ctx.moveTo(W/2-58,ey+24); ctx.lineTo(W/2+58,ey+24); ctx.stroke();
-  // 한글 메인카피 (2줄) — 기존: 더 크고 줄간격 넓음
+  // 영문 태그라인 (기존 실측: baseline y≈810, 색 #E3CD8A, 가는 세리프, 글자높이 98px)
+  const eng=document.getElementById('w-eng').value.trim();
+  const engY=795;
+  ctx.fillStyle='#E3CD8A';
+  ctx.font="italic 500 84px 'Lora', serif";
+  ctx.fillText(eng, W/2, engY);
+  // 영문 밑줄 (기존 실측: y831, 길이132, 중심x510)
+  ctx.strokeStyle='#E3CD8A'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(W/2-66,825); ctx.lineTo(W/2+66,825); ctx.stroke();
+  // 한글 메인카피 2줄 (기존 실측: 1줄 baseline y≈980, 2줄 y≈1135, 간격155, 글자높이110)
   const kr1=document.getElementById('w-kr1').value;
   const kr2=document.getElementById('w-kr2').value;
   const krfs=parseInt(document.getElementById('w-krfs').value);
   const krfont=document.getElementById('w-krfont').value;
   ctx.fillStyle='#FFFFFF';
-  ctx.font=`900 ${krfs}px ${krfont}`;
-  let ky=ey+155;
-  if(kr1){ctx.fillText(kr1,W/2,ky); ky+=krfs*1.32;}
-  if(kr2){ctx.fillText(kr2,W/2,ky);}
-  // 버튼 — 기존 배너: 폭852, 높이138, 하단여백36
+  const isSingleWeight=/Black Han Sans/.test(krfont);
+  const isMyeongjo=/Nanum Myeongjo/.test(krfont);
+  // 나눔명조는 800(ExtraBold), 단일weight폰트는 weight생략, 나머지 900
+  const krWeight=isSingleWeight?'':(isMyeongjo?'800 ':'900 ');
+  ctx.font=`${krWeight}${krfs}px ${krfont}`;
+  const krGap=155;
+  if(kr1 && kr2){
+    ctx.fillText(kr1, W/2, 980);
+    ctx.fillText(kr2, W/2, 980+krGap);
+  }else if(kr1){
+    ctx.fillText(kr1, W/2, 1058);
+  }
+  // 버튼 (기존 실측: 폭852, 높이138, 하단여백36, 색#C9A84C, 글자색#5B461D)
   const btn=document.getElementById('w-btn').value;
   const bw=852,bh=138,bx=(W-bw)/2,by=H-36-bh;
   rr(ctx,bx,by,bw,bh,bh/2,gold2(ctx,bx,by,bw,bh),'');
-  ctx.fillStyle=p.bot;
-  ctx.font="800 54px 'Pretendard Variable',Pretendard,sans-serif";
-  ctx.fillText(btn, W/2, by+bh*0.63);
+  ctx.fillStyle='#5B461D';
+  ctx.font="700 52px 'Nanum Gothic', sans-serif";
+  ctx.fillText(btn, W/2, by+bh*0.64);
 }
 
 function downloadW(){
@@ -981,6 +987,26 @@ function setMode(m){
 
 render();
 updatePresetUI();
+
+// ── 웹폰트 로드 보장: 폰트 준비되면 자동 재렌더 ──
+(function ensureFonts(){
+  const need=[
+    "800 100px 'Nanum Myeongjo'",
+    "700 100px 'Nanum Gothic'",
+    "italic 500 100px 'Lora'",
+    "900 100px Pretendard",
+    "italic 400 100px 'Noto Serif KR'",
+    "900 100px 'Noto Sans KR'",
+    "100px 'Black Han Sans'"
+  ];
+  Promise.all(need.map(f=>document.fonts.load(f).catch(()=>{})))
+    .then(()=>document.fonts.ready)
+    .then(()=>{
+      // 현재 보이는 모드 다시 그리기
+      if(document.body.classList.contains('widget-mode')) renderW();
+      else render();
+    });
+})();
 </script>
 </body>
 </html>
