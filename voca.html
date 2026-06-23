@@ -225,6 +225,15 @@
         table.hwgrid td.s-선제출{ background:#bfe6f0; color:#0f6680; }
         table.hwgrid td.s-시험{ background:#cdddf5; color:#234e84; }
         table.hwgrid td.s-휴일{ background:#e8e8ec; color:#86868b; }
+        /* ===== 전체 단어시험 현황 그리드 ===== */
+        table.examgrid{ border-collapse:separate; border-spacing:0; font-size:12px; white-space:nowrap; }
+        table.examgrid th, table.examgrid td{ border-bottom:1px solid #eee; border-right:1px solid #f0f0f0; padding:6px 7px; text-align:center; min-width:58px; }
+        table.examgrid th.ename, table.examgrid td.ename{ position:sticky; left:0; background:#fff; text-align:left; font-weight:700; min-width:62px; z-index:1; border-right:1px solid #e8d8b8; cursor:pointer; }
+        table.examgrid td.ename:hover{ color:var(--wine); }
+        table.examgrid thead th{ background:#faf6ee; font-weight:700; color:var(--ink); position:sticky; top:0; }
+        table.examgrid td.eg-pass{ background:#e7f6ec; color:#176b29; }
+        table.examgrid td.eg-fail{ background:#fdeaec; color:#b3122a; font-weight:700; }
+        table.examgrid td .eg-date{ display:block; font-size:9.5px; color:#999; font-weight:500; margin-top:1px; }
         /* ===== 출제 구성 애플 스타일 ===== */
         .comp-card{ background:#fbfaf8; border:1px solid #efe9e0; border-radius:16px; padding:16px; }
         .comp-num{ font-variant-numeric:tabular-nums; text-align:right; border:1px solid #e2dccf; border-radius:9px; padding:7px 9px; font-size:14px; font-weight:700; background:#fff; transition:border-color .15s; -webkit-appearance:none; -moz-appearance:textfield; }
@@ -563,6 +572,17 @@
                 <span id="exam-results-arrow" style="color:var(--gold); font-size:13px;">▲</span>
             </button>
             <div id="exam-results-box" style="display:block; margin-top:14px;">
+                <!-- 전체 단어시험 현황 그리드 (최근 8회) -->
+                <div style="border:1px solid #eee; border-radius:12px; padding:12px; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:14px; font-weight:800; color:var(--ink);">전체 단어시험 현황 <span style="font-size:11.5px; color:var(--ink-soft); font-weight:500;">(최근 8회)</span></span>
+                        <button onclick="loadExamGrid()" style="font-size:12px; font-weight:700; padding:6px 12px; border-radius:8px; border:none; background:var(--wine); color:#fff; cursor:pointer;">불러오기</button>
+                    </div>
+                    <div id="exam-grid-info" style="font-size:11.5px; color:#999; margin-bottom:6px;"></div>
+                    <div id="exam-grid-scroll" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+                        <div id="exam-grid-area"><p style="color:var(--ink-soft); font-size:12.5px; padding:6px 2px;">'불러오기'를 누르면 전체 학생의 최근 시험 결과가 표로 나옵니다.</p></div>
+                    </div>
+                </div>
                 <div style="display:flex; gap:14px; align-items:flex-start;">
                     <!-- 1열: 클래스별 학생 명단 -->
                     <div id="exam-roster-panel" style="flex:0 0 190px; max-width:190px; border:1px solid #eee; border-radius:12px; padding:8px; max-height:520px; overflow-y:auto;">
@@ -1585,6 +1605,101 @@
         loadWordWritePanel(name);
     }
     // 결과 조회: 시험기록(미션별) + 불합격 시 단어쓰기 사진
+    // ── 전체 단어시험 현황 그리드 (방법 A: 학생마다 불러 합치기, GAS 수정 없음) ──
+    function loadExamGrid(){
+        const info=document.getElementById('exam-grid-info');
+        const area=document.getElementById('exam-grid-area');
+        info.textContent='불러오는 중...';
+        area.innerHTML='<p style="color:var(--ink-soft); font-size:12.5px; padding:6px;">학생별 결과 수집 중...</p>';
+        // 명단 먼저 (클래스 순서 반영 위해 examRosterCache 우선)
+        const proceed=(students)=>{
+            const names=students.map(s=>s.name).filter(Boolean);
+            if(!names.length){ info.textContent=''; area.innerHTML='<p style="color:#e74c3c; font-size:12.5px;">학생 명단 없음</p>'; return; }
+            info.textContent = names.length + '명 결과 수집 중... (0/' + names.length + ')';
+            const results={};   // name -> missions[]
+            let done=0;
+            const fetchOne=(name)=>new Promise(resolve=>{
+                const cb='egr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+                let fin=false;
+                const cleanup=()=>{ try{delete window[cb];}catch(e){window[cb]=undefined;} const s=document.getElementById(cb); if(s) s.remove(); };
+                window[cb]=(data)=>{ fin=true; cleanup(); resolve((data&&data.missions)||[]); };
+                const s=document.createElement('script'); s.id=cb;
+                s.src=APP_URL + "?type=adminExamResults&name=" + encodeURIComponent(name) + "&limit=10&callback=" + cb + "&t=" + Date.now();
+                s.onerror=()=>{ if(fin)return; cleanup(); resolve([]); };
+                document.body.appendChild(s);
+                setTimeout(()=>{ if(fin)return; cleanup(); resolve([]); }, 12000);
+            });
+            // 동시 과부하 방지: 4개씩 묶어 처리
+            const queue=names.slice();
+            const worker=async()=>{
+                while(queue.length){
+                    const nm=queue.shift();
+                    results[nm]=await fetchOne(nm);
+                    done++;
+                    info.textContent = names.length + '명 중 ' + done + '명 완료...';
+                }
+            };
+            Promise.all([worker(),worker(),worker(),worker()]).then(()=>{
+                renderExamGrid(students, results);
+            });
+        };
+        if(examRosterCache && examRosterCache.length){ proceed(examRosterCache); }
+        else {
+            // roster 없으면 HW roster 한 번 받기
+            const cb='egRoster_'+Date.now();
+            let fin=false;
+            const cleanup=()=>{ try{delete window[cb];}catch(e){window[cb]=undefined;} const s=document.getElementById(cb); if(s) s.remove(); };
+            window[cb]=(d)=>{ fin=true; cleanup(); const st=(d&&d.students)||[]; examRosterCache=st.map(s=>({name:String(s.name||'').trim(),klass:String(s.klass||'').trim()})).filter(s=>s.name); proceed(examRosterCache); };
+            const s=document.createElement('script'); s.id=cb;
+            s.src=HW_URL + "?type=roster&callback=" + cb + "&t=" + Date.now();
+            s.onerror=()=>{ if(fin)return; cleanup(); info.textContent=''; area.innerHTML='<p style="color:#e74c3c; font-size:12.5px;">명단 로딩 실패</p>'; };
+            document.body.appendChild(s);
+            setTimeout(()=>{ if(fin)return; cleanup(); }, 8000);
+        }
+    }
+    function renderExamGrid(students, results){
+        const info=document.getElementById('exam-grid-info');
+        const area=document.getElementById('exam-grid-area');
+        // 각 학생 미션: 오답노트 제외 + 날짜순 최신 8개
+        const perStudent={};
+        let maxCols=0;
+        students.forEach(st=>{
+            const nm=st.name;
+            let ms=(results[nm]||[]).filter(m=> String(m.range||'').indexOf('오답노트')<0 );
+            // 날짜 키 (assignDate 우선, 없으면 lastDate)
+            ms.forEach(m=>{ m._dk = (fmtExamDate(m.assignDate)!=='날짜 미상'? fmtExamDate(m.assignDate): fmtExamDate(m.lastDate)); });
+            ms.sort((a,b)=> String(b._dk).localeCompare(String(a._dk)) );
+            ms=ms.slice(0,8);
+            perStudent[nm]=ms;
+            if(ms.length>maxCols) maxCols=ms.length;
+        });
+        if(!maxCols){ info.textContent=''; area.innerHTML='<p style="color:var(--ink-soft); font-size:12.5px;">시험 기록이 있는 학생이 없습니다.</p>'; return; }
+        info.textContent = students.length + '명 · 최근 ' + maxCols + '회 (O 합격·X 불합격, 숫자=응시횟수)';
+        let h='<table class="examgrid"><thead><tr><th class="ename">학생</th>';
+        for(let i=0;i<maxCols;i++) h += '<th>'+(i+1)+'회전</th>';
+        h += '</tr></thead><tbody>';
+        students.forEach(st=>{
+            const nm=st.name;
+            const ms=perStudent[nm]||[];
+            if(!ms.length) return;   // 기록 없는 학생은 그리드에서 생략
+            const safe=String(nm).replace(/'/g,"\\'");
+            h += '<tr><td class="ename" onclick="selectExamStudent(\''+safe+'\',null)">'+nm+'</td>';
+            // 최신이 1회전 위치(왼쪽). ms는 이미 최신순
+            for(let i=0;i<maxCols;i++){
+                const m=ms[i];
+                if(!m){ h += '<td></td>'; continue; }
+                const pass = (parseInt(m.passAttempt)||0) > 0;
+                const cls = pass ? 'eg-pass' : 'eg-fail';
+                const mark = pass ? ('O'+(m.passAttempt>1?m.passAttempt:'')) : 'X';
+                const date = (m._dk && m._dk!=='날짜 미상') ? m._dk.slice(5) : '';  // MM.DD
+                const rangeTitle = (m.range||'').replace(/"/g,'');
+                h += '<td class="'+cls+'" title="'+rangeTitle+'">'+mark+'<span class="eg-date">'+date+'</span></td>';
+            }
+            h += '</tr>';
+        });
+        h += '</tbody></table>';
+        area.innerHTML=h;
+    }
     function loadExamResults(name){
         const listEl=document.getElementById('exam-result-list');
         if(!name){ listEl.innerHTML='<p style="color:#e74c3c; font-size:13px;">학생을 선택하세요.</p>'; return; }
