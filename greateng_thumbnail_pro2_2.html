@@ -163,7 +163,7 @@ canvas#cvw{display:block;width:100%;aspect-ratio:1020/1410}
         <div class="sec-label">한글 메인 카피</div>
         <div class="field"><label>1번째 줄</label><input type="text" id="w-kr1" value="여름방학," oninput="renderW()"></div>
         <div class="field"><label>2번째 줄</label><input type="text" id="w-kr2" value="실력이 도약합니다" oninput="renderW()"></div>
-        <div class="sl-row"><label>글자 크기</label><input type="range" min="60" max="120" value="92" id="w-krfs" oninput="document.getElementById('w-krfv').value=this.value;renderW()"><input type="number" class="sl-num" id="w-krfv" value="92" min="60" max="120" oninput="document.getElementById('w-krfs').value=this.value;renderW()"></div>
+        <div class="sl-row"><label>글자 크기</label><input type="range" min="60" max="140" value="104" id="w-krfs" oninput="document.getElementById('w-krfv').value=this.value;renderW()"><input type="number" class="sl-num" id="w-krfv" value="104" min="60" max="140" oninput="document.getElementById('w-krfs').value=this.value;renderW()"></div>
         <div class="field"><label>폰트</label><select id="w-krfont" onchange="renderW()"></select></div>
       </div>
       <div class="global-sec">
@@ -925,34 +925,33 @@ function renderW(){
     ctx.drawImage(shieldImg,(W-shW)/2,shY,shW,shH);
     afterShield=shY+shH;
   }
-  // 영문 태그라인 (세리프 이탤릭)
+  // 영문 태그라인 (세리프 이탤릭) — 기존 배너: 가는 세리프, 높이 ~98px
   const eng=document.getElementById('w-eng').value.trim();
-  let ey=afterShield+90;
+  let ey=afterShield+105;
   ctx.fillStyle='#E3CD8A';
-  ctx.font="italic 700 64px 'Noto Serif KR', serif";
+  ctx.font="italic 400 82px 'Noto Serif KR', serif";
   ctx.textAlign='center';
   ctx.fillText(eng, W/2, ey);
   // 영문 밑줄
-  const ew=ctx.measureText(eng).width;
   ctx.strokeStyle='#E3CD8A'; ctx.lineWidth=3;
-  ctx.beginPath(); ctx.moveTo(W/2-60,ey+20); ctx.lineTo(W/2+60,ey+20); ctx.stroke();
-  // 한글 메인카피 (2줄)
+  ctx.beginPath(); ctx.moveTo(W/2-58,ey+24); ctx.lineTo(W/2+58,ey+24); ctx.stroke();
+  // 한글 메인카피 (2줄) — 기존: 더 크고 줄간격 넓음
   const kr1=document.getElementById('w-kr1').value;
   const kr2=document.getElementById('w-kr2').value;
   const krfs=parseInt(document.getElementById('w-krfs').value);
   const krfont=document.getElementById('w-krfont').value;
   ctx.fillStyle='#FFFFFF';
   ctx.font=`900 ${krfs}px ${krfont}`;
-  let ky=ey+120;
-  if(kr1){ctx.fillText(kr1,W/2,ky); ky+=krfs*1.18;}
+  let ky=ey+155;
+  if(kr1){ctx.fillText(kr1,W/2,ky); ky+=krfs*1.32;}
   if(kr2){ctx.fillText(kr2,W/2,ky);}
-  // 버튼
+  // 버튼 — 기존 배너: 폭852, 높이138, 하단여백36
   const btn=document.getElementById('w-btn').value;
-  const bw=800,bh=120,bx=(W-bw)/2,by=H-200;
-  rr(ctx,bx,by,bw,bh,60,gold2(ctx,bx,by,bw,bh),'');
+  const bw=852,bh=138,bx=(W-bw)/2,by=H-36-bh;
+  rr(ctx,bx,by,bw,bh,bh/2,gold2(ctx,bx,by,bw,bh),'');
   ctx.fillStyle=p.bot;
-  ctx.font="900 50px 'Noto Sans KR', sans-serif";
-  ctx.fillText(btn, W/2, by+bh*0.64);
+  ctx.font="900 54px 'Noto Sans KR', sans-serif";
+  ctx.fillText(btn, W/2, by+bh*0.63);
 }
 
 function downloadW(){
