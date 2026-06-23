@@ -1522,7 +1522,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     const weakType=calcWeak(perType,Object.keys(perType),3);
     const zero=rangeAll.filter(pid=>!perPid[pid]);
     const once=rangeAll.filter(pid=>perPid[pid]&&perPid[pid].t>0&&perPid[pid].t<=blindLowThreshold);
-    const covered=rangeAll.length-zero.length;
+    // 커버 = 기준(blindLowThreshold)을 초과해 충분히 푼 지문 비율 (zero·once 제외)
+    const covered=rangeAll.length-zero.length-once.length;
     const covPct=rangeAll.length?Math.round(covered/rangeAll.length*100):0;
     return {perPid,perType,rangeAll,weakPid,weakType,zero,once,covered,covPct};
   };
@@ -1632,7 +1633,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     }).join('')}</table>`:'';
     // 사각지대(안 본 지문) — 0회/1회
     const blindHtml=(Wk&&(Wk.zero.length||Wk.once.length))?`<div style="font-size:12px;line-height:1.7">
-      <div style="margin-bottom:4px"><b style="color:#7a1020">커버리지 ${Wk.covPct}%</b> <span style="color:#999">(범위 ${Wk.rangeAll.length}개 중 ${Wk.covered}개 학습)</span></div>
+      <div style="margin-bottom:4px"><b style="color:#7a1020">${blindLowThreshold}회 초과 학습 ${Wk.covPct}%</b> <span style="color:#999">(범위 ${Wk.rangeAll.length}개 중 ${Wk.covered}개 충분히 학습)</span></div>
       ${Wk.zero.length?`<div style="margin-bottom:6px"><span style="color:#B3261E;font-weight:700">한 번도 안 푼 지문 (${Wk.zero.length}문항)</span><br/>${groupByLessonP(Wk.zero).map(g=>`<div style="font-size:11.5px;line-height:1.6"><b style="color:#B3261E">${esc(g.head)}</b>${g.nums?`<span style="color:#555">: ${esc(g.nums)}</span>`:''}</div>`).join('')}</div>`:''}
       ${Wk.once.length?`<div><span style="color:#92670a;font-weight:700">적게 푼 지문 (${Wk.once.length}문항)</span><br/>${groupByLessonP(Wk.once).map(g=>`<div style="font-size:11.5px;line-height:1.6"><b style="color:#92670a">${esc(g.head)}</b>${g.nums?`<span style="color:#555">: ${esc(g.nums)}</span>`:''}</div>`).join('')}</div>`:''}
     </div>`:'';
@@ -2223,7 +2224,7 @@ ${ESC_}
                         <option value={5}>적게 푼 기준: 5회 이하</option>
                         <option value={10}>적게 푼 기준: 10회 이하</option>
                       </select>
-                      <span style={{fontSize:12,fontWeight:800,color:covPct>=80?'#16a34a':covPct>=50?'#f59e0b':'#dc2626'}}>커버 {covPct}% · {covered}/{rangeAll.length}</span>
+                      <span style={{fontSize:12,fontWeight:800,color:covPct>=80?'#16a34a':covPct>=50?'#f59e0b':'#dc2626'}}>{blindLowThreshold}회 초과 학습 {covPct}% · {covered}/{rangeAll.length}</span>
                     </div>
                   </div>
                   <div style={{padding:'10px 16px'}}>
