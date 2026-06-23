@@ -213,24 +213,26 @@ canvas#cvw{display:block;width:100%;aspect-ratio:1020/1410}
         <input type="checkbox" id="t-engon" checked onchange="render()" style="width:17px;height:17px;accent-color:var(--accent)">
         영문 라벨 표시
       </label>
-      <div class="field"><input type="text" id="t-eng" value="Exam Analysis" oninput="render()"></div>
+      <div class="field"><select id="t-engsel" onchange="onEngSel()"></select></div>
+      <div class="field" id="t-engcustom-wrap" style="display:none"><input type="text" id="t-eng" value="Exam Analysis" placeholder="영문 직접 입력" oninput="render()"></div>
     </div>
 
     <div class="global-sec">
       <div class="sec-label">메인 제목</div>
       <div class="field"><label>1번째 줄</label><input type="text" id="t-title1" value="포항제철중 중2" oninput="render()"></div>
       <div class="field"><label>2번째 줄</label><input type="text" id="t-title2" value="1학기 중간고사 분석" oninput="render()"></div>
-      <div class="sl-row"><label>글자 크기</label><input type="range" min="36" max="76" value="54" id="t-tfs" oninput="document.getElementById('t-tfv').value=this.value;render()"><input type="number" class="sl-num" id="t-tfv" value="54" min="36" max="76" oninput="document.getElementById('t-tfs').value=this.value;render()"></div>
+      <div class="sl-row"><label>글자 크기</label><input type="range" min="36" max="80" value="58" id="t-tfs" oninput="document.getElementById('t-tfv').value=this.value;render()"><input type="number" class="sl-num" id="t-tfv" value="58" min="36" max="80" oninput="document.getElementById('t-tfs').value=this.value;render()"></div>
       <div class="field"><label>폰트</label><select id="t-tfont" onchange="render()"></select></div>
     </div>
 
     <div class="global-sec">
-      <div class="sec-label">하단 태그 (선택)</div>
+      <div class="sec-label">하단 문구 (선택)</div>
       <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);margin-bottom:8px">
         <input type="checkbox" id="t-tagon" checked onchange="render()" style="width:17px;height:17px;accent-color:var(--accent)">
-        하단 태그 표시
+        하단 문구 표시
       </label>
-      <div class="field"><input type="text" id="t-tag" value="내신 · 모의고사 분석 전문" oninput="render()"></div>
+      <div class="field"><select id="t-tagsel" onchange="onTagSel()"></select></div>
+      <div class="field" id="t-tagcustom-wrap" style="display:none"><input type="text" id="t-tag" value="탁월함이 습관이 되도록" placeholder="문구 직접 입력" oninput="render()"></div>
     </div>
 
     </div>
@@ -553,6 +555,76 @@ buildThumbPalettes();
   });
 })();
 
+// ── 영문 라벨 드롭다운 (블로그 카테고리) ──
+const ENG_PRESETS=[
+  {ko:'공지사항',          en:'Notice'},
+  {ko:'내신대비',          en:'Exam Analysis'},
+  {ko:'수능대비',          en:'CSAT Analysis'},
+  {ko:'수험생후기',        en:'Student Reviews'},
+  {ko:'공부방법',          en:'Study Guide'},
+  {ko:'맞춤형시험대비',    en:'Test & Report'},
+  {ko:'매일숙제매일점검',  en:'Daily Check'},
+  {ko:'시험누적복습점검',  en:'Review System'},
+  {ko:'학원소식',          en:'Academy News'},
+  {ko:'수능소식',          en:'CSAT News'},
+  {ko:'대입소식',          en:'Admissions'},
+  {ko:'교육소식',          en:'Education News'},
+  {ko:'실용영어',          en:'Practical English'},
+  {ko:'매일숙제노트',      en:'Homework Note'},
+  {ko:'질문하세요',        en:'Q&A'},
+];
+(function(){
+  const sel=document.getElementById('t-engsel');
+  if(!sel)return;
+  ENG_PRESETS.forEach((p,i)=>{
+    const o=document.createElement('option');
+    o.value=p.en; o.textContent=p.ko+'  ('+p.en+')';
+    if(i===1)o.selected=true; // 내신대비 기본
+    sel.appendChild(o);
+  });
+  const oc=document.createElement('option');
+  oc.value='__custom__'; oc.textContent='✏️ 직접 입력';
+  sel.appendChild(oc);
+})();
+function onEngSel(){
+  const sel=document.getElementById('t-engsel');
+  const wrap=document.getElementById('t-engcustom-wrap');
+  if(sel.value==='__custom__'){ wrap.style.display='block'; }
+  else { wrap.style.display='none'; document.getElementById('t-eng').value=sel.value; }
+  render();
+}
+
+// ── 하단 문구 드롭다운 (추천 + 직접입력) ──
+const TAG_PRESETS=[
+  '탁월함이 습관이 되도록',
+  '데이터로 증명하는 실력',
+  '기출을 넘어, 만점을 향해',
+  '정확한 분석, 확실한 결과',
+  '분석이 다른 학원, 대단한영어',
+  '포항 입시영어 전문',
+];
+(function(){
+  const sel=document.getElementById('t-tagsel');
+  if(!sel)return;
+  TAG_PRESETS.forEach((t,i)=>{
+    const o=document.createElement('option');
+    o.value=t; o.textContent=t;
+    if(i===0)o.selected=true;
+    sel.appendChild(o);
+  });
+  const oc=document.createElement('option');
+  oc.value='__custom__'; oc.textContent='✏️ 직접 입력';
+  sel.appendChild(oc);
+})();
+function onTagSel(){
+  const sel=document.getElementById('t-tagsel');
+  const wrap=document.getElementById('t-tagcustom-wrap');
+  if(sel.value==='__custom__'){ wrap.style.display='block'; }
+  else { wrap.style.display='none'; document.getElementById('t-tag').value=sel.value; }
+  render();
+}
+
+
 // 색상 점 생성
 function makeDots(containerId,stateKey){
   const div=document.getElementById('dots-'+containerId);
@@ -617,21 +689,26 @@ function render(){
 
   ctx.textAlign='center';
 
-  // ── 상단 브랜드 (골드, 샤인) ──
+  // ── 콘텐츠 수집 ──
   const brand=(document.getElementById('t-brand').value||'').trim();
   const shineOn=document.getElementById('t-shine').checked;
-  const brandY=92;
+  const engOn=document.getElementById('t-engon').checked;
+  const eng=(document.getElementById('t-eng').value||'').trim();
+  const t1=(document.getElementById('t-title1').value||'').trim();
+  const t2=(document.getElementById('t-title2').value||'').trim();
+  const tfs=parseInt(document.getElementById('t-tfs').value);
+  const tfont=gf('t-tfont');
+
+  // ── 상단: 브랜드 (골드, 샤인) — 고정 위치 ──
   if(brand){
-    ctx.font="800 28px 'Nanum Myeongjo', serif";
+    const brandY=156;
+    ctx.font="800 30px 'Nanum Myeongjo', serif";
     const bw=ctx.measureText(brand).width;
-    // 골드 그라데이션 + 샤인 하이라이트
     const gx=W/2-bw/2;
     const gg=ctx.createLinearGradient(gx,0,gx+bw,0);
-    gg.addColorStop(0,'#B08A3E');
-    gg.addColorStop(0.5,'#F0DC9A');
-    gg.addColorStop(1,'#B08A3E');
+    gg.addColorStop(0,'#B08A3E'); gg.addColorStop(0.5,'#F0DC9A'); gg.addColorStop(1,'#B08A3E');
     if(shineOn){
-      const t=(Date.now()%2600)/2600; // 0~1 순환
+      const t=(Date.now()%2600)/2600;
       const sp=Math.max(0,Math.min(1,t));
       gg.addColorStop(Math.max(0,sp-0.08),'#C9A84C');
       gg.addColorStop(sp,'#FFF6E0');
@@ -641,50 +718,45 @@ function render(){
     ctx.fillText(brand, W/2, brandY);
   }
 
-  // ── 영문 라벨 (선택, Lora 이탤릭 골드) + 구분선 ──
-  const engOn=document.getElementById('t-engon').checked;
-  const eng=(document.getElementById('t-eng').value||'').trim();
-  let curY=H*0.40;
+  // ── 영문 라벨 (Lora 이탤릭 골드) + 구분선 — 브랜드 바로 아래 ──
   if(engOn && eng){
+    const engY = brand ? 222 : 200;
     ctx.fillStyle='#E3CD8A';
-    ctx.font="italic 500 34px 'Lora', serif";
-    ctx.fillText(eng, W/2, curY);
+    ctx.font="italic 500 36px 'Lora', serif";
+    ctx.fillText(eng, W/2, engY);
     ctx.strokeStyle='#E3CD8A'; ctx.lineWidth=2.5;
-    ctx.beginPath(); ctx.moveTo(W/2-44,curY+22); ctx.lineTo(W/2+44,curY+22); ctx.stroke();
-    curY+=78;
-  }else{
-    curY=H*0.44;
+    ctx.beginPath(); ctx.moveTo(W/2-46,engY+22); ctx.lineTo(W/2+46,engY+22); ctx.stroke();
   }
 
-  // ── 메인 제목 (나눔명조, 흰색, 2줄) ──
-  const t1=(document.getElementById('t-title1').value||'').trim();
-  const t2=(document.getElementById('t-title2').value||'').trim();
-  const tfs=parseInt(document.getElementById('t-tfs').value);
-  const tfont=gf('t-tfont');
+  // ── 메인 제목 (흰색, 강조) — 캔버스 정중앙 배치 ──
   const isMyeongjo=/Nanum Myeongjo/.test(tfont);
   const isSingle=/Black Han Sans/.test(tfont);
   const wt=isSingle?'':(isMyeongjo?'800 ':'900 ');
-  ctx.fillStyle='#FFFFFF';
   ctx.font=`${wt}${tfs}px ${tfont}`;
-  const gap=tfs*1.28;
+  const titleGap2=tfs*1.30;
+  const CENTER=H/2+18; // 정중앙(약간 아래 보정)
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,0.38)';
+  ctx.shadowBlur=14; ctx.shadowOffsetY=2;
+  ctx.fillStyle='#FFFFFF';
   if(t1 && t2){
-    ctx.fillText(t1, W/2, curY);
-    ctx.fillText(t2, W/2, curY+gap);
-    curY+=gap;
+    // 2줄 중심이 CENTER에 오도록
+    ctx.fillText(t1, W/2, CENTER - titleGap2/2 + tfs*0.34);
+    ctx.fillText(t2, W/2, CENTER + titleGap2/2 + tfs*0.34);
   }else if(t1){
-    ctx.fillText(t1, W/2, curY+gap*0.5);
-    curY+=gap*0.5;
+    ctx.fillText(t1, W/2, CENTER + tfs*0.34);
   }
+  ctx.restore();
 
-  // ── 하단 태그 (선택) + 구분선 ──
+  // ── 하단 문구 (선택) + 구분선 — 맨 아래 고정 ──
   const tagOn=document.getElementById('t-tagon').checked;
   const tag=(document.getElementById('t-tag').value||'').trim();
   if(tagOn && tag){
-    const tagY=H-72;
-    ctx.strokeStyle='rgba(227,205,138,0.35)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(W/2-130,tagY-26); ctx.lineTo(W/2+130,tagY-26); ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,0.62)';
-    ctx.font="700 17px 'Nanum Gothic', sans-serif";
+    const tagY=H-66;
+    ctx.strokeStyle='rgba(227,205,138,0.40)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(W/2-120,tagY-28); ctx.lineTo(W/2+120,tagY-28); ctx.stroke();
+    ctx.fillStyle='rgba(227,205,138,0.78)';
+    ctx.font="700 19px 'Nanum Gothic', sans-serif";
     ctx.fillText(tag, W/2, tagY);
   }
 }
@@ -703,12 +775,16 @@ function resetThumb(){
   document.getElementById('t-brand').value='대단한영어';
   document.getElementById('t-shine').checked=true;
   document.getElementById('t-engon').checked=true;
+  document.getElementById('t-engsel').value='Exam Analysis';
+  document.getElementById('t-engcustom-wrap').style.display='none';
   document.getElementById('t-eng').value='Exam Analysis';
   document.getElementById('t-title1').value='포항제철중 중2';
   document.getElementById('t-title2').value='1학기 중간고사 분석';
-  document.getElementById('t-tfs').value=54; document.getElementById('t-tfv').value=54;
+  document.getElementById('t-tfs').value=58; document.getElementById('t-tfv').value=58;
   document.getElementById('t-tagon').checked=true;
-  document.getElementById('t-tag').value='내신 · 모의고사 분석 전문';
+  document.getElementById('t-tagsel').value='탁월함이 습관이 되도록';
+  document.getElementById('t-tagcustom-wrap').style.display='none';
+  document.getElementById('t-tag').value='탁월함이 습관이 되도록';
   render(); startShine();
 }
 
