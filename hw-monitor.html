@@ -168,6 +168,28 @@
 </style>
 </head>
 <body>
+<!-- 허브 메뉴 (관리 페이지 이동) -->
+<div id="hub-menu" style="position:fixed; bottom:22px; right:22px; z-index:5000;">
+    <div id="hub-panel" style="display:none; position:absolute; bottom:62px; right:0; width:200px; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,0.18); padding:8px; border:1px solid #eee;">
+        <div style="font-size:11px; font-weight:800; color:#86868b; padding:7px 10px 5px;">관리 페이지 이동</div>
+        <a href="voca.html" target="_blank" rel="noopener" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:#3a2a20; font-size:13.5px; font-weight:600;"><span style="font-size:15px;">📖</span> 단어시험</a>
+        <a href="teacher.html" target="_blank" rel="noopener" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:#3a2a20; font-size:13.5px; font-weight:600;"><span style="font-size:15px;">✍️</span> 출제·지문분석</a>
+        <a href="index.html" target="_blank" rel="noopener" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:#3a2a20; font-size:13.5px; font-weight:600;"><span style="font-size:15px;">🎯</span> 메인 퀴즈앱</a>
+        <a href="exam-analysis.html" target="_blank" rel="noopener" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:#3a2a20; font-size:13.5px; font-weight:600;"><span style="font-size:15px;">📊</span> 시험 분석</a>
+        <a href="hub.html" target="_blank" rel="noopener" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:#3a2a20; font-size:13.5px; font-weight:600;"><span style="font-size:15px;">🏠</span> 허브</a>
+    </div>
+    <button onclick="toggleHubMenu()" id="hub-fab" title="관리 페이지 이동" style="width:54px; height:54px; border-radius:50%; background:#7a1020; color:#fff; border:none; box-shadow:0 4px 14px rgba(122,16,32,0.4); cursor:pointer; font-size:22px; display:flex; align-items:center; justify-content:center;">☰</button>
+</div>
+<style>.hub-link:hover{ background:#f3eee3; } #hub-fab:active{ transform:scale(0.94); }</style>
+<script>
+function toggleHubMenu(){
+    var panel=document.getElementById('hub-panel'), fab=document.getElementById('hub-fab');
+    if(!panel) return;
+    var open = panel.style.display==='none' || !panel.style.display;
+    panel.style.display = open ? 'block' : 'none';
+    if(fab) fab.textContent = open ? '✕' : '☰';
+}
+</script>
 <div class="wrap">
   <header class="top">
     <h1>대단한영어 <span>멤버스</span> · 숙제 현황</h1>
