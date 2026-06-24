@@ -1908,11 +1908,17 @@
         setTimeout(()=>{ if(done)return; cleanup(); if(el) el.innerHTML='<p style="color:#999; font-size:12px;">시간 초과</p>'; }, 10000);
     }
 
+    let _examGridAutoLoaded = false;
     function enterAdmin() {
         document.getElementById('student-screen').style.display = "none";
         document.getElementById('admin-screen').style.display = "flex";
         ADMIN.init();
         populateExamResultStudents();
+        // 전체 단어시험 현황 — 첫 진입 시 자동으로 한 번 불러오기 (이후엔 새로고침 버튼)
+        if(!_examGridAutoLoaded){
+            _examGridAutoLoaded = true;
+            setTimeout(()=>{ try{ loadExamGrid(); }catch(e){} }, 600);
+        }
     }
     function exitAdmin() {
         document.getElementById('admin-screen').style.display = "none";
