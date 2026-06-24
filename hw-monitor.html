@@ -906,6 +906,14 @@ function toggleHubMenu(){
     const sel = document.getElementById('photo-student');
     sel.innerHTML = '<option value="">전체 학생</option>';
     (ov.students||[]).forEach(s=> sel.add(new Option(s.name, s.name)));
+    // 제출 기록 로그 드롭다운도 함께 채움 (기록 불러오기 안 눌러도 보이게)
+    const logSel = document.getElementById('log-student');
+    if(logSel){
+      const cur = logSel.value;
+      logSel.innerHTML = '<option value="">전체 학생</option>';
+      (ov.students||[]).forEach(s=> logSel.add(new Option(s.name, s.name)));
+      logSel.value = cur;
+    }
   }
 
   // ── 제출 기록 로그 (시트 원본 표) ──
