@@ -119,8 +119,8 @@
     </div>
 
     <div class="field">
-      <label class="q">학생/학부모 성함<span class="req">*</span></label>
-      <input type="text" name="name" required>
+      <label class="q">학생 이름<span class="req">*</span></label>
+      <input type="text" name="name" placeholder="상담받을 학생 이름" required>
     </div>
 
     <div class="field">
@@ -159,16 +159,35 @@
     </div>
 
     <div class="field">
-      <label class="q">학생의 현재 영어 실력</label>
+      <label class="q">학생의 현재 영어 수준</label>
       <div class="sub">가장 가까운 단계를 선택해 주세요.</div>
       <div class="opts" style="flex-direction:column;">
-        <span class="opt"><input type="radio" name="level" id="l1" value="기본개념 잡힘·고난도 문형정복 필요"><label for="l1">기본개념이 잡혀있고 고난도 문형정복이 필요한 단계</label></span>
-        <span class="opt"><input type="radio" name="level" id="l2" value="기본개념 앎·연습 필요"><label for="l2">기본개념은 알고 있으나 연습이 필요한 단계</label></span>
-        <span class="opt"><input type="radio" name="level" id="l3" value="기본개념 부족·연습은 많이"><label for="l3">기본개념이 부족하나 연습은 많이 한 단계</label></span>
-        <span class="opt"><input type="radio" name="level" id="l4" value="노력하나 공부법 모름"><label for="l4">노력은 하나 공부 방법을 모르는 단계</label></span>
-        <span class="opt"><input type="radio" name="level" id="l5" value="처음부터 다시"><label for="l5">처음부터 다시 배워야 할 단계</label></span>
-        <span class="opt"><input type="radio" name="level" id="l6" value="공부습관 미형성"><label for="l6">공부 습관 자체가 안 잡혀 있는 단계</label></span>
+        <span class="opt"><input type="radio" name="level" id="l1" value="최상위권"><label for="l1">최상위권 — 심화·고난도 대비가 필요한 단계</label></span>
+        <span class="opt"><input type="radio" name="level" id="l2" value="상위권"><label for="l2">상위권 — 기본기는 탄탄하고 실전 연습이 필요한 단계</label></span>
+        <span class="opt"><input type="radio" name="level" id="l3" value="중위권"><label for="l3">중위권 — 개념은 알지만 점수로 이어지지 않는 단계</label></span>
+        <span class="opt"><input type="radio" name="level" id="l4" value="중하위권"><label for="l4">중하위권 — 기초가 부족해 다지기가 필요한 단계</label></span>
+        <span class="opt"><input type="radio" name="level" id="l5" value="기초부족"><label for="l5">기초 부족 — 처음부터 차근차근 잡아야 하는 단계</label></span>
+        <span class="opt"><input type="radio" name="level" id="l6" value="잘 모름"><label for="l6">잘 모르겠음</label></span>
       </div>
+    </div>
+
+    <div class="field">
+      <label class="q">약한 영역 <span style="color:var(--ink-soft);font-weight:400;font-size:13px;">(선택 · 복수 선택 가능)</span></label>
+      <div class="sub">특히 보완이 필요한 부분을 골라주세요.</div>
+      <div class="opts">
+        <span class="opt"><input type="checkbox" name="weak" id="w1" value="어법/문법"><label for="w1">어법/문법</label></span>
+        <span class="opt"><input type="checkbox" name="weak" id="w2" value="독해"><label for="w2">독해</label></span>
+        <span class="opt"><input type="checkbox" name="weak" id="w3" value="단어/어휘"><label for="w3">단어/어휘</label></span>
+        <span class="opt"><input type="checkbox" name="weak" id="w4" value="듣기"><label for="w4">듣기</label></span>
+        <span class="opt"><input type="checkbox" name="weak" id="w5" value="서술형/쓰기"><label for="w5">서술형/쓰기</label></span>
+        <span class="opt"><input type="checkbox" name="weak" id="w6" value="잘 모름"><label for="w6">잘 모름</label></span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="q">학습 목표 / 시급한 시점 <span style="color:var(--ink-soft);font-weight:400;font-size:13px;">(선택)</span></label>
+      <div class="sub">언제까지 어떤 목표를 이루고 싶으신가요?</div>
+      <input type="text" name="goal" placeholder="예: 다음 내신 대비 / 2027 수능 / 기초부터 다지기">
     </div>
 
     <div class="field">
@@ -261,7 +280,7 @@
     const ag1 = document.getElementById('agreeGuide').checked;
     const ag2 = document.getElementById('agreeContact').checked;
 
-    if(!name){ showMsg('성함을 입력해 주세요.', 'err'); return; }
+    if(!name){ showMsg('학생 이름을 입력해 주세요.', 'err'); return; }
     if(!phone){ showMsg('연락처를 입력해 주세요.', 'err'); return; }
     if(!(data.get('contactTime')||'').trim()){ showMsg('연락 가능한 시간대를 입력해 주세요.', 'err'); return; }
     if(!(data.get('school')||'').trim()){ showMsg('학교를 입력해 주세요.', 'err'); return; }
@@ -282,7 +301,13 @@
     try {
       // GAS doPost는 form-urlencoded 로 받음(프리플라이트 회피)
       const params = new URLSearchParams();
-      for (const [k, v] of data.entries()) params.append(k, v);
+      // 복수선택(약한 영역)은 콤마로 합쳐 단일 값으로 전송
+      const weakVals = data.getAll('weak');
+      for (const [k, v] of data.entries()) {
+        if (k === 'weak') continue;
+        params.append(k, v);
+      }
+      if (weakVals.length) params.append('weak', weakVals.join(', '));
 
       const res = await fetch(GAS_URL, {
         method: 'POST',
