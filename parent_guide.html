@@ -478,6 +478,7 @@
     <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
     <div class="hero-cta">
       <a class="hcta apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">상담 신청하기</a>
+      <a class="hcta apply" href="apply.html" style="background:var(--ink,#241A16);">일반 상담 신청 (네이버 없이)</a>
       <a class="hcta guide" href="#guide">상담 가이드 먼저 보기</a>
     </div>
   </div>
@@ -769,7 +770,7 @@
             </thead>
             <tbody id="feeBody"><!-- JS 자동 생성 --></tbody>
           </table>
-          <p class="fee-note">※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.</p>
+          <p class="fee-note" id="feeNote">※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.</p>
           <div class="fee-adminbar" id="feeAdminBar">
             <div class="fee-pwbox">
               <label for="feePwInput">관리자 비밀번호</label>
@@ -807,6 +808,10 @@
       <a class="cta-step apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">
         <span class="num">2</span>
         <span class="lbl">네이버 톡톡으로 상담 신청서 작성</span>
+      </a>
+      <a class="cta-step apply" href="apply.html" style="background:var(--ink,#241A16);">
+        <span class="num">2'</span>
+        <span class="lbl">네이버 없이 일반 신청서 작성</span>
       </a>
     </div>
   </div>
@@ -851,10 +856,14 @@
     { name:"고등 A",   days:"수 · 금", time:"오후 7:00 ~ 8:30",  fee:350000 },
     { name:"고등 B",   days:"화 · 목", time:"오후 8:30 ~ 10:00", fee:400000 },
   ];
+
+  /* 시간표 아래 안내 문구 — 바꾸려면 따옴표 안만 고치세요 */
+  const NOTE_TEXT = "※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.";
   /* ▲▲▲  여기까지만 고치면 됩니다  ▲▲▲ */
 
   /* 화면에 보여줄 현재 데이터 (편집 시 이 값이 바뀜) */
   let feeData = TUITION.map(r=>({...r}));
+  let noteData = NOTE_TEXT;
   let curPw = ADMIN_PW;
   let editMode = false;
 
@@ -894,13 +903,26 @@
       });
     }
   }
+  function renderNote(){
+    const el = document.getElementById('feeNote');
+    if(!el) return;
+    if(!editMode){
+      el.textContent = noteData;
+    } else {
+      el.innerHTML = `<textarea id="feeNoteInput" class="fe" style="width:100%;min-height:60px;box-sizing:border-box;font:inherit;line-height:1.6;padding:8px;border-radius:8px;border:1px solid #ccc;resize:vertical;">${esc(noteData)}</textarea>`;
+      const ta = document.getElementById('feeNoteInput');
+      if(ta){ ta.addEventListener('input', e=>{ noteData = e.target.value; }); }
+    }
+  }
   renderFee();
+  renderNote();
 
   /* ── 관리자 편집 모드 ── */
   function enterEdit(){
     editMode = true;
     curPw = ADMIN_PW;
     renderFee();
+    renderNote();
     const pwInput = document.getElementById('feePwInput');
     if(pwInput){ pwInput.value = curPw; }
     document.getElementById('feeAdminBar').style.display = 'flex';
@@ -908,7 +930,9 @@
   function exitEdit(){
     editMode = false;
     feeData = TUITION.map(r=>({...r})); // 원래대로 복원(복사 안 한 변경은 버림)
+    noteData = NOTE_TEXT;
     renderFee();
+    renderNote();
     document.getElementById('feeAdminBar').style.display = 'none';
   }
   // 점(·) 클릭 → 비번 확인
@@ -936,9 +960,10 @@
     const lines = feeData.map(r=>
       `    { name:"${r.name}", days:"${r.days}", time:"${r.time}", fee:${Number(r.fee)||0} },`
     ).join('\n');
-    const code = `  const ADMIN_PW = "${pw}";\n\n  const TUITION = [\n${lines}\n  ];`;
+    const noteEsc = (noteData||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,' ');
+    const code = `  const ADMIN_PW = "${pw}";\n\n  const TUITION = [\n${lines}\n  ];\n\n  /* 시간표 아래 안내 문구 — 바꾸려면 따옴표 안만 고치세요 */\n  const NOTE_TEXT = "${noteEsc}";`;
     navigator.clipboard.writeText(code).then(()=>{
-      alert('새 코드(비밀번호 + 시간표)가 복사되었습니다.\n\nGitHub에서 parent_guide.html 을 열고,\n기존 \'const ADMIN_PW = "..."; \' 부터\n\'const TUITION = [ ... ];\' 까지를 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
+      alert('새 코드(비밀번호 + 시간표 + 안내문구)가 복사되었습니다.\n\nGitHub에서 parent_guide.html 을 열고,\n기존 \'const ADMIN_PW = "..."; \' 부터\n\'const NOTE_TEXT = "...";\' 까지를 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
     }).catch(()=>{
       prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
     });
