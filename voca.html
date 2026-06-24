@@ -255,7 +255,9 @@
         input[type=range].comp-range:disabled{ opacity:.55; }
         .type-row{ display:flex; align-items:center; gap:9px; margin-bottom:6px; }
         .type-dot{ width:9px; height:9px; border-radius:50%; flex:0 0 9px; }
-        .type-label{ flex:1; font-size:13px; font-weight:600; color:#43403b; }</style>
+        .type-label{ flex:1; font-size:13px; font-weight:600; color:#43403b; }
+        .hub-link:hover{ background:#f3eee3; }
+        #hub-fab:active{ transform:scale(0.94); }</style>
 </head>
 <body>
 <datalist id="tickmarks"></datalist>
@@ -557,6 +559,19 @@
 
 <!-- ====================== 관리자 화면 ====================== -->
 <div id="admin-screen">
+    <!-- 허브 메뉴 (관리자 화면에서만 표시 — 학생에겐 안 보임) -->
+    <div id="hub-menu" style="position:fixed; bottom:22px; right:22px; z-index:5000;">
+        <div id="hub-panel" style="display:none; position:absolute; bottom:62px; right:0; width:200px; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,0.18); padding:8px; border:1px solid #eee;">
+            <div style="font-size:11px; font-weight:800; color:var(--ink-soft); padding:7px 10px 5px;">관리 페이지 이동</div>
+            <a href="voca.html" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600;"><span style="font-size:15px;">📖</span> 단어시험</a>
+            <a href="hw-monitor.html" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600;"><span style="font-size:15px;">📷</span> 숙제 점검</a>
+            <a href="teacher.html" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600;"><span style="font-size:15px;">✍️</span> 출제·지문분석</a>
+            <a href="index.html" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600;"><span style="font-size:15px;">🎯</span> 메인 퀴즈앱</a>
+            <a href="exam-analysis.html" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600;"><span style="font-size:15px;">📊</span> 시험 분석</a>
+            <a href="hub.html" class="hub-link" style="display:flex; align-items:center; gap:9px; padding:10px 11px; border-radius:10px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600;"><span style="font-size:15px;">🏠</span> 허브</a>
+        </div>
+        <button onclick="toggleHubMenu()" id="hub-fab" title="관리 페이지 이동" style="width:54px; height:54px; border-radius:50%; background:var(--wine); color:#fff; border:none; box-shadow:0 4px 14px rgba(122,16,32,0.4); cursor:pointer; font-size:22px; display:flex; align-items:center; justify-content:center;">☰</button>
+    </div>
     <div class="admin-box">
         <button class="admin-back-btn" onclick="exitAdmin()">← 학생 화면으로</button>
         <button onclick="openPwModal()" style="position:absolute; top:18px; right:18px; height:34px; padding:0 14px; border-radius:17px; background:#fff; color:var(--ink-soft); border:none; box-shadow:inset 0 0 0 0.5px rgba(0,0,0,0.18); font-size:12.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; z-index:3;">
@@ -1909,6 +1924,14 @@
     }
 
     let _examGridAutoLoaded = false;
+    function toggleHubMenu(){
+        const panel=document.getElementById('hub-panel');
+        const fab=document.getElementById('hub-fab');
+        if(!panel) return;
+        const open = panel.style.display==='none' || !panel.style.display;
+        panel.style.display = open ? 'block' : 'none';
+        if(fab) fab.textContent = open ? '✕' : '☰';
+    }
     function enterAdmin() {
         document.getElementById('student-screen').style.display = "none";
         document.getElementById('admin-screen').style.display = "flex";
