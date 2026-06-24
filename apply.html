@@ -193,8 +193,8 @@
 
     <div class="field">
       <label class="q">구체적으로 어떤 내용을 상담받고 싶으신가요?<span class="req">*</span></label>
-      <div class="sub">방문 상담 전 미리 알려주시면 효과적인 상담이 가능합니다. (20자 이상)</div>
-      <textarea name="content" id="content" required minlength="20"></textarea>
+      <div class="sub">방문 상담 전 미리 알려주시면 효과적인 상담이 가능합니다. (10자 이상)</div>
+      <textarea name="content" id="content" required minlength="10"></textarea>
       <div class="counter" id="content-counter">0자</div>
     </div>
 
@@ -241,7 +241,7 @@
   contentEl.addEventListener('input', () => {
     const n = contentEl.value.trim().length;
     counter.textContent = n + '자';
-    counter.classList.toggle('bad', n > 0 && n < 20);
+    counter.classList.toggle('bad', n > 0 && n < 10);
   });
 
   function showMsg(text, type){
@@ -267,7 +267,7 @@
     if(!(data.get('school')||'').trim()){ showMsg('학교를 입력해 주세요.', 'err'); return; }
     if(!data.get('grade')){ showMsg('학년을 선택해 주세요.', 'err'); return; }
     if(!(data.get('region')||'').trim()){ showMsg('거주 지역을 입력해 주세요.', 'err'); return; }
-    if(content.length < 20){ showMsg('상담 내용을 20자 이상 적어 주세요.', 'err'); return; }
+    if(content.length < 10){ showMsg('상담 내용을 10자 이상 적어 주세요.', 'err'); return; }
     if(!ag1){ showMsg('상담 가이드 동의가 필요합니다.', 'err'); return; }
     if(!ag2){ showMsg('연락 안내 동의가 필요합니다.', 'err'); return; }
 
