@@ -950,7 +950,7 @@
     /* ============================================================
        관리자 진입 (이름칸 '관리자' → 비번 모달 → 숙제점검 GAS adminCheck 검증)
        ============================================================ */
-    let adminAuthed = (sessionStorage.getItem('voca_admin_authed') === '1'); // 새로고침해도 유지(탭 닫으면 해제)
+    let adminAuthed = (function(){ try{ var t=parseInt(localStorage.getItem('voca_admin_authed_at')||'0',10); return t && (Date.now()-t) < 7*24*60*60*1000; }catch(e){ return false; } })(); // 7일간 유지(새 탭·재시작 무관)
 
     function tryGoAdmin() {
         const pw = document.getElementById('admin-pw-input').value;
@@ -966,7 +966,7 @@
             done = true; cleanup();
             if (data && data.ok) {
                 adminAuthed = true;
-                sessionStorage.setItem('voca_admin_authed', '1');
+                try { localStorage.setItem('voca_admin_authed_at', String(Date.now())); } catch(e){}
                 document.getElementById('admin-pw-input').value = "";
                 document.getElementById('admin-pw-modal').style.display = 'none';
                 enterAdmin();
@@ -2153,7 +2153,7 @@
                 document.getElementById('db-wrong-btn').style.display = 'none';
                 if(!previewMode){
                     adminAuthed = false;
-                    sessionStorage.removeItem('voca_admin_authed');
+                    try { localStorage.removeItem('voca_admin_authed_at'); } catch(e){}
                     const gb = document.getElementById('admin-gear-btn');
                     if(gb) gb.style.display = 'none';
                 } else { updateAdminQuickBtn(); }
@@ -2189,7 +2189,7 @@
             if(!previewMode){
                 document.getElementById('status-msg').innerText = "확인 완료!";
                 adminAuthed = false;
-                sessionStorage.removeItem('voca_admin_authed');
+                try { localStorage.removeItem('voca_admin_authed_at'); } catch(e){}
                 const gearBtn = document.getElementById('admin-gear-btn');
                 if(gearBtn) gearBtn.style.display = 'none';
             } else { updateAdminQuickBtn(); }

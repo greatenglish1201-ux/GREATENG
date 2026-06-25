@@ -7,8 +7,8 @@
  *  동작:
  *   - 페이지 로드 즉시(본체 렌더 전) 인증 여부 확인
  *   - 미인증이면 전체 화면 잠금 오버레이를 띄우고 비밀번호 요구
- *   - 통과하면 sessionStorage에 표시 → 같은 탭 내 다른 관리 페이지는 재입력 없음
- *   - 탭을 닫으면 인증 해제(sessionStorage 특성)
+ *   - 통과하면 localStorage에 인증 시각 저장 → 같은 브라우저에서 7일간 재입력 없음(새 탭·재시작 무관)
+ *   - 7일이 지나면 다시 한 번 비밀번호를 묻습니다
  *
  *  ⚠️ 한계(반드시 인지): GitHub Pages 정적 호스팅이라 이 게이트는
  *     "화면을 가리는 1층"입니다. 데이터를 직접 내주는 GAS(hw-monitor 등)는
@@ -25,13 +25,14 @@
 
   // 'vlfl2125' 의 SHA-256 (평문 미노출)
   var PW_HASH = '1262090373cc2818e4b632e4667fbb191a5bb7fddcb1f12d642693ede022c3d1';
-  var SESSION_KEY = 'greateng_admin_authed';
-  var SESSION_VAL = '1';
+  var SESSION_KEY = 'greateng_admin_authed_at';  // 인증 시각(ms) 저장
+  var MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;       // 7일
 
-  // 이미 인증된 세션이면 통과 (같은 탭에서 페이지 이동 시 재입력 없음)
+  // 이미 인증된 브라우저면 통과 (7일 이내, 새 탭·재시작 무관)
   try {
-    if (sessionStorage.getItem(SESSION_KEY) === SESSION_VAL) return;
-  } catch (e) { /* sessionStorage 불가 환경: 아래 게이트로 진행 */ }
+    var savedAt = parseInt(localStorage.getItem(SESSION_KEY) || '0', 10);
+    if (savedAt && (Date.now() - savedAt) < MAX_AGE_MS) return;
+  } catch (e) { /* localStorage 불가 환경: 아래 게이트로 진행 */ }
 
   // ── 본체 렌더 차단용 전체화면 오버레이 ──────────────────────
   // DOM이 아직 없을 수 있으므로 즉시 실행 스타일 + 지연 마운트 병행
@@ -105,7 +106,7 @@
       if (!v) { err.textContent = '비밀번호를 입력하세요.'; return; }
       sha256Hex(v).then(function (h) {
         if (h === PW_HASH) {
-          try { sessionStorage.setItem(SESSION_KEY, SESSION_VAL); } catch (e) {}
+          try { localStorage.setItem(SESSION_KEY, String(Date.now())); } catch (e) {}
           try {
             document.documentElement.classList.remove('greateng-locked');
             document.body.classList.remove('greateng-locked');
