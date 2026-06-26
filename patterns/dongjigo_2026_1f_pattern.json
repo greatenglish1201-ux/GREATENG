@@ -1,0 +1,288 @@
+{
+  "school": "동지고등학교",
+  "grade": 3,
+  "subject": "영어독해와작문",
+  "exam": "2026학년도 1학기 중간고사",
+  "subject_code": "07",
+  "source_basis": "기출 원본 8면 스캔(KakaoTalk_20260501) 직접 분석",
+  "meta": {
+    "total_questions": 26,
+    "total_points": 100,
+    "format": "객관식 26문항, 서술형 없음",
+    "answer_format": "5지선다 (도표/안내문 일부 포함)",
+    "page_count": 8,
+    "copyright_holder": "동지고등학교"
+  },
+  "scoring_pattern": {
+    "tiers": {
+      "3.6": ["주제", "도표불일치", "내용불일치", "어휘_부적절_복수지문", "안내문불일치"],
+      "3.8": ["제목", "어법_틀린것1", "어휘_문맥부적절", "무관한문장", "문장삽입", "어법_틀린것모두", "어휘_적절한것", "순서배열"],
+      "4.2": ["밑줄함의", "어휘_ABC", "빈칸_구"]
+    },
+    "observation": "4.2점은 함의추론·어휘선택(A/B/C)·빈칸 등 고난도 추론 유형에 집중. 3.6점은 사실확인(도표/내용/안내문) 유형. 배점이 난이도 신호로 일관됨."
+  },
+  "type_distribution": {
+    "주제": 2,
+    "제목": 2,
+    "도표불일치": 1,
+    "어법_틀린것1": 2,
+    "어법_틀린것모두": 1,
+    "어휘_문맥부적절_단일": 2,
+    "어휘_부적절_복수지문": 1,
+    "어휘_적절한것": 1,
+    "어휘_ABC선택": 1,
+    "무관한문장": 2,
+    "밑줄함의": 2,
+    "문장삽입": 3,
+    "순서배열": 2,
+    "내용불일치": 1,
+    "안내문불일치": 1,
+    "빈칸_구": 3,
+    "_note": "대의파악(주제2+제목2)=4, 어법4, 어휘5, 무관2, 함의2, 삽입3, 순서2, 빈칸3, 도표1, 내용1, 안내문1. 합산값 27은 9-10/12-13 세트 중복 계수 포함이며 실제 문항은 26개"
+  },
+  "questions": [
+    {
+      "no": 1, "type": "주제", "points": 3.6,
+      "topic": "사회불안을 공감·연민으로 전환하기",
+      "axis": "불안=약점 ↔ 불안=공감의 자원",
+      "difficulty": "중",
+      "trap": "③ 타인의 판단에서 벗어나기, ④ 사회관계 회피 — 본문의 'outward-facing/compassion' 방향과 반대인 오답",
+      "key_signal": "flipping anxiety into compassion"
+    },
+    {
+      "no": 2, "type": "제목", "points": 3.8,
+      "topic": "사람들이 비판적으로 사고하기를 두려워하는 이유",
+      "axis": "사고 회피 원인=게으름 ↔ 사고 회피 원인=두려움(신념 흔들림)",
+      "difficulty": "중상",
+      "trap": "③ 게으름 극복법, ④ 현대과학의 논리 중요성 — 지엽적/부분 키워드 오답",
+      "key_signal": "fear is a big one; it shakes us to the core"
+    },
+    {
+      "no": 3, "type": "도표불일치", "points": 3.6,
+      "topic": "AI 도입에 따른 소득수준별 일자리 전망(2024)",
+      "axis": "도표 수치 일치 ↔ 불일치",
+      "difficulty": "중상",
+      "trap": "④ upper-income에서 'fewer'와 'no difference'가 같은 8%라는 진술 — 도표상 36% vs 44%로 불일치(정답 후보)",
+      "key_signal": "수치 비교/배수 표현(more than three times) 검증"
+    },
+    {
+      "no": 4, "type": "어법_틀린것1", "points": 3.8,
+      "topic": "문학은 일회용 정보전달체가 아니다",
+      "axis": "문학적 독서=전인적 참여 ↔ 일상적 독서=정보처리",
+      "difficulty": "상",
+      "trap": "⑤ to explain → explaining (those changes ~ how 구문, 분사 자리)",
+      "grammar_points": ["what(관계대명사)", "most remarkably(부사)", "is(주어수일치)", "activating(병렬/분사)", "to explain(준동사)"]
+    },
+    {
+      "no": 5, "type": "어휘_문맥부적절", "points": 3.8,
+      "topic": "미국인의 비만과 1인분 크기 증가",
+      "axis": "큰 1인분=정상 인식 ↔ 칼로리 과다섭취 결과",
+      "difficulty": "중상",
+      "trap": "⑤ intentionally → unintentionally (더 큰 양 제공 시 '무의식적으로' 더 먹음)",
+      "vocab_points": ["confronted", "appropriate", "distortions", "increased", "intentionally"]
+    },
+    {
+      "no": 6, "type": "무관한문장", "points": 3.8,
+      "topic": "소련 내 미국 음료회사 병입공장 설립 협상",
+      "axis": "이념(집단주의) ↔ 상업 진출 정당화",
+      "difficulty": "중상",
+      "trap": "③ 이미 광고전략으로 유명했다는 문장 — 협상 정당화 흐름과 무관",
+      "key_signal": "글의 논리축(협상 진행)에서 이탈한 배경설명 문장"
+    },
+    {
+      "no": 7, "type": "밑줄함의", "points": 4.2,
+      "topic": "Salk연구소 TRF 연구와 공로·시기 귀속의 어려움",
+      "axis": "과학=질서정연한 논리 ↔ 과학=무질서한 관찰의 사후정리",
+      "difficulty": "상",
+      "trap": "①③④ 과학과정을 '논리적/효과적/완벽'으로 미화하는 오답 — 함의는 '언제·누구에 의해 발견인지 특정 어려움'(②)",
+      "key_signal": "assign credit and dates = identifying when and by whom"
+    },
+    {
+      "no": 8, "type": "문장삽입", "points": 3.8,
+      "topic": "지각시스템의 대리기능(vicarious functioning)·새의 항법",
+      "axis": "단일 경로 ↔ 다중·대체 경로(유연성)",
+      "difficulty": "상",
+      "trap": "주어진 문장 'cloudy day→landmarks/magnetic sense'는 별 항법(stars) 직후(③)에 위치",
+      "key_signal": "But if 역접 + 대체수단 → 별 항법 문장 뒤"
+    },
+    {
+      "no": 9, "type": "순서배열", "points": 3.8,
+      "topic": "Sarah와 Margaret의 카페 만남(서사)",
+      "axis": "절망 ↔ 회복/연결",
+      "difficulty": "중",
+      "trap": "정답 ④ (D)-(B)-(C): Margaret 등장(D)→마음열기(B)→이해받음/이메일(C)",
+      "key_signal": "서사 시간순+대명사 지시(she/Margaret) 추적"
+    },
+    {
+      "no": 10, "type": "내용불일치", "points": 3.6,
+      "topic": "(9번 동일 지문) Sarah·Margaret",
+      "axis": "본문 사실 ↔ 변형 진술",
+      "difficulty": "중",
+      "trap": "② Margaret의 말이 단순하여 Sarah를 설득하지 못했다 — 본문은 'carried a weight she needed'로 불일치(정답)",
+      "key_signal": "selection에서 긍정/부정 뒤집기"
+    },
+    {
+      "no": 11, "type": "어법_틀린것1", "points": 3.8,
+      "topic": "논문 수정요청 이메일(reviewer 코멘트)",
+      "axis": "정중한 요청 ↔ 마감 압박",
+      "difficulty": "중상",
+      "trap": "② availability(명사) — within the limited time 'and ___' 병렬에서 형용사/구조 오류 후보",
+      "grammar_points": ["during", "availability", "have summarized", "incorporating", "that"]
+    },
+    {
+      "no": 12, "type": "주제", "points": 3.6,
+      "topic": "연구를 쇼핑리스트에 비유(중학생 지도)",
+      "axis": "전부 베끼기(verbatim) ↔ 필요 정보만 선택",
+      "difficulty": "중",
+      "trap": "①②④⑤ 부분 키워드(리스트 제공/백과사전 가치/신뢰출처) 오답 — 핵심은 ③ '필요 정보 선택'",
+      "key_signal": "shopping list = choosing needed information"
+    },
+    {
+      "no": 13, "type": "어휘_부적절_복수지문", "points": 3.6,
+      "topic": "(12번 동일 지문) a~e 밑줄",
+      "axis": "문맥상 적절 ↔ 부적절",
+      "difficulty": "중상",
+      "trap": "(c) requisite — 문맥상 'why it isn't necessary to copy' 흐름에서 반의 필요 (정답 후보 c)",
+      "vocab_points": ["trouble", "located", "requisite", "helpful", "discard"]
+    },
+    {
+      "no": 14, "type": "어법_틀린것모두", "points": 3.8,
+      "topic": "자동차 대출 상환 독촉 편지",
+      "axis": "친근한 안부 ↔ 단호한 상환 요구",
+      "difficulty": "상",
+      "trap": "복수정답형. ⑤ (f) are satisfying→are satisfied, (g) buy 등 — 'f,g' 조합(정답 후보 ⑤)",
+      "grammar_points": ["did", "when", "have", "what", "do", "are satisfying(태)", "buy(명사)"],
+      "note": "동지고 유일 '모두 고르기' 어법 — 복수오류 동시 판별 요구"
+    },
+    {
+      "no": 15, "type": "어휘_적절한것", "points": 3.8,
+      "topic": "내부감각(interoception)과 타인 감정 공유",
+      "axis": "내부감각=고립 ↔ 내부감각=타인과의 다리",
+      "difficulty": "상",
+      "trap": "② immediate access — 뇌는 타인 마음에 '직접 접근 없음'이므로 부적절(정답: no immediate access 맥락)",
+      "vocab_points": ["external", "immediate", "precise", "indispensable", "deliberately"]
+    },
+    {
+      "no": 16, "type": "어휘_ABC선택", "points": 4.2,
+      "topic": "CAD와 조기고착(premature fixation)·건축 스케치",
+      "axis": "수기 스케치=창의/모호성 ↔ 컴퓨터 렌더링=조기 고정",
+      "difficulty": "상",
+      "trap": "정답 ① seeming/omits/deterrent — (A)완성도는 '겉으로 보이는', (B)놀이성 '생략', (C)변경의 '억제책'",
+      "vocab_points": ["seeming/authentic", "cultivates/omits", "deterrent/stimulus"]
+    },
+    {
+      "no": 17, "type": "밑줄함의", "points": 3.8,
+      "topic": "서번트 리더십·빵집 운영(nothing was beneath us)",
+      "axis": "리더=직접 관여 회피 ↔ 리더=솔선수범",
+      "difficulty": "상",
+      "trap": "①②③ 리더가 '잡무에서 물러나야' 류 오답 — 함의는 ⑤ '잡무도 자신의 일로 여김'",
+      "key_signal": "nothing was beneath us = led by example, did the work"
+    },
+    {
+      "no": 18, "type": "무관한문장", "points": 3.8,
+      "topic": "회복(recovery)=과정이자 결과",
+      "axis": "회복=결과(자원 복원) ↔ 회복=과정(상태 변화)",
+      "difficulty": "상",
+      "trap": "⑤ '신체적 비활동이 가장 효과적 회복법'은 본문 논지(회복=활동 과정)와 모순 — 무관(정답 후보)",
+      "key_signal": "글 전체 흐름(과정/결과 정의)에서 이탈한 일반화 문장"
+    },
+    {
+      "no": 19, "type": "안내문불일치", "points": 3.6,
+      "topic": "박물관 Heart Centering Yoga 안내문",
+      "axis": "안내문 정보 일치 ↔ 불일치",
+      "difficulty": "중",
+      "trap": "⑤ 매트·물 '제공된다' — 본문 'will not be provided'와 불일치(정답)",
+      "key_signal": "will not be provided / Non-Members 요금 구조"
+    },
+    {
+      "no": 20, "type": "문장삽입", "points": 3.8,
+      "topic": "대공황 등 거대위기·통제가능 영역 집중",
+      "axis": "거대위기=압도/통제불가 ↔ 통제가능 영역으로 분해",
+      "difficulty": "상",
+      "trap": "주어진 문장 'best chance=identify aspects within your control'은 분해 논리 시작점(②)",
+      "key_signal": "With these sorts of crises → break down 전환점"
+    },
+    {
+      "no": 21, "type": "빈칸_구", "points": 4.2,
+      "topic": "예술 vs 상업·전문성('Art without commerce is a hobby')",
+      "axis": "예술=상업과 분리 ↔ 예술=상업으로 정당화(서구문화)",
+      "difficulty": "상",
+      "trap": "정답 ① 'for that is regarded as the only indicator of success' — 돈벌이=성공 유일지표 맥락",
+      "key_signal": "legitimized by ability to earn money → success indicator"
+    },
+    {
+      "no": 22, "type": "순서배열", "points": 3.8,
+      "topic": "인식공동체(epistemic communities)와 전문지식 접근",
+      "axis": "전문지식=비밀/폐쇄 ↔ 개방성으로 이동",
+      "difficulty": "상",
+      "trap": "정답 ④ (C)-(B)-(A): 전근대 비밀(C)→신입사회화(B)→그럼에도 외부인 접근한계(A)",
+      "key_signal": "Nonetheless(A)의 역접 위치, premodern(C) 시간표지"
+    },
+    {
+      "no": 23, "type": "빈칸_구", "points": 4.2,
+      "topic": "제스처와 언어의 공동표현(co-expressive)",
+      "axis": "언어=범주적 선택강제 ↔ 제스처=선택 없는 형상적",
+      "difficulty": "상",
+      "trap": "빈칸=언어가 강제하는 '선택'의 종류. 정답 ① 'characteristic of language as a semiotic system'",
+      "key_signal": "gesture does not present such choices ↔ language does"
+    },
+    {
+      "no": 24, "type": "제목", "points": 3.8,
+      "topic": "약병(medicine bottle)에 대한 대중의 지속적 믿음",
+      "axis": "회의의 시대 ↔ 약에 대한 믿음은 불변",
+      "difficulty": "상",
+      "trap": "②③④⑤ 재정부담/외래환자기대/과로의사 등 부분 키워드 — 핵심 ① '약에 대한 지속적 대중 믿음과 의료관행 영향'",
+      "key_signal": "faith in medicines remains the same; bottle/box/jar granted"
+    },
+    {
+      "no": 25, "type": "문장삽입", "points": 4.2,
+      "topic": "강황(turmeric)·아유르베다 식품치료",
+      "axis": "음식=치료 전통 ↔ 강황의 약용 효과",
+      "difficulty": "중상",
+      "trap": "주어진 문장 'turmeric도 관절염/알츠하이머/암 치료 도움'은 강황 효능 진술(④) 위치",
+      "key_signal": "Aside from flavor + turmeric 효능 → 결론부 직전"
+    },
+    {
+      "no": 26, "type": "빈칸_구", "points": 4.2,
+      "topic": "정치권력·지배(dominance)의 인류학적 비판",
+      "axis": "정치권력=보편적 강제 ↔ 정치권력=서구적 집착(문화편향)",
+      "difficulty": "최상",
+      "trap": "①②③ '보편/필연/공유 패턴' 오답 — 정답 ⑤ 'cultural obsessions of our own'(우리 문화의 집착·인류학적 편향)",
+      "key_signal": "Western fixation; not a universal → our own bias"
+    }
+  ],
+  "_analysis_card": {
+    "school_identity": "동지고는 EBS 수능특강·모의고사 변형 기반의 정통 수능형 출제. 서술형 0, 26문항 전 객관식.",
+    "difficulty_profile": {
+      "overall": "상(고3 1학기 중간 기준 높음)",
+      "hardest_types": ["빈칸_구(4.2)", "밑줄함의(4.2)", "어휘_ABC(4.2)", "어법_틀린것모두(3.8)"],
+      "easiest_types": ["안내문불일치", "내용불일치", "순서배열(서사)"]
+    },
+    "signature_features": [
+      "어법을 '틀린 것 1개'와 '틀린 것 모두 고르기' 두 방식으로 모두 출제(11번 vs 14번) — 복수오류 동시판별 요구",
+      "어휘 5문항으로 비중 최다: 문맥부적절·복수지문(a-e)·적절한것·A/B/C선택까지 4개 하위유형 전부 활용",
+      "문장삽입 3개 — 역접(But/Aside)·시간(then)·지시어 단서를 일관되게 활용",
+      "빈칸은 모두 '구(phrase)' 단위 4.2점 — 단어빈칸 없음, 추상도 높은 사회/인류학/예술론 소재 선호",
+      "대의파악(주제·제목)에서 '부분 키워드 오답'을 일관되게 배치 — 지엽 함정",
+      "한 지문 2문항 출제(9-10 서사, 12-13 비유) 패턴 보유"
+    ],
+    "topic_domains": [
+      "심리/인지(불안·공감·내부감각·지각)", "과학사·과학철학(TRF·과학의 무질서)",
+      "사회/인류학(인식공동체·정치권력·예술상업)", "교육/연구방법(쇼핑리스트 비유)",
+      "건강/회복(비만·회복과정·강황)", "리더십/비즈니스(서번트리더·소련협상)",
+      "서사문(Sarah·Margaret)", "실용문(이메일·독촉편지·안내문)"
+    ],
+    "distractor_logic": {
+      "대의파악": "본문 부분 키워드를 제목/주제처럼 위장",
+      "어법": "준동사(분사 vs to부정사)·태(satisfying/satisfied)·병렬구조 집중",
+      "어휘": "정반대 의미어 삽입(intentionally↔unintentionally, requisite 반의)",
+      "빈칸": "보편/필연 주장(오답) ↔ 문화상대·예외 강조(정답) 대립을 즐겨 활용"
+    },
+    "exam_prediction_guidance": {
+      "type_quota_for_finals": "기말도 동일 26문항 가정 시: 어휘 5, 어법 3~4, 빈칸 3, 삽입 3, 주제+제목 4, 순서 2, 무관 2, 함의 2, 도표·내용·안내문 각 1을 기준선으로 배정 권장",
+      "difficulty_anchor": "4.2점은 추상 사회/인류학/예술 지문에서 빈칸·함의로, 3.6점은 도표·안내문·내용일치로 고정 배정",
+      "passage_selection": "추상 논설(인류학/철학/예술론)은 빈칸·함의·제목용, 서사·실용문(이메일/안내문)은 순서·내용·안내문·어법용으로 배분",
+      "must_replicate": "어법 '모두 고르기' 1문항, 한 지문 2문항 세트 1개, 부분키워드 오답은 동지고 시그니처이므로 기말 예상문제에도 반드시 반영"
+    }
+  }
+}
