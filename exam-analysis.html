@@ -1752,6 +1752,22 @@ async function saveExamToSheet(){
   }catch(e){ alert('저장 실패: '+e.message+'\n(GAS에 saveExam 액션이 없으면 추가가 필요합니다)'); }
 }
 
+// 시험 항목을 다양한 GAS 반환 형태에서 {meta, questions, key}로 복원
+function unwrapExamItem(it){
+  let d = it;
+  // data 래핑: {key, data:{...}, savedAt}
+  if(d && d.data && typeof d.data==='object' && (d.data.questions||d.data.meta||d.data.json)) d = d.data;
+  // json 문자열 컬럼: {json:"{...전체...}"} 또는 {data:{json:"..."}}
+  if(d && typeof d.json==='string'){ try{ d = Object.assign({}, d, JSON.parse(d.json)); }catch(e){} }
+  // questions가 문자열(JSON)인 경우
+  if(d && typeof d.questions==='string'){ try{ d.questions = JSON.parse(d.questions); }catch(e){} }
+  // question_list 별칭
+  if(d && (!d.questions||!d.questions.length) && d.question_list){
+    try{ d.questions = typeof d.question_list==='string'?JSON.parse(d.question_list):d.question_list; }catch(e){}
+  }
+  return d || {};
+}
+
 async function loadExamListFromSheet(){
   const box = document.getElementById('examSheetList');
   const st  = document.getElementById('examSheetStatus');
@@ -1763,18 +1779,24 @@ async function loadExamListFromSheet(){
     box.innerHTML='';
     window._examSheetList = list;
     list.forEach((it,i)=>{
-      const m = it.meta||{};
+      const m = it.meta||(it.data&&it.data.meta)||{};
       const div=document.createElement('div');
       div.className='pattern-list-item';
       div.innerHTML=`<span>📝 ${[m.school,m.grade,m.year,m.semester,m.exam].filter(Boolean).join(' ')||it.key} (${m.total||'?'}문항)</span>
         <span style="font-size:.75rem;color:var(--ink4);">${(it.savedAt||'').slice(0,10)}</span>`;
       div.onclick=()=>{
-        const d = it;
-        if(typeof d.questions==='string'){ try{ d.questions=JSON.parse(d.questions); }catch(e){} }
+        // GAS 반환 구조가 제각각일 수 있어 모든 형태에서 시험 객체(d)를 복원한다.
+        // 가능 형태: {questions:[...]} | {json:"{...}"} | {data:{...}} | {question_list:"[...]"} | {data:{json:"..."}}
+        let d = unwrapExamItem(it);
         const v = validateExam(d);
         generatedQs = d.questions||[]; examMeta = d.meta||{}; window._examV = v;
+        if(!generatedQs.length){
+          alert('⚠️ 이 항목에서 문항(questions)을 찾지 못했습니다.\n시트 json 컬럼 구조를 확인하세요. (콘솔에 원본 로그 출력)');
+          console.warn('[시험 불러오기] questions 복원 실패. 원본 항목:', it);
+        }
         try{ localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify({meta:examMeta, questions:generatedQs})); }catch(e){}
         renderExamCard();
+        console.log('[시험 등록] generatedQs', generatedQs.length, '문항');
       };
       box.appendChild(div);
     });
