@@ -1485,7 +1485,7 @@ function clearExam(){
 
 // ━━━ 인쇄 (구버전 검증 레이아웃 이식) ━━━
 function printExam(){
-  if(!generatedQs.length){ alert('생성된 문제가 없습니다.'); return; }
+  if(!generatedQs.length){ alert('인쇄할 시험지가 등록되지 않았습니다.\n출제 탭에서 예상문제 JSON을 불러오거나, 시트 보관 목록에서 항목을 클릭해 등록한 뒤 다시 시도하세요.'); return; }
 
   const m = examMeta || {};
   const SCHOOL_FULL = {'이동고':'포항이동고등학교','제철고':'포항제철고등학교','동지고':'포항동지고등학교','제철중':'포항제철중학교','이동중':'포항이동중학교','두호고':'포항두호고등학교','대동고':'포항대동고등학교'};
@@ -1701,6 +1701,23 @@ ${answerSheetHtml}
 </body></html>`;
 
   const w = window.open('', '_blank');
+  if(!w){
+    // 팝업 차단됨 → 현재 페이지에 숨김 iframe으로 인쇄 폴백
+    try{
+      const old=document.getElementById('__printFrame'); if(old) old.remove();
+      const ifr=document.createElement('iframe');
+      ifr.id='__printFrame';
+      ifr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+      document.body.appendChild(ifr);
+      const idoc=ifr.contentWindow.document;
+      idoc.open(); idoc.write(html); idoc.close();
+      ifr.onload=()=>{ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }catch(e){ alert('인쇄 실패: '+e.message); } };
+      // onload가 즉시 안 걸리는 브라우저 대비
+      setTimeout(()=>{ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }catch(e){} }, 500);
+      alert('⚠️ 팝업이 차단되어 현재 창에서 인쇄합니다.\n매번 새 창으로 열려면 주소창의 팝업 차단 아이콘에서 이 사이트를 허용하세요.');
+    }catch(e){ alert('인쇄 창을 열 수 없습니다. 브라우저의 팝업 차단을 해제해 주세요.\n('+e.message+')'); }
+    return;
+  }
   w.document.write(html);
   w.document.close();
 }
@@ -1754,18 +1771,50 @@ async function saveExamToSheet(){
 
 // 시험 항목을 다양한 GAS 반환 형태에서 {meta, questions, key}로 복원
 function unwrapExamItem(it){
-  let d = it;
-  // data 래핑: {key, data:{...}, savedAt}
-  if(d && d.data && typeof d.data==='object' && (d.data.questions||d.data.meta||d.data.json)) d = d.data;
-  // json 문자열 컬럼: {json:"{...전체...}"} 또는 {data:{json:"..."}}
-  if(d && typeof d.json==='string'){ try{ d = Object.assign({}, d, JSON.parse(d.json)); }catch(e){} }
-  // questions가 문자열(JSON)인 경우
-  if(d && typeof d.questions==='string'){ try{ d.questions = JSON.parse(d.questions); }catch(e){} }
-  // question_list 별칭
-  if(d && (!d.questions||!d.questions.length) && d.question_list){
-    try{ d.questions = typeof d.question_list==='string'?JSON.parse(d.question_list):d.question_list; }catch(e){}
+  // 1) 객체 내 어디에 있든 questions 배열과 meta를 재귀로 찾아낸다.
+  //    GAS 반환 구조가 무엇이든(data 래핑, json 문자열, 이중 문자열 등) 대응.
+  function deepParse(v, depth){
+    if(depth>6 || v==null) return v;
+    // 문자열인데 JSON처럼 보이면 파싱 시도
+    if(typeof v==='string'){
+      const t=v.trim();
+      if((t.startsWith('{')&&t.endsWith('}'))||(t.startsWith('[')&&t.endsWith(']'))){
+        try{ return deepParse(JSON.parse(t), depth+1); }catch(e){ return v; }
+      }
+      return v;
+    }
+    if(Array.isArray(v)) return v.map(x=>deepParse(x, depth+1));
+    if(typeof v==='object'){
+      const o={};
+      for(const k in v) o[k]=deepParse(v[k], depth+1);
+      return o;
+    }
+    return v;
   }
-  return d || {};
+  function findQuestions(o, depth){
+    if(depth>6 || o==null || typeof o!=='object') return null;
+    if(Array.isArray(o.questions) && o.questions.length) return o;
+    // question_list 별칭
+    if(o.question_list){
+      try{ const ql=typeof o.question_list==='string'?JSON.parse(o.question_list):o.question_list;
+        if(Array.isArray(ql)&&ql.length) return Object.assign({}, o, {questions:ql}); }catch(e){}
+    }
+    // 자식 탐색 (data, json 등 어떤 키든)
+    for(const k in o){
+      const found=findQuestions(o[k], depth+1);
+      if(found) {
+        // meta는 상위에 있을 수 있으니 합쳐줌
+        return Object.assign({}, o.meta?{meta:o.meta}:{}, found,
+                             found.meta?{}:(o.meta?{meta:o.meta}:{}));
+      }
+    }
+    return null;
+  }
+  const parsed = deepParse(it, 0);
+  const found = findQuestions(parsed, 0);
+  if(found && found.questions && found.questions.length) return found;
+  // 마지막 폴백: parsed 자체가 {meta,questions}면 그대로
+  return parsed || {};
 }
 
 async function loadExamListFromSheet(){
