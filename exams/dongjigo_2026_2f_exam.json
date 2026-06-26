@@ -107,16 +107,16 @@
    "num": 6,
    "qtype": "무관한문장",
    "score": 3.8,
-   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\n\nIn the context of a studio visit, the viewer might notice several clipped newspaper articles pinned to the wall, a wax-coated hotplate, walls with paint marks, resin-drizzled floors and several sculptures barely visible through their plastic wrap. Such real-world clues offer the visitor a foothold onto the artist's oeuvre. ①<u>Similarly, guests experiencing artworks in some homes notice art positioned next to furnishings, family photographs displayed on the piano and coffee-table books stacked to demonstrate preferences.</u> ②<u>Together, these components affect particular experiences.</u> ③<u>The market value of a sculpture is determined primarily by the reputation of the auction house that sells it.</u> ④<u>Within the artist's studio or collector's home, residue from studio activities or the collector's personal belongings help to connect the artworks to the world.</u> ⑤<u>By contrast, artworks displayed in exhibitions feel comparatively isolated, practically clipped from the world where they originated.</u>",
+   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\n\nIn the context of a studio visit, the viewer might notice several clipped newspaper articles pinned to the wall, a wax-coated hotplate, walls with paint marks, resin-drizzled floors and several sculptures barely visible through their plastic wrap. Such real-world clues offer the visitor a foothold onto the artist's oeuvre. ①Similarly, guests experiencing artworks in some homes notice art positioned next to furnishings, family photographs displayed on the piano and coffee-table books stacked to demonstrate preferences. ②Together, these components affect particular experiences. ③The market value of a sculpture is determined primarily by the reputation of the auction house that sells it. ④Within the artist's studio or collector's home, residue from studio activities or the collector's personal belongings help to connect the artworks to the world. ⑤By contrast, artworks displayed in exhibitions feel comparatively isolated, practically clipped from the world where they originated.",
    "choices": [
-    "① 문장③",
-    "② 문장①",
-    "③ 문장②",
-    "④ 문장④",
-    "⑤ 문장⑤"
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
    ],
-   "answer": "① 문장③",
-   "explanation": "경매장 평판·시장가치는 '맥락이 의미를 부여한다'는 흐름과 무관. [출처: 수능특강 26강]",
+   "answer": "③",
+   "explanation": "글은 '스튜디오/집의 실제 단서들이 예술 경험에 맥락을 부여한다'는 내용. ③'조각의 시장 가치는 경매장 평판이 결정한다'는 시장가치 얘기로 흐름과 무관. ①유사 사례·②종합 효과·④거주공간 단서·⑤전시장 대비는 모두 맥락 부여 흐름. [출처: 수능특강 26강]",
    "source": "수능특강 26강"
   },
   {
@@ -143,13 +143,13 @@
    "score": 3.8,
    "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n\n[주어진 문장] If you start to think too much about your driving, you actually increase your chances of having an accident.\n\nThe experiences of learning to ride a bicycle or drive a car illustrate well how the 'what' and 'how' systems — those involved in object identification and practical action — might interact during development. ( ① ) When we learn to drive a car, we go through a first stage where each required action and sequence of actions — such as looking in the mirror, signaling with the blinker, pressing the clutch prior to shifting into gear, and so forth — are explicitly thought of and double-checked while monitoring our situation in the environment. ( ② ) Once learned and after a few hours of practice, the required actions for driving become second nature, transferable to almost any vehicle and performed without explicit thinking. ( ③ ) Information appears to be perceived directly; the affordances of the road, the car, and the traffic implicitly detected. ( ④ ) People in sport competitions confirm that self-consciousness is one's worst enemy: tennis, golf, or billiard players commonly report that they lose their 'touch' by thinking too much about their moves.",
    "choices": [
-    "① ①",
-    "② ②",
-    "③ ③",
-    "④ ④",
-    "⑤ ⑤"
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
    ],
-   "answer": "④ ④",
+   "answer": "④",
    "explanation": "주어진 문장(생각 과다→사고 위험)은 스포츠 자의식 언급 직전(④). [출처: 수능특강 25강]",
    "source": "수능특강 25강"
   },
@@ -175,7 +175,7 @@
    "num": 10,
    "qtype": "내용일치",
    "score": 3.6,
-   "question": "윗글의 'I'에 관한 내용으로 적절하지 않은 것은? (9번 지문)\n(※ 9번 지문 참조)",
+   "question": "윗글의 'I'에 관한 내용으로 적절하지 않은 것은?\n\nAt the violin competition, my hands shook slightly as I stepped onto the stage. It had been years since I last performed on stage, and every eye in the room seemed fixed on me, pressing down with silent weight. I held the violin tightly, uncertain of how the first note would sound. Then, as I looked down, the polished surface caught a faint reflection ─ my father's face, just as I remembered. In that moment, something settled. I thought of the quiet evenings when he sat beside me during practice, gently nodding in rhythm. His presence was steady and unwavering. I drew in a slow breath and raised the violin to my chin, anchoring it against my shoulder. The bow paused just above the strings, then touched down with purpose. My grip steadied, and with each movement that followed, I played Pachelbel's Canon in D ─ no longer hesitating, but sure and measured from the first note on.",
    "choices": [
     "① 무대에 오를 때 손이 약간 떨렸다.",
     "② 무대에서 연주한 지 여러 해가 지나 있었다.",
@@ -205,38 +205,46 @@
    "source": "수능특강 29강"
   },
   {
-   "type": "single",
-   "num": 12,
-   "qtype": "주제",
-   "score": 3.6,
-   "question": "윗글의 주제로 가장 적절한 것은?\n\nThere are a growing number of AI tools that companies use to screen job applicants. These automated systems decide which smaller set of applicants from a large pool will reach a human hiring manager. The AI tool analyzes video interviews for content, word choice, facial expressions, and so on, assigning each interviewee an \"employability score,\" which is compared to those of other applicants. But the validity of these tools is (a)<u>dubious</u>; in fact, there is no evidence that these scores accurately predict job performance. Critics worry that algorithms trained on limited data will be more likely to give (b)<u>higher</u> employability scores to typical applicants who are more frequently represented in the current workforce and give (c)<u>higher</u> scores to those who appear atypical because they are less frequently represented in the current workforce. The result would be to (d)<u>reinforce</u> current demographic imbalances instead of building a diverse workforce. Put differently, these automated technological tools seem to be reproducing biased wallpaper in hiring decisions. And, in fact, the technology may even be (e)<u>magnifying</u> bias in new ways.",
-   "choices": [
-    "① the risk that AI hiring tools reproduce and even amplify existing bias",
-    "② how AI tools accurately measure job applicants' future performance",
-    "③ the growing popularity of video interviews among large companies",
-    "④ why human hiring managers should be replaced by automated systems",
-    "⑤ practical tips for applicants to raise their employability scores"
-   ],
-   "answer": "① the risk that AI hiring tools reproduce and even amplify existing bias",
-   "explanation": "AI 채용 선별 도구가 타당성이 의심스럽고, 전형적 지원자에 유리하게 작동해 기존 인구통계학적 불균형을 강화하며 새로운 방식으로 편향을 증폭할 수 있다는 글. 따라서 주제는 ①(AI 채용 도구가 기존 편향을 재생산·증폭하는 위험). [출처: 수능특강 영어 Test3]",
-   "source": "수능특강 영어 Test3"
-  },
-  {
-   "type": "single",
-   "num": 13,
-   "qtype": "어휘",
-   "score": 3.6,
-   "question": "윗글의 밑줄 친 (a)~(e) 중에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?\n(※ 12번 지문의 밑줄 (a)~(e)를 참조하시오.)",
-   "choices": [
-    "① (a)",
-    "② (b)",
-    "③ (c)",
-    "④ (d)",
-    "⑤ (e)"
-   ],
-   "answer": "③ (c)",
-   "explanation": "비전형적(atypical) 지원자는 현재 노동력에서 덜 대표되므로 알고리즘이 '낮은(lower)' 점수를 준다는 맥락이다. (c) higher는 정반대이므로 lower가 되어야 한다. (a)dubious(타당성 의심), (b)higher(전형적 지원자엔 높은 점수), (d)reinforce(불균형 강화), (e)magnifying(편향 증폭)은 모두 적절. [출처: 수능특강 영어 Test3]",
-   "source": "수능특강 영어 Test3"
+   "type": "group",
+   "range": "12~13",
+   "header": "※ [12~13] 다음 글을 읽고 물음에 답하시오.",
+   "passage": "There are a growing number of AI tools that companies use to screen job applicants. These automated systems decide which smaller set of applicants from a large pool will reach a human hiring manager. The AI tool analyzes video interviews for content, word choice, facial expressions, and so on, assigning each interviewee an \"employability score,\" which is compared to those of other applicants. But the validity of these tools is (a)<u>dubious</u>; in fact, there is no evidence that these scores accurately predict job performance. Critics worry that algorithms trained on limited data will be more likely to give (b)<u>higher</u> employability scores to typical applicants who are more frequently represented in the current workforce and give (c)<u>higher</u> scores to those who appear atypical because they are less frequently represented in the current workforce. The result would be to (d)<u>reinforce</u> current demographic imbalances instead of building a diverse workforce. Put differently, these automated technological tools seem to be reproducing biased wallpaper in hiring decisions. And, in fact, the technology may even be (e)<u>magnifying</u> bias in new ways.",
+   "questions": [
+    {
+     "type": "single",
+     "num": 12,
+     "qtype": "주제",
+     "score": 3.6,
+     "question": "윗글의 주제로 가장 적절한 것은?",
+     "choices": [
+      "① the risk that AI hiring tools reproduce and even amplify existing bias",
+      "② how AI tools accurately measure job applicants' future performance",
+      "③ the growing popularity of video interviews among large companies",
+      "④ why human hiring managers should be replaced by automated systems",
+      "⑤ practical tips for applicants to raise their employability scores"
+     ],
+     "answer": "① the risk that AI hiring tools reproduce and even amplify existing bias",
+     "explanation": "AI 채용 선별 도구가 타당성이 의심스럽고, 전형적 지원자에 유리하게 작동해 기존 인구통계학적 불균형을 강화하며 새로운 방식으로 편향을 증폭할 수 있다는 글. 따라서 주제는 ①(AI 채용 도구가 기존 편향을 재생산·증폭하는 위험). [출처: 수능특강 영어 Test3]",
+     "source": "수능특강 영어 Test3"
+    },
+    {
+     "type": "single",
+     "num": 13,
+     "qtype": "어휘",
+     "score": 3.6,
+     "question": "윗글의 밑줄 친 (a)~(e) 중에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+     "choices": [
+      "① (a)",
+      "② (b)",
+      "③ (c)",
+      "④ (d)",
+      "⑤ (e)"
+     ],
+     "answer": "③ (c)",
+     "explanation": "비전형적(atypical) 지원자는 현재 노동력에서 덜 대표되므로 알고리즘이 '낮은(lower)' 점수를 준다는 맥락이다. (c) higher는 정반대이므로 lower가 되어야 한다. (a)dubious(타당성 의심), (b)higher(전형적 지원자엔 높은 점수), (d)reinforce(불균형 강화), (e)magnifying(편향 증폭)은 모두 적절. [출처: 수능특강 영어 Test3]",
+     "source": "수능특강 영어 Test3"
+    }
+   ]
   },
   {
    "type": "single",
@@ -311,16 +319,16 @@
    "num": 18,
    "qtype": "무관한문장",
    "score": 3.8,
-   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\n\nConnectivity, the capacity of a landscape to support movement by any given species across the landscape, is of increasing concern for conservation biologists. As the connectivity of a landscape increases from the human perspective (generally through increases in road networks), connectivity decreases for many other species. ①<u>Although we may see many species of animals moving across human landscapes (e.g. deer, wolves, and turtles crossing roads or wandering through our backyards), landscapes substantially altered for human use act as barriers to movement of both animal and plant species.</u> ②<u>In other cases, passage is essentially impossible — cities along landscape corridors such as river valleys can effectively eliminate genetic exchange between previously connected plant and animal populations; dams can permanently halt spawning of fish by blocking travel to their breeding grounds.</u> ③<u>Recent advances in highway engineering have dramatically reduced the cost of building new road networks across the country.</u> ④<u>Thus, lack of connectivity can decrease the conservation value of remaining habitat below what its mapped area might suggest, increasing the impact of fragmentation.</u> ⑤<u>This increases the overall impact of habitat fragmentation on biodiversity.</u>",
+   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\n\nConnectivity, the capacity of a landscape to support movement by any given species across the landscape, is of increasing concern for conservation biologists. As the connectivity of a landscape increases from the human perspective (generally through increases in road networks), connectivity decreases for many other species. ①Although we may see many species of animals moving across human landscapes (e.g. deer, wolves, and turtles crossing roads or wandering through our backyards), landscapes substantially altered for human use act as barriers to movement of both animal and plant species. ②In other cases, passage is essentially impossible — cities along landscape corridors such as river valleys can effectively eliminate genetic exchange between previously connected plant and animal populations; dams can permanently halt spawning of fish by blocking travel to their breeding grounds. ③Recent advances in highway engineering have dramatically reduced the cost of building new road networks across the country. ④Thus, lack of connectivity can decrease the conservation value of remaining habitat below what its mapped area might suggest, increasing the impact of fragmentation. ⑤This increases the overall impact of habitat fragmentation on biodiversity.",
    "choices": [
-    "① 문장①",
-    "② 문장②",
-    "③ 문장④",
-    "④ 문장⑤",
-    "⑤ 문장③"
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
    ],
-   "answer": "③ 문장④",
-   "explanation": "글은 '인간에 의한 경관 변형이 다른 종의 이동(연결성)을 막아 서식지 단편화를 키운다'는 논지. ③'고속도로 공학 발전으로 도로 건설 비용이 크게 낮아졌다'는 건설비용 얘기로 연결성·단편화 논지와 무관. ①장벽화·②통행불가 사례·④보존가치 저하·⑤단편화 영향 증대는 모두 흐름에 부합. [출처: 수능특강 22강]",
+   "answer": "③",
+   "explanation": "글은 '인간의 경관 변형이 다른 종의 이동(연결성)을 막아 서식지 단편화를 키운다'는 논지. ③'고속도로 공학 발전으로 도로 건설 비용이 크게 낮아졌다'는 건설비용 얘기로 연결성·단편화 논지와 무관. ①장벽화·②통행불가 사례·④보존가치 저하·⑤단편화 영향 증대는 모두 흐름에 부합. [출처: 수능특강 22강]",
    "source": "수능특강 22강"
   },
   {
@@ -347,13 +355,13 @@
    "score": 3.8,
    "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n\n[주어진 문장] Since none of these people had visited savannas, the implication is that this preference was programmed into their brains.\n\nPeople like pictures of the savanna, even if they have never been there. ( ① ) In one study, people of different ages looked at images of tropical forests, deciduous forests, coniferous forests, deserts, and the East African savanna. ( ② ) Eight-year-old children said that they would like to live in or visit the savanna more than any other environment. ( ③ ) After the age of 15, people also liked deciduous and coniferous forests. ( ④ ) This programmed preference is called 'the savanna hypothesis.' As people get older, this preference gets modified by where they have lived. ( ⑤ ) They showed that young children in Austria prefer landscapes thinly dotted with trees and with low mountains, scenes that resemble the savanna. After puberty, their preferences shifted to areas with denser trees and higher mountains, again, presumably, because of more experience with these terrains.",
    "choices": [
-    "① ①",
-    "② ②",
-    "③ ③",
-    "④ ④",
-    "⑤ ⑤"
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
    ],
-   "answer": "③ ③",
+   "answer": "③",
    "explanation": "주어진 문장(가본 적 없음→각인된 선호)은 'savanna hypothesis' 명명 직전(③). [출처: 수능특강 28강]",
    "source": "수능특강 28강"
   },
@@ -432,13 +440,13 @@
    "score": 4.2,
    "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n\n[주어진 문장] For example, expecting mothers who consume diets rich in healthy foods can help develop their child's taste preferences in a positive way.\n\nScience shows that, when compared to adults, children naturally prefer higher levels of sweet and salty tastes and reject bitter tastes. ( ① ) This might help explain why children are drawn to more unhealthy food choices within our current food environment — an environment composed of high-salt, high-refined-sugar foods. ( ② ) In support of this idea, studies have found that sensory experiences, beginning early in life, can shape preferences in both a positive and a negative way. ( ③ ) This is because flavors from foods that the mother eats are transmitted to amniotic fluid and to mother's milk. ( ④ ) Having healthy food experiences early in life may go a long way toward promoting healthy eating throughout a person's life span.",
    "choices": [
-    "① ①",
-    "② ②",
-    "③ ③",
-    "④ ④",
-    "⑤ ⑤"
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
    ],
-   "answer": "③ ③",
+   "answer": "③",
    "explanation": "주어진 예시(건강식 임산부)는 'This is because 양수·모유로 전달' 설명 앞(③). [출처: 수능특강 30강]",
    "source": "수능특강 30강"
   },

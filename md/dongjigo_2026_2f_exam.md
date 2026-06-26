@@ -1,8 +1,5 @@
 # 2026학년도 2학기 기말고사(예상) · 동지고 3학년 영어독해와작문
-### 대단한영어(GREATENG) 예상문제 — 26문항 100점 (서술형 없음)
-
-> 출제범위: 수능특강 영어 21~30강 + Test2·Test3 + 5·6월 모의고사
-> 생성: 2026-06-26 12:25 KST · claude-authored (2026-06-26 검증·도표·해설 수정 반영)
+### 대단한영어(GREATENG) — 26문항 100점
 
 ---
 
@@ -69,13 +66,13 @@ Linguists typically distinguish between signals that are communicative and those
 
 **6. 다음 글에서 전체 흐름과 관계 없는 문장은?** (3.8점)
 
-In the context of a studio visit, the viewer might notice several clipped newspaper articles pinned to the wall, a wax-coated hotplate, walls with paint marks, resin-drizzled floors and several sculptures barely visible through their plastic wrap. Such real-world clues offer the visitor a foothold onto the artist's oeuvre. ①<u>Similarly, guests experiencing artworks in some homes notice art positioned next to furnishings, family photographs displayed on the piano and coffee-table books stacked to demonstrate preferences.</u> ②<u>Together, these components affect particular experiences.</u> ③<u>The market value of a sculpture is determined primarily by the reputation of the auction house that sells it.</u> ④<u>Within the artist's studio or collector's home, residue from studio activities or the collector's personal belongings help to connect the artworks to the world.</u> ⑤<u>By contrast, artworks displayed in exhibitions feel comparatively isolated, practically clipped from the world where they originated.</u>
+In the context of a studio visit, the viewer might notice several clipped newspaper articles pinned to the wall, a wax-coated hotplate, walls with paint marks, resin-drizzled floors and several sculptures barely visible through their plastic wrap. Such real-world clues offer the visitor a foothold onto the artist's oeuvre. ①Similarly, guests experiencing artworks in some homes notice art positioned next to furnishings, family photographs displayed on the piano and coffee-table books stacked to demonstrate preferences. ②Together, these components affect particular experiences. ③The market value of a sculpture is determined primarily by the reputation of the auction house that sells it. ④Within the artist's studio or collector's home, residue from studio activities or the collector's personal belongings help to connect the artworks to the world. ⑤By contrast, artworks displayed in exhibitions feel comparatively isolated, practically clipped from the world where they originated.
 
-① 문장③  
-② 문장①  
-③ 문장②  
-④ 문장④  
-⑤ 문장⑤  
+①  
+②  
+③  
+④  
+⑤  
 
 ---
 
@@ -97,11 +94,11 @@ Much research in social psychology has documented some of the key strategies tha
 
 The experiences of learning to ride a bicycle or drive a car illustrate well how the 'what' and 'how' systems — those involved in object identification and practical action — might interact during development. ( ① ) When we learn to drive a car, we go through a first stage where each required action and sequence of actions — such as looking in the mirror, signaling with the blinker, pressing the clutch prior to shifting into gear, and so forth — are explicitly thought of and double-checked while monitoring our situation in the environment. ( ② ) Once learned and after a few hours of practice, the required actions for driving become second nature, transferable to almost any vehicle and performed without explicit thinking. ( ③ ) Information appears to be perceived directly; the affordances of the road, the car, and the traffic implicitly detected. ( ④ ) People in sport competitions confirm that self-consciousness is one's worst enemy: tennis, golf, or billiard players commonly report that they lose their 'touch' by thinking too much about their moves.
 
-① ①  
-② ②  
-③ ③  
-④ ④  
-⑤ ⑤  
+①  
+②  
+③  
+④  
+⑤  
 
 ---
 
@@ -125,9 +122,9 @@ At the violin competition, my hands shook slightly as I stepped onto the stage. 
 
 ---
 
-**10. 윗글의 'I'에 관한 내용으로 적절하지 않은 것은? (9번 지문)** (3.6점)
+**10. 윗글의 'I'에 관한 내용으로 적절하지 않은 것은?** (3.6점)
 
-(※ 9번 지문 참조)
+At the violin competition, my hands shook slightly as I stepped onto the stage. It had been years since I last performed on stage, and every eye in the room seemed fixed on me, pressing down with silent weight. I held the violin tightly, uncertain of how the first note would sound. Then, as I looked down, the polished surface caught a faint reflection ─ my father's face, just as I remembered. In that moment, something settled. I thought of the quiet evenings when he sat beside me during practice, gently nodding in rhythm. His presence was steady and unwavering. I drew in a slow breath and raised the violin to my chin, anchoring it against my shoulder. The bow paused just above the strings, then touched down with purpose. My grip steadied, and with each movement that followed, I played Pachelbel's Canon in D ─ no longer hesitating, but sure and measured from the first note on.
 
 ① 무대에 오를 때 손이 약간 떨렸다.  
 ② 무대에서 연주한 지 여러 해가 지나 있었다.  
@@ -149,9 +146,11 @@ Along with the mistaken notion that the law resides in the books ①<u>goes</u> 
 
 ---
 
-**12. 윗글의 주제로 가장 적절한 것은?** (3.6점)
+**※ [12~13] 다음 글을 읽고 물음에 답하시오.**
 
 There are a growing number of AI tools that companies use to screen job applicants. These automated systems decide which smaller set of applicants from a large pool will reach a human hiring manager. The AI tool analyzes video interviews for content, word choice, facial expressions, and so on, assigning each interviewee an "employability score," which is compared to those of other applicants. But the validity of these tools is (a)<u>dubious</u>; in fact, there is no evidence that these scores accurately predict job performance. Critics worry that algorithms trained on limited data will be more likely to give (b)<u>higher</u> employability scores to typical applicants who are more frequently represented in the current workforce and give (c)<u>higher</u> scores to those who appear atypical because they are less frequently represented in the current workforce. The result would be to (d)<u>reinforce</u> current demographic imbalances instead of building a diverse workforce. Put differently, these automated technological tools seem to be reproducing biased wallpaper in hiring decisions. And, in fact, the technology may even be (e)<u>magnifying</u> bias in new ways.
+
+**12. 윗글의 주제로 가장 적절한 것은?** (3.6점)
 
 ① the risk that AI hiring tools reproduce and even amplify existing bias  
 ② how AI tools accurately measure job applicants' future performance  
@@ -159,17 +158,14 @@ There are a growing number of AI tools that companies use to screen job applican
 ④ why human hiring managers should be replaced by automated systems  
 ⑤ practical tips for applicants to raise their employability scores  
 
----
-
 **13. 윗글의 밑줄 친 (a)~(e) 중에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (3.6점)
-
-(※ 12번 지문의 밑줄 (a)~(e)를 참조하시오.)
 
 ① (a)  
 ② (b)  
 ③ (c)  
 ④ (d)  
 ⑤ (e)  
+
 
 ---
 
@@ -223,13 +219,13 @@ Without bark, a tree cannot transport sugar from its leaves to its roots. As the
 
 **18. 다음 글에서 전체 흐름과 관계 없는 문장은?** (3.8점)
 
-Connectivity, the capacity of a landscape to support movement by any given species across the landscape, is of increasing concern for conservation biologists. As the connectivity of a landscape increases from the human perspective (generally through increases in road networks), connectivity decreases for many other species. ①<u>Although we may see many species of animals moving across human landscapes (e.g. deer, wolves, and turtles crossing roads or wandering through our backyards), landscapes substantially altered for human use act as barriers to movement of both animal and plant species.</u> ②<u>In other cases, passage is essentially impossible — cities along landscape corridors such as river valleys can effectively eliminate genetic exchange between previously connected plant and animal populations; dams can permanently halt spawning of fish by blocking travel to their breeding grounds.</u> ③<u>Recent advances in highway engineering have dramatically reduced the cost of building new road networks across the country.</u> ④<u>Thus, lack of connectivity can decrease the conservation value of remaining habitat below what its mapped area might suggest, increasing the impact of fragmentation.</u> ⑤<u>This increases the overall impact of habitat fragmentation on biodiversity.</u>
+Connectivity, the capacity of a landscape to support movement by any given species across the landscape, is of increasing concern for conservation biologists. As the connectivity of a landscape increases from the human perspective (generally through increases in road networks), connectivity decreases for many other species. ①Although we may see many species of animals moving across human landscapes (e.g. deer, wolves, and turtles crossing roads or wandering through our backyards), landscapes substantially altered for human use act as barriers to movement of both animal and plant species. ②In other cases, passage is essentially impossible — cities along landscape corridors such as river valleys can effectively eliminate genetic exchange between previously connected plant and animal populations; dams can permanently halt spawning of fish by blocking travel to their breeding grounds. ③Recent advances in highway engineering have dramatically reduced the cost of building new road networks across the country. ④Thus, lack of connectivity can decrease the conservation value of remaining habitat below what its mapped area might suggest, increasing the impact of fragmentation. ⑤This increases the overall impact of habitat fragmentation on biodiversity.
 
-① 문장①  
-② 문장②  
-③ 문장④  
-④ 문장⑤  
-⑤ 문장③  
+①  
+②  
+③  
+④  
+⑤  
 
 ---
 
@@ -251,11 +247,11 @@ Hunters in the Ache tribe, living in the Paraguayan jungle, have a lot of ups an
 
 People like pictures of the savanna, even if they have never been there. ( ① ) In one study, people of different ages looked at images of tropical forests, deciduous forests, coniferous forests, deserts, and the East African savanna. ( ② ) Eight-year-old children said that they would like to live in or visit the savanna more than any other environment. ( ③ ) After the age of 15, people also liked deciduous and coniferous forests. ( ④ ) This programmed preference is called 'the savanna hypothesis.' As people get older, this preference gets modified by where they have lived. ( ⑤ ) They showed that young children in Austria prefer landscapes thinly dotted with trees and with low mountains, scenes that resemble the savanna. After puberty, their preferences shifted to areas with denser trees and higher mountains, again, presumably, because of more experience with these terrains.
 
-① ①  
-② ②  
-③ ③  
-④ ④  
-⑤ ⑤  
+①  
+②  
+③  
+④  
+⑤  
 
 ---
 
@@ -319,11 +315,11 @@ For thousands of years in the West, red was the only color worthy of that name, 
 
 Science shows that, when compared to adults, children naturally prefer higher levels of sweet and salty tastes and reject bitter tastes. ( ① ) This might help explain why children are drawn to more unhealthy food choices within our current food environment — an environment composed of high-salt, high-refined-sugar foods. ( ② ) In support of this idea, studies have found that sensory experiences, beginning early in life, can shape preferences in both a positive and a negative way. ( ③ ) This is because flavors from foods that the mother eats are transmitted to amniotic fluid and to mother's milk. ( ④ ) Having healthy food experiences early in life may go a long way toward promoting healthy eating throughout a person's life span.
 
-① ①  
-② ②  
-③ ③  
-④ ④  
-⑤ ⑤  
+①  
+②  
+③  
+④  
+⑤  
 
 ---
 
@@ -341,7 +337,6 @@ As Michael Patrick Lynch observes in his book The Internet of Us: Knowing More a
 
 
 ## 정답 및 해설
-
 | 문항 | 유형 | 배점 | 정답 | 출처 | 해설 |
 | :-: | :-: | :-: | :-: | :-: | :-- |
 | 1 | 주제 | 3.6 | ⑤ | 수능특강 27강 | 본문은 디지털 정치의 부상(more prominent)과 동시에 그 한계(There seems a limit to the power)를 함께 제시한다. 따라서 '부상과 내재적 한계 양면'을 담은 ⑤가 정답. ①'뉴스 확산'·③'20세기 혁명사'는 지엽/범위 밖, ②'정당 대체'·④'항상 정부 전복'은 본문에 없는 과장으로 오답. |
@@ -349,7 +344,7 @@ As Michael Patrick Lynch observes in his book The Internet of Us: Knowing More a
 | 3 | 도표불일치 | 3.6 | ④ | 구성형(모평 소재 기반 통계표) | 35-44 never=13%, 18-24 never=8% → 두 배(16%)가 아니므로 불일치. |
 | 4 | 어법 | 3.8 | ③ | 수능특강 23강 | ③ too ~ to do 구문이므로 seeing → to see가 옳다(too small for us to see). ①inhabited는 realm을 수식하는 과거분사, ②because는 뒤에 절을 이끄는 접속사, ④used는 'be used to+동명사' 아닌 수동, ⑤have we begun은 부정어구 도치로 모두 적법. |
 | 5 | 어휘 | 3.8 | ⑤ | 수능특강 26강 | 문맥은 '문화마다 의미가 다름' → identical은 정반대. |
-| 6 | 무관한문장 | 3.8 | ① | 수능특강 26강 | 경매장 평판·시장가치는 '맥락이 의미를 부여한다'는 흐름과 무관. |
+| 6 | 무관한문장 | 3.8 | ③ | 수능특강 26강 | 글은 '스튜디오/집의 실제 단서들이 예술 경험에 맥락을 부여한다'는 내용. ③'조각의 시장 가치는 경매장 평판이 결정한다'는 시장가치 얘기로 흐름과 무관. ①유사 사례·②종합 효과·④거주공간 단서·⑤전시장 대비는 모두 맥락 부여 흐름. |
 | 7 | 함축의미 | 4.2 | ② | 수능특강 28강 | titrate=(시약을 미세 조절하듯) 비중을 조절함. 성공은 무겁게·실패는 가볍게 '저울질'해 긍정적 자아상을 방어한다는 뜻이 정답 ②. ①은 '고정된 객관 기준'으로 정반대, ③'더 생생히 회상'·④'노력과 운을 동등하게'·⑤'감정을 이성으로 대체'는 모두 본문의 '비중 조절(편향적 가중)'과 어긋나는 매력적 오답. |
 | 8 | 문장삽입 | 3.8 | ④ | 수능특강 25강 | 주어진 문장(생각 과다→사고 위험)은 스포츠 자의식 언급 직전(④). |
 | 9 | 글의순서 | 3.8 | ④ | 수능특강 영어 Test3 | 긴장 속 무대(주어진 글) → (B) 바이올린 표면에 비친 아버지 얼굴로 마음이 가라앉음(something settled) → (C) 연습 때 곁을 지킨 아버지 회상으로 그 안정감 부연 → (A) 숨을 고르고 연주를 시작하는 행동. 흐름상 (B)-(C)-(A). |
@@ -361,7 +356,7 @@ As Michael Patrick Lynch observes in his book The Internet of Us: Knowing More a
 | 15 | 어휘 | 3.8 | ④ | 5·6월 모의고사(6월 32) | 본문은 '비언어가 의미의 절반 이상을 전달한다'는 논지. ①verbal→nonverbal(비언어 behaviors), ③gaining→losing(주목 안 하면 정보를 잃음), ⑤easy→difficult(숨기기 어렵다)가 문맥상 오류. ②ignore는 '비언어를 무시하기 쉽다'로 자연스러워 함정. 적절한 것은 ④ silent(입이 침묵하면 손끝으로 말한다). |
 | 16 | 어휘 | 4.2 | ① | 수능특강 25강 | (A) 부정어 no를 보기만 해도 뇌가 스트레스 호르몬을 분비 → stress-producing. (B) 그 호르몬이 정상적 뇌 기능(작동)을 방해 → 'regulation(조절)'을 방해한다가 문맥상 자연스러움(disruption을 넣으면 '방해를 방해'로 이중부정 오류). (C) 부정어의 효과가 강력함 → powerful. 따라서 ①. ②④는 (B)disruption, ③④는 (A)tension-relieving, ⑤는 (C)limited에서 각각 어긋나는 교차 함정. |
 | 17 | 함축의미 | 3.8 | ④ | 수능특강 영어 Test3 | 환상박피로 약해진 나무도 이웃이 지하 네트워크로 양분을 보내 살린다는 글. '사슬은 가장 약한 고리만큼만 강하다'=군집은 가장 약한 구성원까지 살아 있을 때 강하다는 뜻이므로 ④가 적절. ①'강자 우위'·②'경쟁'·③'약한 나무 하나는 무영향'은 상부상조 논지와 반대, ⑤'강자의 희생'은 본문에 없는 과장으로 모두 함정. |
-| 18 | 무관한문장 | 3.8 | ③ | 수능특강 22강 | 글은 '인간에 의한 경관 변형이 다른 종의 이동(연결성)을 막아 서식지 단편화를 키운다'는 논지. ③'고속도로 공학 발전으로 도로 건설 비용이 크게 낮아졌다'는 건설비용 얘기로 연결성·단편화 논지와 무관. ①장벽화·②통행불가 사례·④보존가치 저하·⑤단편화 영향 증대는 모두 흐름에 부합. |
+| 18 | 무관한문장 | 3.8 | ③ | 수능특강 22강 | 글은 '인간의 경관 변형이 다른 종의 이동(연결성)을 막아 서식지 단편화를 키운다'는 논지. ③'고속도로 공학 발전으로 도로 건설 비용이 크게 낮아졌다'는 건설비용 얘기로 연결성·단편화 논지와 무관. ①장벽화·②통행불가 사례·④보존가치 저하·⑤단편화 영향 증대는 모두 흐름에 부합. |
 | 19 | 내용일치 | 3.6 | ① | 수능특강 21강 | 본문은 강인한 개인주의 '대신' 나눔 → ① 정반대(불일치). |
 | 20 | 문장삽입 | 3.8 | ③ | 수능특강 28강 | 주어진 문장(가본 적 없음→각인된 선호)은 'savanna hypothesis' 명명 직전(③). |
 | 21 | 빈칸추론 | 4.2 | ② | 수능특강 29강 | 'deliberately situated' → 지리적 우연이 아닌 의도적 배치의 구조적 패턴. ①④⑤ 부분키워드. |
