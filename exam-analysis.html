@@ -1558,13 +1558,13 @@ function printExam(){
     // answer/explanation 분리
     let ans = '', exp = '';
     if(q.explanation !== undefined){
-      // answer에서 선지번호만 추출 (①②③④⑤ 또는 숫자)
-      const rawAns = (q.answer||'').trim();
+      // answer에서 선지번호만 추출 (①②③④⑤ 또는 숫자). 정수형 answer도 안전 처리.
+      const rawAns = (q.answer==null ? '' : String(q.answer)).trim();
       const numMatch = rawAns.match(/^([①②③④⑤⑥]|\d+)/);
       ans = numMatch ? numMatch[1] : rawAns.split(' ')[0];
       exp = (q.explanation||'').replace(/^해설[:\s]*/,'');
     } else {
-      const parts = (q.answer||'').split('\n');
+      const parts = (q.answer==null ? '' : String(q.answer)).split('\n');
       const numMatch = parts[0].match(/^([①②③④⑤⑥]|\d+)/);
       ans = numMatch ? numMatch[1] : parts[0].split(/\s/)[0];
       exp = parts.slice(1).join(' ').replace(/^해설[:\s]*/,'');
@@ -1834,14 +1834,27 @@ async function loadExamListFromSheet(){
       div.innerHTML=`<span>📝 ${[m.school,m.grade,m.year,m.semester,m.exam].filter(Boolean).join(' ')||it.key} (${m.total||'?'}문항)</span>
         <span style="font-size:.75rem;color:var(--ink4);">${(it.savedAt||'').slice(0,10)}</span>`;
       div.onclick=()=>{
-        // GAS 반환 구조가 제각각일 수 있어 모든 형태에서 시험 객체(d)를 복원한다.
-        // 가능 형태: {questions:[...]} | {json:"{...}"} | {data:{...}} | {question_list:"[...]"} | {data:{json:"..."}}
+        window.__lastExamItem = it;  // 콘솔에서 window.__lastExamItem 으로 확인 가능
         let d = unwrapExamItem(it);
         const v = validateExam(d);
         generatedQs = d.questions||[]; examMeta = d.meta||{}; window._examV = v;
         if(!generatedQs.length){
-          alert('⚠️ 이 항목에서 문항(questions)을 찾지 못했습니다.\n시트 json 컬럼 구조를 확인하세요. (콘솔에 원본 로그 출력)');
-          console.warn('[시험 불러오기] questions 복원 실패. 원본 항목:', it);
+          // 구조를 추측하지 않고, 실제 항목의 키 구조를 알림창에 직접 보여준다(콘솔 없이 진단 가능).
+          let shape='';
+          try{
+            const top=Object.keys(it||{});
+            shape='최상위 키: '+top.join(', ');
+            top.forEach(k=>{
+              const val=it[k];
+              const t=typeof val;
+              if(t==='string') shape+=`\n  ${k}: 문자열(${val.length}자)${val.trim()[0]==='{'||val.trim()[0]==='['?' ← JSON처럼 보임':''}`;
+              else if(Array.isArray(val)) shape+=`\n  ${k}: 배열(${val.length})`;
+              else if(t==='object'&&val) shape+=`\n  ${k}: 객체{${Object.keys(val).join(',')}}`;
+              else shape+=`\n  ${k}: ${t}`;
+            });
+          }catch(e){ shape='(구조 분석 실패: '+e.message+')'; }
+          alert('⚠️ 문항(questions)을 찾지 못했습니다. 이 항목의 실제 구조:\n\n'+shape+'\n\n이 내용을 그대로 캡처해 전달하면 정확히 맞출 수 있습니다.');
+          console.warn('[시험 불러오기] 원본 항목:', it, '\nJSON:', JSON.stringify(it).slice(0,2000));
         }
         try{ localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify({meta:examMeta, questions:generatedQs})); }catch(e){}
         renderExamCard();
