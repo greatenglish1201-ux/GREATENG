@@ -1328,6 +1328,20 @@ function applyPattern(item){
   try{ localStorage.setItem(ACTIVE_PATTERN_KEY, JSON.stringify(item)); }catch(e){ console.warn('패턴 로컬 저장 실패(용량?):', e); }
   renderActivePattern();
   console.log('[패턴 적용]', item.key||'', '| 검증:', v.ok?'통과':'실패', v.warns.length?('경고 '+v.warns.length):'');
+
+  // ── 시트/로컬에서 불러온 항목이 완성된 문항(questions)을 가지면 출제·인쇄용으로도 적재 ──
+  // (기존: applyPattern은 analysisData(검토용)만 채워 출제·인쇄가 안 됨. questions 보유 시 generatedQs도 채운다.)
+  if(item.questions && item.questions.length){
+    generatedQs = item.questions;
+    examMeta = item.meta || {
+      school:item.school, grade:item.grade, year:item.year,
+      semester:item.semester, exam:item.exam, total:item.total
+    };
+    try{ window._examV = validateExam(item); }catch(e){ window._examV=null; }
+    try{ localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify({meta:examMeta, questions:generatedQs})); }catch(e){ console.warn('시험지 로컬 저장 실패:', e); }
+    try{ renderExamCard(); }catch(e){}
+    console.log('[출제 적재] generatedQs', generatedQs.length, '문항 → 출력 탭에서 인쇄 가능');
+  }
 }
 
 // 파일 종류 판별: 예상문제(meta.build/type 구조) vs 패턴(original_q 보유)
