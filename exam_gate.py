@@ -79,9 +79,21 @@ def main():
     if abs(total - 100) > 0.1: fails.append(f"[1차] 배점합 {total}≠100")
     nums = [q['num'] for q in qs]
     if nums != list(range(1, n + 1)): fails.append(f"[1차] 번호 비연속")
+    inbody_re = re.compile(r'문장삽입|삽입|흐름무관|무관|어법|어휘')
     for q in qs:
-        if len(q['choices']) != 5: fails.append(f"[1차] {q['num']}번 선지 {len(q['choices'])}개")
-        if q['answer'][0] not in [str(c).strip()[0] for c in q['choices']]:
+        ch = q.get('choices')
+        qt = q.get('qtype','')
+        body = q.get('question','')
+        circ_in_body = sum(body.count(c) for c in '①②③④⑤')
+        if not ch:
+            if inbody_re.search(qt):
+                if circ_in_body < 5:
+                    fails.append(f"[1차] {q['num']}번({qt}) 본문 ①~⑤ {circ_in_body}개(<5)+선지없음")
+            else:
+                fails.append(f"[1차] {q['num']}번({qt}) 선지 없음(필수)")
+            continue
+        if len(ch) != 5: fails.append(f"[1차] {q['num']}번 선지 {len(ch)}개")
+        if q['answer'][0] not in [str(c).strip()[0] for c in ch]:
             fails.append(f"[1차] {q['num']}번 정답기호 불일치")
 
     # ---- 정답분포 균등 ----
@@ -116,7 +128,11 @@ def main():
     # ---- 5차 순서 선지=해설 ----
     for q in qs:
         if q['qtype'] == '글의순서':
-            cc = q['choices'][circ.index(q['answer'][0])]
+            ch = q.get('choices')
+            if not ch:
+                fails.append(f"[5차] {q['num']}번 순서 선지 없음(필수)")
+                continue
+            cc = ch[circ.index(q['answer'][0])]
             mm = re.search(r'\(([ABC])\)-\(([ABC])\)-\(([ABC])\)', q['explanation'])
             if mm and f"({mm.group(1)})-({mm.group(2)})-({mm.group(3)})" not in cc:
                 fails.append(f"[5차] {q['num']}번 순서 선지↔해설 불일치")
