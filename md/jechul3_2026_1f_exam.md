@@ -1,7 +1,5 @@
-# 2026학년도 1학기 기말고사 · 제철고 3학년 영어II
-### 대단한영어(GREATENG) 예상문제 — 30문항 100점
-
-> 출제범위: 수특영독(영어독해연습) 1~8강
+# 2026학년도 1학기 기말고사 · 포항제철고 3학년 영어II
+### 대단한영어(GREATENG) 예상문제 — 30문항 100점 · 원문 보존율 평균 99%
 
 ---
 
@@ -17,15 +15,15 @@ Historians do more than select and interpret evidence: they also organize the ev
 
 ---
 
-**2. 글의 문맥상, 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?** (2.7점)
+**2. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?** (2.7점)
 
-To illustrate the benefits of simplifying the observer's job, consider psychologist William Ickes's research on 'everyday mind reading.'
+To illustrate the benefits of simplifying the observer's job, consider psychologist William Ickes's research on 'everyday mind reading.' One way he studies such mind reading is by having two strangers interact.
 
-(A) Then, participants see the tape again and are to stop it at different points and write down what their interaction partner was thinking at that point. Observers rate the degree to which the participant's guess matches what the partner was actually thinking.
+(A) He tapes the interaction and then has each participant view the tape. Participants are to stop the tape at different points and say what they are thinking. Then, participants see the tape again and are to stop it at different points and write down what their interaction partner was thinking at that point.
 
-(B) One way he studies such mind reading is by having two strangers interact. He tapes the interaction and then has each participant view the tape. Participants are to stop the tape at different points and say what they are thinking.
+(B) Observers rate the degree to which the participant's guess about what the partner was thinking matches what the partner was actually thinking. Ickes could have had observers make their judgments on a 0 (not at all) to 100 (completely) scale.
 
-(C) Ickes could have had observers make their judgments on a 0 to 100 scale. However, he had observers use a 3-point scale. By using fewer categories, raters found the job of rating easier and were able to make reliable ratings.
+(C) However, he had observers use a 3-point scale with '0' being 'essentially different content,' '1' being 'similar, but not the same, content,' and '2' being 'essentially the same content.' By using fewer categories, raters found the job of rating easier and were able to make reliable ratings.
 
 ① (B)-(A)-(C)  
 ② (A)-(C)-(B)  
@@ -35,9 +33,9 @@ To illustrate the benefits of simplifying the observer's job, consider psycholog
 
 ---
 
-**3. 다음 글의 밑줄 친 어휘 중, 문맥상 쓰임이 적절하지 않은 것은?** (2.9점)
+**3. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (2.9점)
 
-Fan editors often consult "specialist sources" to track down information about their media interests. These works are considered ①<u>authoritative</u> due to their reputation for accuracy and focused coverage. While fan editors usually seek information ②<u>individually</u>, they will sometimes collaborate with others who share their taste in media. This collaboration tends to emerge ③<u>spontaneously</u>, often in response to a lack of accessible information. And regardless of whether information seeking is done individually or collaboratively, fan editors commonly face several key informational ④<u>barriers</u>. Paywalled sources often block off content, and link rot can hinder an editor's ability to locate information. Language barriers can also ⑤<u>assist</u> editors, leading some to use machine translation tools or to seek help from multilingual colleagues.
+Fan editors often consult "specialist sources" to track down information about their media interests. These works are considered ①<u>authoritative</u> due to their reputation for accuracy and focused coverage, and after sufficient "enculturation," fan editors will often learn to seek out these sources whenever an information need arises. While fan editors usually seek information ②<u>individually</u>, they will sometimes collaborate with others who share their taste in media. This collaboration tends to emerge ③<u>spontaneously</u>, often in response to a lack of accessible information, and it usually occurs within established groups of editors. And regardless of whether information seeking is done individually or collaboratively, fan editors commonly face several key informational ④<u>barriers</u>. Paywalled sources, for instance, often block off content, and link rot can hinder an editor's ability to locate information. Language barriers can also ⑤<u>assist</u> editors, leading some to use machine translation tools or to seek help from multilingual colleagues. Finally, the issue of "recentism" often makes it difficult for fan editors to find pre-digital sources.
 
 ① authoritative  
 ② individually  
@@ -73,7 +71,7 @@ Computing the sum or average of several positive and negative values indeed lies
 
 **6. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (3.4점)
 
-The power and value of being literate in a literate society are played out every day. Many individuals make considerable ①<u>sacrifices</u> to become literate just as others take it for granted. Societies that do not practice literate behavior are often squalid, undernourished in mind and body, and harsh. We admit that various forms of "barbarity" can be found in all societies, but they are much more ②<u>prevalent</u> where literate behavior is absent. Literacy and quality of life go hand in hand. With literacy comes the power of belonging to a ③<u>privileged</u> group and the ④<u>freedom</u> that derives from that power. Frederick Douglass, who struggled as a slave to learn to read, said it best: "Once you learn to read, you will be forever ⑤<u>enslaved</u>."
+The power and value of being literate in a literate society are played out every day around the world. Many individuals, and in fact whole societies, make considerable ①<u>sacrifices</u> to become literate just as others take it for granted. Societies that do not practice literate behavior are often squalid, undernourished in mind and body, repressive of human rights and dignity, brutal, and harsh. Present-day examples are easy to list, but in fact this has always been the case. As Samuel Johnson observed more than two centuries ago, "The mass of every people must be barbarous where there is no printing." We admit that various forms of "barbarity" can be found in all societies, but they are much more ②<u>prevalent</u> where literate behavior is absent. Literacy and quality of life go hand in hand. With literacy comes the power of belonging to a ③<u>privileged</u> group and the ④<u>freedom</u> that derives from that power. Frederick Douglass, who struggled as a slave to learn to read, said it best: "Once you learn to read, you will be forever ⑤<u>enslaved</u>."
 
 ① sacrifices  
 ② prevalent  
@@ -85,7 +83,7 @@ The power and value of being literate in a literate society are played out every
 
 **7. 다음 글에서 전체 흐름과 관계 없는 문장은?** (3.1점)
 
-With people living longer and the average age increasing markedly, the ramifications for sport are substantial. ① Fewer people are likely to engage in the most popular traditional and, incidentally, most athletic sports, such as soccer, other forms of football, and basketball, so these sports will need to market their products differently to satisfy the older spectator. ② This may mean far more comfortable sport areas with greater and better access to car parks, bars, and restaurants. ③ It may mean showing top sports during the day or much earlier in the evening, with far less television coverage on Fridays and Saturdays when older viewers prefer to visit friends or spend time at the local pub. ④ Youth participation in organized school sports has steadily declined in recent years due to the growing popularity of digital entertainment. ⑤ The 'ageing viewer' syndrome will probably herald a realisation that new sponsors — perhaps a good red wine rather than colas — will be required for sport.
+With people living longer and the average age increasing markedly, the ramifications for sport are substantial. ① Fewer people are likely to engage in the most popular traditional and, incidentally, most athletic sports, such as soccer, other forms of football, and basketball. ② These sports will need to market their products differently in order to satisfy the requirements of the older spectator or supporter, which may mean far more comfortable sport areas with greater and better access to car parks, bars, and restaurants. ③ It may mean showing top sports during the day or much earlier in the evening, with far less television coverage on Fridays and Saturdays when older viewers prefer to visit friends, go to restaurants or spend time at the local pub or club. ④ Regular participation in youth sports has been shown to improve academic performance and concentration among schoolchildren. ⑤ The 'ageing viewer' syndrome will probably herald a realisation that new sponsors will be required for sport: colas and sport shoes may be fine for the under-35s, but the older generation may prefer a good red wine and comfortable slippers. It will be the sporting organisations and sponsors who can create the idea of youth combined with the comfort of older age which will be most successful in the next half century.
 
 ①  
 ②  
@@ -97,13 +95,13 @@ With people living longer and the average age increasing markedly, the ramificat
 
 **8. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?** (3.2점)
 
-There are two classic problems that give us mathematically proper ways to evaluate coincidences.
+There are two classic problems that give us mathematically proper ways to evaluate coincidences. One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday.
 
-(A) These two problems, along with the law of large numbers and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.
+(A) The other is the monkey problem, which asks: if given a large enough amount of time, could a monkey, randomly hitting the keys of a computer keyboard, write the first line of a Shakespeare sonnet? These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.
 
-(B) One is the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people will share a birthday. The other is the monkey problem: given enough time, could a monkey randomly hitting keys write the first line of a Shakespeare sonnet?
+(B) This last law, the law of truly large numbers, is a philosophical adage. In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time. It's not a theorem that can be proven.
 
-(C) This last law, the law of truly large numbers, tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time. It gives a sense of just how common coincidences are.
+(C) After all, I used the phrase "bound to happen," which is as ambiguous as any phrase can be. But it gives a sense of just how common coincidences are.
 
 ① (B)-(A)-(C)  
 ② (A)-(C)-(B)  
@@ -141,13 +139,11 @@ Many people, including those in most governments, place their faith in new techn
 
 The sciences do make extensive use of idealizations. The ideal gas law describes the relationship of pressure, volume, and temperature of gases under conditions that never perfectly obtain.
 
-(A) Even on such views, however, the theories are still meant to be descriptive. They are to be used to make predictions and offer explanations about the behavior of gases or whatever phenomena are at issue in real situations.
+(A) Even on such views, however, the theories are still meant to be descriptive. They are to be used to make predictions and offer explanations about the behavior of gases or whatever phenomena are at issue in real situations. There are, accordingly, constraints as to how idealized they can be.
 
-(B) In particular, it makes simplifying assumptions about the molecules ─ for example, that they do not attract or repel one another. The molecules of real gases are not like this, but their behavior is nonetheless close enough to ideal ones that the gas law is useful.
+(B) The molecules of real gases are not like this, but their behavior is nonetheless close enough to ideal ones that the gas law is useful. Indeed, there are philosophers of science who argue that this is the best way to think about scientific theories in general; they are best regarded as models that are precisely accurate only under conditions that are never entirely realized.
 
-(C) Indeed, there are philosophers of science who argue that this is the best way to think about scientific theories in general; they are best regarded as models that are precisely accurate only under conditions that are never entirely realized.
-
-There are, accordingly, constraints as to how idealized they can be.
+(C) In particular, it makes simplifying assumptions about the molecules making up gases ─ for example, that they do not attract or repel one another and do not themselves take up volume. There are, accordingly, constraints as to how idealized they can be: they cannot be so far removed from real world systems as to be worthless in describing actual phenomena with acceptable degrees of accuracy.
 
 ① (A)-(C)-(B)  
 ② (B)-(A)-(C)  
@@ -159,7 +155,7 @@ There are, accordingly, constraints as to how idealized they can be.
 
 **12. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (3.4점)
 
-The scientific process is invariably ①<u>non-linear</u> and can be long and drawn out, with hypotheses sitting on the shelf until the time has come to dust them down. For every new theory and paper, there are many that fell by the wayside for lack of time, funding or data. Like the music industry, the hits are few and far between and don't always come when or from where you expect. It's important not to be ②<u>discouraged</u> by this: the fact that not every idea comes to fruition isn't a good reason to have ③<u>fewer</u> of them. Scientific breakthroughs ultimately depend on people working away without the immediate reward of achieving anything tangible: trying things that don't work but might still be useful. Such ④<u>impatience</u> is the bedrock on which progress is eventually achieved ─ stitched together from all those loose bits of fabric that could so easily have been ⑤<u>discarded</u>.
+The scientific process is invariably ①<u>non-linear</u> and can be long and drawn out, with hypotheses sitting on the shelf until the time has come to dust them down, if that ever finally arrives. Sometimes you sit waiting for the tide to come in, but it never actually does. For every new theory and paper, there are many that fell by the wayside for lack of time, funding or data. Like the music industry, the hits are few and far between and don't always come when or from where you expect. It's important not to be ②<u>discouraged</u> by this: the fact that not every idea comes to fruition isn't a good reason to have ③<u>fewer</u> of them. Scientific breakthroughs ultimately depend on people working away without the immediate reward of achieving anything tangible: trying things that don't work (but might still be useful) and devising bits of a solution that won't be relevant until some undefined point in the future. Such ④<u>impatience</u> is the bedrock on which progress is eventually achieved ─ stitched together from all those loose bits of fabric that could so easily have been ⑤<u>discarded</u>.
 
 ① non-linear  
 ② discouraged  
@@ -195,7 +191,7 @@ Knowledge is power. And one way to measure the amount of trust on a team is by l
 
 **15. 다음 글에서 전체 흐름과 관계 없는 문장은?** (3.2점)
 
-Social media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations. ① Social media was initially and mainly used for communication with friends and family, but with the popularity of some platforms, it has turned into a vital tool for businesses seeking to sell their products online. ② Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers. ③ Influencer marketing is another way that social media has evolved into a platform for businesses. ④ Excessive use of social media has been linked to increased anxiety and sleep problems among teenagers. ⑤ Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.
+Social media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations. ① Social media was initially and mainly used for communication with friends and family, but with the popularity of some platforms, it has turned into a vital tool for businesses seeking to sell their products online. ② Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers. ③ Influencer marketing is another way that social media has evolved into a platform for businesses. ④ Excessive use of social media has been linked to increased anxiety and sleep problems among teenagers. ⑤ Influencers are those users who have a sizable social media following and are recognized as authorities in their specialized field, and influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow.
 
 ①  
 ②  
@@ -233,7 +229,7 @@ Emerging findings suggest that minorities arguing their point of view electronic
 
 **18. 다음 글에서 전체 흐름과 관계 없는 문장은?** (3.5점)
 
-Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species. ① At the same time, Izard's formulation of "affective-cognitive structures" shows that emotions are in reality not separable from the particular circumstances that are associated with them. ② The fact that it is possible to construct a list of "basic," universally recognizable emotions derives not only from facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying. ③ These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances. ④ Recent advances in facial recognition software have allowed companies to identify customers' emotions for targeted advertising. ⑤ As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it.
+Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species. ① At the same time, Izard's formulation of "affective-cognitive structures" shows that emotions are in reality not separable from the particular circumstances that are associated with them. ② The fact that it is possible to construct a list of "basic," universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures. ③ These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances. ④ Facial recognition technology has recently raised serious concerns about privacy and surveillance in public spaces. ⑤ As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it; to use Lewis's terms, the contextual reality of emotional expression transforms "state" into "experience."
 
 ①  
 ②  
@@ -245,7 +241,7 @@ Research on the universality of facial expressions suggests that the socializati
 
 **19. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (3.7점)
 
-As civilizations started to grow and flourish, people found they could accomplish more with ①<u>more</u> effort if they specialized and divided their work into separate designations. So, for example, the work of brick-making was conducted ②<u>separately</u> from the work of shipbuilding. Each line of work was its own ③<u>distinct</u> activity, carried out by distinct practitioners who developed their work into an institution of sorts. As civilization continued to develop, differentiated forms of work became more sophisticated, more ④<u>specialized</u>, and more communal. In ancient Rome, they became formalized with the creation of what were called collegia, or professional associations. By the Middle Ages, guilds, a ⑤<u>similar</u> type of organization, had taken hold throughout much of Europe.
+As civilizations started to grow and flourish, people found they could accomplish more with ①<u>more</u> effort if they specialized and divided their work into separate designations. So, for example, the work of brick-making was conducted ②<u>separately</u> from the work of shipbuilding ─ just as the work of laying roads was separate from the work of farming, which was separate from the work of building dwellings or making pots. Each line of work was its own ③<u>distinct</u> activity, carried out by distinct practitioners who developed their work into an institution of sorts. As civilization continued to develop, differentiated forms of work became more sophisticated, more ④<u>specialized</u>, and more communal. In ancient Rome, they became formalized with the creation of what were called collegia, or professional associations. There was, for example, a college of woodworkers, a college of merchant mariners, a college of wine dealers, and a college of planters. In ancient China, a similar system developed. By the Middle Ages, guilds, a ⑤<u>similar</u> type of organization, had taken hold throughout much of Europe.
 
 ① more  
 ② separately  
@@ -293,9 +289,9 @@ Central to the notion of brilliant leadership is the critical linkage between em
 
 ---
 
-**23. 다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?** (3.4점)
+**23. 다음 빈칸에 들어갈 말로 가장 적절한 것은?** (3.4점)
 
-Organic chemistry occupies a central role in the world around us, as we are surrounded by organic compounds. The food that we eat and the clothes that we wear are comprised of organic compounds. Our ability to smell odors or see colors results from the behavior of organic compounds. In fact, our bodies are constructed mostly from organic compounds whose behavior and function are determined by principles such as molecular structure, bonding, and reactivity. The responses of our bodies to pharmaceuticals are the results of reactions guided by these principles, and a deep understanding of them enables the design of new drugs that fight disease. Accordingly, it is not surprising that organic chemistry is ______ for anyone entering the health professions.
+Organic chemistry occupies a central role in the world around us, as we are surrounded by organic compounds. The food that we eat and the clothes that we wear are comprised of organic compounds. Our ability to smell odors or see colors results from the behavior of organic compounds. Pharmaceuticals, pesticides, paints, adhesives, and plastics are all made from organic compounds. In fact, our bodies are constructed mostly from organic compounds (DNA, RNA, proteins, etc.) whose behavior and function are determined by principles such as molecular structure, bonding, and reactivity ─ all central to organic chemistry. The responses of our bodies to pharmaceuticals are the results of reactions guided by the principles of organic chemistry. A deep understanding of those principles enables the design of new drugs that fight disease and improve the overall quality of life and longevity. Accordingly, it is not surprising that organic chemistry is ______ for anyone entering the health professions.
 
 ① an outdated discipline  
 ② required knowledge  
@@ -305,9 +301,9 @@ Organic chemistry occupies a central role in the world around us, as we are surr
 
 ---
 
-**24. 다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?** (3.7점)
+**24. 다음 빈칸에 들어갈 말로 가장 적절한 것은?** (3.7점)
 
-The Dutch news site De Correspondent was born with the idea of ______ from the start. Jay Rosen explained how the journalists were expected to have a radically different relationship with the reader. Writers continuously share what they are working on with the people who follow them. They pose questions and post call-outs as they launch new projects: what they want to find out, the expertise they need, any sort of help they want from readers. Sometimes readers are the project. Writers also manage the discussion threads ─ which are not called comments but contributions ─ in order to highlight the best additions and pull useful material into the next version of an ongoing story.
+The Dutch news site De Correspondent was born with the idea of ______ from the start. Jay Rosen, the NYU professor who became an adviser to the organisation, explained how the journalists were expected to have a radically different relationship with the reader than in traditional media. 'Expectations are that writers will continuously share what they are working on with the people who follow them and read their stuff. They will pose questions and post call-outs as they launch new projects: what they want to find out, the expertise they are going to need to do this right, any sort of help they want from readers. Sometimes readers are the project. Writers also manage the discussion threads ─ which are not called comments but contributions ─ in order to highlight the best additions and pull useful material into the next version of an ongoing story.' Some of these crowdsourcing techniques have been used by journalists on more mainstream papers, notably David Fahrenthold of the Washington Post.
 
 ① eliminating all reader feedback  
 ② replacing human journalists with AI  
@@ -345,7 +341,7 @@ Motivation has an extensive history in academic research. Some of the earliest w
 
 **27. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (3.6점)
 
-Many countries have had legislation to protect animals for decades. But whether this legislation is ①<u>adequate</u> lies at the heart of a key debate between those who argue for animal welfare and those who argue for animal rights. Those who argue for animal welfare seek ②<u>increased</u> legal protection for animals from human-inflicted pain. Animal rights advocates maintain that this welfare legislation does not go far enough. Welfare legislation ③<u>accepts</u>, they argue, that animals may be used by humans for food and as experimental subjects; it merely tries to curb the worst excesses of these practices. The problem, on the rights view, is more ④<u>trivial</u> than this: animals are not the kinds of thing that humans should use in this way at all. The problem is not one about treating animals inhumanely, but instead one about understanding them as human ⑤<u>resources</u>.
+Many countries have had legislation to protect animals in place for decades, even for centuries. This legislation may regulate practices such as slaughter or experimentation, or may be more generally aimed at preventing cruelty. But whether this kind of legislation is ①<u>adequate</u> lies at the heart of a key debate between those who argue, in a legal context, for the promotion of animal welfare and those who argue for the promotion of animal rights. Those who argue for animal welfare seek ②<u>increased</u> legal protection for animals from human-inflicted pain and other kinds of suffering (for example, insufficient food and space). Animal rights advocates maintain that this welfare legislation does not go far enough. Welfare legislation ③<u>accepts</u>, they argue, that animals may be used by humans for food and as experimental subjects; it merely tries to curb the worst excesses of these practices. The problem, on the rights view, is more ④<u>trivial</u> than this: animals are not the kinds of thing that humans should use in this way at all. The problem, therefore, is not one about treating animals inhumanely, but instead one about understanding them as human ⑤<u>resources</u>.
 
 ① adequate  
 ② increased  
@@ -373,7 +369,7 @@ When a patient chooses to buy he or she becomes a part of demand. Wanting to buy
 
 [주어진 문장] Industrialization changed the production-consumption dynamic in at least two ways.
 
-Among the attempts to resist fast fashion are consumer movements to make more informed, ethical decisions. ( ① ) The "slow fashion" movement encourages buying fewer clothes of higher quality and wearing them longer. ( ② ) Some consumers have become more active in producing and repairing their own clothing, what the design historian Fiona Hackney calls the "quiet activism" of everyday making. ( ③ ) This practice represents a return to the intimate connection of production with consumption before the industrialization of fibers, textiles, and apparel. ( ④ ) Factory-made, store-bought clothes were more detached from consumer-made ones, and they also tended to be less expensive. ( ⑤ ) Prior to industrialization, only wealthy people could afford a closet of many garments.
+Among the attempts to resist fast fashion are consumer movements to make more informed, ethical decisions as they purchase, use, and repair their clothing. ( ① ) The "slow fashion" movement, for example, encourages buying fewer clothes of higher quality and wearing them longer, and thinking critically about the labor and environmental conditions surrounding their production. ( ② ) Some consumers have become more active in producing (sewing or knitting) and repairing their own clothing. ( ③ ) The design historian Fiona Hackney refers to the "quiet activism" of everyday making, arguing for "the emergence of a new, historically conscious, socially engaged amateur practice." This practice represents a return to the intimate connection of production with consumption before the industrialization of fibers, textiles, and apparel. ( ④ ) Factory-made, store-bought clothes were more detached from consumer-made ones, and they also tended to be less expensive. ( ⑤ ) Prior to industrialization, only wealthy people could afford a closet of many garments; among working-class people, formal clothes were often prized possessions that were included in wills.
 
 ①  
 ②  
@@ -400,32 +396,32 @@ You can use your days off to figure out whether you are a morning person or a ni
 | 문항 | 유형 | 배점 | 정답 | 출처 | 해설 |
 | :-: | :-: | :-: | :-: | :-: | :-- |
 | 1 | 제목 | 2.5 | ③ | 수특영독 3강 5번 | 역사가가 연대순 배열, 특정 색조 부여, 아이러니 강조, 낭만화 등 여러 방식으로 사건을 서사로 만든다는 글이므로 ①이 제목으로 적절하다. ②⑤는 본문이 말하는 다양성과 어긋난다. |
-| 2 | 글의순서 | 2.7 | ① | 수특영독 2강 1번 | Ickes 연구 소개(주어진 글) → 실험 방법으로 참가자가 자기 생각을 말함(B) → 이어 상대 생각을 적고 관찰자가 평가(A) → 평가 척도를 단순화해 신뢰도를 높임(C). 따라서 (B)-(A)-(C). |
-| 3 | 어휘 | 2.9 | ⑤ | 수특영독 5강 12번 | 언어 장벽은 편집자를 '방해(hinder)'하며 그래서 번역 도구를 쓴다는 흐름이므로 ⑤ assist(돕다)는 부적절하다. ①authoritative, ②individually, ③spontaneously, ④barriers는 원문 그대로 적절하다. |
+| 2 | 글의순서 | 2.7 | ① | 수특영독 2강 1번 | 주어진 글(관찰자의 일을 단순화하는 이점을 보이려 Ickes의 마음 읽기 연구를 소개; 두 낯선 사람을 상호작용시킴) → (A)그 상호작용을 녹화해 참가자들이 자기 생각과 상대 생각을 적게 함 → (B)관찰자들이 추측의 일치도를 평가하는데, 0~100 척도를 쓸 수도 있었음 → (C)그러나 3점 척도를 사용했고, 범주를 줄이니 평가가 쉽고 신뢰성이 높아짐. 따라서 (A)-(B)-(C)인 ①. |
+| 3 | 어휘 | 2.9 | ⑤ | 수특영독 5강 12번 | 언어 장벽은 편집자에게 기계 번역 도구나 다국어 동료의 도움을 찾게 만드는 '방해(hinder)' 요인이므로, '돕다'는 ⑤ assist는 정반대로 부적절하다. ①권위 있는, ②개별적으로, ③자발적으로, ④장벽은 모두 적절. |
 | 4 | 함축의미 | 3.1 | ① | 수특영독 7강 6번 | 디지털 이미지의 파일은 소프트웨어와 디스플레이가 해석하기 전까지는 이미지가 아닌 0과 1의 비트일 뿐이라고 했으므로, 현실에서 한 단계 더 멀어졌다는 것은 ②를 의미한다. |
 | 5 | 요지 | 3.0 | ② | 수특영독 2강 5번 | 보이지 않게 가려진 화살표조차 뇌의 두정엽이 무의식적으로 합산해 판단에 반영한다는 실험을 제시하므로, 뇌가 의식하지 못하는 정보도 더해 판단에 쓴다는 ②가 요지로 적절하다. |
-| 6 | 어휘 | 3.4 | ⑤ | 수특영독 3강 2번 | Douglass의 말은 '읽기를 배우면 영원히 자유로워진다(free)'이므로 ⑤ enslaved(노예가 된)는 정반대로 부적절하다. ①sacrifices, ②prevalent, ③privileged, ④freedom은 원문 그대로 적절하다. |
-| 7 | 흐름무관 | 3.1 | ④ | 수특영독 6강 8번 | 글 전체는 고령화가 스포츠 마케팅·관람 환경·후원에 미치는 영향을 다룬다. ④는 청소년의 학교 스포츠 참여 감소와 그 원인(디지털 오락)에 관한 내용으로 전체 흐름과 무관하다. 나머지 ①②③⑤는 원문의 고령 관객 대응 논의를 그대로 따른다. |
-| 8 | 글의순서 | 3.2 | ① | 수특영독 1강 7번 | 두 고전 문제 언급(주어진 글) → 생일 문제와 원숭이 문제 소개(B) → 이 문제들과 큰 수의 법칙이 우연을 설명한다(A) → 그중 '진정 큰 수의 법칙'을 부연(C). 따라서 (B)-(A)-(C). |
+| 6 | 어휘 | 3.4 | ⑤ | 수특영독 3강 2번 | 노예였던 Frederick Douglass가 읽기를 배우면 '영원히 자유로워진다(free)'고 한 맥락이므로(문해력이 권력과 자유를 가져온다는 글의 논지와 일치), '노예가 된다'는 ⑤ enslaved는 정반대로 부적절하다. ①희생, ②더 만연한, ③특권을 가진, ④자유는 모두 적절. |
+| 7 | 흐름무관 | 3.1 | ④ | 수특영독 6강 8번 | 글은 인구 고령화가 스포츠 산업(관중 구성·중계 시간·후원사)에 미치는 영향을 다룬다. ④'청소년 스포츠 참여가 학업 성취와 집중력을 높인다'는 청소년 이야기로 고령화의 영향이라는 논지와 무관. ①②③⑤는 모두 고령 관중에 맞춘 스포츠 산업의 변화. |
+| 8 | 글의순서 | 3.2 | ① | 수특영독 1강 7번 | 주어진 글(우연을 평가하는 두 고전 문제 중 하나인 생일 문제 제시) → (A)다른 하나인 원숭이 문제를 제시하고, 이 문제들과 여러 법칙이 우연의 빈도를 이해하게 해 준다 → (B)그중 '진정으로 큰 수의 법칙'을 설명(가능성이 있으면 언젠가 반드시 일어남) → (C)'반드시 일어난다'는 표현의 모호함을 언급하며 우연이 얼마나 흔한지 보여준다. 따라서 (A)-(B)-(C)인 ①. |
 | 9 | 빈칸추론 | 3.4 | ① | 수특영독 7강 3번 | 글 전체가 백인 중산층의 방식을 '정상'으로 보는 당연시된 가정이 아시아계를 '일탈'로 규정하게 만든다고 설명하므로, 빈칸에는 '백인 학생의 방식이 정상이라는' ①이 적절하다. |
 | 10 | 빈칸추론 | 3.4 | ⑤ | 수특영독 5강 2번 | 깨끗한 기술이 생태위기 해결에 일정 역할은 하지만, 인구·소비의 무절제한 팽창을 보상할 수 없고 새로운 문제를 낳는다는 흐름이므로, '풍요의 꿈을 감당할 수 없다'는 ⑤가 적절하다. |
-| 11 | 글의순서 | 3.1 | ⑤ | 수특영독 2강 10번 | 이상화 사용(주어진 글) → 이상기체법칙의 단순화 가정과 유용성(B) → 이를 일반 과학이론으로 확장하는 철학자들(C) → 그럼에도 이론은 기술적이어야 함(A) → 제약 언급(맺음). 따라서 (B)-(C)-(A). |
-| 12 | 어휘 | 3.4 | ④ | 수특영독 2강 7번 | 진보는 결실 없이도 묵묵히 시도하는 '인내(patience)'를 바탕으로 이루어진다는 흐름이므로 ④ impatience(조급함)는 부적절하다. ①non-linear, ②discouraged, ③fewer, ⑤discarded는 원문 그대로 적절하다. |
+| 11 | 글의순서 | 3.1 | ⑤ | 수특영독 2강 10번 | 주어진 글(과학은 이상화를 광범위하게 사용; 이상 기체 법칙 예시) → (C)특히 기체 분자에 대한 단순화 가정(서로 끌거나 밀지 않고 부피를 차지하지 않음)을 함 → (B)실제 기체 분자는 다르지만 충분히 가까워 법칙이 유용하며, 이것이 과학 이론 일반을 보는 최선의 방식이라는 견해 → (A)그러나 그런 견해에서도 이론은 여전히 기술적이며 이상화에 제약이 있음. 따라서 (C)-(B)-(A)인 ⑤. |
+| 12 | 어휘 | 3.4 | ④ | 수특영독 2강 7번 | 과학적 돌파구는 즉각적 보상 없이 오래 묵묵히 작업하는 데 달려 있으므로, 진보의 토대가 되는 것은 '인내(patience)'여야 한다. 따라서 '조급함'을 뜻하는 ④ impatience는 정반대로 부적절하다. ①비선형적, ②낙담한, ③더 적은, ⑤버려진은 모두 적절. |
 | 13 | 함축의미 | 3.1 | ③ | 수특영독 8강 8번 | 고임금 직원이라도 수년간 저축을 많이 해두면 그 종잣돈이 위험을 감수하고 창업에 뛰어들 여유를 준다는 맥락이므로, 'the leap'(창업 도약)을 가능하게 한다는 ③이 적절하다. |
 | 14 | 빈칸추론 | 3.4 | ② | 수특영독 3강 12번 | 팀이 정보를 공유할수록 신뢰가 높다는 글의 흐름과, 권한 있는 정보를 공유하면 사람들이 '신뢰받는다'고 느낀다는 뒷받침으로 보아, 리더가 특권 정보를 공유하는 것은 '팀을 신뢰한다'는 신호이므로 ②이 적절하다. |
-| 15 | 흐름무관 | 3.2 | ④ | 수특영독 1강 9번 | 글 전체는 소셜미디어가 기업의 전자상거래·마케팅 플랫폼으로 진화한 과정을 다룬다. ④는 소셜미디어 과다 사용이 청소년 불안·수면 문제와 연관된다는 내용으로 전체 흐름과 무관하다. |
+| 15 | 흐름무관 | 3.2 | ④ | 수특영독 1강 9번 | 글은 소셜 미디어가 기업을 위한 전자상거래·마케팅 플랫폼으로 진화한 과정(직접 쇼핑, 인플루언서 마케팅)을 다룬다. ④'소셜 미디어 과용이 청소년의 불안·수면 문제와 관련된다'는 부작용 이야기로 전자상거래 플랫폼화라는 논지와 무관. ①②③⑤는 모두 소셜 미디어의 비즈니스 플랫폼화. |
 | 16 | 추론 | 3.4 | ③ | 수특영독 3강 10번 | 과학과 민주주의는 표현(대표)이 결코 완전하지 않아 대안적 표현을 허용하며, 기존 표현에 대한 비판적 평가에 기반한 개선 기제를 내장하고 있다고 했으므로 ①을 추론할 수 있다. |
 | 17 | 요약문완성 | 3.4 | ① | 수특영독 6강 11번 | 전자적 소통을 통한 소수 의견은 집단 결정을 '개선(improve)'할 수 있는데, 지리적 '거리(distance)'가 양측의 불편함을 줄여주기 때문이라는 내용이므로 ①이 적절하다. |
-| 18 | 흐름무관 | 3.5 | ④ | 수특영독 1강 1번 | 글 전체는 감정 표현의 보편성과 그것이 특정 상황과 분리될 수 없다는 점을 다룬다. ④는 얼굴 인식 소프트웨어의 상업적 활용에 관한 내용으로 전체 흐름과 무관하다. |
-| 19 | 어휘 | 3.7 | ① | 수특영독 7강 8번 | 분업·전문화를 통해 '더 적은(less)' 노력으로 더 많이 이룰 수 있었다는 흐름이므로 ① more는 부적절하다(less가 맞음). ②separately, ③distinct, ④specialized, ⑤similar는 원문 그대로 적절하다. |
+| 18 | 흐름무관 | 3.5 | ④ | 수특영독 1강 1번 | 글은 감정 표현이 보편적이면서도 특정 상황·맥락과 분리될 수 없어 '상태'를 '경험'으로 전환한다는 점을 다룬다. ④'얼굴 인식 기술이 프라이버시·감시 우려를 낳았다'는 기술·사회 문제로 감정 표현의 보편성·맥락성이라는 논지와 무관. ①②③⑤는 모두 감정 표현의 보편성과 상황 의존성. |
+| 19 | 어휘 | 3.7 | ① | 수특영독 7강 8번 | 전문화·분업을 하면 '더 적은(less)' 노력으로 더 많은 것을 이룰 수 있다는 맥락이므로, '더 많은'을 뜻하는 ① more는 정반대로 부적절하다. ②개별적으로, ③뚜렷한, ④전문화된, ⑤유사한은 모두 적절. |
 | 20 | 빈칸추론 | 3.4 | ③ | 수특영독 7강 9번 | 동물 심리학자들은 의식을 관찰할 수 없고 행동만 관찰할 수 있었으며, 인간 심리학도 동물처럼 '행동(behavior)'의 연구여야 한다고 반발했으므로 ③이 적절하다. |
 | 21 | 문장삽입 | 3.5 | ③ | 수특영독 4강 8번 | 주어진 문장은 '모든 통제·방향전환이 인간 복지에 보탬이 되는 것은 아니다'라는 전환 문장이다. 자연이 위협을 준다는 긍정적 통제 설명(③ 앞) 뒤, 의료기술이 만성질환 고통을 늘렸다는 부정적 예(③ 뒤) 앞에 와야 자연스러우므로 ③에 들어간다. |
 | 22 | 함축의미 | 3.6 | ⑤ | 수특영독 4강 2번 | 훌륭한 리더의 공감은 이익 같은 결과가 아니라 옳은 일이기에 행하는 것(가치 기반)이라는 의미이므로 ⑤이 적절하다. ②는 결과 기반으로 본문과 반대다. |
-| 23 | 빈칸추론 | 3.4 | ② | 수특영독 8강 12번 | 유기화학 원리가 음식·신체·약물 반응을 지배하고 신약 설계를 가능하게 한다고 했으므로, 보건 계열 진입자에게 유기화학이 '필수 지식(required knowledge)'이라는 ②이 적절하다. |
-| 24 | 빈칸추론 | 3.7 | ③ | 수특영독 4강 12번 | 기자가 독자와 작업을 공유하고 질문·도움을 요청하며 독자의 기여를 기사에 반영한다는 내용이므로, '능동적 독자를 (처음부터) 참여시키는' ①이 빈칸에 적절하다. |
+| 23 | 빈칸추론 | 3.4 | ② | 수특영독 8강 12번 | 글은 음식·옷·의약품·우리 몸까지 모든 것이 유기 화합물로 이루어져 있어 유기화학이 중심적 역할을 한다고 한다. 따라서 보건 직종에 들어가는 사람에게 유기화학은 '필수 지식(required knowledge)'이라는 ②가 정답. ①시대에 뒤진 학문·③의학과 무관·④적용하기엔 너무 이론적·⑤완전히 선택적 과목은 본문 논지와 정반대. |
+| 24 | 빈칸추론 | 3.7 | ③ | 수특영독 4강 12번 | 빈칸 뒤에서 작가들이 작업 내용을 독자와 지속적으로 공유하고, 독자에게 질문·도움을 요청하며, 때로는 독자가 프로젝트 자체가 되고, 독자의 기여를 다음 기사에 반영한다고 설명한다(크라우드소싱). 따라서 '능동적 독자를 통합하는(incorporating active readers)' ③이 정답. ①독자 피드백 제거·②AI 대체·④속보에만 집중·⑤기사마다 과금은 본문과 정반대. |
 | 25 | 요약문완성 | 3.6 | ② | 수특영독 6강 2번 | 도매상은 상품을 대량으로 '보관(storing)'하고 다양한 제조사의 상품을 갖춰, 소매상이 한 곳과의 접촉으로 조달을 '단순화(simplify)'할 수 있게 한다는 내용이므로 ②이 적절하다. |
 | 26 | 빈칸추론 | 3.6 | ② | 수특영독 5강 6번 | 쥐·소비자·운동선수 모두 목표 달성이 가까워질수록 더 노력한다는 예가 이어지므로, Hull이 관찰한 바는 '목표 달성이 임박할수록 투입 노력이 증가한다'는 ②이다. |
-| 27 | 어휘 | 3.6 | ④ | 수특영독 5강 3번 | 동물권 옹호자들은 문제가 복지론보다 '더 근본적(fundamental)'이라 보므로 ④ trivial(사소한)은 부적절하다. ①adequate, ②increased, ③accepts, ⑤resources는 원문 그대로 적절하다. |
+| 27 | 어휘 | 3.6 | ④ | 수특영독 5강 3번 | 동물권 옹호자들은 문제가 복지 입법보다 '더 근본적(fundamental)'이라고 본다(동물을 인간이 사용해서는 안 된다는 주장). 따라서 '사소한'을 뜻하는 ④ trivial은 정반대로 부적절하다. ①적절한, ②증가된, ③받아들이다, ⑤자원은 모두 적절. |
 | 28 | 요약문완성 | 3.5 | ② | 수특영독 3강 4번 | 인공심장 가격이 '낮아질수록(falls)' 보이지 않던 잠재 수요가 '실제 수요로(active)' 드러나, 의료 필요가 거의 없는 사람까지 구매하게 된다는 내용이므로 ②이 적절하다. |
-| 29 | 문장삽입 | 3.7 | ④ | 수특영독 4강 6번 | 주어진 문장은 '산업화가 생산-소비 역학을 두 가지로 바꿨다'는 일반화이다. 산업화 이전으로의 회귀를 말한 문장(④ 앞) 뒤, 그 두 가지 변화(공장제 옷의 분리·저렴함)를 구체화하는 문장(④ 뒤) 앞에 와야 하므로 ④에 들어간다. |
+| 29 | 문장삽입 | 3.7 | ④ | 수특영독 4강 6번 | 주어진 문장은 '산업화가 생산-소비 역학을 적어도 두 가지 방식으로 바꾸었다'는 내용이다. ④ 뒤 문장이 그 두 방식(공장제·상점 구매 의류가 소비자 제작 의류와 분리되었고 더 저렴해졌다)을 구체적으로 설명하므로, 그 도입이 되는 주어진 문장은 ④에 들어가야 한다. |
 | 30 | 함축의미 | 3.5 | ⑤ | 수특영독 7강 12번 | 오전 9시 방문이 가능하냐는 물음에 '난 새벽 5시(at five o'clock, 즉 새벽)에야 잠자리에 든다'고 답한 것으로, 자신이 극단적 저녁형 인간임을 익살스럽게 강조한 것이므로 ⑤이 적절하다. |
