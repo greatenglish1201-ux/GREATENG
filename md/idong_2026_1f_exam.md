@@ -1,7 +1,7 @@
 # 2026학년도 1학기 기말고사(예상) · 이동고 3학년 영어독해와작문
 ### 대단한영어(GREATENG) 예상문제 — 25문항 100점
 
-> 출제범위: 수특영어(25·26·28·29·30강) + 5월모(29·30·32·35·36) + 6월모(30~41)
+> 출제범위: 수특영어(25강2·3/26강1~3/28~30강 전체) + 5모(29·30·32·35·36·39) + 6모(30~42)
 
 ---
 
@@ -43,13 +43,13 @@ Much research in social psychology has documented some of the key strategies ①
 
 **4. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?** (3.6점)
 
-Teaching reflects what society itself demands; it necessitates that disorder — of students and teachers alike — ①<u>yield</u> to its opposite. Effective teaching requires that, ②<u>failing</u> their own self-imposed order, students experience the imposition of some outer order so that inner order may develop. This means in practice that the goals of classes ③<u>be</u> clearly set, that the manner of achieving them be clear, and that all activities ④<u>be</u> directed somehow to their attainment. Above all, it implies structured industry — study and activity that ⑤<u>is</u> oriented toward a goal and pursued with perseverance.
+Science shows that, when compared to adults, children naturally prefer higher levels of sweet and salty tastes and ①<u>reject</u> bitter tastes. This might help explain why children are drawn to more unhealthy food choices within our current food environment — an environment ②<u>composed</u> of high-salt, high-refined-sugar foods. In support of this idea, studies have found that sensory experiences, ③<u>beginning</u> early in life, can shape preferences in both a positive and a negative way. For example, expecting mothers who consume diets rich in healthy foods can help develop their child's taste preferences in a positive way because flavors from foods ④<u>that</u> the mother eats are transmitted to amniotic fluid and to mother's milk. Having healthy food experiences early in life may go a long way toward ⑤<u>promote</u> healthy eating throughout a person's life span.
 
-① yield  
-② failing  
-③ be  
-④ be  
-⑤ is  
+① reject  
+② composed  
+③ beginning  
+④ that  
+⑤ promote  
 
 ---
 
@@ -336,7 +336,7 @@ The structure of glass is, frankly, a bit of a mess. Clear and perfect as it mig
 | 1 | 어법 | 4.4 | ④ | 수능특강 영어 28강 1번 | ④ landscapes가 '나무로 점점이 채워진' 대상이므로 수동의 과거분사 dotted가 되어야 한다(thinly dotted with trees). 능동의 현재분사 dotting은 틀리다. ①주어 people에 대한 과거동사 looked, ②be동사+과거분사 수동 programmed, ③get+과거분사 modified, ⑤scenes를 선행사로 하는 주격 관계대명사 뒤 복수동사 resemble은 모두 적절. |
 | 2 | 어법 | 4.4 | ① | 수능특강 영어 28강 2번 | ① 앞의 내용 전체를 받아 '출처 점검이라 알려진'의 수동 의미이므로 과거분사 known이 되어야 한다(분사구문). 능동의 현재분사 knowing은 틀리다. ②비교급 less, ③주격 관계대명사 that 뒤 동사 generate, ④분사구문 making, ⑤to source monitor에 병렬로 이어지는 (to) distinguish는 모두 적절. |
 | 3 | 어법 | 4.6 | ③ | 수능특강 영어 28강 3번 | ③ 뒤에 완전한 절(someone fails a calculus test)이 이어지고 Imagine의 목적어 명사절을 이끄므로 접속사 that이 되어야 한다. 관계대명사 which는 틀리다. ①strategies를 수식하는 목적격 관계대명사 that, ②전치사 from의 목적어 동명사 overwriting, ④a way를 수식하는 주격 관계대명사 that, ⑤story와 동격을 이루는 접속사 that은 모두 적절. |
-| 4 | 어법 | 3.6 | ⑤ | 수능특강 영어 25강 1번 | ⑤ 선행사 study and activity가 복수이므로 주격 관계대명사 that 뒤 동사는 복수형 are가 되어야 한다. 단수 is는 틀리다. ①necessitates that 뒤 (should)yield, ②분사구문 failing, ③④requires/means that 뒤 (should)be로 모두 원형은 적절. |
+| 4 | 어법 | 3.6 | ⑤ | 수능특강 영어 30강 3번 | ⑤ 전치사 toward의 목적어 자리이므로 동명사 promoting이 되어야 한다(toward promoting). 동사원형 promote는 틀리다. ①주어 children에 이어지는 병렬 동사 reject(prefer ... and reject), ②an environment를 수식하는 과거분사 composed(구성된), ③sensory experiences를 부연하는 분사구문 beginning, ④foods를 선행사로 하는 목적격 관계대명사 that은 모두 적절. |
 | 5 | 어법 | 4.4 | ④ | 수능특강 영어 30강 1번 | ④ 조동사 can 뒤에는 동사원형이 와야 하므로 lead가 되어야 한다. 현재분사 leading은 틀리다. ①조동사+원형 can include, ②현재완료 have heard, ③앞의 reactions를 대신하는 지시대명사 those, ⑤조동사+원형 can fit은 모두 적절. |
 | 6 | 빈칸추론 | 4.7 | ③ | 5·6월 모의고사(5월 35) | 빈칸 앞에서 pre-consumer 폐기물은 깨끗하고 균질하며 단일 소재라 양질의 원료로 되돌릴 수 있다고 강조한다. 따라서 이 자재들은 '쓸모없는 것이 아니라 단지 잘못된 형태에 있을 뿐'이라는 ③이 정답. ①'혼합 오염'·②'양이 너무 적음'은 본문의 'clean·single material' 진술과 반대, ④소비자 수요·⑤규제는 글의 초점(재활용 가치)과 무관. |
 | 7 | 빈칸추론 | 4.2 | ① | 5·6월 모의고사(6월 30) | 빈칸 문장은 무대 상연 시 많은 시간이 드는 춤·동작이 '대본에 글로 옮겨지면' 어떻게 되는지를 대조한다. 앞서 가사·음악을 빼면 대본(libretto)이 매우 빈약해진다고 했으므로, 글로는 '아주 적은 공간만 차지한다'는 ①이 정답. ②리허설·④무대비용·⑤배우 혼란은 'typed into a script(지면)'라는 대조 축과 무관, ③감정 강도는 본문에 없는 비약. |

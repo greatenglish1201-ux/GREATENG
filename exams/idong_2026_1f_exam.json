@@ -12,7 +12,7 @@
   "build": "claude-authored (2026-06-26 재출제)",
   "generated_at": "2026-06-26 13:30 KST",
   "pattern_key": "이동고_3학년_2026_1학기_기말",
-  "source_scope": "수특영어(25·26·28·29·30강) + 5월모(29·30·32·35·36) + 6월모(30~41)"
+  "source_scope": "수특영어(25강2·3/26강1~3/28~30강 전체) + 5모(29·30·32·35·36·39) + 6모(30~42)"
  },
  "questions": [
   {
@@ -71,17 +71,17 @@
    "num": 4,
    "qtype": "어법",
    "score": 3.6,
-   "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\n\nTeaching reflects what society itself demands; it necessitates that disorder — of students and teachers alike — ①<u>yield</u> to its opposite. Effective teaching requires that, ②<u>failing</u> their own self-imposed order, students experience the imposition of some outer order so that inner order may develop. This means in practice that the goals of classes ③<u>be</u> clearly set, that the manner of achieving them be clear, and that all activities ④<u>be</u> directed somehow to their attainment. Above all, it implies structured industry — study and activity that ⑤<u>is</u> oriented toward a goal and pursued with perseverance.",
+   "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\n\nScience shows that, when compared to adults, children naturally prefer higher levels of sweet and salty tastes and ①<u>reject</u> bitter tastes. This might help explain why children are drawn to more unhealthy food choices within our current food environment — an environment ②<u>composed</u> of high-salt, high-refined-sugar foods. In support of this idea, studies have found that sensory experiences, ③<u>beginning</u> early in life, can shape preferences in both a positive and a negative way. For example, expecting mothers who consume diets rich in healthy foods can help develop their child's taste preferences in a positive way because flavors from foods ④<u>that</u> the mother eats are transmitted to amniotic fluid and to mother's milk. Having healthy food experiences early in life may go a long way toward ⑤<u>promote</u> healthy eating throughout a person's life span.",
    "choices": [
-    "① yield",
-    "② failing",
-    "③ be",
-    "④ be",
-    "⑤ is"
+    "① reject",
+    "② composed",
+    "③ beginning",
+    "④ that",
+    "⑤ promote"
    ],
    "answer": "⑤",
-   "explanation": "⑤ 선행사 study and activity가 복수이므로 주격 관계대명사 that 뒤 동사는 복수형 are가 되어야 한다. 단수 is는 틀리다. ①necessitates that 뒤 (should)yield, ②분사구문 failing, ③④requires/means that 뒤 (should)be로 모두 원형은 적절. [출처: 수능특강 영어 25강 1번]",
-   "source": "수능특강 영어 25강 1번"
+   "explanation": "⑤ 전치사 toward의 목적어 자리이므로 동명사 promoting이 되어야 한다(toward promoting). 동사원형 promote는 틀리다. ①주어 children에 이어지는 병렬 동사 reject(prefer ... and reject), ②an environment를 수식하는 과거분사 composed(구성된), ③sensory experiences를 부연하는 분사구문 beginning, ④foods를 선행사로 하는 목적격 관계대명사 that은 모두 적절. [출처: 수능특강 영어 30강 3번]",
+   "source": "수능특강 영어 30강 3번"
   },
   {
    "type": "single",
