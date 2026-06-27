@@ -1,7 +1,7 @@
 # 2026학년도 1학기 기말고사 2차(예상) · 이동고 3학년 심화영어1
 ### 대단한영어(GREATENG) 예상문제 — 25문항 100점 (이동고 1차(영어독해와작문) 패턴)
 
-> 출제범위: 수능특강 영어 3·4·5·6·7·11·12·13·14·15·16·17강(심화영어1 범위)
+> 출제범위: 수능특강 영어 3·4·5·6·7·11·12·13·14·15·16·17강(심화영어1 범위)  ·  원문 보존율 평균 98%
 
 ---
 
@@ -19,7 +19,7 @@ AI is a prolific idea generator. Human brainstorming groups tend to focus on the
 
 **2. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?** (4.0점)
 
-Becoming aware of our internal sensations can help us handle our own emotions. Perhaps more surprisingly, the body's interoceptive faculty can also bring us into closer contact with other people's emotions. That's because the brain, on its own, has no direct access to the contents of other people's minds, no way ①<u>feel</u> what others are feeling. Interpreting others' spoken words and facial expressions may ②<u>yield</u> only a coolly abstract sense of the emotions that stir within. The body acts as a critical conduit, ③<u>supplying</u> the brain with the visceral information it lacks. When interacting with others, we subtly and unconsciously mimic their facial expressions, gestures, posture, and vocal pitch. In an act similar to taking a bite off our partner's plate, we are ④<u>sampling</u> their emotions, and the body is the bridge ⑤<u>that</u> makes this possible.
+Becoming aware of our internal sensations can help us handle our own emotions. Perhaps more surprisingly, the body's interoceptive faculty can also bring us into closer contact with other people's emotions. That's because the brain, on its own, has no direct access to the contents of other people's minds, no way ①<u>feel</u> what others are feeling. Interpreting others' spoken words and facial expressions may ②<u>yield</u> only a coolly abstract sense of the emotions that stir within. The body acts as a critical conduit, ③<u>supplying</u> the brain with the visceral information it lacks. When interacting with other people, we subtly and unconsciously mimic their facial expressions, gestures, posture, and vocal pitch. In an act similar to taking a bite off our partner's plate, or borrowing an earbud to hear the song our friend is listening to, we are ④<u>sampling</u> their emotions, and the body is the bridge ⑤<u>that</u> connects us.
 
 ① feel  
 ② yield  
@@ -31,13 +31,13 @@ Becoming aware of our internal sensations can help us handle our own emotions. P
 
 **3. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?** (4.0점)
 
-The importance of what a reader brings to the page is highlighted in a study discussed by Hirsch in The Knowledge Deficit. This study consisted of two groups of students who ①<u>were</u> asked to read a passage about baseball. The first group was made up of strong readers who knew little about baseball. The second group was composed of struggling readers who ②<u>were</u> knowledgeable about baseball. After reading, students in each group had their comprehension tested. Having strong reading skills was not enough for the students who came to the page with a knowledge deficit. Though the second group were not strong readers, their prior knowledge enabled them ③<u>to outscore</u> readers with far better abilities. Prior knowledge was the x-factor ④<u>what</u> made the difference, ⑤<u>highlighting</u> the role of background knowledge.
+The importance of what a reader brings to the page is highlighted in a study discussed by Hirsch in The Knowledge Deficit. This study consisted of two groups of students who ①<u>were</u> asked to read a passage about baseball. The first group was made up of strong readers who knew little about baseball. The second group was ②<u>composed</u> of struggling readers who were knowledgeable about baseball. After reading the passage, students in each group had their comprehension ③<u>tested</u>. Guess which group scored higher? The struggling readers. Having strong reading skills was not enough for the students who came to the page with a knowledge deficit about the topic. Though the second group of readers were not strong readers, their prior knowledge enabled them ④<u>outscore</u> readers with far better abilities. Prior knowledge, or, in the case of the good readers, the lack of prior knowledge, ⑤<u>was</u> the x-factor.
 
 ① were  
-② were  
-③ to outscore  
-④ what  
-⑤ highlighting  
+② composed  
+③ tested  
+④ outscore  
+⑤ was  
 
 ---
 
@@ -55,34 +55,34 @@ The use of emotion may be important in exercise, particularly among exercise ins
 
 **5. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?** (4.0점)
 
-Symbols are instrumental in ①<u>helping</u> people derive meanings from social situations. In social encounters, each person's interpretation of a given situation ②<u>becomes</u> a subjective reality from that person's viewpoint. We often assume that what we consider to be reality is shared by others; however, this assumption is often incorrect. Subjective reality is acquired and shared through agreed-upon symbols, especially language. If a person shouts 'Fire!' in a crowded movie theater, that language produces the same response in all of ③<u>those</u> who hear and understand it. How people interpret the messages ④<u>what</u> they receive becomes their subjective reality and may strongly ⑤<u>influence</u> their behavior.
+Symbols are instrumental in ①<u>helping</u> people derive meanings from social situations. In social encounters, each person's interpretation or definition of a given situation ②<u>becomes</u> a subjective reality from that person's viewpoint. We often assume that what we consider to be reality is shared by others; however, this assumption is often incorrect. Subjective reality is acquired and shared through agreed-upon symbols, especially language. If a person shouts Fire! in a crowded movie theater, for example, that language produces the same response in all of ③<u>those</u> who hear and understand it. How people interpret the messages ④<u>what</u> they receive and the situations they encounter ⑤<u>becomes</u> their subjective reality and may strongly influence their behavior.
 
 ① helping  
 ② becomes  
 ③ those  
 ④ what  
-⑤ influence  
+⑤ becomes  
 
 ---
 
 **6. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (4.0점)
 
-In the old Soviet Union, a famous U.S. beverage company wanted to set up a bottling plant. The prevailing ideology ①<u>stressed</u> the importance of the group over the individual. Soft drinks hardly seemed to ②<u>match</u> the country's ideological priorities; one official dismissed the product as a 'useless drink.' Eventually, the two sides struck a deal, but not on the basis that the drink would quench thirst. They ③<u>restructured</u> the project to include heavy training for local workers and a farm to grow ingredients. In addition, the company promised to ④<u>persuade</u> other American companies to consider investments. The deal succeeded because it was ⑤<u>negotiated</u> around ideological priorities.
+In the old Soviet Union, a famous U.S. beverage company wanted to set up a bottling plant and distribution network. The prevailing ideology in the old Soviet Union at the time ①<u>stressed</u> the importance of the group over the individual and the need to develop industrial capacity at the expense of consumer goods. Soft drinks hardly seemed to ②<u>match</u> the country's ideological priorities. Indeed, one government official dismissed the product as a 'useless drink.' Eventually, the two sides struck a deal, but not on the basis that the drink would ③<u>quench</u> the local population's thirst. They restructured the project to include a heavy training component for local workers and managers, as well as a farm that would grow certain of the drink's ingredients. In addition, the company promised to make efforts to ④<u>persuade</u> other American companies to consider investments in the ⑤<u>country</u>.
 
 ① stressed  
 ② match  
-③ restructured  
+③ quench  
 ④ persuade  
-⑤ negotiated  
+⑤ country  
 
 ---
 
 **7. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?** (4.0점)
 
-Limited animation is a process of making animated cartoons that does not follow a 'realistic' approach. Realistic animation is very ①<u>time-consuming</u> and expensive. Limited animation creates an image that uses abstract art, symbolism, and limited movement to create the same effect, but at a much ②<u>lower</u> production cost. This style depends more upon suspension of disbelief to tell a story; the story exists more in the viewer's ③<u>imagination</u>. It also encourages animators to indulge in artistic styles not necessarily bound to the limits of the real world. The result is a new artistic style that could not have developed if animation was solely devoted to producing ④<u>simulations</u> of reality. Without limited animation, ground-breaking films such as Yellow Submarine could never have been ⑤<u>prevented</u>.
+Limited animation is a process of making animated cartoons that does not follow a 'realistic' approach. However, this style of animation is very ①<u>time-consuming</u> and expensive. Limited animation creates an image that uses abstract art, symbolism, and limited movement to create the same effect, but at a much lower production ②<u>cost</u>. This style of animation depends more upon suspension of disbelief to tell a story; the story exists more in the viewer's ③<u>imagination</u>. It also encourages the animators to indulge in artistic styles that are not necessarily bound to the limits of the real world. The result is a new artistic style that could not have developed if animation was solely devoted to producing ④<u>simulations</u> of reality. Without limited animation, such ground-breaking films as Yellow Submarine, Chuck Jones' The Dot and the Line, and many others could never have been ⑤<u>prevented</u>.
 
 ① time-consuming  
-② lower  
+② cost  
 ③ imagination  
 ④ simulations  
 ⑤ prevented  
@@ -91,21 +91,21 @@ Limited animation is a process of making animated cartoons that does not follow 
 
 **8. 다음 빈칸에 들어갈 말로 가장 적절한 것은?** (4.0점)
 
-Energy can always be injected into an organization to motivate people. Bonuses, promotions, and other carrots can get people to work harder, but the gains are, like all manipulations, short-term. Over time, such tactics cost more money and increase stress for employee and employer alike. That's not loyalty; that's the employee version of repeat business. Loyalty among employees is when they turn down more money or benefits to continue working at the same company. Loyalty to a company ______. It's the cause that we come to work for. We don't want to come to work to build a wall; we want to come to work to build a cathedral.
+Energy can always be injected into an organization to motivate people to do things. Bonuses, promotions, other carrots, and even a few sticks can get people to work harder, for sure, but the gains are, like all manipulations, short-term. Over time, such tactics cost more money and increase stress for employee and employer alike, and eventually will become the main reason people show up for work every day. That's not loyalty. That's the employee version of repeat business. Loyalty among employees is when they turn down more money or benefits to continue working at the same company. Loyalty to a company trumps pay and benefits. It's ______ that we come to work for. We don't want to come to work to build a wall; we want to come to work to build a cathedral.
 
-① grows naturally with higher bonuses  
-② depends mainly on job security  
-③ trumps pay and benefits  
-④ fades as stress increases  
-⑤ requires constant supervision  
+① the salary  
+② the comfort  
+③ the cause  
+④ the approval  
+⑤ the competition  
 
 ---
 
 **9. 다음 빈칸에 들어갈 말로 가장 적절한 것은?** (4.0점)
 
-In the early 1960s the great American writer James Baldwin wrote: "People are trapped in history, and history is trapped in them." But the statement is equally true if the word 'people' is replaced with 'all of life on Earth,' for each strand of DNA is an ancient record of biological history, passed down from generation to generation. One could say that DNA is nothing but history, one slowly accumulated over countless eons by the most pitiless of all phenomena — natural selection. DNA is a history that is inside us — and yet one that is ______ as well, the blueprint for our bodies, and dictator of what we will pass on to our children. We are indeed trapped in this particular vehicle of history as much as it is trapped in us.
+In the early 1960s the great American writer James Baldwin wrote: "People are trapped in history, and history is trapped in them." But the statement is equally true if the word 'people' is replaced with 'all of life on Earth, present and past,' for each strand of DNA, in each of our cells, is an ancient record of biological history, written in simple code and passed down from generation to generation. One could say that DNA is nothing but history, one with a physical manifestation that was slowly blended and accumulated over countless eons by the most pitiless of all phenomena — natural selection. DNA is a history that is inside us — and yet one that is ______ as well, the blueprint for our bodies, and dictator of what we will pass on to our children, gifts that can be blessings — or deadly time bombs. We are indeed trapped in this particular vehicle of history as much as it is trapped in us.
 
-① a record we can freely rewrite  
+① a record we can rewrite  
 ② our master  
 ③ irrelevant to our future  
 ④ a product of our choices  
@@ -115,7 +115,7 @@ In the early 1960s the great American writer James Baldwin wrote: "People are tr
 
 **10. 다음 빈칸에 들어갈 말로 가장 적절한 것은?** (4.0점)
 
-Below-grade-level readers in my urban middle school have a great deal of difficulty doing research. Their answer when assigned to do 'a report' is to copy verbatim everything in the encyclopedia article or whatever source they have located. To get the students to understand why it isn't necessary to copy everything, I use a comparison to a supermarket. I ask them if everything in the supermarket is useful, and we conclude that it is, but we don't buy everything all the time. Then I ask them how they determine what to buy when they go with their parents. From that point on, I lead a discussion about how whatever their teachers have asked for is their ______ for their research, and they should just read for that information and write it down in note format.
+Here's an application of metaphors to research papers: Below-grade-level readers in my urban middle school have a great deal of difficulty doing research. Their answer when assigned to do 'a report' is to come to the media center and copy verbatim everything in the encyclopedia article or whatever source they have located, be it Internet, print, or whatever. To try to get the students to understand why it isn't necessary to copy everything in the articles, I use a comparison to a supermarket. I ask them if everything in the supermarket is useful, and we discuss this, with the usual conclusion being that it is, but we don't buy everything all the time. Then I ask them why they don't buy everything each time they go and how they determine what to buy when they go with their parents. From that point on, I lead a discussion about how whatever their teachers have asked for is their ______ for their research, and they should just read for that information and write it down in note format. It sometimes helps them to understand that copying everything is a wasteful endeavor.
 
 ① 'shopping list'  
 ② 'price tag'  
@@ -151,13 +151,13 @@ The standard school mathematics curriculum doesn't stress enough that mathematic
 
 (B) Mathematicians study specific objects but, usually, they aim to cluster them together and study them all at the same time.
 
-(C) We reason similarly in everyday life: since all fruits have seeds, and an apple is a fruit, then an apple must have seeds.
+(C) Often, when mathematicians want to prove that an important object behaves in a particular way, they prove instead that it belongs to a class already known to have this property. We reason similarly in everyday life: since all fruits have seeds, and an apple is a fruit, then an apple must have seeds.
 
-① (A)-(C)-(B)  
-② (B)-(C)-(A)  
-③ (B)-(A)-(C)  
-④ (C)-(A)-(B)  
-⑤ (C)-(B)-(A)  
+① (B)-(A)-(C)  
+② (A)-(C)-(B)  
+③ (C)-(A)-(B)  
+④ (C)-(B)-(A)  
+⑤ (A)-(B)-(C)  
 
 ---
 
@@ -165,9 +165,9 @@ The standard school mathematics curriculum doesn't stress enough that mathematic
 
 It is a myth that all ideas are equally valid, even those with little or no objective proof. The existence of science is the commitment to objective truth.
 
-(A) However, an intuition must be followed with testing that confirms or disproves its veracity. If a theory is disproved, one should consider it a reason to alter the hypothesis, not a justification to keep holding to it because one is instinctively wedded to it.
+(A) However, an intuition must be followed with testing that confirms or disproves its veracity. If a theory is disproved, one should consider it as a reason to reject or alter the hypothesis, not a justification to just keep firmly holding to the hypothesis because you are instinctively wedded to it.
 
-(B) After all, science is true: fire is hot, planes can fly, antibiotics treat illness, and immunizations keep us from getting sick. These accomplishments are made possible by objective truths.
+(B) After all, science is true: fire is hot, the wheel is efficient, birds and planes can fly, we've landed on a comet and traveled to the Moon, antibiotics treat illness, and immunizations keep us from getting sick. These accomplishments are made possible by objective truths.
 
 (C) Critical thinking is an absolute must, and we must respect evidence. It's the only reason for anyone to trust anything about reality. Without testing and evidence, intuition is useful, but it is never the ultimate word.
 
@@ -181,7 +181,7 @@ It is a myth that all ideas are equally valid, even those with little or no obje
 
 **14. 다음 글에서 전체 흐름과 관계 없는 문장은?** (4.0점)
 
-There is no scientific basis for the term 'race.' ① Most humans are genetically very similar, and there is so little variation amongst us that it is not possible to draw neat boundaries around people and label them as a distinct racial group. ② Race is an example of social construction, in which social processes create something that essentially does not exist but takes on real force in people's lives. ③ Modern DNA testing kits have become an increasingly popular way for people to trace their family ancestry. ④ For example, in ancient Rome there were various leading figures, such as Emperor Septimius Severus, who were black. ⑤ Little is said of their skin colour in accounts written at the time, because the ancient Romans did not think it made any difference.
+There is no scientific basis for the term 'race.' ① Most humans are genetically very similar and there is so little variation amongst us that it is not possible to draw neat boundaries around people and label them as a distinct racial group. ② Race is an example of social construction, which social processes create something that essentially does not exist but takes on real force in people's lives. ③ Modern DNA testing kits have become an increasingly popular way for people to trace their family ancestry. ④ Sociologists prefer to call these processes 'racialization.' ⑤ For example, in ancient Rome there were various leading figures, such as Emperor Septimius Severus, who were black, and little is said of their skin colour in accounts written at the time, because the ancient Romans did not think it made any difference.
 
 ①  
 ②  
@@ -193,7 +193,7 @@ There is no scientific basis for the term 'race.' ① Most humans are geneticall
 
 **15. 다음 글에서 전체 흐름과 관계 없는 문장은?** (4.0점)
 
-People may not think critically for a variety of reasons, but fear is a big one. ① Reading speed can be significantly improved through regular practice and proper eye-movement training. ② People don't want to think not just because it's hard, but also because they're afraid it will make them question their long-held beliefs. ③ Once we start thinking deeply, long-held assumptions are challenged, and thought makes us worry that we'll lose our balance. ④ We worry about thinking because we care about what we and other people think. ⑤ Even the most far-fetched ideas have an effect on the world; thinking is important to us, to others, and to the world, which is one reason why we are so afraid of it.
+People may not think critically for a variety of reasons, such as laziness and inability, but fear is a big one. Why is that? ① People don't want to think not just because it's hard, but also because they're afraid it will make them question their long-held beliefs. ② Your students most likely do want to think about things that can be very controversial, like politics, ethics, and philosophy. But probe even deeper. ③ Reading speed can be significantly improved through regular practice and proper eye-movement training. ④ Once we start thinking deeply, long-held assumptions are challenged. Thought makes us worry that we'll lose our balance and have to look at the world in a different way. We worry about thinking because we care about what we and other people think. ⑤ Even the most far-fetched ideas have an effect on the world. Non-Euclidean geometry and symbolic logic are about as abstract as thinking can get, but you can't understand Einsteinian gravity without the first and run computers without the second. Thinking is important to us, to others, and to the world we live in; this is one reason why we are so afraid of it: it shakes us to the core.
 
 ①  
 ②  
@@ -205,7 +205,7 @@ People may not think critically for a variety of reasons, but fear is a big one.
 
 **16. 다음 글에서 전체 흐름과 관계 없는 문장은?** (4.0점)
 
-The incidence of obesity has increased in parallel with increasing portion sizes. ① Adults today consume an average of 300 more calories per day than they did in 1985. ② In almost every eating situation, we are now confronted by huge portions, perceived as "normal" or "a great value." ③ We find portion distortions in restaurants, where jumbo portions are 250 percent larger than regular ones, and in our homes, where plate sizes have grown. ④ Research shows that people unintentionally consume more calories when offered larger portions, which over time can result in obesity. ⑤ Regular aerobic exercise such as jogging strengthens the heart and improves cardiovascular endurance.
+Many factors contribute to Americans' growing waistlines, but one observation in particular cannot be overlooked: The incidence of obesity has increased in parallel with increasing portion sizes. ① Consider this: Adults today consume an average of 300 more calories per day than they did in the year 1985. Is this just a coincidence, or do larger portion sizes have something to do with it? ② In almost every eating situation, we are now confronted by huge portions, which are perceived as "normal" or "a great value." Americans have created the perception that large portion sizes are appropriate, creating an environment of portion distortion. ③ We find portion distortions in restaurants, where the jumbo-sized portions are consistently 250 percent larger than the regular portions, and in our homes, where the surface area of the average dinner plate has increased 36 percent since 1960. ④ Research shows that people unintentionally consume more calories when offered larger portions, and consuming larger portion sizes can contribute to positive energy balance, which, over time, leads to weight gain and ultimately can result in obesity. ⑤ Regular aerobic exercise such as jogging strengthens the heart and improves cardiovascular endurance.
 
 ①  
 ②  
@@ -219,7 +219,7 @@ The incidence of obesity has increased in parallel with increasing portion sizes
 
 [주어진 문장] But those pills coming off a pharmaceutical production line look nothing like what our instincts tell us is safe to eat.
 
-Why do humans have the counterproductive instinct to favor natural products in the absence of knowledge of their benefits or harm? ( ① ) The answer likely lies in our genes. ( ② ) Our species relied heavily upon experience to judge whether ingestion of something was beneficial or dangerous, evolving the instinct to avoid plants that made us sick. ( ③ ) Treating unknowns with great caution provided a survival advantage. ( ④ ) The ingredients remind us of a high school chemistry lab, yet we are expected to consume them. ( ⑤ ) Thus, we treat them with caution just as our distant ancestors regarded a new plant.
+Why do humans have the counterproductive instinct to favor natural products in the absence of knowledge of their benefits or their potential for harm? ( ① ) The answer likely lies in our genes. ( ② ) Our species, through most of its evolutionary history, relied heavily upon experience to judge whether ingestion of something was beneficial versus whether it was dangerous. ( ③ ) We evolved the instinct to avoid plants that made us sick and favored those that made us well. Treating unknowns with great caution provided a terrific survival advantage. ( ④ ) The ingredients remind us of a high school chemistry lab. ( ⑤ ) Yet we are expected to consume them. Thus, we treat them with caution just as our distant ancestors regarded a new plant. When in need of a remedy, we are drawn to derivatives of our food, plant products, which we perceive to be safe, and not artificial products of science.
 
 ①  
 ②  
@@ -267,7 +267,7 @@ Consumer surveys indicate that the majority of Americans (91%) believe they have
 
 **21. 다음 글의 제목으로 가장 적절한 것은?** (4.0점)
 
-When people are asked what any painting hanging on a gallery wall means, no matter how strange it might appear, they tend to find meaning in it because it is located in a gallery. Consider a soda can found thrown away on a city street. But if we saw the very same object on a pedestal, displayed in an art gallery, signed by some artist, and given a title such as 'Waste,' then we would interpret its meaning in a vastly different way. We would be inclined to interpret it as an artistic form, describing a throw-away or materialistic society. Clearly, the can's location on a sidewalk versus its display on a pedestal in an art gallery will influence how we will interpret it.
+When people are asked what any painting hanging on a gallery wall means, no matter how strange it might appear, as is the case with most abstract-expressionist paintings, they tend to find meaning in it because it is located in a gallery. Consider a soda can found thrown away on a city street. But if we saw the very same object on a pedestal, displayed in an art gallery, signed by some artist, and given a title such as 'Waste,' then we would interpret its meaning in a vastly different way. We would, in fact, be inclined to interpret it as an artistic form, descrying a throw-away or materialistic society. Clearly, the can's location on a sidewalk versus its display on a pedestal in an art gallery will influence how we will interpret it.
 
 ① Context Shapes How We Interpret Meaning  
 ② Abstract Art: Too Strange to Understand  
@@ -279,7 +279,7 @@ When people are asked what any painting hanging on a gallery wall means, no matt
 
 **22. 다음 글의 제목으로 가장 적절한 것은?** (4.0점)
 
-In the escape that reading literature provides through identification with other lives, places, and times, we activate our imagination, that uniquely human ability to explore an alternative set of ideas and experiences outside our present environment. As opposed to perception that receives and processes information from the outside world and finds meaning in it, in imagination the process is reversed. For example, we read 'house' and picture a representation of a house from memory. It is our imagination, the complex interweaving of perception and memory that literature activates, releasing a latent creativity that pleases. The writer may provide the blueprint, but the reader builds literature's many rooms, and literature gratifies our imaginative and creative abilities.
+In the escape that reading literature provides through vicarious identification and comparison with other lives, places, and times, we activate our imagination, that uniquely human ability to explore an alternative set of ideas and experiences that are outside our present environment and that may not even be real. As opposed to perception that receives and processes information from the outside world — light, sound, shape — and finds meaning in it — a sunset, a symphony, a house — in imagination, the process is reversed. For example, we read 'house' and picture a representation of a house from memory. It is our imagination, the complex interweaving of perception and memory that literature activates, releasing a latent creativity that pleases. The writer may provide the blueprint, but the reader builds literature's many rooms, and like any satisfying occupation, literature gratifies our imaginative and creative abilities.
 
 ① The Decline of Imagination in the Digital Age  
 ② How Writers Construct Realistic Fictional Worlds  
@@ -291,7 +291,7 @@ In the escape that reading literature provides through identification with other
 
 **23. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?** (4.0점)
 
-In 1899, the British Empire finalized a border between Egypt and Sudan using the straight twenty-second parallel. This border arbitrarily tore through local tribes, so in 1902 the British drew a new line to reflect tribal territories. The combination of these two lines created the inhabitable Hala'ib Triangle and an empty patch of desert, Bir Tawil. The strange result is that both countries refuse to claim Bir Tawil, an area the size of London, because claiming it would mean giving up the greater prize of the Hala'ib Triangle. This makes Bir Tawil the largest piece of land that no country wants.
+Bir Tawil is a strange place. In January 1899, administrators of the British Empire decided to finalize a border between the countries of Egypt and Sudan. In colonial fashion, they decided to use the conveniently straight line of the twenty-second parallel of latitude. Unsurprisingly, this new international border arbitrarily tore through local tribes and communities, and in 1902, the British drew a new line to reflect tribal territories. The combination of these two intersecting lines brought about the creation of two new areas: the large, inhabitable coastal area called the Hala'ib Triangle and an empty, landlocked patch of desert, which is Bir Tawil. The strange result of this long-standing conflict is that, to this day, both countries refuse to claim Bir Tawil, an area of land roughly the size of London, as it would mean giving up a greater prize. This makes Bir Tawil the largest — perhaps the only — piece of land that no country wants.
 
 [요약문] Because two conflicting colonial borders forced a __(A)__ between two territories, both Egypt and Sudan __(B)__ the less valuable Bir Tawil in order to keep their claim to the richer Hala'ib Triangle.
 
@@ -305,7 +305,7 @@ In 1899, the British Empire finalized a border between Egypt and Sudan using the
 
 **24. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?** (4.0점)
 
-Recovery can be considered a process as well as an outcome. Recovery as an outcome refers to one's physiological and psychological state after a recovery period. Physiological recovery outcomes involve the restoration of resources such as muscle strength and heart rate; psychological outcomes relate to attention, motivation, and mood. These states act as a resource that functions as a stress-buffer for upcoming activities. Recovery as a process refers to those activities and experiences that result in a change in one's physiological and psychological state. Regarding processes, physical inactivity is generally considered the most effective way to restore physiological resources.
+Recovery can be considered a process as well as an outcome. Recovery as an outcome refers to one's physiological and psychological state after a certain recovery period, which can be, for instance, at the end of the day, after engaging in a certain activity, or after waking up. Physiological recovery outcomes involve the restoration of physiological resources such as muscle strength, heart rate, and the absence of physical fatigue. Psychological recovery outcomes relate to the restoration of mental resources such as attention, motivation, mental energy, and mood. As such, one's physiological and psychological states act as a resource that functions as a stress-buffer for upcoming activities as well. Recovery as a process refers to those activities and experiences that result in a change in one's physiological and psychological state. Regarding recovery processes, physical inactivity is generally considered the most effective way to restore physiological resources.
 
 [요약문] Recovery can be understood both as an __(A)__ — the restored physical and mental state that buffers future stress — and as a __(B)__ involving activities, such as rest, that bring about that state.
 
@@ -334,26 +334,26 @@ A detailed anthropological study of daily scientific practice in the Salk Instit
 | 문항 | 유형 | 배점 | 정답 | 출처 | 해설 |
 | :-: | :-: | :-: | :-: | :-: | :-- |
 | 1 | 어법 | 4.0 | ⑤ | 수능특강 영어 13강 1번 | ⑤ 전치사 without의 목적어 자리이므로 명사 judgment가 되어야 한다(동사 judge는 틀림). ①주어 groups에 이어지는 병렬 동사 lean(focus ... and lean), ②the number of ideas를 선행사로 하는 주격 관계대명사 that, ③This is why ~(이유) 구문, ④전치사 of의 목적어인 동명사 creating은 모두 적절. |
-| 2 | 어법 | 4.0 | ① | 수능특강 영어 13강 2번 | ① no way를 수식하여 '~할 방법'을 뜻하려면 to부정사 to feel이 되어야 한다(동사원형 feel은 틀림). ②조동사 may 뒤 원형 yield, ③분사구문 supplying, ④are와 함께 진행형을 이루는 현재분사 sampling(능동), ⑤the bridge를 선행사로 하는 주격 관계대명사 that은 모두 적절. |
-| 3 | 어법 | 4.0 | ④ | 수능특강 영어 14강 4번 | ④ 앞에 선행사 the x-factor가 있고 뒤 절에 주어가 비어 있으므로 주격 관계대명사 that(또는 which)이 되어야 한다(선행사를 포함하는 what은 틀림). ①students who에 이어지는 복수 were, ②readers who에 이어지는 복수 were, ③enable+목적어+to부정사, ⑤분사구문 highlighting은 모두 적절. |
+| 2 | 어법 | 4.0 | ① | 수능특강 영어 13강 2번 | ① no way를 수식하여 '~할 방법'을 뜻하려면 to부정사 to feel이 되어야 한다(원형 feel은 틀림). ②조동사 may 뒤 원형 yield, ③분사구문 supplying, ④are와 함께 진행형을 이루는 현재분사 sampling, ⑤the bridge를 선행사로 하는 주격 관계대명사 that은 모두 적절. |
+| 3 | 어법 | 4.0 | ④ | 수능특강 영어 14강 4번 | ④ enable+목적어+to부정사 구문이므로 to outscore가 되어야 한다(원형 outscore는 틀림). ①students who에 이어지는 복수 수동 were asked, ②be composed of(~로 구성되다)의 과거분사 composed, ③had+목적어+p.p.(사역) 구조의 tested, ⑤주어 Prior knowledge에 일치하는 단수 was는 모두 적절. |
 | 4 | 어법 | 4.0 | ⑤ | 수능특강 영어 15강 Gateway | ⑤ be worth 뒤에는 동명사가 와야 하므로 considering이 되어야 한다(원형 consider는 틀림). ①has been established(수동완료), ②전치사 of의 목적어 동명사 increasing, ③전환 부사 Conversely, ④could be 뒤 과거분사 used(수동)는 모두 적절. |
-| 5 | 어법 | 4.0 | ④ | 수능특강 영어 17강 1번 | ④ 앞에 선행사 the messages가 있고 뒤 절에서 receive의 목적어가 비어 있으므로 목적격 관계대명사 that(또는 which)이 되어야 한다(선행사를 포함하는 what은 틀림). ①전치사 in의 목적어 동명사 helping, ②주어 each person's interpretation(단수)에 일치하는 becomes, ③those who(~하는 사람들), ⑤조동사 may 뒤 원형 influence는 모두 적절. |
-| 6 | 어휘 | 4.0 | ② | 수능특강 영어 7강 1번 | 청량음료가 집단을 중시하는 소련의 이념적 우선순위에 '맞지 않아(fit)' 보였다는 맥락이므로, '맞아 보였다'는 ② match는 정반대로 부적절하다(이어지는 '쓸모없는 음료'라는 일축과도 어긋남). ①이념이 강조, ③프로젝트 재구성, ④다른 기업 투자 설득, ⑤이념을 중심으로 협상은 모두 적절. |
-| 7 | 어휘 | 4.0 | ⑤ | 수능특강 영어 7강 3번 | 마지막 문장은 리미티드 애니메이션이 없었다면 Yellow Submarine 같은 혁신적 영화가 '제작될(produced)' 수 없었을 것이라는 뜻이므로, '막아지다'는 ⑤ prevented는 부적절하다(produced가 맞다). ①사실적 애니메이션은 시간이 많이 듦, ②더 낮은 제작비, ③관객의 상상, ④현실의 모사는 모두 적절. |
-| 8 | 빈칸추론 | 4.0 | ③ | 수능특강 영어 3강 1번 | 빈칸 뒤에서 '우리가 일하러 오는 이유는 대의이며, 벽이 아니라 성당을 짓기 위해 출근한다'고 한다. 앞에서도 진정한 충성심은 더 많은 돈·혜택을 거절하는 것이라 했으므로, 충성심은 '급여와 혜택을 능가한다(trumps pay and benefits)'는 ③이 정답. ①보너스로 커진다·②직업 안정성에 좌우는 본문이 부정한 외적 유인, ④·⑤는 무관. |
-| 9 | 빈칸추론 | 4.0 | ② | 수능특강 영어 3강 2번 | 빈칸 뒤에서 DNA를 '우리 몸의 청사진이자 자녀에게 물려줄 것을 좌우하는 독재자(dictator)'라 했고, 마지막 문장은 우리가 이 역사에 '갇혀 있다(trapped)'고 한다. 따라서 DNA는 우리 안에 있으면서 동시에 우리를 지배하는 '우리의 주인(our master)'이라는 ②가 정답. ①자유롭게 다시 쓸 수 있다·④우리 선택의 산물은 본문의 '독재자·갇힘'과 반대, ③무관·⑤분리는 본문과 어긋남. |
-| 10 | 빈칸추론 | 4.0 | ① | 수능특강 영어 11강 Gateway | 교사가 슈퍼마켓 비유로, 가게의 모든 것이 유용해도 다 사지는 않듯 자료의 모든 것을 베낄 필요가 없음을 가르친다. 부모와 장 볼 때 '무엇을 살지 정하는 기준'에 빗대므로, 교사가 요구한 것이 곧 조사의 '쇼핑 목록(shopping list)'이라는 ①이 정답. 학생은 그 목록에 해당하는 정보만 골라 읽으면 된다. ②가격표·③창고·④계산대·⑤배달은 '선별'이라는 비유의 핵심과 무관. |
+| 5 | 어법 | 4.0 | ④ | 수능특강 영어 17강 1번 | ④ 앞에 선행사 the messages가 있고 뒤 절에서 receive의 목적어가 비어 있으므로 목적격 관계대명사 that(또는 which)이 되어야 한다(선행사를 포함하는 what은 틀림). ①전치사 in의 목적어 동명사 helping, ②주어 interpretation(단수) 일치 becomes, ③those who(~하는 사람들), ⑤주어 How절(단수 취급) 일치 becomes는 모두 적절. |
+| 6 | 어휘 | 4.0 | ② | 수능특강 영어 7강 1번 | 청량음료가 집단을 중시하는 소련의 이념적 우선순위에 '맞지 않아(fit)' 보였다는 맥락이므로(이어지는 '쓸모없는 음료'라는 일축과 연결), '맞다'는 ② match는 정반대로 부적절하다. ①이념이 강조했다, ③갈증을 해소하다, ④다른 기업을 설득하다, ⑤그 나라는 모두 적절. |
+| 7 | 어휘 | 4.0 | ⑤ | 수능특강 영어 7강 3번 | 마지막 문장은 리미티드 애니메이션이 없었다면 Yellow Submarine 같은 혁신적 영화가 '제작될(produced)' 수 없었을 것이라는 뜻이므로, '막아지다'는 ⑤ prevented는 부적절하다. ①시간이 많이 듦, ②제작비, ③관객의 상상, ④현실의 모사는 모두 적절. |
+| 8 | 빈칸추론 | 4.0 | ③ | 수능특강 영어 3강 1번 | 빈칸 뒤 '벽이 아니라 성당을 짓기 위해 출근한다'는 비유는 더 큰 목적·대의를 위해 일한다는 뜻이다. 앞에서 진정한 충성심은 급여와 혜택을 능가한다(trumps pay and benefits)고 했으므로, 출근의 이유는 '대의(the cause)'인 ③이 정답. ①급여·②안락함·④인정·⑤경쟁은 본문이 부정하거나 무관한 외적 유인. |
+| 9 | 빈칸추론 | 4.0 | ② | 수능특강 영어 3강 2번 | 빈칸 뒤에서 DNA를 '우리 몸의 청사진이자 자녀에게 물려줄 것을 좌우하는 독재자(dictator)'라 했고, 마지막 문장은 우리가 이 역사에 '갇혀 있다(trapped)'고 한다. 따라서 DNA는 우리 안에 있으면서 동시에 우리를 지배하는 '우리의 주인(our master)'이라는 ②가 정답. ①다시 쓸 수 있는 기록·④우리 선택의 산물은 본문의 '독재자·갇힘'과 반대, ③무관·⑤분리는 어긋남. |
+| 10 | 빈칸추론 | 4.0 | ① | 수능특강 영어 11강 Gateway | 교사가 슈퍼마켓 비유로, 가게의 모든 것이 유용해도 다 사지는 않듯 자료의 모든 것을 베낄 필요가 없음을 가르친다. 부모와 장 볼 때 '무엇을 살지 정하는 기준'에 빗대므로, 교사가 요구한 것이 곧 조사의 '쇼핑 목록(shopping list)'이라는 ①이 정답. ②가격표·③창고·④계산대·⑤배달은 선별이라는 비유의 핵심과 무관. |
 | 11 | 글의순서 | 4.0 | ③ | 수능특강 영어 15강 1번 | 주어진 글(측정기기는 정밀도 면에서 최적 능력까지 읽어야 한다) → (B)정밀도는 자릿수로 반영되며 자릿수가 많을수록 정밀 → (A)소수점 첫째·둘째 자리를 얻을 수 있으면 기록하라는 구체적 방법 → (C)따라서 가능한 많은 자릿수를 얻도록 노력하라는 결론. 따라서 (B)-(A)-(C)인 ③. |
-| 12 | 글의순서 | 4.0 | ③ | 수능특강 영어 15강 2번 | 주어진 글(수학은 추상화에 관한 것) → (B)수학자들은 개별 대상을 한데 묶어 동시에 연구한다 → (A)이로써 한 번만 증명하면 되어 시간·노력을 아낀다 → (C)일상에서도 '모든 과일에 씨가 있고 사과는 과일이니 사과엔 씨가 있다'처럼 비슷하게 추론한다. 따라서 (B)-(A)-(C)인 ③. |
-| 13 | 글의순서 | 4.0 | ① | 수능특강 영어 4강 2번 | 주어진 글(모든 생각이 동등하게 타당하다는 것은 신화; 과학은 객관적 진리에 대한 헌신) → (B)'결국 과학은 참이다'라며 구체적 성취를 나열 → (A)'그러나' 직관은 검증을 거쳐야 하고 반증되면 가설을 수정해야 한다 → (C)비판적 사고와 증거 존중이 필수라는 결론. 따라서 (B)-(A)-(C)인 ③. |
+| 12 | 글의순서 | 4.0 | ① | 수능특강 영어 15강 2번 | 주어진 글(수학은 추상화에 관한 것) → (B)수학자들은 개별 대상을 한데 묶어 동시에 연구한다 → (A)이로써 한 번만 증명하면 되어 시간·노력을 아낀다 → (C)구체적으로 한 부류에 속함을 증명하며, 일상에서도 비슷하게 추론한다. 따라서 (B)-(A)-(C)인 ③. |
+| 13 | 글의순서 | 4.0 | ① | 수능특강 영어 4강 2번 | 주어진 글(모든 생각이 동등하게 타당하다는 것은 신화; 과학은 객관적 진리에 대한 헌신) → (B)'결국 과학은 참이다'라며 구체적 성취를 나열 → (A)'그러나' 직관은 검증을 거쳐야 하고 반증되면 가설을 수정해야 한다 → (C)비판적 사고와 증거 존중이 필수라는 결론. 따라서 (B)-(A)-(C)인 ①. |
 | 14 | 흐름무관 | 4.0 | ③ | 수능특강 영어 11강 2번 | 글은 '인종'이 과학적 근거 없는 사회적 구성물임을, 고대 로마가 피부색을 중시하지 않은 예로 보여준다. ③'현대 DNA 검사 키트가 가계 추적 수단으로 인기'는 인종의 사회적 구성이라는 논지와 무관. ①②④⑤는 모두 인종 구분의 비과학성·사회성의 흐름. |
-| 15 | 흐름무관 | 4.0 | ① | 수능특강 영어 3강 4번 | 글은 사람들이 비판적 사고를 두려워하는 이유를 다룬다. ①'읽기 속도는 규칙적 연습과 안구 운동 훈련으로 향상된다'는 읽기 기술로 사고에 대한 두려움이라는 논지와 무관. ②③④⑤는 모두 사고의 두려움·중요성의 흐름. |
-| 16 | 흐름무관 | 4.0 | ⑤ | 수능특강 영어 11강 4번 | 글은 분량 증가가 무의식적 과식과 비만으로 이어진다는 점을 일관되게 말한다. ⑤'규칙적 유산소 운동이 심장을 강화하고 심혈관 지구력을 향상시킨다'는 운동 효과로 분량·비만 논지와 무관. ①②③④는 모두 분량 증가와 과식의 흐름. |
+| 15 | 흐름무관 | 4.0 | ③ | 수능특강 영어 3강 4번 | 글은 사람들이 비판적 사고를 두려워하는 이유(오래된 믿음이 도전받고 균형을 잃을까 하는 걱정)와 사고의 중요성을 다룬다. ③'읽기 속도는 규칙적 연습과 안구 운동 훈련으로 향상된다'는 읽기 기술로 논지와 무관. ①②④⑤는 모두 사고의 두려움·중요성의 흐름. |
+| 16 | 흐름무관 | 4.0 | ⑤ | 수능특강 영어 11강 4번 | 글은 분량(portion size) 증가가 무의식적 과식과 비만으로 이어진다는 점을 일관되게 말한다. ⑤'규칙적 유산소 운동이 심장을 강화하고 심혈관 지구력을 향상시킨다'는 운동 효과로 분량·비만이라는 논지와 무관. ①②③④는 모두 분량 증가와 과식의 흐름. |
 | 17 | 문장삽입 | 4.0 | ④ | 수능특강 영어 12강 1번 | 주어진 문장은 '제약 생산 라인에서 나온 알약은 본능이 안전하다고 여기는 것과 전혀 닮지 않았다'는 내용이다. ④ 뒤 문장 '그 성분이 고등학교 화학 실험실을 떠올리게 한다'와 직접 연결되므로, 약의 인공성을 처음 제시하는 주어진 문장은 ④에 들어가야 한다. |
 | 18 | 주제 | 4.0 | ② | 수능특강 영어 4강 3번 | 글은 사회적 불안이 정상이며, 그것을 단서 삼아 타인에게 공감과 도움을 베풀고 연결을 강화하는 도구로 '전환'할 수 있다고 말한다. 따라서 주제는 '공감과 연결을 위한 도구로서 사회적 불안의 활용'인 ②. ①증상·③회피·④긴장 숨기기·⑤공포의 기원은 지엽이거나 본문에 없는 내용. |
 | 19 | 주제 | 4.0 | ④ | 수능특강 영어 5강 Gateway | 글은 너무 거대해 통제 불가능한 위기에 매몰되면 파괴적 반응이 악화되므로, '자신이 통제할 수 있는 측면'을 찾는 것이 최선이라고 한다(대침체 때 투자 포트폴리오 재구성 예시). 따라서 주제는 ④. ①경제적 피해·②예측 불가·③심리 증상·⑤정부 정책은 지엽이거나 본문 논지가 아니다. |
 | 20 | 주제 | 4.0 | ③ | 수능특강 영어 5강 1번 | 글은 사람들이 건강 정보를 주로 인터넷에 의존하지만, 그 정보 다수가 전문가 검토·정부 규제 없이 오해를 부르는 주장을 담는다고 지적한다. 따라서 주제는 '온라인 건강·영양 정보의 신뢰성 부족'인 ③. ①건강 관심 증가·②정부 규제(없다고 함)·④제품 선택법·⑤의사 불신은 지엽이거나 반대. |
-| 21 | 제목 | 4.0 | ① | 수능특강 영어 6강 1번 | 글은 같은 음료수 캔도 길거리에 있으면 쓰레기지만 미술관 받침대 위 작품으로 놓이면 예술로 해석된다는 예로, 대상이 놓인 '맥락'이 의미 해석을 좌우함을 보인다. 따라서 제목은 '맥락이 의미 해석을 형성한다'인 ①. ②추상화의 난해함·③쓰레기 재활용·④물질주의 쇠퇴·⑤제목 선정은 지엽이거나 무관. |
+| 21 | 제목 | 4.0 | ① | 수능특강 영어 6강 1번 | 글은 같은 음료수 캔도 길거리에 있으면 쓰레기지만 미술관 받침대 위 작품으로 놓이면 예술로 해석된다는 예로, 대상이 놓인 '맥락(위치)'이 의미 해석을 좌우함을 보인다. 따라서 제목은 '맥락이 의미 해석을 형성한다'인 ①. ②추상화의 난해함·③쓰레기 재활용·④물질주의 쇠퇴·⑤제목 선정은 지엽이거나 무관. |
 | 22 | 제목 | 4.0 | ④ | 수능특강 영어 6강 3번 | 글은 문학을 읽을 때 독자의 상상력이 활성화되어, 작가가 준 '청사진' 위에 독자가 의미의 '방들'을 지으며 창의력이 충족된다고 한다. 따라서 제목은 '문학이 독자의 상상력을 일깨운다'인 ④. ①상상력 쇠퇴·②사실적 세계 구축·③지각·⑤기억의 한계는 본문 논지와 어긋나거나 지엽. |
 | 23 | 요약문완성 | 4.0 | ② | 수능특강 영어 16강 2번 | 두 개의 상충하는 식민지 국경 때문에 두 영토 중 하나만 택해야 하는 '선택(choice)'이 강제되었고, 이집트와 수단 모두 더 가치 있는 Hala'ib Triangle을 차지하기 위해 가치가 낮은 Bir Tawil을 '거부(reject)'한다. 따라서 (A) choice, (B) reject인 ②가 정답. ①협력·④합병은 상황과 반대, ③전쟁·⑤조약은 본문에 없다. |
 | 24 | 요약문완성 | 4.0 | ② | 수능특강 영어 17강 4번 | 글은 회복을 두 측면으로 정의한다: 회복 기간 후의 회복된 신체·심리 '상태'(결과, outcome)와 그 상태를 가져오는 활동·경험(과정, process). 따라서 (A) outcome, (B) process인 ②가 정답. ④는 둘을 뒤바꾼 것이라 (A)(B) 순서가 맞지 않다. |
