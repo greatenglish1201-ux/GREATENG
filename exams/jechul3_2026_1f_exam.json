@@ -1,0 +1,637 @@
+{
+ "key": "제철고_3학년_2026_1학기_기말",
+ "meta": {
+  "key": "제철고_3학년_2026_1학기_기말",
+  "school": "제철고",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "기말고사",
+  "subject": "영어II",
+  "pattern_key": "제철고_3학년_2026_1학기_중간",
+  "build": "claude-authored",
+  "total": 30,
+  "total_score": 100.0,
+  "patterns": {
+   "제목": 1,
+   "글의순서": 3,
+   "어휘": 5,
+   "함축의미": 4,
+   "요지": 1,
+   "흐름무관": 3,
+   "빈칸추론": 7,
+   "추론": 1,
+   "요약문완성": 3,
+   "문장삽입": 2
+  },
+  "answer_dist": {
+   "①": 6,
+   "②": 6,
+   "③": 6,
+   "④": 6,
+   "⑤": 6
+  }
+ },
+ "questions": [
+  {
+   "type": "single",
+   "num": 1,
+   "qtype": "제목",
+   "score": 2.5,
+   "question": "다음 글의 제목으로 가장 적절한 것은?\nHistorians do more than select and interpret evidence: they also organize the evidence in order to create an understandable (and, they hope, persuasive) narrative. Chronological order is generally part of making history plausible, especially when the causes of change are central, although in practice much historical writing must go back and forth in time in order to pick up various threads of a complex story. Historians also make events understandable by casting them in a particular light or giving their narrative a particular tone. For example, a historian might highlight historical ironies, such as the way President George W. Bush once criticized \"nation building,\" in which the U.S. rebuilds a country's economic and political structure when its government fails; but later, as a consequence of launching a war in Iraq, Bush had to attempt exactly that. Historians can also romanticize events, as did those who described John F. Kennedy's term as President as \"Camelot,\" alluding to a Broadway musical about the heroic King Arthur and the Knights of the Round Table. Similarly, one historian may view a certain chain of events as improvement, while another may perceive it as a decline. These are just a few of the ways historians may make narrative sense of history.",
+   "choices": [
+    "① The Danger of Romanticizing Political Leaders",
+    "② Why Chronological Order Is the Only Valid History",
+    "③ Various Ways Historians Shape Events into Narrative",
+    "④ How Irony Distorts Our Understanding of the Past",
+    "⑤ Objective Facts: The Sole Foundation of History"
+   ],
+   "answer": "③",
+   "explanation": "역사가가 연대순 배열, 특정 색조 부여, 아이러니 강조, 낭만화 등 여러 방식으로 사건을 서사로 만든다는 글이므로 ①이 제목으로 적절하다. ②⑤는 본문이 말하는 다양성과 어긋난다. [출처: 수특영독 3강 5번]",
+   "source": "수특영독 3강 5번 (원유형:빈칸추론)",
+   "_orig": "Historians do more than select and interpret evidence: they also organize the evidence in order to create an understandable (and, they hope, persuasive) narrative. Chronological order is generally part of making history plausible, especially when the causes of change are central, although in practice much historical writing must go back and forth in time in order to pick up various threads of a complex story. Historians also make events understandable by casting them in a particular light or giving their narrative a particular tone. For example, a historian might highlight historical ironies, such as the way President George W. Bush once criticized \"nation building,\" in which the U.S. rebuilds a country's economic and political structure when its government fails; but later, as a consequence of launching a war in Iraq, Bush had to attempt exactly that. Historians can also romanticize events, as did those who described John F. Kennedy's term as President as \"Camelot,\" alluding to a Broadway musical about the heroic King Arthur and the Knights of the Round Table. Similarly, one historian may view a certain chain of events as improvement, while another may perceive it as a decline. These are just a few of the ways historians may make narrative sense of history.",
+   "_origtype": "빈칸추론",
+   "_src": "3강_5번"
+  },
+  {
+   "type": "single",
+   "num": 2,
+   "qtype": "글의순서",
+   "score": 2.7,
+   "question": "글의 문맥상, 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nTo illustrate the benefits of simplifying the observer's job, consider psychologist William Ickes's research on 'everyday mind reading.'\n\n(A) Then, participants see the tape again and are to stop it at different points and write down what their interaction partner was thinking at that point. Observers rate the degree to which the participant's guess matches what the partner was actually thinking.\n\n(B) One way he studies such mind reading is by having two strangers interact. He tapes the interaction and then has each participant view the tape. Participants are to stop the tape at different points and say what they are thinking.\n\n(C) Ickes could have had observers make their judgments on a 0 to 100 scale. However, he had observers use a 3-point scale. By using fewer categories, raters found the job of rating easier and were able to make reliable ratings.",
+   "choices": [
+    "① (B)-(A)-(C)",
+    "② (A)-(C)-(B)",
+    "③ (B)-(C)-(A)",
+    "④ (C)-(A)-(B)",
+    "⑤ (C)-(B)-(A)"
+   ],
+   "answer": "①",
+   "explanation": "Ickes 연구 소개(주어진 글) → 실험 방법으로 참가자가 자기 생각을 말함(B) → 이어 상대 생각을 적고 관찰자가 평가(A) → 평가 척도를 단순화해 신뢰도를 높임(C). 따라서 (B)-(A)-(C). [출처: 수특영독 2강 1번]",
+   "source": "수특영독 2강 1번 (원유형:빈칸추론)",
+   "_orig": "To illustrate the benefits of simplifying the observer's job, consider psychologist William Ickes's research on 'everyday mind reading.' One way he studies such mind reading is by having two strangers interact. He tapes the interaction and then has each participant view the tape. Participants are to stop the tape at different points and say what they are thinking. Then, participants see the tape again and are to stop it at different points and write down what their interaction partner was thinking at that point. Observers rate the degree to which the participant's guess about what the partner was thinking matches what the partner was actually thinking. Ickes could have had observers make their judgments on a 0 (not at all) to 100 (completely) scale. However, he had observers use a 3-point scale with '0' being 'essentially different content,' '1' being 'similar, but not the same, content,' and '2' being 'essentially the same content.' By using fewer categories, raters found the job of rating easier and were able to make reliable ratings.",
+   "_origtype": "빈칸추론",
+   "_src": "2강_1번"
+  },
+  {
+   "type": "single",
+   "num": 3,
+   "qtype": "어휘",
+   "score": 2.9,
+   "question": "다음 글의 밑줄 친 어휘 중, 문맥상 쓰임이 적절하지 않은 것은?\nFan editors often consult \"specialist sources\" to track down information about their media interests. These works are considered ①<u>authoritative</u> due to their reputation for accuracy and focused coverage. While fan editors usually seek information ②<u>individually</u>, they will sometimes collaborate with others who share their taste in media. This collaboration tends to emerge ③<u>spontaneously</u>, often in response to a lack of accessible information. And regardless of whether information seeking is done individually or collaboratively, fan editors commonly face several key informational ④<u>barriers</u>. Paywalled sources often block off content, and link rot can hinder an editor's ability to locate information. Language barriers can also ⑤<u>assist</u> editors, leading some to use machine translation tools or to seek help from multilingual colleagues.",
+   "choices": [
+    "① authoritative",
+    "② individually",
+    "③ spontaneously",
+    "④ barriers",
+    "⑤ assist"
+   ],
+   "answer": "⑤",
+   "explanation": "언어 장벽은 편집자를 '방해(hinder)'하며 그래서 번역 도구를 쓴다는 흐름이므로 ⑤ assist(돕다)는 부적절하다. ①authoritative, ②individually, ③spontaneously, ④barriers는 원문 그대로 적절하다. [출처: 수특영독 5강 12번]",
+   "source": "수특영독 5강 12번 (원유형:글의순서)",
+   "_orig": "Fan editors often consult \"specialist sources\" to track down information about their media interests. These works are considered authoritative due to their reputation for accuracy and focused coverage, and after sufficient \"enculturation,\" fan editors will often learn to seek out these sources whenever an information need arises. While fan editors usually seek information individually, they will sometimes collaborate with others who share their taste in media. This collaboration tends to emerge spontaneously, often in response to a lack of accessible information, and it usually occurs within established groups of editors. And regardless of whether information seeking is done individually or collaboratively, fan editors commonly face several key informational barriers. Paywalled sources, for instance, often block off content, and link rot can hinder an editor's ability to locate information. Language barriers can also hinder editors, leading some to use machine translation tools or to seek help from multilingual colleagues. Finally, the issue of \"recentism\" often makes it difficult for fan editors to find pre-digital sources.",
+   "_origtype": "글의순서",
+   "_src": "5강_12번"
+  },
+  {
+   "type": "single",
+   "num": 4,
+   "qtype": "함축의미",
+   "score": 3.1,
+   "question": "다음 글에서 밑줄 친 <u>digital images tend to be one more step removed from reality</u>가 의미하는 바로 가장 적절한 것은?\nPhotography battles with the fantasy that it captures a neutral view of reality without modifying it. Susan Sontag refers to an official use of the printed photograph that passes for unquestionable proof that a given thing happened. However, she states her opinion that 'photographs are as much an interpretation of the world as paintings and drawings'. Additionally, the art of dodging and burning during the transfer from negative to print was well established before Photoshop and digital photography. Ansel Adams is known for spending many hours in the darkroom developing a single print and he also said, 'dodging and burning are steps to take care of mistakes God made in establishing tonal relationships'. However, <u>digital images tend to be one more step removed from reality</u>. While the negative in print photography is still an image, the file of a digital image is comprised of bits ─ computerized 1's and 0's ─ that are not an image until interpreted and displayed by a combination of software and an electronic display device.",
+   "choices": [
+    "① A digital file is mere data until software interprets it into an image.",
+    "② Digital images are processed faster than film photographs.",
+    "③ Digital photography perfectly captures a neutral view of reality.",
+    "④ Photographers no longer need darkroom skills in the digital age.",
+    "⑤ Printed photographs are entirely free from human interpretation."
+   ],
+   "answer": "①",
+   "explanation": "디지털 이미지의 파일은 소프트웨어와 디스플레이가 해석하기 전까지는 이미지가 아닌 0과 1의 비트일 뿐이라고 했으므로, 현실에서 한 단계 더 멀어졌다는 것은 ②를 의미한다. [출처: 수특영독 7강 6번]",
+   "source": "수특영독 7강 6번 (원유형:글의순서)",
+   "_orig": "Photography battles with the fantasy that it captures a neutral view of reality without modifying it. Susan Sontag refers to an official use of the printed photograph that passes for unquestionable proof that a given thing happened. However, she states her opinion that 'photographs are as much an interpretation of the world as paintings and drawings'. Additionally, the art of dodging and burning during the transfer from negative to print was well established before Photoshop and digital photography. Ansel Adams is known for spending many hours in the darkroom developing a single print and he also said, 'dodging and burning are steps to take care of mistakes God made in establishing tonal relationships'. However, digital images tend to be one more step removed from reality. While the negative in print photography is still an image, the file of a digital image is comprised of bits ─ computerized 1's and 0's ─ that are not an image until interpreted and displayed by a combination of software and an electronic display device.",
+   "_origtype": "글의순서",
+   "_src": "7강_6번"
+  },
+  {
+   "type": "single",
+   "num": 5,
+   "qtype": "요지",
+   "score": 3.0,
+   "question": "다음 글의 요지로 가장 적절한 것은?\nComputing the sum or average of several positive and negative values indeed lies within the normal repertoire of what elementary circuits of neurons can do without consciousness. Even a monkey can learn to make a decision based on the total value brought about by a series of arbitrary shapes, and the firing of parietal neurons keeps track of the sum. In my laboratory, we proved that approximate addition is within grasp of the human unconscious. In one experiment, we flashed a series of five arrows and asked subjects whether more arrows were pointing right or pointing left. When the arrows were made invisible by masking, participants were asked to guess, and indeed they thought that they were responding randomly, but in reality they continued to do much better than chance would predict. Signals from their parietal cortex gave evidence that their brain was unconsciously computing the approximate sum of the overall evidence. The arrows were subjectively invisible, but they still made their way into the brain's weighting and decision systems.",
+   "choices": [
+    "① 의식 없이는 어떤 수치 계산도 불가능하다.",
+    "② 뇌는 의식하지 못하는 정보도 더하여 판단에 사용한다.",
+    "③ 원숭이는 인간보다 합산 능력이 뛰어나다.",
+    "④ 화살표 실험은 의식적 추측에만 의존한다.",
+    "⑤ 두정엽은 시각 정보 처리와 무관하다."
+   ],
+   "answer": "②",
+   "explanation": "보이지 않게 가려진 화살표조차 뇌의 두정엽이 무의식적으로 합산해 판단에 반영한다는 실험을 제시하므로, 뇌가 의식하지 못하는 정보도 더해 판단에 쓴다는 ②가 요지로 적절하다. [출처: 수특영독 2강 5번]",
+   "source": "수특영독 2강 5번 (원유형:빈칸추론)",
+   "_orig": "Computing the sum or average of several positive and negative values indeed lies within the normal repertoire of what elementary circuits of neurons can do without consciousness. Even a monkey can learn to make a decision based on the total value brought about by a series of arbitrary shapes, and the firing of parietal neurons keeps track of the sum. In my laboratory, we proved that approximate addition is within grasp of the human unconscious. In one experiment, we flashed a series of five arrows and asked subjects whether more arrows were pointing right or pointing left. When the arrows were made invisible by masking, participants were asked to guess, and indeed they thought that they were responding randomly, but in reality they continued to do much better than chance would predict. Signals from their parietal cortex gave evidence that their brain was unconsciously computing the approximate sum of the overall evidence. The arrows were subjectively invisible, but they still made their way into the brain's weighting and decision systems.",
+   "_origtype": "빈칸추론",
+   "_src": "2강_5번"
+  },
+  {
+   "type": "single",
+   "num": 6,
+   "qtype": "어휘",
+   "score": 3.4,
+   "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nThe power and value of being literate in a literate society are played out every day. Many individuals make considerable ①<u>sacrifices</u> to become literate just as others take it for granted. Societies that do not practice literate behavior are often squalid, undernourished in mind and body, and harsh. We admit that various forms of \"barbarity\" can be found in all societies, but they are much more ②<u>prevalent</u> where literate behavior is absent. Literacy and quality of life go hand in hand. With literacy comes the power of belonging to a ③<u>privileged</u> group and the ④<u>freedom</u> that derives from that power. Frederick Douglass, who struggled as a slave to learn to read, said it best: \"Once you learn to read, you will be forever ⑤<u>enslaved</u>.\"",
+   "choices": [
+    "① sacrifices",
+    "② prevalent",
+    "③ privileged",
+    "④ freedom",
+    "⑤ enslaved"
+   ],
+   "answer": "⑤",
+   "explanation": "Douglass의 말은 '읽기를 배우면 영원히 자유로워진다(free)'이므로 ⑤ enslaved(노예가 된)는 정반대로 부적절하다. ①sacrifices, ②prevalent, ③privileged, ④freedom은 원문 그대로 적절하다. [출처: 수특영독 3강 2번]",
+   "source": "수특영독 3강 2번 (원유형:빈칸추론)",
+   "_orig": "The power and value of being literate in a literate society are played out every day around the world. Many individuals, and in fact whole societies, make considerable sacrifices to become literate just as others take it for granted. Societies that do not practice literate behavior are often squalid, undernourished in mind and body, repressive of human rights and dignity, brutal, and harsh. Present-day examples are easy to list, but in fact this has always been the case. As Samuel Johnson observed more than two centuries ago, \"The mass of every people must be barbarous where there is no printing.\" We admit that various forms of \"barbarity\" can be found in all societies, but they are much more prevalent where literate behavior is absent. Literacy and quality of life go hand in hand. With literacy comes the power of belonging to a privileged group and the freedom that derives from that power. Frederick Douglass, who struggled as a slave to learn to read, said it best: \"Once you learn to read, you will be forever free.\"",
+   "_origtype": "빈칸추론",
+   "_src": "3강_2번"
+  },
+  {
+   "type": "single",
+   "num": 7,
+   "qtype": "흐름무관",
+   "score": 3.1,
+   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nWith people living longer and the average age increasing markedly, the ramifications for sport are substantial. ① Fewer people are likely to engage in the most popular traditional and, incidentally, most athletic sports, such as soccer, other forms of football, and basketball, so these sports will need to market their products differently to satisfy the older spectator. ② This may mean far more comfortable sport areas with greater and better access to car parks, bars, and restaurants. ③ It may mean showing top sports during the day or much earlier in the evening, with far less television coverage on Fridays and Saturdays when older viewers prefer to visit friends or spend time at the local pub. ④ Youth participation in organized school sports has steadily declined in recent years due to the growing popularity of digital entertainment. ⑤ The 'ageing viewer' syndrome will probably herald a realisation that new sponsors — perhaps a good red wine rather than colas — will be required for sport.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "글 전체는 고령화가 스포츠 마케팅·관람 환경·후원에 미치는 영향을 다룬다. ④는 청소년의 학교 스포츠 참여 감소와 그 원인(디지털 오락)에 관한 내용으로 전체 흐름과 무관하다. 나머지 ①②③⑤는 원문의 고령 관객 대응 논의를 그대로 따른다. [출처: 수특영독 6강 8번]",
+   "source": "수특영독 6강 8번 (원유형:주제)",
+   "_orig": "With people living longer and the average age increasing markedly, the ramifications for sport are substantial. Fewer people are likely to engage in the most popular traditional and, incidentally, most athletic sports, such as soccer, other forms of football, and basketball. These sports will need to market their products differently in order to satisfy the requirements of the older spectator or supporter. This may mean far more comfortable sport areas with greater and better access to car parks, bars, and restaurants. It may mean showing top sports during the day or much earlier in the evening, with far less television coverage on Fridays and Saturdays when older viewers prefer to visit friends, go to restaurants or spend time at the local pub or club. The 'ageing viewer' syndrome, for such it may well be, will probably herald a realisation that new sponsors will be required for sport. Colas and sport shoes may be fine for the under-35s, but the older generation may prefer a good red wine and comfortable slippers. It will be the sporting organisations and sponsors who can create the idea of youth combined with the comfort of older age which will be most successful in the next half century.",
+   "_origtype": "주제",
+   "_src": "6강_8번"
+  },
+  {
+   "type": "single",
+   "num": 8,
+   "qtype": "글의순서",
+   "score": 3.2,
+   "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nThere are two classic problems that give us mathematically proper ways to evaluate coincidences.\n\n(A) These two problems, along with the law of large numbers and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect.\n\n(B) One is the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people will share a birthday. The other is the monkey problem: given enough time, could a monkey randomly hitting keys write the first line of a Shakespeare sonnet?\n\n(C) This last law, the law of truly large numbers, tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time. It gives a sense of just how common coincidences are.",
+   "choices": [
+    "① (B)-(A)-(C)",
+    "② (A)-(C)-(B)",
+    "③ (B)-(C)-(A)",
+    "④ (C)-(A)-(B)",
+    "⑤ (C)-(B)-(A)"
+   ],
+   "answer": "①",
+   "explanation": "두 고전 문제 언급(주어진 글) → 생일 문제와 원숭이 문제 소개(B) → 이 문제들과 큰 수의 법칙이 우연을 설명한다(A) → 그중 '진정 큰 수의 법칙'을 부연(C). 따라서 (B)-(A)-(C). [출처: 수특영독 1강 7번]",
+   "source": "수특영독 1강 7번 (원유형:빈칸추론)",
+   "_orig": "There are two classic problems that give us mathematically proper ways to evaluate coincidences. One is a counterintuitive poser: the birthday problem, which tells us that in any group of twenty-three people the odds are better than even that two people in the group will have the same birthday. The other is the monkey problem, which asks: if given a large enough amount of time, could a monkey, randomly hitting the keys of a computer keyboard, write the first line of a Shakespeare sonnet? These two problems, along with the law of large numbers, the theory of hidden variables, and the law of truly large numbers, give us a reasonable understanding of why coincidences happen far more frequently than we expect. This last law, the law of truly large numbers, is a philosophical adage. In a nutshell, it tells us that if there is any likelihood that something could happen, no matter how small, it's bound to happen at some time. It's not a theorem that can be proven. After all, I used the phrase \"bound to happen,\" which is as ambiguous as any phrase can be. But it gives a sense of just how common coincidences are.",
+   "_origtype": "빈칸추론",
+   "_src": "1강_7번"
+  },
+  {
+   "type": "single",
+   "num": 9,
+   "qtype": "빈칸추론",
+   "score": 3.4,
+   "question": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?\nAmerican educators saw Asian American parenting as deviant and, correspondingly, felt white middle class parents and kids set an appropriate standard that others should conform to. For example, when white children outperform minority students, teachers rarely see it as 'academic bullying' or express sympathy about minorities' 'emotional well-being.' Similarly, educators do not create pathological rationales for whites' weaker performance relative to Asian Americans, as happens for minorities relative to whites. Whites are not expected to emulate those who achieve more (i.e., toward Asian Americans), whereas black and Latinx youths are (i.e., toward whites). Also, teachers, predominantly white, reinforce a 'hidden curriculum' ─ that is, informal norms for what constitutes proper behavior, dress, attitudes, and discipline in schools. Racial inequalities arise even in integrated and reasonably resourced schools. Educators make significant efforts to address the learning gaps facing minority youths but do not disrupt the white supremacy embedded in standard practices. The taken-for-granted assumption that ______ contributes to why Asian Americans are framed as 'deviant' and 'a problem.'",
+   "choices": [
+    "① white students' practices are 'normal'",
+    "② minority students lack motivation",
+    "③ Asian American parenting is superior",
+    "④ all schools are equally resourced",
+    "⑤ academic competition harms everyone"
+   ],
+   "answer": "①",
+   "explanation": "글 전체가 백인 중산층의 방식을 '정상'으로 보는 당연시된 가정이 아시아계를 '일탈'로 규정하게 만든다고 설명하므로, 빈칸에는 '백인 학생의 방식이 정상이라는' ①이 적절하다. [출처: 수특영독 7강 3번]",
+   "source": "수특영독 7강 3번 (원유형:제목)",
+   "_orig": "American educators saw Asian American parenting as deviant and, correspondingly, felt white middle class parents and kids set an appropriate standard that others should conform to. For example, when white children outperform minority students, teachers rarely see it as 'academic bullying' or express sympathy about minorities' 'emotional well-being.' Similarly, educators do not create pathological rationales for whites' weaker performance relative to Asian Americans, as happens for minorities relative to whites. Whites are not expected to emulate those who achieve more (i.e., toward Asian Americans), whereas black and Latinx youths are (i.e., toward whites). Also, teachers, predominantly white, reinforce a 'hidden curriculum' ─ that is, informal norms for what constitutes proper behavior, dress, attitudes, and discipline in schools. Racial inequalities arise even in integrated and reasonably resourced schools. Educators make significant efforts to address the learning gaps facing minority youths but do not disrupt the white supremacy embedded in standard practices. The taken-for-granted assumption that white students' practices are 'normal' contributes to why Asian Americans are framed as 'deviant' and 'a problem.'",
+   "_origtype": "제목",
+   "_src": "7강_3번"
+  },
+  {
+   "type": "single",
+   "num": 10,
+   "qtype": "빈칸추론",
+   "score": 3.4,
+   "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?\nMany people, including those in most governments, place their faith in new technologies as the solution to every present and indeed future ecological problem. And it is true that appropriate, clean, and affordable technology has an important role to play in resolving the ecocrisis; but ______. Technology is vanishingly unlikely to be able to compensate for uncontrolled expansion of either population or consumption. For example, it tends to become increasingly expensive and/or specialized, and technological 'solutions' notoriously tend to create new problems, which then seem to require more technological intervention, and so on. Still more fundamentally, such 'solutions' to ecological problems ignore the urgent need actually to reduce consumption (thereby, of course, spending less) and lock us into a collective mindset ─ run by technoscience, financed by capital, and protected by state power ─ which is a principal cause of the problems. Then more of that cause can only be perceived, with increasingly desperate denial, as the only solution.",
+   "choices": [
+    "① it can solve every ecological problem on its own",
+    "② population growth poses no real ecological threat",
+    "③ governments should abandon all new technologies",
+    "④ consumption levels are irrelevant to the crisis",
+    "⑤ it cannot bear the weight of cornucopian dreams"
+   ],
+   "answer": "⑤",
+   "explanation": "깨끗한 기술이 생태위기 해결에 일정 역할은 하지만, 인구·소비의 무절제한 팽창을 보상할 수 없고 새로운 문제를 낳는다는 흐름이므로, '풍요의 꿈을 감당할 수 없다'는 ⑤가 적절하다. [출처: 수특영독 5강 2번]",
+   "source": "수특영독 5강 2번 (원유형:주제)",
+   "_orig": "Many people, including those in most governments, place their faith in new technologies as the solution to every present and indeed future ecological problem. And it is true that appropriate, clean, and affordable technology has an important role to play in resolving the ecocrisis; but it cannot bear the weight of cornucopian dreams. Technology is vanishingly unlikely to be able to compensate for uncontrolled expansion of either population or consumption. For example, it tends to become increasingly expensive and/or specialized, and technological 'solutions' notoriously tend to create new problems, which then seem to require more technological intervention, and so on. Still more fundamentally, such 'solutions' to ecological problems ignore the urgent need actually to reduce consumption (thereby, of course, spending less) and lock us into a collective mindset ─ run by technoscience, financed by capital, and protected by state power ─ which is a principal cause of the problems. Then more of that cause can only be perceived, with increasingly desperate denial, as the only solution.",
+   "_origtype": "주제",
+   "_src": "5강_2번"
+  },
+  {
+   "type": "single",
+   "num": 11,
+   "qtype": "글의순서",
+   "score": 3.1,
+   "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nThe sciences do make extensive use of idealizations. The ideal gas law describes the relationship of pressure, volume, and temperature of gases under conditions that never perfectly obtain.\n\n(A) Even on such views, however, the theories are still meant to be descriptive. They are to be used to make predictions and offer explanations about the behavior of gases or whatever phenomena are at issue in real situations.\n\n(B) In particular, it makes simplifying assumptions about the molecules ─ for example, that they do not attract or repel one another. The molecules of real gases are not like this, but their behavior is nonetheless close enough to ideal ones that the gas law is useful.\n\n(C) Indeed, there are philosophers of science who argue that this is the best way to think about scientific theories in general; they are best regarded as models that are precisely accurate only under conditions that are never entirely realized.\n\nThere are, accordingly, constraints as to how idealized they can be.",
+   "choices": [
+    "① (A)-(C)-(B)",
+    "② (B)-(A)-(C)",
+    "③ (C)-(B)-(A)",
+    "④ (C)-(A)-(B)",
+    "⑤ (B)-(C)-(A)"
+   ],
+   "answer": "⑤",
+   "explanation": "이상화 사용(주어진 글) → 이상기체법칙의 단순화 가정과 유용성(B) → 이를 일반 과학이론으로 확장하는 철학자들(C) → 그럼에도 이론은 기술적이어야 함(A) → 제약 언급(맺음). 따라서 (B)-(C)-(A). [출처: 수특영독 2강 10번]",
+   "source": "수특영독 2강 10번 (원유형:빈칸추론)",
+   "_orig": "The sciences do make extensive use of idealizations. The ideal gas law describes the relationship of pressure, volume, and temperature of gases under conditions that never perfectly obtain. In particular, it makes simplifying assumptions about the molecules making up gases ─ for example, that they do not attract or repel one another and do not themselves take up volume. The molecules of real gases are not like this, but their behavior is nonetheless close enough to ideal ones that the gas law is useful. Indeed, there are philosophers of science who argue that this is the best way to think about scientific theories in general; they are best regarded as models that are precisely accurate only under conditions that are never entirely realized. Even on such views, however, the theories are still meant to be descriptive. They are to be used to make predictions and offer explanations about the behavior of gases or whatever phenomena are at issue in real situations. There are, accordingly, constraints as to how idealized they can be. They cannot be so far removed from real world systems as to be worthless in describing actual phenomena with acceptable degrees of accuracy.",
+   "_origtype": "빈칸추론",
+   "_src": "2강_10번"
+  },
+  {
+   "type": "single",
+   "num": 12,
+   "qtype": "어휘",
+   "score": 3.4,
+   "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nThe scientific process is invariably ①<u>non-linear</u> and can be long and drawn out, with hypotheses sitting on the shelf until the time has come to dust them down. For every new theory and paper, there are many that fell by the wayside for lack of time, funding or data. Like the music industry, the hits are few and far between and don't always come when or from where you expect. It's important not to be ②<u>discouraged</u> by this: the fact that not every idea comes to fruition isn't a good reason to have ③<u>fewer</u> of them. Scientific breakthroughs ultimately depend on people working away without the immediate reward of achieving anything tangible: trying things that don't work but might still be useful. Such ④<u>impatience</u> is the bedrock on which progress is eventually achieved ─ stitched together from all those loose bits of fabric that could so easily have been ⑤<u>discarded</u>.",
+   "choices": [
+    "① non-linear",
+    "② discouraged",
+    "③ fewer",
+    "④ impatience",
+    "⑤ discarded"
+   ],
+   "answer": "④",
+   "explanation": "진보는 결실 없이도 묵묵히 시도하는 '인내(patience)'를 바탕으로 이루어진다는 흐름이므로 ④ impatience(조급함)는 부적절하다. ①non-linear, ②discouraged, ③fewer, ⑤discarded는 원문 그대로 적절하다. [출처: 수특영독 2강 7번]",
+   "source": "수특영독 2강 7번 (원유형:빈칸추론)",
+   "_orig": "The scientific process is invariably non-linear and can be long and drawn out, with hypotheses sitting on the shelf until the time has come to dust them down, if that ever finally arrives. Sometimes you sit waiting for the tide to come in, but it never actually does. For every new theory and paper, there are many that fell by the wayside for lack of time, funding or data. Like the music industry, the hits are few and far between and don't always come when or from where you expect. It's important not to be discouraged by this: the fact that not every idea comes to fruition isn't a good reason to have fewer of them. Scientific breakthroughs ultimately depend on people working away without the immediate reward of achieving anything tangible: trying things that don't work (but might still be useful) and devising bits of a solution that won't be relevant until some undefined point in the future. Such patience is the bedrock on which progress is eventually achieved ─ stitched together from all those loose bits of fabric that could so easily have been discarded.",
+   "_origtype": "빈칸추론",
+   "_src": "2강_7번"
+  },
+  {
+   "type": "single",
+   "num": 13,
+   "qtype": "함축의미",
+   "score": 3.1,
+   "question": "다음 글에서 밑줄 친 <u>that nest egg may make them more likely to make the leap</u>가 의미하는 바로 가장 적절한 것은?\nEmployees tend to leave companies to become founders when their employers' growth rates begin to fall, reducing the attractiveness of staying there and the opportunity costs of becoming founders. The likelihood of an employee leaving to become a founder has also been linked to the employee's own performance. Employees whose performance was in the middle of the distribution were the least likely to leave; the most likely were the poor-performing employees (the \"slugs\" whose pay wasn't high and who had the least to lose by leaving to found a startup) and the high-performing employees (the \"stars\" who had the potential to earn high wages by becoming self-employed). Although high-paid employees may be less likely than lower-paid employees to walk away from their salaries, if they have saved a high percentage of their earnings over the years, <u>that nest egg may make them more likely to make the leap</u> than if they hadn't saved.",
+   "choices": [
+    "① Saving money discourages employees from ever becoming founders.",
+    "② Employees with low pay are the most reluctant to leave their jobs.",
+    "③ High savings give well-paid employees the financial cushion to risk founding a startup.",
+    "④ Star performers always earn higher wages than average employees.",
+    "⑤ Company growth rates determine the salaries of all employees."
+   ],
+   "answer": "③",
+   "explanation": "고임금 직원이라도 수년간 저축을 많이 해두면 그 종잣돈이 위험을 감수하고 창업에 뛰어들 여유를 준다는 맥락이므로, 'the leap'(창업 도약)을 가능하게 한다는 ③이 적절하다. [출처: 수특영독 8강 8번]",
+   "source": "수특영독 8강 8번 (원유형:주제)",
+   "_orig": "Employees tend to leave companies to become founders when their employers' growth rates begin to fall, reducing the attractiveness of staying there and the opportunity costs of becoming founders. The likelihood of an employee leaving to become a founder has also been linked to the employee's own performance. Employees whose performance was in the middle of the distribution were the least likely to leave; the most likely were the poor-performing employees (the \"slugs\" whose pay wasn't high and who had the least to lose by leaving to found a startup) and the high-performing employees (the \"stars\" who had the potential to earn high wages by becoming self-employed). Although high-paid employees may be less likely than lower-paid employees to walk away from their salaries, if they have saved a high percentage of their earnings over the years, that nest egg may make them more likely to make the leap than if they hadn't saved.",
+   "_origtype": "주제",
+   "_src": "8강_8번"
+  },
+  {
+   "type": "single",
+   "num": 14,
+   "qtype": "빈칸추론",
+   "score": 3.4,
+   "question": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?\nKnowledge is power. And one way to measure the amount of trust on a team is by looking at how much information people keep to themselves (low trust) or share openly (high trust). Team leaders signal that they ______ when they share privileged information with them. This could be sharing the team's finances, or the budget handed down from higher-ups, so that the whole team knows what they're working with and where the priorities are. It could also be competitive data or customer trends that are widely available but rarely shared. It could even be passing on information shared by another team. In a meeting, any time someone says, \"This stays here,\" the atmosphere changes. People know whatever follows is spoken in trust, and they respond to that feeling of being trusted with trustworthy behavior. People begin to feel like they're in the inner circle when they receive more information about their work or the environment than they usually do. They start to see how their work fits into the larger organizational whole.",
+   "choices": [
+    "① lack confidence in the budget",
+    "② trust their team",
+    "③ want to limit communication",
+    "④ distrust higher-ups",
+    "⑤ prefer to work alone"
+   ],
+   "answer": "②",
+   "explanation": "팀이 정보를 공유할수록 신뢰가 높다는 글의 흐름과, 권한 있는 정보를 공유하면 사람들이 '신뢰받는다'고 느낀다는 뒷받침으로 보아, 리더가 특권 정보를 공유하는 것은 '팀을 신뢰한다'는 신호이므로 ②이 적절하다. [출처: 수특영독 3강 12번]",
+   "source": "수특영독 3강 12번 (원유형:함축의미)",
+   "_orig": "Knowledge is power. And one way to measure the amount of trust on a team is by looking at how much information people keep to themselves (low trust) or share openly (high trust). Team leaders signal that they trust their team when they share privileged information with them. This could be sharing the team's finances, or the budget handed down from higher-ups, so that the whole team knows what they're working with and where the priorities are. It could also be competitive data or customer trends that are widely available but rarely shared. It could even be passing on information shared by another team. In a meeting, any time someone says, \"This stays here,\" the atmosphere changes. People know whatever follows is spoken in trust, and they respond to that feeling of being trusted with trustworthy behavior. People begin to feel like they're in the inner circle when they receive more information about their work or the environment than they usually do. They start to see how their work fits into the larger organizational whole.",
+   "_origtype": "함축의미",
+   "_src": "3강_12번"
+  },
+  {
+   "type": "single",
+   "num": 15,
+   "qtype": "흐름무관",
+   "score": 3.2,
+   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nSocial media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations. ① Social media was initially and mainly used for communication with friends and family, but with the popularity of some platforms, it has turned into a vital tool for businesses seeking to sell their products online. ② Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers. ③ Influencer marketing is another way that social media has evolved into a platform for businesses. ④ Excessive use of social media has been linked to increased anxiety and sleep problems among teenagers. ⑤ Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "글 전체는 소셜미디어가 기업의 전자상거래·마케팅 플랫폼으로 진화한 과정을 다룬다. ④는 소셜미디어 과다 사용이 청소년 불안·수면 문제와 연관된다는 내용으로 전체 흐름과 무관하다. [출처: 수특영독 1강 9번]",
+   "source": "수특영독 1강 9번 (원유형:빈칸추론)",
+   "_orig": "Social media's transformation into an e-commerce platform is a significant milestone that enabled it to become a platform for organizations. Social media was initially and mainly used for communication with friends and family. But with the popularity of some platforms, social media has turned into a vital tool for businesses seeking to sell their products online. Social media is now used by businesses to promote their products and offerings as well as provide a direct shopping option for buyers. Influencer marketing is another way that social media has evolved into a platform for businesses. Influencers are those users who have a sizable social media following and are recognized as authorities or thought leaders in their specialized field. Influencer marketing allows businesses to reach the users' followers, who are more likely to trust suggestions from people they follow on social media.",
+   "_origtype": "빈칸추론",
+   "_src": "1강_9번"
+  },
+  {
+   "type": "single",
+   "num": 16,
+   "qtype": "추론",
+   "score": 3.4,
+   "question": "다음 글을 통해 추론할 수 있는 것으로 가장 적절한 것은?\nScience and democracy share important principles and ideals that oppose illegitimate claims for knowledge and power. The authority of both scientific knowledge and democratic governance is legitimated by representation. It is only when this representation is accepted as legitimate that it can support the authority of the knowledge claims made, or the authority of particular forms of governance. Representation is, however, never perfect or complete. Since both scientific practices and democratic governance, in principle, admit potential alternative representations, continuous struggles over what is represented and what is not can be foreseen. To represent means to simplify, which implies the existence of alternatives ─ alternative ways of simplifying complicated issues. This further means that both science and democracy have inbuilt mechanisms for improvement, which are based on critical assessments of existing representations.",
+   "choices": [
+    "① Scientific knowledge requires no representation to claim authority.",
+    "② Perfect representation is achievable in both science and democracy.",
+    "③ Both science and democracy can improve themselves by critically reassessing their representations.",
+    "④ Democratic governance should eliminate all alternative viewpoints.",
+    "⑤ Simplification of issues makes alternatives impossible."
+   ],
+   "answer": "③",
+   "explanation": "과학과 민주주의는 표현(대표)이 결코 완전하지 않아 대안적 표현을 허용하며, 기존 표현에 대한 비판적 평가에 기반한 개선 기제를 내장하고 있다고 했으므로 ①을 추론할 수 있다. [출처: 수특영독 3강 10번]",
+   "source": "수특영독 3강 10번 (원유형:빈칸추론)",
+   "_orig": "Science and democracy share important principles and ideals that oppose illegitimate claims for knowledge and power. The authority of both scientific knowledge and democratic governance is legitimated by representation. It is only when this representation is accepted as legitimate that it can support the authority of the knowledge claims made, or the authority of particular forms of governance. Representation is, however, never perfect or complete. Since both scientific practices and democratic governance, in principle, admit potential alternative representations, continuous struggles over what is represented and what is not can be foreseen. To represent means to simplify, which implies the existence of alternatives ─ alternative ways of simplifying complicated issues. This further means that both science and democracy have inbuilt mechanisms for improvement, which are based on critical assessments of existing representations.",
+   "_origtype": "빈칸추론",
+   "_src": "3강_10번"
+  },
+  {
+   "type": "single",
+   "num": 17,
+   "qtype": "요약문완성",
+   "score": 3.4,
+   "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?\nEmerging findings suggest that minorities arguing their point of view electronically can be influential in ways that improve group performance, as long as they claim in-group affiliation and maintain their views consistently. Several fascinating studies have also demonstrated a persuasive and performance advantage for remote or geographically removed minorities. In these cases, groups with a minority advocate who is geographically remote seemed to perform better because the minority was able to play devil's advocate, effectively inducing the majority to think about alternatives. Perhaps being removed from the anxiety and discomfort of face-to-face disagreements makes it easier for the minority to assert an atypical view without fear of reprisal, and makes it easier for majorities to accept minority input without worrying about the identity consequences of publicly accepting it. Thus, increased opportunity for minority points of view to improve group decisions should be counted among the benefits of electronic or technology-mediated communication.\n\n→ Minority opinions expressed through electronic communication can (A) group decisions, partly because geographical (B) eases the discomfort of disagreement for both sides.",
+   "choices": [
+    "① (A) improve … (B) distance",
+    "② (A) improve … (B) closeness",
+    "③ (A) weaken … (B) distance",
+    "④ (A) distort … (B) closeness",
+    "⑤ (A) delay … (B) distance"
+   ],
+   "answer": "①",
+   "explanation": "전자적 소통을 통한 소수 의견은 집단 결정을 '개선(improve)'할 수 있는데, 지리적 '거리(distance)'가 양측의 불편함을 줄여주기 때문이라는 내용이므로 ①이 적절하다. [출처: 수특영독 6강 11번]",
+   "source": "수특영독 6강 11번 (원유형:흐름무관)",
+   "_orig": "Emerging findings suggest that minorities arguing their point of view electronically can be influential in ways that improve group performance, as long as they claim in-group affiliation and maintain their views consistently. Several fascinating studies have also demonstrated a persuasive and performance advantage for remote or geographically removed minorities. In these cases, groups with a minority advocate who is geographically remote seemed to perform better because the minority was able to play devil's advocate, effectively inducing the majority to think about alternatives. Perhaps being removed from the anxiety and discomfort of face-to-face disagreements makes it easier for the minority to assert an atypical view without fear of reprisal, and makes it easier for majorities to accept minority input without worrying about the identity consequences of publicly accepting it. Thus, increased opportunity for minority points of view to improve group decisions should be counted among the benefits of electronic or technology-mediated communication.",
+   "_origtype": "흐름무관",
+   "_src": "6강_11번"
+  },
+  {
+   "type": "single",
+   "num": 18,
+   "qtype": "흐름무관",
+   "score": 3.5,
+   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nResearch on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species. ① At the same time, Izard's formulation of \"affective-cognitive structures\" shows that emotions are in reality not separable from the particular circumstances that are associated with them. ② The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions derives not only from facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying. ③ These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances. ④ Recent advances in facial recognition software have allowed companies to identify customers' emotions for targeted advertising. ⑤ As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "글 전체는 감정 표현의 보편성과 그것이 특정 상황과 분리될 수 없다는 점을 다룬다. ④는 얼굴 인식 소프트웨어의 상업적 활용에 관한 내용으로 전체 흐름과 무관하다. [출처: 수특영독 1강 1번]",
+   "source": "수특영독 1강 1번 (원유형:빈칸추론)",
+   "_orig": "Research on the universality of facial expressions suggests that the socialization of affect involves interactions between situational variables and a finite repertoire of human emotions whose meanings are at least roughly synonymous among all members of the species. At the same time, Izard's formulation of \"affective-cognitive structures\" shows that emotions are in reality not separable from the particular circumstances that are associated with them. The fact that it is possible to construct a list of \"basic,\" universally recognizable emotions derives not only from a species-specific repertoire of facial expressions, but perhaps more fundamentally from a larger set of human expressive behaviors, including laughter and crying as well as bodily movements and postures. These behaviors, for which a universal capacity exists, are also, without exception, carried out in particular circumstances. As elements in the human communicative function, they create the necessity of response from the environment while also being shaped by it. To use Lewis's terms, the contextual reality of emotional expression transforms \"state\" into \"experience.\"",
+   "_origtype": "빈칸추론",
+   "_src": "1강_1번"
+  },
+  {
+   "type": "single",
+   "num": 19,
+   "qtype": "어휘",
+   "score": 3.7,
+   "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nAs civilizations started to grow and flourish, people found they could accomplish more with ①<u>more</u> effort if they specialized and divided their work into separate designations. So, for example, the work of brick-making was conducted ②<u>separately</u> from the work of shipbuilding. Each line of work was its own ③<u>distinct</u> activity, carried out by distinct practitioners who developed their work into an institution of sorts. As civilization continued to develop, differentiated forms of work became more sophisticated, more ④<u>specialized</u>, and more communal. In ancient Rome, they became formalized with the creation of what were called collegia, or professional associations. By the Middle Ages, guilds, a ⑤<u>similar</u> type of organization, had taken hold throughout much of Europe.",
+   "choices": [
+    "① more",
+    "② separately",
+    "③ distinct",
+    "④ specialized",
+    "⑤ similar"
+   ],
+   "answer": "①",
+   "explanation": "분업·전문화를 통해 '더 적은(less)' 노력으로 더 많이 이룰 수 있었다는 흐름이므로 ① more는 부적절하다(less가 맞음). ②separately, ③distinct, ④specialized, ⑤similar는 원문 그대로 적절하다. [출처: 수특영독 7강 8번]",
+   "source": "수특영독 7강 8번 (원유형:주제)",
+   "_orig": "As civilizations started to grow and flourish, people found they could accomplish more with less effort if they specialized and divided their work into separate designations. So, for example, the work of brick-making was conducted separately from the work of shipbuilding ─ just as the work of laying roads was separate from the work of farming, which was separate from the work of building dwellings or making pots. Each line of work was its own distinct activity, carried out by distinct practitioners who developed their work into an institution of sorts. As civilization continued to develop, differentiated forms of work became more sophisticated, more specialized, and more communal. In ancient Rome, they became formalized with the creation of what were called collegia, or professional associations. There was, for example, a college of woodworkers, a college of merchant mariners, a college of wine dealers, and a college of planters. In ancient China, a similar system developed. By the Middle Ages, guilds, a similar type of organization, had taken hold throughout much of Europe.",
+   "_origtype": "주제",
+   "_src": "7강_8번"
+  },
+  {
+   "type": "single",
+   "num": 20,
+   "qtype": "빈칸추론",
+   "score": 3.4,
+   "question": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?\nNo one has objected so strenuously to defining psychology as the science of consciousness, and limiting it to consciousness, as the group of animal psychologists. By energetic work, they had proved that the animal was a very good subject for psychological study, and had discovered much that was important regarding instinct and learning in animals. But from the nature of the case, they could not observe the consciousness of animals; they could only observe their behavior, that is to say, the motor (and in some cases glandular) activities of the animals under known conditions. When then the animal psychologists were warned by the mighty ones in the science that they must interpret their results in terms of consciousness or not call themselves psychologists any longer, they rebelled; and some of the best fighters among them took the offensive, by insisting that human psychology, no less than animal, was properly a study of ______, and that it had been a great mistake ever to define it as the science of consciousness.",
+   "choices": [
+    "① instinct",
+    "② consciousness",
+    "③ behavior",
+    "④ glandular activity",
+    "⑤ introspection"
+   ],
+   "answer": "③",
+   "explanation": "동물 심리학자들은 의식을 관찰할 수 없고 행동만 관찰할 수 있었으며, 인간 심리학도 동물처럼 '행동(behavior)'의 연구여야 한다고 반발했으므로 ③이 적절하다. [출처: 수특영독 7강 9번]",
+   "source": "수특영독 7강 9번 (원유형:제목)",
+   "_orig": "No one has objected so strenuously to defining psychology as the science of consciousness, and limiting it to consciousness, as the group of animal psychologists. By energetic work, they had proved that the animal was a very good subject for psychological study, and had discovered much that was important regarding instinct and learning in animals. But from the nature of the case, they could not observe the consciousness of animals; they could only observe their behavior, that is to say, the motor (and in some cases glandular) activities of the animals under known conditions. When then the animal psychologists were warned by the mighty ones in the science that they must interpret their results in terms of consciousness or not call themselves psychologists any longer, they rebelled; and some of the best fighters among them took the offensive, by insisting that human psychology, no less than animal, was properly a study of behavior, and that it had been a great mistake ever to define it as the science of consciousness.",
+   "_origtype": "제목",
+   "_src": "7강_9번"
+  },
+  {
+   "type": "single",
+   "num": 21,
+   "qtype": "문장삽입",
+   "score": 3.5,
+   "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n[주어진 문장] But not all control and redirection add to human welfare.\n\nScientific progress is measured not only by an increase in understanding but by an increase in control over nature and redirection of nature's course. ( ① ) \"The contemplative ideal of scientific investigations for their own sake has been replaced in modern times,\" Wieland comments, \"by the practical ideal of scientific research in the service of humanity.\" ( ② ) The natural course of things once presented and still presents threats to human welfare: people went and still go hungry, die in infancy, and face natural disasters. ( ③ ) Medical technology, based on science, has lengthened the number of years human beings suffer from chronic diseases, condemning them to lonely, bedridden existences. ( ④ ) End-of-life treatments, which prove medical innovation and competence, can sustain life, but not living. ( ⑤ ) The illustrious medical journal The Lancet reports frequently on the \"sea of suffering\" in aging populations.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "explanation": "주어진 문장은 '모든 통제·방향전환이 인간 복지에 보탬이 되는 것은 아니다'라는 전환 문장이다. 자연이 위협을 준다는 긍정적 통제 설명(③ 앞) 뒤, 의료기술이 만성질환 고통을 늘렸다는 부정적 예(③ 뒤) 앞에 와야 자연스러우므로 ③에 들어간다. [출처: 수특영독 4강 8번]",
+   "source": "수특영독 4강 8번 (원유형:빈칸추론)",
+   "_orig": "Scientific progress is measured not only by an increase in understanding but by an increase in control over nature and redirection of nature's course. \"The contemplative ideal of scientific investigations for their own sake has been replaced in modern times,\" Wieland comments, \"by the practical ideal of scientific research in the service of humanity.\" The natural course of things once presented and still presents threats to human welfare: people went and still go hungry, die in infancy and early adulthood, and face natural disasters. But not all control and redirection add to human welfare. Medical technology, based on science, has lengthened the number of years human beings suffer from chronic diseases, condemning them to lonely, bedridden existences. End-of-life treatments, which prove medical innovation and competence, can sustain life, but not living. The illustrious medical journal The Lancet reports frequently on the \"sea of suffering\" in aging populations.",
+   "_origtype": "빈칸추론",
+   "_src": "4강_8번"
+  },
+  {
+   "type": "single",
+   "num": 22,
+   "qtype": "함축의미",
+   "score": 3.6,
+   "question": "다음 글에서 밑줄 친 <u>it frames empathy as values-driven rather than outcome-driven</u>이 의미하는 바로 가장 적절한 것은?\nCentral to the notion of brilliant leadership is the critical linkage between empathy and authenticity. While leaders may act on the premise that sensitivity to employee concerns is helpful in achieving organizational goals, brilliant leaders believe that empathy has value in its own right. In this regard, empathy is less a means to an end (e.g., profiting) but rather is consistent with Kant's notion of \"Character,\" which underscores truthfulness as a core element of virtue. From a stakeholder perspective, particularly employees, brilliant leaders would be seen as behaving in ways that reveal a genuineness of motives. Guided by the deontologically-based philosophical guidepost, \"We should do our duty for no other reason than because it's the right thing to do,\" the brilliant leader's empathetic conduct is derived less from strategic or tactical interests than it is from one's personal sense of integrity. That, then, is a defining feature of authenticity: <u>it frames empathy as values-driven rather than outcome-driven</u>.",
+   "choices": [
+    "① Empathy and authenticity are unrelated to ethical character.",
+    "② Empathy is valuable only when it improves organizational performance.",
+    "③ Leaders should hide their true motives from employees.",
+    "④ Authenticity requires leaders to ignore their personal integrity.",
+    "⑤ Brilliant leaders show empathy because it is right, not because it yields profit."
+   ],
+   "answer": "⑤",
+   "explanation": "훌륭한 리더의 공감은 이익 같은 결과가 아니라 옳은 일이기에 행하는 것(가치 기반)이라는 의미이므로 ⑤이 적절하다. ②는 결과 기반으로 본문과 반대다. [출처: 수특영독 4강 2번]",
+   "source": "수특영독 4강 2번 (원유형:빈칸추론)",
+   "_orig": "Central to the notion of brilliant leadership is the critical linkage between empathy and authenticity. While leaders may act on the premise that sensitivity to employee concerns is helpful in achieving organizational goals, brilliant leaders believe that empathy has value in its own right. In this regard, empathy is less a means to an end (e.g., profiting) but rather is consistent with Kant's notion of \"Character,\" which underscores truthfulness as a core element of virtue. From a stakeholder perspective, particularly employees, brilliant leaders would be seen as behaving in ways that reveal a genuineness of motives. Guided by the deontologically-based philosophical guidepost, \"We should do our duty for no other reason than because it's the right thing to do,\" the brilliant leader's empathetic conduct is derived less from strategic or tactical interests than it is from one's personal sense of integrity. That, then, is a defining feature of authenticity: it frames empathy as values-driven rather than outcome-driven.",
+   "_origtype": "빈칸추론",
+   "_src": "4강_2번"
+  },
+  {
+   "type": "single",
+   "num": 23,
+   "qtype": "빈칸추론",
+   "score": 3.4,
+   "question": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?\nOrganic chemistry occupies a central role in the world around us, as we are surrounded by organic compounds. The food that we eat and the clothes that we wear are comprised of organic compounds. Our ability to smell odors or see colors results from the behavior of organic compounds. In fact, our bodies are constructed mostly from organic compounds whose behavior and function are determined by principles such as molecular structure, bonding, and reactivity. The responses of our bodies to pharmaceuticals are the results of reactions guided by these principles, and a deep understanding of them enables the design of new drugs that fight disease. Accordingly, it is not surprising that organic chemistry is ______ for anyone entering the health professions.",
+   "choices": [
+    "① an outdated discipline",
+    "② required knowledge",
+    "③ irrelevant to medicine",
+    "④ too theoretical to apply",
+    "⑤ a purely optional subject"
+   ],
+   "answer": "②",
+   "explanation": "유기화학 원리가 음식·신체·약물 반응을 지배하고 신약 설계를 가능하게 한다고 했으므로, 보건 계열 진입자에게 유기화학이 '필수 지식(required knowledge)'이라는 ②이 적절하다. [출처: 수특영독 8강 12번]",
+   "source": "수특영독 8강 12번 (원유형:글의순서)",
+   "_orig": "Organic chemistry occupies a central role in the world around us, as we are surrounded by organic compounds. The food that we eat and the clothes that we wear are comprised of organic compounds. Our ability to smell odors or see colors results from the behavior of organic compounds. Pharmaceuticals, pesticides, paints, adhesives, and plastics are all made from organic compounds. In fact, our bodies are constructed mostly from organic compounds (DNA, RNA, proteins, etc.) whose behavior and function are determined by principles such as molecular structure, bonding, and reactivity ─ all central to organic chemistry. The responses of our bodies to pharmaceuticals are the results of reactions guided by the principles of organic chemistry. A deep understanding of those principles enables the design of new drugs that fight disease and improve the overall quality of life and longevity. Accordingly, it is not surprising that organic chemistry is required knowledge for anyone entering the health professions.",
+   "_origtype": "글의순서",
+   "_src": "8강_12번"
+  },
+  {
+   "type": "single",
+   "num": 24,
+   "qtype": "빈칸추론",
+   "score": 3.7,
+   "question": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?\nThe Dutch news site De Correspondent was born with the idea of ______ from the start. Jay Rosen explained how the journalists were expected to have a radically different relationship with the reader. Writers continuously share what they are working on with the people who follow them. They pose questions and post call-outs as they launch new projects: what they want to find out, the expertise they need, any sort of help they want from readers. Sometimes readers are the project. Writers also manage the discussion threads ─ which are not called comments but contributions ─ in order to highlight the best additions and pull useful material into the next version of an ongoing story.",
+   "choices": [
+    "① eliminating all reader feedback",
+    "② replacing human journalists with AI",
+    "③ incorporating active readers",
+    "④ focusing only on breaking news",
+    "⑤ charging readers for every article"
+   ],
+   "answer": "③",
+   "explanation": "기자가 독자와 작업을 공유하고 질문·도움을 요청하며 독자의 기여를 기사에 반영한다는 내용이므로, '능동적 독자를 (처음부터) 참여시키는' ①이 빈칸에 적절하다. [출처: 수특영독 4강 12번]",
+   "source": "수특영독 4강 12번 (원유형:함축의미)",
+   "_orig": "The Dutch news site De Correspondent was born with the idea of incorporating active readers from the start. Jay Rosen, the NYU professor who became an adviser to the organisation, explained how the journalists were expected to have a radically different relationship with the reader than in traditional media. 'Expectations are that writers will continuously share what they are working on with the people who follow them and read their stuff. They will pose questions and post call-outs as they launch new projects: what they want to find out, the expertise they are going to need to do this right, any sort of help they want from readers. Sometimes readers are the project. Writers also manage the discussion threads ─ which are not called comments but contributions ─ in order to highlight the best additions and pull useful material into the next version of an ongoing story.' Some of these crowdsourcing techniques have been used by journalists on more mainstream papers, notably David Fahrenthold of the Washington Post.",
+   "_origtype": "함축의미",
+   "_src": "4강_12번"
+  },
+  {
+   "type": "single",
+   "num": 25,
+   "qtype": "요약문완성",
+   "score": 3.6,
+   "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?\nA wholesaler is an organisation or individual acting as the middle step between a producer and a retailer. It is reasonable to ask what the point might be of having a wholesaler in the distribution channel. Why would the manufacturer not simply pass the sporting goods straight on to the retailer? However, a wholesaler can be important in helping other channel members. First, they usually buy goods in bulk from the manufacturer and then store them. When the retailer is ready to order some goods, the wholesaler transports the sporting goods to them. A wholesaler can also stock a large range of goods from a variety of different manufacturers. As a result, instead of having to contact all of these producers, the retailer only has to talk to the one wholesaler to gain access to a range of different sporting goods.\n\n→ A wholesaler benefits the distribution channel by (A) goods in bulk and offering a wide range of products, so retailers can (B) their sourcing through a single contact.",
+   "choices": [
+    "① (A) storing … (B) complicate",
+    "② (A) storing … (B) simplify",
+    "③ (A) producing … (B) simplify",
+    "④ (A) discarding … (B) expand",
+    "⑤ (A) hiding … (B) reduce"
+   ],
+   "answer": "②",
+   "explanation": "도매상은 상품을 대량으로 '보관(storing)'하고 다양한 제조사의 상품을 갖춰, 소매상이 한 곳과의 접촉으로 조달을 '단순화(simplify)'할 수 있게 한다는 내용이므로 ②이 적절하다. [출처: 수특영독 6강 2번]",
+   "source": "수특영독 6강 2번 (원유형:주제)",
+   "_orig": "A wholesaler is an organisation or individual acting as the middle step between a producer and a retailer. It is reasonable to ask what the point might be of having a wholesaler in the distribution channel. Why would the manufacturer not simply pass the sporting goods straight on to the retailer? However, a wholesaler can be important in helping other channel members. First, they usually buy goods in bulk from the manufacturer and then store them. When the retailer is ready to order some goods, the wholesaler transports the sporting goods to them. A wholesaler can also stock a large range of goods from a variety of different manufacturers. As a result, instead of having to contact all of these producers, the retailer only has to talk to the one wholesaler to gain access to a range of different sporting goods.",
+   "_origtype": "주제",
+   "_src": "6강_2번"
+  },
+  {
+   "type": "single",
+   "num": 26,
+   "qtype": "빈칸추론",
+   "score": 3.6,
+   "question": "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?\nMotivation has an extensive history in academic research. Some of the earliest work on this topic was by Clark Hull, who observed that ______. Although this conclusion was drawn by observing rats running a maze to achieve a food reward ─ with speed increasing as distance to the food decreased ─ it is nevertheless useful in seeking to explain goal pursuit in humans. Indeed, much of the modern work on motivation has built on this foundation to understand what promotes goal pursuit and achievement. For example, mirroring Hull's rats, consumers have been shown to accelerate coffee purchases as they approach the end of a '10th free' loyalty card. In the sports context, athletes are often observed to give 'one last push' as they complete a given event, and this is also often a feature both of others' efforts to motivate them despite their fatigue, and of their own self-talk. This method of motivation can also be seen when a person puts in extra effort as they reach the end of a given exercise routine. Given the centrality of motivation to success in most life domains, this topic has fascinated scholars in a range of disciplines in the social sciences, including economics and psychology.",
+   "choices": [
+    "① motivation disappears once a reward is finally obtained",
+    "② effort invested in a goal increases as its attainment becomes more likely",
+    "③ humans and rats pursue goals in completely opposite ways",
+    "④ goal pursuit slows down as one approaches the reward",
+    "⑤ rewards have no measurable effect on human behavior"
+   ],
+   "answer": "②",
+   "explanation": "쥐·소비자·운동선수 모두 목표 달성이 가까워질수록 더 노력한다는 예가 이어지므로, Hull이 관찰한 바는 '목표 달성이 임박할수록 투입 노력이 증가한다'는 ②이다. [출처: 수특영독 5강 6번]",
+   "source": "수특영독 5강 6번 (원유형:글의순서)",
+   "_orig": "Motivation has an extensive history in academic research. Some of the earliest work on this topic was by Clark Hull, who observed that effort invested in accomplishing a goal increases as goal attainment becomes more likely. Although this conclusion was drawn by observing rats running a maze to achieve a food reward ─ with speed increasing as distance to the food decreased ─ it is nevertheless useful in seeking to explain goal pursuit in humans. Indeed, much of the modern work on motivation has built on this foundation to understand what promotes goal pursuit and achievement. For example, mirroring Hull's rats, consumers have been shown to accelerate coffee purchases as they approach the end of a '10th free' loyalty card. In the sports context, athletes are often observed to give 'one last push' as they complete a given event, and this is also often a feature both of others' efforts to motivate them despite their fatigue, and of their own self-talk. This method of motivation can also be seen when a person puts in extra effort as they reach the end of a given exercise routine. Given the centrality of motivation to success in most life domains, this topic has fascinated scholars in a range of disciplines in the social sciences, including economics and psychology.",
+   "_origtype": "글의순서",
+   "_src": "5강_6번"
+  },
+  {
+   "type": "single",
+   "num": 27,
+   "qtype": "어휘",
+   "score": 3.6,
+   "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nMany countries have had legislation to protect animals for decades. But whether this legislation is ①<u>adequate</u> lies at the heart of a key debate between those who argue for animal welfare and those who argue for animal rights. Those who argue for animal welfare seek ②<u>increased</u> legal protection for animals from human-inflicted pain. Animal rights advocates maintain that this welfare legislation does not go far enough. Welfare legislation ③<u>accepts</u>, they argue, that animals may be used by humans for food and as experimental subjects; it merely tries to curb the worst excesses of these practices. The problem, on the rights view, is more ④<u>trivial</u> than this: animals are not the kinds of thing that humans should use in this way at all. The problem is not one about treating animals inhumanely, but instead one about understanding them as human ⑤<u>resources</u>.",
+   "choices": [
+    "① adequate",
+    "② increased",
+    "③ accepts",
+    "④ trivial",
+    "⑤ resources"
+   ],
+   "answer": "④",
+   "explanation": "동물권 옹호자들은 문제가 복지론보다 '더 근본적(fundamental)'이라 보므로 ④ trivial(사소한)은 부적절하다. ①adequate, ②increased, ③accepts, ⑤resources는 원문 그대로 적절하다. [출처: 수특영독 5강 3번]",
+   "source": "수특영독 5강 3번 (원유형:제목)",
+   "_orig": "Many countries have had legislation to protect animals in place for decades, even for centuries. This legislation may regulate practices such as slaughter or experimentation, or may be more generally aimed at preventing cruelty. But whether this kind of legislation is adequate lies at the heart of a key debate between those who argue, in a legal context, for the promotion of animal welfare and those who argue for the promotion of animal rights. Those who argue for animal welfare seek increased legal protection for animals from human-inflicted pain and other kinds of suffering (for example, insufficient food and space). Animal rights advocates maintain that this welfare legislation does not go far enough. Welfare legislation accepts, they argue, that animals may be used by humans for food and as experimental subjects; it merely tries to curb the worst excesses of these practices. The problem, on the rights view, is more fundamental than this: animals are not the kinds of thing that humans should use in this way at all. The problem, therefore, is not one about treating animals inhumanely, but instead one about understanding them as human resources.",
+   "_origtype": "제목",
+   "_src": "5강_3번"
+  },
+  {
+   "type": "single",
+   "num": 28,
+   "qtype": "요약문완성",
+   "score": 3.5,
+   "question": "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?\nWhen a patient chooses to buy he or she becomes a part of demand. Wanting to buy (drugs, plastic surgery, artificial hip, etc.) but not doing so leaves that potential patient invisible, part of latent demand that does not effectively participate in the market. That extra demand will be revealed if the price goes low enough. For example, consider the development of an artificial heart. If each heart costs $1 million, they would only be used in matters of life and death. If further development reduced the cost of artificial hearts to $100,000 each, more people would get them. The artificial hearts would still be used only for people with serious illnesses, but they might be implanted long before a person's natural heart gave out. If the cost of making an artificial heart dropped to $100, one would be readily available to anyone who needed it. Consider what would happen if the cost of an artificial heart dropped to $10 and could be easily implanted during a 15-minute visit to the doctor. Some people who had never been ill but were just worried might have new hearts implanted.\n\n→ As the price of a product such as an artificial heart (A), previously latent demand becomes (B), so that even people with little or no medical need might purchase it.",
+   "choices": [
+    "① (A) rises … (B) active",
+    "② (A) falls … (B) active",
+    "③ (A) falls … (B) hidden",
+    "④ (A) rises … (B) invisible",
+    "⑤ (A) stays … (B) fixed"
+   ],
+   "answer": "②",
+   "explanation": "인공심장 가격이 '낮아질수록(falls)' 보이지 않던 잠재 수요가 '실제 수요로(active)' 드러나, 의료 필요가 거의 없는 사람까지 구매하게 된다는 내용이므로 ②이 적절하다. [출처: 수특영독 3강 4번]",
+   "source": "수특영독 3강 4번 (원유형:빈칸추론)",
+   "_orig": "When a patient chooses to buy he or she becomes a part of demand. Wanting to buy (drugs, plastic surgery, artificial hip, etc.) but not doing so leaves that potential patient invisible, part of latent demand that does not effectively participate in the market. That extra demand will be revealed if the price goes low enough. For example, consider the development of an artificial heart. If each heart costs $1 million, they would only be used in matters of life and death. If further development reduced the cost of artificial hearts to $100,000 each, more people would get them. The artificial hearts would still be used only for people with serious illnesses, but they might be implanted long before a person's natural heart gave out. If the cost of making an artificial heart dropped to $100, one would be readily available to anyone who needed it. Consider what would happen if the cost of an artificial heart dropped to $10 and could be easily implanted during a 15-minute visit to the doctor. Some people who had never been ill but were just worried might have new hearts implanted.",
+   "_origtype": "빈칸추론",
+   "_src": "3강_4번"
+  },
+  {
+   "type": "single",
+   "num": 29,
+   "qtype": "문장삽입",
+   "score": 3.7,
+   "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n[주어진 문장] Industrialization changed the production-consumption dynamic in at least two ways.\n\nAmong the attempts to resist fast fashion are consumer movements to make more informed, ethical decisions. ( ① ) The \"slow fashion\" movement encourages buying fewer clothes of higher quality and wearing them longer. ( ② ) Some consumers have become more active in producing and repairing their own clothing, what the design historian Fiona Hackney calls the \"quiet activism\" of everyday making. ( ③ ) This practice represents a return to the intimate connection of production with consumption before the industrialization of fibers, textiles, and apparel. ( ④ ) Factory-made, store-bought clothes were more detached from consumer-made ones, and they also tended to be less expensive. ( ⑤ ) Prior to industrialization, only wealthy people could afford a closet of many garments.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "주어진 문장은 '산업화가 생산-소비 역학을 두 가지로 바꿨다'는 일반화이다. 산업화 이전으로의 회귀를 말한 문장(④ 앞) 뒤, 그 두 가지 변화(공장제 옷의 분리·저렴함)를 구체화하는 문장(④ 뒤) 앞에 와야 하므로 ④에 들어간다. [출처: 수특영독 4강 6번]",
+   "source": "수특영독 4강 6번 (원유형:함축의미)",
+   "_orig": "Among the attempts to resist fast fashion are consumer movements to make more informed, ethical decisions as they purchase, use, and repair their clothing. The \"slow fashion\" movement, for example, encourages buying fewer clothes of higher quality and wearing them longer, purchasing clothes produced (or at least sold) locally, and thinking critically about the labor and environmental conditions surrounding their production and distribution. Some consumers have become more active in producing (sewing or knitting) and repairing their own clothing. The design historian Fiona Hackney refers to the \"quiet activism\" of everyday making. She argues for \"the emergence of a new, historically conscious, socially engaged amateur practice.\" This practice represents a return to the intimate connection of production (making) with consumption (use, wear) before the industrialization of fibers, textiles, and apparel. Industrialization changed the production-consumption dynamic in at least two ways: Factory-made, store-bought clothes were more detached from consumer-made ones, and they also tended to be less expensive. Prior to industrialization, only wealthy people could afford a closet of many garments. Among working-class people, formal clothes were often prized possessions that were included in wills.",
+   "_origtype": "함축의미",
+   "_src": "4강_6번"
+  },
+  {
+   "type": "single",
+   "num": 30,
+   "qtype": "함축의미",
+   "score": 3.5,
+   "question": "다음 글에서 밑줄 친 <u>I am always in bed by five o'clock</u>이 의미하는 바로 가장 적절한 것은?\nYou can use your days off to figure out whether you are a morning person or a night person. Even though the alarm clock doesn't go off on weekends, some people still merrily leap out of bed. Others pull their pillows over their heads, relieved that for once they won't be torn out of their sleep in the middle of the night; they can nod off again with visions of breakfast in bed at noon. The natural differences between these types are enormous: If there were no outside constraints and people could be left to their own devices, some would not go to bed until the others were already awake for the next day. Oscar Wilde enjoyed flaunting his night-owl status. When an acquaintance asked the Irish writer whether he could visit him at nine o'clock, Wilde replied, \"You are a remarkable man! I could never stay awake as long as that. <u>I am always in bed by five o'clock</u>!\"",
+   "choices": [
+    "① Wilde prefers having breakfast in bed at noon.",
+    "② Wilde goes to sleep early every evening to stay healthy.",
+    "③ Wilde dislikes meeting acquaintances in the morning.",
+    "④ Wilde wakes up at five o'clock every morning.",
+    "⑤ Wilde humorously emphasizes that he is an extreme night owl who sleeps at dawn."
+   ],
+   "answer": "⑤",
+   "explanation": "오전 9시 방문이 가능하냐는 물음에 '난 새벽 5시(at five o'clock, 즉 새벽)에야 잠자리에 든다'고 답한 것으로, 자신이 극단적 저녁형 인간임을 익살스럽게 강조한 것이므로 ⑤이 적절하다. [출처: 수특영독 7강 12번]",
+   "source": "수특영독 7강 12번 (원유형:글의순서)",
+   "_orig": "You can use your days off to figure out whether you are a morning person or a night person. Even though the alarm clock doesn't go off on weekends, some people still merrily leap out of bed. Others pull their pillows over their heads, relieved that for once they won't be torn out of their sleep in the middle of the night; they can nod off again with visions of breakfast in bed at noon. The natural differences between these types are enormous: If there were no outside constraints and people could be left to their own devices, some would not go to bed until the others were already awake for the next day. Oscar Wilde enjoyed flaunting his night-owl status. When an acquaintance asked the Irish writer whether he could visit him at nine o'clock, Wilde replied, \"You are a remarkable man! I could never stay awake as long as that. I am always in bed by five o'clock!\"",
+   "_origtype": "글의순서",
+   "_src": "7강_12번"
+  }
+ ]
+}
