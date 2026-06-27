@@ -774,10 +774,11 @@ header { padding: 12px 16px; }
       <!-- 학년 -->
       <div style="display:flex;flex-direction:column;gap:3px;">
         <span style="font-size:.75rem;color:var(--ink4);">학년</span>
-        <select id="passageGradeSel"
+        <select id="passageGradeSel" onchange="filterPublisherByGrade()"
           style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
           <option value="">선택</option>
-          <option>중1</option><option>중2</option><option>중3</option>
+          <optgroup label="중학교"><option>중1</option><option>중2</option><option>중3</option></optgroup>
+          <optgroup label="고등학교"><option>고1</option><option>고2</option><option>고3</option></optgroup>
         </select>
       </div>
       <!-- 교과서 (2022 개정: 출판사(저자)) -->
@@ -787,6 +788,7 @@ header { padding: 12px 16px; }
           <select id="passagePublisherSel" onchange="syncCombo('passagePublisherSel','passagePublisher')"
             style="flex:1;background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);">
             <option value="">선택</option>
+            <optgroup label="중학교" id="pubGroupMiddle">
             <option>NE능률(김기택)</option>
             <option>YBM(김은영)</option>
             <option>YBM(박준언)</option>
@@ -797,6 +799,20 @@ header { padding: 12px 16px; }
             <option>지학사(송미정)</option>
             <option>천재(소영순)</option>
             <option>천재(이상기)</option>
+            </optgroup>
+            <optgroup label="고등 공통영어1" id="pubGroupHigh">
+            <option>NE능률(민병천)</option>
+            <option>NE능률(오선영)</option>
+            <option>YBM(김은형)</option>
+            <option>YBM(박준언)</option>
+            <option>동아(박용예)</option>
+            <option>동아(이병민)</option>
+            <option>미래엔(김성연)</option>
+            <option>비상(홍민표)</option>
+            <option>지학사(신상근)</option>
+            <option>천재(강상구)</option>
+            <option>천재(조수경)</option>
+            </optgroup>
             <option>직접입력</option>
           </select>
           <input type="text" id="passagePublisher" placeholder="출판사(저자)"
@@ -1062,6 +1078,29 @@ function getFromGAS(params){
     script.src = APPS_SCRIPT_URL + '?' + qs + '&callback=' + cbName;
     document.head.appendChild(script);
   });
+}
+
+// 학년(중/고)에 따라 교과서 출판사 목록 필터: 해당 학교급 그룹만 표시
+function filterPublisherByGrade(){
+  const grade = document.getElementById('passageGradeSel')?.value || '';
+  const mid  = document.getElementById('pubGroupMiddle');
+  const high = document.getElementById('pubGroupHigh');
+  const pubSel = document.getElementById('passagePublisherSel');
+  const isHigh = /고/.test(grade);
+  const isMid  = /중/.test(grade);
+  // 학년 미선택 시 둘 다 표시
+  if(mid)  mid.style.display  = (!grade || isMid)  ? '' : 'none';
+  if(high) high.style.display = (!grade || isHigh) ? '' : 'none';
+  // 현재 선택값이 숨겨진 그룹에 속하면 초기화
+  if(pubSel){
+    const opt = pubSel.selectedOptions[0];
+    const grp = opt ? opt.parentElement : null;
+    if(grp && grp.style.display === 'none'){
+      pubSel.value = '';
+      const inp = document.getElementById('passagePublisher');
+      if(inp){ inp.value=''; }
+    }
+  }
 }
 
 function syncCombo(selId, inputId){

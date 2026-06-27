@@ -25,11 +25,11 @@ To illustrate the benefits of simplifying the observer's job, consider psycholog
 
 (C) However, he had observers use a 3-point scale with '0' being 'essentially different content,' '1' being 'similar, but not the same, content,' and '2' being 'essentially the same content.' By using fewer categories, raters found the job of rating easier and were able to make reliable ratings.
 
-① (B)-(A)-(C)  
+① (A)-(B)-(C)  
 ② (A)-(C)-(B)  
-③ (B)-(C)-(A)  
-④ (C)-(A)-(B)  
-⑤ (C)-(B)-(A)  
+③ (B)-(A)-(C)  
+④ (B)-(C)-(A)  
+⑤ (C)-(A)-(B)  
 
 ---
 
@@ -103,11 +103,11 @@ There are two classic problems that give us mathematically proper ways to evalua
 
 (C) After all, I used the phrase "bound to happen," which is as ambiguous as any phrase can be. But it gives a sense of just how common coincidences are.
 
-① (B)-(A)-(C)  
+① (A)-(B)-(C)  
 ② (A)-(C)-(B)  
-③ (B)-(C)-(A)  
-④ (C)-(A)-(B)  
-⑤ (C)-(B)-(A)  
+③ (B)-(A)-(C)  
+④ (B)-(C)-(A)  
+⑤ (C)-(A)-(B)  
 
 ---
 
@@ -145,11 +145,11 @@ The sciences do make extensive use of idealizations. The ideal gas law describes
 
 (C) In particular, it makes simplifying assumptions about the molecules making up gases ─ for example, that they do not attract or repel one another and do not themselves take up volume. There are, accordingly, constraints as to how idealized they can be: they cannot be so far removed from real world systems as to be worthless in describing actual phenomena with acceptable degrees of accuracy.
 
-① (A)-(C)-(B)  
-② (B)-(A)-(C)  
-③ (C)-(B)-(A)  
-④ (C)-(A)-(B)  
-⑤ (B)-(C)-(A)  
+① (A)-(B)-(C)  
+② (A)-(C)-(B)  
+③ (B)-(A)-(C)  
+④ (B)-(C)-(A)  
+⑤ (C)-(B)-(A)  
 
 ---
 
