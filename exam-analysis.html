@@ -1552,17 +1552,31 @@ function printExam(){
     // 순서배열 등 짧은 선지: 2열 배치로 세로 공간 절약 (모든 선지가 짧을 때만)
     const shortChoices = q.choices && q.choices.length>=4 &&
       q.choices.every(c => (''+c).replace(/<[^>]+>/g,'').length <= 22);
+    // 본문에 ①~⑤가 내장되는 유형은 아래 선지목록을 달지 않는다
+    const qtNow = q.qtype||'';
+    const inBodyChoiceTypes = /문장삽입|삽입|흐름무관|무관|어법|어휘/.test(qtNow);
     let choicesHtml;
     if(isWritingType(q)){
       choicesHtml = `<div class="write-box"></div>`;
+    } else if(inBodyChoiceTypes){
+      choicesHtml = '';
     } else if(q.choices && q.choices.length){
       const cls = shortChoices ? 'choices-2col' : '';
       choicesHtml = `<div class="${cls}">` + q.choices.map(ch=>`<div class="choice">${ch}</div>`).join('') + `</div>`;
     } else {
       choicesHtml = '';
     }
+    // 빈칸추론: 본문의 ______를 정답 글자수 비례 밑줄로 치환
+    let qHtml = (q.question||'').replace(/\n/g,'<br>');
+    if(/빈칸/.test(qtNow)){
+      let ansTxt='';
+      (q.choices||[]).forEach(c=>{ if((''+c).startsWith(q.answer)) ansTxt=(''+c).replace(/^[①②③④⑤]\s*/,'').replace(/<[^>]+>/g,''); });
+      const ansLen = ansTxt.trim().length || 8;
+      const widthEm = Math.min(22, Math.max(3, +(ansLen*0.55).toFixed(1)));
+      qHtml = qHtml.replace(/_{2,}/g, `<span class="vblank" style="width:${widthEm}em"></span>`);
+    }
     return `<div class="qblock">
-      <div class="qrow"><span class="qnum">${num}.</span><span class="qtext">${(q.question||'').replace(/\n/g,'<br>')}</span><span class="qscore">[${score}점]</span></div>
+      <div class="qrow"><span class="qnum">${num}.</span><span class="qtext">${qHtml}</span><span class="qscore">[${score}점]</span></div>
       ${choicesHtml}
       <div class="answer">정답: ${q.answer||''}</div>
     </div>`;
@@ -1662,6 +1676,7 @@ function printExam(){
   .examinee { display: flex; gap: 22px; justify-content: flex-end; align-items: center; margin: 5px 3px 8px; font-size: 9pt; font-weight: 700; }
   .examinee .blank { display: inline-block; border-bottom: 1px solid #000; width: 88px; margin-left: 5px; }
   .examinee .blank.sm { width: 52px; }
+  .vblank { display: inline-block; border-bottom: 1.3px solid #000; height: 1em; vertical-align: middle; margin: 0 2px; }
 
   /* 2단 컬럼 */
   .columns { column-count: 2; column-gap: 7mm; column-rule: 1px solid #888; }
