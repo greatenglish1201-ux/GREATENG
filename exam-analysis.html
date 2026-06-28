@@ -2642,7 +2642,7 @@ function renderReview(){
   </div>`;
 
   // ━━━ 카드 렌더 (검수대기 먼저, 자동통과는 접힘) ━━━
-  const cardHtml=(r,collapsed)=>{
+  const cardHtml=(r,collapsed,isApproved)=>{
     const {q,v,tri}=r; const n=q.num;
     const qbody=_rvEsc(_rvBody(q));
     const ch=(q.choices||[]).map(c=>`<div class="rv-ch">${_rvEsc(c)}</div>`).join('');
@@ -2655,7 +2655,7 @@ function renderReview(){
     tri.reasons.forEach(rr=>{ chk+=`<div class="rv-chk"><span class="rv-chk-tag">${rr.tag}</span> ${rr.q}</div>`; });
     const fre=tri.fre!=null?` · Flesch ${tri.fre}`:'';
     const cp=tri.copy!=null?` · 복붙 ${tri.copy}%`:'';
-    return `<div class="rv-card ${laneColor}" id="rvq${n}" data-num="${n}"${collapsed?' data-collapsed="1"':''}>
+    return `<div class="rv-card ${laneColor}" id="rvq${n}" data-num="${n}"${collapsed?' data-collapsed="1"':''}${isApproved?' style="display:none;"':''}>
       <div class="rv-qh" onclick="rvCardToggle(${n})">
         <span class="rv-st ${laneColor}">${badge}</span> <b>${n}.</b>
         <span class="rv-stem">${_rvEsc((q.question||'').split('\n')[0])}</span>
@@ -2701,20 +2701,38 @@ function renderReview(){
   };
 
   let cards='<div class="rv-section-t">검수 대기</div>';
-  needReview.forEach(r=> cards+=cardHtml(r,false));
+  const approved=_rvGetApproved();
+  needReview.forEach(r=> cards+=cardHtml(r, false, approved.includes(r.q.num)));
   cards+=`<div class="rv-section-t">자동 통과 <span style="font-weight:400;color:var(--ink4)">(접힘 — 클릭하면 펼침)</span></div>`;
-  auto.forEach(r=> cards+=cardHtml(r,true));
+  auto.forEach(r=> cards+=cardHtml(r, true, approved.includes(r.q.num)));
 
-  root.innerHTML=gateHtml+queueHtml+cards+foot;
+  const approvedBar=`<div id="rvApprovedBar" style="font-size:.86rem;color:#080;margin:6px 0 10px;"></div>`;
+  root.innerHTML=gateHtml+queueHtml+approvedBar+cards+foot;
+  _rvUpdateApprovedBar();
 }
 function rvCardToggle(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
   const b=c.querySelector('.rv-cardbody'); if(!b) return;
   b.style.display = b.style.display==='none' ? 'block' : 'none';
 }
+function _rvApprovedKey(){ try{ return 'ea_approved_'+(examMeta?.key||(generatedQs[0]&&generatedQs[0].num)||'x'); }catch(e){ return 'ea_approved_x'; } }
+function _rvGetApproved(){ try{ return JSON.parse(localStorage.getItem(_rvApprovedKey())||'[]'); }catch(e){ return []; } }
+function _rvSetApproved(arr){ try{ localStorage.setItem(_rvApprovedKey(), JSON.stringify([...new Set(arr)])); }catch(e){} }
 function rvApprove(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
-  if(c){ c.classList.add('rv-approved'); const st=c.querySelector('.rv-st'); if(st) st.textContent='✓'; }
+  if(c){ c.style.display='none'; }            // 승인하면 목록에서 사라짐
+  const ap=_rvGetApproved(); ap.push(n); _rvSetApproved(ap);
+  _rvUpdateApprovedBar();
+}
+function rvUnapproveAll(){
+  _rvSetApproved([]); renderReview();
+}
+function _rvUpdateApprovedBar(){
+  const bar=document.getElementById('rvApprovedBar'); if(!bar) return;
+  const ap=_rvGetApproved(); const tot=_flat(generatedQs).length;
+  bar.innerHTML = ap.length
+    ? `✅ 검수 완료 <b>${ap.length}</b> / 총 ${tot} · 남은 ${tot-ap.length}개 &nbsp; <a href="#" onclick="rvUnapproveAll();return false;" style="color:var(--wine);">전체 되돌리기</a>`
+    : '';
 }
 function rvToggle(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
