@@ -2702,7 +2702,8 @@ function renderReview(){
 
   let cards='<div class="rv-section-t">검수 대기</div>';
   const approved=_rvGetApproved();
-  needReview.forEach(r=> cards+=cardHtml(r, false, approved.includes(r.q.num)));
+  // 반려(reject)는 가장 중요 → 승인 기록이 있어도 항상 표시. 검수대기(review)만 승인 시 숨김.
+  needReview.forEach(r=>{ const hide = r.tri.lane!=='reject' && approved.includes(r.q.num); cards+=cardHtml(r, false, hide); });
   cards+=`<div class="rv-section-t">자동 통과 <span style="font-weight:400;color:var(--ink4)">(접힘 — 클릭하면 펼침)</span></div>`;
   auto.forEach(r=> cards+=cardHtml(r, true, approved.includes(r.q.num)));
 
@@ -2729,10 +2730,13 @@ function rvUnapproveAll(){
 }
 function _rvUpdateApprovedBar(){
   const bar=document.getElementById('rvApprovedBar'); if(!bar) return;
-  const ap=_rvGetApproved(); const tot=_flat(generatedQs).length;
+  const ap=_rvGetApproved(); const allQ=_flat(generatedQs); const tot=allQ.length;
+  // 반려 상태인데 승인 기록에 있는 문항 수(=옛 기록일 가능성) 안내
+  let rejectCount=0;
+  try{ allQ.forEach(q=>{ const v=_rvVerify(q); const t=_rvTriage(q,v); if(t.lane==='reject') rejectCount++; }); }catch(e){}
   bar.innerHTML = ap.length
-    ? `✅ 검수 완료 <b>${ap.length}</b> / 총 ${tot} · 남은 ${tot-ap.length}개 &nbsp; <a href="#" onclick="rvUnapproveAll();return false;" style="color:var(--wine);">전체 되돌리기</a>`
-    : '';
+    ? `✅ 검수 완료 <b>${ap.length}</b> / 총 ${tot} · 남은 ${tot-ap.length}개${rejectCount?` · <span style="color:var(--wine);">⛔ 반려 ${rejectCount}개는 항상 표시됨</span>`:''} &nbsp; <a href="#" onclick="rvUnapproveAll();return false;" style="color:var(--wine);">전체 되돌리기</a>`
+    : (rejectCount?`<span style="color:var(--wine);">⛔ 반려 ${rejectCount}개 — 먼저 확인하세요</span>`:'');
 }
 function rvToggle(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
