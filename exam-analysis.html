@@ -2325,8 +2325,9 @@ function _rvCopyRate(q){
   const aw=(ans.toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!stop.has(w));
   if(!aw.length) return null;
   const ow=new Set((orig.toLowerCase().match(/[a-z]{4,}/g)||[]));
-  const hit=aw.filter(w=>ow.has(w)).length;
-  return Math.round(hit/aw.length*100);
+  const hitWords=aw.filter(w=>ow.has(w));
+  const rate=Math.round(hitWords.length/aw.length*100);
+  return {rate, words:[...new Set(hitWords)]};
 }
 
 /* ━━━ B2B 자동검증: 선지 길이 편차 (정답이 유독 긴가) ━━━ */
@@ -2435,9 +2436,11 @@ function _rvTriage(q, verify){
   if(verify.flags && verify.flags.length) autoflags.push(...verify.flags);
   if(_rvExpMismatch(q)) autoflags.push('해설 정답기호 불일치');
   const copy=_rvCopyRate(q);
+  const copyRate=copy?copy.rate:null;
+  const copyWords=copy?copy.words:[];
   // 교과서존(쉬운 워밍업)은 복붙 관대 — 외부/부교재 출처만 엄격
   const isEasy=/교과서/.test(q._src||q.source||'');
-  if(copy!=null && copy>60 && !isEasy) autoflags.push(`정답 본문복붙 ${copy}%`);
+  if(copyRate!=null && copyRate>60 && !isEasy) autoflags.push(`정답 본문복붙 ${copyRate}%`);
   // 길이단서: 함축은 선지가 본래 길어 제외
   const len=(q.qtype==='함축의미')?null:_rvLenFlag(q);
   if(len) autoflags.push(`정답 길이단서(${len.ansLen}vs평균${len.avg})`);
@@ -2445,8 +2448,9 @@ function _rvTriage(q, verify){
   // 전문가 판단 포인트 — 문항의 '실제 상태'에 맞춰 구체적으로 생성
   const ansTxt=(()=>{ const i='①②③④⑤'.indexOf((q.answer||'')[0]); return i>=0&&q.choices?(''+q.choices[i]).replace(/^[①②③④⑤]\s*/,'').replace(/<[^>]+>/g,''):''; })();
   // 1) autoflags(이미 잡힌 문제)에 대한 맞춤 안내 — 반복 일반론 대신 '이 문항이 왜 걸렸는지 + 무엇을 볼지'
-  if(copy!=null && copy>60 && !isEasy){
-    reasons.push({tag:'복붙 확인', q:`정답 「${ansTxt.slice(0,40)}」가 본문 어휘를 ${copy}% 그대로 사용 — 본문만 보고 찍힐 수 있음. 정답을 본문에 없는 표현으로 바꿀지 검토.`});
+  if(copyRate!=null && copyRate>60 && !isEasy){
+    const wlist=copyWords.length?` 겹치는 단어: <b style="color:#a00">${copyWords.join(', ')}</b> — 이 단어들을 정답에서 빼거나 다른 표현으로.`:'';
+    reasons.push({tag:'복붙 확인', q:`정답 「${ansTxt.slice(0,40)}」가 본문 어휘를 ${copyRate}% 사용.${wlist}`});
   }
   if(len){
     reasons.push({tag:'길이단서', q:`정답이 ${len.ansLen}단어로 평균 ${len.avg}보다 긺 — 길이로 정답이 노출될 수 있음. 오답을 비슷한 길이로 늘릴지 검토.`});
@@ -2484,7 +2488,7 @@ function _rvTriage(q, verify){
   let lane='auto';
   if(autoflags.length) lane='reject';
   else if(verify.status==='manual' || reasons.length || diffNote) lane='review';
-  return {lane, reasons, autoflags, copy, fre, diffNote};
+  return {lane, reasons, autoflags, copy:copyRate, fre, diffNote};
 }
 
 function _rvVerify(q){
