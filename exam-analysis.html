@@ -918,6 +918,21 @@ header { padding: 12px 16px; }
     <div id="examSheetList" style="display:flex;flex-direction:column;gap:6px;margin-top:10px;"></div>
     <div id="examSheetStatus" style="font-size:.8rem;color:var(--ink4);margin-top:4px;"></div>
   </div>
+
+  <div class="step-box">
+    <div class="step-title">✨ 선지 도우미 (AI 생성)</div>
+    <p style="font-size:.8rem;color:var(--ink4);margin:0 0 10px;">지문을 붙여넣고 유형을 고르면 평가원식 오답 선지·어휘·어법 변형을 생성합니다. 생성 결과는 <b>참고용</b>이며, 정답 타당성은 직접 확인하세요.</p>
+    <input type="password" id="aiKey" placeholder="Anthropic API Key (sk-ant-...)" style="width:100%;padding:8px;border:1px solid #d8cdbb;border-radius:6px;margin-bottom:8px;font-size:.85rem;" oninput="localStorage.setItem('ea_claude_key',this.value)">
+    <textarea id="aiPassage" placeholder="영어 지문을 붙여넣으세요" style="width:100%;min-height:90px;padding:8px;border:1px solid #d8cdbb;border-radius:6px;margin-bottom:8px;font-size:.85rem;font-family:inherit;"></textarea>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+      <button class="btn" style="background:#5a3a8a;color:#fff;font-size:.82rem;padding:7px 12px;" onclick="genHelper('topic')">제목·주제 선지</button>
+      <button class="btn" style="background:#5a3a8a;color:#fff;font-size:.82rem;padding:7px 12px;" onclick="genHelper('summary')">요약문 선지</button>
+      <button class="btn" style="background:#7a1020;color:#fff;font-size:.82rem;padding:7px 12px;" onclick="genHelper('grammar')">어법 변형(단어)</button>
+      <button class="btn" style="background:#7a1020;color:#fff;font-size:.82rem;padding:7px 12px;" onclick="genHelper('vocab')">어휘 반의/유의어</button>
+    </div>
+    <div style="font-size:.78rem;color:var(--ink4);margin-bottom:6px;">어법·어휘는 위 지문 대신 <b>단어 1개</b>를 입력란에 넣으세요.</div>
+    <div id="aiResult" style="display:none;margin-top:8px;"></div>
+  </div>
 </div>
 
 <!-- ━━━ 3. 출력 ━━━ -->
@@ -939,7 +954,9 @@ header { padding: 12px 16px; }
   <div class="step-box">
     <div class="step-title">🖨️ 시험지 출력</div>
     <div id="printExamInfo" class="pattern-card" style="margin-bottom:10px;"><span style="color:var(--ink4);">✍️ 출제 탭에서 예상문제를 먼저 등록하세요</span></div>
+    <button class="btn" style="background:#7a1020;color:#fff;margin-bottom:8px;" onclick="runExamAudit()">🔍 검수 (인쇄 전 자동 점검)</button>
     <button class="btn btn-green" onclick="printExam()">🖨️ 인쇄 / PDF 저장 (시험지+정답지)</button>
+    <div id="auditPanel" style="display:none;margin-top:12px;"></div>
     <p style="font-size:.78rem;color:var(--ink4);margin-top:8px;">A4 2단 레이아웃 · 새 창에서 열리며 브라우저 인쇄 대화상자에서 PDF로 저장할 수 있습니다.</p>
   </div>
 </div>
@@ -1522,9 +1539,242 @@ function clearExam(){
   renderExamCard();
 }
 
+// ━━━ 선지 도우미 (teacher.html 이식: AI 생성) ━━━
+function _callClaude(key,sys,user,maxTokens=2048){
+  if(!key) throw new Error('API 키 없음');
+  return fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTokens,system:sys,messages:[{role:'user',content:user}]})
+  }).then(async r=>{ const d=await r.json().catch(()=>({})); if(!r.ok)throw new Error(d?.error?.message||('HTTP '+r.status)); return d; });
+}
+function _parseJSON(text){
+  let s=text.replace(/```(?:json)?|```/g,'').trim();
+  const start=s.search(/[{[]/); if(start<0)throw new Error('JSON 없음');
+  const opener=s[start], closer=opener==='{'?'}':']'; let depth=0,inStr=false,esc=false,end=-1;
+  for(let i=start;i<s.length;i++){ const c=s[i]; if(esc){esc=false;continue;} if(c==='\\'){esc=true;continue;} if(c==='"'){inStr=!inStr;continue;} if(inStr)continue; if(c==='{'||c==='[')depth++; else if(c==='}'||c===']')depth--; if(depth===0){end=i;break;} }
+  return JSON.parse(end>=0?s.slice(start,end+1):s.slice(start));
+}
+const _AUTHOR_SYS='Return ONLY valid JSON, no markdown, no explanation.';
+function _topicPrompt(p){return `You are a Korean CSAT English exam expert (주제/제목 22~24번).
+Rules: CORRECT option = THESIS (central claim, noun phrase "the+명사+수식"). Must be MANIFEST(명료), cover WHOLE passage scope.
+Distractors (use ALL 4): TOO NARROW(one detail) / TOO BROAD(over-generalizes) / PARTIAL(half-truth w/ passage vocab) / OFF-FOCUS(touched but not main, strong trap).
+LENGTH: all 5 options ±3 words of correct; never make correct the longest.
+Passage:\n${p}\nReturn JSON only: {"options":["correct thesis","too narrow","too broad","partial","off-focus"]}`;}
+function _summaryPrompt(p){return `You are a Korean CSAT English summary expert (요약문 40번).
+Template = ONE sentence capturing thesis with (A)(B) two key concepts. Correct (A)(B) = PARAPHRASES not verbatim.
+Distractors per blank(4): OPPOSITE / PARTIAL / BAIT(passage vocab wrong role) / SCOPE(too narrow or broad). Never synonyms of correct.
+Passage:\n${p}\nReturn JSON only: {"template":"... ____(A)____ ... ____(B)____ ...","A_correct":"","A_distractors":["","","",""],"B_correct":"","B_distractors":["","","",""]}`;}
+function _grammarPrompt(w){return `For the English word/phrase "${w}", suggest 4 grammatically different forms that create unambiguous grammar errors in CSAT context (tense, voice, participle, infinitive, S-V agreement, pronoun, adverb/adjective). Return JSON only: {"forms":["","","",""]}`;}
+function _vocabPrompt(w){return `For the English word "${w}", provide 3 antonyms(반의어) and 3 synonyms(유의어). Return JSON only: {"antonyms":["","",""],"synonyms":["","",""]}`;}
+
+async function genHelper(kind){
+  const key=document.getElementById('aiKey').value.trim();
+  const box=document.getElementById('aiResult');
+  box.style.display='block';
+  if(!key){ box.innerHTML='<div style="padding:10px;background:#fff3f3;border-radius:6px;color:#7a1020;font-size:.85rem;">먼저 Anthropic API Key를 입력하세요.</div>'; return; }
+  const input=document.getElementById('aiPassage').value.trim();
+  if(!input){ box.innerHTML='<div style="padding:10px;background:#fff3f3;border-radius:6px;color:#7a1020;font-size:.85rem;">'+((kind==='grammar'||kind==='vocab')?'단어를 입력하세요.':'지문을 입력하세요.')+'</div>'; return; }
+  box.innerHTML='<div style="padding:10px;color:#5a3a8a;font-size:.85rem;">⏳ 생성 중...</div>';
+  try{
+    let sys=_AUTHOR_SYS, prompt, render;
+    if(kind==='topic'){ prompt=_topicPrompt(input);
+      render=(j)=>{ const o=j.options||[]; const labels=['정답(thesis)','너무 좁음','너무 넓음','부분 진술','초점 이탈'];
+        return '<div style="font-weight:700;color:#5a3a8a;margin-bottom:6px;">제목·주제 선지 (정답+오답 4유형)</div>'+
+          o.map((x,i)=>`<div style="font-size:.84rem;padding:3px 0;"><span style="display:inline-block;width:74px;color:#888;font-size:.75rem;">${labels[i]||''}</span> ${i===0?'<b>':''}${x}${i===0?'</b>':''}</div>`).join('')+
+          '<div style="font-size:.75rem;color:#b8860b;margin-top:6px;">⚠️ 정답이 최장이 아닌지, 오답이 매력적이되 명확히 틀린지 확인하세요.</div>'; };
+    } else if(kind==='summary'){ prompt=_summaryPrompt(input);
+      render=(j)=>{ const da=['반대','부분','미끼','범위'];
+        return '<div style="font-weight:700;color:#5a3a8a;margin-bottom:6px;">요약문 선지</div>'+
+          `<div style="font-size:.84rem;margin-bottom:6px;background:#f5f0ff;padding:6px;border-radius:4px;">${j.template||''}</div>`+
+          `<div style="font-size:.82rem;"><b>(A) 정답:</b> ${j.A_correct||''}</div>`+
+          (j.A_distractors||[]).map((x,i)=>`<div style="font-size:.8rem;padding:1px 0 1px 10px;color:#666;">${da[i]}: ${x}</div>`).join('')+
+          `<div style="font-size:.82rem;margin-top:4px;"><b>(B) 정답:</b> ${j.B_correct||''}</div>`+
+          (j.B_distractors||[]).map((x,i)=>`<div style="font-size:.8rem;padding:1px 0 1px 10px;color:#666;">${da[i]}: ${x}</div>`).join(''); };
+    } else if(kind==='grammar'){ sys='Return ONLY valid JSON, no markdown.'; prompt=_grammarPrompt(input);
+      render=(j)=>'<div style="font-weight:700;color:#7a1020;margin-bottom:6px;">어법 오류 변형: '+input+'</div>'+
+        (j.forms||[]).map(f=>`<div style="font-size:.84rem;padding:2px 0;">• ${input} → <b>${f}</b></div>`).join('')+
+        '<div style="font-size:.75rem;color:#b8860b;margin-top:6px;">⚠️ 선택한 변형이 명확한 오류인지 확인하세요.</div>';
+    } else { sys='Return ONLY valid JSON, no markdown.'; prompt=_vocabPrompt(input);
+      render=(j)=>'<div style="font-weight:700;color:#7a1020;margin-bottom:6px;">어휘: '+input+'</div>'+
+        '<div style="font-size:.82rem;"><b>반의어(오답용):</b> '+(j.antonyms||[]).join(', ')+'</div>'+
+        '<div style="font-size:.82rem;margin-top:2px;"><b>유의어(주의-오답금지):</b> '+(j.synonyms||[]).join(', ')+'</div>'+
+        '<div style="font-size:.75rem;color:#b8860b;margin-top:6px;">⚠️ 어휘 오답은 반의어로. 유의어를 오답에 쓰면 복수정답 논란.</div>';
+    }
+    const d=await _callClaude(key,sys,prompt);
+    const j=_parseJSON(d.content[0].text);
+    box.innerHTML='<div style="padding:12px;background:#fff;border:1px solid #e8e0f0;border-radius:8px;">'+render(j)+'</div>';
+  }catch(e){
+    box.innerHTML='<div style="padding:10px;background:#fff3f3;border-radius:6px;color:#7a1020;font-size:.85rem;">생성 실패: '+e.message+'</div>';
+  }
+}
+// 페이지 로드시 저장된 키 복원
+window.addEventListener('DOMContentLoaded',()=>{ const k=localStorage.getItem('ea_claude_key'); const el=document.getElementById('aiKey'); if(k&&el)el.value=k; });
+
+// ━━━ 검수 (게이트 규칙 내장: 인쇄 전 자동 점검) ━━━
+function _flat(qs){ const out=[]; (qs||[]).forEach(q=>{ if(q && q.type==='group' && q.questions) q.questions.forEach(s=>out.push(s)); else out.push(q); }); return out; }
+function _circIdx(a){ return '①②③④⑤'.indexOf((a||'').trim()[0]); }
+function _bodyOf(q){ const t=q.question||''; const i=t.indexOf('\n'); return i>=0? t.slice(i+1): t; }
+function _wl(t){ t=(t||'').replace(/<u>|<\/u>|\[주어진 문장\]|\[요약문\]|[①②③④⑤]|\(A\)|\(B\)|\(C\)|_{2,}/g,''); const m=t.toLowerCase().match(/[a-z']+/g)||[]; return new Set(m.filter(w=>w.length>2)); }
+function _overlap(a,b){ if(!a.size||!b.size) return 0; let c=0; a.forEach(w=>{ if(b.has(w)) c++; }); return c/Math.min(a.size,b.size); }
+
+function runExamAudit(){
+  const panel=document.getElementById('auditPanel');
+  panel.style.display='block';
+  if(!generatedQs.length){ panel.innerHTML='<div style="padding:12px;background:#fff3f3;border-radius:8px;color:#7a1020;">출제된 문항이 없습니다. 먼저 예상문제를 등록하세요.</div>'; return; }
+  const qs=_flat(generatedQs);
+  const n=qs.length;
+  const circ='①②③④⑤';
+  const fails=[];   // 자동 판정: 치명(고쳐야 함)
+  const warns=[];   // 사람 확인 필요
+  const perQ={};    // 문항별 이슈
+  const addQ=(num,type,msg)=>{ (perQ[num]=perQ[num]||[]).push({type,msg}); };
+
+  // 1차 구조
+  const total=qs.reduce((a,q)=>a+(+q.score||0),0);
+  if(Math.abs(total-100)>0.1) fails.push(`배점 합계 ${total} ≠ 100`);
+  const nums=qs.map(q=>q.num);
+  for(let i=0;i<n;i++) if(nums[i]!==i+1){ fails.push(`문항 번호 비연속 (${i+1}번 위치에 ${nums[i]})`); break; }
+  const inbody=/문장삽입|삽입|흐름무관|무관|어법|어휘/;
+  qs.forEach(q=>{
+    const ch=q.choices, qt=q.qtype||'', body=q.question||'';
+    const circN=(body.match(/[①②③④⑤]/g)||[]).length;
+    if(!ch||!ch.length){
+      if(inbody.test(qt)){ if(circN<5){ fails.push(`${q.num}번(${qt}) 본문 ①~⑤ ${circN}개(<5)`); addQ(q.num,'fail',`본문 번호 ${circN}개`); } }
+      else { fails.push(`${q.num}번(${qt}) 선지 없음`); addQ(q.num,'fail','선지 없음'); }
+      return;
+    }
+    if(ch.length!==5){ fails.push(`${q.num}번 선지 ${ch.length}개`); addQ(q.num,'fail',`선지 ${ch.length}개`); }
+    const syms=ch.map(c=>(''+c).trim()[0]);
+    if(_circIdx(q.answer)<0 || !syms.includes((q.answer||'').trim()[0])){ fails.push(`${q.num}번 정답기호 불일치`); addQ(q.num,'fail','정답기호 불일치'); }
+  });
+
+  // 정답분포
+  const dist={}; circ.split('').forEach(c=>dist[c]=0);
+  qs.forEach(q=>{ const a=(q.answer||'').trim()[0]; if(a in dist) dist[a]++; });
+  if(n%5===0){ const exp=n/5; const bad=circ.split('').filter(c=>dist[c]!==exp); if(bad.length) fails.push(`정답분포 불균등 ${circ.split('').map(c=>c+dist[c]).join(' ')} (각 ${exp} 기대)`); }
+
+  // 2차 밑줄
+  qs.forEach(q=>{ const u=(q.question.match(/<u>/g)||[]).length; if((q.qtype==='어법'||q.qtype==='어휘')&&u!==5){ fails.push(`${q.num}번(${q.qtype}) 밑줄 ${u}개(≠5)`); addQ(q.num,'fail',`밑줄 ${u}개`); } });
+
+  // 4차 표시·축약
+  qs.forEach(q=>{ const b=_bodyOf(q);
+    if(b.includes('...')||b.includes('…')||b.includes('(중략)')){ fails.push(`${q.num}번 축약(...) 발견`); addQ(q.num,'fail','본문 축약'); }
+    if(q.qtype==='빈칸추론'&&!/_{2,}|vblank/.test(q.question)) addQ(q.num,'warn','빈칸 표시 확인');
+    if(q.qtype==='글의순서'&&!(b.includes('(A)')&&b.includes('(B)')&&b.includes('(C)'))){ fails.push(`${q.num}번 순서 (A)(B)(C) 누락`); addQ(q.num,'fail','(A)(B)(C) 누락'); }
+  });
+
+  // 5차 순서: 선지↔해설 + 배치=정답 결함
+  qs.forEach(q=>{ if(q.qtype!=='글의순서'||!q.choices) return;
+    const cc=q.choices[_circIdx(q.answer)]||'';
+    const mm=(q.explanation||'').match(/\(([ABC])\)-\(([ABC])\)-\(([ABC])\)/);
+    if(mm && !cc.includes(`(${mm[1]})-(${mm[2]})-(${mm[3]})`)){ fails.push(`${q.num}번 순서 선지↔해설 불일치`); addQ(q.num,'fail','선지↔해설 불일치'); }
+    // 배치=정답 결함
+    const labels=(q.question.match(/\(([ABC])\)/g)||[]).map(x=>x[1]); const seen=[]; labels.forEach(x=>{ if(!seen.includes(x)) seen.push(x); });
+    const place=seen.slice(0,3).join('');
+    const am=(cc.match(/[ABC]/g)||[]).join('');
+    if(place==='ABC'&&am==='ABC'){ fails.push(`${q.num}번 순서 결함: 지문배치=정답(그냥 읽으면 답)`); addQ(q.num,'fail','배치=정답(읽으면 답)'); }
+  });
+
+  // 6차 출처
+  qs.forEach(q=>{ if(!/\[출처:|출처/.test(q.explanation||'')) { warns.push(`${q.num}번 해설 출처 표기 확인`); addQ(q.num,'warn','출처 표기 없음'); } });
+
+  // 동일 지문 중복
+  const seen=[];
+  qs.forEach(q=>{ const bw=_wl(_bodyOf(q)); const src=(q.source||'').trim(); let dup=null;
+    for(const p of seen){ const ov=_overlap(bw,p.bw); if(ov>=0.90||(src&&p.src&&src===p.src&&ov>=0.70)){ dup=p.num; break; } }
+    if(dup){ warns.push(`${q.num}·${dup}번 동일 지문(세트면 무시)`); addQ(q.num,'warn',`${dup}번과 동일 지문`); }
+    else seen.push({num:q.num,src,bw});
+  });
+
+  // 7차 원문보존: 헬퍼로 출제하면 자동 보존, 게이트가 정밀확인 → 사람은 안 봐도 됨
+  // (원문보존은 패널에서 제외. exam_helpers.py 연산출제 + exam_gate.py 검증이 담당)
+
+  // ── 사람 검수 항목 (기계가 판정 못 하는 '내용 타당성') ──
+  // 우선순위: 1=꼭 봐야(정답 유일성) 2=빠르게(오답 명확성) 3=게이트가 검증(생략 가능)
+  const PRI={'빈칸추론':1,'글의순서':1,'제목':1,'주제':1,'요지':1,'함축의미':2,'어휘':2,'요약문완성':2,'어법':3,'문장삽입':3,'흐름무관':3,'내용일치':3};
+  const humanHigh=[], humanMid=[];
+  qs.forEach(q=>{
+    const t=q.qtype||'', num=q.num, a=q.answer||'';
+    const ci=_circIdx(a), ansc=(q.choices&&ci>=0)?(''+q.choices[ci]).replace(/<[^>]+>/g,'').slice(0,48):'';
+    let msg='';
+    if(t==='빈칸추론') msg=`정답 「${ansc}」가 유일 정답인지 (다른 선지 여지 없는지)`;
+    else if(t==='어휘') msg=`정답 ${a} 단어가 문맥상 명확히 틀린지, 나머지 4개 맞는지`;
+    else if(t==='어법') msg=`정답 ${a}가 어법상 분명한 오류인지`;
+    else if(t==='글의순서') msg=`정답 ${a} 순서가 논리적으로 유일한지`;
+    else if(t==='문장삽입') msg=`주어진 문장이 정답 ${a} 위치에만 자연스러운지`;
+    else if(t==='흐름무관') msg=`정답 ${a} 문장이 확실히 흐름과 무관한지`;
+    else if(t==='제목'||t==='주제'||t==='요지') msg=`정답 「${ansc}」가 글 전체를 포괄하는지, 오답이 매력적이되 틀린지`;
+    else if(t==='함축의미') msg=`밑줄 표현의 정답 해석 ${a}가 문맥상 유일한지`;
+    else if(t==='내용일치') msg=`정답 ${a}만 본문과 어긋나는지 (나머지 4개 확실한지)`;
+    else if(t==='요약문완성') msg=`요약 (A)(B) 정답 조합이 본문과 일치하는지`;
+    if(!msg) return;
+    const pri=PRI[t]||3;
+    const item={num,t,msg};
+    if(pri===1) humanHigh.push(item); else if(pri===2) humanMid.push(item);
+  });
+
+  // ── 렌더 ──
+  const failN=fails.length, warnN=warns.length;
+  let h=`<div style="border-radius:10px;overflow:hidden;border:1px solid #e5ddd0;">`;
+  // 헤더 요약
+  const ok=failN===0;
+  h+=`<div style="padding:12px 14px;background:${ok?'#eef7ee':'#fdeeee'};border-bottom:1px solid #e5ddd0;">
+    <span style="font-size:1.05rem;font-weight:700;color:${ok?'#1d7a1d':'#7a1020'};">${ok?'✅ 자동검수 통과':'❌ 자동검수 실패'}</span>
+    <span style="margin-left:10px;font-size:.85rem;color:#555;">치명 ${failN} · 확인필요 ${warnN} · 총 ${n}문항</span>
+  </div>`;
+  // 치명
+  if(failN){ h+=`<div style="padding:10px 14px;background:#fff;"><div style="font-weight:700;color:#7a1020;margin-bottom:6px;">❌ 고쳐야 할 것 (${failN})</div>`;
+    fails.forEach(f=>h+=`<div style="font-size:.85rem;padding:3px 0;color:#3a2a20;">• ${f}</div>`); h+=`</div>`; }
+  // 확인 필요
+  if(warnN){ h+=`<div style="padding:10px 14px;background:#fffbf0;border-top:1px solid #f0e8d8;"><div style="font-weight:700;color:#b8860b;margin-bottom:6px;">⚠️ 직접 확인 (${warnN}) — 이것만 빠르게 보세요</div>`;
+    warns.forEach(w=>h+=`<div style="font-size:.85rem;padding:3px 0;color:#3a2a20;">• ${w}</div>`); h+=`</div>`; }
+  // 문항별 상세 (이슈 있는 것만)
+  const issueNums=Object.keys(perQ).sort((a,b)=>a-b);
+  if(issueNums.length){ h+=`<div style="padding:10px 14px;background:#fff;border-top:1px solid #f0e8d8;"><div style="font-weight:700;margin-bottom:6px;color:#3a2a20;">📋 문항별 상세</div><table style="width:100%;border-collapse:collapse;font-size:.82rem;">`;
+    issueNums.forEach(num=>{ const items=perQ[num]; const hasFail=items.some(x=>x.type==='fail');
+      h+=`<tr style="border-bottom:1px solid #f0ece4;"><td style="padding:5px 8px;font-weight:700;width:42px;color:${hasFail?'#7a1020':'#b8860b'};">${num}번</td><td style="padding:5px 8px;">`;
+      items.forEach(it=>h+=`<span style="display:inline-block;margin:1px 4px 1px 0;padding:1px 7px;border-radius:10px;font-size:.76rem;background:${it.type==='fail'?'#fdeeee':'#fffbf0'};color:${it.type==='fail'?'#7a1020':'#b8860b'};">${it.type==='fail'?'❌':'⚠️'} ${it.msg}</span>`);
+      h+=`</td></tr>`; });
+    h+=`</table></div>`; }
+  // 사람 검수 항목 (정답 타당성 - 기계가 못 봄)
+  if(humanHigh.length||humanMid.length){
+    h+=`<div style="padding:10px 14px;background:#f5f0ff;border-top:1px solid #e8e0f0;">
+      <div style="font-weight:700;margin-bottom:8px;color:#5a3a8a;">👁️ 선생님 검수 (정답 타당성 — 기계가 판정 못 함)</div>`;
+    if(humanHigh.length){
+      h+=`<div style="font-size:.82rem;font-weight:700;color:#7a1020;margin:4px 0;">🔴 꼭 확인 (정답 유일성) ${humanHigh.length}개</div>`;
+      humanHigh.forEach(it=>h+=`<div style="font-size:.82rem;padding:2px 0 2px 8px;color:#3a2a20;"><b>${it.num}번</b>(${it.t}): ${it.msg}</div>`);
+    }
+    if(humanMid.length){
+      h+=`<div style="font-size:.82rem;font-weight:700;color:#b8860b;margin:8px 0 4px;">🟡 빠르게 (오답 명확성) ${humanMid.length}개</div>`;
+      humanMid.forEach(it=>h+=`<div style="font-size:.82rem;padding:2px 0 2px 8px;color:#3a2a20;"><b>${it.num}번</b>(${it.t}): ${it.msg}</div>`);
+    }
+    const skipN=n-humanHigh.length-humanMid.length;
+    h+=`<div style="font-size:.78rem;color:#888;margin-top:8px;">⚪ 나머지 ${skipN}개(어법·삽입·무관·내용일치 등)는 게이트가 형식·논리 검증 완료 → 생략 가능</div>`;
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+  panel.innerHTML=h;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// 인쇄 시 자동 경고: 치명 이슈 있으면 알림
+const _origPrintExam_forAudit = null;
 // ━━━ 인쇄 (구버전 검증 레이아웃 이식) ━━━
 function printExam(){
   if(!generatedQs.length){ alert('인쇄할 시험지가 등록되지 않았습니다.\n출제 탭에서 예상문제 JSON을 불러오거나, 시트 보관 목록에서 항목을 클릭해 등록한 뒤 다시 시도하세요.'); return; }
+  // 인쇄 전 자동 검수 경고: 치명 이슈가 있으면 확인
+  try{
+    const _qs=_flat(generatedQs); let _fail=0;
+    const _circ='①②③④⑤';
+    const _total=_qs.reduce((a,q)=>a+(+q.score||0),0); if(Math.abs(_total-100)>0.1)_fail++;
+    const _dist={}; _circ.split('').forEach(c=>_dist[c]=0); _qs.forEach(q=>{const a=(q.answer||'').trim()[0]; if(a in _dist)_dist[a]++;});
+    if(_qs.length%5===0){const e=_qs.length/5; if(_circ.split('').some(c=>_dist[c]!==e))_fail++;}
+    _qs.forEach(q=>{ const u=(q.question.match(/<u>/g)||[]).length; if((q.qtype==='어법'||q.qtype==='어휘')&&u!==5)_fail++;
+      if(q.qtype==='글의순서'&&q.choices){ const cc=q.choices[_circIdx(q.answer)]||''; const labels=(q.question.match(/\(([ABC])\)/g)||[]).map(x=>x[1]); const sn=[]; labels.forEach(x=>{if(!sn.includes(x))sn.push(x);}); if(sn.slice(0,3).join('')==='ABC'&&(cc.match(/[ABC]/g)||[]).join('')==='ABC')_fail++; }
+    });
+    if(_fail>0 && !confirm(`⚠️ 자동검수에서 치명 이슈 ${_fail}건이 발견되었습니다.\n('🔍 검수' 버튼으로 상세 확인 가능)\n\n그래도 인쇄를 진행할까요?`)) return;
+  }catch(e){ console.warn('인쇄 전 검수 스킵:', e); }
 
   const m = examMeta || {};
   const SCHOOL_FULL = {'이동고':'포항이동고등학교','제철고':'포항제철고등학교','동지고':'포항동지고등학교','제철중':'포항제철중학교','이동중':'포항이동중학교','두호고':'포항두호고등학교','대동고':'포항대동고등학교'};
