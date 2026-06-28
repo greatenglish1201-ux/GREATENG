@@ -602,6 +602,7 @@ header { padding: 12px 16px; }
 .rv-orig{ font-size:.8rem; color:#555; background:#fafafa; padding:8px; border-radius:4px; margin-top:4px; text-align:justify; }
 .rv-exp{ background:#f4f7fb; border-left:3px solid var(--navy); padding:7px 10px; margin-top:10px; font-size:.82rem; }
 .rv-card u{ text-underline-offset:2px; font-weight:600; }
+.rv-src{ font-size:.8rem; color:#7a1020; background:#faf5ef; padding:4px 10px; border-radius:5px; margin:6px 0 2px; display:inline-block; }
 
 /* ━━━ 사용법 매뉴얼 박스 ━━━ */
 .manual{border:1px solid var(--gold-lt);border-left:4px solid var(--gold2);border-radius:8px;background:linear-gradient(180deg,#fffdf6,#fdf9ee);margin-bottom:14px;overflow:hidden;}
@@ -2537,6 +2538,7 @@ function renderReview(){
         <span class="rv-stem">${_rvEsc((q.question||'').split('\n')[0])}</span>
         <span class="rv-sc">[${q.score}점]·${q.qtype}${fre}${cp}</span>
       </div>
+      ${(q.source||q._src)?`<div class="rv-src">📖 출처: ${_rvEsc(q.source||q._src)}${q._origtype?` · 원유형: ${q._origtype}`:''}</div>`:''}
       <div class="rv-cardbody"${collapsed?' style="display:none"':''}>
         ${chk?`<div class="rv-chkbox">${chk}</div>`:''}
         <div class="rv-cols">
