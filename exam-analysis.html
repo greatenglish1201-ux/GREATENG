@@ -2666,7 +2666,19 @@ function renderReview(){
   const cardHtml=(r,collapsed,isApproved)=>{
     const {q,v,tri}=r; const n=q.num;
     const qbody=_rvEsc(_rvBody(q));
-    const ch=(q.choices||[]).map(c=>`<div class="rv-ch">${_rvEsc(c)}</div>`).join('');
+    // 어법·어휘 등 선지가 번호(①~⑤)만 있는 유형 → 빈 번호 나열 대신 본문 밑줄 단어를 표시
+    const choicesAreBare=(q.choices||[]).every(c=>/^[①②③④⑤]\s*$/.test((''+c)));
+    let ch;
+    if(choicesAreBare){
+      const unders=[...(_rvBody(q).matchAll(/([①②③④⑤])\s*<u>(.*?)<\/u>/g))].map(m=>`${m[1]} ${m[2]}`);
+      if(unders.length){
+        ch=`<div class="rv-ch" style="color:#888;font-size:.82rem;">본문 밑줄로 출제: ${unders.map(u=>`<b style="color:#3a2a20">${u}</b>`).join(' &nbsp; ')}</div>`;
+      } else {
+        ch=`<div class="rv-ch" style="color:#888;font-size:.82rem;">본문 밑줄(①~⑤)로 출제되는 유형</div>`;
+      }
+    } else {
+      ch=(q.choices||[]).map(c=>`<div class="rv-ch">${_rvEsc(c)}</div>`).join('');
+    }
     const laneColor=tri.lane==='reject'?'reject':(tri.lane==='review'?'review':'auto');
     const badge=tri.lane==='reject'?'⛔':(tri.lane==='review'?'👁':'✓');
     // 검수 포인트
