@@ -2291,6 +2291,46 @@ function _rvGate(Q){
   return {tot, dist, stemMatch, ...g};
 }
 
+/* ━━━ 터미널 게이트(exam_gate.py)와 동일한 구조 검사 ━━━ */
+function _rvGateStructure(Q){
+  const fails=[], warns=[]; const circ='①②③④⑤';
+  const inbody=/문장삽입|삽입|흐름무관|무관|어법|어휘/;
+  // 1차: 번호 연속
+  Q.forEach((q,i)=>{ if(q.num!==i+1 && fails.filter(f=>f.includes('번호')).length===0) fails.push(`번호 비연속(${i+1}번 위치에 ${q.num})`); });
+  // 1차: 선지·정답기호 / 본문내장 유형
+  Q.forEach(q=>{ const ch=q.choices, qt=q.qtype||'', body=q.question||'';
+    const circN=(body.match(/[①②③④⑤]/g)||[]).length;
+    if(!ch||!ch.length){
+      if(inbody.test(qt)){ if(circN<5) fails.push(`${q.num}번(${qt}) 본문 ①~⑤ ${circN}개(<5)`); }
+      else fails.push(`${q.num}번(${qt}) 선지 없음`);
+      return;
+    }
+    if(ch.length!==5) fails.push(`${q.num}번 선지 ${ch.length}개`);
+    const syms=ch.map(c=>(''+c).trim()[0]);
+    if(!syms.includes((q.answer||'').trim()[0])) fails.push(`${q.num}번 정답기호 불일치`);
+  });
+  // 정답분포 균등 (n이 5의 배수면 각 n/5 기대)
+  const dist={}; circ.split('').forEach(c=>dist[c]=0); Q.forEach(q=>{const a=(q.answer||'').trim()[0]; if(a in dist)dist[a]++;});
+  if(Q.length%5===0){ const e=Q.length/5; const bad=circ.split('').filter(c=>dist[c]!==e); if(bad.length) fails.push(`정답분포 불균등 ${circ.split('').map(c=>c+dist[c]).join(' ')}(각 ${e})`); }
+  // 2차: 어법·어휘 밑줄 5개
+  Q.forEach(q=>{ const u=(q.question.match(/<u>/g)||[]).length; if((q.qtype==='어법'||q.qtype==='어휘')&&u!==5) fails.push(`${q.num}번(${q.qtype}) 밑줄 ${u}개(≠5)`); });
+  // 4차: 본문 축약·순서/요약 형식
+  Q.forEach(q=>{ const b=(q.question||'').split('\n').slice(1).join(' ');
+    if(b.includes('...')||b.includes('…')||b.includes('(중략)')) fails.push(`${q.num}번 축약(...) 발견`);
+    if(q.qtype==='글의순서'&&!(b.includes('(A)')&&b.includes('(B)')&&b.includes('(C)'))) fails.push(`${q.num}번 순서 (A)(B)(C) 누락`);
+    if(q.qtype==='요약문완성'&&!(b.includes('(A)')&&b.includes('(B)'))) fails.push(`${q.num}번 요약 (A)(B) 누락`);
+  });
+  // 5차: 순서 선지↔해설
+  Q.forEach(q=>{ if(q.qtype!=='글의순서'||!q.choices) return;
+    const cc=q.choices['①②③④⑤'.indexOf((q.answer||'')[0])]||'';
+    const mm=(q.explanation||'').match(/\(([ABC])\)-\(([ABC])\)-\(([ABC])\)/);
+    if(mm && !cc.includes(`(${mm[1]})-(${mm[2]})-(${mm[3]})`)) fails.push(`${q.num}번 순서 선지↔해설 불일치`);
+  });
+  // 6차: 출처 누락
+  Q.forEach(q=>{ if(!/출처/.test(q.explanation||'')) warns.push(`${q.num}번 출처 표기 없음`); });
+  return {fails, warns};
+}
+
 /* ━━━ B2B: 문항 트리아지 (자동통과 vs 검수대기) ━━━ */
 function _rvTriage(q, verify){
   const reasons=[];      // 검수자가 봐야 할 이유
@@ -2413,6 +2453,7 @@ function renderReview(){
   const Q=generatedQs.filter(q=>q.type!=='group');
   const results=Q.map(q=>{ const v=_rvVerify(q); return {q, v, tri:_rvTriage(q,v)}; });
   const gate=_rvGate(Q);
+  const struct=_rvGateStructure(Q);
   const hasOrig=Q.some(q=>q._orig);
 
   const reject=results.filter(r=>r.tri.lane==='reject');
@@ -2422,18 +2463,24 @@ function renderReview(){
   // ━━━ 1층: 자동 게이트 스코어카드 ━━━
   const g1=(label,val,st)=>`<div class="gate-cell"><div class="gate-l">${label}</div><div class="gate-v ${st}">${val}</div></div>`;
   let gateHtml=`<div class="rv-layer">
-    <div class="rv-layer-h"><span class="rv-layer-t">🛡 1층 · 자동 게이트</span><span class="rv-layer-s">기계 검사 — 검수자 손 안 탐</span></div>
+    <div class="rv-layer-h"><span class="rv-layer-t">🛡 1층 · 자동 게이트</span><span class="rv-layer-s">기계 검사 — 검수자 손 안 탐 (exam_gate.py 동일)</span></div>
     <div class="gate-grid">
-      ${g1('발문 일치', gate.stemMatch?`${gate.stemMatch.ok}/${gate.stemMatch.tot}`:'패턴없음', gate.stemMatch&&gate.stemMatch.ok===gate.stemMatch.tot?'ok':(gate.stemMatch?'warn':'na'))}
       ${g1('총점', gate.tot, gate.tot===100?'ok':'bad')}
+      ${g1('구조 검사', struct.fails.length?`✗ ${struct.fails.length}`:'✓ 통과', struct.fails.length?'bad':'ok')}
       ${g1('정답 정합', `${Q.length-results.filter(r=>_rvExpMismatch(r.q)).length}/${Q.length}`, results.some(r=>_rvExpMismatch(r.q))?'bad':'ok')}
       ${g1('자동 반려', reject.length, reject.length?'bad':'ok')}
     </div>`;
+  // 구조 게이트 치명 항목 (exam_gate.py FAIL과 동일)
+  if(struct.fails.length){
+    gateHtml+=`<div class="gate-reject"><b>❌ 구조 결함 (고쳐야 함):</b><br>`
+      +struct.fails.map(f=>`<span style="display:inline-block;margin:2px 6px 2px 0;">• ${f}</span>`).join('')+`</div>`;
+  }
   if(reject.length){
-    gateHtml+=`<div class="gate-reject"><b>⛔ 출제 반려 권장:</b> `
+    gateHtml+=`<div class="gate-reject"><b>⛔ 문항 반려 권장:</b> `
       +reject.map(r=>`<a href="#rvq${r.q.num}">${r.q.num}번</a>(${r.tri.autoflags.join(', ')})`).join(' · ')+`</div>`;
   }
-  if(gate.warn.length) gateHtml+=`<div class="gate-warn">⚠ ${gate.warn.join(' / ')}</div>`;
+  const allWarn=[...gate.warn, ...struct.warns];
+  if(allWarn.length) gateHtml+=`<div class="gate-warn">⚠ ${allWarn.join(' / ')}</div>`;
   gateHtml+=`</div>`;
 
   // ━━━ 2층: 전문가 검수 큐 ━━━
