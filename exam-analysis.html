@@ -1602,6 +1602,11 @@ Distractors per blank(4): OPPOSITE / PARTIAL / BAIT(passage vocab wrong role) / 
 Passage:\n${p}\nReturn JSON only: {"template":"... ____(A)____ ... ____(B)____ ...","A_correct":"","A_distractors":["","","",""],"B_correct":"","B_distractors":["","","",""]}`;}
 function _grammarPrompt(w){return `For the English word/phrase "${w}", suggest 4 grammatically different forms that create unambiguous grammar errors in CSAT context (tense, voice, participle, infinitive, S-V agreement, pronoun, adverb/adjective). Return JSON only: {"forms":["","","",""]}`;}
 function _vocabPrompt(w){return `For the English word "${w}", provide 3 antonyms(반의어) and 3 synonyms(유의어). Return JSON only: {"antonyms":["","",""],"synonyms":["","",""]}`;}
+function _blankPrompt(p){return `You are a Korean CSAT English exam expert (빈칸추론 31~34번). The passage has a blank (______).
+Provide the CORRECT phrase that fills the blank (matches the logical flow, usually a paraphrase of the passage's key idea — NOT verbatim copy from the passage).
+Then 4 DISTRACTORS that are plausible but wrong: OPPOSITE(반대 방향) / PARTIAL(부분만 맞음) / OFF-TOPIC(지문 소재이나 논리 무관) / OVER-GENERAL(너무 포괄적).
+All 5 options similar length (±3 words). Correct must NOT be the longest. Avoid using exact passage phrases verbatim in the correct answer.
+Passage with blank:\n${p}\nReturn JSON only: {"options":["correct","opposite","partial","off-topic","over-general"]}`;}
 
 async function genHelper(kind){
   const key=_cleanKey(document.getElementById('aiKey')?.value||localStorage.getItem('ea_claude_key')||'');
@@ -1655,13 +1660,15 @@ async function rvAISuggest(num, qtype){
   if(!key){ box.innerHTML='<div style="font-size:.8rem;color:#7a1020;">⚙️ 설정 탭에서 API 키를 먼저 입력하세요.</div>'; return; }
   box.innerHTML='<div style="font-size:.8rem;color:#5a3a8a;">⏳ 생성 중...</div>';
   try{
-    if(/제목|주제|요지/.test(qtype)){
+    if(/제목|주제|요지|빈칸추론/.test(qtype)){
       const body=(card?.querySelector('.rf-body')?.value||'').trim();
       if(!body){ box.innerHTML='<div style="font-size:.8rem;color:#7a1020;">지문이 비어 있습니다.</div>'; return; }
-      const d=await _callClaude(key,_AUTHOR_SYS,_topicPrompt(body));
+      const isBlank=(qtype==='빈칸추론');
+      if(isBlank && !/_{2,}|______/.test(body)){ box.innerHTML='<div style="font-size:.8rem;color:#b8860b;">지문에 빈칸(______)이 보이지 않습니다. 빈칸 위치를 먼저 확인하세요.</div>'; return; }
+      const d=await _callClaude(key,_AUTHOR_SYS, isBlank?_blankPrompt(body):_topicPrompt(body));
       const j=_parseJSON(d.content[0].text);
       const circ='①②③④⑤'; const lines=(j.options||[]).map((x,i)=>circ[i]+' '+x);
-      const labels=['정답(thesis)','너무 좁음','너무 넓음','부분 진술','초점 이탈'];
+      const labels=isBlank?['정답','반대 방향','부분만 맞음','소재만 같음','너무 포괄적']:['정답(thesis)','너무 좁음','너무 넓음','부분 진술','초점 이탈'];
       let h='<div style="font-size:.76rem;color:#5a3a8a;margin-bottom:4px;">후보 클릭=그 선지만 교체 / 버튼=5개 모두 교체 (첫 줄=정답)</div>';
       h+='<button class="btn" style="background:#185fa5;color:#fff;font-size:.76rem;padding:3px 9px;margin-bottom:5px;" onclick="rvApplyChoices('+num+')">⬇ 5개 모두 적용</button>';
       h+=lines.map((x,i)=>`<div style="font-size:.82rem;padding:4px 7px;border:1px solid #e8e0f0;border-radius:4px;margin:2px 0;cursor:pointer;" onclick="rvPickChoice(${num},${i})"><span style="color:#999;font-size:.72rem;">${labels[i]||''}</span> ${x}</div>`).join('');
@@ -2348,8 +2355,18 @@ function _rvLenFlag(q){
 /* ━━━ B2B 자동검증: 해설 정답기호 정합 ━━━ */
 function _rvExpMismatch(q){
   const exp=q.explanation||''; if(!q.answer) return false;
-  const m=exp.match(/따라서\s*([①②③④⑤])/);
-  return m && m[1]!==q.answer;
+  const ans=q.answer[0];
+  // 해설에서 정답을 가리키는 다양한 표현을 모두 수집
+  // "따라서 ②", "②가/이 적절/정답/제목/답", "정답은 ②", "②번이 ..."
+  const marks=[];
+  let m;
+  const re1=/(?:따라서|그러므로|정답(?:은|:)?\s*)\s*([①②③④⑤])/g;
+  while((m=re1.exec(exp))) marks.push(m[1]);
+  const re2=/([①②③④⑤])\s*(?:가|이|번이|번은)?\s*(?:제목|주제|정답|적절|답)/g;
+  while((m=re2.exec(exp))) marks.push(m[1]);
+  if(!marks.length) return false;          // 해설이 기호를 명시 안 하면 판정 불가
+  // 명시된 기호 중 정답과 일치하는 게 하나도 없으면 불일치
+  return !marks.includes(ans);
 }
 
 /* ━━━ B2B: 전역 게이트 (시험 전체 기계검사) ━━━ */
