@@ -41,7 +41,8 @@ def main():
 
     # PASS → 발행
     exam = json.load(open(exam_path))
-    base = os.path.basename(exam_path).replace('_exam.json', '')
+    base = os.path.basename(exam_path)
+    base = base[:-len('_exam.json')] if base.endswith('_exam.json') else base[:-len('.json')] if base.endswith('.json') else base
     dst = f"{OUT}/{base}_exam.json"
     if os.path.abspath(exam_path) != os.path.abspath(dst):
         shutil.copy(exam_path, dst)

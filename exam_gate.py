@@ -104,6 +104,35 @@ def main():
         if q['answer'][0] not in [str(c).strip()[0] for c in ch]:
             fails.append(f"[1차] {q['num']}번 정답기호 불일치")
 
+    # ---- 동일 지문 중복 검사 (경고) ----
+    # 같은 지문을 여러 문항이 쓰면 세트 구성일 수 있으나(제목+어휘 등), 의도치 않은 중복일 수도 있어 경고.
+    # 판정: ①출처(괄호 세부 포함) 정확 일치  AND  ②본문 어휘 70%+ 일치 → 동일 지문으로 간주
+    def body_words(q):
+        b = body_of(q)
+        b = re.sub(r'<u>|</u>|[①②③④⑤]|_{2,}|\(A\)|\(B\)|\(C\)', '', b)
+        return set(w for w in re.findall(r"[a-z']+", b.lower()) if len(w) > 2)
+    seen = []
+    dup_groups = {}
+    for q in qs:
+        bw = body_words(q)
+        src = (q.get('source') or '').strip()
+        matched = None
+        for idx, (pnum, psrc, pbw) in enumerate(seen):
+            if not bw or not pbw: continue
+            overlap = len(bw & pbw) / min(len(bw), len(pbw))
+            same_src = src and psrc and src == psrc
+            # 본문 90%+ 거의동일, 또는 (출처정확일치 AND 본문70%+)
+            if overlap >= 0.90 or (same_src and overlap >= 0.70):
+                matched = pnum; break
+        if matched:
+            dup_groups.setdefault(matched, [matched]).append(q['num'])
+        else:
+            seen.append((q['num'], src, bw))
+    for base, group in dup_groups.items():
+        nums_str = '·'.join(str(x) for x in group)
+        src = next((q.get('source','') for q in qs if q['num']==base), '')
+        warns.append(f"[중복] {nums_str}번이 동일 지문({src}). 의도된 세트면 무시, 아니면 다른 지문으로 교체")
+
     # ---- 정답분포 균등 ----
     from collections import Counter
     dist = Counter(q['answer'][0] for q in qs)
@@ -133,7 +162,7 @@ def main():
         if q['qtype'] == '요약문완성' and ('(A)' not in b or '(B)' not in b):
             fails.append(f"[4차] {q['num']}번 요약 (A)(B) 누락")
 
-    # ---- 5차 순서 선지=해설 ----
+    # ---- 5차 순서 선지=해설 + 배치 결함 ----
     for q in qs:
         if q['qtype'] == '글의순서':
             ch = q.get('choices')
@@ -144,6 +173,18 @@ def main():
             mm = re.search(r'\(([ABC])\)-\(([ABC])\)-\(([ABC])\)', q['explanation'])
             if mm and f"({mm.group(1)})-({mm.group(2)})-({mm.group(3)})" not in cc:
                 fails.append(f"[5차] {q['num']}번 순서 선지↔해설 불일치")
+            # ★배치=정답 결함: 지문 단락이 (A)(B)(C) 순으로 놓였는데 정답 읽기순서도 A-B-C면
+            #   학생이 라벨 순서대로 위에서 읽기만 해도 정답 → 변별력 없는 결함
+            body = q['question']
+            labels = [x for x in re.findall(r'\(([ABC])\)', body) if x in 'ABC']
+            seen = []
+            for x in labels:
+                if x not in seen: seen.append(x)
+            place = ''.join(seen[:3])
+            am = re.findall(r'[ABC]', cc)
+            read = ''.join(am[:3])
+            if place == 'ABC' and read == 'ABC':
+                fails.append(f"[5차★] {q['num']}번 순서 결함: 지문배치(A)(B)(C)=정답(A)-(B)-(C). 그냥 읽으면 답 → 정답이 섞인 순서가 되게 재배치")
 
     # ---- 6차 출처 ----
     for q in qs:
