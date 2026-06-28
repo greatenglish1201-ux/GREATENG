@@ -59,7 +59,7 @@ def main():
         md.append(f"**{q['num']}. {q['question'].split(chr(10))[0]}** ({q['score']}점)\n")
         rest = q['question'].split('\n', 1)[1].strip() if '\n' in q['question'] else ''
         if rest: md.append(rest + "\n")
-        for c in q['choices']: md.append(str(c) + "  ")
+        for c in (q.get('choices') or []): md.append(str(c) + "  ")
         md.append("\n---\n")
     md.append("\n## 정답 및 해설\n| 문항 | 유형 | 배점 | 정답 | 출처 | 해설 |\n| :-: | :-: | :-: | :-: | :-: | :-- |")
     for q in qs:

@@ -42,7 +42,15 @@ def preservation(q, orig):
     if q['qtype'] == '흐름무관':
         a = q['answer'][0]
         body = re.sub(rf'{a}[^①②③④⑤]+', '', body)
-    return len(ow & wl(body)) / len(ow)
+    bw = wl(body)
+    if not bw: return None
+    overlap = len(ow & bw)
+    # 원문이 출제본보다 1.5배 이상 길면(교과서 課 단위 등): 출제본이 원문에 포함되는 비율로 평가
+    #   (한 문항이 긴 본문의 일부만 발췌하는 게 정상이므로 원문 기준이면 부당하게 낮아짐)
+    # 그 외(절대유형·수특영독 등 1지문=1문항): 원문 기준(원문 문장 삭제·압축을 잡아야 함)
+    if len(ow) >= len(bw) * 1.5:
+        return overlap / len(bw)   # 출제본 단어가 원문에 다 있는가(=창작·변형 없는가)
+    return overlap / len(ow)        # 원문 단어가 출제본에 다 있는가(=삭제·압축 없는가)
 
 def auto_map_by_body(qs, origs):
     """본문 역매칭: 각 문항 본문과 가장 겹치는 원문 pid"""

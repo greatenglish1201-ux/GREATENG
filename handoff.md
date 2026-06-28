@@ -21,8 +21,14 @@
       · (2026-06-27 새세션 테스트: 절대유형 출제 때 패턴을 안 읽고 "어법중심? 7유형풀세트?"를 사용자에게 되물은 실수 발견 → 이 단계 신설)
 - [ ] **원문 먼저 확보**: 모든 지문 본문을 출제 전에 원본 DB에서 받아둔다.
       · 수능특강 Part1(1~17강) → passages.js
-      · 수특영독(27STYD)·모의고사(MOGO_26_G3_) → 시트(통합분석어시스트, fileId 1_dt7nLh4c9eIRL...)
-      · 시트 추출법: read_file_content→tool_results JSON→ norm=c.replace(chr(92),'') → "{ID} |" 찾기→ "text":"..." 정규식
+      · 수특영독(27STYD)·모의고사(MOGO)·수특영어(27ST_E)·절대유형(ABSO_TYPE) → 시트 '지문DB' 탭(통합분석어시스트, fileId 1_dt7nLh4c9eIRL-05zrGOHFc_m39baVZ7tCelAhRYzw)
+      · **★큰 시트는 read_file_content 쓰지 말 것 (977KB+라 중간이 잘려 ABSO 11~16강 등 누락됨. 2026-06-27 이걸로 "지문 없다"고 오판한 사고).**
+      · **원문 추출은 tools/fetch_passages.py 사용**:
+        1) Google Drive:download_file_content(fileId=위 ID, exportMimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        2) tool_results의 base64 content 디코드 → sheet.xlsx 저장:
+           raw=json.load(open('<tool_result>')); txt=''.join(b['text'] for b in raw if 'text' in b); obj=json.loads(txt); open('sheet.xlsx','wb').write(base64.b64decode(obj['content']))
+        3) python3 fetch_passages.py sheet.xlsx [ABSO_TYPE|27STYD|...]  → passages_extracted.json (id→본문)
+        · 지문DB 229개 전체(절대유형 11~16강 포함) 다 나옴. 이게 게이트 원문소스가 됨.
 - [ ] **본문 추측·창작 절대 금지**: 원문을 못 찾으면 만들지 말고 필립께 요청. (이동고 12·13번 무관을 지어낸 실수 반복 금지)
 - [ ] ID 매핑 확인: Part1=Gateway _01·N번 _(N+1) / Part2·영독·MOGO=N번 _0N. 매핑 후 첫 문장 대조로 검증.
 - [ ] **★★★ 출제 행동 강제 절차 (이게 핵심·새세션이 계속 어긴 부분)**:
