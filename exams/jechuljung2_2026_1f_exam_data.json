@@ -1,0 +1,444 @@
+{
+ "title": "제철중 2학년 2026학년도 1학기 기말고사 영어 예상문제",
+ "total": 26,
+ "questions": [
+  {
+   "num": 1,
+   "score": 4,
+   "qtype": "어휘쓰임",
+   "stem": "밑줄 친 단어의 쓰임이 적절하지 않은 것은?",
+   "choices": [
+    "① The strict law <u>requires</u> people to keep at least two parrots.",
+    "② Many travelers <u>visit</u> Egypt to see the Nile River.",
+    "③ French people are very <u>proud</u> of their cooking.",
+    "④ A cruise is a great way to <u>experience</u> a country.",
+    "⑤ The room was so clean and <u>messy</u> that everyone loved it."
+   ],
+   "answer": "⑤",
+   "exp": "messy(지저분한)는 clean(깨끗한)과 의미가 모순되어 쓰임이 부적절하다. 나머지는 require(요구하다), visit(방문하다), proud(자랑스러워하는), experience(경험하다)가 자연스럽게 쓰였다."
+  },
+  {
+   "num": 2,
+   "score": 4,
+   "qtype": "영영풀이",
+   "stem": "주어진 단어의 영영 풀이가 잘못된 것은?",
+   "choices": [
+    "① import: to bring goods into a country from another country",
+    "② tradition: a new idea or method that nobody has followed before",
+    "③ surprising: causing someone to feel unexpected wonder",
+    "④ flavor: the particular taste of a food or drink",
+    "⑤ recommend: to tell someone that something is good or useful"
+   ],
+   "answer": "②",
+   "exp": "tradition(전통)은 '오랫동안 전해 내려온 신념이나 관습'이다. ②의 풀이는 오히려 '새로운 발상'을 설명하므로 잘못되었다."
+  },
+  {
+   "num": 3,
+   "score": 4,
+   "qtype": "어휘빈칸",
+   "stem": "주어진 문장의 빈칸에 알맞은 말이 아닌 것은? (순서 상관없음)",
+   "passage": "Don't forget to ______ the koalas at the zoo.",
+   "choices": [
+    "① feed",
+    "② watch",
+    "③ see",
+    "④ visit",
+    "⑤ import"
+   ],
+   "answer": "⑤",
+   "exp": "동물원에서 코알라에게 '먹이를 주다/보다/구경하다/방문하다'는 모두 자연스럽지만 import(수입하다)는 의미상 빈칸에 들어갈 수 없다."
+  },
+  {
+   "num": 4,
+   "score": 4,
+   "qtype": "영영풀이",
+   "stem": "주어진 단어의 영영 풀이가 잘못된 것은?",
+   "choices": [
+    "① cruise: a journey on a ship for pleasure",
+    "② sight: a place that is interesting for visitors to see",
+    "③ remain: to stay in the same state without changing",
+    "④ feed: to take food away from a person or an animal",
+    "⑤ culture: the way of life and customs of a group of people"
+   ],
+   "answer": "④",
+   "exp": "feed는 '먹이를 주다(to give food to)'라는 뜻이다. ④는 반대로 '음식을 빼앗다'로 풀이하여 잘못되었다."
+  },
+  {
+   "num": 5,
+   "score": 4,
+   "qtype": "대화빈칸",
+   "stem": "대화의 흐름상, (A)에 들어갈 가장 적절한 표현은?",
+   "passage": "W: Hello! How may I help you?\nB: My family is planning to visit London. We're going to see the Tower of London and Big Ben.\nW: (A)\nB: That sounds good. Can you recommend any must-eat foods in London?\nW: Sure. You should try fish and chips. It's a classic English dish.",
+   "choices": [
+    "① Why don't you take a red bus tour? It's a great way to see all the sights.",
+    "② I have never been to London before, so I can't help you.",
+    "③ You must pay a penalty if you eat on the bus.",
+    "④ How about staying home instead of traveling?",
+    "⑤ Don't forget to bring your own fish and chips."
+   ],
+   "answer": "①",
+   "exp": "런던의 명소를 보러 간다는 말에 대한 응답이고, 바로 뒤에서 B가 'That sounds good.'이라고 호응하므로 관광 방법을 추천하는 ①이 자연스럽다."
+  },
+  {
+   "num": 6,
+   "score": 3,
+   "qtype": "대화어색",
+   "stem": "대화들의 흐름상 어색한 것은?",
+   "choices_ab": [
+    "ⓐ A: What time does the museum open? B: It opens at nine in the morning.",
+    "ⓑ A: Why don't you visit Hoi An? B: That sounds perfect!",
+    "ⓒ A: Don't forget to feed them! B: Okay, I won't.",
+    "ⓓ A: Where can I buy a ticket? B: You can buy one at the station.",
+    "ⓔ A: What can I do at the Eiffel Tower? B: I'm going to wash the dishes now."
+   ],
+   "choices": [
+    "① ⓐ",
+    "② ⓑ",
+    "③ ⓒ",
+    "④ ⓓ",
+    "⑤ ⓔ"
+   ],
+   "answer": "⑤",
+   "exp": "에펠탑에서 무엇을 할 수 있는지 물었는데 '설거지를 하겠다'고 동문서답하므로 ⑤가 어색하다. 나머지는 질문과 응답이 자연스럽게 연결된다."
+  },
+  {
+   "num": 7,
+   "score": 3,
+   "qtype": "공고문",
+   "stem": "다음 공고문을 보고 답할 수 없는 것은?",
+   "passage": "[World Culture Day]\n· When: Friday, July 10, 3 p.m.\n· Where: School Hall\n· What: Learn surprising rules from Switzerland, Singapore, and France\n· Bring: Your notebook\n· Free snacks for everyone!",
+   "choices": [
+    "① 행사는 언제 열리는가?",
+    "② 행사를 준비한 사람은 누구인가?",
+    "③ 행사는 어디에서 열리는가?",
+    "④ 행사에서 무엇을 배우는가?",
+    "⑤ 무엇을 가져가야 하는가?"
+   ],
+   "answer": "②",
+   "exp": "공고문에 날짜·장소·내용·준비물·간식 제공은 나와 있으나 행사를 준비한 사람에 대한 정보는 없다."
+  },
+  {
+   "num": 8,
+   "score": 5,
+   "qtype": "어법어색",
+   "stem": "어법상 어색한 문장은?",
+   "choices": [
+    "① I met a girl who likes music.",
+    "② She learned how to cook Vietnamese food.",
+    "③ This book helped me to learn English.",
+    "④ The cake make by my mom was delicious.",
+    "⑤ I know the man who fixed my bike."
+   ],
+   "answer": "④",
+   "exp": "④ 케이크는 '만들어진' 대상이므로 명사 The cake를 뒤에서 수식하는 과거분사 made가 되어야 한다(make → made). ① 주격 관계대명사 who, ② 의문사+to부정사, ③ help+목적어+to부정사, ⑤ 주격 관계대명사 who로 모두 옳다."
+  },
+  {
+   "num": 9,
+   "score": 5,
+   "qtype": "어법개수",
+   "stem": "어법상 올바른 문장은 모두 몇 개인가?",
+   "choices_ab": [
+    "ⓐ He knows where to going after school.",
+    "ⓑ They are students who works hard.",
+    "ⓒ Swiss law gets people to spend time with their pets.",
+    "ⓓ I forgot when to call him."
+   ],
+   "choices": [
+    "① 0개",
+    "② 1개",
+    "③ 2개",
+    "④ 3개",
+    "⑤ 4개"
+   ],
+   "answer": "③",
+   "exp": "ⓒ(get+목적어+to부정사), ⓓ(when+to부정사)가 올바르다. ⓐ는 where to go, ⓑ는 선행사 students(복수)에 맞춰 who work가 되어야 하므로 올바른 문장은 2개이다."
+  },
+  {
+   "num": 10,
+   "score": 4,
+   "qtype": "어휘빈칸세트",
+   "stem": "윗글의 ⓐ~ⓒ에 들어갈 가장 적절한 단어는?",
+   "group": "10-11",
+   "passage": "Every country has its own culture. Culture shows ways of living and thinking. In each culture, there are rules that don't allow ⓐ certain things. So, we need to know how to act in different countries.\n\nIn Switzerland, people really care about animals. ( ① ) Swiss law says that people cannot have just one hamster or one parrot at home. ( ② ) They must have at least two. These pets feel ⓑ when they are alone. ( ③ ) Also, people who have dogs or cats must spend enough time with their pets. ( ④ ) Those who have dogs must take them outside for ⓒ too. ( ⑤ ) Pets are very happy in Switzerland.",
+   "choices": [
+    "① ⓐ allow — ⓑ lonely — ⓒ exercise",
+    "② ⓐ allow — ⓑ proud — ⓒ exercise",
+    "③ ⓐ hide — ⓑ lonely — ⓒ exercise",
+    "④ ⓐ allow — ⓑ lonely — ⓒ flavor",
+    "⑤ ⓐ hide — ⓑ proud — ⓒ flavor"
+   ],
+   "answer": "①",
+   "exp": "ⓐ '특정한 것을 허용하지 않는 규칙' → allow, ⓑ '혼자 있을 때 외로움을 느낀다' → lonely, ⓒ '운동을 위해 밖으로 데리고 나가야 한다' → exercise."
+  },
+  {
+   "num": 11,
+   "score": 3,
+   "qtype": "문장삽입",
+   "stem": "윗글의 흐름상 아래 문장이 들어가기에 가장 적절한 곳은?",
+   "group": "10-11",
+   "passage": "They need a friend that can be with them.",
+   "choices": [
+    "① ①",
+    "② ②",
+    "③ ③",
+    "④ ④",
+    "⑤ ⑤"
+   ],
+   "answer": "③",
+   "exp": "주어진 문장의 They는 외로움을 느끼는 반려동물을 가리키므로, '혼자 있으면 외롭다'는 문장 바로 뒤인 ③에 들어가야 '그래서 함께할 친구가 필요하다'로 자연스럽게 이어진다."
+  },
+  {
+   "num": 12,
+   "score": 4,
+   "qtype": "어법밑줄",
+   "stem": "글의 흐름상 어법적으로 어색한 것은?",
+   "passage": "Singapore is a very clean city ⓐwhich is famous for its strict rules. People ⓑwho break the rules must pay a penalty. Everyone knows ⓒwhere to eat and where to keep the streets tidy. These rules ⓓhelps the city stay clean. Visitors should learn ⓔhow to act in the city.",
+   "choices": [
+    "① ⓐ",
+    "② ⓑ",
+    "③ ⓒ",
+    "④ ⓓ",
+    "⑤ ⓔ"
+   ],
+   "answer": "④",
+   "exp": "주어 These rules가 복수이므로 helps가 아닌 help가 되어야 한다. ⓐ(사물 선행사+which), ⓑ(사람 선행사+who), ⓒⓔ(의문사+to부정사)는 모두 올바르다."
+  },
+  {
+   "num": 13,
+   "score": 4,
+   "qtype": "영작",
+   "stem": "윗글의 (가) 문장을 주어진 단어들을 배열하여 영어로 옮길 때 세 번째 빈칸에 들어갈 단어로 알맞은 것은?",
+   "group": "13-15",
+   "passage": "In France, children can't have ketchup in school cafeterias. This sounds surprising, but there's a good reason. France is famous for its delicious food. French people are very proud of their food. (가) 그들은 케첩이 그들 음식의 진짜 맛을 숨긴다고 믿는다. They really hope (A)that their children can taste and enjoy the flavors of French cooking. That way, French children can learn to (나).",
+   "boki": "believe / that / hides / ketchup / the real taste / they / of their food",
+   "choices": [
+    "① ketchup",
+    "② that",
+    "③ hides",
+    "④ believe",
+    "⑤ they"
+   ],
+   "answer": "②",
+   "exp": "(가) = They believe that ketchup hides the real taste of their food. 세 번째 자리에 오는 단어는 명사절 접속사 that이다."
+  },
+  {
+   "num": 14,
+   "score": 3,
+   "qtype": "빈칸",
+   "stem": "윗글의 (나)에 들어갈 알맞은 표현은?",
+   "group": "13-15",
+   "choices": [
+    "① forget about French cooking",
+    "② eat only fast food",
+    "③ become famous detectives",
+    "④ hide the taste of food",
+    "⑤ love their food culture"
+   ],
+   "answer": "⑤",
+   "exp": "앞 내용이 '아이들이 프랑스 요리의 풍미를 맛보고 즐기길 바란다'이므로, 그 결과로 '자신들의 음식 문화를 사랑하는 법을 배운다'가 자연스럽다."
+  },
+  {
+   "num": 15,
+   "score": 4,
+   "qtype": "어법쓰임",
+   "stem": "윗글의 (A)와 쓰임이 같은 것은?",
+   "group": "13-15",
+   "choices": [
+    "① I met a girl that likes music.",
+    "② Look at the dog that is running over there.",
+    "③ I know that he is honest.",
+    "④ She has a friend that lives in Paris.",
+    "⑤ This is the house that we bought last year."
+   ],
+   "answer": "③",
+   "exp": "(A)의 that은 hope의 목적어인 명사절을 이끄는 접속사이다. ③의 that도 know의 목적절을 이끄는 접속사로 쓰임이 같다. 나머지는 모두 선행사를 수식하는 관계대명사이다."
+  },
+  {
+   "num": 16,
+   "score": 3,
+   "qtype": "대화빈칸",
+   "stem": "대화의 빈칸에 가장 알맞은 것은?",
+   "passage": "Hana: Hi! I'm planning to go to Da Nang.\nDoyun: It has beautiful beaches. It's a great place to relax.\nHana: Sounds good. I also want to enjoy Vietnamese traditions.\nDoyun: Then ____________? It's close to Da Nang, and you can see the old town there.\nHana: That sounds perfect!",
+   "choices": [
+    "① why don't you visit Hoi An",
+    "② what about staying at the beach all day",
+    "③ how do you go to Paris",
+    "④ when will you leave Korea",
+    "⑤ where did you buy the ticket"
+   ],
+   "answer": "①",
+   "exp": "베트남 전통을 즐기고 싶다는 말에 대한 제안이고, 뒤에서 '다낭에서 가깝고 옛 시가지를 볼 수 있다'고 했으므로 호이안 방문을 제안하는 ①이 알맞다."
+  },
+  {
+   "num": 17,
+   "score": 3,
+   "qtype": "대화어색",
+   "stem": "두 사람의 대화가 어색한 것은?",
+   "choices": [
+    "① A: What should I cook for dinner? B: How about pasta?",
+    "② A: Can I recommend a place? B: Sure!",
+    "③ A: Don't forget to take a cruise on the river! B: Sure, I'll remember.",
+    "④ A: How may I help you? B: It's the largest zoo in Australia.",
+    "⑤ A: You should see the night view of the tower. B: I'd love to."
+   ],
+   "answer": "④",
+   "exp": "도움이 필요한지 묻는 말에 '호주에서 가장 큰 동물원'이라고 답하는 것은 어색하다. 나머지는 제안·추천과 응답이 자연스럽다."
+  },
+  {
+   "num": 18,
+   "score": 4,
+   "qtype": "어휘부적절",
+   "stem": "내용상 ①~⑤의 빈칸에 적절하지 않은 것은?",
+   "passage": "People in different countries follow their own ①culture. Each country has ②rules that people must keep. In Switzerland, people who have dogs must ③ignore them and spend enough time with them. In Singapore, people cannot drop ④trash on the street. In France, children eat ⑤healthy food at school.",
+   "choices": [
+    "① ①",
+    "② ②",
+    "③ ③",
+    "④ ④",
+    "⑤ ⑤"
+   ],
+   "answer": "③",
+   "exp": "스위스에서는 반려견을 돌보고(care for) 충분한 시간을 보내야 한다고 했으므로 ignore(무시하다)는 내용상 적절하지 않다."
+  },
+  {
+   "num": 19,
+   "score": 3,
+   "qtype": "문장삽입",
+   "stem": "윗글의 ①~⑤ 중 주어진 문장이 들어갈 가장 알맞은 곳은?",
+   "group": "19-20",
+   "passage": "Singapore is a very clean city. Here, people cannot eat or drink on buses or the subway. ( ① ) They also cannot sell or bring chewing gum into the country. ( ② ) People who break these rules must follow strict steps ⓐ . ( ③ ) In Singapore, everyone knows the right way to act in public and how to ⓑ their trash. ( ④ ) Thanks to these rules, Singapore ⓒ very clean. ( ⑤ )",
+   "sentence": "Those actions can make the city dirty and messy.",
+   "choices": [
+    "① ①",
+    "② ②",
+    "③ ③",
+    "④ ④",
+    "⑤ ⑤"
+   ],
+   "answer": "②",
+   "exp": "Those actions는 앞에 나온 '버스·지하철에서 먹고 마시기, 껌 반입' 행위들을 가리키므로 그 행위들이 모두 언급된 직후인 ②가 알맞다."
+  },
+  {
+   "num": 20,
+   "score": 4,
+   "qtype": "어휘빈칸세트",
+   "stem": "윗글의 빈칸 ⓐ~ⓒ에 들어갈 말이 바르게 짝지어진 것은?",
+   "group": "19-20",
+   "choices": [
+    "① ⓐ fine — ⓑ throw away — ⓒ remains",
+    "② ⓐ fine — ⓑ feed — ⓒ remains",
+    "③ ⓐ rule — ⓑ throw away — ⓒ becomes",
+    "④ ⓐ fine — ⓑ throw away — ⓒ imports",
+    "⑤ ⓐ tax — ⓑ hide — ⓒ remains"
+   ],
+   "answer": "①",
+   "exp": "규칙을 어기면 '벌금(fine)'을 내야 하고, 쓰레기를 '버릴(throw away)' 곳을 알며, 그 덕분에 싱가포르는 깨끗하게 '유지된다(remains)'."
+  },
+  {
+   "num": 21,
+   "score": 4,
+   "qtype": "내용일치",
+   "stem": "Which is TRUE about the passage below?",
+   "passage": "The Nile River is in Egypt. It is the longest river in the world. Many travelers visit Egypt to see this famous river. They can take a cruise on the river and enjoy the beautiful views. A river cruise is one of the best ways to experience Egypt.",
+   "choices": [
+    "① The Nile River is the largest zoo in Africa.",
+    "② The Nile River is the longest river in Egypt only.",
+    "③ Travelers cannot take a cruise on the Nile River.",
+    "④ The Nile River is in Egypt and is the longest river in the world.",
+    "⑤ A river cruise is the worst way to experience Egypt."
+   ],
+   "answer": "④",
+   "exp": "글에서 나일강은 이집트에 있으며 세계에서 가장 긴 강이라고 했으므로 ④가 글의 내용과 일치한다."
+  },
+  {
+   "num": 22,
+   "score": 3,
+   "qtype": "흐름무관",
+   "stem": "아래의 밑줄 친 ①~⑤ 중 글의 흐름상 어색한 것은?",
+   "passage": "Which rule is most surprising? ①Maybe some rules sound strange to you, but they show different lifestyles around the world. ②Understanding different rules from different countries helps us live together more happily. ③We need to know how to act in different countries. ④Every culture has its own ways of living and thinking. ⑤Learning to ride a bike is the fastest way to make new friends.",
+   "choices": [
+    "① ①",
+    "② ②",
+    "③ ③",
+    "④ ④",
+    "⑤ ⑤"
+   ],
+   "answer": "⑤",
+   "exp": "글은 '나라마다 다른 규칙과 문화를 이해하자'는 내용인데 ⑤는 자전거 타기와 친구 사귀기에 대한 내용으로 글의 흐름과 무관하다."
+  },
+  {
+   "num": 23,
+   "score": 4,
+   "qtype": "어법빈칸",
+   "stem": "의미가 자연스럽게 이어지도록 문장을 완성하려고 할 때, ①~⑤의 빈칸에 알맞은 말은?",
+   "choices": [
+    "① She learned ____ to make scones.",
+    "② I don't know ____ to act in different countries.",
+    "③ He taught me ____ to take good photos.",
+    "④ Can you tell me ____ to use this machine?",
+    "⑤ We should learn ____ to care for pets."
+   ],
+   "answer": "⑤",
+   "exp": "다섯 문장 모두 '~하는 방법'을 의미하므로 의문사 how가 공통으로 들어간다. 참고로 why는 to부정사와 함께 쓰지 않는다."
+  },
+  {
+   "num": 24,
+   "score": 4,
+   "qtype": "어법밑줄",
+   "stem": "밑줄 친 부분이 어법상 틀린 것은?",
+   "choices": [
+    "① I have a friend who lives in Sydney.",
+    "② She knows what to do next.",
+    "③ The rules which keeps the city clean are strict.",
+    "④ He helped me carry the boxes.",
+    "⑤ This is the museum that we visited last summer."
+   ],
+   "answer": "③",
+   "exp": "주격 관계대명사절의 동사는 선행사의 수에 일치시킨다. 선행사 The rules가 복수이므로 keeps가 아닌 keep이 되어야 한다."
+  },
+  {
+   "num": 25,
+   "score": 5,
+   "qtype": "어법묶음",
+   "stem": "어법상 올바른 것으로만 묶인 것은?",
+   "choices_ab": [
+    "ⓐ This is a rule that protects animals.",
+    "ⓑ I wonder why to visit the museum.",
+    "ⓒ My teacher got me to read more books.",
+    "ⓓ People which live in Singapore follow the rules.",
+    "ⓔ What to eat for lunch is a big question."
+   ],
+   "choices": [
+    "① ⓐ, ⓑ",
+    "② ⓐ, ⓒ, ⓔ",
+    "③ ⓑ, ⓓ",
+    "④ ⓒ, ⓓ, ⓔ",
+    "⑤ ⓐ, ⓑ, ⓔ"
+   ],
+   "answer": "②",
+   "exp": "ⓐ(사물 선행사+that), ⓒ(get+목적어+to부정사), ⓔ(what+to부정사 주어, 단수 취급)는 올바르다. ⓑ는 why+to부정사를 쓸 수 없고, ⓓ는 사람 선행사이므로 which가 아닌 who/that을 써야 한다."
+  },
+  {
+   "num": 26,
+   "score": 5,
+   "qtype": "어법개수",
+   "stem": "밑줄 친 부분에 유의하여, 어법상 어색한 문장을 고르면 모두 몇 개인가?",
+   "choices_ab": [
+    "ⓐ He knows how to swimming in the sea.",
+    "ⓑ The boy who run every morning is healthy.",
+    "ⓒ This app helps people to learn languages.",
+    "ⓓ Tell me when to starting the game.",
+    "ⓔ I have a cat which has blue eyes."
+   ],
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "③",
+   "exp": "ⓐ how to swim, ⓑ 선행사 The boy(단수)에 맞춰 runs, ⓓ when to start가 되어야 하므로 어색한 문장은 3개이다. ⓒ(help+목적어+to부정사)와 ⓔ(동물 선행사+which)는 올바르다."
+  }
+ ]
+}
