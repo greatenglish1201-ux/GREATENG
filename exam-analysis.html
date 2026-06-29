@@ -2938,14 +2938,14 @@ function rvToggle(n){
 }
 function rvSave(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
-  const q=generatedQs.find(x=>x.num===n); if(!q) return;
+  const q=_flat(generatedQs).find(x=>x.num===n); if(!q) return;
   const stem=c.querySelector('.rf-stem').value;
   const body=c.querySelector('.rf-body').value;
   q.question=stem+'\n'+body;
   q.choices=c.querySelector('.rf-ch').value.split('\n').filter(x=>x.trim());
   q.answer=c.querySelector('.rf-ans').value;
   q.explanation=c.querySelector('.rf-exp').value;
-  try{ const d=JSON.parse(localStorage.getItem(ACTIVE_EXAM_KEY)||'{}'); if(d.questions){ const t=d.questions.find(x=>x.num===n); if(t){Object.assign(t,q);} localStorage.setItem(ACTIVE_EXAM_KEY,JSON.stringify(d)); } }catch(e){}
+  try{ const d=JSON.parse(localStorage.getItem(ACTIVE_EXAM_KEY)||'{}'); if(d.questions){ const t=_flat(d.questions).find(x=>x.num===n); if(t){Object.assign(t,q);} localStorage.setItem(ACTIVE_EXAM_KEY,JSON.stringify(d)); } }catch(e){}
   renderReview();  // 재검증
   if(typeof renderExamCard==='function') renderExamCard();
 }
@@ -2960,12 +2960,24 @@ function _examStamp(){
   const now=new Date(); const pad=(x)=>String(x).padStart(2,'0');
   return `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
 }
+// 저장 전 파일명 베이스 확인: 기본값('exam')이면 경고+입력, 평소엔 그대로 확인
+function _confirmFileBase(){
+  let base=_examFileBase();
+  const isDefault=(base==='exam');
+  const msg=isDefault
+    ? '⚠️ 원본 파일명을 못 찾았습니다(시험을 파일로 불러오지 않고 띄운 경우).\n\n저장할 파일명 베이스를 입력하세요\n(예: jechulgo1_2026_1f_exam)\n뒤에 _v버전_날짜시각.json 이 자동으로 붙습니다.'
+    : `저장 파일명 베이스: "${base}"\n\n이대로 저장하려면 확인, 바꾸려면 수정 후 확인하세요.`;
+  const input=prompt(msg, isDefault?'' : base);
+  if(input===null) return null; // 취소
+  const cleaned=input.trim().replace(/\.json$/i,'').replace(/[^\w가-힣]/g,'_');
+  return cleaned||base;
+}
 function rvExport(){
+  const base=_confirmFileBase(); if(base===null) return;
   const d={meta:examMeta, questions:generatedQs};
   const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  // GitHub 저장과 동일한 파일명 규칙: 원본베이스_v1_날짜시각.json (로컬은 버전 추적 불가하여 v1 고정)
-  a.download=`${_examFileBase()}_v1_${_examStamp()}.json`; a.click();
+  a.download=`${base}_v1_${_examStamp()}.json`; a.click();
 }
 
 // ━━━ 검토본 GitHub 직접 저장 (teacher.html 패턴) ━━━
@@ -2974,8 +2986,8 @@ async function rvSaveToGitHub(){
   const repo=(localStorage.getItem('gh_repo')||'greatenglish1201-ux/GREATENG').trim();
   if(!token){ alert('⚙️ 설정 탭에서 GitHub Token을 먼저 입력하세요.'); return; }
   if(!generatedQs.length){ alert('저장할 시험이 없습니다.'); return; }
-  // 파일명: 불러온 원본 베이스 + _v버전_YYYYMMDD_HHMM (rvExport와 동일 규칙)
-  const base=_examFileBase();
+  // 파일명 베이스 확인 (기본값이면 입력받음)
+  const base=_confirmFileBase(); if(base===null) return;
   const stamp=_examStamp();
   // 버전 자동 증가: exams/ 안에 같은 base_v* 파일이 몇 개 있나 세서 +1
   let ver=1;
