@@ -1850,8 +1850,25 @@ document.addEventListener('mouseup', function(e){
     if(i>=0){ raw=raw.slice(0,i)+sym+'<u>'+txt+'</u>'+raw.slice(i+txt.length); }
   }
   hidBody.value=raw;
+  // 밑줄 기호를 출현 순서대로 ①~⑤ 재정렬 (해제로 번호가 비거나 밀리는 것 방지)
+  {
+    let k=0; const circ2=['①','②','③','④','⑤'];
+    raw=raw.replace(/(①|②|③|④|⑤)?<u[^>]*>(.*?)<\/u>/g,(mt,sym,w)=>{ const s=circ2[k]||''; k++; return s+'<u>'+w+'</u>'; });
+    hidBody.value=raw;
+  }
   // 표시 갱신
   wrap.innerHTML=raw.replace(/</g,'&lt;').replace(/&lt;u&gt;/g,'<u style="background:#fff3b0">').replace(/&lt;u style="background:#fff3b0"&gt;/g,'<u style="background:#fff3b0">').replace(/&lt;\/u&gt;/g,'</u>');
+  // ★ 양방향 동기화: 지문 밑줄(①~⑤) 단어로 선지 칸(.rf-chi) 자동 갱신
+  try{
+    const card2=document.querySelector(`.rv-card[data-num="${wrap.dataset.num}"]`);
+    const chis=card2 && card2.querySelectorAll('.rf-chi');
+    if(chis && chis.length===5){
+      const marks={};
+      [...raw.matchAll(/(①|②|③|④|⑤)<u[^>]*>(.*?)<\/u>/g)].forEach(m=>{ marks[m[1]]=m[2]; });
+      circ.forEach((sym,i)=>{ if(marks[sym]!=null) chis[i].value=marks[sym]; });
+      chis.forEach(inp=>{ inp.style.background='#eafaef'; setTimeout(()=>inp.style.background='',700); });
+    }
+  }catch(e){}
   sel.removeAllRanges();
 });
 function rvManualKeep(num){
