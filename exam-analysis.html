@@ -654,6 +654,8 @@ header { padding: 12px 16px; }
 .rv-chk.bad{color:#922;} .rv-chk.warn{color:#8a6d1a;}
 .rv-chk-tag{display:inline-block;background:#666;color:#fff;font-size:.7rem;padding:1px 7px;border-radius:9px;margin-right:5px;}
 .rv-cardact{display:flex;gap:8px;margin-top:10px;}
+.rv-hl-blank{background:#fff3b0;color:#7a5a00;padding:0 3px;border-radius:3px;font-weight:700;}
+.rv-hl-ans{background:#ffe0e0;text-decoration-color:var(--red);text-decoration-thickness:2px;font-weight:700;}
 .rv-foot{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid var(--gold-lt);}
 .rv-prog{flex:1;height:8px;background:var(--paper);border-radius:99px;overflow:hidden;}
 .rv-prog-bar{height:100%;background:var(--green2);}
@@ -2482,6 +2484,7 @@ function _rvTriage(q, verify){
   if(len) autoflags.push(`정답 길이단서(${len.ansLen}vs평균${len.avg})`);
 
   // 전문가 판단 포인트 — 문항의 '실제 상태'에 맞춰 구체적으로 생성
+  const ansidx='①②③④⑤'.indexOf((q.answer||'')[0])+1;
   const ansTxt=(()=>{ const i='①②③④⑤'.indexOf((q.answer||'')[0]); return i>=0&&q.choices?(''+q.choices[i]).replace(/^[①②③④⑤]\s*/,'').replace(/<[^>]+>/g,''):''; })();
   // 1) autoflags(이미 잡힌 문제)에 대한 맞춤 안내 — 반복 일반론 대신 '이 문항이 왜 걸렸는지 + 무엇을 볼지'
   if(copyRate!=null && copyRate>60 && !isEasy){
@@ -2491,29 +2494,44 @@ function _rvTriage(q, verify){
   if(len){
     reasons.push({tag:'길이단서', q:`정답이 ${len.ansLen}단어로 평균 ${len.avg}보다 긺 — 길이로 정답이 노출될 수 있음. 오답을 비슷한 길이로 늘릴지 검토.`});
   }
-  // 2) 유형별 핵심 검수 포인트 (autoflags가 없을 때만 일반 안내 — 중복 방지)
-  if(!reasons.length){
+  // 2) 유형별 핵심 검수 포인트 (autoflags가 있어도 정답/오답 확인은 늘 필요 → 함께 표시)
+  {
+    const choicesTxt=(q.choices||[]).map((c,i)=>`${'①②③④⑤'[i]} ${(''+c).replace(/^[①②③④⑤]\s*/,'').replace(/<[^>]+>/g,'')}`);
+    const wrongList=choicesTxt.filter((c,i)=>i!==ansidx-1);
     if(q.qtype==='어법'){
-      const wrong=(()=>{ const m=[...(_rvBody(q).matchAll(/(①|②|③|④|⑤)\s*<u>(.*?)<\/u>/g))]; const t=m.find(x=>x[1]===(q.answer||'')[0]); return t?t[2]:''; })();
-      reasons.push({tag:'어법 변별', q:wrong?`정답 ${q.answer}의 「${wrong}」가 명확한 오류인가? 나머지 4개는 어법상 확실히 맞는가?`:'어법 포인트가 변별력 있는가? (도치·대동사·분사 등)'});
+      const m=[...(_rvBody(q).matchAll(/(①|②|③|④|⑤)\s*<u>(.*?)<\/u>/g))];
+      const ansU=m.find(x=>x[1]===(q.answer||'')[0]); const others=m.filter(x=>x[1]!==(q.answer||'')[0]);
+      reasons.push({tag:'정답 확인', q:ansU?`정답 ${q.answer} 「<b>${ansU[2]}</b>」가 <b>명확한 어법 오류</b>인가? (원문은 무엇이었는지 ▶원문 전체로 대조)`:'정답 밑줄이 명확한 오류인가?'});
+      if(others.length) reasons.push({tag:'오답 확인', q:`나머지 4개(${others.map(o=>o[2]).join(', ')})는 <b>어법상 확실히 맞는가?</b> 하나라도 애매하면 복수정답 위험.`});
+      reasons.push({tag:'변별력', q:`포인트가 제철고 수준인가? (단순 수일치·시제=쉬움 / 도치·관계사 what·분사 능동수동·병렬=변별력 높음)`});
     }
     else if(q.qtype==='어휘'){
-      reasons.push({tag:'어휘 변별', q:`정답 ${q.answer} 단어가 문맥상 명확히 틀린가? 나머지 4개는 반의어가 아니라 본래 단어인가?`});
+      const m=[...(_rvBody(q).matchAll(/(①|②|③|④|⑤)\s*<u>(.*?)<\/u>/g))];
+      const ansU=m.find(x=>x[1]===(q.answer||'')[0]);
+      reasons.push({tag:'정답 확인', q:ansU?`정답 ${q.answer} 「<b>${ansU[2]}</b>」가 문맥상 <b>명백히 틀린 단어</b>인가? (반대 의미가 들어가야 자연스러운가)`:'정답 단어가 문맥상 틀린가?'});
+      reasons.push({tag:'오답 확인', q:`나머지 4개는 <b>원문 그대로의 올바른 단어</b>인가? (오답 자리에 반의어를 넣으면 복수정답 — 원래 단어여야 함)`});
     }
     else if(['제목','주제','요지'].includes(q.qtype)){
-      reasons.push({tag:'정독 필요', q:`정답 「${ansTxt.slice(0,40)}」가 글 전체를 포괄하는가? 오답 4개가 매력적이되(본문 어휘 활용) 명확히 틀린가?`});
+      reasons.push({tag:'정답 확인', q:`정답 「<b>${ansTxt}</b>」가 <b>글 전체를 포괄</b>하는가? (일부 문단만 말하면 오답)`});
+      reasons.push({tag:'오답 확인', q:`오답들이 <b>매력적이되 명확히 틀린가?</b><br>${wrongList.map(w=>`· ${w}`).join('<br>')}<br>→ 너무 좁음/너무 넓음/지문에 없음/반대 중 무엇인지, 정답과 의미 겹치는 건 없는지.`});
+      reasons.push({tag:'해설 대조', q:`해설이 가리키는 내용 = 정답 ${q.answer} 선지 내용과 <b>일치</b>하는가? (해설은 ①을 설명하는데 정답기호가 ②면 오류)`});
     }
     else if(q.qtype==='빈칸추론'){
-      reasons.push({tag:'정독 필요', q:`빈칸에 정답 「${ansTxt.slice(0,40)}」만 들어가는가? 다른 선지가 들어갈 여지는 없는가?`});
+      reasons.push({tag:'정답 확인', q:`빈칸에 정답 「<b>${ansTxt}</b>」를 넣어 읽으면 <b>앞뒤 논리가 자연스러운가?</b>`});
+      reasons.push({tag:'오답 확인', q:`다른 선지를 넣어보면 <b>모두 어색한가?</b> (하나라도 말이 되면 복수정답)<br>${wrongList.map(w=>`· ${w}`).join('<br>')}`});
+      reasons.push({tag:'단서 확인', q:`빈칸의 정답을 <b>본문 어느 부분</b>에서 끌어낼 수 있는가? (단서 문장이 명확해야 함)`});
     }
     else if(q.qtype==='함축의미'){
-      reasons.push({tag:'정독 필요', q:'밑줄어구가 비유/함의를 담는가? 정답이 그 진의를 정확히 포착하는가?'});
+      reasons.push({tag:'정답 확인', q:`밑줄 어구가 <b>비유/함의</b>를 담는가? 정답 「<b>${ansTxt}</b>」가 그 진의를 정확히 포착하나?`});
+      reasons.push({tag:'오답 확인', q:`오답이 <b>표면적 의미</b>(글자 그대로)로 매력적이되 함의와는 다른가?`});
     }
     else if(['글의순서','문장삽입'].includes(q.qtype)){
-      reasons.push({tag:'정독 필요', q:'연결어·대명사 단서로 정답 순서/위치가 유일하게 보장되는가?'});
+      reasons.push({tag:'단서 확인', q:`<b>연결어·대명사·지시어</b>(however, this, they 등)로 정답 ${q.qtype==='글의순서'?'순서':'위치'}가 <b>유일하게</b> 정해지는가?`});
+      reasons.push({tag:'오답 확인', q:`다른 배치로 넣으면 <b>흐름이 깨지는가?</b> (다른 배치도 가능하면 복수정답)`});
     }
     else if(q.qtype==='흐름무관'){
-      reasons.push({tag:'정독 필요', q:`정답 ${q.answer} 문장이 확실히 흐름과 무관한가? 나머지는 자연스럽게 이어지는가?`});
+      reasons.push({tag:'정답 확인', q:`정답 ${q.answer} 문장이 <b>확실히 흐름과 무관</b>한가? (소재만 같고 논지 이탈)`});
+      reasons.push({tag:'오답 확인', q:`나머지 문장은 <b>자연스럽게 이어지는가?</b> (정답 빼고 읽으면 매끄러운지)`});
     }
   }
   // 외부지문(고난도존)은 난이도도 확인
@@ -2686,7 +2704,18 @@ function renderReview(){
   // ━━━ 카드 렌더 (검수대기 먼저, 자동통과는 접힘) ━━━
   const cardHtml=(r,collapsed,isApproved)=>{
     const {q,v,tri}=r; const n=q.num;
-    const qbody=_rvEsc(_rvBody(q));
+    let qbody=_rvEsc(_rvBody(q));
+    // ── 본문 하이라이트: 검수할 핵심 위치를 색으로 표시 ──
+    // 빈칸추론: 빈칸(______)을 노랑 강조
+    if(q.qtype==='빈칸추론'){ qbody=qbody.replace(/_{3,}|______/g, m=>`<mark class="rv-hl-blank">${m}</mark>`); }
+    // 어법·어휘: 정답 번호의 밑줄을 빨강, 나머지 밑줄은 회색 표시
+    if(q.qtype==='어법'||q.qtype==='어휘'){
+      const ansN=(q.answer||'')[0];
+      qbody=qbody.replace(/(①|②|③|④|⑤)\s*<u>(.*?)<\/u>/g, (full,mk,w)=>
+        mk===ansN ? `${mk} <u class="rv-hl-ans">${w}</u>` : `${mk} <u>${w}</u>`);
+    }
+    // 흐름무관: 정답 번호 강조 (본문에 ①②③ 마커가 있으면)
+    if(q.qtype==='흐름무관'){ const ansN=(q.answer||'')[0]; qbody=qbody.replace(new RegExp('('+ansN+')','g'),`<mark class="rv-hl-blank">$1</mark>`); }
     // 어법·어휘 등 선지가 번호(①~⑤)만 있는 유형 → 빈 번호 나열 대신 본문 밑줄 단어를 표시
     const choicesAreBare=(q.choices||[]).every(c=>/^[①②③④⑤]\s*$/.test((''+c)));
     let ch;
