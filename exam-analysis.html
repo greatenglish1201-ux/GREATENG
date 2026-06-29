@@ -3327,16 +3327,23 @@ function rvSave(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
   const q=_flat(generatedQs).find(x=>x.num===n); if(!q) return;
   const stem=c.querySelector('.rf-stem').value;
-  const body=c.querySelector('.rf-body').value;  // 어법/어휘는 hidden(드래그밑줄 반영됨), 그 외는 textarea
-  q.question=stem+'\n'+body;
+  let body=c.querySelector('.rf-body').value;  // 어법/어휘는 hidden(드래그밑줄 반영됨), 그 외는 textarea
   // 선지: 어법/어휘는 칸별 input(.rf-chi)에서, 그 외는 textarea(.rf-ch)에서
   const chInputs=c.querySelectorAll('.rf-chi');
   if(chInputs.length===5){
     const circ=['①','②','③','④','⑤'];
-    q.choices=Array.from(chInputs).map((inp,i)=>circ[i]+' '+inp.value.replace(/^[①②③④⑤]\s*/,'').trim());
+    const newCh=Array.from(chInputs).map(inp=>inp.value.replace(/^[①②③④⑤]\s*/,'').trim());
+    q.choices=newCh.map((b,i)=>circ[i]+' '+b);
+    // ★ 어법·어휘: 선지 내용으로 지문의 ①~⑤ 밑줄 내용을 동기화 (선지만 고쳐도 지문 밑줄·검증 반영)
+    body=body.replace(/(①|②|③|④|⑤)<u[^>]*>(.*?)<\/u>/g, (mt,sym,old)=>{
+      const idx=circ.indexOf(sym);
+      const nw=(idx>=0 && newCh[idx]!=null)? newCh[idx] : old;
+      return sym+'<u>'+nw+'</u>';
+    });
   } else {
     q.choices=c.querySelector('.rf-ch').value.split('\n').filter(x=>x.trim());
   }
+  q.question=stem+'\n'+body;
   q.answer=c.querySelector('.rf-ans').value;
   q.explanation=c.querySelector('.rf-exp').value;
   try{ const d=JSON.parse(localStorage.getItem(ACTIVE_EXAM_KEY)||'{}'); if(d.questions){ const t=_flat(d.questions).find(x=>x.num===n); if(t){Object.assign(t,q);} localStorage.setItem(ACTIVE_EXAM_KEY,JSON.stringify(d)); } }catch(e){}
