@@ -1731,7 +1731,27 @@ window.addEventListener('DOMContentLoaded',()=>{ const k=localStorage.getItem('e
 
 // ━━━ 검토 탭: 수정 중 AI 선지 추천 (teacher.html식) ━━━
 function rvAIBlankMode(num, mode){ window['_aiMode'+num]=mode; rvAISuggest(num,'빈칸추론'); }
-function rvAIBlankReset(num){ delete window['_aiMode'+num]; rvAISuggest(num,'빈칸추론'); }
+function rvAIBlankReset(num){ delete window['_aiMode'+num]; delete window['_manualAns'+num]; rvAISuggest(num,'빈칸추론'); }
+// 원문 영역에서 드래그로 선택한 텍스트를 수동 입력칸에 자동 반영
+document.addEventListener('mouseup', function(e){
+  const sel=(window.getSelection&&window.getSelection().toString()||'').trim();
+  if(!sel) return;
+  const origDiv=e.target.closest && e.target.closest('[id^="rvorig"]');
+  if(!origDiv) return;
+  const num=origDiv.id.replace('rvorig','');
+  const inp=document.getElementById('rvman'+num);
+  if(inp){ inp.value=sel; inp.style.background='#eafaef'; setTimeout(()=>inp.style.background='',900); }
+});
+// 수동 지정: 선택/입력한 원문 구절을 정답①로 넣고, 오답②~⑤는 AI(keep 모드)로 생성
+function rvManualKeep(num){
+  const inp=document.getElementById('rvman'+num);
+  const ans=(inp?.value||'').trim();
+  if(!ans){ const b=document.getElementById('rvai'+num); if(b) b.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ 먼저 원문에서 정답이 될 구절을 선택하거나 입력하세요.</div>'); return; }
+  // 사용자가 지정한 원문 구절을 보관 → keep 모드 생성 후 ①에 강제 주입
+  window['_manualAns'+num]=ans;
+  window['_aiMode'+num]='keep';
+  rvAISuggest(num,'빈칸추론');
+}
 async function rvAISuggest(num, qtype){
   const card=document.getElementById('rvq'+num);
   const key=_cleanKey(localStorage.getItem('ea_claude_key')||'');
@@ -1754,7 +1774,18 @@ async function rvAISuggest(num, qtype){
           h+=`<div style="font-size:.78rem;color:#555;background:#f8f5ef;padding:6px 9px;border-radius:5px;margin-bottom:8px;">원문 빈칸 자리: 「<b style="color:#7a1020">${bo.text}</b>」</div>`;
           h+=`<button class="btn" style="background:#1a7f37;color:#fff;font-size:.78rem;padding:5px 11px;margin:0 6px 6px 0;" onclick="rvAIBlankMode(${num},'keep')">① 원문 그대로 정답 + 오답만 AI</button>`;
         } else {
-          h+=`<div style="font-size:.78rem;color:#a00;background:#fdecea;padding:6px 9px;border-radius:5px;margin-bottom:8px;">⚠ 원문 자리를 못 찾음: ${bo.reason}<br>→ ①번(원문 그대로)은 쓸 수 없습니다. ②번으로 진행하세요.</div>`;
+          h+=`<div style="font-size:.78rem;color:#a00;background:#fdecea;padding:6px 9px;border-radius:5px;margin-bottom:8px;">⚠ 원문 자리 자동 탐지 실패: ${bo.reason}</div>`;
+          // 원문(_orig)이 있으면 수동으로 빈칸 자리(정답)를 직접 지정할 수 있게 제공
+          const hasOrig = !!(q && q._orig);
+          if(hasOrig){
+            const origText=String(q._orig).replace(/\s+/g,' ').trim().replace(/"/g,'&quot;');
+            h+=`<div style="font-size:.78rem;color:#185fa5;background:#eef4fb;padding:6px 9px;border-radius:5px;margin-bottom:6px;">아래 원문에서 <b>빈칸으로 낼 부분(정답 구절)</b>을 드래그로 선택하거나 직접 입력한 뒤 <b>[① 원문 그대로 적용]</b>을 누르세요.</div>`;
+            h+=`<div id="rvorig${num}" style="font-size:.82rem;line-height:1.55;color:#3a2a20;background:#fff;border:1px solid #e0d8cc;border-radius:5px;padding:8px;margin-bottom:6px;max-height:160px;overflow:auto;user-select:text;">${origText}</div>`;
+            h+=`<input type="text" id="rvman${num}" placeholder="정답이 될 원문 구절 (위에서 선택하면 자동 입력)" style="width:100%;font-size:.82rem;padding:5px 7px;border:1px solid #b9a;border-radius:5px;margin-bottom:6px;box-sizing:border-box;">`;
+            h+=`<button class="btn" style="background:#1a7f37;color:#fff;font-size:.78rem;padding:5px 11px;margin:0 6px 6px 0;" onclick="rvManualKeep(${num})">① 원문 그대로 적용 (정답=선택 구절, 오답=AI)</button>`;
+          } else {
+            h+=`<div style="font-size:.78rem;color:#a00;margin-bottom:6px;">이 문항엔 원문(_orig)이 없어 수동 지정도 불가합니다. ②번으로 진행하세요.</div>`;
+          }
         }
         h+=`<button class="btn" style="background:#185fa5;color:#fff;font-size:.78rem;padding:5px 11px;margin-bottom:6px;" onclick="rvAIBlankMode(${num},'transform')">② 원문 변형해서 출제 (정답+오답 모두 AI)</button>`;
         box.innerHTML=h; return;
@@ -1765,9 +1796,14 @@ async function rvAISuggest(num, qtype){
       const circ='①②③④⑤'; let lines=(j.options||[]).map((x,i)=>circ[i]+' '+x);
       // ① 원문 그대로 모드: 정답①을 원문 빈칸 자리로 교체 (AI 오답 ②~⑤만 사용)
       if(isBlank && mode==='keep'){
-        const q=generatedQs.find(x=>x.num===num)||_flat(generatedQs).find(x=>x.num===num);
-        const bo=q?_rvBlankOriginal(q):{ok:false};
-        if(bo.ok) lines[0]='① '+bo.text;
+        const manual=window['_manualAns'+num];
+        if(manual){
+          lines[0]='① '+manual;  // 수동 지정: 사용자가 원문에서 고른 구절을 정답으로
+        } else {
+          const q=generatedQs.find(x=>x.num===num)||_flat(generatedQs).find(x=>x.num===num);
+          const bo=q?_rvBlankOriginal(q):{ok:false};
+          if(bo.ok) lines[0]='① '+bo.text;
+        }
       }
       const labels=isBlank?['정답','반대 방향','부분만 맞음','소재만 같음','너무 포괄적']:['정답(thesis)','너무 좁음','너무 넓음','부분 진술','초점 이탈'];
       const modeLabel=mode==='keep'?'① 원문 그대로 정답 + AI 오답':'② 원문 변형 출제';
