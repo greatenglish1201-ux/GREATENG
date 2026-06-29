@@ -3199,12 +3199,13 @@ function renderReview(){
               <div class="rf-bodywrap" id="rfbody${n}" data-num="${n}" style="font-size:1.06rem;line-height:1.9;background:#fff;border:1px solid #d8cdbb;border-radius:6px;padding:9px;margin-bottom:4px;white-space:pre-wrap;user-select:text;">${_rvBody(q).replace(/</g,'&lt;').replace(/&lt;u&gt;/g,'<u style="background:#fff3b0">').replace(/&lt;\/u&gt;/g,'</u>')}</div>
               <textarea class="rf-body" style="display:none;">${_rvBody(q)}</textarea>
               <div style="font-size:.78rem;color:#888;margin-bottom:6px;">밑줄 다섯 군데(①~⑤)를 차례로 드래그하세요. 잘못 쳤으면 그 부분을 다시 드래그하면 해제됩니다.</div>
-              <label>선지 &amp; 정답 (번호 클릭=정답)</label>
+              <label>선지 &amp; 정답 (번호 클릭=정답) <span style="font-weight:400;color:#888;font-size:.8rem;">· 괄호=현재 그 번호 정답 개수</span></label>
               <div class="rf-choicebox" id="rfchbox${n}">
-                ${['①','②','③','④','⑤'].map((sym,i)=>{const cv=(q.choices&&q.choices[i]||'').replace(/^[①②③④⑤]\s*/,'');const sel=(q.answer===sym);return `<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px;">
-                  <button type="button" class="rf-ansbtn" data-sym="${sym}" data-num="${n}" style="min-width:30px;height:30px;border-radius:15px;border:1px solid ${sel?'#185FA5':'#ccc'};background:${sel?'#185FA5':'transparent'};color:${sel?'#fff':'#888'};font-weight:700;cursor:pointer;">${sym}</button>
+                ${(()=>{const dist=_rvAnsDist();const tot=_flat(generatedQs).length;const tgt=tot%5===0?tot/5:null;return ['①','②','③','④','⑤'].map((sym,i)=>{const cv=(q.choices&&q.choices[i]||'').replace(/^[①②③④⑤]\s*/,'');const sel=(q.answer===sym);const cnt=dist[sym]||0;const over=(tgt!=null&&cnt>tgt);const under=(tgt!=null&&cnt<tgt);const cntColor=over?'#c0392b':(under?'#1a7f37':'#999');return `<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px;">
+                  <button type="button" class="rf-ansbtn" data-sym="${sym}" data-num="${n}" title="현재 ${sym} 정답 ${cnt}개${tgt!=null?` (목표 ${tgt})`:''}" style="min-width:30px;height:30px;border-radius:15px;border:1px solid ${sel?'#185FA5':'#ccc'};background:${sel?'#185FA5':'transparent'};color:${sel?'#fff':'#888'};font-weight:700;cursor:pointer;">${sym}</button>
+                  <span style="font-size:.72rem;color:${cntColor};min-width:30px;font-weight:${over||under?'700':'400'};">(${cnt}${over?'↑':under?'↓':''})</span>
                   <input type="text" class="rf-chi" data-idx="${i}" value="${cv.replace(/"/g,'&quot;')}" style="flex:1;font-size:1.0rem;padding:6px 9px;border-radius:6px;border:1px solid ${sel?'#185FA5':'#D2D2D7'};${sel?'font-weight:600;color:#185FA5;':''}">
-                </div>`;}).join('')}
+                </div>`;}).join('');})()}
               </div>
               <input type="hidden" class="rf-ans" value="${q.answer||'①'}">`
               :`
@@ -3298,6 +3299,12 @@ function _rvApprovedKey(){
 }
 function _rvGetApproved(){ try{ return JSON.parse(localStorage.getItem(_rvApprovedKey())||'[]'); }catch(e){ return []; } }
 function _rvSetApproved(arr){ try{ localStorage.setItem(_rvApprovedKey(), JSON.stringify([...new Set(arr)])); }catch(e){} }
+// 현재 시험 전체의 정답분포 {①:n,...} 반환
+function _rvAnsDist(){
+  const d={'①':0,'②':0,'③':0,'④':0,'⑤':0};
+  try{ _flat(generatedQs).forEach(q=>{ const a=(q.answer||'').trim()[0]; if(a in d) d[a]++; }); }catch(e){}
+  return d;
+}
 function rvApprove(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
   if(c){ c.style.display='none'; }            // 승인하면 목록에서 사라짐
@@ -3344,11 +3351,23 @@ function rvSave(n){
     q.choices=c.querySelector('.rf-ch').value.split('\n').filter(x=>x.trim());
   }
   q.question=stem+'\n'+body;
+  const prevAns=q.answer;
   q.answer=c.querySelector('.rf-ans').value;
   q.explanation=c.querySelector('.rf-exp').value;
+  // B안: 정답이 바뀌었고, 새 정답 번호가 분포상 과한 번호면 안내(막지 않음)
+  let distMsg='';
+  try{
+    if(q.answer!==prevAns){
+      const tot=_flat(generatedQs).length;
+      if(tot%5===0){ const tgt=tot/5; const d=_rvAnsDist(); // 이 시점엔 q.answer 이미 반영됨
+        if(d[q.answer]>tgt){ distMsg=`\n\n⚖ 참고: 정답 ${q.answer}은 현재 ${d[q.answer]}개로 목표(${tgt})보다 많습니다. 분포를 맞추려면 다른 위치도 고려하세요. (그대로 둬도 됩니다)`; }
+      }
+    }
+  }catch(e){}
   try{ const d=JSON.parse(localStorage.getItem(ACTIVE_EXAM_KEY)||'{}'); if(d.questions){ const t=_flat(d.questions).find(x=>x.num===n); if(t){Object.assign(t,q);} localStorage.setItem(ACTIVE_EXAM_KEY,JSON.stringify(d)); } }catch(e){}
   renderReview();  // 재검증
   if(typeof renderExamCard==='function') renderExamCard();
+  if(distMsg) setTimeout(()=>alert('✓ '+n+'번 저장됨'+distMsg), 200);
   // 저장 후: 그 문항이 어느 구역으로 갔든 펼쳐서 찾아가 보여줌 (사라진 느낌 방지)
   setTimeout(()=>{
     let cardEl=document.querySelector(`.rv-card[data-num="${n}"]`);
