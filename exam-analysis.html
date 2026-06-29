@@ -624,29 +624,35 @@ header { padding: 12px 16px; }
 .manual .mbody .warn{color:var(--red);font-weight:600;}
 
 /* ━━━ B2B 2층 검토 구조 ━━━ */
-.rv-layer{border:1px solid var(--gold-lt);border-radius:10px;background:#fffdf8;padding:12px 14px;margin-bottom:14px;}
-.rv-layer-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rv-layer{border:none;border-radius:0;background:none;padding:0;margin-bottom:18px;}
+.rv-layer-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #ececec;}
 .rv-layer-t{font-weight:700;font-size:.92rem;color:var(--navy);}
 .rv-layer-s{margin-left:auto;font-size:.84rem;color:var(--ink4);}
-.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:9px;}
-.gate-cell{background:var(--white);border-radius:7px;padding:8px 10px;}
-.gate-l{font-size:.82rem;color:var(--ink4);}
-.gate-v{font-size:1.15rem;font-weight:700;margin-top:2px;}
+.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0;}
+.gate-cell{background:none;border-radius:0;padding:4px 14px 4px 0;}
+.gate-l{font-size:.78rem;color:var(--ink4);}
+.gate-v{font-size:1.1rem;font-weight:700;margin-top:2px;}
 .gate-v.ok{color:var(--green2);} .gate-v.bad{color:var(--red);} .gate-v.warn{color:var(--gold);} .gate-v.na{color:var(--ink4);}
 .gate-reject{margin-top:10px;background:#fdecea;border-left:3px solid var(--red);padding:9px 12px;border-radius:4px;font-size:.9rem;line-height:1.7;color:#922;}
 .gate-reject a{color:var(--red);font-weight:700;}
-.gate-warn{margin-top:8px;font-size:.88rem;line-height:1.7;color:var(--gold);}
+.gate-warn{margin-top:8px;font-size:.84rem;line-height:1.6;color:var(--ink4);}
 .rv-section-t{font-weight:700;font-size:.84rem;color:var(--ink3);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--gold-lt);}
-.rv-card.reject{border-left:4px solid var(--red);}
-.rv-card.review{border-left:4px solid var(--blue);}
-.rv-card.auto{border-left:4px solid var(--green2);opacity:.92;}
-.rv-card.rv-approved{opacity:.55;}
+.rv-sec{display:flex;align-items:center;gap:7px;font-weight:700;font-size:.9rem;margin:22px 0 10px;padding:0 0 7px;border-bottom:1px solid #ececec;}
+.rv-sec-icon{font-size:1rem;}
+.rv-sec-cnt{margin-left:auto;color:var(--ink4);font-size:.82rem;font-weight:600;}
+.rv-sec-reject{color:#b3261e;border-bottom-color:#f0c4bf;}
+.rv-sec-review{color:#444;}
+.rv-sec-auto{color:#999;}
+.rv-card.reject{border:1px solid #eee;border-left:4px solid var(--red);}
+.rv-card.review{border:1px solid #eee;border-left:4px solid #bbb;}
+.rv-card.auto{border:1px solid #f0f0f0;border-left:4px solid #d8d8d8;opacity:.85;}
+.rv-card.rv-approved{opacity:.5;}
 .rv-st.reject{color:var(--red);} .rv-st.review{color:var(--blue);} .rv-st.auto{color:var(--green2);}
 .rv-qh{cursor:pointer;}
-.rv-chkbox{background:#f6f9fd;border:1px solid #e0eaf5;border-radius:6px;padding:8px 10px;margin:8px 0;}
-.rv-chk{font-size:.8rem;color:var(--ink2);margin:4px 0;line-height:1.5;}
+.rv-chkbox{background:none;border:none;border-left:3px solid #e0e0e0;border-radius:0;padding:2px 0 2px 11px;margin:8px 0;}
+.rv-chk{font-size:.84rem;color:var(--ink2);margin:4px 0;line-height:1.5;}
 .rv-chk.bad{color:#922;} .rv-chk.warn{color:#8a6d1a;}
-.rv-chk-tag{display:inline-block;background:var(--navy);color:#fff;font-size:.68rem;padding:1px 7px;border-radius:9px;margin-right:5px;}
+.rv-chk-tag{display:inline-block;background:#666;color:#fff;font-size:.7rem;padding:1px 7px;border-radius:9px;margin-right:5px;}
 .rv-cardact{display:flex;gap:8px;margin-top:10px;}
 .rv-foot{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid var(--gold-lt);}
 .rv-prog{flex:1;height:8px;background:var(--paper);border-radius:99px;overflow:hidden;}
@@ -1546,6 +1552,9 @@ function loadExamJSON(input){
       if(!v.ok){ alert('❌ 검증 실패:\n'+v.errs.join('\n')); return; }
       generatedQs = d.questions;
       examMeta = d.meta || {};
+      // 원본 파일명 기억 (GitHub 저장 시 이 이름 + 버전·날짜·시간 사용)
+      // 이미 _v숫자_날짜_시각이 붙어있으면 그 부분을 떼고 베이스만 보관
+      window._loadedFilename = (f.name||'').replace(/\.json$/i,'').replace(/_v\d+_\d{8}_\d{4,6}$/,'');
       window._examV = v;
       try{ localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify(d)); }catch(e){ console.warn('시험지 로컬 저장 실패:', e); }
       renderExamCard();
@@ -2658,7 +2667,7 @@ function renderReview(){
   const needReview=reject.concat(review); // 반려+검수대기 모두 카드로
   let queueHtml=`<div class="rv-layer">
     <div class="rv-layer-h"><span class="rv-layer-t">👤 2층 · 전문가 검수 큐</span>
-      <span class="rv-layer-s">${auto.length} 자동통과 · <b style="color:var(--blue)">${needReview.length} 검수대기</b></span></div>`;
+      <span class="rv-layer-s">${reject.length?`<b style="color:var(--red)">⛔ 반려 ${reject.length}</b> · `:''}<b style="color:var(--blue)">👁 검수권장 ${review.length}</b> · <span style="color:var(--green2)">✓ 자동통과 ${auto.length}</span></span></div>`;
   if(!needReview.length){
     queueHtml+=`<div class="rv-dash-ok" style="margin:8px 0">✓ 전 문항 자동통과 — 검수 대기 없음</div>`;
   }
@@ -2738,18 +2747,29 @@ function renderReview(){
         </div>
         <div class="rv-exp">${_rvEsc(q.explanation||'')}</div>
         <div class="rv-cardact">
-          <button class="btn btn-green" onclick="rvApprove(${n})">✓ 승인</button>
-          <button class="btn btn-gold" onclick="rvToggle(${n})">✎ 수정</button>
+          ${tri.lane==='reject'
+            ? `<button class="btn btn-gold" onclick="rvToggle(${n})" style="font-weight:700;">✎ 수정하기</button><button class="btn btn-gray" onclick="rvApprove(${n})">그래도 통과</button>`
+            : `<button class="btn btn-green" onclick="rvApprove(${n})">✓ 승인</button><button class="btn btn-gold" onclick="rvToggle(${n})">✎ 수정</button>`}
         </div>
       </div>
     </div>`;
   };
 
-  let cards='<div class="rv-section-t">검수 대기</div>';
   const approved=_rvGetApproved();
-  // 반려(reject)는 가장 중요 → 승인 기록이 있어도 항상 표시. 검수대기(review)만 승인 시 숨김.
-  needReview.forEach(r=>{ const hide = r.tri.lane!=='reject' && approved.includes(r.q.num); cards+=cardHtml(r, false, hide); });
-  cards+=`<div class="rv-section-t">자동 통과 <span style="font-weight:400;color:var(--ink4)">(접힘 — 클릭하면 펼침)</span></div>`;
+  let cards='';
+  // ━━━ 1구역: 반려 (가장 중요·항상 표시) ━━━
+  if(reject.length){
+    cards+=`<div class="rv-sec rv-sec-reject"><span class="rv-sec-icon">⛔</span> 반려 — 꼭 고쳐야 함 <span class="rv-sec-cnt">${reject.length}</span></div>`;
+    reject.forEach(r=> cards+=cardHtml(r, false, false));  // 반려는 절대 안 숨김
+  }
+  // ━━━ 2구역: 검수 권장 (확인 필요, 승인 시 숨김) ━━━
+  const reviewVisible=review.filter(r=>!approved.includes(r.q.num));
+  if(review.length){
+    cards+=`<div class="rv-sec rv-sec-review"><span class="rv-sec-icon">👁</span> 검수 권장 — 확인 필요 <span class="rv-sec-cnt">${reviewVisible.length}${approved.filter(n=>review.some(r=>r.q.num===n)).length?` <span style="font-weight:400;opacity:.7">(${review.length-reviewVisible.length} 승인됨)</span>`:''}</span></div>`;
+    review.forEach(r=> cards+=cardHtml(r, false, approved.includes(r.q.num)));
+  }
+  // ━━━ 3구역: 자동 통과 (접힘) ━━━
+  cards+=`<div class="rv-sec rv-sec-auto"><span class="rv-sec-icon">✓</span> 자동 통과 <span class="rv-sec-cnt">${auto.length}</span> <span style="font-weight:400;color:var(--ink4);font-size:.78rem">(접힘 — 클릭하면 펼침)</span></div>`;
   auto.forEach(r=> cards+=cardHtml(r, true, approved.includes(r.q.num)));
 
   const approvedBar=`<div id="rvApprovedBar" style="font-size:.86rem;color:#080;margin:6px 0 10px;"></div>`;
@@ -2815,16 +2835,23 @@ async function rvSaveToGitHub(){
   const repo=(localStorage.getItem('gh_repo')||'greatenglish1201-ux/GREATENG').trim();
   if(!token){ alert('⚙️ 설정 탭에서 GitHub Token을 먼저 입력하세요.'); return; }
   if(!generatedQs.length){ alert('저장할 시험이 없습니다.'); return; }
-  // 저장 경로: exams/<파일명>.json — meta.filename 우선, 없으면 key 기반
-  let fname=examMeta.filename||examMeta.file||'';
-  if(!fname){
-    const k=examMeta.key||'exam';
-    fname=k.replace(/[^\w가-힣]/g,'_')+'.json';
-  }
-  if(!/\.json$/.test(fname)) fname+='.json';
+  // 파일명: 불러온 원본 베이스 + _v버전_YYYYMMDD_HHMM
+  let base=window._loadedFilename||examMeta.filename||examMeta.file||'';
+  if(base) base=base.replace(/\.json$/i,'').replace(/_v\d+_\d{8}_\d{4,6}$/,'');
+  if(!base){ const k=examMeta.key||'exam'; base=k.replace(/[^\w가-힣]/g,'_'); }
+  const now=new Date();
+  const pad=(x)=>String(x).padStart(2,'0');
+  const stamp=`${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+  // 버전 자동 증가: exams/ 안에 같은 base_v* 파일이 몇 개 있나 세서 +1
+  let ver=1;
+  try{
+    const lr=await fetch(`https://api.github.com/repos/${repo}/contents/exams`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'},cache:'no-store'});
+    if(lr.ok){ const list=await lr.json(); const re=new RegExp('^'+base.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'_v(\\d+)_'); let mx=0; list.forEach(f=>{ const m=(f.name||'').match(re); if(m) mx=Math.max(mx,+m[1]); }); ver=mx+1; }
+  }catch(e){}
+  const fname=`${base}_v${ver}_${stamp}.json`;
   const path='exams/'+fname;
-  // 명확히 확인받기 (위험: 파일 덮어쓰기)
-  if(!confirm(`GitHub에 저장합니다.\n\n저장소: ${repo}\n경로: ${path}\n문항: ${_flat(generatedQs).length}개\n\n이 파일을 덮어씁니다. 진행할까요?`)) return;
+  // 명확히 확인받기 (버전·날짜가 붙은 새 파일로 저장 — 기존 파일 보존)
+  if(!confirm(`GitHub에 새 버전으로 저장합니다.\n\n저장소: ${repo}\n새 파일: ${path}\n문항: ${_flat(generatedQs).length}개\n\n기존 파일은 그대로 두고 새 파일을 만듭니다. 진행할까요?`)) return;
   const st=document.getElementById('rvGhStatus'); if(st){ st.textContent='저장 중...'; st.style.color='#5a3a8a'; }
   try{
     const apiBase=`https://api.github.com/repos/${repo}/contents/${path}`;
