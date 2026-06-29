@@ -1762,6 +1762,54 @@ document.addEventListener('mouseup', function(e){
   if(inp){ inp.value=sel; inp.style.background='#eafaef'; setTimeout(()=>inp.style.background='',900); }
 });
 // 수동 지정: 선택/입력한 원문 구절을 정답①로 넣고, 오답②~⑤는 AI(keep 모드)로 생성
+// ━━━ teacher식 어법/어휘 편집: 정답 번호버튼 클릭 ━━━
+document.addEventListener('click', function(e){
+  const btn=e.target.closest && e.target.closest('.rf-ansbtn');
+  if(!btn) return;
+  const num=btn.dataset.num, sym=btn.dataset.sym;
+  const box=document.getElementById('rfchbox'+num); if(!box) return;
+  // 모든 버튼/인풋 비활성 스타일
+  box.querySelectorAll('.rf-ansbtn').forEach(b=>{ b.style.background='transparent'; b.style.color='#888'; b.style.borderColor='#ccc'; });
+  box.querySelectorAll('.rf-chi').forEach(inp=>{ inp.style.borderColor='#D2D2D7'; inp.style.fontWeight='400'; inp.style.color='#1d1d1f'; });
+  btn.style.background='#185FA5'; btn.style.color='#fff'; btn.style.borderColor='#185FA5';
+  const idx=['①','②','③','④','⑤'].indexOf(sym);
+  const inp=box.querySelectorAll('.rf-chi')[idx];
+  if(inp){ inp.style.borderColor='#185FA5'; inp.style.fontWeight='600'; inp.style.color='#185FA5'; }
+  const card=document.querySelector(`.rv-card[data-num="${num}"]`);
+  const hid=card&&card.querySelector('.rf-ans'); if(hid) hid.value=sym;
+});
+// ━━━ 어법/어휘 지문 드래그 → ①~⑤ 밑줄 토글 ━━━
+document.addEventListener('mouseup', function(e){
+  const wrap=e.target.closest && e.target.closest('.rf-bodywrap');
+  if(!wrap) return;
+  const sel=window.getSelection(); const txt=(sel&&sel.toString()||'').trim();
+  if(!txt) return;
+  // 현재 평문(태그 제거) + 기존 밑줄 구간 파악
+  const card=document.querySelector(`.rv-card[data-num="${wrap.dataset.num}"]`);
+  const hidBody=card&&card.querySelector('.rf-body'); if(!hidBody) return;
+  let raw=hidBody.value; // <u>..</u> 포함된 원본
+  // 이미 밑줄(<u>txt 포함)이면 해제, 아니면 추가
+  const circ=['①','②','③','④','⑤'];
+  // 평문 기준으로 txt가 이미 어떤 <u>안에 있나 검사: 간단히 <u>{sym}{txt}</u> 패턴 탐색
+  let toggled=false;
+  for(const sym of circ){
+    const pat=new RegExp(sym+'<u[^>]*>'+txt.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'</u>');
+    if(pat.test(raw)){ raw=raw.replace(pat, txt); toggled=true; break; }
+  }
+  if(!toggled){
+    // 다음 사용할 기호 = 현재 밑줄 개수+1
+    const used=(raw.match(/<u/g)||[]).length;
+    if(used>=5){ wrap.insertAdjacentHTML('afterend','<div class="_uwarn" style="font-size:.78rem;color:#a00;">밑줄은 최대 5개(①~⑤)입니다. 기존 밑줄을 해제 후 다시 치세요.</div>'); setTimeout(()=>{const w=wrap.parentNode.querySelector('._uwarn');if(w)w.remove();},2500); sel.removeAllRanges(); return; }
+    const sym=circ[used];
+    // 평문에서 첫 출현 위치에 기호+밑줄 삽입 (이미 밑줄 안인 건 위에서 걸러짐)
+    const i=raw.indexOf(txt);
+    if(i>=0){ raw=raw.slice(0,i)+sym+'<u>'+txt+'</u>'+raw.slice(i+txt.length); }
+  }
+  hidBody.value=raw;
+  // 표시 갱신
+  wrap.innerHTML=raw.replace(/</g,'&lt;').replace(/&lt;u&gt;/g,'<u style="background:#fff3b0">').replace(/&lt;u style="background:#fff3b0"&gt;/g,'<u style="background:#fff3b0">').replace(/&lt;\/u&gt;/g,'</u>');
+  sel.removeAllRanges();
+});
 function rvManualKeep(num){
   const inp=document.getElementById('rvman'+num);
   const ans=(inp?.value||'').trim();
@@ -2847,7 +2895,7 @@ function _rvTriage(q, verify){
   const SOFT_FLAGS=['정답이 원문 복원형 아님'];
   if(verify.flags && verify.flags.length){
     verify.flags.forEach(f=>{
-      if(SOFT_FLAGS.includes(f)) reasons.push({tag:'원문 변형', q:'빈칸추론은 정답이 원문을 <b>paraphrase</b>하는 게 정상입니다(원문에 그대로 없어도 OK). 정답이 글의 논리와 맞는지, 오답이 복수정답이 아닌지만 확인하세요.'});
+      if(SOFT_FLAGS.includes(f)) reasons.push({tag:'⚠ 원문과 다름', q:'<b style="color:#b8860b">정답이 원문 표현과 다릅니다(paraphrase).</b> 빈칸추론은 변형이 정상이지만 <b>반드시 확인</b>하세요 — 정답이 글의 논리와 정확히 맞는지, 변형이 과해 다른 선지도 답이 될 여지는 없는지. 원문 그대로 쓰려면 우측 「원문으로 다시 출제」를 사용하세요.'});
       else autoflags.push(f);
     });
   }
@@ -2972,7 +3020,7 @@ function _rvVerify(q){
     const wrongs=(q.choices||[]).filter(c=>!c.startsWith(q.answer)).map(c=>c.replace(/^[①②③④⑤]\s*/,''));
     const wrongIn=wrongs.filter(w=>_rvNorm(w).length>10 && origN.includes(_rvNorm(w))).length;
     rows=`<div class="rv-kv">정답 선지: <b>${_rvEsc(ansTxt.slice(0,70))}</b></div>`
-       +`<div class="rv-kv">원문 대조: ${present?'<span class="ok">✓ 원문 표현과 일치</span>':'<span style="color:#b8860b">↺ paraphrase(원문 변형) — 빈칸추론에선 정상</span>'}</div>`
+       +`<div class="rv-kv">원문 대조: ${present?'<span class="ok">✓ 원문 표현과 일치</span>':'<span style="color:#b8860b;font-weight:700;background:#fdf6e3;padding:1px 6px;border-radius:4px;">⚠ 원문과 다름 (paraphrase) — 확인 요망</span>'}</div>`
        +`<div class="rv-kv">오답 중 원문 존재: ${wrongIn}개 ${wrongIn===0?'<span class="ok">✓</span>':'<span class="bad">⚠ 복수정답 위험</span>'}</div>`;
     if(!present) flags.push('정답이 원문 복원형 아님');
     if(wrongIn>0) flags.push(`오답 ${wrongIn}개 원문에 존재`);
@@ -3136,15 +3184,29 @@ function renderReview(){
             </div>
             <div class="rv-editm" style="display:none">
               <label>발문</label><textarea class="rf-stem" rows="2">${(q.question||'').split('\n')[0]}</textarea>
+              ${(q.qtype==='어법'||q.qtype==='어휘')?`
+              <label>지문 <span style="font-weight:400;color:#888;font-size:.8rem;">(밑줄 칠 부분을 드래그하면 ①~⑤ 밑줄 토글)</span></label>
+              <div class="rf-bodywrap" id="rfbody${n}" data-num="${n}" style="font-size:1.06rem;line-height:1.9;background:#fff;border:1px solid #d8cdbb;border-radius:6px;padding:9px;margin-bottom:4px;white-space:pre-wrap;user-select:text;">${_rvBody(q).replace(/</g,'&lt;').replace(/&lt;u&gt;/g,'<u style="background:#fff3b0">').replace(/&lt;\/u&gt;/g,'</u>')}</div>
+              <textarea class="rf-body" style="display:none;">${_rvBody(q)}</textarea>
+              <div style="font-size:.78rem;color:#888;margin-bottom:6px;">밑줄 다섯 군데(①~⑤)를 차례로 드래그하세요. 잘못 쳤으면 그 부분을 다시 드래그하면 해제됩니다.</div>
+              <label>선지 &amp; 정답 (번호 클릭=정답)</label>
+              <div class="rf-choicebox" id="rfchbox${n}">
+                ${['①','②','③','④','⑤'].map((sym,i)=>{const cv=(q.choices&&q.choices[i]||'').replace(/^[①②③④⑤]\s*/,'');const sel=(q.answer===sym);return `<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px;">
+                  <button type="button" class="rf-ansbtn" data-sym="${sym}" data-num="${n}" style="min-width:30px;height:30px;border-radius:15px;border:1px solid ${sel?'#185FA5':'#ccc'};background:${sel?'#185FA5':'transparent'};color:${sel?'#fff':'#888'};font-weight:700;cursor:pointer;">${sym}</button>
+                  <input type="text" class="rf-chi" data-idx="${i}" value="${cv.replace(/"/g,'&quot;')}" style="flex:1;font-size:1.0rem;padding:6px 9px;border-radius:6px;border:1px solid ${sel?'#185FA5':'#D2D2D7'};${sel?'font-weight:600;color:#185FA5;':''}">
+                </div>`;}).join('')}
+              </div>
+              <input type="hidden" class="rf-ans" value="${q.answer||'①'}">`
+              :`
               <label>지문</label><textarea class="rf-body" rows="7">${_rvBody(q)}</textarea>
-              <label>선지(한 줄 하나)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>
+              <label>선지(한 줄 하나)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>`}
               <div class="rv-airec">
                 ${(q.qtype==='어휘'||q.qtype==='어법')?`<input type="text" class="rf-aiword" placeholder="${q.qtype==='어휘'?'어휘 오답 만들 단어 (예: profitable)':'어법 변형할 단어 (예: resides)'}" style="width:100%;padding:6px;border:1px solid #d8cdbb;border-radius:5px;margin-bottom:5px;font-size:.78rem;">`:''}
                 <button class="btn" style="background:#5a3a8a;color:#fff;font-size:.8rem;padding:6px 12px;" onclick="rvAISuggest(${n},'${q.qtype}')">✨ AI ${q.qtype==='어휘'?'반의어 추천':q.qtype==='어법'?'변형형 추천':'선지 추천'}</button>
                 <span style="font-size:.74rem;color:#999;margin-left:6px;">생성 후보를 클릭하면 반영 · 키는 ⚙️설정에서</span>
                 <div class="rv-aibox" id="rvai${n}" style="display:none;margin-top:6px;"></div>
               </div>
-              <label>정답</label><select class="rf-ans">${['①','②','③','④','⑤'].map(c=>`<option ${q.answer===c?'selected':''}>${c}</option>`).join('')}</select>
+              ${(q.qtype==='어법'||q.qtype==='어휘')?'':`<label>정답</label><select class="rf-ans">${['①','②','③','④','⑤'].map(c=>`<option ${q.answer===c?'selected':''}>${c}</option>`).join('')}</select>`}
               <label>해설</label><textarea class="rf-exp" rows="3">${q.explanation||''}</textarea>
               <div class="rv-eact"><button class="btn btn-navy" onclick="rvSave(${n})">저장</button><button class="btn btn-gray" onclick="rvToggle(${n})">취소</button></div>
             </div>
@@ -3234,9 +3296,16 @@ function rvSave(n){
   const c=document.querySelector(`.rv-card[data-num="${n}"]`);
   const q=_flat(generatedQs).find(x=>x.num===n); if(!q) return;
   const stem=c.querySelector('.rf-stem').value;
-  const body=c.querySelector('.rf-body').value;
+  const body=c.querySelector('.rf-body').value;  // 어법/어휘는 hidden(드래그밑줄 반영됨), 그 외는 textarea
   q.question=stem+'\n'+body;
-  q.choices=c.querySelector('.rf-ch').value.split('\n').filter(x=>x.trim());
+  // 선지: 어법/어휘는 칸별 input(.rf-chi)에서, 그 외는 textarea(.rf-ch)에서
+  const chInputs=c.querySelectorAll('.rf-chi');
+  if(chInputs.length===5){
+    const circ=['①','②','③','④','⑤'];
+    q.choices=Array.from(chInputs).map((inp,i)=>circ[i]+' '+inp.value.replace(/^[①②③④⑤]\s*/,'').trim());
+  } else {
+    q.choices=c.querySelector('.rf-ch').value.split('\n').filter(x=>x.trim());
+  }
   q.answer=c.querySelector('.rf-ans').value;
   q.explanation=c.querySelector('.rf-exp').value;
   try{ const d=JSON.parse(localStorage.getItem(ACTIVE_EXAM_KEY)||'{}'); if(d.questions){ const t=_flat(d.questions).find(x=>x.num===n); if(t){Object.assign(t,q);} localStorage.setItem(ACTIVE_EXAM_KEY,JSON.stringify(d)); } }catch(e){}
