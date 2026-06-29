@@ -779,7 +779,18 @@ header { padding: 12px 16px; }
       <span style="font-size:.78rem;font-weight:400;color:var(--ink4);margin-left:6px;">저장 후 불러오면 다기기에서 사용 가능</span>
     </div>
     <!-- 분류 입력 -->
-    <div style="display:grid;grid-template-columns:0.6fr 1.4fr 1fr;gap:8px;margin-bottom:8px;">
+    <div style="display:grid;grid-template-columns:0.9fr 0.6fr 1.4fr 1fr;gap:8px;margin-bottom:8px;">
+      <!-- 학교 -->
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:.75rem;color:var(--ink4);">학교</span>
+        <input type="text" id="passageSchool" list="passageSchoolList" placeholder="학교명"
+          style="background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.8rem;color:var(--ink);font-family:'Noto Sans KR',sans-serif;">
+        <datalist id="passageSchoolList">
+          <option value="제철중"></option><option value="이동중"></option>
+          <option value="제철고"></option><option value="이동고"></option>
+          <option value="동지고"></option><option value="두호고"></option><option value="대동고"></option>
+        </datalist>
+      </div>
       <!-- 학년 -->
       <div style="display:flex;flex-direction:column;gap:3px;">
         <span style="font-size:.75rem;color:var(--ink4);">학년</span>
@@ -1040,7 +1051,7 @@ const ACTIVE_PATTERN_KEY = 'greateng_active_pattern';
 let analysisData = null;
 
 // ── 구버전 호환 shim (이식 함수가 참조) ──
-function getSchool(){ return ''; }
+function getSchool(){ return (document.getElementById('passageSchool')?.value||'').trim(); }
 
 function switchTab(n){
   // 탭 버튼 인덱스(DOM 순서)와 패널 id 매핑: 검토 버튼은 화면상 출제 다음이지만 패널은 tab6
@@ -1192,6 +1203,7 @@ async function saveMiddlePassages(){
   const school   = getSchool()||'';
   const grade    = document.getElementById('passageGradeSel')?.value || document.getElementById('metaGrade')?.value || '';
   if(!grade){ status.innerHTML='<span class="error">학년을 선택하세요.</span>'; return; }
+  if(!school.trim()){ status.innerHTML='<span class="error">학교를 입력하세요. (학교가 비면 저장돼도 불러오기 목록에 안 뜹니다)</span>'; return; }
   const year     = document.getElementById('metaYear')?.value||'2026';
   const semester = document.getElementById('metaSemester')?.value||'';
 
@@ -1258,6 +1270,8 @@ function renderMiddlePassageList(list){
 function applyMiddlePassage(i){
   const it = (window._mpList||[])[i];
   if(!it) return;
+  const schoolEl = document.getElementById('passageSchool');
+  if(schoolEl && it.school) schoolEl.value = it.school;
   if(it.body_text){
     document.getElementById('manualTextBody').value  = it.body_text;
     document.getElementById('manualTitleBody').value = it.lesson||'';
@@ -1279,6 +1293,7 @@ function applyMiddlePassage(i){
   }
   document.getElementById('middlePassageStatus').innerHTML =
     `<span style="color:var(--green2)">✅ ${[it.grade,it.lesson].filter(Boolean).join(' ')||'지문'} 적용 완료</span>`;
+  updateManualCount();
 }
 
 
