@@ -1977,6 +1977,99 @@ function _bodyOf(q){ const t=q.question||''; const i=t.indexOf('\n'); return i>=
 function _wl(t){ t=(t||'').replace(/<u>|<\/u>|\[주어진 문장\]|\[요약문\]|[①②③④⑤]|\(A\)|\(B\)|\(C\)|_{2,}/g,''); const m=t.toLowerCase().match(/[a-z']+/g)||[]; return new Set(m.filter(w=>w.length>2)); }
 function _overlap(a,b){ if(!a.size||!b.size) return 0; let c=0; a.forEach(w=>{ if(b.has(w)) c++; }); return c/Math.min(a.size,b.size); }
 
+// ━━━ 정답분포 자동 보정 (방법2: 동그라미숫자만 swap + 사후 정합검사로 위험문항 제외) ━━━
+function _balSwapQ(q, ai, bi){
+  // q의 선지 ai↔bi 위치 교환 + 정답기호·지문밑줄·해설번호 동시 치환. 실패하면 null 반환(원본 보존).
+  const C='①②③④⑤';
+  if(ai===bi) return null;
+  const orig=JSON.parse(JSON.stringify({question:q.question,choices:q.choices,answer:q.answer,explanation:q.explanation}));
+  const ch=(q.choices||[]).slice(); if(ch.length!==5) return null;
+  const ansIdx=C.indexOf((q.answer||'').trim()[0]); if(ansIdx<0) return null;
+  // 선지 내용(기호 제거) 추출
+  const bodies=ch.map(c=>String(c).replace(/^[①②③④⑤]\s*/,''));
+  // ai↔bi 내용 교환 후 기호 재부여
+  const nb=bodies.slice(); const t=nb[ai]; nb[ai]=nb[bi]; nb[bi]=t;
+  const newChoices=nb.map((b,i)=>C[i]+' '+b);
+  // 정답기호: 정답이 ai였으면 bi로, bi였으면 ai로
+  let newAnsIdx=ansIdx; if(ansIdx===ai) newAnsIdx=bi; else if(ansIdx===bi) newAnsIdx=ai;
+  const newAns=C[newAnsIdx];
+  // 지문 밑줄 기호 교환 (밑줄형: 지문에 ①~⑤ 기호가 직접 있는 경우)
+  let newQ=q.question;
+  const hasMarksInBody=(C.split('').filter(c=>newQ.includes(c)).length>=4);
+  if(hasMarksInBody){
+    // ai↔bi 기호만 임시토큰으로 안전 교환
+    newQ=newQ.split(C[ai]).join('\u0001').split(C[bi]).join(C[ai]).split('\u0001').join(C[bi]);
+  }
+  // 해설 번호 교환 — 단, 해설의 동그라미숫자가 '선지 지칭'으로만 쓰였는지 확인
+  let newExp=q.explanation||'';
+  // 해설에 등장하는 동그라미 숫자 집합
+  const expMarks=new Set((newExp.match(/[①②③④⑤]/g)||[]));
+  // 위험판정: 해설에 ai/bi 외의 기호가 섞여 있고 그게 5개 선지 전부를 일관되게 안 가리키면 보류
+  // (간단·안전: ai,bi 두 기호만 교환. 다른 기호는 그대로 둠)
+  if(expMarks.size){
+    newExp=newExp.split(C[ai]).join('\u0001').split(C[bi]).join(C[ai]).split('\u0001').join(C[bi]);
+  }
+  // 적용
+  q.question=newQ; q.choices=newChoices; q.answer=newAns; q.explanation=newExp;
+  // ── 사후 정합 검사 ──
+  const fail=[];
+  // 1) 선지 5개·기호순서
+  if(q.choices.length!==5) fail.push('선지수');
+  q.choices.forEach((c,i)=>{ if(!String(c).trim().startsWith(C[i])) fail.push('기호순서'); });
+  // 2) 정답기호가 선지에 존재
+  if(!q.choices.some(c=>String(c).startsWith(q.answer))) fail.push('정답기호');
+  // 3) 해설-정답 일치(해설에 정답기호가 언급되면 OK, 비선지 동그라미숫자 의심시 경고)
+  //    해설에 동그라미숫자가 있는데 정답기호가 빠졌으면 위험
+  if((q.explanation.match(/[①②③④⑤]/g)||[]).length && !q.explanation.includes(q.answer)) fail.push('해설-정답불일치');
+  // 4) 밑줄형이면 지문 밑줄 기호와 선지 정합 (간단 검사: 지문 ①~⑤ 개수 유지)
+  if(hasMarksInBody){ const cnt=C.split('').filter(c=>q.question.includes(c)).length; if(cnt<4) fail.push('지문밑줄'); }
+  if(fail.length){ // 되돌림
+    q.question=orig.question; q.choices=orig.choices; q.answer=orig.answer; q.explanation=orig.explanation;
+    return {ok:false, reason:fail.join(',')};
+  }
+  return {ok:true};
+}
+function rvBalanceAnswers(){
+  const C='①②③④⑤';
+  const all=_flat(generatedQs); const n=all.length;
+  if(n%5!==0){ alert('문항 수가 5의 배수가 아니라 완전 균등 보정은 생략합니다.'); return; }
+  const target=n/5;
+  const skipped=[]; let moved=0;
+  // 최대 반복: 분포가 맞을 때까지(과다→과소로 한 문항씩 이동)
+  for(let guard=0; guard<n*2; guard++){
+    const dist={}; C.split('').forEach(c=>dist[c]=0);
+    all.forEach(q=>{ const a=(q.answer||'').trim()[0]; if(a in dist)dist[a]++; });
+    const over=C.split('').filter(c=>dist[c]>target).sort((a,b)=>dist[b]-dist[a]);
+    const under=C.split('').filter(c=>dist[c]<target).sort((a,b)=>dist[a]-dist[b]);
+    if(!over.length||!under.length) break;
+    const fromSym=over[0], toSym=under[0];
+    const fromIdx=C.indexOf(fromSym), toIdx=C.indexOf(toSym);
+    // fromSym이 정답인 문항 중, 아직 안 건드렸고 보정 성공하는 것 하나 찾기
+    let done=false;
+    for(const q of all){
+      if((q.answer||'').trim()[0]!==fromSym) continue;
+      if(skipped.includes(q.num)) continue;
+      const r=_balSwapQ(q, fromIdx, toIdx);
+      if(r&&r.ok){ moved++; done=true; break; }
+      else if(r&&!r.ok){ skipped.push(q.num); }
+    }
+    if(!done){ // 이 from→to로 옮길 안전한 문항이 없음 → 다른 조합 시도 위해 이 toSym 잠시 보류
+      // 무한루프 방지: over 첫 문항 전부 skip되면 종료
+      const candidates=all.filter(q=>(q.answer||'').trim()[0]===fromSym && !skipped.includes(q.num));
+      if(!candidates.length) break;
+    }
+  }
+  // 재렌더 + 결과 안내
+  if(typeof renderReview==='function') renderReview();
+  else if(typeof runReview==='function') runReview();
+  const dist2={}; C.split('').forEach(c=>dist2[c]=0);
+  all.forEach(q=>{ const a=(q.answer||'').trim()[0]; if(a in dist2)dist2[a]++; });
+  let msg='⚖ 정답분포 보정 완료\n현재: '+C.split('').map(c=>c+dist2[c]).join(' ')+'\n옮긴 문항: '+moved+'개';
+  if(skipped.length) msg+='\n\n⚠ 자동 보정에서 제외(수동 확인 필요): '+skipped.sort((a,b)=>a-b).join(', ')+'번\n→ 해설에 정답·오답 번호가 섞여 있어 자동 교환 시 헷갈릴 수 있는 문항입니다. 직접 선지 순서를 바꾸고 해설 번호를 확인하세요.';
+  alert(msg);
+  runExamAudit();
+}
+
 function runExamAudit(){
   const panel=document.getElementById('auditPanel');
   panel.style.display='block';
@@ -2111,6 +2204,16 @@ function runExamAudit(){
     const skipN=n-humanHigh.length-humanMid.length;
     h+=`<div style="font-size:.78rem;color:#888;margin-top:8px;">⚪ 나머지 ${skipN}개(어법·삽입·무관·내용일치 등)는 게이트가 형식·논리 검증 완료 → 생략 가능</div>`;
     h+=`</div>`;
+  }
+  // 정답분포 불균등 자동보정 버튼 (n이 5의 배수이고 분포가 안 맞을 때만)
+  if(n%5===0){ const e2=n/5; const bad2=circ.split('').filter(c=>dist[c]!==e2);
+    if(bad2.length){
+      h+=`<div style="padding:10px 14px;background:#eef4fb;border-top:1px solid #d8e4f0;">
+        <div style="font-weight:700;color:#185fa5;margin-bottom:4px;">⚖ 정답분포 자동 보정</div>
+        <div style="font-size:.9rem;color:#444;margin-bottom:7px;">현재 ${circ.split('').map(c=>c+dist[c]).join(' ')} → 각 ${e2}개로 맞춥니다. 선지 순서·지문 밑줄·해설 번호를 함께 옮기고, 헷갈릴 수 있는 해설은 자동에서 빼서 따로 표시합니다(AI 호출 없음).</div>
+        <button class="btn" style="background:#185fa5;color:#fff;font-size:.92rem;padding:7px 14px;" onclick="rvBalanceAnswers()">⚖ 정답분포 자동 보정 실행</button>
+      </div>`;
+    }
   }
   h+=`</div>`;
   panel.innerHTML=h;
