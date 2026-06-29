@@ -1623,7 +1623,16 @@ Distractors per blank(4): OPPOSITE / PARTIAL / BAIT(passage vocab wrong role) / 
 Passage:\n${p}\nReturn JSON only: {"template":"... ____(A)____ ... ____(B)____ ...","A_correct":"","A_distractors":["","","",""],"B_correct":"","B_distractors":["","","",""]}`;}
 function _grammarPrompt(w){return `For the English word/phrase "${w}", suggest 4 grammatically different forms that create unambiguous grammar errors in CSAT context (tense, voice, participle, infinitive, S-V agreement, pronoun, adverb/adjective). Return JSON only: {"forms":["","","",""]}`;}
 function _vocabPrompt(w){return `For the English word "${w}", provide 3 antonyms(반의어) and 3 synonyms(유의어). Return JSON only: {"antonyms":["","",""],"synonyms":["","",""]}`;}
-function _blankPrompt(p){return `You are a Korean CSAT English exam expert (빈칸추론 31~34번). The passage has a blank (______).
+function _blankPrompt(p, mode){
+  if(mode==='keep'){
+    // 원문 그대로 모드: 정답은 사용자가 원문으로 채우므로, AI는 그럴듯한 오답 4개에 집중
+    return `You are a Korean CSAT English exam expert (빈칸추론 31~34번). The passage has a blank (______).
+The CORRECT answer will be supplied separately (verbatim from the passage), so for "correct" just give a short paraphrase placeholder.
+Focus on 4 high-quality DISTRACTORS that are plausible but wrong: OPPOSITE(반대 방향) / PARTIAL(부분만 맞음) / OFF-TOPIC(지문 소재이나 논리 무관) / OVER-GENERAL(너무 포괄적).
+All distractors similar length to each other and to a typical correct phrase. Do NOT copy passage phrases verbatim in distractors.
+Passage with blank:\n${p}\nReturn JSON only: {"options":["correct-placeholder","opposite","partial","off-topic","over-general"]}`;
+  }
+  return `You are a Korean CSAT English exam expert (빈칸추론 31~34번). The passage has a blank (______).
 Provide the CORRECT phrase that fills the blank (matches the logical flow, usually a paraphrase of the passage's key idea — NOT verbatim copy from the passage).
 Then 4 DISTRACTORS that are plausible but wrong: OPPOSITE(반대 방향) / PARTIAL(부분만 맞음) / OFF-TOPIC(지문 소재이나 논리 무관) / OVER-GENERAL(너무 포괄적).
 All 5 options similar length (±3 words). Correct must NOT be the longest. Avoid using exact passage phrases verbatim in the correct answer.
@@ -1673,6 +1682,8 @@ async function genHelper(kind){
 window.addEventListener('DOMContentLoaded',()=>{ const k=localStorage.getItem('ea_claude_key'); const el=document.getElementById('aiKey'); if(k&&el)el.value=k; });
 
 // ━━━ 검토 탭: 수정 중 AI 선지 추천 (teacher.html식) ━━━
+function rvAIBlankMode(num, mode){ window['_aiMode'+num]=mode; rvAISuggest(num,'빈칸추론'); }
+function rvAIBlankReset(num){ delete window['_aiMode'+num]; rvAISuggest(num,'빈칸추론'); }
 async function rvAISuggest(num, qtype){
   const card=document.getElementById('rvq'+num);
   const key=_cleanKey(localStorage.getItem('ea_claude_key')||'');
@@ -1686,13 +1697,39 @@ async function rvAISuggest(num, qtype){
       if(!body){ box.innerHTML='<div style="font-size:.8rem;color:#7a1020;">지문이 비어 있습니다.</div>'; return; }
       const isBlank=(qtype==='빈칸추론');
       if(isBlank && !/_{2,}|______/.test(body)){ box.innerHTML='<div style="font-size:.8rem;color:#b8860b;">지문에 빈칸(______)이 보이지 않습니다. 빈칸 위치를 먼저 확인하세요.</div>'; return; }
-      const d=await _callClaude(key,_AUTHOR_SYS, isBlank?_blankPrompt(body):_topicPrompt(body));
+      // 빈칸은 두 가지 출제 방식 중 선택 (mode 미지정 시 버튼만 표시)
+      if(isBlank && !window['_aiMode'+num]){
+        const q=generatedQs.find(x=>x.num===num)||_flat(generatedQs).find(x=>x.num===num);
+        const bo=q?_rvBlankOriginal(q):{ok:false,reason:'문항을 찾을 수 없음'};
+        let h='<div style="font-size:.82rem;color:#3a2a20;margin-bottom:8px;font-weight:600;">빈칸 출제 방식을 고르세요</div>';
+        if(bo.ok){
+          h+=`<div style="font-size:.78rem;color:#555;background:#f8f5ef;padding:6px 9px;border-radius:5px;margin-bottom:8px;">원문 빈칸 자리: 「<b style="color:#7a1020">${bo.text}</b>」</div>`;
+          h+=`<button class="btn" style="background:#1a7f37;color:#fff;font-size:.78rem;padding:5px 11px;margin:0 6px 6px 0;" onclick="rvAIBlankMode(${num},'keep')">① 원문 그대로 정답 + 오답만 AI</button>`;
+        } else {
+          h+=`<div style="font-size:.78rem;color:#a00;background:#fdecea;padding:6px 9px;border-radius:5px;margin-bottom:8px;">⚠ 원문 자리를 못 찾음: ${bo.reason}<br>→ ①번(원문 그대로)은 쓸 수 없습니다. ②번으로 진행하세요.</div>`;
+        }
+        h+=`<button class="btn" style="background:#185fa5;color:#fff;font-size:.78rem;padding:5px 11px;margin-bottom:6px;" onclick="rvAIBlankMode(${num},'transform')">② 원문 변형해서 출제 (정답+오답 모두 AI)</button>`;
+        box.innerHTML=h; return;
+      }
+      const mode=window['_aiMode'+num]||'transform';
+      const d=await _callClaude(key,_AUTHOR_SYS, isBlank?_blankPrompt(body, mode):_topicPrompt(body));
       const j=_parseJSON(d.content[0].text);
-      const circ='①②③④⑤'; const lines=(j.options||[]).map((x,i)=>circ[i]+' '+x);
+      const circ='①②③④⑤'; let lines=(j.options||[]).map((x,i)=>circ[i]+' '+x);
+      // ① 원문 그대로 모드: 정답①을 원문 빈칸 자리로 교체 (AI 오답 ②~⑤만 사용)
+      if(isBlank && mode==='keep'){
+        const q=generatedQs.find(x=>x.num===num)||_flat(generatedQs).find(x=>x.num===num);
+        const bo=q?_rvBlankOriginal(q):{ok:false};
+        if(bo.ok) lines[0]='① '+bo.text;
+      }
       const labels=isBlank?['정답','반대 방향','부분만 맞음','소재만 같음','너무 포괄적']:['정답(thesis)','너무 좁음','너무 넓음','부분 진술','초점 이탈'];
-      let h='<div style="font-size:.76rem;color:#5a3a8a;margin-bottom:4px;">후보 클릭=그 선지만 교체 / 버튼=전체 또는 오답만 교체 (첫 줄=정답)</div>';
-      h+='<button class="btn" style="background:#185fa5;color:#fff;font-size:.76rem;padding:3px 9px;margin:0 5px 5px 0;" onclick="rvApplyChoices('+num+')">⬇ 5개 모두 적용</button>';
-      if(isBlank) h+='<button class="btn" style="background:#1a7f37;color:#fff;font-size:.76rem;padding:3px 9px;margin-bottom:5px;" onclick="rvApplyWrongOnly('+num+')">⬇ 오답 4개만 (정답=내 원문 유지)</button>';
+      const modeLabel=mode==='keep'?'① 원문 그대로 정답 + AI 오답':'② 원문 변형 출제';
+      let h=`<div style="font-size:.76rem;color:#5a3a8a;margin-bottom:4px;">${isBlank?'['+modeLabel+'] · ':''}후보 클릭=그 선지만 교체 / 첫 줄=정답</div>`;
+      if(isBlank && mode==='keep'){
+        h+='<button class="btn" style="background:#1a7f37;color:#fff;font-size:.76rem;padding:3px 9px;margin:0 5px 5px 0;" onclick="rvApplyChoices('+num+')">⬇ 적용 (정답=원문, 오답=AI)</button>';
+      } else {
+        h+='<button class="btn" style="background:#185fa5;color:#fff;font-size:.76rem;padding:3px 9px;margin:0 5px 5px 0;" onclick="rvApplyChoices('+num+')">⬇ 5개 모두 적용</button>';
+      }
+      h+=`<button class="btn btn-gray" style="font-size:.74rem;padding:3px 9px;margin-bottom:5px;" onclick="rvAIBlankReset(${num})">↺ 방식 다시 선택</button>`;
       h+=lines.map((x,i)=>`<div style="font-size:.82rem;padding:4px 7px;border:1px solid #e8e0f0;border-radius:4px;margin:2px 0;cursor:pointer;" onclick="rvPickChoice(${num},${i})"><span style="color:#999;font-size:.72rem;">${labels[i]||''}</span> ${x}</div>`).join('');
       box.innerHTML=h; box.dataset.cands=JSON.stringify(lines);
     } else if(qtype==='어휘'){
@@ -2356,25 +2393,34 @@ function _rvSim(a,b){ // 간이 유사도 (Dice 계수, 단어집합)
 function _rvBody(q){ return (q.question||'').split('\n').slice(1).join('\n'); }
 // 빈칸추론: 출제본의 빈칸(______) 자리에 원문에 있던 구절을 찾아 반환
 function _rvBlankOriginal(q){
-  if(q.qtype!=='빈칸추론' || !q._orig) return null;
+  if(q.qtype!=='빈칸추론') return {ok:false, reason:'빈칸추론 아님'};
   const made=_rvBody(q).replace(/<[^>]+>/g,'');
-  const m=made.match(/_{3,}/); if(!m) return null;
+  const m=made.match(/_{3,}/); if(!m) return {ok:false, reason:'본문에 빈칸(______)이 없음'};
+  if(!q._orig) return {ok:false, reason:'이 문항에 원문(_orig)이 없어 대조 불가 — 자산 탭에서 원문을 주입하거나, 정답이 원문을 변형했는지 직접 확인'};
   const before=made.slice(0,m.index).trim();
   const after=made.slice(m.index+m[0].length).trim();
-  const bw=before.split(/\s+/).slice(-6);
-  const aw=after.split(/\s+/).slice(0,6);
+  const bw=before.split(/\s+/).slice(-8);
+  const aw=after.split(/\s+/).slice(0,8);
   const on=q._orig.replace(/\s+/g,' ').trim();
   const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  for(let n=Math.min(6,bw.length);n>=2;n--){
+  // 앞 단어 8→1, 뒤 단어 8→1까지 점진적으로 느슨하게 매칭
+  for(let n=Math.min(8,bw.length);n>=1;n--){
     const ba=esc(bw.slice(-n).join(' '));
-    for(let k=Math.min(6,aw.length);k>=2;k--){
+    for(let k=Math.min(8,aw.length);k>=1;k--){
       const aa=esc(aw.slice(0,k).join(' '));
       const re=new RegExp(ba+'\\s*(.*?)\\s*'+aa,'i');
       const mm=on.match(re);
-      if(mm && mm[1].length<300 && mm[1].length>0) return mm[1].trim();
+      if(mm && mm[1].length<400 && mm[1].length>0) return {ok:true, text:mm[1].trim()};
     }
   }
-  return null;
+  // 앞 단어만으로라도 그 뒤 일부를 보여주기 (뒤 매칭 실패 대비)
+  for(let n=Math.min(8,bw.length);n>=2;n--){
+    const ba=esc(bw.slice(-n).join(' '));
+    const re=new RegExp(ba+'\\s+(.{5,120}?)[.,;]','i');
+    const mm=on.match(re);
+    if(mm) return {ok:true, text:mm[1].trim()+' …', partial:true};
+  }
+  return {ok:false, reason:'빈칸 앞뒤 문장이 원문과 달라 자리를 못 찾음 — 빈칸 주변을 원문 그대로 두면 찾을 수 있음. 지금은 정답이 원문을 변형했는지 직접 확인'};
 }
 
 // 유형별 자동 검증 → {status, rows(html), flags[]}
@@ -2567,9 +2613,11 @@ function _rvTriage(q, verify){
       reasons.push({tag:'해설 대조', q:`해설이 가리키는 내용 = 정답 ${q.answer} 선지 내용과 <b>일치</b>하는가? (해설은 ①을 설명하는데 정답기호가 ②면 오류)`});
     }
     else if(q.qtype==='빈칸추론'){
-      const blankOrig=_rvBlankOriginal(q);
-      if(blankOrig){
-        reasons.push({tag:'원문 빈칸 자리', q:`원문에서 빈칸 자리에 있던 표현: 「<b style="color:#7a1020">${blankOrig}</b>」<br>→ 정답 「${ansTxt}」가 이걸 <b>적절히 변형(paraphrase)</b>했는가? 너무 똑같으면 본문 찾기 문제로 전락.`});
+      const bo=_rvBlankOriginal(q);
+      if(bo.ok){
+        reasons.push({tag:'원문 빈칸 자리', q:`원문에서 빈칸 자리에 있던 표현: 「<b style="color:#7a1020">${bo.text}</b>」${bo.partial?' (대략)':''}<br>→ 정답 「${ansTxt}」가 이걸 <b>적절히 변형(paraphrase)</b>했는가? 너무 똑같으면 본문 찾기 문제로 전락.`});
+      } else {
+        reasons.push({tag:'원문 빈칸 자리', q:`⚠ 원문 자리를 못 찾음: ${bo.reason}`});
       }
       reasons.push({tag:'정답 확인', q:`빈칸에 정답 「<b>${ansTxt}</b>」를 넣어 읽으면 <b>앞뒤 논리가 자연스러운가?</b>`});
       reasons.push({tag:'오답 확인', q:`다른 선지를 넣어보면 <b>모두 어색한가?</b> (하나라도 말이 되면 복수정답)<br>${wrongList.map(w=>`· ${w}`).join('<br>')}`});
