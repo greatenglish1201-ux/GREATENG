@@ -1665,6 +1665,27 @@ Then 4 DISTRACTORS that are plausible but wrong: OPPOSITE(반대 방향) / PARTI
 All 5 options similar length (±3 words). Correct must NOT be the longest. Avoid using exact passage phrases verbatim in the correct answer.
 Passage with blank:\n${p}\nReturn JSON only: {"options":["correct","opposite","partial","off-topic","over-general"]}`;}
 
+// ━━━ 선지 변경 시 해설 자동 재생성용 프롬프트 ━━━
+function _explPrompt(body, choices, ansSym){
+  const circ='①②③④⑤';
+  const ansIdx=circ.indexOf((ansSym||'①')[0]);
+  const lines=(choices||[]).map((c,i)=>circ[i]+' '+String(c).replace(/^[①②③④⑤]\s*/,'')).join('\n');
+  return `You are a Korean CSAT English exam author writing the Korean 해설(explanation) for a multiple-choice question.
+Passage:
+${body}
+
+Choices (current order, FIXED — do not reorder):
+${lines}
+
+The CORRECT answer is ${circ[ansIdx]} (index ${ansIdx+1}).
+Write ONE Korean 해설 paragraph that:
+1) States the correct answer using the symbol ${circ[ansIdx]} explicitly (e.g. "...이므로 ${circ[ansIdx]}이 정답이다").
+2) Gives the passage-based reason the correct choice fits.
+3) Briefly says why each of the other 4 choices is wrong, referring to them by their CURRENT symbols.
+Use natural Korean (존댓말 불필요, 해설체). Keep under 5 sentences. The symbols MUST match the current choice order above.
+Return JSON only: {"explanation":"..."}`;
+}
+
 async function genHelper(kind){
   const key=_cleanKey(document.getElementById('aiKey')?.value||localStorage.getItem('ea_claude_key')||'');
   const box=document.getElementById('aiResult');
@@ -1795,9 +1816,8 @@ function rvApplyWrongOnly(num){
   for(let i=1;i<5;i++){ const c=(cands[i]||'').replace(/^[①②③④⑤]\s*/,''); out.push(circ[i]+' '+c); }
   ta.value=out.join('\n'); ta.style.background='#eafaef'; setTimeout(()=>ta.style.background='',1000);
   const ans=card.querySelector('.rf-ans'); if(ans){ ans.value='①'; }
-  const exp=card.querySelector('.rf-exp');
-  if(exp && !/①/.test(exp.value)){ exp.style.background='#fff3b0'; setTimeout(()=>exp.style.background='',2500);
-    box.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ 정답=① (내 원문) 으로 설정. <b>해설</b>을 ① 기준으로 수정하세요.</div>'); }
+  // 오답(②~⑤)이 바뀌었으니 해설도 현재 선지·정답(①) 기준으로 자동 재생성
+  _rvRegenExplanation(num);
 }
 function rvApplyChoices(num){
   const box=document.getElementById('rvai'+num); const cands=JSON.parse(box.dataset.cands||'[]');
@@ -1807,13 +1827,8 @@ function rvApplyChoices(num){
     ta.value=cands.join('\n'); ta.style.background='#f5f0ff'; setTimeout(()=>ta.style.background='',800);
     // AI 후보는 첫 줄이 정답 → 정답을 ①로 자동 설정
     const ans=card.querySelector('.rf-ans'); if(ans){ ans.value='①'; ans.style.background='#f5f0ff'; setTimeout(()=>ans.style.background='',800); }
-    // 해설이 옛 정답 기호를 가리킬 수 있으니 경고 표시
-    const exp=card.querySelector('.rf-exp');
-    if(exp && !/①/.test(exp.value)){
-      exp.style.background='#fff3b0'; setTimeout(()=>exp.style.background='',2500);
-      const box2=document.getElementById('rvai'+num);
-      if(box2) box2.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ 정답을 ①로 바꿨습니다. <b>해설</b>도 ① 기준으로 수정하세요(노랑 표시된 칸).</div>');
-    }
+    // 선지가 바뀌었으니 해설도 현재 선지·정답 기준으로 자동 재생성
+    _rvRegenExplanation(num);
   }
 }
 function rvPickChoice(num,idx){
@@ -1822,6 +1837,46 @@ function rvPickChoice(num,idx){
   if(!ta||!cands[idx]) return;
   const lines=ta.value.split('\n'); lines[idx]=cands[idx]; ta.value=lines.join('\n');
   ta.style.background='#f5f0ff'; setTimeout(()=>ta.style.background='',800);
+}
+
+// ━━━ 선지 변경 후 해설을 현재 선지·정답에 맞게 AI로 자동 재생성 ━━━
+async function _rvRegenExplanation(num){
+  const card=document.getElementById('rvq'+num); if(!card) return;
+  const exp=card.querySelector('.rf-exp'); if(!exp) return;
+  const key=_cleanKey(localStorage.getItem('ea_claude_key')||'');
+  const box=document.getElementById('rvai'+num);
+  if(!key){ if(box) box.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ API 키가 없어 해설 자동 재생성을 건너뜁니다. 해설을 직접 ① 기준으로 수정하세요.</div>'); return; }
+  const body=(card.querySelector('.rf-body')?.value||'').trim();
+  const choices=(card.querySelector('.rf-ch')?.value||'').split('\n').filter(x=>x.trim());
+  const ansSym=(card.querySelector('.rf-ans')?.value||'①');
+  if(!body || choices.length<2){ return; }
+  // 기존 해설 백업 (되돌리기용)
+  const prevExp=exp.value;
+  exp.dataset.prevExp=prevExp;
+  const prevBg=exp.style.background;
+  exp.style.background='#eef'; exp.value='⏳ 해설 재생성 중...';
+  try{
+    const d=await _callClaude(key,_AUTHOR_SYS,_explPrompt(body,choices,ansSym),1024);
+    const j=_parseJSON(d.content[0].text);
+    if(j && j.explanation){
+      exp.value=j.explanation;
+      exp.style.background='#eafaef'; setTimeout(()=>exp.style.background='',1500);
+      if(box){
+        box.insertAdjacentHTML('beforeend','<div id="rvexpundo'+num+'" style="font-size:.78rem;color:#185fa5;margin-top:6px;">✓ 해설을 현재 선지·정답('+ansSym+') 기준으로 재생성했습니다. <button class="btn btn-gray" style="font-size:.72rem;padding:2px 7px;" onclick="_rvUndoExpl('+num+')">↺ 이전 해설로</button></div>');
+      }
+    } else {
+      exp.value=prevExp; exp.style.background=prevBg;
+    }
+  }catch(e){
+    exp.value=prevExp; exp.style.background='#fff3b0'; setTimeout(()=>exp.style.background='',2500);
+    if(box) box.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ 해설 재생성 실패('+e.message+'). 해설을 직접 '+ansSym+' 기준으로 수정하세요.</div>');
+  }
+}
+function _rvUndoExpl(num){
+  const card=document.getElementById('rvq'+num); if(!card) return;
+  const exp=card.querySelector('.rf-exp'); if(!exp) return;
+  if(exp.dataset.prevExp!==undefined){ exp.value=exp.dataset.prevExp; exp.style.background='#fff3b0'; setTimeout(()=>exp.style.background='',1500); }
+  const u=document.getElementById('rvexpundo'+num); if(u) u.remove();
 }
 
 // ━━━ 검수 (게이트 규칙 내장: 인쇄 전 자동 점검) ━━━
