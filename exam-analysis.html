@@ -2326,6 +2326,28 @@ function _rvSim(a,b){ // 간이 유사도 (Dice 계수, 단어집합)
   return 2*inter/(A.size+B.size);
 }
 function _rvBody(q){ return (q.question||'').split('\n').slice(1).join('\n'); }
+// 빈칸추론: 출제본의 빈칸(______) 자리에 원문에 있던 구절을 찾아 반환
+function _rvBlankOriginal(q){
+  if(q.qtype!=='빈칸추론' || !q._orig) return null;
+  const made=_rvBody(q).replace(/<[^>]+>/g,'');
+  const m=made.match(/_{3,}/); if(!m) return null;
+  const before=made.slice(0,m.index).trim();
+  const after=made.slice(m.index+m[0].length).trim();
+  const bw=before.split(/\s+/).slice(-6);
+  const aw=after.split(/\s+/).slice(0,6);
+  const on=q._orig.replace(/\s+/g,' ').trim();
+  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  for(let n=Math.min(6,bw.length);n>=2;n--){
+    const ba=esc(bw.slice(-n).join(' '));
+    for(let k=Math.min(6,aw.length);k>=2;k--){
+      const aa=esc(aw.slice(0,k).join(' '));
+      const re=new RegExp(ba+'\\s*(.*?)\\s*'+aa,'i');
+      const mm=on.match(re);
+      if(mm && mm[1].length<300 && mm[1].length>0) return mm[1].trim();
+    }
+  }
+  return null;
+}
 
 // 유형별 자동 검증 → {status, rows(html), flags[]}
 /* ━━━ B2B 자동검증: 간이 난이도 (Flesch 근사) ━━━ */
@@ -2517,9 +2539,12 @@ function _rvTriage(q, verify){
       reasons.push({tag:'해설 대조', q:`해설이 가리키는 내용 = 정답 ${q.answer} 선지 내용과 <b>일치</b>하는가? (해설은 ①을 설명하는데 정답기호가 ②면 오류)`});
     }
     else if(q.qtype==='빈칸추론'){
+      const blankOrig=_rvBlankOriginal(q);
+      if(blankOrig){
+        reasons.push({tag:'원문 빈칸 자리', q:`원문에서 빈칸 자리에 있던 표현: 「<b style="color:#7a1020">${blankOrig}</b>」<br>→ 정답 「${ansTxt}」가 이걸 <b>적절히 변형(paraphrase)</b>했는가? 너무 똑같으면 본문 찾기 문제로 전락.`});
+      }
       reasons.push({tag:'정답 확인', q:`빈칸에 정답 「<b>${ansTxt}</b>」를 넣어 읽으면 <b>앞뒤 논리가 자연스러운가?</b>`});
       reasons.push({tag:'오답 확인', q:`다른 선지를 넣어보면 <b>모두 어색한가?</b> (하나라도 말이 되면 복수정답)<br>${wrongList.map(w=>`· ${w}`).join('<br>')}`});
-      reasons.push({tag:'단서 확인', q:`빈칸의 정답을 <b>본문 어느 부분</b>에서 끌어낼 수 있는가? (단서 문장이 명확해야 함)`});
     }
     else if(q.qtype==='함축의미'){
       reasons.push({tag:'정답 확인', q:`밑줄 어구가 <b>비유/함의</b>를 담는가? 정답 「<b>${ansTxt}</b>」가 그 진의를 정확히 포착하나?`});
@@ -2706,16 +2731,13 @@ function renderReview(){
     const {q,v,tri}=r; const n=q.num;
     let qbody=_rvEsc(_rvBody(q));
     // ── 본문 하이라이트: 검수할 핵심 위치를 색으로 표시 ──
-    // 빈칸추론: 빈칸(______)을 노랑 강조
-    if(q.qtype==='빈칸추론'){ qbody=qbody.replace(/_{3,}|______/g, m=>`<mark class="rv-hl-blank">${m}</mark>`); }
+    // (빈칸추론은 빈칸 표시 대신, 검수 안내에서 '원문의 빈칸 자리'를 보여줌)
     // 어법·어휘: 정답 번호의 밑줄을 빨강, 나머지 밑줄은 회색 표시
     if(q.qtype==='어법'||q.qtype==='어휘'){
       const ansN=(q.answer||'')[0];
       qbody=qbody.replace(/(①|②|③|④|⑤)\s*<u>(.*?)<\/u>/g, (full,mk,w)=>
         mk===ansN ? `${mk} <u class="rv-hl-ans">${w}</u>` : `${mk} <u>${w}</u>`);
     }
-    // 흐름무관: 정답 번호 강조 (본문에 ①②③ 마커가 있으면)
-    if(q.qtype==='흐름무관'){ const ansN=(q.answer||'')[0]; qbody=qbody.replace(new RegExp('('+ansN+')','g'),`<mark class="rv-hl-blank">$1</mark>`); }
     // 어법·어휘 등 선지가 번호(①~⑤)만 있는 유형 → 빈 번호 나열 대신 본문 밑줄 단어를 표시
     const choicesAreBare=(q.choices||[]).every(c=>/^[①②③④⑤]\s*$/.test((''+c)));
     let ch;
