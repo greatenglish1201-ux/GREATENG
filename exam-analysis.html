@@ -3194,7 +3194,15 @@ function rvCardToggle(n){
   const b=c.querySelector('.rv-cardbody'); if(!b) return;
   b.style.display = b.style.display==='none' ? 'block' : 'none';
 }
-function _rvApprovedKey(){ try{ return 'ea_approved_'+(examMeta?.key||(generatedQs[0]&&generatedQs[0].num)||'x'); }catch(e){ return 'ea_approved_x'; } }
+function _rvApprovedKey(){
+  try{
+    // 시험 내용 기반의 안 바뀌는 식별자 (파일 업데이트·재불러오기와 무관하게 동일 시험이면 같은 key)
+    const m=examMeta||{};
+    const sig=[m.school,m.grade,m.year,m.semester,m.exam].filter(Boolean).join('_');
+    const base = sig || m.key || (generatedQs[0]&&('q'+generatedQs[0].num)) || 'x';
+    return 'ea_approved_'+String(base).replace(/[^\w가-힣]/g,'_');
+  }catch(e){ return 'ea_approved_x'; }
+}
 function _rvGetApproved(){ try{ return JSON.parse(localStorage.getItem(_rvApprovedKey())||'[]'); }catch(e){ return []; } }
 function _rvSetApproved(arr){ try{ localStorage.setItem(_rvApprovedKey(), JSON.stringify([...new Set(arr)])); }catch(e){} }
 function rvApprove(n){
