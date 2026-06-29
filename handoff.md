@@ -46,6 +46,10 @@
 - 여름 특강 3개 반(중1-2 / 중3-고1 / 고3 주말 잠정) 커리큘럼·교재 확정
 
 ## 5. 최근 완료 (참고용)
+- **exam-analysis.html 검토탭: 노안 대응 글씨 확대 (2026-06-29)**
+  - 검토 탭 글씨가 .8~.9rem이라 작다는 요청. CSS 추가로 확대: .rv-card 1.06rem, .rv-bd(지문) 1.12rem, .rv-ch(선지) 1.08rem, .rv-stem 1.1rem, .rv-detail/.rv-kv 1.02rem, .rv-exp 1.04rem, .rv-orig 1.02rem, .rv-chk 1.0rem, .rv-editm textarea 1.04rem 등. (.rv-src 정의 직후에 블록 추가)
+  - 참고(버그 아님): 검수 문항이 '사라지는' 현상 = 검수권장(👁) 문항을 '그래도 통과'로 승인하면 숨겨지는 정상 동작. 반려(⛔)는 cardHtml(r,false,false)로 절대 안 숨김. 승인 되돌리기는 상단 바 '전체 되돌리기'(rvUnapproveAll). 18번 반려는 제목 정답이 본문어휘 67% 복붙이라 정당한 반려(paraphrase 필요).
+  - 동일 파일 누적(앞 4개 + 글씨확대). JS 문법 통과. buildOutput·GAS·passages.js 미변경.
 - **exam-analysis.html 검토탭: '원문으로 다시 출제' 기능 (2026-06-29)**
   - 요청: 오류 반려만 내지 말고, 검수 패널 오른쪽 '원문 전체'(q._orig)를 가져다 다시 출제하는 길을 열 것.
   - 구현: (1) 검수 카드 우측 '원문 전체' details에 `📝 이 원문으로 다시 출제` 버튼 추가(details open으로 펼침). (2) `rvReauthorFromOrig(num)` 함수: 편집모드(.rv-view→.rv-editm) 자동 열기 → q._orig를 .rf-body 지문칸에 주입 → 빈칸추론이면 현재 정답선지 텍스트가 원문에 그대로 있으면 그 자리를 ______로 자동 치환(없으면 사용자가 직접 빈칸 지정하도록 안내) → AI 박스 열고 rvAISuggest(num,qtype) 호출로 출제 흐름 연결. (3) 빈칸추론이면 앞서 만든 '원문 자리 수동지정'(드래그→rvManualKeep)·해설 자동재생성과 그대로 연결됨.
