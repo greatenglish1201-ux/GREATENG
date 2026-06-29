@@ -1,6 +1,6 @@
 # GREATENG 작업 핸드오프
 > 새 대화 시작 시 이 파일 링크를 Claude에게 주면 맥락이 복원됩니다.
-> 마지막 갱신: 2026-06-26
+> 마지막 갱신: 2026-06-29
 
 ## 0. 기본 정보
 - 저장소: greatenglish1201-ux/GREATENG (GitHub Pages 배포)
@@ -46,6 +46,35 @@
 - 여름 특강 3개 반(중1-2 / 중3-고1 / 고3 주말 잠정) 커리큘럼·교재 확정
 
 ## 5. 최근 완료 (참고용)
+- **제철중3 기말 예상문제 → JSON 신규 생성 (jechuljung3_2026_1f_exam.json) (2026-06-29)**
+  - 검수 통과한 PDF 26문항을 제철고 JSON과 동일 평면스키마(key/meta/questions, 문항=type:single + qtype/score/question/choices/answer/explanation/source/_orig/_origtype/_src)로 작성.
+  - **파일명 학교급 분리**: 레포 기존 `exams/jechul3_2026_1f_exam.json`은 이름과 달리 **제철고3 영어II 30문항**이 들어있어 혼선. 그래서 중3은 `jechuljung3_2026_1f_exam.json`으로 명명(고3은 향후 jechulgo3 권장).
+  - meta.key=제철중_3학년_2026_1학기_기말 / school=제철중 / subject=영어 / publisher=비상(김진완) / scope=L3 The Secret of My Father·L4 The Junk Orchestra.
+  - **밑줄형 `<u>` 태그 적용**(복제프로그램 밑줄 렌더링용): 어법 밑줄형 Q1·3·5·7과 개수형 Q2·4·6·8, 어휘 Q9·Q15 = 각 5개씩 정확 삽입 확인.
+  - **PDF 대비 다듬기 1건 반영**: Q7 본문 "inspire people by recycled music" → "through recycled music"(자연스러움, 정답 ④that→it·밑줄 무관).
+  - 자동검수: 26문항·100점·정답분포 ①6②6③6④4⑤4·유형분포 메타=실제 일치, HIGH 0건. MED 6건(Q2·4·6·8·22·25)은 정답이 '개수형(n개)/기호형(ⓔ·ⓒ)'이라 해설에 동그라미기호가 없을 뿐 정답-해설 정합 정상(검수기 오탐). JSON 유효성 통과.
+  - 산출: `/mnt/user-data/outputs/jechuljung3_2026_1f_exam.json`. 빌더 build_jc3.py/build_jc3_part2.py/assemble.py(재실행 동일 산출).
+  - ⚠️ 레포 반영 시: outputs 파일을 GitHub Desktop으로 `exams/`에 추가(기존 제철고3 파일 덮어쓰기 금지 — 파일명 다르므로 충돌 없음).
+- **제철중3 기말 예상문제 PDF(26문항) 전수 검수 — 실오류 0건 (2026-06-29)**
+  - 입력=완성 시험지 PDF(`포항제철중학교_중3_기말고사_영어_예상문제.pdf`, 문제 4p + 정답해설 2p). 레포엔 JSON 산출물 없음(outputs 전용).
+  - 자동집계: 26문항·100점·정답분포 ①6②6③6④4⑤4 (handoff 기존 기록과 일치).
+  - **어법 8문항**(L3 명사절if/과거완료, L4 분사후치/가목적어it~to) 핵심4포인트 충실. 개수형(Q2③·Q4④·Q6④·Q8③) 올바른선지 개수 일일이 대조 → 전부 정답 유일.
+  - **내용일치**(Q16①·Q18①불일치, Q17②·Q19⑤일치) 사실관계 전수 확인: Q18=플루트 설명을 바이올린에 갖다붙인 함정, Q19=연도1995→2005·악기제작자 Gómez·Lucy White 인터뷰어 등 미세변형 함정 정확. **복수정답 없음.**
+  - **교차 답노출 점검**: 독립운동 진실은 Q17 단독 유지, Q24 제목정답④는 "숨겨진 진실"로 추상화(독립운동 직접노출 회피). handoff 'Q17 단독' 원칙 지켜짐 ✓.
+  - 대화(Q20②·Q21②·Q22⑤어색)·독해(Q23①·Q24④·Q26②)·영작배열(Q25③, 4번째=ⓒ an arrangement) 전부 정답 유일.
+  - **다듬기 권장 1건(오답 아님)**: Q7 본문 "inspire people **by** recycled music" → through/with가 자연스러움. 밑줄(②it)·정답(④that→it)과 무관.
+  - **미확인(다음 권장)**: 어법 밑줄형 Q1·3·5·7, 어휘 Q15의 `<u>단어</u>` 태그 정합은 PDF만으론 미검증 → JSON 원본 주면 apply_underline 태그까지 확인 가능.
+  - 산출: `/mnt/user-data/outputs/제철중3_기말_검수보고서.md` (문항별 판정·근거). 시험지 자체는 수정 불필요(이상 없음).
+- **기출 검수: jechul3_2026_1f_exam.json — 해설 정답기호 불일치 3건 수정 (2026-06-29)**
+  - 레포(raw)에서 handoff.md + exam_authoring_universal_handoff.md 먼저 읽음. 검수 대상 JSON은 레포 미존재(outputs 전용 워크플로) → 사용자 업로드본으로 검수.
+  - ⚠️ **파일명 vs 내용 불일치 주의**: 파일명은 jechul3(제철중3 뉘앙스)이나 **meta는 제철고 3학년·영어II·기말 30문항**(meta.key=제철고_3학년_2026_1학기_기말). 제철중3 26문항과 별개 시험. 산출 파일명은 업로드 원본명 유지.
+  - 기계 전수검수(gate_check.py): 선지5개·기호순서·정답기호유효·배점합(=100)·정답분포(meta=실제 ①6②6③6④6⑤6)·qtype분포(meta=실제 10유형) **전부 일치, HIGH 0건**.
+  - **수정한 실오류(MED→0)**: 해설 끝 동그라미번호가 answer와 어긋난 3건. **해설 설명 내용 자체는 정답 선지를 정확히 가리키고 번호만 틀린 안전 케이스**라 번호만 교체.
+    - Q1(제목, 정답③): 해설 "①이 제목으로 적절"→"③이 제목으로 적절".
+    - Q4(함축, 정답①): 해설 "②를 의미한다"→"①을 의미한다".
+    - Q16(추론, 정답③): 해설 "①을 추론할 수 있다"→"③을 추론할 수 있다".
+  - 남은 LOW 30건 = 전 문항 `_review` 카드 부재(검수자 편의 메타, 정답 정합성과 무관). 검토탭 빠른검수 원하면 13번 _review 스키마대로 후속 작성 필요.
+  - 산출: `/mnt/user-data/outputs/jechul3_2026_1f_exam.json` (json.tool 유효성 통과). 평면스키마(key/meta/questions) 유지, 해설 외 필드·구조 무변경. 작업스크립트 gate_check.py/fix.py(재실행 동일 산출).
 - **exam-analysis.html: 검수 승인 상태 유지(파일 업데이트해도 안 풀림) (2026-06-29)**
   - 문제: 파일 업데이트/재불러오기 때마다 검수 문항이 바뀜(승인 표시 초기화). 원인=`_rvApprovedKey()`가 examMeta.key에 의존했는데 이 값이 불러올 때마다 달라지거나 비어서 localStorage 'ea_approved_{key}' 매칭 실패.
   - 해결: key를 **시험 내용 기반 안정값**으로 변경. [school,grade,year,semester,exam] 조합(sig)을 우선 사용 → 같은 시험이면 examMeta.key가 달라도 항상 동일 key. fallback: sig 없으면 examMeta.key, 그것도 없으면 'q'+첫문항번호. 특수문자 정규화.
