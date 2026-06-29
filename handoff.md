@@ -46,6 +46,22 @@
 - 여름 특강 3개 반(중1-2 / 중3-고1 / 고3 주말 잠정) 커리큘럼·교재 확정
 
 ## 5. 최근 완료 (참고용)
+- **exam-analysis.html 검토탭: '원문으로 다시 출제' 기능 (2026-06-29)**
+  - 요청: 오류 반려만 내지 말고, 검수 패널 오른쪽 '원문 전체'(q._orig)를 가져다 다시 출제하는 길을 열 것.
+  - 구현: (1) 검수 카드 우측 '원문 전체' details에 `📝 이 원문으로 다시 출제` 버튼 추가(details open으로 펼침). (2) `rvReauthorFromOrig(num)` 함수: 편집모드(.rv-view→.rv-editm) 자동 열기 → q._orig를 .rf-body 지문칸에 주입 → 빈칸추론이면 현재 정답선지 텍스트가 원문에 그대로 있으면 그 자리를 ______로 자동 치환(없으면 사용자가 직접 빈칸 지정하도록 안내) → AI 박스 열고 rvAISuggest(num,qtype) 호출로 출제 흐름 연결. (3) 빈칸추론이면 앞서 만든 '원문 자리 수동지정'(드래그→rvManualKeep)·해설 자동재생성과 그대로 연결됨.
+  - 연결 확인: 카드 id=rvq{n} == .rv-card[data-num={n}] 동일 요소라 rvAISuggest의 .rf-body 읽기가 주입된 지문과 일치.
+  - 이번까지 동일 파일 4개 작업 누적(해설 자동재생성 / 원문 빈칸자리 수동지정 / 빈칸 원문복원형 검수강등 / 원문으로 다시출제). JS 문법 통과. buildOutput·GAS·passages.js 미변경.
+- **exam-analysis.html 검토탭: 빈칸추론 '원문 복원형 아님' 반려→검수권장 강등 (2026-06-29)**
+  - 배경: 빈칸추론 검증(라인~2803)이 정답 선지가 원문(_orig)에 글자 그대로 있는지 단순 문자열 대조 → 없으면 '정답이 원문 복원형 아님' 플래그. 이건 우리가 추가한 '원문 대조 검수'가 아니라 빈칸 유형에 원래 있던 규칙. 문제는 빈칸추론 정답은 paraphrase가 정상인데 이 플래그가 autoflags(반려⛔)로 들어가 정상 문항이 막힘(예: 식물·인간 면역 지문 8번, 정답 'nurtures beneficial microbes that suppress pathogens'는 글 결론을 정확히 요약했으나 반려됨).
+  - 해결(전자안 채택): _rvTriage에 SOFT_FLAGS=['정답이 원문 복원형 아님'] 도입. verify.flags 중 SOFT_FLAGS는 autoflags(반려) 대신 reasons(검수권장👁)로 라우팅 {tag:'원문 변형'} 객체로 push. 나머지 flags는 기존대로 반려. '오답이 원문에 존재'(복수정답)·'해설 정답기호 불일치'는 반려 유지 → 시뮬레이션으로 확인(원문복원만=review, +복수정답/해설불일치=reject).
+  - 검증 표시(rows)도 빈칸추론 'present=false'를 빨강 '✗ 원문에 없음'→황색 '↺ paraphrase(원문 변형) — 빈칸추론에선 정상'으로 중립화.
+  - 주의: reasons 배열은 {tag,q} 객체 형식(라인2961 rr.tag/rr.q 렌더링). 문자열로 push하면 깨짐 — 반드시 객체로.
+  - 앞선 두 작업(해설 자동재생성, 원문 빈칸자리 수동지정)과 동일 파일 누적. JS 문법 통과. buildOutput·저장 미변경.
+- **exam-analysis.html 검토탭: 빈칸추론 원문 자리 수동 지정 기능 (2026-06-29)**
+  - 문제: 빈칸추론 문항에서 출제본 지문의 빈칸 앞뒤 단어가 원문(_orig)과 달라 `_rvBlankOriginal` 자동 탐지가 실패하면, ①번(원문 그대로 정답) 방식이 아예 막히고 ②번(변형)만 강제됨. 사용자는 원문 그대로 정답을 넣고 싶은데 불가.
+  - 해결: 자동 탐지 실패 시에도 _orig가 있으면 **원문 전체를 보여주고 빈칸 칠 구절을 직접 지정**하게 함. (1) rvAISuggest의 방식선택 UI에서 bo.ok=false일 때 원문 div(#rvorig{num}) + 입력칸(#rvman{num}) + '① 원문 그대로 적용' 버튼 표시. (2) document mouseup 핸들러: #rvorig 영역에서 드래그 선택하면 #rvman 입력칸에 자동 반영. (3) `rvManualKeep(num)`: 선택/입력 구절을 window['_manualAns'+num]에 저장하고 keep 모드로 rvAISuggest 재호출. (4) keep 모드 생성부에서 _manualAns가 있으면 자동탐지(bo.text) 대신 그 값을 정답①로 주입. (5) rvAIBlankReset에서 _manualAns도 초기화.
+  - 직전 작업(선지 변경 시 해설 자동 재생성)과 함께 동일 파일에 누적. JS 문법검증 통과. buildOutput·저장 미변경.
+  - 작업파일: /home/claude/dongjigo/exam_work.html → outputs/exam-analysis.html.
 - **exam-analysis.html 검토탭: 선지 변경 시 해설 자동 재생성 (2026-06-29)**
   - 문제: AI로 선지를 새로 만들면(rvApplyChoices/rvApplyWrongOnly) 선지·정답은 ①로 바뀌는데 **해설은 이전 버전 그대로** 남아, 검수기가 '해설 정답기호 불일치'로 자동 반려(예: 정답①인데 해설엔 '③이 정답'). 기존 코드는 "해설을 직접 수정하세요" 경고만 띄움.
   - 해결(확실한 방법): 선지 적용 직후 **`_rvRegenExplanation(num)` 호출로 해설을 AI 자동 재생성**. 새 프롬프트 `_explPrompt(body,choices,ansSym)`가 현재 지문·선지5개·정답기호를 넘겨 → 정답기호 명시 + 정답 근거 + 오답4개 사유(현재 선지순서 기준)를 한국어 해설로 생성. 모델 claude-sonnet-4-6 재사용.
