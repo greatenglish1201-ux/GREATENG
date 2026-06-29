@@ -3010,11 +3010,38 @@ function _rvVerify(q){
   if(qt==='어휘'||qt==='어법'){
     const und=[...made.matchAll(/(①|②|③|④|⑤)?\s*<u>(.*?)<\/u>/g)];
     let chip='', replaced=[];
+    // 밑줄 앞뒤 문맥까지 보려고 '평문(밑줄 기호·태그 제거)' 준비
+    const plain=made.replace(/[①②③④⑤]/g,'').replace(/<u>/g,'').replace(/<\/u>/g,'');
+    const plainWords=plain.split(/\s+/).map(_rvNorm).filter(Boolean);
+    const origWords=orig.split(/\s+/).map(_rvNorm).filter(Boolean);
+    // 원문에서 '연속 2단어(bigram)' 집합 — 문맥 일치 판정용
+    const origBigrams=new Set();
+    for(let i=0;i<origWords.length-1;i++) origBigrams.add(origWords[i]+' '+origWords[i+1]);
+    const origText=' '+origWords.join(' ')+' ';
     und.forEach(m=>{
       const mk=m[1]||'', w=m[2]||'';
-      // 밑줄 구 '전체'를 정규화해 원문에 그대로 있는지 (첫 단어만 보면 'to think'의 to만 보여 오판)
-      const wn=_rvNorm(w);
-      const inOrig = wn && origN.includes(wn);
+      const wWords=_rvNorm(w).split(/(?<=.)(?=.)/); // not used; keep simple below
+      const wnTokens=w.split(/\s+/).map(_rvNorm).filter(Boolean);
+      let inOrig=false;
+      if(wnTokens.length>=2){
+        // 다단어 밑줄: 정규화 연속 문자열이 원문에 그대로 있는지
+        inOrig = origText.includes(' '+wnTokens.join(' ')+' ');
+      } else if(wnTokens.length===1){
+        const tok=wnTokens[0];
+        // 단일 단어: 원문에 그 단어가 있되, '같은 문맥(앞 단어와의 bigram)'으로 존재하는지 확인
+        // 평문에서 이 밑줄 단어의 앞 단어 찾기
+        const pi=plainWords.indexOf(tok);
+        // 밑줄 단어 바로 앞 평문 단어 추정: made에서 밑줄 위치 기준
+        const before=(function(){ const idx=made.indexOf('<u>'+w+'</u>'); if(idx<0) return ''; const pre=made.slice(0,idx).replace(/[①②③④⑤]/g,'').replace(/<\/?u>/g,'').trim().split(/\s+/); return _rvNorm(pre[pre.length-1]||''); })();
+        if(before){
+          // 앞단어+밑줄단어 bigram이 원문에 있으면 '원문 그대로(같은 자리)'
+          inOrig = origBigrams.has(before+' '+tok);
+          // bigram이 안 맞아도, 단어 자체가 원문에 있고 흔치 않은 내용어면 관대하게 인정(고유명사 등)
+          if(!inOrig && origWords.includes(tok) && tok.length>=7) inOrig=true;
+        } else {
+          inOrig = origWords.includes(tok);
+        }
+      }
       if(inOrig) chip+=`<span class="rv-chip ok">✓ ${w}</span>`;
       else { chip+=`<span class="rv-chip bad">✗ ${w}</span>`; replaced.push(mk); }
     });
