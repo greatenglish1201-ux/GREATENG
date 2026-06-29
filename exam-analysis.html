@@ -2949,11 +2949,23 @@ function rvSave(n){
   renderReview();  // 재검증
   if(typeof renderExamCard==='function') renderExamCard();
 }
+// 저장 파일명 생성: 원본베이스 + _v버전 + _날짜시각 (GitHub·로컬 공통)
+function _examFileBase(){
+  let base=window._loadedFilename||examMeta.filename||examMeta.file||'';
+  if(base) base=base.replace(/\.json$/i,'').replace(/_v\d+_\d{8}_\d{4,6}$/,'');
+  if(!base){ const k=examMeta.key||'exam'; base=k.replace(/[^\w가-힣]/g,'_'); }
+  return base;
+}
+function _examStamp(){
+  const now=new Date(); const pad=(x)=>String(x).padStart(2,'0');
+  return `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+}
 function rvExport(){
   const d={meta:examMeta, questions:generatedQs};
   const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=(examMeta.key||'exam')+'_reviewed.json'; a.click();
+  // GitHub 저장과 동일한 파일명 규칙: 원본베이스_v1_날짜시각.json (로컬은 버전 추적 불가하여 v1 고정)
+  a.download=`${_examFileBase()}_v1_${_examStamp()}.json`; a.click();
 }
 
 // ━━━ 검토본 GitHub 직접 저장 (teacher.html 패턴) ━━━
@@ -2962,13 +2974,9 @@ async function rvSaveToGitHub(){
   const repo=(localStorage.getItem('gh_repo')||'greatenglish1201-ux/GREATENG').trim();
   if(!token){ alert('⚙️ 설정 탭에서 GitHub Token을 먼저 입력하세요.'); return; }
   if(!generatedQs.length){ alert('저장할 시험이 없습니다.'); return; }
-  // 파일명: 불러온 원본 베이스 + _v버전_YYYYMMDD_HHMM
-  let base=window._loadedFilename||examMeta.filename||examMeta.file||'';
-  if(base) base=base.replace(/\.json$/i,'').replace(/_v\d+_\d{8}_\d{4,6}$/,'');
-  if(!base){ const k=examMeta.key||'exam'; base=k.replace(/[^\w가-힣]/g,'_'); }
-  const now=new Date();
-  const pad=(x)=>String(x).padStart(2,'0');
-  const stamp=`${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+  // 파일명: 불러온 원본 베이스 + _v버전_YYYYMMDD_HHMM (rvExport와 동일 규칙)
+  const base=_examFileBase();
+  const stamp=_examStamp();
   // 버전 자동 증가: exams/ 안에 같은 base_v* 파일이 몇 개 있나 세서 +1
   let ver=1;
   try{
