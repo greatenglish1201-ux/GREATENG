@@ -1763,6 +1763,49 @@ document.addEventListener('mouseup', function(e){
   if(inp){ inp.value=sel; inp.style.background='#eafaef'; setTimeout(()=>inp.style.background='',900); }
 });
 // 수동 지정: 선택/입력한 원문 구절을 정답①로 넣고, 오답②~⑤는 AI(keep 모드)로 생성
+// ━━━ 빈칸추론 지문 드래그 → ______ 빈칸 토글 ━━━
+document.addEventListener('mouseup', function(e){
+  const wrap=e.target.closest && e.target.closest('.rf-blankwrap');
+  if(!wrap) return;
+  const num=wrap.dataset.num;
+  const card=document.querySelector(`.rv-card[data-num="${num}"]`);
+  const hidBody=card&&card.querySelector('.rf-body'); if(!hidBody) return;
+  let raw=hidBody.value;
+  // 이미 빈칸 마크를 다시 드래그? → 복원
+  const clickedBlank=e.target.closest && e.target.closest('._blankmark');
+  if(clickedBlank){
+    // 저장해둔 원문 구절로 복원
+    const saved=window['_blankOrig'+num];
+    if(saved){ raw=raw.replace(/_{3,}/, saved); delete window['_blankOrig'+num]; }
+    hidBody.value=raw;
+    wrap.innerHTML=raw.replace(/</g,'&lt;').replace(/_{3,}/g,'<span class="_blankmark" style="background:#ffe08a;font-weight:700;padding:0 4px;border-radius:3px;">______</span>');
+    return;
+  }
+  const sel=window.getSelection(); const txt=(sel&&sel.toString()||'').trim();
+  if(!txt) return;
+  // 이미 빈칸이 하나 있으면 먼저 복원 후 새로 (빈칸은 하나만)
+  if(/_{3,}/.test(raw)){
+    const prev=window['_blankOrig'+num];
+    if(prev){ raw=raw.replace(/_{3,}/, prev); delete window['_blankOrig'+num]; }
+  }
+  const i=raw.indexOf(txt);
+  if(i<0){ sel.removeAllRanges(); return; }
+  // 선택 구절을 ______로, 원문 구절은 기억(복원/정답후보용)
+  window['_blankOrig'+num]=txt;
+  raw=raw.slice(0,i)+'______'+raw.slice(i+txt.length);
+  hidBody.value=raw;
+  wrap.innerHTML=raw.replace(/</g,'&lt;').replace(/_{3,}/g,'<span class="_blankmark" style="background:#ffe08a;font-weight:700;padding:0 4px;border-radius:3px;">______</span>');
+  // 선지 첫 줄(정답)에 빼낸 원문 구절을 후보로 넣어줌(비어있을 때만)
+  const chTa=card.querySelector('.rf-ch');
+  if(chTa){ const lines=chTa.value.split('\n'); if(!lines[0] || !lines[0].trim()){ lines[0]='① '+txt; chTa.value=lines.join('\n'); } }
+  // AI 박스에 안내
+  const box=document.getElementById('rvai'+num);
+  if(box){ box.style.display='block';
+    const old=box.querySelector('._blankinfo'); if(old) old.remove();
+    box.insertAdjacentHTML('afterbegin','<div class="_blankinfo" style="font-size:.78rem;color:#1a7f37;margin-bottom:6px;">✓ 빈칸 설정됨. 빼낸 원문: 「'+txt.slice(0,50)+'」 — 아래 출제 방식을 고르면 정답·오답을 AI로 만듭니다.</div>');
+  }
+  sel.removeAllRanges();
+});
 // ━━━ teacher식 어법/어휘 편집: 정답 번호버튼 클릭 ━━━
 document.addEventListener('click', function(e){
   const btn=e.target.closest && e.target.closest('.rf-ansbtn');
@@ -1847,12 +1890,16 @@ function rvReauthorFromOrig(num){
   }
   bodyTa.value=newBody;
   bodyTa.style.background='#eafaef'; setTimeout(()=>bodyTa.style.background='',1200);
+  // 빈칸추론 드래그-빈칸 div가 있으면 그 표시도 원문으로 갱신
+  const blankWrap=document.getElementById('rfblank'+num);
+  if(blankWrap){ blankWrap.innerHTML=newBody.replace(/</g,'&lt;').replace(/_{3,}/g,'<span class="_blankmark" style="background:#ffe08a;font-weight:700;padding:0 4px;border-radius:3px;">______</span>'); }
+  delete window['_blankOrig'+num];
   // 3) AI 박스 열고 빈칸이면 출제 방식 선택 흐름으로, 아니면 해당 유형 추천으로
   delete window['_aiMode'+num]; delete window['_manualAns'+num];
   const box=document.getElementById('rvai'+num);
   if(box){
     box.style.display='block';
-    box.insertAdjacentHTML('afterbegin','<div style="font-size:.78rem;color:#1a7f37;margin-bottom:6px;">✓ 원문을 지문칸에 넣었습니다.'+(isBlank&&/_{3,}/.test(newBody)?' 빈칸(______) 위치를 확인하세요.':isBlank?' 지문칸에서 빈칸 칠 부분을 ______ 로 바꾸거나, 아래에서 원문 자리를 직접 지정하세요.':'')+'</div>');
+    box.insertAdjacentHTML('afterbegin','<div style="font-size:.78rem;color:#1a7f37;margin-bottom:6px;">✓ 원문을 지문칸에 넣었습니다.'+(isBlank&&/_{3,}/.test(newBody)?' 빈칸(______) 위치를 확인하세요.':isBlank?' 지문칸에서 <b>빈칸 낼 부분을 드래그</b>하면 ______로 바뀝니다.':'')+'</div>');
   }
   rvAISuggest(num, q.qtype);
 }
@@ -3235,9 +3282,15 @@ function renderReview(){
                 </div>`;}).join('');})()}
               </div>
               <input type="hidden" class="rf-ans" value="${q.answer||'①'}">`
+              :(q.qtype==='빈칸추론'?`
+              <label>지문 <span style="font-weight:400;color:#888;font-size:.8rem;">(빈칸 낼 부분을 드래그하면 ______로 바뀜 · 다시 드래그하면 복원)</span></label>
+              <div class="rf-blankwrap" id="rfblank${n}" data-num="${n}" style="font-size:1.06rem;line-height:1.9;background:#fff;border:1px solid #d8cdbb;border-radius:6px;padding:9px;margin-bottom:4px;white-space:pre-wrap;user-select:text;">${_rvBody(q).replace(/</g,'&lt;').replace(/_{3,}/g,'<span class="_blankmark" style="background:#ffe08a;font-weight:700;padding:0 4px;border-radius:3px;">______</span>')}</div>
+              <textarea class="rf-body" style="display:none;">${_rvBody(q)}</textarea>
+              <div style="font-size:.78rem;color:#888;margin-bottom:6px;">빼낸 원문 구절은 정답 후보로 저장됩니다. 빈칸은 하나만 두세요.</div>
+              <label>선지(한 줄 하나, 첫 줄이 정답)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>`
               :`
               <label>지문</label><textarea class="rf-body" rows="7">${_rvBody(q)}</textarea>
-              <label>선지(한 줄 하나)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>`}
+              <label>선지(한 줄 하나)</label><textarea class="rf-ch" rows="5">${(q.choices||[]).join('\n')}</textarea>`)}
               <div class="rv-airec">
                 ${(q.qtype==='어휘'||q.qtype==='어법')?`<input type="text" class="rf-aiword" placeholder="${q.qtype==='어휘'?'어휘 오답 만들 단어 (예: profitable)':'어법 변형할 단어 (예: resides)'}" style="width:100%;padding:6px;border:1px solid #d8cdbb;border-radius:5px;margin-bottom:5px;font-size:.78rem;">`:''}
                 <button class="btn" style="background:#5a3a8a;color:#fff;font-size:.8rem;padding:6px 12px;" onclick="rvAISuggest(${n},'${q.qtype}')">✨ AI ${q.qtype==='어휘'?'반의어 추천':q.qtype==='어법'?'변형형 추천':'선지 추천'}</button>
