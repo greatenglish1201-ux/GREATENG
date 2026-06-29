@@ -1282,10 +1282,22 @@ function applyMiddlePassage(i){
 }
 
 
+function updateManualCount(){
+  const body   = document.getElementById('manualTextBody')?.value||'';
+  const dialog = document.getElementById('manualTextDialog')?.value||'';
+  const info   = document.getElementById('manualCountInfo'); if(!info) return;
+  const bw = (body.trim().match(/[A-Za-z']+/g)||[]).length;
+  const dw = (dialog.trim().match(/[A-Za-z']+/g)||[]).length;
+  const parts=[];
+  if(body.trim())   parts.push(`본문 ${body.length}자 · ${bw}단어`);
+  if(dialog.trim()) parts.push(`대화문 ${dialog.length}자 · ${dw}단어`);
+  info.textContent = parts.join('  /  ');
+}
 function clearAllManual(){
   ['manualTextBody','manualTitleBody','manualTextDialog','manualTitleDialog'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
+  updateManualCount();
 }
 
 // ━━━ 기출 패턴 관리 ━━━
@@ -2749,7 +2761,7 @@ function renderReview(){
     root.innerHTML='<div style="color:var(--ink4);padding:20px;text-align:center;">✍️ 출제 탭에서 예상문제를 먼저 로드하세요.</div>';
     return;
   }
-  const Q=generatedQs.filter(q=>q.type!=='group');
+  const Q=_flat(generatedQs);  // group 내부 문항까지 펼쳐서 검토 (rvSave의 _flat과 일치)
   const results=Q.map(q=>{ const v=_rvVerify(q); return {q, v, tri:_rvTriage(q,v)}; });
   const gate=_rvGate(Q);
   const struct=_rvGateStructure(Q);
