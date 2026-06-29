@@ -1690,8 +1690,9 @@ async function rvAISuggest(num, qtype){
       const j=_parseJSON(d.content[0].text);
       const circ='①②③④⑤'; const lines=(j.options||[]).map((x,i)=>circ[i]+' '+x);
       const labels=isBlank?['정답','반대 방향','부분만 맞음','소재만 같음','너무 포괄적']:['정답(thesis)','너무 좁음','너무 넓음','부분 진술','초점 이탈'];
-      let h='<div style="font-size:.76rem;color:#5a3a8a;margin-bottom:4px;">후보 클릭=그 선지만 교체 / 버튼=5개 모두 교체 (첫 줄=정답)</div>';
-      h+='<button class="btn" style="background:#185fa5;color:#fff;font-size:.76rem;padding:3px 9px;margin-bottom:5px;" onclick="rvApplyChoices('+num+')">⬇ 5개 모두 적용</button>';
+      let h='<div style="font-size:.76rem;color:#5a3a8a;margin-bottom:4px;">후보 클릭=그 선지만 교체 / 버튼=전체 또는 오답만 교체 (첫 줄=정답)</div>';
+      h+='<button class="btn" style="background:#185fa5;color:#fff;font-size:.76rem;padding:3px 9px;margin:0 5px 5px 0;" onclick="rvApplyChoices('+num+')">⬇ 5개 모두 적용</button>';
+      if(isBlank) h+='<button class="btn" style="background:#1a7f37;color:#fff;font-size:.76rem;padding:3px 9px;margin-bottom:5px;" onclick="rvApplyWrongOnly('+num+')">⬇ 오답 4개만 (정답=내 원문 유지)</button>';
       h+=lines.map((x,i)=>`<div style="font-size:.82rem;padding:4px 7px;border:1px solid #e8e0f0;border-radius:4px;margin:2px 0;cursor:pointer;" onclick="rvPickChoice(${num},${i})"><span style="color:#999;font-size:.72rem;">${labels[i]||''}</span> ${x}</div>`).join('');
       box.innerHTML=h; box.dataset.cands=JSON.stringify(lines);
     } else if(qtype==='어휘'){
@@ -1719,10 +1720,37 @@ async function rvAISuggest(num, qtype){
   }catch(e){ box.innerHTML='<div style="font-size:.8rem;color:#7a1020;">생성 실패: '+e.message+'</div>'; }
 }
 function rvCopyWord(w){ navigator.clipboard?.writeText(w); }
+function rvApplyWrongOnly(num){
+  const box=document.getElementById('rvai'+num); const cands=JSON.parse(box.dataset.cands||'[]');
+  const card=document.getElementById('rvq'+num); const ta=card.querySelector('.rf-ch'); if(!ta) return;
+  // 현재 선지란의 첫 줄(① 정답=내가 넣은 원문)은 유지, ②~⑤를 AI 오답으로 교체
+  const cur=ta.value.split('\n');
+  const myAns=(cur[0]||'① ').replace(/^[①②③④⑤]\s*/,'');
+  const circ='①②③④⑤';
+  const out=['① '+myAns];
+  for(let i=1;i<5;i++){ const c=(cands[i]||'').replace(/^[①②③④⑤]\s*/,''); out.push(circ[i]+' '+c); }
+  ta.value=out.join('\n'); ta.style.background='#eafaef'; setTimeout(()=>ta.style.background='',1000);
+  const ans=card.querySelector('.rf-ans'); if(ans){ ans.value='①'; }
+  const exp=card.querySelector('.rf-exp');
+  if(exp && !/①/.test(exp.value)){ exp.style.background='#fff3b0'; setTimeout(()=>exp.style.background='',2500);
+    box.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ 정답=① (내 원문) 으로 설정. <b>해설</b>을 ① 기준으로 수정하세요.</div>'); }
+}
 function rvApplyChoices(num){
   const box=document.getElementById('rvai'+num); const cands=JSON.parse(box.dataset.cands||'[]');
-  const card=document.getElementById('rvq'+num); const ta=card.querySelector('.rf-ch');
-  if(ta && cands.length){ ta.value=cands.join('\n'); ta.style.background='#f5f0ff'; setTimeout(()=>ta.style.background='',800); }
+  const card=document.getElementById('rvq'+num);
+  const ta=card.querySelector('.rf-ch');
+  if(ta && cands.length){
+    ta.value=cands.join('\n'); ta.style.background='#f5f0ff'; setTimeout(()=>ta.style.background='',800);
+    // AI 후보는 첫 줄이 정답 → 정답을 ①로 자동 설정
+    const ans=card.querySelector('.rf-ans'); if(ans){ ans.value='①'; ans.style.background='#f5f0ff'; setTimeout(()=>ans.style.background='',800); }
+    // 해설이 옛 정답 기호를 가리킬 수 있으니 경고 표시
+    const exp=card.querySelector('.rf-exp');
+    if(exp && !/①/.test(exp.value)){
+      exp.style.background='#fff3b0'; setTimeout(()=>exp.style.background='',2500);
+      const box2=document.getElementById('rvai'+num);
+      if(box2) box2.insertAdjacentHTML('beforeend','<div style="font-size:.78rem;color:#7a1020;margin-top:6px;">⚠️ 정답을 ①로 바꿨습니다. <b>해설</b>도 ① 기준으로 수정하세요(노랑 표시된 칸).</div>');
+    }
+  }
 }
 function rvPickChoice(num,idx){
   const box=document.getElementById('rvai'+num); const cands=JSON.parse(box.dataset.cands||'[]');
