@@ -1,557 +1,557 @@
 {
+ "key": "제철중_3학년_2026_1학기_기말",
+ "meta": {
   "key": "제철중_3학년_2026_1학기_기말",
-  "meta": {
-    "key": "제철중_3학년_2026_1학기_기말",
-    "school": "제철중",
-    "grade": "3학년",
-    "year": "2026",
-    "semester": "1학기",
-    "exam": "기말고사",
-    "subject": "영어",
-    "publisher": "비상(김진완)",
-    "scope": "Lesson 3 The Secret of My Father / Lesson 4 The Junk Orchestra",
-    "pattern_key": "제철중_3학년_2026_1학기_중간",
-    "pattern_note": "기출(중간) 번호별 유형·발문형식·배점 복제. 어법 문법은 중간범위(관계사)→기말범위(if·과거완료·분사·가목적어)로 교체",
-    "build": "claude-authored-v2",
-    "total": 26,
-    "total_score": 100,
-    "patterns": {
-      "내용일치": 3,
-      "요지": 1,
-      "어법": 8,
-      "어휘": 7,
-      "영작": 1,
-      "주제": 1,
-      "대화": 5
-    },
-    "answer_dist": {
-      "①": 4,
-      "②": 4,
-      "③": 6,
-      "④": 7,
-      "⑤": 5
-    }
+  "school": "제철중",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "기말고사",
+  "subject": "영어",
+  "publisher": "비상(김진완)",
+  "scope": "Lesson 3 The Secret of My Father / Lesson 4 The Junk Orchestra",
+  "pattern_key": "제철중_3학년_2026_1학기_중간",
+  "pattern_note": "기출(중간) 번호별 유형·발문형식·배점 복제. 어법 문법은 중간범위(관계사)→기말범위(if·과거완료·분사·가목적어)로 교체",
+  "build": "claude-authored-v2",
+  "total": 26,
+  "total_score": 100,
+  "patterns": {
+   "내용일치": 3,
+   "요지": 1,
+   "어법": 8,
+   "어휘": 7,
+   "영작": 1,
+   "주제": 1,
+   "대화": 5
   },
-  "questions": [
-    {
-      "type": "single",
-      "num": 1,
-      "qtype": "내용일치",
-      "score": 4,
-      "question": "다음 글을 읽고 답할 수 없는 질문은? [4점]\nIn 1946, a strange man visited me and asked, \"Are you Mr. Kim Yonghwan's daughter?\" He said, \"Your father was not a gambler. He sent the family money to the independence fighters in Manchuria. He made himself look like a gambler to keep this a secret from the Japanese officers.\" At first, I was not sure if he was telling the truth. But afterwards, I found out the truth about my father and I realized that I had been wrong about him.",
-      "choices": [
-        "① When did the strange man visit the writer?",
-        "② What did the writer's father really do with the family money?",
-        "③ Why did the father make himself look like a gambler?",
-        "④ How did the writer feel about her father at first?",
-        "⑤ How much money did the father send to Manchuria?"
-      ],
-      "answer": "⑤",
-      "explanation": "방문 시기(1946년)·아버지가 돈을 보낸 곳(만주 독립운동가)·도박꾼인 척한 이유(일본 장교에게 비밀 유지)·처음의 심정(반신반의)은 본문에 있으나, ⑤ '얼마를 보냈는지' 구체적 액수는 언급이 없어 답할 수 없다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "내용일치",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 2,
-      "qtype": "내용일치",
-      "score": 4,
-      "question": "위 글의 내용과 일치하지 않는 것은? [4점]",
-      "choices": [
-        "① 낯선 남자가 1946년에 화자를 찾아왔다.",
-        "② 아버지는 만주의 독립운동가들에게 돈을 보냈다.",
-        "③ 아버지는 일부러 도박꾼처럼 보이게 행동했다.",
-        "④ 화자는 남자의 말을 처음부터 완전히 믿었다.",
-        "⑤ 화자는 결국 아버지에 대해 오해했음을 깨달았다."
-      ],
-      "answer": "④",
-      "explanation": "화자는 처음에 남자의 말이 사실인지 확신하지 못했다(I was not sure if he was telling the truth)고 했으므로 ④ '처음부터 완전히 믿었다'는 일치하지 않는다. ①②③⑤는 본문과 일치한다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "내용일치",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 3,
-      "qtype": "요지",
-      "score": 4,
-      "question": "위 글이 전하는 메시지로 가장 잘 맞는 문장을 고르시오. [4점]",
-      "choices": [
-        "① Money is more important than family honor.",
-        "② Gambling always ruins a family's fortune.",
-        "③ We should never trust a stranger's words.",
-        "④ Keeping secrets from family is always wrong.",
-        "⑤ The truth can completely change how we see someone."
-      ],
-      "answer": "⑤",
-      "explanation": "화자는 아버지의 숨겨진 진실을 알게 된 뒤 그를 향한 오해와 부끄러움이 자부심으로 바뀌었다. 따라서 '진실은 누군가를 보는 시각을 완전히 바꿀 수 있다'는 ⑤가 메시지로 가장 적절하다. ①②③④는 본문의 정서적 반전과 맞지 않는다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "요지",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 4,
-      "qtype": "어법",
-      "score": 4,
-      "question": "다음 글의 밑줄 친 ⓐ~ⓔ 중 어법상 옳지 않은 것은? [4점]\nI was not sure ⓐif he was telling the truth. When I was sixteen, my family ⓑhad already made an arrangement for my marriage. They played instruments ⓒmade out of garbage. Nicolás made ⓓthat possible for children to play music. I realized that I ⓔhad been wrong about my father.",
-      "choices": [
-        "① ⓐ",
-        "② ⓑ",
-        "③ ⓒ",
-        "④ ⓓ",
-        "⑤ ⓔ"
-      ],
-      "answer": "④",
-      "explanation": "정답은 ④(ⓓ)이다. ⓓ는 5형식에서 to부정사(진목적어)를 대신하는 가목적어가 와야 하므로 that이 아니라 it이 되어야 한다(made it possible for children to play). ⓐ는 명사절 if(~인지), ⓑ는 과거완료, ⓒ는 분사 후치수식(made), ⓔ는 과거완료로 모두 옳다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 5,
-      "qtype": "어법",
-      "score": 5,
-      "question": "다음 각 문장의 빈칸에 if를 넣었을 때, 어법상 어색한 문장의 개수는? [5점]\n(A) I wonder ____ it is true.\n(B) I was not sure ____ he was telling the truth.\n(C) ____ she passed the exam surprised me.\n(D) Nobody knew ____ the rumor was true or not.\n(E) ____ you study hard, you will pass.\n(F) She asked me ____ I believed the story.",
-      "choices": [
-        "① 1개",
-        "② 2개",
-        "③ 3개",
-        "④ 4개",
-        "⑤ 5개"
-      ],
-      "answer": "①",
-      "explanation": "if를 넣어 어색한 것은 (C) 1개뿐이다. (C)는 주어 자리의 명사절이라 if를 쓸 수 없고 whether(또는 That)가 와야 한다. (A)(B)(D)(F)는 '~인지'를 뜻하는 명사절 if로 자연스럽고, (E)는 '만약 ~라면'의 조건절 if로 자연스럽다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 6,
-      "qtype": "어휘",
-      "score": 4,
-      "question": "다음 밑줄 친 부분의 영영 풀이가 옳지 않은 것은? [4점]",
-      "choices": [
-        "① gamble: to risk money on a game or uncertain result",
-        "② devote: to give all of your effort or time to something",
-        "③ arrangement: a plan or agreement made in advance",
-        "④ embarrassing: making someone feel proud and confident",
-        "⑤ realize: to begin to understand something clearly"
-      ],
-      "answer": "④",
-      "explanation": "embarrassing은 '부끄럽게/당황스럽게 만드는'의 뜻이므로 ④ 'making someone feel proud and confident(자랑스럽고 자신 있게 만드는)'는 정반대 풀이로 옳지 않다. ①②③⑤는 모두 올바른 영영 풀이다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 7,
-      "qtype": "어법",
-      "score": 4,
-      "question": "다음 중 어법상 어색한 것은? [4점]",
-      "choices": [
-        "① The cello make out of an oil tank looked shiny.",
-        "② They played instruments made out of garbage.",
-        "③ A girl playing the cello appeared on the stage.",
-        "④ The young people performing on the stage were amazing.",
-        "⑤ I forgot the instruments made from recycled materials."
-      ],
-      "answer": "①",
-      "explanation": "①은 첼로가 '만들어진' 대상이므로 명사를 뒤에서 수식하는 과거분사 made가 되어야 한다(make → made). ②⑤는 과거분사 후치수식(made), ③④는 능동의 현재분사 후치수식(playing/performing)으로 모두 옳다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 8,
-      "qtype": "영작",
-      "score": 4,
-      "question": "다음 우리말과 같은 뜻이 되도록 <보기>의 단어를 모두 배열할 때, (ⓐ)에 들어갈 말로 가장 적절한 것은? [4점]\n(나는 그가 진실을 말하고 있는지 확신하지 못했다.)\n<보기> if / telling / was / I / he / sure / the truth\n= I was not ( ⓐ )( ⓑ )( ⓒ )( ⓓ )( ⓔ ) the truth.",
-      "choices": [
-        "① if",
-        "② was",
-        "③ sure",
-        "④ telling",
-        "⑤ he"
-      ],
-      "answer": "③",
-      "explanation": "올바른 배열은 'I was not [sure(ⓐ) if(ⓑ) he(ⓒ) was(ⓓ) telling(ⓔ)] the truth.'이다. 따라서 (ⓐ)에 오는 것은 ③ sure이다. be sure 뒤에 '~인지'를 뜻하는 명사절 if가 이어지는 구조이다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "영작",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 9,
-      "qtype": "어법",
-      "score": 5,
-      "question": "다음 중 어법상 어색한 문장의 개수는? [5점]\nⓐ I was not sure if he was telling the truth.\nⓑ My family had already made an arrangement.\nⓒ They played instruments making out of garbage.\nⓓ He made it possible for children to play music.\nⓔ She asked me if did I believe the story.\nⓕ I realized that I had been wrong about him.",
-      "choices": [
-        "① 1개",
-        "② 2개",
-        "③ 3개",
-        "④ 4개",
-        "⑤ 5개"
-      ],
-      "answer": "②",
-      "explanation": "어색한 것은 ⓒ, ⓔ 2개이다. ⓒ는 악기가 '만들어진' 대상이므로 made(과거분사)가 되어야 한다(making → made). ⓔ는 명사절이므로 간접의문문 어순 if I believed가 되어야 한다(did I believe → I believed). ⓐⓑⓓⓕ는 각각 명사절 if·과거완료·가목적어 it·과거완료로 모두 옳다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 10,
-      "qtype": "어휘",
-      "score": 3,
-      "question": "다음 빈칸에 들어갈 말로 가장 알맞은 것은? [3점]\nMy father spent all his days at the gambling house. ______, he was secretly sending money to the independence fighters in Manchuria.",
-      "choices": [
-        "① For example",
-        "② However",
-        "③ Therefore",
-        "④ As a result",
-        "⑤ In short"
-      ],
-      "answer": "②",
-      "explanation": "앞 문장(도박장에서 시간을 보냄)과 뒤 문장(실제로는 독립운동가들에게 돈을 보냄)은 겉모습과 진실이 대조되므로, 역접의 연결어 ② However(그러나)가 적절하다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 11,
-      "qtype": "어휘",
-      "score": 3,
-      "question": "다음 빈칸 (A), (B), (C)에 들어갈 말을 옳게 짝지은 것은? [3점]\nOne person's garbage is another person's treasure. The children of Cateura made instruments (A)____ garbage. They didn't have to worry (B)____ spending money. Even something worthless can make inspiring music, (C)____ you put your heart into it.",
-      "choices": [
-        "① of – about – as long as",
-        "② out of – for – although",
-        "③ of – for – as long as",
-        "④ out of – about – as long as",
-        "⑤ out of – about – although"
-      ],
-      "answer": "④",
-      "explanation": "(A) '~로 만들다'는 make out of, (B) worry about(~에 대해 걱정하다), (C) '~하기만 하면'의 조건은 as long as가 적절하다. 따라서 ④ out of–about–as long as가 정답이다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 12,
-      "qtype": "주제",
-      "score": 4,
-      "question": "다음 글의 주제로 가장 알맞은 것은? [4점]\nFavio Chávez went to Cateura to work on a recycling program and saw children living in a town filled with garbage. He decided to share his love of music with them. A local garbage picker made instruments out of garbage, so the children could play music without spending much money. Chávez wanted people to know that even something worthless can make inspiring music.",
-      "choices": [
-        "① The danger of living in a town filled with garbage",
-        "② How recycling can completely solve pollution",
-        "③ Music made from garbage that brings hope to children",
-        "④ The high cost of learning musical instruments",
-        "⑤ Why professional training is needed for an orchestra"
-      ],
-      "answer": "③",
-      "explanation": "글은 쓰레기로 만든 악기로 가난한 마을 아이들이 음악을 하게 된 이야기를 통해, 하찮은 것도 영감을 주는 음악이 될 수 있음을 전한다. 따라서 주제는 ③ '아이들에게 희망을 주는, 쓰레기로 만든 음악'이 적절하다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "주제",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 13,
-      "qtype": "내용일치",
-      "score": 4,
-      "question": "다음 글의 내용과 일치하는 것은? [4점]\nWhen Chávez went to Cateura in Paraguay in 2005, he saw children living in a town that was mostly filled with garbage. Nicolás Gómez, a local garbage picker, helped him by making instruments out of garbage. The wonderful thing was that the children didn't have to worry about spending a lot of money on them.",
-      "choices": [
-        "① Chávez visited Cateura in 1995.",
-        "② Cateura was a clean and wealthy town.",
-        "③ The instruments were very expensive to buy.",
-        "④ Chávez refused to share music with the children.",
-        "⑤ Nicolás Gómez made instruments out of garbage."
-      ],
-      "answer": "⑤",
-      "explanation": "Nicolás Gómez가 쓰레기로 악기를 만들어 도왔다고 했으므로 ⑤가 일치한다. ① 2005년 방문, ② 쓰레기로 가득한 마을, ③ 돈 걱정 없이 연주 가능(비싸지 않음), ④ 음악을 나누기로 결심(거절 아님)이므로 나머지는 일치하지 않는다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "내용일치",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 14,
-      "qtype": "어법",
-      "score": 5,
-      "question": "다음 글의 밑줄 친 ①~⑤ 중 어법상 틀린 것은? [5점]\nThe concert began with a girl ①playing Bach's Cello Suite No. 1 on her shiny cello. I was so into the music ②played by the orchestra that I forgot they were using instruments ③making from recycled materials. After the concert, I found ④it possible to inspire people by music. An orchestra is ⑤formed by people, not by instruments.",
-      "choices": [
-        "① playing",
-        "② played",
-        "③ making",
-        "④ it",
-        "⑤ formed"
-      ],
-      "answer": "③",
-      "explanation": "③ 악기는 '만들어진' 대상이므로 명사 instruments를 뒤에서 수식하는 과거분사 made가 되어야 한다(making → made). ① 능동의 현재분사(연주하는), ② 과거분사 후치수식(연주된), ④ 가목적어 it, ⑤ 수동태 formed로 모두 옳다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 15,
-      "qtype": "어법",
-      "score": 4,
-      "question": "다음 중 어법상 올바른 것은? [4점]",
-      "choices": [
-        "① I was not sure that he was telling the truth.",
-        "② She asked me if did I believe the story.",
-        "③ Before I met him, I have never heard of a parakho.",
-        "④ When I was sixteen, my family had already made an arrangement.",
-        "⑤ I wonder whether or not is it true."
-      ],
-      "answer": "④",
-      "explanation": "④는 결혼이 화자가 16세이던 과거보다 더 이전에 정해졌으므로 과거완료 had made가 옳다. ① '~인지'이므로 that → if/whether, ② 명사절 어순 if I believed, ③ 과거(met)보다 앞선 일이므로 had never heard, ⑤ 명사절 어순 whether or not it is true가 되어야 하므로 모두 틀리다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 16,
-      "qtype": "어법",
-      "score": 4,
-      "question": "다음 중 어법상 올바른 것은? [4점]",
-      "choices": [
-        "① The cello make out of an oil tank looked shiny.",
-        "② He made possible for children to play music.",
-        "③ They found it interesting playing recycled instruments.",
-        "④ I forgot they were using instruments make from garbage.",
-        "⑤ The young people performing on the stage were amazing."
-      ],
-      "answer": "⑤",
-      "explanation": "⑤는 the young people을 뒤에서 수식하는 능동의 현재분사 performing이 옳다. ① 만들어진 대상이므로 made, ② 가목적어 it 필요(made it possible), ③ 진목적어는 to부정사여야 함(it interesting to play), ④ 만들어진 대상이므로 made가 되어야 하므로 모두 틀리다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 17,
-      "qtype": "대화",
-      "score": 3,
-      "question": "다음 대화의 내용과 일치하지 않는 것은? [3점]\nM: I watched a movie about Jeong Yakyong yesterday. He was a detective in it.\nW: Jeong Yakyong? Wasn't he a scholar in the Joseon Dynasty?\nM: Yeah, but it is said that he was also a detective. He solved about 90 cases.\nW: Oh, I didn't know that he was also a detective.",
-      "choices": [
-        "① 남자는 어제 정약용에 관한 영화를 보았다.",
-        "② 정약용은 조선 시대의 학자였다.",
-        "③ 정약용은 탐정이기도 했다고 전해진다.",
-        "④ 정약용은 약 90건의 사건을 해결했다고 한다.",
-        "⑤ 여자는 정약용이 탐정이었다는 것을 이미 알고 있었다."
-      ],
-      "answer": "⑤",
-      "explanation": "여자는 마지막에 '정약용이 탐정이기도 했다는 것을 몰랐다(I didn't know that he was also a detective)'고 했으므로 ⑤ '이미 알고 있었다'는 일치하지 않는다. ①②③④는 대화와 일치한다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "대화",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 18,
-      "qtype": "어법",
-      "score": 5,
-      "question": "다음 중 어법상 올바른 문장의 개수는? [5점]\nⓐ I was not sure if he was telling the truth.\nⓑ My family had already made an arrangement for my marriage.\nⓒ They played instruments made out of garbage.\nⓓ He made it possible for children to play music.\nⓔ Before I met him, I have never heard of a parakho.\nⓕ The cello make out of an oil tank looked shiny.",
-      "choices": [
-        "① 2개",
-        "② 3개",
-        "③ 4개",
-        "④ 5개",
-        "⑤ 6개"
-      ],
-      "answer": "③",
-      "explanation": "올바른 것은 ⓐ(명사절 if), ⓑ(과거완료), ⓒ(분사 후치수식 made), ⓓ(가목적어 it) 4개이다. ⓔ는 과거(met)보다 앞선 일이므로 had never heard, ⓕ는 만들어진 대상이므로 made가 되어야 하므로 틀리다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어법",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 19,
-      "qtype": "어휘",
-      "score": 3,
-      "question": "다음 영영 풀이에 해당하는 단어는? [3점]\nto give all of your time or effort to something you believe in",
-      "choices": [
-        "① gamble",
-        "② devote",
-        "③ wonder",
-        "④ inspire",
-        "⑤ realize"
-      ],
-      "answer": "②",
-      "explanation": "'자신이 믿는 일에 시간과 노력을 모두 바치다'는 ② devote(헌신하다, 바치다)의 풀이다. 본문에서 아버지가 독립운동에 생애를 바쳤다(devoted his life)고 쓰였다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 20,
-      "qtype": "어휘",
-      "score": 3,
-      "question": "다음 빈칸에 들어갈 가장 적절한 단어는? [3점]\nEven something worthless can make ____________ music. (하찮은 것도 영감을 주는 음악을 만들 수 있다)",
-      "choices": [
-        "① inspiring",
-        "② boring",
-        "③ annoying",
-        "④ silent",
-        "⑤ expensive"
-      ],
-      "answer": "①",
-      "explanation": "문맥상 '영감을 주는' 음악이므로 ① inspiring이 적절하다. 본문 결론 문장(even something worthless can make inspiring music)에서 그대로 쓰인 표현이다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 21,
-      "qtype": "어휘",
-      "score": 3,
-      "question": "다음 중 단어의 영영 풀이로 틀린 것은? [3점]",
-      "choices": [
-        "① worthless: having great value and importance",
-        "② conductor: a person who directs an orchestra or musicians",
-        "③ treasure: something very valuable or precious",
-        "④ recycle: to use something again instead of throwing it away",
-        "⑤ inspire: to make someone feel encouraged or want to do something"
-      ],
-      "answer": "①",
-      "explanation": "worthless는 '가치 없는, 쓸모없는'의 뜻이므로 ① 'having great value and importance(큰 가치와 중요성을 지닌)'는 정반대 풀이로 틀리다. ②③④⑤는 모두 올바른 영영 풀이다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 22,
-      "qtype": "어휘",
-      "score": 3,
-      "question": "다음 빈칸에 들어갈 가장 적절한 단어는? [3점]\nOne person's garbage is another person's ____________. (어떤 사람의 쓰레기는 다른 사람의 보물이다)",
-      "choices": [
-        "① fortune",
-        "② tradition",
-        "③ treasure",
-        "④ secret",
-        "⑤ trouble"
-      ],
-      "answer": "③",
-      "explanation": "문맥상 '보물'이므로 ③ treasure가 적절하다. 본문에서 쓰레기가 누군가에겐 보물이 된다는 의미로 쓰인 표현이다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "어휘",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 23,
-      "qtype": "대화",
-      "score": 4,
-      "question": "다음 대화의 빈칸에 들어갈 말로 가장 적절한 것은? [4점]\nM: You always listen to music before you swim. ____________\nW: Yes, it keeps me awake and it helps me focus.",
-      "choices": [
-        "① Where did you learn to swim?",
-        "② Do you find it helpful to listen to music before you swim?",
-        "③ How long have you been swimming?",
-        "④ Are you planning to join the swimming club?",
-        "⑤ Why don't you stop listening to music?"
-      ],
-      "answer": "②",
-      "explanation": "뒤에서 '집중과 각성에 도움이 된다'고 답하므로, 수영 전 음악 듣기가 도움이 되는지 의견을 묻는 ②가 적절하다('의견 묻기: Do you find it ~?' 기능).",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "대화",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 24,
-      "qtype": "대화",
-      "score": 4,
-      "question": "다음 대화 중 흐름상 어색한 것은? [4점]",
-      "choices": [
-        "① A: Is it okay if I take pictures here? B: Sure. Go ahead.",
-        "② A: Wasn't Jeong Yakyong a scholar? B: Yeah, but it is said that he was also a detective.",
-        "③ A: Are you planning to perform at the talent show? B: Yeah, I am.",
-        "④ A: Do you find it helpful to listen to music? B: No, I'm going to the music room.",
-        "⑤ A: Is it okay if I cook in the kitchen now? B: Yes, but please remember it closes at 10."
-      ],
-      "answer": "④",
-      "explanation": "④는 음악 듣기가 도움이 되는지 의견을 묻는 말에 '음악실에 간다'고 동문서답하므로 어색하다. ①⑤는 허락 요청, ②는 알고 있는 내용 진술, ③은 계획 묻기에 알맞게 호응한다.",
-      "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "대화",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 25,
-      "qtype": "대화",
-      "score": 4,
-      "question": "다음 대화의 밑줄 친 부분과 비슷한 의미의 표현은? [4점]\nW: I'm going to a Junk Orchestra concert this weekend.\nM: Really? I <u>can't wait to</u> hear how it sounds!",
-      "choices": [
-        "① don't want to",
-        "② am afraid to",
-        "③ am eager to",
-        "④ refuse to",
-        "⑤ forget to"
-      ],
-      "answer": "③",
-      "explanation": "can't wait to는 '몹시 ~하고 싶다, 학수고대하다'의 뜻이므로 ③ am eager to(간절히 ~하고 싶다)와 의미가 비슷하다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "대화",
-      "_src": ""
-    },
-    {
-      "type": "single",
-      "num": 26,
-      "qtype": "대화",
-      "score": 3,
-      "question": "다음 대화의 흐름상 어색한 것은? [3점]\nM: ①Do you know that the Junk Orchestra plays instruments made from garbage?\nW: ②No, I didn't know that. How interesting!\nM: ③Yeah, and the children in Cateura learned music without spending much money ④because the instruments were very expensive.\nW: ⑤That's amazing! I'd love to hear them play someday.",
-      "choices": [
-        "① ①",
-        "② ②",
-        "③ ③",
-        "④ ④",
-        "⑤ ⑤"
-      ],
-      "answer": "④",
-      "explanation": "악기가 쓰레기로 만들어져 '돈을 많이 들이지 않고' 음악을 배웠다는 흐름인데, ④는 '악기가 매우 비쌌기 때문에'라며 앞뒤가 모순되므로 어색하다. cheap/inexpensive 같은 내용이 와야 한다.",
-      "source": "비상(김진완) Lesson 4 The Junk Orchestra",
-      "_orig": "",
-      "_origtype": "대화",
-      "_src": ""
-    }
-  ]
+  "answer_dist": {
+   "①": 4,
+   "②": 4,
+   "③": 6,
+   "④": 7,
+   "⑤": 5
+  }
+ },
+ "questions": [
+  {
+   "type": "single",
+   "num": 1,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "다음 글을 읽고 답할 수 없는 질문은? [4점]\nIn 1946, a strange man visited me and asked, \"Are you Mr. Kim Yonghwan's daughter?\" He said, \"Your father was not a gambler. He sent the family money to the independence fighters in Manchuria. He made himself look like a gambler to keep this a secret from the Japanese officers.\" At first, I was not sure if he was telling the truth. But afterwards, I found out the truth about my father and I realized that I had been wrong about him.",
+   "choices": [
+    "① When did the strange man visit the writer?",
+    "② What did the writer's father really do with the family money?",
+    "③ Why did the father make himself look like a gambler?",
+    "④ How did the writer feel about her father at first?",
+    "⑤ How much money did the father send to Manchuria?"
+   ],
+   "answer": "⑤",
+   "explanation": "방문 시기(1946년)·아버지가 돈을 보낸 곳(만주 독립운동가)·도박꾼인 척한 이유(일본 장교에게 비밀 유지)·처음의 심정(반신반의)은 본문에 있으나, ⑤ '얼마를 보냈는지' 구체적 액수는 언급이 없어 답할 수 없다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 2,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "위 글의 내용과 일치하지 않는 것은? [4점]",
+   "choices": [
+    "① 아버지는 만주의 독립운동가들에게 돈을 보냈다.",
+    "② 화자는 남자의 말을 처음부터 완전히 믿었다.",
+    "③ 아버지는 일부러 도박꾼처럼 보이게 행동했다.",
+    "④ 낯선 남자가 1946년에 화자를 찾아왔다.",
+    "⑤ 화자는 결국 아버지에 대해 오해했음을 깨달았다."
+   ],
+   "answer": "②",
+   "explanation": "화자는 처음에 남자의 말이 사실인지 확신하지 못했다(I was not sure if he was telling the truth)고 했으므로 ② '처음부터 완전히 믿었다'는 일치하지 않는다. ①③④⑤는 본문과 일치한다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 3,
+   "qtype": "요지",
+   "score": 4,
+   "question": "위 글이 전하는 메시지로 가장 잘 맞는 문장을 고르시오. [4점]",
+   "choices": [
+    "① Money is more important than family honor.",
+    "② Gambling always ruins a family's fortune.",
+    "③ We should never trust a stranger's words.",
+    "④ Keeping secrets from family is always wrong.",
+    "⑤ The truth can completely change how we see someone."
+   ],
+   "answer": "⑤",
+   "explanation": "화자는 아버지의 숨겨진 진실을 알게 된 뒤 그를 향한 오해와 부끄러움이 자부심으로 바뀌었다. 따라서 '진실은 누군가를 보는 시각을 완전히 바꿀 수 있다'는 ⑤가 메시지로 가장 적절하다. ①②③④는 본문의 정서적 반전과 맞지 않는다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "요지",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 4,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 글의 밑줄 친 ⓐ~ⓔ 중 어법상 옳지 않은 것은? [4점]\nI wonder ⓐif the rumor about him is true. When I was sixteen, my family ⓑhad already made an arrangement for my marriage. They played instruments ⓒmade out of garbage. Nicolás made ⓓthat possible for children to play music. I realized that I ⓔhad been wrong about my father.",
+   "choices": [
+    "① ⓐ",
+    "② ⓑ",
+    "③ ⓒ",
+    "④ ⓓ",
+    "⑤ ⓔ"
+   ],
+   "answer": "④",
+   "explanation": "정답은 ④(ⓓ)이다. ⓓ는 5형식에서 to부정사(진목적어)를 대신하는 가목적어가 와야 하므로 that이 아니라 it이 되어야 한다(made it possible for children to play). ⓐ는 명사절 if(~인지), ⓑ는 과거완료, ⓒ는 분사 후치수식(made), ⓔ는 과거완료로 모두 옳다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 5,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 각 문장의 빈칸에 if를 넣었을 때, 어법상 어색한 문장의 개수는? [5점]\n(A) I wonder ____ it is true.\n(B) I was not sure ____ he was telling the truth.\n(C) ____ she passed the exam surprised me.\n(D) Nobody knew ____ the rumor was true.\n(E) ____ you study hard, you will pass.\n(F) She asked me ____ I believed the story.",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "①",
+   "explanation": "if를 넣어 어색한 것은 (C) 1개뿐이다. (C)는 주어 자리의 명사절이라 if를 쓸 수 없고 whether(또는 That)가 와야 한다. (A)(B)(D)(F)는 '~인지'를 뜻하는 명사절 if로 자연스럽고, (E)는 '만약 ~라면'의 조건절 if로 자연스럽다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 6,
+   "qtype": "어휘",
+   "score": 4,
+   "question": "다음 밑줄 친 부분의 영영 풀이가 옳지 않은 것은? [4점]",
+   "choices": [
+    "① gamble: to risk money on a game or uncertain result",
+    "② devote: to give all of your effort or time to something",
+    "③ arrangement: a plan or agreement made in advance",
+    "④ embarrassing: making someone feel proud and confident",
+    "⑤ realize: to begin to understand something clearly"
+   ],
+   "answer": "④",
+   "explanation": "embarrassing은 '부끄럽게/당황스럽게 만드는'의 뜻이므로 ④ 'making someone feel proud and confident(자랑스럽고 자신 있게 만드는)'는 정반대 풀이로 옳지 않다. ①②③⑤는 모두 올바른 영영 풀이다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 7,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 어법상 어색한 것은? [4점]",
+   "choices": [
+    "① The cello make out of an oil tank looked shiny.",
+    "② The boy waving at us is my brother.",
+    "③ I know the woman dancing on the stage.",
+    "④ The letter written in French was hard to read.",
+    "⑤ The man standing by the door is a conductor."
+   ],
+   "answer": "①",
+   "explanation": "①은 첼로가 '만들어진' 대상이므로 명사를 뒤에서 수식하는 과거분사 made가 되어야 한다(make → made). ②③⑤는 능동의 현재분사(waving/dancing/standing), ④는 과거분사 후치수식(written)으로 모두 옳다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 8,
+   "qtype": "영작",
+   "score": 4,
+   "question": "다음 우리말과 같은 뜻이 되도록 <보기>의 단어를 모두 배열할 때, (ⓐ)에 들어갈 말로 가장 적절한 것은? [4점]\n(나는 그가 진실을 말하고 있는지 확신하지 못했다.)\n<보기> if / telling / was / I / he / sure / the truth\n= I was not ( ⓐ )( ⓑ )( ⓒ )( ⓓ )( ⓔ ) the truth.",
+   "choices": [
+    "① if",
+    "② was",
+    "③ sure",
+    "④ telling",
+    "⑤ he"
+   ],
+   "answer": "③",
+   "explanation": "올바른 배열은 'I was not [sure(ⓐ) if(ⓑ) he(ⓒ) was(ⓓ) telling(ⓔ)] the truth.'이다. 따라서 (ⓐ)에 오는 것은 ③ sure이다. be sure 뒤에 '~인지'를 뜻하는 명사절 if가 이어지는 구조이다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "영작",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 9,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 중 어법상 어색한 문장의 개수는? [5점]\nⓐ I was not sure if he was telling the truth.\nⓑ I wonder if the story is really true.\nⓒ Nobody knew if the rumor was true.\nⓓ She asked me where did I buy the cello.\nⓔ He asked me if did I believe the story.\nⓕ I realized that I had been wrong about him.",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "②",
+   "explanation": "어색한 것은 ⓓ, ⓔ 2개이다. 둘 다 명사절(간접의문문)이므로 「의문사/접속사+주어+동사」 어순이어야 한다. ⓓ는 where I bought, ⓔ는 if I believed가 되어야 한다(did I~ 어순 오류). ⓐⓑⓒ는 '~인지'를 뜻하는 명사절 if, ⓕ는 과거완료로 모두 옳다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 10,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 빈칸에 들어갈 말로 가장 알맞은 것은? [3점]\nMy father spent all his days at the gambling house. ______, he was secretly sending money to the independence fighters in Manchuria.",
+   "choices": [
+    "① For example",
+    "② However",
+    "③ Therefore",
+    "④ As a result",
+    "⑤ In short"
+   ],
+   "answer": "②",
+   "explanation": "앞 문장(도박장에서 시간을 보냄)과 뒤 문장(실제로는 독립운동가들에게 돈을 보냄)은 겉모습과 진실이 대조되므로, 역접의 연결어 ② However(그러나)가 적절하다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 11,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 빈칸 (A), (B), (C)에 들어갈 말을 옳게 짝지은 것은? [3점]\nFavio Chávez wanted to share his love of music. The children of Cateura made instruments (A)____ garbage. They didn't have to worry (B)____ spending much money. They could keep playing music (C)____ they put their heart into it.",
+   "choices": [
+    "① of – about – as long as",
+    "② out of – for – although",
+    "③ of – for – as long as",
+    "④ out of – about – as long as",
+    "⑤ out of – about – although"
+   ],
+   "answer": "④",
+   "explanation": "(A) '~로 만들다'는 make out of, (B) worry about(~에 대해 걱정하다), (C) '~하기만 하면'의 조건은 as long as가 적절하다. 따라서 ④ out of–about–as long as가 정답이다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 12,
+   "qtype": "주제",
+   "score": 4,
+   "question": "다음 글의 주제로 가장 알맞은 것은? [4점]\nThe concert began with a girl playing Bach on a cello made from an oil tank. The audience was amazed that such beautiful sound came from instruments built out of garbage. The performance showed that an orchestra is formed by people, not by expensive instruments, and that passion matters more than what an instrument is made of.",
+   "choices": [
+    "① The danger of living in a town filled with garbage",
+    "② How to build a cello from an oil tank",
+    "③ Passion, not expensive instruments, makes real music",
+    "④ The high cost of professional orchestras",
+    "⑤ Why classical music is better than other genres"
+   ],
+   "answer": "③",
+   "explanation": "글은 쓰레기로 만든 악기로도 아름다운 연주가 가능했음을 통해, 오케스트라는 비싼 악기가 아니라 사람과 열정으로 만들어진다는 점을 전한다. 따라서 주제는 ③ '비싼 악기가 아니라 열정이 진정한 음악을 만든다'가 적절하다. ①②④⑤는 글의 핵심에서 벗어난다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "주제",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 13,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "다음 글의 내용과 일치하는 것은? [4점]\nWhen Chávez went to Cateura in Paraguay in 2005, he saw children living in a town that was mostly filled with garbage. Nicolás Gómez, a local garbage picker, helped him by making instruments out of garbage. The wonderful thing was that the children didn't have to worry about spending a lot of money on them.",
+   "choices": [
+    "① Chávez visited Cateura in 1995.",
+    "② Cateura was a clean and wealthy town.",
+    "③ The instruments were very expensive to buy.",
+    "④ Chávez refused to share music with the children.",
+    "⑤ Nicolás Gómez made instruments out of garbage."
+   ],
+   "answer": "⑤",
+   "explanation": "Nicolás Gómez가 쓰레기로 악기를 만들어 도왔다고 했으므로 ⑤가 일치한다. ① 2005년 방문, ② 쓰레기로 가득한 마을, ③ 돈 걱정 없이 연주 가능(비싸지 않음), ④ 음악을 나누기로 결심(거절 아님)이므로 나머지는 일치하지 않는다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 14,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 글의 밑줄 친 ①~⑤ 중 어법상 틀린 것은? [5점]\nThe concert began with a girl ①playing Bach's Cello Suite No. 1 on her shiny cello. The orchestra ②conducted by Favio Chávez sounded wonderful. I forgot they were using instruments ③making from recycled materials. The audience ④watching the performance was deeply moved. The young musicians ⑤standing on the stage smiled brightly.",
+   "choices": [
+    "① playing",
+    "② conducted",
+    "③ making",
+    "④ watching",
+    "⑤ standing"
+   ],
+   "answer": "③",
+   "explanation": "③ 악기는 '만들어진' 대상이므로 명사 instruments를 뒤에서 수식하는 과거분사 made가 되어야 한다(making → made). ① 능동의 현재분사(연주하는), ② 과거분사 후치수식(지휘되는), ④⑤ 능동의 현재분사(지켜보는/서 있는)로 모두 옳다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 15,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 어법상 올바른 것은? [4점]",
+   "choices": [
+    "① I was not sure that he was telling the truth.",
+    "② She asked me what time was it then.",
+    "③ He found that interesting to play the cello.",
+    "④ When I was sixteen, my family had already made an arrangement.",
+    "⑤ The painting drawing by the artist was beautiful."
+   ],
+   "answer": "④",
+   "explanation": "④는 결혼 준비가 화자가 16세이던 과거보다 더 이전에 이뤄졌으므로 과거완료 had made가 옳다. ① '~인지'이므로 that → if/whether, ② 명사절(간접의문문)이므로 what time it was, ③ 가목적어 it이 필요하므로 found it interesting, ⑤ 그림은 '그려진' 대상이므로 과거분사 drawn(drawing → drawn)이 되어야 하므로 모두 틀리다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 16,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 어법상 올바른 것은? [4점]",
+   "choices": [
+    "① The bridge build in 1990 is still strong.",
+    "② I have met him before I moved here last year.",
+    "③ Tell me the reason why were you late.",
+    "④ She made that clear to everyone in the room.",
+    "⑤ The young people performing on the stage were amazing."
+   ],
+   "answer": "⑤",
+   "explanation": "⑤는 the young people을 뒤에서 수식하는 능동의 현재분사 performing이 옳다. ① 다리는 '건설된' 대상이므로 built, ② 이사한 과거보다 앞선 일이므로 had met, ③ 명사절 어순 why you were late, ④ 가목적어 it이 필요하므로 made it clear가 되어야 하므로 모두 틀리다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 17,
+   "qtype": "대화",
+   "score": 3,
+   "question": "다음 대화의 내용과 일치하지 않는 것은? [3점]\nM: I watched a movie about Jeong Yakyong yesterday. He was a detective in it.\nW: Jeong Yakyong? Wasn't he a scholar in the Joseon Dynasty?\nM: Yeah, but it is said that he was also a detective. He solved about 90 cases.\nW: Oh, I didn't know that he was also a detective.",
+   "choices": [
+    "① 남자는 어제 정약용에 관한 영화를 보았다.",
+    "② 정약용은 조선 시대의 학자였다.",
+    "③ 정약용은 탐정이기도 했다고 전해진다.",
+    "④ 정약용은 약 90건의 사건을 해결했다고 한다.",
+    "⑤ 여자는 정약용이 탐정이었다는 것을 이미 알고 있었다."
+   ],
+   "answer": "⑤",
+   "explanation": "여자는 마지막에 '정약용이 탐정이기도 했다는 것을 몰랐다(I didn't know that he was also a detective)'고 했으므로 ⑤ '이미 알고 있었다'는 일치하지 않는다. ①②③④는 대화와 일치한다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 18,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 중 어법상 올바른 문장의 개수는? [5점]\nⓐ I was not sure if the news was true.\nⓑ Before the war ended, he had left the country.\nⓒ The song sung by the choir touched everyone.\nⓓ Music makes it possible to share our feelings.\nⓔ I wonder where has she gone.\nⓕ The toy break by the child was on the floor.",
+   "choices": [
+    "① 2개",
+    "② 3개",
+    "③ 4개",
+    "④ 5개",
+    "⑤ 6개"
+   ],
+   "answer": "③",
+   "explanation": "올바른 것은 ⓐ(명사절 if), ⓑ(과거완료), ⓒ(분사 후치수식 sung), ⓓ(가목적어 it) 4개이다. ⓔ는 명사절 어순 where she has gone, ⓕ는 '부서진' 대상이므로 과거분사 broken(break → broken)이 되어야 하므로 틀리다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 19,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 영영 풀이에 해당하는 단어는? [3점]\nto give all of your time or effort to something you believe in",
+   "choices": [
+    "① gamble",
+    "② devote",
+    "③ wonder",
+    "④ inspire",
+    "⑤ realize"
+   ],
+   "answer": "②",
+   "explanation": "'자신이 믿는 일에 시간과 노력을 모두 바치다'는 ② devote(헌신하다, 바치다)의 풀이다. 본문에서 아버지가 독립운동에 생애를 바쳤다(devoted his life)고 쓰였다.  [출처: 비상(김진완) Lesson 3 The Secret of My Father]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 20,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 빈칸에 들어갈 가장 적절한 것은? [3점]\nThe story of the Junk Orchestra was very ____________ to many young people, encouraging them to follow their dreams. (정크 오케스트라의 이야기는 많은 젊은이들에게 매우 영감을 주어, 꿈을 좇도록 북돋웠다)",
+   "choices": [
+    "① inspiring",
+    "② disappointing",
+    "③ boring",
+    "④ confusing",
+    "⑤ frightening"
+   ],
+   "answer": "①",
+   "explanation": "이야기가 젊은이들에게 '영감을 주는' 긍정적 의미이고 뒤에 꿈을 좇도록 북돋웠다는 내용이 이어지므로 ① inspiring이 적절하다. ②실망스러운 ③지루한 ④혼란스러운 ⑤무서운은 문맥에 맞지 않는다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 21,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 단어의 영영 풀이로 틀린 것은? [3점]",
+   "choices": [
+    "① worthless: having great value and importance",
+    "② conductor: a person who directs an orchestra or musicians",
+    "③ treasure: something very valuable or precious",
+    "④ recycle: to use something again instead of throwing it away",
+    "⑤ inspire: to make someone feel encouraged or want to do something"
+   ],
+   "answer": "①",
+   "explanation": "worthless는 '가치 없는, 쓸모없는'의 뜻이므로 ① 'having great value and importance(큰 가치와 중요성을 지닌)'는 정반대 풀이로 틀리다. ②③④⑤는 모두 올바른 영영 풀이다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 22,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 영영 풀이에 해당하는 단어는? [3점]\nsomething very valuable or precious that people want to keep",
+   "choices": [
+    "① fortune",
+    "② tradition",
+    "③ treasure",
+    "④ secret",
+    "⑤ trouble"
+   ],
+   "answer": "③",
+   "explanation": "'매우 귀중하고 소중하여 간직하고 싶은 것'은 ③ treasure(보물)의 풀이다. ① fortune(운/재산), ② tradition(전통), ④ secret(비밀), ⑤ trouble(곤경)은 풀이와 맞지 않는다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 23,
+   "qtype": "대화",
+   "score": 4,
+   "question": "다음 대화의 빈칸에 들어갈 말로 가장 적절한 것은? [4점]\nM: You always listen to music before you swim. ____________\nW: Yes, it keeps me awake and it helps me focus.",
+   "choices": [
+    "① Where did you learn to swim?",
+    "② Do you find it helpful to listen to music before you swim?",
+    "③ How long have you been swimming?",
+    "④ Are you planning to join the swimming club?",
+    "⑤ Why don't you stop listening to music?"
+   ],
+   "answer": "②",
+   "explanation": "뒤에서 '집중과 각성에 도움이 된다'고 답하므로, 수영 전 음악 듣기가 도움이 되는지 의견을 묻는 ②가 적절하다('의견 묻기: Do you find it ~?' 기능).  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 24,
+   "qtype": "대화",
+   "score": 4,
+   "question": "다음 대화 중 흐름상 어색한 것은? [4점]",
+   "choices": [
+    "① A: Is it okay if I take pictures here? B: Sure. Go ahead.",
+    "② A: Wasn't Jeong Yakyong a scholar? B: Yeah, but it is said that he was also a detective.",
+    "③ A: Are you planning to perform at the talent show? B: Yeah, I am.",
+    "④ A: How was the Junk Orchestra concert? B: I'm going to wash my hands now.",
+    "⑤ A: Is it okay if I cook in the kitchen now? B: Yes, but please remember it closes at 10."
+   ],
+   "answer": "④",
+   "explanation": "④는 콘서트가 어땠는지 감상을 묻는 말에 '손을 씻겠다'고 동문서답하므로 어색하다. ①⑤는 허락 요청, ②는 알고 있는 내용 진술, ③은 계획 묻기에 알맞게 호응한다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 3 The Secret of My Father / 비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 25,
+   "qtype": "대화",
+   "score": 4,
+   "question": "다음 대화의 밑줄 친 부분과 비슷한 의미의 표현은? [4점]\nW: I'm going to a Junk Orchestra concert this weekend.\nM: Really? I <u>can't wait to</u> hear how it sounds!",
+   "choices": [
+    "① don't want to",
+    "② am afraid to",
+    "③ am eager to",
+    "④ refuse to",
+    "⑤ forget to"
+   ],
+   "answer": "③",
+   "explanation": "can't wait to는 '몹시 ~하고 싶다, 학수고대하다'의 뜻이므로 ③ am eager to(간절히 ~하고 싶다)와 의미가 비슷하다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 26,
+   "qtype": "대화",
+   "score": 3,
+   "question": "다음 대화의 흐름상 어색한 것은? [3점]\nM: ①Do you know that the Junk Orchestra plays instruments made from garbage even though they were very expensive?\nW: ②No, I didn't know that. How interesting!\nM: ③Yeah, and the children in Cateura learned music without spending much money.\nW: ④That's amazing!\nM: ⑤I'd love to hear them play someday.",
+   "choices": [
+    "① ①",
+    "② ②",
+    "③ ③",
+    "④ ④",
+    "⑤ ⑤"
+   ],
+   "answer": "①",
+   "explanation": "악기가 쓰레기로 만들어져 '돈을 많이 들이지 않고' 배웠다는 흐름인데, ①은 '악기가 매우 비쌌음에도'라며 뒤 내용(돈을 적게 씀)과 모순되므로 어색하다. cheap/inexpensive 같은 맥락이 와야 한다.  [출처: 비상(김진완) Lesson 4 The Junk Orchestra]",
+   "source": "비상(김진완) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  }
+ ]
 }
