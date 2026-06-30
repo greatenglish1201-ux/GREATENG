@@ -498,6 +498,18 @@ function toggleHubMenu(){
     el.innerHTML = '<span style="font-weight:700; color:var(--navy);">단어쓰기 추가 제출 ('+uniq.length+'회): </span>' + pretty.join(', ');
   }
 
+  // 지연 일수 계산: 숙제 날짜(d.date)와 실제 제출일의 차이를 일 단위로
+  function lateDaysOf(d){
+    if(d.status !== '지연제출') return 0;
+    const submitRaw = d.submitDate || d.submittedAt || d.submitTs || d.ts || '';
+    if(!submitRaw || !d.date) return 0;
+    const due = new Date(d.date + 'T00:00:00');
+    const sub = new Date(String(submitRaw).slice(0,10) + 'T00:00:00');
+    if(isNaN(due) || isNaN(sub)) return 0;
+    const diff = Math.round((sub - due) / 86400000);
+    return diff > 0 ? diff : 0;
+  }
+
   function renderInspectDays(days){
     const el = document.getElementById('insp-days');
     if(!days.length){ el.innerHTML = '<span class="muted">현황 없음</span>'; return; }
@@ -505,8 +517,12 @@ function toggleHubMenu(){
     let h = '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
     days.forEach(d=>{
       const [y,m,dd] = d.date.split('-');
+      const ld = lateDaysOf(d);
+      const lateBadge = ld > 0
+        ? '<br><span style="font-size:10px; color:var(--late); font-weight:800;">+'+ld+'일</span>'
+        : '';
       h += '<div style="min-width:58px; text-align:center; padding:8px 4px; border-radius:9px; background:'+color(d.status)+'; font-size:12px; font-weight:700;">'
-        + parseInt(m)+'/'+parseInt(dd)+'<br><span style="font-size:11px;">'+(d.status||'-')+'</span></div>';
+        + parseInt(m)+'/'+parseInt(dd)+'<br><span style="font-size:11px;">'+(d.status||'-')+'</span>'+lateBadge+'</div>';
     });
     h += '</div>';
     el.innerHTML = h;
@@ -857,7 +873,7 @@ function toggleHubMenu(){
     g.rows.forEach(row=>{
       allGridNames.push(row.name);
       statusByStudent[row.name] = {};
-      (allDates).forEach((dt,i)=>{ statusByStudent[row.name][dt] = row.statuses[i] || ''; });
+      (allDates).forEach((dt,i)=>{ statusByStudent[row.name][dt] = (row.statuses[i] !== undefined && row.statuses[i] !== null) ? row.statuses[i] : ''; });
     });
 
     if(!allGridNames.length){ area.innerHTML = '<span class="muted">학생 없음</span>'; return; }
@@ -879,11 +895,15 @@ function toggleHubMenu(){
     filtered.forEach(nm=>{
       h += '<tr><td class="name" style="cursor:pointer; color:var(--wine);" onclick="openInspect(\''+nm+'\')">'+nm+' ›</td>';
       allDates.forEach(dt=>{
-        const st = (statusByStudent[nm] && statusByStudent[nm][dt]) || '';
+        const raw = (statusByStudent[nm] && statusByStudent[nm][dt]) || '';
+        // raw는 문자열("지연제출") 또는 객체({s:"지연제출", late:2}) 모두 허용
+        const st = (raw && typeof raw === 'object') ? (raw.s || '') : raw;
+        const lateN = (raw && typeof raw === 'object' && st==='지연제출') ? (parseInt(raw.late)||0) : 0;
         const cls = st ? ('s-'+st) : '';
         const click = st ? ' clickable' : '';
         const mark = st==='제출'?'O':st==='미제출'?'X':st==='지연제출'?'△':st==='선제출'?'◎':st==='시험'?'시':st==='휴일'?'-':'';
-        h += '<td class="'+cls+click+'" onclick="openDay(\''+nm+'\',\''+dt+'\')">'+mark+'</td>';
+        const lateSup = lateN>0 ? '<sup style="font-size:9px; font-weight:800; margin-left:1px;">+'+lateN+'</sup>' : '';
+        h += '<td class="'+cls+click+'" onclick="openDay(\''+nm+'\',\''+dt+'\')">'+mark+lateSup+'</td>';
       });
       h += '</tr>';
     });
