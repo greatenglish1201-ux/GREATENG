@@ -2258,7 +2258,7 @@ function runExamAudit(){
   if(n%5===0){ const exp=n/5; const bad=circ.split('').filter(c=>dist[c]!==exp); if(bad.length) fails.push(`정답분포 불균등 ${circ.split('').map(c=>c+dist[c]).join(' ')} (각 ${exp} 기대)`); }
 
   // 2차 밑줄
-  qs.forEach(q=>{ const u=(q.question.match(/<u>/g)||[]).length; if((q.qtype==='어법'||q.qtype==='어휘')&&u!==5){ fails.push(`${q.num}번(${q.qtype}) 밑줄 ${u}개(≠5)`); addQ(q.num,'fail',`밑줄 ${u}개`); } });
+  qs.forEach(q=>{ const u=_rvUnderlineIssue(q); if(u!=null){ fails.push(`${q.num}번(${q.qtype}) 밑줄 ${u}개(≠5)`); addQ(q.num,'fail',`밑줄 ${u}개`); } });
 
   // 4차 표시·축약
   qs.forEach(q=>{ const b=_bodyOf(q);
@@ -2383,7 +2383,7 @@ function printExam(){
     const _total=_qs.reduce((a,q)=>a+(+q.score||0),0); if(Math.abs(_total-100)>0.1)_fail++;
     const _dist={}; _circ.split('').forEach(c=>_dist[c]=0); _qs.forEach(q=>{const a=(q.answer||'').trim()[0]; if(a in _dist)_dist[a]++;});
     if(_qs.length%5===0){const e=_qs.length/5; if(_circ.split('').some(c=>_dist[c]!==e))_fail++;}
-    _qs.forEach(q=>{ const u=(q.question.match(/<u>/g)||[]).length; if((q.qtype==='어법'||q.qtype==='어휘')&&u!==5)_fail++;
+    _qs.forEach(q=>{ if(_rvUnderlineIssue(q)!=null)_fail++;
       if(q.qtype==='글의순서'&&q.choices){ const cc=q.choices[_circIdx(q.answer)]||''; const labels=(q.question.match(/\(([ABC])\)/g)||[]).map(x=>x[1]); const sn=[]; labels.forEach(x=>{if(!sn.includes(x))sn.push(x);}); if(sn.slice(0,3).join('')==='ABC'&&(cc.match(/[ABC]/g)||[]).join('')==='ABC')_fail++; }
     });
     if(_fail>0 && !confirm(`⚠️ 자동검수에서 치명 이슈 ${_fail}건이 발견되었습니다.\n('🔍 검수' 버튼으로 상세 확인 가능)\n\n그래도 인쇄를 진행할까요?`)) return;
@@ -2976,6 +2976,17 @@ function _rvGate(Q){
   return {tot, dist, stemMatch, ...g};
 }
 
+/* 어법·어휘 문항의 '밑줄 5개' 검사는 밑줄형(①<u>…</u> 형태)에만 적용해야 한다.
+   중등은 '올바른 것 고르기'·개수형(ⓐ~ⓕ)·짝맞추기((A)(B)(C))·영영풀이 등 밑줄 없는 형식이 정상이므로,
+   <u> 태그가 1개 이상 있을 때(=밑줄형으로 의도)만 5개 여부를 따진다. 0개면 다른 형식이라 검사 제외. */
+function _rvUnderlineIssue(q){
+  if(q.qtype!=='어법' && q.qtype!=='어휘') return null;
+  const u=((q.question||'').match(/<u>/g)||[]).length;
+  if(u===0) return null;        // 밑줄형이 아님 → 검사 안 함
+  if(u===5) return null;        // 정상
+  return u;                     // 밑줄형인데 5개가 아님 → 문제
+}
+
 /* ━━━ 터미널 게이트(exam_gate.py)와 동일한 구조 검사 ━━━ */
 function _rvGateStructure(Q){
   const fails=[], warns=[]; const circ='①②③④⑤';
@@ -2998,7 +3009,7 @@ function _rvGateStructure(Q){
   const dist={}; circ.split('').forEach(c=>dist[c]=0); Q.forEach(q=>{const a=(q.answer||'').trim()[0]; if(a in dist)dist[a]++;});
   if(Q.length%5===0){ const e=Q.length/5; const bad=circ.split('').filter(c=>dist[c]!==e); if(bad.length) fails.push(`정답분포 불균등 ${circ.split('').map(c=>c+dist[c]).join(' ')}(각 ${e})`); }
   // 2차: 어법·어휘 밑줄 5개
-  Q.forEach(q=>{ const u=(q.question.match(/<u>/g)||[]).length; if((q.qtype==='어법'||q.qtype==='어휘')&&u!==5) fails.push(`${q.num}번(${q.qtype}) 밑줄 ${u}개(≠5)`); });
+  Q.forEach(q=>{ const u=_rvUnderlineIssue(q); if(u!=null) fails.push(`${q.num}번(${q.qtype}) 밑줄 ${u}개(≠5)`); });
   // 4차: 본문 축약·순서/요약 형식
   Q.forEach(q=>{ const b=(q.question||'').split('\n').slice(1).join(' ');
     if(b.includes('...')||b.includes('…')||b.includes('(중략)')) fails.push(`${q.num}번 축약(...) 발견`);
