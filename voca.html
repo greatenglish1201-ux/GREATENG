@@ -665,6 +665,8 @@
                 <span style="color:#999; font-size:13px;">학생 명단을 불러오는 중...</span>
             </div>
             <div id="adm-st-count" style="font-size:12.5px; color:var(--navy); font-weight:700; margin-bottom:8px;">선택된 학생: 0명</div>
+            <button type="button" onclick="ADMIN.reassignLastEach()" style="width:100%; margin-bottom:8px; padding:11px; background:var(--gold); color:#fff; border:none; border-radius:980px; font-size:13.5px; font-weight:800; cursor:pointer; letter-spacing:-0.01em;">↩ 체크한 학생 각자 지난 배정 그대로 재시험</button>
+            <div id="adm-reassign-msg" style="font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:6px; padding-left:4px; line-height:1.4;"></div>
             <div id="prev-range-msg" style="font-size: 13px; font-weight: bold; color: var(--red); margin-bottom: 5px; padding-left: 5px; line-height: 1.4;"></div>
             <!-- 모든 미션은 합격(90%)까지 자동 반복 응시가 기본. 모드 선택 불필요. -->
             <input type="hidden" id="exam-mode-sel" value="정기시험">
@@ -3849,6 +3851,61 @@
             let finalSum = Object.values(v).reduce((a,b)=>a+b,0);
             document.getElementById('total-val').value = finalSum;
             document.getElementById('total-num').value = finalSum;
+        },
+
+        // 체크한 학생들 각자의 '지난 배정'을 그대로 다시 저장(재시험)
+        // saveToSheet의 일괄 배정과 달리, 학생마다 다른 자기 마지막 범위를 사용한다.
+        reassignLastEach: async function() {
+            const names = this.getCheckedStudents();
+            if(names.length === 0) return alert("학생을 먼저 체크하세요!");
+            const msg = document.getElementById('adm-reassign-msg');
+            const statusEl = document.getElementById('adm-status-msg');
+            const ok = confirm(names.length + "명을 각자 지난 배정 그대로 재시험 배정합니다.\n("
+                + names.join(', ') + ")\n\n진행할까요?");
+            if(!ok) return;
+
+            let done = 0, skipped = [], failed = [];
+            for(let i=0; i<names.length; i++){
+                const name = names[i];
+                msg.style.color = "var(--navy)";
+                msg.innerText = "재시험 배정 중... (" + (i+1) + "/" + names.length + ") " + name;
+                let cfg = null;
+                try {
+                    const res = await fetch(APP_URL + "?type=adminGetLast&name="
+                        + encodeURIComponent(name) + "&t=" + Date.now());
+                    const data = await res.json();
+                    cfg = (data && data.config && data.config.book) ? data.config : null;
+                } catch(e) {
+                    failed.push(name);
+                    continue;
+                }
+                if(!cfg){ skipped.push(name); continue; }
+                // 지난 config를 동일 스키마로 그대로 재전송 (assignDate는 GAS가 새로 찍음)
+                const payload = {
+                    name: name,
+                    book: cfg.book,
+                    testMode: cfg.testMode || document.getElementById('exam-mode-sel').value,
+                    target: cfg.target || "",
+                    ek: cfg.ek || 0,
+                    keObj: cfg.keObj || 0,
+                    keSubj: cfg.keSubj || 0,
+                    ee: cfg.ee || 0,
+                    ex: cfg.ex || 0
+                };
+                try {
+                    await fetch(APP_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(payload) });
+                    done++;
+                } catch(e) {
+                    failed.push(name);
+                }
+            }
+            let summary = done + "명 재시험 배정 완료";
+            if(skipped.length) summary += " · 지난 배정 없음 " + skipped.length + "명(" + skipped.join(', ') + ")";
+            if(failed.length) summary += " · 실패 " + failed.length + "명(" + failed.join(', ') + ")";
+            msg.style.color = failed.length ? "var(--red)" : "var(--navy)";
+            msg.innerText = summary;
+            if(statusEl) statusEl.innerText = summary;
+            alert(summary);
         },
 
         saveToSheet: async function() {
