@@ -2377,13 +2377,31 @@ function printExam(){
     // 순서배열 등 짧은 선지: 2열 배치로 세로 공간 절약 (모든 선지가 짧을 때만)
     const shortChoices = q.choices && q.choices.length>=4 &&
       q.choices.every(c => (''+c).replace(/<[^>]+>/g,'').length <= 22);
-    // 본문에 ①~⑤가 내장되는 유형은 아래 선지목록을 달지 않는다
+    // 본문에 ①~⑤가 "선지 텍스트로" 내장된 문항만 아래 선지목록을 생략한다.
+    // 두 경우를 구분해야 한다:
+    //  (A) 선지 본문내장(밑줄형 어법 #14, 번호기호형 대화 #26): 본문의 ①~⑤ 뒤에 실제 영문이 붙어
+    //      그 자체가 선지다 → 하단 선지 생략(중복 방지).
+    //  (B) 위치표시일 뿐(빈칸 ____①____, 삽입 ( ① )): 본문 ①~⑤는 자리표시이고 실제 선지는
+    //      choices 배열에 따로 있다 → 반드시 출력해야 함.
+    //  과거 버그: qtype이 어법/어휘이기만 하면 무조건 숨겨 #4·#5·#6·#7·#9·#10·#11·#15·#16·#18~#22의
+    //  선지가 인쇄에서 통째로 사라졌다.
     const qtNow = q.qtype||'';
-    const inBodyChoiceTypes = /문장삽입|삽입|흐름무관|무관|어법|어휘/.test(qtNow);
+    const bodyText = (q.question||'');
+    const circInBody = (bodyText.match(/[①②③④⑤]/g)||[]).length;
+    // 선지가 본문의 번호를 가리키기만 하는가(① ① / ① ⓐ ...): 그러면 본문내장형
+    const choicesPointToBody = q.choices && q.choices.length &&
+      q.choices.every(c => /^\s*[①②③④⑤]\s*([①②③④⑤ⓐ-ⓔ\s]|$)/.test((''+c).replace(/<[^>]+>/g,'')) &&
+                           (''+c).replace(/<[^>]+>/g,'').replace(/[①②③④⑤ⓐ-ⓔ\s]/g,'')==='');
+    // 본문 ①~⑤가 "선지 텍스트"로 박혀 있는가: 번호 바로 뒤에 영문/한글 내용이 붙어 있고(밑줄형),
+    // 빈칸(____①____)·삽입(( ① )) 패턴이 아닐 때.
+    const isPositionMarker = /_+\s*[①②③④⑤]\s*_+|\(\s*[①②③④⑤]\s*\)/.test(bodyText);
+    const inlineChoiceInBody = circInBody >= 4 &&
+      /[①②③④⑤]\s*[A-Za-z가-힣]/.test(bodyText) && !isPositionMarker;
+    const hasInBodyChoices = inlineChoiceInBody || choicesPointToBody;
     let choicesHtml;
     if(isWritingType(q)){
       choicesHtml = `<div class="write-box"></div>`;
-    } else if(inBodyChoiceTypes){
+    } else if(hasInBodyChoices){
       choicesHtml = '';
     } else if(q.choices && q.choices.length){
       const cls = shortChoices ? 'choices-2col' : '';
