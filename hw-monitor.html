@@ -902,7 +902,7 @@ function toggleHubMenu(){
         const cls = st ? ('s-'+st) : '';
         const click = st ? ' clickable' : '';
         const mark = st==='제출'?'O':st==='미제출'?'X':st==='지연제출'?'△':st==='선제출'?'◎':st==='시험'?'시':st==='휴일'?'-':'';
-        const lateSup = lateN>0 ? '<sup style="font-size:9px; font-weight:800; margin-left:1px;">+'+lateN+'</sup>' : '';
+        const lateSup = lateN>0 ? '<span style="font-size:13px; font-weight:900; margin-left:2px; vertical-align:baseline;">+'+lateN+'</span>' : '';
         h += '<td class="'+cls+click+'" onclick="openDay(\''+nm+'\',\''+dt+'\')">'+mark+lateSup+'</td>';
       });
       h += '</tr>';
