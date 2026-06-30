@@ -189,6 +189,11 @@
   .cbtn.naver:hover{transform:translateY(-2px);background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.6)}
   .cbtn.line{background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.32)}
   .cbtn.line:hover{transform:translateY(-2px);color:#fff;border-color:rgba(255,255,255,.6)}
+  .cbtn-num{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+    font-size:12.5px;font-weight:800;background:rgba(0,0,0,.14)}
+  .cbtn.gold .cbtn-num{background:var(--ink);color:var(--gold)}
+  .cbtn.naver .cbtn-num{background:#03c75a;color:#fff}
+  .cbtn.line .cbtn-num{background:rgba(255,255,255,.16);color:#fff}
 
   /* ── 푸터 ── */
   .foot{background:var(--navy);color:#fff;text-align:center;padding:40px 22px}
@@ -228,7 +233,7 @@
     </div>
     <div class="hero-cta">
       <a class="hbtn primary" href="apply.html">상담 신청서 작성</a>
-      <a class="hbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
+      <a class="hbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 상담신청서 작성</a>
       <a class="hbtn ghost" href="#courses">강좌 살펴보기</a>
       <p class="cta-note">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
     </div>
@@ -343,11 +348,11 @@
 <section class="cta">
   <h2>여름특강, 상담으로 시작하세요</h2>
   <p>상담을 통해 자녀의 현재 수준과 방학 학습 방향을 함께 짚어드립니다.</p>
-  <p class="small">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>네이버 톡톡으로 신청해 주시면 원장이 직접 답변드립니다.</p>
+  <p class="small">원활한 상담을 위해 학원 안내를 먼저 읽어주신 뒤, 상담 신청서를 작성해 주세요.<br>확인 후 원장이 직접 답변드립니다.</p>
   <div class="cta-btns">
-    <a class="cbtn gold" href="apply.html">상담 신청서 작성</a>
-    <a class="cbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
-    <a class="cbtn line" href="parent_guide.html#guide">수업 안내 먼저 보기</a>
+    <a class="cbtn line" href="parent_guide.html#guide"><span class="cbtn-num">1</span>상담 가이드 먼저 읽기</a>
+    <a class="cbtn gold" href="apply.html"><span class="cbtn-num">2</span>상담 신청서 작성</a>
+    <a class="cbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener"><span class="cbtn-num">3</span>네이버 상담신청서 작성</a>
     <p class="cta-note light">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
   </div>
 </section>

@@ -60,6 +60,33 @@
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
   }
   .hero-cta{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px;margin:26px 0 0}
+  /* 히어로 2단: 좌 텍스트 / 우 과정 카드 */
+  .hero .hero-wrap{max-width:1080px;margin:0 auto;padding:0 20px;
+    display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  .hero-main{min-width:0}
+  .hero-cards{display:flex;flex-direction:column;gap:14px}
+  .hcard-banner{display:block;text-decoration:none;position:relative;overflow:hidden;
+    border-radius:18px;padding:26px 24px;border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 14px 34px rgba(0,0,0,.34);
+    transition:transform .2s cubic-bezier(.2,.7,.3,1),box-shadow .2s ease}
+  .hcard-banner::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(130% 120% at 88% -8%,rgba(255,255,255,.18),transparent 56%);pointer-events:none}
+  .hcard-banner:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(0,0,0,.42)}
+  .hcard-banner .hb-tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.9);margin-bottom:10px;position:relative}
+  .hcard-banner h3{font-size:20px;font-weight:800;color:#fff;margin:0 0 7px;letter-spacing:-0.02em;position:relative}
+  .hcard-banner p{font-size:13.5px;color:rgba(255,255,255,.82);margin:0 0 16px;line-height:1.55;position:relative}
+  .hcard-banner .hb-go{position:relative;display:inline-flex;align-items:center;gap:6px;
+    font-size:13px;font-weight:700;color:var(--ink);background:var(--gold-soft);
+    padding:8px 16px;border-radius:980px;transition:background .18s ease,gap .18s ease}
+  .hcard-banner:hover .hb-go{background:#fff;gap:9px}
+  .hcard-banner.summer{background:linear-gradient(150deg,#8f1228,#5c0a1b)}
+  .hcard-banner.suneung{background:linear-gradient(150deg,#c06a2c,#8a3d12)}
+  .hcard-banner .hb-accent{position:absolute;top:0;left:0;width:3px;height:100%}
+  .hcard-banner.summer .hb-accent{background:#a31f38}
+  .hcard-banner.suneung .hb-accent{background:#c06a2c}
+  @media(max-width:860px){
+    .hero .hero-wrap{grid-template-columns:1fr;gap:30px}
+  }
   .hcta{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;
     padding:16px 26px;border-radius:980px;font-size:15.5px;font-weight:700;letter-spacing:-0.01em;
     transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s ease,background .18s ease}
@@ -485,16 +512,34 @@
 </style>
 
 <header class="hero">
-  <div class="wrap">
-    <div class="hero-tagline">Excellence as a Habit</div>
-    <div class="eyebrow">대단한영어 · 포항</div>
-    <h1>중등·고등 영어,<br><span class="hl">수업과 시험 대비</span>를 이렇게 합니다</h1>
-    <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
-    <div class="hero-cta">
-      <a class="hcta apply" href="apply.html">상담 신청서 작성</a>
-      <a class="hcta naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
-      <a class="hcta guide" href="#guide">상담 가이드 먼저 보기</a>
-      <p class="cta-note">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
+  <div class="hero-wrap">
+    <div class="hero-main">
+      <div class="hero-tagline">Excellence as a Habit</div>
+      <div class="eyebrow">대단한영어 · 포항</div>
+      <h1>중등·고등 영어,<br><span class="hl">수업과 시험 대비</span>를 이렇게 합니다</h1>
+      <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
+      <div class="hero-cta">
+        <a class="hcta guide" href="#guide">상담 가이드 먼저 보기</a>
+        <a class="hcta apply" href="apply.html">상담 신청서 작성</a>
+        <a class="hcta naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 상담신청서 작성</a>
+        <p class="cta-note">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
+      </div>
+    </div>
+    <div class="hero-cards">
+      <a class="hcard-banner summer" href="summer.html">
+        <span class="hb-accent"></span>
+        <span class="hb-tag">2026 여름방학</span>
+        <h3>여름방학 집중 특강</h3>
+        <p>중1 첫 내신, 예비고1~고1 수능 어법. 학년별로 가장 급한 것만 잡습니다.</p>
+        <span class="hb-go">특강 보기 →</span>
+      </a>
+      <a class="hcard-banner suneung" href="suneung_2026.html">
+        <span class="hb-accent"></span>
+        <span class="hb-tag">고3 수능 파이널</span>
+        <h3>2027 수능대비반</h3>
+        <p>흐름 독해 중심으로 수능 영어를 마무리하는 고3 파이널. 7월 개강.</p>
+        <span class="hb-go">과정 보기 →</span>
+      </a>
     </div>
   </div>
 </header>
@@ -814,7 +859,7 @@
   <div class="cta">
     <h3>우리 아이에게 맞는지 궁금하신가요?</h3>
     <p>상담을 통해 자녀의 현재 수준과 학습 방향을 함께 짚어드립니다.</p>
-    <div class="cta-notice">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>아래 순서로 신청해 주시면 원장이 직접 빠르고 친절하게 답변드립니다.</div>
+    <div class="cta-notice">원활한 상담을 위해 학원 안내를 먼저 읽어주신 뒤, 상담 신청서를 작성해 주세요.<br>확인 후 원장이 직접 답변드립니다.</div>
     <div class="cta-steps">
       <a class="cta-step guide" href="#guide">
         <span class="num">1</span>
@@ -826,7 +871,7 @@
       </a>
       <a class="cta-step naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">
         <span class="num">3</span>
-        <span class="lbl">네이버 톡톡 상담</span>
+        <span class="lbl">네이버 상담신청서 작성</span>
       </a>
     </div>
   </div>
