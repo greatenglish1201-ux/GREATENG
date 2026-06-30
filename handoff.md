@@ -47,6 +47,13 @@
 - 여름 특강 3개 반(중1-2 / 중3-고1 / 고3 주말 잠정) 커리큘럼·교재 확정
 
 ## 5. 최근 완료 (참고용)
+- **exam-analysis.html 검토탭: '원유형 회피 검사' 드롭다운 추가 (2026-06-30)**
+  - 배경: 원유형 동일 경고를 고정값(중등 끔/고등 반려)으로 두지 말고 **상단에서 원장이 직접 선택**하게.
+  - **신규 UI**: 검토 탭 상단 옵션바에 `<select id="rvOrigtypeMode">` 4모드 — auto(중등=끔·고등=반려, 기본)/reject(항상 반려)/review(항상 검수권장)/off(검사안함). 선택 즉시 재렌더+localStorage 저장+힌트표시.
+  - **로직**: 전역 `rvOrigtypeMode`(localStorage 복원) + `rvSetOrigtypeMode()` + `_rvOrigtypeApplies()`(off→false, auto→!중등, reject/review→true) + `_rvOrigtypeIsReject()`(review→검수권장, 그외→반려). _rvVerify 플래그 2곳을 `_rvOrigtypeApplies()`로, _rvTriage 분기를 `_rvOrigtypeIsReject()`로, 카드 '원유형:' 라벨도 적용시에만 표시. renderReview 진입 시 드롭다운·힌트 동기화.
+  - **동작표**(검증): auto→중등통과/고등반려, reject→둘다반려, review→둘다검수권장, off→둘다통과. 4모드×중등(제철중3)/고등(제철고1) 시뮬레이션 통과.
+  - 중등판별 `_rvIsMiddleSchool()`은 한글 \b 미작동 회피 패턴(중$·중학교·중1~3) 유지. 전체 JS node 문법 통과.
+  - 누적 파일(인쇄선지누락+중등원유형+드롭다운 모두 같은 exam-analysis.html). diff=exam-analysis_print-fix.diff. 파일명 원본유지. ⚠️GAS 아님(정적). 적용 후 드롭다운 4모드 전환·검토 재렌더 회귀확인.
 - **중등 출제 게이트·핸드오프 정비 — 고등처럼 강제화 (2026-06-29)**
   - 요청: 중등 지문 출제도 고등 게이트처럼 리스트 보여주고 출제 시 강제하게.
   - **신규 `exam_gate_middle.py`**(고등 exam_gate.py의 중등판). 종료코드 0=PASS/1=FAIL, 통과 전 산출금지 동일철학.

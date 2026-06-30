@@ -1057,6 +1057,16 @@ header { padding: 12px 16px; }
       <p>검증 후 수정본 JSON을 내보내 ④에서 다시 등록할 수 있다.</p>
     </div>
   </details>
+  <div class="rv-optbar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;padding:9px 12px;background:#faf7f0;border:1px solid #e7e0d2;border-radius:8px;">
+    <span style="font-size:.82rem;font-weight:700;color:#7a1020;">⚙ 원유형 회피 검사</span>
+    <select id="rvOrigtypeMode" onchange="rvSetOrigtypeMode(this.value)" style="font-size:.82rem;padding:4px 8px;border:1px solid #cfc6b4;border-radius:6px;background:#fff;">
+      <option value="auto">자동 (중등=끔 · 고등=반려)</option>
+      <option value="reject">항상 반려 (꼭 고쳐야 함)</option>
+      <option value="review">항상 검수권장 (참고만)</option>
+      <option value="off">검사 안 함</option>
+    </select>
+    <span id="rvOrigtypeHint" style="font-size:.76rem;color:var(--ink4);"></span>
+  </div>
   <div id="reviewRoot">
     <div style="color:var(--ink4);padding:20px;text-align:center;">✍️ 출제 탭에서 예상문제를 먼저 로드하세요.</div>
   </div>
@@ -1533,6 +1543,34 @@ function updateDashboard(){ renderActivePattern(); }
 // ━━━ 예상문제 (납품 JSON) ━━━
 let generatedQs = [];
 let examMeta = {};
+
+// 원유형 회피 검사 모드: 'auto'(중등 끔·고등 반려) | 'reject'(항상 반려) | 'review'(항상 검수권장) | 'off'(검사안함)
+let rvOrigtypeMode = (function(){ try{ return localStorage.getItem('rvOrigtypeMode')||'auto'; }catch(e){ return 'auto'; } })();
+const RV_ORIGTYPE_HINTS = {
+  auto:'중등은 끄고, 고등은 반려로 강하게 막습니다.',
+  reject:'학교급과 무관하게 원유형 동일을 ⛔반려 처리합니다.',
+  review:'반려하지 않고 👁검수권장(참고)으로만 표시합니다.',
+  off:'원유형 회피 검사를 하지 않습니다.'
+};
+function rvSetOrigtypeMode(v){
+  rvOrigtypeMode = v || 'auto';
+  try{ localStorage.setItem('rvOrigtypeMode', rvOrigtypeMode); }catch(e){}
+  const hint=document.getElementById('rvOrigtypeHint');
+  if(hint) hint.textContent = RV_ORIGTYPE_HINTS[rvOrigtypeMode]||'';
+  if(typeof renderReview==='function' && generatedQs && generatedQs.length) renderReview();
+}
+// 현재 모드 + 학교급으로 '원유형 동일'을 검사할지(플래그를 달지) 결정
+function _rvOrigtypeApplies(){
+  if(rvOrigtypeMode==='off') return false;
+  if(rvOrigtypeMode==='auto') return !_rvIsMiddleSchool();  // 중등이면 끔
+  return true;  // reject / review 는 학교급 무관하게 검사
+}
+// 현재 모드에서 '원유형 동일'이 반려급인지(true=반려, false=검수권장)
+function _rvOrigtypeIsReject(){
+  if(rvOrigtypeMode==='review') return false;
+  if(rvOrigtypeMode==='reject') return true;
+  return true;  // auto(고등) = 반려
+}
 const ACTIVE_EXAM_KEY = 'greateng_active_exam';
 
 function flatQs(qs){
@@ -2984,10 +3022,14 @@ function _rvTriage(q, verify){
   const autoflags=[];    // 자동 경고(반려급)
   // 자동 경고 (기계가 확실히 잡는 것)
   // 단, '정답이 원문 복원형 아님'은 빈칸추론에서 paraphrase가 정상이므로 반려가 아닌 검수권장으로 강등
-  const SOFT_FLAGS=['정답이 원문 복원형 아님'];
+  // '원유형과 동일(…)'은 상단 드롭다운 모드에 따라 반려/검수권장으로 분기.
   if(verify.flags && verify.flags.length){
     verify.flags.forEach(f=>{
-      if(SOFT_FLAGS.includes(f)) reasons.push({tag:'⚠ 원문과 다름', q:'<b style="color:#b8860b">정답이 원문 표현과 다릅니다(paraphrase).</b> 빈칸추론은 변형이 정상이지만 <b>반드시 확인</b>하세요 — 정답이 글의 논리와 정확히 맞는지, 변형이 과해 다른 선지도 답이 될 여지는 없는지. 원문 그대로 쓰려면 우측 「원문으로 다시 출제」를 사용하세요.'});
+      if(f==='정답이 원문 복원형 아님') reasons.push({tag:'⚠ 원문과 다름', q:'<b style="color:#b8860b">정답이 원문 표현과 다릅니다(paraphrase).</b> 빈칸추론은 변형이 정상이지만 <b>반드시 확인</b>하세요 — 정답이 글의 논리와 정확히 맞는지, 변형이 과해 다른 선지도 답이 될 여지는 없는지. 원문 그대로 쓰려면 우측 「원문으로 다시 출제」를 사용하세요.'});
+      else if(/^원유형과 동일/.test(f)){
+        if(_rvOrigtypeIsReject()) autoflags.push(f);  // 반려
+        else reasons.push({tag:'유형 참고', q:`원시험과 같은 유형(${f.replace(/^원유형과 동일\(?|\)$/g,'')})입니다. 원유형 회피가 권장되지만 <b>문항 자체의 결함은 아닙니다.</b> 의도한 것이면 그대로 두어도 됩니다.`});
+      }
       else autoflags.push(f);
     });
   }
@@ -3069,6 +3111,20 @@ function _rvTriage(q, verify){
   return {lane, reasons, autoflags, copy:copyRate, fre, diffNote};
 }
 
+// 중등(중학교) 시험인지 판별 — 원유형 회피는 고등 전략이므로 중등엔 적용하지 않는다.
+// 중등은 교과서 범위가 좁아 내용일치·어법 등 유형이 원시험과 같은 것이 정상이다.
+// (주의: 한글에서는 정규식 \b 단어경계가 동작하지 않으므로 명시 패턴으로 판별)
+function _rvIsMiddleSchool(){
+  const m=(typeof examMeta!=='undefined'&&examMeta)?examMeta:{};
+  const s=(m.school||'')+''; const g=(m.grade||'')+'';
+  // 고등 신호가 명확하면 우선 고등 처리
+  if(/고등학교|고등|고[123]|고\s*[123]/.test(s) || /고[123]|고\s*[123]|고등/.test(g)) return false;
+  // 중등 신호: 학교명이 '중' 또는 '중학교'로 끝나거나 포함, 학년이 중1~3/중등
+  if(/중학교/.test(s) || /중$/.test(s) || /중[^가-힣]/.test(s)) return true;
+  if(/중\s*[123]|중등|중학/.test(g)) return true;
+  return false;
+}
+
 function _rvVerify(q){
   const orig=q._orig||'', made=_rvBody(q), qt=q.qtype;
   const ansidx='①②③④⑤'.indexOf(q.answer)+1;
@@ -3084,7 +3140,7 @@ function _rvVerify(q){
       const place=seen.slice(0,3).join(''); const read=(cc.match(/[ABC]/g)||[]).join('');
       if(place==='ABC'&&read==='ABC') flags.push('순서 배치=정답(그냥 읽으면 답)');
     }
-    if(q._origtype && q._origtype===qt) flags.push(`원유형과 동일(${q._origtype})`);
+    if(q._origtype && q._origtype===qt && _rvOrigtypeApplies()) flags.push(`원유형과 동일(${q._origtype})`);
     rows=`<div class="rv-kv" style="color:#888;font-size:.8rem;">⚠ 원문(_orig) 미저장 — 원문 대조 생략. 정답 타당성은 직접 확인하세요.</div>`;
     return {status:'manual', rows, flags};
   }
@@ -3188,13 +3244,16 @@ function _rvVerify(q){
     rows=`<div class="rv-kv">지문 무변형: ${same?'<span class="ok">✓ 원문과 일치</span>':'<span class="bad">⚠ 차이('+Math.round(sim*100)+'%)</span>'}</div>`;
     if(!same) flags.push(`지문 차이(${Math.round(sim*100)}%)`);
   }
-  // 원유형 회피
-  if(q._origtype && q._origtype===qt) flags.push(`원유형과 동일(${q._origtype})`);
+  // 원유형 회피 — 상단 드롭다운(rvOrigtypeMode)으로 제어. auto는 중등 끔·고등 적용.
+  if(q._origtype && q._origtype===qt && _rvOrigtypeApplies()) flags.push(`원유형과 동일(${q._origtype})`);
   return {status:flags.length?'warn':'ok', rows, flags};
 }
 
 function renderReview(){
   const root=document.getElementById('reviewRoot');
+  // 상단 드롭다운·힌트를 현재 모드로 동기화
+  const _sel=document.getElementById('rvOrigtypeMode'); if(_sel) _sel.value=rvOrigtypeMode;
+  const _hint=document.getElementById('rvOrigtypeHint'); if(_hint) _hint.textContent=RV_ORIGTYPE_HINTS[rvOrigtypeMode]||'';
   if(!generatedQs || !generatedQs.length){
     root.innerHTML='<div style="color:var(--ink4);padding:20px;text-align:center;">✍️ 출제 탭에서 예상문제를 먼저 로드하세요.</div>';
     return;
@@ -3292,7 +3351,7 @@ function renderReview(){
         <span class="rv-stem">${_rvEsc((q.question||'').split('\n')[0])}</span>
         <span class="rv-sc">[${q.score}점]·${q.qtype}${fre}${cp}</span>
       </div>
-      ${(q.source||q._src)?`<div class="rv-src">📖 출처: ${_rvEsc(q.source||q._src)}${q._origtype?` · 원유형: ${q._origtype}`:''}</div>`:''}
+      ${(q.source||q._src)?`<div class="rv-src">📖 출처: ${_rvEsc(q.source||q._src)}${(q._origtype&&_rvOrigtypeApplies())?` · 원유형: ${q._origtype}`:''}</div>`:''}
       <div class="rv-cardbody"${collapsed?' style="display:none"':''}>
         ${chk?`<div class="rv-chkbox">${chk}</div>`:''}
         <div class="rv-cols">
