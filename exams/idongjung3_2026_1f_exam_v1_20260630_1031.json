@@ -1,0 +1,555 @@
+{
+ "meta": {
+  "key": "이동중_3학년_2026_1학기_기말",
+  "school": "이동중",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "기말고사",
+  "subject": "영어",
+  "publisher": "능률(김성곤)",
+  "scope": "Lesson 3 Leadership / Lesson 4 The Junk Orchestra",
+  "pattern_key": "이동중_3학년_2026_1학기_중간",
+  "build": "claude-authored",
+  "total": 26,
+  "total_score": 100,
+  "patterns": {
+   "어휘": 5,
+   "대화": 2,
+   "어법": 10,
+   "추론": 2,
+   "주제": 2,
+   "내용일치": 4,
+   "요지": 1
+  },
+  "answer_dist": {
+   "①": 5,
+   "②": 5,
+   "③": 5,
+   "④": 6,
+   "⑤": 5
+  }
+ },
+ "questions": [
+  {
+   "type": "single",
+   "num": 1,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 단어의 영영 풀이로 적절하지 않은 것은?",
+   "choices": [
+    "① quality: a feature or characteristic that someone or something has",
+    "② motivate: to make someone want to do something",
+    "③ valued: considered to be unimportant and easily replaced",
+    "④ reasoning: the process of thinking about something in a logical way",
+    "⑤ determine: to decide or control what something will be"
+   ],
+   "answer": "③",
+   "explanation": "valued는 '소중히 여겨지는, 가치 있게 여겨지는'의 뜻이므로 ③ 'considered to be unimportant and easily replaced(중요하지 않고 쉽게 대체된다고 여겨지는)'는 정반대 풀이로 적절하지 않다. ①②④⑤는 모두 올바른 영영 풀이다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 2,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 단어의 관계가 서로 다른 것은?",
+   "choices": [
+    "① positive – negative",
+    "② outgoing – friendly",
+    "③ worthless – valueless",
+    "④ inspiring – moving",
+    "⑤ effective – efficient"
+   ],
+   "answer": "①",
+   "explanation": "①은 positive(긍정적인)와 negative(부정적인)로 서로 반의 관계이고, 나머지 ②③④⑤는 모두 유의 관계이다(친근한=outgoing/friendly, 무가치한=worthless/valueless, 영감을 주는=inspiring/moving, 효율적인=effective/efficient). 따라서 관계가 다른 것은 ①이다.",
+   "source": "능률(김성곤) Lesson 3·4",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 3,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 <보기>의 (A)~(C)에 나타난 단어 사이의 관계와 같도록 할 때, (D)의 빈칸에 들어갈 가장 알맞은 단어는?\n<보기>\n(A) clean – dirty\n(B) valued – worthless\n(C) confident – unsure\n(D) positive – ___________",
+   "choices": [
+    "① negative",
+    "② friendly",
+    "③ creative",
+    "④ logical",
+    "⑤ positively"
+   ],
+   "answer": "①",
+   "explanation": "(A)(B)(C)는 모두 반의어 쌍이다(깨끗한↔더러운, 가치 있는↔무가치한, 자신 있는↔확신 없는). 따라서 (D)도 positive(긍정적인)의 반의어인 ① negative(부정적인)가 와야 한다.",
+   "source": "능률(김성곤) Lesson 3·4",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 4,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 <보기>의 내용이 가리키는 단어로 알맞은 것은?\n<보기>\nthe ability to lead a group of people, or the qualities a good leader has",
+   "choices": [
+    "① tradition",
+    "② leadership",
+    "③ election",
+    "④ environment",
+    "⑤ instrument"
+   ],
+   "answer": "②",
+   "explanation": "'한 무리의 사람들을 이끄는 능력, 또는 좋은 지도자가 갖는 자질'은 ② leadership(리더십)의 정의이다. ①tradition(전통)·③election(선거)·④environment(환경)·⑤instrument(악기)는 모두 정의와 맞지 않는다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 5,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 <보기>의 빈칸에 들어갈 단어가 바르게 연결되지 않은 것은?\n<보기>\n(1) She is friendly and ____①____, so she makes friends easily.\n(2) The teacher tried to ____②____ the students to study harder.\n(3) We need a clear ____③____ for where our team is going.\n(4) Green leaders ____④____ that the team feels valued.\n(5) Even something ____⑤____ can make inspiring music.",
+   "choices": [
+    "① outgoing",
+    "② motivate",
+    "③ vision",
+    "④ ensure",
+    "⑤ valuable"
+   ],
+   "answer": "⑤",
+   "explanation": "(5)는 문맥상 '하찮은/무가치한 것조차도 영감을 주는 음악을 만들 수 있다'는 뜻이므로 빈칸에는 worthless가 들어가야 한다. ⑤ valuable(가치 있는)은 문맥과 반대라 연결이 바르지 않다. ①outgoing(외향적인) ②motivate(동기를 부여하다) ③vision(비전) ④ensure(보장하다·반드시 ~하게 하다)는 모두 문맥에 맞다.",
+   "source": "능률(김성곤) Lesson 3·4",
+   "_orig": "",
+   "_origtype": "어휘",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 6,
+   "qtype": "대화",
+   "score": 4,
+   "question": "다음 글을 읽고 답할 수 없는 질문은?\nW: Hey, Jake. I saw you won the swimming competition yesterday. Congratulations!\nM: Thanks, Anna.\nW: You always seem to listen to music before you compete. Do you find it helpful to listen to music before you swim?\nM: Yes, it keeps me awake and it helps me focus.",
+   "choices": [
+    "① Did Jake win the swimming competition?",
+    "② What does Jake do before he competes?",
+    "③ Does Jake find music helpful before swimming?",
+    "④ How many hours does Jake practice swimming every day?",
+    "⑤ How does listening to music affect Jake?"
+   ],
+   "answer": "④",
+   "explanation": "Jake가 수영 시합 전 음악을 듣는다는 것·그것이 도움이 된다는 것·집중과 각성에 도움이 된다는 것은 대화에 있으나, ④ '매일 몇 시간 연습하는지'는 언급이 없어 답할 수 없다.",
+   "source": "능률(김성곤) Lesson 4 Listen & Talk 1",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 7,
+   "qtype": "대화",
+   "score": 4,
+   "question": "다음 글의 내용과 일치하지 않는 것은?\nW: Hey, Tommy. When is the last day to sign up for the talent show?\nM: This Friday. Are you planning to sign up for it, Megan?\nW: Yeah, I'm going to perform with a couple of people.\nM: How cool! What are you going to do?\nW: We will play K-pop music with the violin and cello.",
+   "choices": [
+    "① The last day to sign up for the talent show is Friday.",
+    "② Megan is planning to sign up for the talent show.",
+    "③ Megan will perform with other people.",
+    "④ Megan will play K-pop music with the violin and cello.",
+    "⑤ Tommy is going to perform alone at the talent show."
+   ],
+   "answer": "⑤",
+   "explanation": "Tommy가 공연한다는 내용은 대화에 없다. 신청 마감은 금요일(①), Megan은 신청 예정(②)이며 여러 명과 함께(③) 바이올린·첼로로 K-pop을 연주한다(④). 따라서 ⑤가 일치하지 않는다.",
+   "source": "능률(김성곤) Lesson 4 Listen & Talk 2",
+   "_orig": "",
+   "_origtype": "대화",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 8,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 <보기>의 두 문장을 한 문장으로 바르게 연결한 것은?\n<보기>\n○ I met a girl.\n○ She likes music.",
+   "choices": [
+    "① I met a girl who likes music.",
+    "② I met a girl who she likes music.",
+    "③ I met a girl which likes music.",
+    "④ I met a girl who like music.",
+    "⑤ I met a girl whom likes music."
+   ],
+   "answer": "①",
+   "explanation": "선행사 a girl이 사람이고 관계사절에서 주어 역할을 하므로 주격 관계대명사 who를 쓰고, 그 뒤에 주어 없이 동사가 온다. 선행사가 단수이므로 동사도 likes. 따라서 ①이 옳다. ②는 who 뒤에 주어 she 중복, ③은 사람에 which, ④는 수일치(like) 오류, ⑤는 목적격 whom 오류이다.",
+   "source": "능률(김성곤) Lesson 3 주격 관계대명사",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 9,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 중 어법상 바르지 않은 문장의 개수는?\n(a) This is the book that is popular in Korea.\n(b) They are students who works hard.\n(c) She learned how to cook Vietnamese food.\n(d) This book helped me to learn English.\n(e) I don't know what to saying at the meeting.\n(f) My parents got me to clean my room.\n(g) She forgot when to call him.\n(h) The question is why to go there.",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "③",
+   "explanation": "바르지 않은 것은 (b)(e)(h) 3개이다. (b)는 선행사 students가 복수이므로 works→work(수일치). (e)는 의문사+to부정사이므로 what to saying→what to say. (h)는 why+to부정사를 쓰지 않으므로 틀림. (a)주격that, (c)how to부정사, (d)help+목+to, (f)get+목+to, (g)when to부정사는 모두 옳다.",
+   "source": "능률(김성곤) Lesson 3 관계대명사·의문사+to부정사·준사역동사",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 10,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 <보기>의 문장 ⓐ~ⓕ 중, 어법 및 의미상 영작이 정확한 것의 개수는?\n<보기>\nⓐ 음악을 듣는 소녀는 행복해 보인다.  The girl listening to music looks happy.\nⓑ 그는 내가 그 문제를 풀게 했다.  He got me solve the problem.\nⓒ 쓰레기로 만들어진 그 악기들은 멋진 소리를 낸다.  The instruments made out of garbage make a great sound.\nⓓ 나는 무엇을 말해야 할지 몰랐다.  I didn't know what should say.\nⓔ 이 책은 내가 영어를 배우도록 도왔다.  This book helped me to learn English.\nⓕ 친절한 그 소년은 모두에게 사랑받는다.  The boy who kind is loved by everyone.",
+   "choices": [
+    "① 2개",
+    "② 3개",
+    "③ 4개",
+    "④ 5개",
+    "⑤ 6개"
+   ],
+   "answer": "②",
+   "explanation": "정확한 것은 ⓐⓒⓔ 3개이다. ⓐ는 현재분사 후치수식(listening), ⓒ는 과거분사 후치수식(made), ⓔ는 help+목+to부정사로 모두 옳다. ⓑ는 got me solve→got me to solve(get+목+to), ⓓ는 what should say→what to say(또는 what I should say), ⓕ는 who kind→who is kind(관계사절에 동사 필요)로 틀리다.",
+   "source": "능률(김성곤) Lesson 3·4 분사·준사역동사·관계대명사",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 11,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 <보기>의 밑줄 친 관계대명사에 대한 설명으로 바른 것은?\n<보기>\nⓐ Green leaders are people who create a positive environment.\nⓑ He has good reasoning skills which help him analyze problems.\nⓒ This is the book which is popular in Korea.\nⓓ I met a girl who like music.\nⓔ The leader who they respected has retired.",
+   "choices": [
+    "① ⓐ의 who는 사물 선행사 people을 받으므로 which로 고쳐야 한다.",
+    "② ⓑ의 which는 사람 선행사를 받는 주격 관계대명사이다.",
+    "③ ⓒ의 which는 that으로 바꾸어 쓸 수 있다.",
+    "④ ⓓ의 who 뒤 동사 like는 어법상 옳다.",
+    "⑤ ⓔ의 who는 주격 관계대명사이다."
+   ],
+   "answer": "③",
+   "explanation": "③ ⓒ는 사물 선행사 the book을 받는 주격 which로, that으로 바꿔 쓸 수 있어 옳은 설명이다. ① people은 사람이므로 who가 맞다(틀린 설명). ② ⓑ의 which는 사물(skills)을 받는다(틀림). ④ 선행사 a girl이 단수이므로 like→likes여야 한다(틀림). ⑤ ⓔ는 they respected의 목적어가 빈 목적격 관계대명사이다(틀림).",
+   "source": "능률(김성곤) Lesson 3 주격 관계대명사",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 12,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 글의 (A)~(C)에 들어갈 말로 바르게 짝지어진 것은?\nThe Junk Orchestra played instruments (A)[made/making] entirely out of garbage. Nicolas Gomez, a local garbage picker, (B)[help/helped] the children a lot. He made it possible for children (C)[play/to play] music with instruments from garbage.",
+   "choices": [
+    "① made – helped – to play",
+    "② made – help – play",
+    "③ making – helped – to play",
+    "④ making – help – play",
+    "⑤ made – helped – play"
+   ],
+   "answer": "①",
+   "explanation": "(A) instruments는 '만들어진' 대상이므로 과거분사 made(후치수식). (B) 과거 시제 문맥이고 주어가 단수 Nicolas Gomez이므로 helped. (C) 가목적어 it ~ 진목적어 to부정사 구조이므로 to play. 따라서 ① made–helped–to play.",
+   "source": "능률(김성곤) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 13,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 글의 밑줄 친 (A)와 쓰임이 같은 that을 포함한 것은?\nBrian said to Yumi, \"You are friendly and outgoing, and you help people get along. I have no doubt (A)that you will be elected if you run for class representative.\"",
+   "choices": [
+    "① This is the book that I read last week.",
+    "② The boy that is running is my brother.",
+    "③ I have no doubt that he will succeed.",
+    "④ She wore the dress that her mom bought.",
+    "⑤ Look at the dog that is barking loudly."
+   ],
+   "answer": "③",
+   "explanation": "(A)의 that은 doubt(명사)와 동격을 이루는 명사절 접속사로 완전한 절을 이끈다. ③도 doubt 뒤 동격 명사절 that으로 쓰임이 같다. ①④는 목적격 관계대명사, ②⑤는 주격 관계대명사로 모두 명사를 수식한다.",
+   "source": "능률(김성곤) Lesson 3",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 14,
+   "qtype": "추론",
+   "score": 3,
+   "question": "다음 글의 밑줄 친 (B)에 해당하는 예시로 가장 적절한 것은?\nYumi found that there are many leadership styles. A green leader ensures that the team feels valued and creates a positive environment. But green leaders are not the only kind. There are (B)other leaders, too, who lead in their own way depending on the situation. For example, some leaders have good reasoning skills, some allow others to work on their own, and some come up with fresh ideas.",
+   "choices": [
+    "① A blue leader who approaches problems in new and creative ways",
+    "② A leader who only cares about winning competitions",
+    "③ A leader who forces everyone to follow the same rule",
+    "④ A leader who never listens to the team members",
+    "⑤ A leader who refuses to take any responsibility"
+   ],
+   "answer": "①",
+   "explanation": "(B)는 그린 리더 외에 '상황에 따라 자기만의 방식으로 이끄는 다른 리더들'을 가리키며, 본문은 그 예로 '논리적 분석·자율 위임·새로운 아이디어 제시'를 든다. 따라서 '새롭고 창의적인 방식으로 문제에 접근하는 블루 리더(①)'가 가장 적절한 예시다. ②③④⑤는 본문이 제시한 긍정적 리더십 유형과 맞지 않는다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "추론",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 15,
+   "qtype": "주제",
+   "score": 4,
+   "question": "다음 글의 목적으로 가장 알맞은 것은?\nYumi did not think she could be a leader. But after she did some research online, she found that there are many different leadership styles, such as green, red, purple, orange, yellow, and blue leaders. We belong to many different groups, and each group's situation calls for a different leadership style. After reading everything, Yumi became more confident and discovered that she has some of the qualities of a green leader.",
+   "choices": [
+    "① To explain why only outgoing people can be leaders.",
+    "② To compare the salaries of different leaders.",
+    "③ To describe how to win a class election.",
+    "④ To advise students not to run for class representative.",
+    "⑤ To show that there are diverse leadership styles and anyone can be a leader."
+   ],
+   "answer": "⑤",
+   "explanation": "글은 다양한 리더십 스타일이 존재하며, 자신의 성향에 맞는 리더가 될 수 있다는 점을 통해 유미가 자신감을 얻는 과정을 보여 준다. 따라서 목적은 ⑤ '다양한 리더십 유형이 있고 누구나 리더가 될 수 있음을 보여 주는 것'이다. ①②③④는 본문 내용과 맞지 않는다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "주제",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 16,
+   "qtype": "주제",
+   "score": 4,
+   "question": "윗글에서 Yumi가 깨달은 내용으로 가장 적절한 것은?",
+   "choices": [
+    "① Only people with a clear vision can become leaders.",
+    "② A good leader must control every member of the team.",
+    "③ Leadership styles are all the same in every situation.",
+    "④ There are many leadership styles, and one's own qualities can make a good leader.",
+    "⑤ The friendliest person always becomes the best leader."
+   ],
+   "answer": "④",
+   "explanation": "유미는 좋은 리더의 자질이 한 가지가 아니라 여러 스타일이 있으며, 자신이 가진 자질(친근함 등)도 좋은 리더십이 될 수 있음을 깨달았다. 따라서 ④가 적절하다. ①②③⑤는 본문의 다양성·상황 의존성과 어긋난다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "주제",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 17,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 글의 (A)~(D)에 들어갈 말로 바르게 짝지어진 것은?\nYumi found a website (A)[describing/described] leadership styles. A green leader is a person (B)[who/which] creates a positive environment. We belong to many groups, and each group's situation (C)[call/calls] for a different style. After reading everything, Yumi was able (D)[improve/to improve] her confidence.",
+   "choices": [
+    "① describing – who – call – improve",
+    "② describing – who – calls – to improve",
+    "③ described – which – calls – to improve",
+    "④ describing – which – call – improve",
+    "⑤ described – who – calls – improve"
+   ],
+   "answer": "②",
+   "explanation": "(A) website가 능동적으로 '설명하는'이므로 현재분사 describing. (B) 선행사 person은 사람이므로 who. (C) 주어 each group's situation은 단수이므로 calls. (D) be able to부정사이므로 to improve. 따라서 ② describing–who–calls–to improve.",
+   "source": "능률(김성곤) Lesson 3",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 18,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 글의 밑줄 친 (A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은?\nThe young people played instruments (A)______ from recycled materials. Nicolas made it (B)______ for children to play music. Lucy found it interesting (C)______ a story about the orchestra. Chavez wanted people (D)______ that even something worthless can make inspiring music.",
+   "choices": [
+    "① making – possible – write – know",
+    "② made – possibly – writing – to know",
+    "③ made – possible – to write – to know",
+    "④ making – possible – to write – know",
+    "⑤ made – possibly – to write – know"
+   ],
+   "answer": "③",
+   "explanation": "(A) instruments는 '만들어진' 대상이므로 과거분사 made. (B) 가목적어 it의 보어 자리이므로 형용사 possible. (C) find it+형용사+진목적어 to부정사이므로 to write. (D) want+목적어+to부정사이므로 to know. 따라서 ③ made–possible–to write–to know.",
+   "source": "능률(김성곤) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 19,
+   "qtype": "내용일치",
+   "score": 3,
+   "question": "윗글에 등장하는 인물과 그 내용이 잘못 연결된 것은?\nLucy White is a music blogger who went to the concert of The Junk Orchestra. Favio Chavez started the orchestra in Cateura, Paraguay, in 2005 to add something positive to children's lives. Nicolas Gomez, a local garbage picker, made instruments out of garbage.",
+   "choices": [
+    "① Lucy White - 콘서트에 다녀온 음악 블로거이다.",
+    "② Favio Chavez - 2005년에 파라과이 Cateura에서 오케스트라를 시작했다.",
+    "③ Favio Chavez - 아이들의 삶에 긍정적인 것을 더해 주고 싶어 했다.",
+    "④ Nicolas Gomez - 쓰레기로 악기를 만든 쓰레기 줍는 사람이다.",
+    "⑤ Lucy White - 직접 쓰레기로 악기를 만들어 아이들에게 주었다."
+   ],
+   "answer": "⑤",
+   "explanation": "악기를 쓰레기로 만든 사람은 Nicolas Gomez이고, Lucy White는 콘서트를 취재한 음악 블로거이다. 따라서 ⑤가 잘못 연결되었다. ①②③④는 본문과 일치한다.",
+   "source": "능률(김성곤) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 20,
+   "qtype": "요지",
+   "score": 4,
+   "question": "윗글을 한 문장으로 요약할 때 가장 적절한 것은?",
+   "choices": [
+    "① The most expensive instruments always make the best music.",
+    "② Recycling garbage is the only way to protect the environment.",
+    "③ Only trained musicians can play in a real orchestra.",
+    "④ What matters is your heart, not the instrument; an orchestra is made by people.",
+    "⑤ Children in Cateura wanted to become famous singers."
+   ],
+   "answer": "④",
+   "explanation": "본문은 어떤 악기로 연주하든 마음을 담는 것이 중요하며, 오케스트라는 악기가 아니라 사람이 만든다는 결론을 제시한다. 따라서 요약으로는 ④가 적절하다. ①③은 본문이 부정하는 내용, ②⑤는 본문에 없는 내용이다.",
+   "source": "능률(김성곤) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "요지",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 21,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "다음 글의 밑줄 친 ⓐ~ⓔ가 가리키는 것을 바르게 짝짓지 않은 것은?\nBrian told Yumi that ⓐshe has good leadership qualities. Yumi did some research online, and ⓑit showed her many leadership styles. Green leaders create a positive environment, and ⓒthey are friendly and easy to talk to. Different groups have their own situations, and ⓓthey all call for different leadership styles. After reading everything, Yumi found that ⓔshe has some qualities of a green leader.",
+   "choices": [
+    "① ⓐ - Yumi",
+    "② ⓑ - the research online",
+    "③ ⓒ - green leaders",
+    "④ ⓓ - leadership styles",
+    "⑤ ⓔ - Yumi"
+   ],
+   "answer": "④",
+   "explanation": "ⓓ they가 가리키는 것은 앞에 나온 'Different groups(여러 그룹들)'이며, 이 그룹들이 '서로 다른 리더십 스타일을 필요로 하는' 주체이다. leadership styles는 필요로 되는 대상이므로 ④의 연결이 옳지 않다. ①ⓐ=Yumi, ②ⓑ=online research, ③ⓒ=green leaders, ⑤ⓔ=Yumi는 모두 옳다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 22,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글을 읽고 답할 수 없는 질문은?",
+   "choices": [
+    "① Who told Yumi that she has good leadership qualities?",
+    "② What did Yumi do to learn about leadership styles?",
+    "③ What are the qualities of a green leader?",
+    "④ Why do different groups call for different leadership styles?",
+    "⑤ How many students voted for Yumi in the election?"
+   ],
+   "answer": "⑤",
+   "explanation": "브라이언이 말해 준 것(①), 유미가 온라인 조사를 한 것(②), 그린 리더의 자질(③), 그룹마다 다른 리더십이 필요한 이유(④)는 본문에 있으나, ⑤ '선거에서 몇 명이 유미에게 투표했는지'는 언급이 없어 답할 수 없다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 23,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 글의 밑줄 친 (A)~(E)에 대한 설명으로 바른 것은?\nThe children of Cateura played instruments (A)made out of garbage. Chavez wanted people (B)to know the value of music. He made (C)it possible for children to play music. An orchestra is (D)formed by people, not by instruments. Lucy realized that it doesn't matter (E)what you play with.",
+   "choices": [
+    "① (A): 'made'는 능동의 의미이므로 'making'으로 고쳐야 한다.",
+    "② (B): 'to know'는 want의 목적격 보어로 쓰인 to부정사이며 어법상 옳다.",
+    "③ (C): 'it'은 앞의 instruments를 가리키는 대명사이다.",
+    "④ (D): 'formed'는 능동태이므로 'forming'으로 고쳐야 한다.",
+    "⑤ (E): 'what'은 선행사가 필요한 관계대명사이므로 'which'로 고쳐야 한다."
+   ],
+   "answer": "②",
+   "explanation": "② (B) want+목적어(people)+to부정사(to know) 구조로 어법상 옳다. ① instruments는 '만들어진' 대상이므로 과거분사 made가 옳다(고칠 필요 없음). ③ (C) it은 진목적어 to play music을 대신하는 가목적어이지 instruments가 아니다. ④ orchestra는 '형성되는' 대상이므로 수동태 is formed가 옳다(고칠 필요 없음). ⑤ (E) what은 선행사를 포함한 관계대명사(=the thing which)로 'play with'의 목적어 역할을 하므로, 선행사가 따로 없는 이 자리에서는 which로 고칠 수 없다.",
+   "source": "능률(김성곤) Lesson 4 The Junk Orchestra",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 24,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 글의 밑줄 친 ⓐ~ⓔ 중, 어법상 틀린 것의 개수는?\nGreen leaders are people ⓐwho creates a positive environment. They help the team members ⓑto feel valued. Each situation ⓒcall for a different leadership style. Yumi found it possible ⓓto become a green leader. The instruments ⓔmade out of garbage sounded wonderful.",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "②",
+   "explanation": "틀린 것은 ⓐ, ⓒ 2개이다. ⓐ는 선행사 people이 복수이므로 creates→create(수일치). ⓒ는 주어 Each situation이 단수이므로 call→calls. ⓑ는 help+목+to부정사(옳음), ⓓ는 find it+형용사+진목적어 to부정사(옳음), ⓔ는 과거분사 후치수식(옳음)이다.",
+   "source": "능률(김성곤) Lesson 3·4",
+   "_orig": "",
+   "_origtype": "어법",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 25,
+   "qtype": "추론",
+   "score": 3,
+   "question": "다음 글의 밑줄 친 문장 (A)가 의미하는 바는?\nAfter reading about all the leadership styles, Yumi realized something important. (A)Each group's unique situation determines the best leadership style. So she stopped thinking that only one kind of person can be a leader.",
+   "choices": [
+    "① Only one leadership style works in every group.",
+    "② A leader must change groups to become successful.",
+    "③ Friendly people are always the best leaders.",
+    "④ The best leadership style depends on each group's situation.",
+    "⑤ Leadership styles do not matter at all."
+   ],
+   "answer": "④",
+   "explanation": "(A)는 '각 그룹의 고유한 상황이 최선의 리더십 스타일을 결정한다'는 뜻으로, 상황에 따라 적합한 리더십이 달라진다는 의미다. 따라서 ④가 적절하다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "추론",
+   "_src": ""
+  },
+  {
+   "type": "single",
+   "num": 26,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글의 내용과 일치하지 않는 것은?\nYumi did not believe she could be a leader at first. After doing some research online, she learned that there are six different leadership styles. She found that each situation calls for a different style. In the end, she discovered that she has some qualities of a green leader and became more confident about running for class representative.",
+   "choices": [
+    "① Yumi가 처음에는 자신이 리더가 될 수 있다고 믿지 않았다.",
+    "② Yumi는 온라인으로 리더십에 관해 조사했다.",
+    "③ Yumi는 여섯 가지 리더십 스타일이 있다는 것을 알게 되었다.",
+    "④ 상황에 상관없이 한 가지 리더십 스타일이 가장 좋다고 결론지었다.",
+    "⑤ Yumi는 자신이 그린 리더의 자질을 지녔음을 발견했다."
+   ],
+   "answer": "④",
+   "explanation": "본문은 '상황마다 다른 리더십 스타일이 필요하다'고 했으므로, ④ '상황에 상관없이 한 가지 스타일이 가장 좋다'는 내용과 일치하지 않는다. ①②③⑤는 본문과 일치한다.",
+   "source": "능률(김성곤) Lesson 3 Leadership",
+   "_orig": "",
+   "_origtype": "내용일치",
+   "_src": ""
+  }
+ ]
+}
