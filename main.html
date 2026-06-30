@@ -138,13 +138,24 @@
     .hero h1 .hl::after{animation:none;display:none}
   }
   .hero p{font-size:17.5px;color:rgba(255,255,255,.82);max-width:600px;line-height:1.62;letter-spacing:-0.015em;margin:0 0 28px}
-  .hero-cta{display:flex;flex-wrap:wrap;gap:11px}
-  .hbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
-    padding:14px 26px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
-    transition:transform .15s ease,opacity .15s ease}
-  .hbtn:hover{transform:translateY(-1px);opacity:.93}
-  .hbtn.primary{background:var(--gold);color:var(--ink)}
-  .hbtn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+  .hero-cta{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px}
+  .hbtn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;
+    padding:16px 26px;border-radius:980px;font-size:15.5px;font-weight:700;letter-spacing:-0.01em;
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s ease,background .18s ease}
+  /* 주 버튼 — 골드 솔리드, 살짝 떠 있게 */
+  .hbtn.primary{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:var(--ink);
+    box-shadow:0 6px 18px rgba(194,160,90,.32),inset 0 1px 0 rgba(255,255,255,.4)}
+  .hbtn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(194,160,90,.42),inset 0 1px 0 rgba(255,255,255,.5)}
+  /* 보조 버튼 — 네이버: 골드 외곽 + 초록 점으로 식별 (초록 면적 최소화) */
+  .hbtn.naver{background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(194,160,90,.55)}
+  .hbtn.naver::before{content:"";width:7px;height:7px;border-radius:50%;background:#03c75a;flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(3,199,90,.18)}
+  .hbtn.naver:hover{transform:translateY(-2px);background:rgba(255,255,255,.12);border-color:rgba(194,160,90,.85)}
+  /* 3차 버튼 — 고스트 */
+  .hbtn.ghost{background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.28)}
+  .hbtn.ghost:hover{transform:translateY(-2px);color:#fff;border-color:rgba(255,255,255,.55)}
+  .cta-note{font-size:12.5px;color:rgba(255,255,255,.55);margin:4px 0 0;text-align:center;letter-spacing:-0.01em}
+  .cta-note.light{color:rgba(255,255,255,.6)}
   @media(max-width:560px){.hero{padding:54px 22px 60px}.hero p{font-size:16px}}
 
   /* ── 공통 섹션 ── */
@@ -233,13 +244,19 @@
   .cta h2{font-size:27px;font-weight:700;letter-spacing:-0.025em;margin:0 0 12px}
   .cta p{font-size:16px;color:rgba(255,255,255,.85);max-width:520px;margin:0 auto 12px;line-height:1.6;letter-spacing:-0.014em}
   .cta .small{font-size:13.5px;color:rgba(255,255,255,.62);margin-bottom:26px;line-height:1.55}
-  .cta-btns{display:flex;flex-wrap:wrap;gap:11px;justify-content:center}
-  .cbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
-    padding:14px 28px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
-    transition:transform .15s ease,opacity .15s ease}
-  .cbtn:hover{transform:translateY(-1px);opacity:.93}
-  .cbtn.gold{background:var(--gold);color:var(--ink)}
-  .cbtn.line{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}
+  .cta-btns{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px;margin:0 auto}
+  .cbtn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;
+    padding:16px 28px;border-radius:980px;font-size:15.5px;font-weight:700;letter-spacing:-0.01em;
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s ease,background .18s ease}
+  .cbtn.gold{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:var(--ink);
+    box-shadow:0 6px 18px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.4)}
+  .cbtn.gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.5)}
+  .cbtn.naver{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+  .cbtn.naver::before{content:"";width:7px;height:7px;border-radius:50%;background:#03c75a;flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(3,199,90,.22)}
+  .cbtn.naver:hover{transform:translateY(-2px);background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.6)}
+  .cbtn.line{background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.32)}
+  .cbtn.line:hover{transform:translateY(-2px);color:#fff;border-color:rgba(255,255,255,.6)}
 
   /* ── 푸터 ── */
   .foot{background:var(--navy);color:#fff;text-align:center;padding:40px 22px}
@@ -273,9 +290,10 @@
     <h1><span class="hl">대단한영어</span><span class="hsub">포항 입시영어의 기준</span></h1>
     <p>포항 남구의 중·고등 입시영어 전문 학원. 원장이 직접 개발한 학습 관리 시스템으로, 학교별 시험에 딱 맞춘 대비를 합니다.</p>
     <div class="hero-cta">
-      <a class="hbtn primary" href="apply.html" style="background:#7A0F24;color:#fff;border:1.5px solid var(--gold,#C2A05A);box-shadow:0 4px 14px rgba(122,15,36,.28);">상담 신청서 작성 (네이버 ID 불필요)</a>
-      <a class="hbtn primary" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener" style="background:#03C75A;color:#fff;border:none;">네이버 상담신청서 작성</a>
+      <a class="hbtn primary" href="apply.html">상담 신청서 작성</a>
+      <a class="hbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
       <a class="hbtn ghost" href="parent_guide.html">수업 자세히 보기</a>
+      <p class="cta-note">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
     </div>
   </div>
 </header>
@@ -418,7 +436,7 @@
     <a class="hcard" href="summer.html" style="--accent:#a31f38">
       <div class="hc-label">2026 여름방학</div>
       <h3>여름방학 집중 특강</h3>
-      <p>방학 동안 한 단계 끌어올리는 주말 집중 과정. 고등 수능 어법반과 중등 2학기 내신 대비반을 운영합니다.</p>
+      <p>중1은 2학기 첫 지필고사 대비, 예비고1~고1은 수능 어법 집중. 학년별로 가장 급한 것만 잡는 방학 과정입니다.</p>
       <div class="hc-go">특강 보기 →</div>
     </a>
     <a class="hcard" href="suneung_2026.html" style="--accent:#c06a2c">
@@ -442,9 +460,10 @@
   <p>상담을 통해 자녀의 현재 수준과 학습 방향을 함께 짚어드립니다.</p>
   <p class="small">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>네이버 톡톡으로 신청해 주시면 원장이 직접 답변드립니다.</p>
   <div class="cta-btns">
-    <a class="cbtn gold" href="apply.html" style="background:#7A0F24;color:#fff;border:1.5px solid var(--gold,#C2A05A);box-shadow:0 4px 14px rgba(122,15,36,.28);">상담 신청서 작성 (네이버 ID 불필요)</a>
-    <a class="cbtn gold" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener" style="background:#03C75A;color:#fff;border:none;">네이버 상담신청서 작성</a>
+    <a class="cbtn gold" href="apply.html">상담 신청서 작성</a>
+    <a class="cbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
     <a class="cbtn line" href="parent_guide.html#guide">상담 가이드 먼저 보기</a>
+    <p class="cta-note light">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
   </div>
 </section>
 

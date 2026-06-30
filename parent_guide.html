@@ -59,14 +59,20 @@
     content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
   }
-  .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-  .hcta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
-    padding:13px 24px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
-    transition:transform .15s ease,opacity .15s ease}
-  .hcta:hover{transform:translateY(-1px);opacity:.92}
+  .hero-cta{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px;margin:26px 0 0}
+  .hcta{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;
+    padding:16px 26px;border-radius:980px;font-size:15.5px;font-weight:700;letter-spacing:-0.01em;
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s ease,background .18s ease}
   .hcta:active{transform:translateY(0)}
-  .hcta.apply{background:var(--gold);color:var(--ink)}
-  .hcta.guide{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+  .hcta.apply{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:var(--ink);
+    box-shadow:0 6px 18px rgba(201,168,76,.32),inset 0 1px 0 rgba(255,255,255,.4)}
+  .hcta.apply:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(201,168,76,.42),inset 0 1px 0 rgba(255,255,255,.5)}
+  .hcta.naver{background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(201,168,76,.55)}
+  .hcta.naver::before{content:"";width:7px;height:7px;border-radius:50%;background:#03c75a;flex-shrink:0;box-shadow:0 0 0 3px rgba(3,199,90,.18)}
+  .hcta.naver:hover{transform:translateY(-2px);background:rgba(255,255,255,.12);border-color:rgba(201,168,76,.85)}
+  .hcta.guide{background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.28)}
+  .hcta.guide:hover{transform:translateY(-2px);color:#fff;border-color:rgba(255,255,255,.55)}
+  .cta-note{font-size:12.5px;color:rgba(255,255,255,.55);margin:4px 0 0;text-align:center;letter-spacing:-0.01em}
   .hero-tagline{
     font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
     font-size:20px;color:var(--gold-soft);margin-bottom:10px;letter-spacing:.01em;
@@ -347,8 +353,10 @@
   .cta-step .lbl{font-size:15px;font-weight:700}
   .cta-step.guide{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
   .cta-step.guide .num{background:var(--paper-2);color:var(--navy-3)}
-  .cta-step.apply{background:var(--gold);color:var(--ink);box-shadow:0 8px 22px rgba(201,168,76,.35)}
+  .cta-step.apply{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:var(--ink);box-shadow:0 8px 22px rgba(201,168,76,.35)}
   .cta-step.apply .num{background:var(--ink);color:var(--gold)}
+  .cta-step.naver{background:#fff;border:1.5px solid var(--gold);color:var(--ink)}
+  .cta-step.naver .num{background:#03c75a;color:#fff}
   .brand{text-align:center;padding:34px 22px;margin-top:10px;
     background:linear-gradient(160deg,var(--navy-2),var(--navy));
     color:rgba(255,255,255,.75);font-size:13px;letter-spacing:.05em;
@@ -450,6 +458,7 @@
     <div class="gnav-links">
       <a href="https://greatenglish1201-ux.github.io/GREATENG/main.html">메인</a>
       <a class="active" href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">수업안내</a>
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/summer.html">여름특강</a>
       <a href="https://greatenglish1201-ux.github.io/GREATENG/suneung_2026.html">수능대비반</a>
       <a href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">학교정보</a>
     </div>
@@ -463,6 +472,11 @@
   .gnav-links a{font-size:13px;font-weight:600;color:rgba(255,255,255,.72);text-decoration:none;padding:7px 12px;border-radius:8px;white-space:nowrap;transition:all .15s}
   .gnav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
   .gnav-links a.active{color:#0e1626;background:linear-gradient(135deg,#e3cd8a,#C9A84C);font-weight:700}
+  @media(max-width:560px){
+    .gnav-inner{flex-direction:column;align-items:flex-start;gap:7px}
+    .gnav-links{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:2px;scrollbar-width:none}
+    .gnav-links::-webkit-scrollbar{display:none}
+  }
   @media(max-width:430px){
     .gnav-brand{font-size:14px}
     .gnav-links a{font-size:12px;padding:6px 9px}
@@ -477,9 +491,10 @@
     <h1>중등·고등 영어,<br><span class="hl">수업과 시험 대비</span>를 이렇게 합니다</h1>
     <p>학부모님들이 가장 많이 궁금해하시는 "수업이 어떻게 진행되고, 시험은 어떻게 대비하나요?"에 솔직하게 답해드립니다.</p>
     <div class="hero-cta">
-      <a class="hcta apply" href="apply.html" style="background:#7A0F24;color:#fff;border:1.5px solid var(--gold,#C2A05A);box-shadow:0 4px 14px rgba(122,15,36,.28);">상담 신청서 작성 (네이버 ID 불필요)</a>
-      <a class="hcta apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener" style="background:#03C75A;color:#fff;border:none;">네이버 상담신청서 작성</a>
+      <a class="hcta apply" href="apply.html">상담 신청서 작성</a>
+      <a class="hcta naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
       <a class="hcta guide" href="#guide">상담 가이드 먼저 보기</a>
+      <p class="cta-note">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
     </div>
   </div>
 </header>
@@ -805,13 +820,13 @@
         <span class="num">1</span>
         <span class="lbl">학원 상담 가이드 먼저 읽기</span>
       </a>
-      <a class="cta-step apply" href="apply.html" style="background:#7A0F24;color:#fff;border:1.5px solid var(--gold,#C2A05A);box-shadow:0 4px 14px rgba(122,15,36,.28);">
+      <a class="cta-step apply" href="apply.html">
         <span class="num">2</span>
-        <span class="lbl">상담 신청서 작성 (네이버 ID 불필요)</span>
+        <span class="lbl">상담 신청서 작성</span>
       </a>
-      <a class="cta-step apply" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener" style="background:#03C75A;color:#fff;border:none;">
+      <a class="cta-step naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">
         <span class="num">3</span>
-        <span class="lbl">네이버 상담신청서 작성</span>
+        <span class="lbl">네이버 톡톡 상담</span>
       </a>
     </div>
   </div>

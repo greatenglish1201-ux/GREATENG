@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대단한영어 | 2026 여름방학 집중 특강</title>
-<meta name="description" content="포항 남구 대이로 105 중·고등 입시영어 전문 학원. 2026 여름방학 집중 특강 — 고등 수능 어법반, 중등 2학기 내신 대비반. 주말 집중 과정.">
+<meta name="description" content="포항 남구 대이로 105 중·고등 입시영어 전문 학원. 2026 여름방학 집중 특강 — 중1 2학기 첫 내신 대비반, 예비고1~고1 수능 어법 집중반. 수업+개인별 클리닉.">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500;1,600&display=swap">
@@ -90,13 +90,21 @@
   .hero-tags{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:24px}
   .htag{font-size:13px;font-weight:600;padding:7px 15px;border-radius:980px;
     background:rgba(255,255,255,.08);border:1px solid rgba(194,160,90,.4);color:#f3e3d2}
-  .hero-cta{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;margin-top:30px}
-  .hbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
-    padding:13px 26px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
-    transition:transform .15s ease,opacity .15s ease}
-  .hbtn:hover{transform:translateY(-1px);opacity:.93}
-  .hbtn.primary{background:var(--gold);color:var(--ink)}
-  .hbtn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+  .hero-cta{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px;margin:30px auto 0}
+  .hbtn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;
+    padding:16px 26px;border-radius:980px;font-size:15.5px;font-weight:700;letter-spacing:-0.01em;
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s ease,background .18s ease}
+  .hbtn.primary{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:var(--ink);
+    box-shadow:0 6px 18px rgba(194,160,90,.32),inset 0 1px 0 rgba(255,255,255,.4)}
+  .hbtn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(194,160,90,.42),inset 0 1px 0 rgba(255,255,255,.5)}
+  .hbtn.naver{background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(194,160,90,.55)}
+  .hbtn.naver::before{content:"";width:7px;height:7px;border-radius:50%;background:#03c75a;flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(3,199,90,.18)}
+  .hbtn.naver:hover{transform:translateY(-2px);background:rgba(255,255,255,.12);border-color:rgba(194,160,90,.85)}
+  .hbtn.ghost{background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.28)}
+  .hbtn.ghost:hover{transform:translateY(-2px);color:#fff;border-color:rgba(255,255,255,.55)}
+  .cta-note{font-size:12.5px;color:rgba(255,255,255,.55);margin:4px 0 0;text-align:center;letter-spacing:-0.01em}
+  .cta-note.light{color:rgba(255,255,255,.6)}
 
   /* ── 섹션 공통 ── */
   .sec{max-width:880px;margin:0 auto;padding:54px 22px}
@@ -168,13 +176,19 @@
   .cta h2{font-size:27px;font-weight:800;letter-spacing:-0.025em;margin:0 0 12px}
   .cta p{font-size:16px;color:rgba(255,255,255,.85);max-width:520px;margin:0 auto 12px;line-height:1.6}
   .cta .small{font-size:13.5px;color:rgba(255,255,255,.62);margin-bottom:26px;line-height:1.55}
-  .cta-btns{display:flex;flex-wrap:wrap;gap:11px;justify-content:center}
-  .cbtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
-    padding:14px 28px;border-radius:980px;font-size:15px;font-weight:600;letter-spacing:-0.01em;
-    transition:transform .15s ease,opacity .15s ease}
-  .cbtn:hover{transform:translateY(-1px);opacity:.93}
-  .cbtn.gold{background:var(--gold);color:var(--ink)}
-  .cbtn.line{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}
+  .cta-btns{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:380px;margin:0 auto}
+  .cbtn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;
+    padding:16px 28px;border-radius:980px;font-size:15.5px;font-weight:700;letter-spacing:-0.01em;
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s ease,background .18s ease}
+  .cbtn.gold{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:var(--ink);
+    box-shadow:0 6px 18px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.4)}
+  .cbtn.gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.5)}
+  .cbtn.naver{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+  .cbtn.naver::before{content:"";width:7px;height:7px;border-radius:50%;background:#03c75a;flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(3,199,90,.22)}
+  .cbtn.naver:hover{transform:translateY(-2px);background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.6)}
+  .cbtn.line{background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.32)}
+  .cbtn.line:hover{transform:translateY(-2px);color:#fff;border-color:rgba(255,255,255,.6)}
 
   /* ── 푸터 ── */
   .foot{background:var(--navy);color:#fff;text-align:center;padding:40px 22px}
@@ -205,17 +219,18 @@
 <header class="hero">
   <div class="hero-in">
     <div class="hero-eyebrow">2026 Summer Intensive</div>
-    <h1>여름방학,<br><span class="hl">한 단계 끌어올리는</span> 시간</h1>
-    <p>방학은 평소 시간에 쫓겨 미뤄둔 약점을 집중적으로 다지는 시기입니다. 대단한영어는 주말 집중 과정으로, 학년별 목표에 맞춘 어법과 내신 대비를 설계했습니다.</p>
+    <h1>중1은 <span class="hl">첫 내신</span>,<br>예비고1은 <span class="hl">수능 어법</span>의 시작</h1>
+    <p>중1은 2학기부터 첫 지필고사가 시작됩니다. 예비고1·고1은 지금이 수능 어법의 뼈대를 세울 때입니다. 짧은 방학, 학년별로 가장 급한 것만 집중합니다.</p>
     <div class="hero-tags">
-      <span class="htag">주말 집중 과정</span>
+      <span class="htag">중1 · 2학기 첫 내신 대비</span>
+      <span class="htag">예비고1~고1 · 수능 어법</span>
       <span class="htag">수업 + 개인별 클리닉</span>
-      <span class="htag">학년별 맞춤 설계</span>
     </div>
     <div class="hero-cta">
-      <a class="hbtn primary" href="apply.html" style="background:#7A0F24;color:#fff;border:1.5px solid var(--gold,#C2A05A);box-shadow:0 4px 14px rgba(122,15,36,.28);">상담 신청서 작성 (네이버 ID 불필요)</a>
-      <a class="hbtn primary" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener" style="background:#03C75A;color:#fff;border:none;">네이버 상담신청서 작성</a>
+      <a class="hbtn primary" href="apply.html">상담 신청서 작성</a>
+      <a class="hbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
       <a class="hbtn ghost" href="#courses">강좌 살펴보기</a>
+      <p class="cta-note">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
     </div>
   </div>
 </header>
@@ -229,7 +244,7 @@
     <div class="glance-grid">
       <div class="gl"><div class="t">기간</div><div class="d">방학 집중<small>주말 운영</small></div></div>
       <div class="gl"><div class="t">한 회차</div><div class="d">수업 + 클리닉<small>배우고 바로 소화</small></div></div>
-      <div class="gl"><div class="t">개설반</div><div class="d">학년별 과정<small>고등 어법 / 중등 내신</small></div></div>
+      <div class="gl"><div class="t">개설반</div><div class="d">학년별 과정<small>중1 내신 / 예비고1~고1 어법</small></div></div>
       <div class="gl"><div class="t">방식</div><div class="d">집중 + 맞춤<small>개인별 보충 학습</small></div></div>
     </div>
   </div>
@@ -246,14 +261,14 @@
     <!-- 고등 어법반 -->
     <div class="course hl">
       <div class="course-head">
-        <span class="badge">고등학생</span>
+        <span class="badge">예비고1 ~ 고1</span>
         <h3>수능 어법 집중반</h3>
         <p class="tagline">수능·내신에 반복되는 어법의 뼈대를 체계적으로 세웁니다</p>
       </div>
       <div class="course-body">
-        <div class="row"><span class="lab">대상</span><span class="val">고등학생 <small>(고등 어법을 처음 정리하거나, 다시 다지고 싶은 학생)</small></span></div>
+        <div class="row"><span class="lab">대상</span><span class="val">예비 고1 ~ 고1 <small>(중등 영문법을 마무리하고 고등 수능 어법으로 넘어가는 단계)</small></span></div>
         <div class="row"><span class="lab">교재</span><span class="val">수능 어법 전문 교재로 학습 <small>(학생 수준에 맞춰 운영)</small></span></div>
-        <div class="row"><span class="lab">목표</span><span class="val">수능·내신에 반복 출제되는 빈출 어법 포인트를 한 바퀴 정리</span></div>
+        <div class="row"><span class="lab">목표</span><span class="val">수능·내신에 반복 출제되는 빈출 어법 포인트를 한 바퀴 정리 <small>(처음 정리하는 학생도, 한 번 다진 학생도 한 반에서 수준별로)</small></span></div>
 
         <div class="weeks">
           <div class="wk-title">학습 흐름</div>
@@ -273,14 +288,14 @@
     <!-- 중등 내신반 -->
     <div class="course ms">
       <div class="course-head">
-        <span class="badge">중학생</span>
-        <h3>2학기 내신 대비반</h3>
-        <p class="tagline">2학기 시험을 미리 준비하는 자체 제작 대비 과정</p>
+        <span class="badge">중1 중심</span>
+        <h3>2학기 첫 내신 대비반</h3>
+        <p class="tagline">중1, 2학기에 시작되는 첫 지필고사를 미리 준비합니다</p>
       </div>
       <div class="course-body">
-        <div class="row"><span class="lab">대상</span><span class="val">중학생 <small>(2학기 내신을 탄탄하게 준비하고 싶은 학생)</small></span></div>
+        <div class="row"><span class="lab">대상</span><span class="val">중1 <small>(2학기 첫 지필고사를 준비하는 학생 · 중2~3도 상담 후 함께 운영)</small></span></div>
         <div class="row"><span class="lab">방식</span><span class="val">학교 교과서에 맞춘 <b>자체 제작 대비 자료</b> <small>(어법·빈칸·순서·내용일치·서술형)</small></span></div>
-        <div class="row"><span class="lab">목표</span><span class="val">2학기 출제 범위를 미리 익혀 학기 시작과 동시에 앞서가기</span></div>
+        <div class="row"><span class="lab">목표</span><span class="val">1학기까지 없던 시험이 2학기부터 시작 — 첫 시험에서 점수와 공부 습관을 동시에 잡기</span></div>
 
         <div class="weeks">
           <div class="wk-title">커리큘럼</div>
@@ -330,9 +345,10 @@
   <p>상담을 통해 자녀의 현재 수준과 방학 학습 방향을 함께 짚어드립니다.</p>
   <p class="small">수업 중에는 상세한 전화 상담이 어려울 수 있습니다.<br>네이버 톡톡으로 신청해 주시면 원장이 직접 답변드립니다.</p>
   <div class="cta-btns">
-    <a class="cbtn gold" href="apply.html" style="background:#7A0F24;color:#fff;border:1.5px solid var(--gold,#C2A05A);box-shadow:0 4px 14px rgba(122,15,36,.28);">상담 신청서 작성 (네이버 ID 불필요)</a>
-    <a class="cbtn gold" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener" style="background:#03C75A;color:#fff;border:none;">네이버 상담신청서 작성</a>
+    <a class="cbtn gold" href="apply.html">상담 신청서 작성</a>
+    <a class="cbtn naver" href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡 상담</a>
     <a class="cbtn line" href="parent_guide.html#guide">수업 안내 먼저 보기</a>
+    <p class="cta-note light">신청서는 네이버 ID 없이 바로 작성할 수 있습니다</p>
   </div>
 </section>
 
