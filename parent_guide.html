@@ -346,6 +346,8 @@
   .fab{border:none;padding:9px 16px;border-radius:980px;font-size:13.5px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;font-family:inherit;transition:opacity .15s ease}
   .fab-add{background:var(--fill,#f3eee5);color:var(--ink)}
   .fab-copy{background:var(--gold);color:var(--ink)}
+  .fab-save{background:var(--wine,#7a1020);color:#fff}
+  .fab-reset{background:transparent;color:var(--ink);border:1px solid #d8cfc0}
   .fab-done{background:var(--ink);color:#fff;margin-left:auto}
   .fab:hover{opacity:.85}
   #feeAdminDot{display:inline-block;margin-left:8px;color:var(--muted);opacity:.35;cursor:pointer;
@@ -838,8 +840,10 @@
             </div>
             <div class="fee-adminbtns">
               <button class="fab fab-add" id="feeAddBtn">+ 반 추가</button>
+              <button class="fab fab-save" id="feeSaveBtn">이 브라우저에 저장</button>
               <button class="fab fab-copy" id="feeCopyBtn">수정된 코드 복사</button>
-              <button class="fab fab-done" id="feeDoneBtn">편집 종료</button>
+              <button class="fab fab-reset" id="feeResetBtn">기본값으로 초기화</button>
+              <button class="fab fab-done" id="feeDoneBtn">저장 후 종료</button>
             </div>
           </div>
         </div>
@@ -921,11 +925,34 @@
   const NOTE_TEXT = "※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.";
   /* ▲▲▲  여기까지만 고치면 됩니다  ▲▲▲ */
 
+  /* localStorage 저장 키 */
+  const FEE_LS_KEY = 'greateng_parentguide_fee_v1';
+
+  /* 저장된 값 불러오기 (없으면 코드의 기본값 사용) */
+  function loadSaved(){
+    try{
+      const raw = localStorage.getItem(FEE_LS_KEY);
+      if(!raw) return null;
+      const o = JSON.parse(raw);
+      if(o && Array.isArray(o.fee)) return o;
+    }catch(e){}
+    return null;
+  }
+  const _saved = loadSaved();
+
   /* 화면에 보여줄 현재 데이터 (편집 시 이 값이 바뀜) */
-  let feeData = TUITION.map(r=>({...r}));
-  let noteData = NOTE_TEXT;
+  let feeData = _saved ? _saved.fee.map(r=>({...r})) : TUITION.map(r=>({...r}));
+  let noteData = (_saved && typeof _saved.note === 'string') ? _saved.note : NOTE_TEXT;
   let curPw = ADMIN_PW;
   let editMode = false;
+
+  /* 현재 편집값을 이 브라우저에 저장 */
+  function saveLocal(){
+    try{
+      localStorage.setItem(FEE_LS_KEY, JSON.stringify({ fee: feeData, note: noteData }));
+      return true;
+    }catch(e){ return false; }
+  }
 
   const feeBody = document.getElementById('feeBody');
   const esc = s => String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -988,9 +1015,8 @@
     document.getElementById('feeAdminBar').style.display = 'flex';
   }
   function exitEdit(){
+    saveLocal();               // 이 브라우저에 저장(유지)
     editMode = false;
-    feeData = TUITION.map(r=>({...r})); // 원래대로 복원(복사 안 한 변경은 버림)
-    noteData = NOTE_TEXT;
     renderFee();
     renderNote();
     document.getElementById('feeAdminBar').style.display = 'none';
@@ -1027,6 +1053,20 @@
     }).catch(()=>{
       prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
     });
+  });
+  // 이 브라우저에 저장
+  document.getElementById('feeSaveBtn').addEventListener('click',()=>{
+    if(saveLocal()){ alert('이 브라우저에 저장되었습니다.\n\n※ 모든 방문자에게 반영하려면 \'수정된 코드 복사\' 후 GitHub Commit 이 필요합니다.'); }
+    else { alert('저장에 실패했습니다.'); }
+  });
+  // 기본값으로 초기화 (저장값 삭제)
+  document.getElementById('feeResetBtn').addEventListener('click',()=>{
+    if(!confirm('저장된 수정값을 지우고 코드의 기본값으로 되돌립니다.\n계속할까요?')) return;
+    try{ localStorage.removeItem(FEE_LS_KEY); }catch(e){}
+    feeData = TUITION.map(r=>({...r}));
+    noteData = NOTE_TEXT;
+    renderFee();
+    renderNote();
   });
   // 편집 종료
   document.getElementById('feeDoneBtn').addEventListener('click', exitEdit);
