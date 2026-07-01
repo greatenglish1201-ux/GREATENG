@@ -77,6 +77,53 @@
   .tile.drag-over{ outline:2px dashed var(--wine); outline-offset:3px; }
   .drag-grip{ position:absolute; top:14px; right:16px; font-size:18px; color:var(--ink-3); letter-spacing:-2px; }
   @media (max-width:560px){ .sort-bar{ flex-direction:column; align-items:stretch; } .sort-bar span{ text-align:center; } }
+  /* 카드 꾸미기 (아이콘·색상 편집) */
+  .edit-btn{ position:absolute; top:12px; right:14px; width:30px; height:30px; border-radius:9px;
+    border:1px solid var(--line); background:var(--card); color:var(--ink-2); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:14px; font-family:inherit;
+    box-shadow:0 1px 3px rgba(0,0,0,.06); transition:background .15s ease; z-index:2; }
+  .edit-btn:hover{ background:var(--fill); }
+  .tile.editable{ cursor:default; }
+  .modal-back{ position:fixed; inset:0; background:rgba(29,29,31,.42); backdrop-filter:blur(2px);
+    display:none; align-items:center; justify-content:center; padding:20px; z-index:50; }
+  .modal-back.active{ display:flex; }
+  .modal{ background:var(--card); border-radius:20px; width:100%; max-width:420px; max-height:88vh; overflow:auto;
+    box-shadow:0 24px 60px rgba(44,36,32,.28); padding:24px; }
+  .modal h3{ margin:0 0 4px; font-size:18px; font-weight:700; letter-spacing:-0.02em; }
+  .modal .sub{ margin:0 0 20px; font-size:13px; color:var(--ink-3); font-weight:500; }
+  .modal .field-label{ font-size:12px; font-weight:600; color:var(--ink-2); margin:0 0 9px; letter-spacing:0.01em; }
+  .emoji-grid{ display:grid; grid-template-columns:repeat(8,1fr); gap:5px; margin-bottom:20px; }
+  .emoji-cell{ aspect-ratio:1; border:1px solid transparent; border-radius:10px; background:var(--fill);
+    font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:transform .1s ease, border-color .1s ease; padding:0; font-family:inherit; }
+  .emoji-cell:hover{ transform:scale(1.08); }
+  .emoji-cell.sel{ border-color:var(--wine); background:#fff; box-shadow:0 0 0 2px rgba(142,21,48,.14); }
+  .emoji-input{ width:100%; border:1px solid var(--line); border-radius:11px; padding:10px 12px;
+    font-size:14px; font-family:inherit; margin-bottom:20px; box-sizing:border-box; color:var(--ink); }
+  .emoji-input:focus{ outline:none; border-color:var(--wine); }
+  .color-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:14px; }
+  .color-cell{ aspect-ratio:1; border-radius:11px; cursor:pointer; border:2px solid transparent;
+    position:relative; transition:transform .1s ease; }
+  .color-cell:hover{ transform:scale(1.08); }
+  .color-cell.sel{ border-color:var(--ink); box-shadow:0 0 0 2px #fff inset; }
+  .color-custom{ display:flex; align-items:center; gap:9px; margin-bottom:22px; }
+  .color-custom input[type=color]{ width:38px; height:38px; border:1px solid var(--line); border-radius:10px;
+    padding:0; background:none; cursor:pointer; }
+  .color-custom .hexbox{ flex:1; border:1px solid var(--line); border-radius:11px; padding:10px 12px;
+    font-size:14px; font-family:inherit; color:var(--ink); box-sizing:border-box; }
+  .color-custom .hexbox:focus{ outline:none; border-color:var(--wine); }
+  .modal-preview{ display:flex; align-items:center; gap:12px; background:var(--fill); border-radius:14px;
+    padding:14px 16px; margin-bottom:22px; }
+  .modal-preview .pv-ico{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center;
+    justify-content:center; font-size:21px; flex-shrink:0; }
+  .modal-preview .pv-name{ font-size:15px; font-weight:600; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions button{ flex:1; border-radius:980px; padding:11px 16px; font-size:14px; font-weight:600;
+    font-family:inherit; cursor:pointer; transition:opacity .15s ease, background .15s ease; }
+  .btn-cancel{ border:1px solid var(--line); background:var(--card); color:var(--ink-2); }
+  .btn-cancel:hover{ background:var(--fill); }
+  .btn-apply{ border:none; background:var(--wine); color:#fff; }
+  .btn-apply:hover{ opacity:.88; }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 </head>
@@ -88,14 +135,49 @@
     <p>모든 도구를 한곳에서</p>
   </header>
   <div class="sort-ctrl">
-    <button id="sortToggle" class="sort-btn">카드 순서 바꾸기</button>
+    <div style="display:flex; gap:8px;">
+      <button id="editToggle" class="sort-btn">카드 꾸미기</button>
+      <button id="sortToggle" class="sort-btn">카드 순서 바꾸기</button>
+    </div>
     <div id="sortBar" class="sort-bar">
       <span>카드를 끌어서 순서를 바꾼 뒤 저장하세요</span>
       <button id="sortSave" class="sort-save">순서 저장 (코드 복사)</button>
     </div>
+    <div id="editBar" class="sort-bar">
+      <span>카드의 ✎ 버튼을 눌러 아이콘·색을 바꾼 뒤 저장하세요</span>
+      <button id="editSave" class="sort-save">변경 저장 (코드 복사)</button>
+    </div>
   </div>
   <div class="grid" id="grid"></div>
   <footer>대단한영어 · 탁월함이 습관이 되도록</footer>
+</div>
+
+<div class="modal-back" id="editModal">
+  <div class="modal">
+    <h3 id="edTitle">카드 꾸미기</h3>
+    <p class="sub">아이콘과 왼쪽 색을 골라 미리 확인한 뒤 적용하세요.</p>
+
+    <div class="modal-preview">
+      <div class="pv-ico" id="edPvIco"></div>
+      <div class="pv-name" id="edPvName"></div>
+    </div>
+
+    <p class="field-label">아이콘</p>
+    <div class="emoji-grid" id="edEmojiGrid"></div>
+    <input class="emoji-input" id="edEmojiInput" maxlength="4" placeholder="또는 직접 이모지 붙여넣기">
+
+    <p class="field-label">왼쪽 색</p>
+    <div class="color-grid" id="edColorGrid"></div>
+    <div class="color-custom">
+      <input type="color" id="edColorPick" value="#8e1530">
+      <input class="hexbox" id="edColorHex" maxlength="7" placeholder="#8e1530">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="edCancel">취소</button>
+      <button class="btn-apply" id="edApply">적용</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -141,6 +223,7 @@
   /* 현재 순서를 담는 작업용 배열 */
   let order = PAGES.map((p,i)=>i);
   let sortMode = false;
+  let editMode = false;
 
   const grid = document.getElementById('grid');
 
@@ -158,6 +241,15 @@
           + '<p>'+esc(p.desc||'')+'</p>'
           + '</div>';
       }
+      if(editMode){
+        // 꾸미기 모드: 링크 비활성 + 편집 버튼
+        return '<div class="tile editable" data-idx="'+idx+'" style="--accent:'+color+'; --accent-soft:'+soft+';">'
+          + '<button class="edit-btn" data-edit="'+idx+'" title="아이콘·색 바꾸기">✎</button>'
+          + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
+          + '<h2>'+esc(p.name)+'</h2>'
+          + '<p>'+esc(p.desc||'')+'</p>'
+          + '</div>';
+      }
       return '<a class="tile" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+'; --accent-soft:'+soft+';">'
         + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
         + '<h2>'+esc(p.name)+'</h2>'
@@ -166,6 +258,7 @@
         + '</a>';
     }).join('');
     if(sortMode) bindDrag();
+    if(editMode) bindEdit();
   }
 
   /* 드래그 정렬 */
@@ -198,8 +291,142 @@
     });
   }
 
+  /* ===== 카드 꾸미기 (아이콘·색 편집) ===== */
+  const EMOJIS = ['\ud83d\udcdd','\ud83d\udcda','\ud83d\udcd6','\u270f\ufe0f','\ud83d\udccb','\ud83d\udcc8','\ud83d\udcca','\ud83c\udfaf',
+    '\ud83c\udf93','\ud83c\udfeb','\ud83c\udfdb\ufe0f','\ud83e\uddd1\u200d\ud83c\udfeb','\ud83d\uddc2\ufe0f','\ud83d\udd16','\ud83e\udde9','\u2b50',
+    '\ud83d\udd25','\ud83d\udca1','\ud83c\udfc6','\ud83c\udfa8','\ud83d\uddbc\ufe0f','\ud83d\udcbb','\ud83d\udda5\ufe0f','\ud83d\udcf1',
+    '\ud83d\udd0d','\u2705','\ud83d\udcc5','\ud83d\udd14','\ud83d\udce3','\ud83d\udcac','\ud83c\udf1f','\ud83d\ude80'];
+  const COLORS = ['#8e1530','#6f0f24','#b08a3e','#2b5b8a','#7a5a9a','#3a8a5c',
+    '#c06a2c','#d4a017','#c0568e','#2a9d8f','#4a5568','#a83232'];
+
+  let editTarget = null;        // 현재 편집 중인 PAGES 인덱스
+  let draftIcon = '', draftColor = '';
+  const modal = document.getElementById('editModal');
+
+  function bindEdit(){
+    grid.querySelectorAll('.edit-btn').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        openEditor(+b.dataset.edit);
+      });
+    });
+  }
+
+  function openEditor(idx){
+    editTarget = idx;
+    const p = PAGES[idx];
+    draftIcon = p.icon || '\ud83d\udd17';
+    draftColor = p.color || '#8e1530';
+    document.getElementById('edTitle').textContent = p.name + ' 꾸미기';
+
+    // 이모지 그리드
+    const eg = document.getElementById('edEmojiGrid');
+    eg.innerHTML = EMOJIS.map(function(em){
+      return '<button class="emoji-cell'+(em===draftIcon?' sel':'')+'" data-em="'+em+'">'+em+'</button>';
+    }).join('');
+    eg.querySelectorAll('.emoji-cell').forEach(function(c){
+      c.addEventListener('click', function(){ draftIcon = c.dataset.em;
+        document.getElementById('edEmojiInput').value=''; syncEmojiSel(); updatePreview(); });
+    });
+    document.getElementById('edEmojiInput').value='';
+
+    // 색상 그리드
+    const cg = document.getElementById('edColorGrid');
+    cg.innerHTML = COLORS.map(function(c){
+      return '<button class="color-cell'+(c.toLowerCase()===draftColor.toLowerCase()?' sel':'')+'" data-c="'+c+'" style="background:'+c+';"></button>';
+    }).join('');
+    cg.querySelectorAll('.color-cell').forEach(function(c){
+      c.addEventListener('click', function(){ setColor(c.dataset.c); });
+    });
+    document.getElementById('edColorPick').value = draftColor;
+    document.getElementById('edColorHex').value = draftColor;
+
+    updatePreview();
+    modal.classList.add('active');
+  }
+
+  function syncEmojiSel(){
+    document.querySelectorAll('#edEmojiGrid .emoji-cell').forEach(function(c){
+      c.classList.toggle('sel', c.dataset.em===draftIcon);
+    });
+  }
+  function setColor(hex){
+    draftColor = hex;
+    document.getElementById('edColorPick').value = /^#[0-9a-fA-F]{6}$/.test(hex)?hex:'#8e1530';
+    document.getElementById('edColorHex').value = hex;
+    document.querySelectorAll('#edColorGrid .color-cell').forEach(function(c){
+      c.classList.toggle('sel', c.dataset.c.toLowerCase()===hex.toLowerCase());
+    });
+    updatePreview();
+  }
+  function updatePreview(){
+    const soft = /^#[0-9a-fA-F]{6}$/.test(draftColor)?softBg(draftColor):'#f3eee5';
+    const pv = document.getElementById('edPvIco');
+    pv.textContent = draftIcon;
+    pv.style.background = soft;
+    document.getElementById('edPvName').textContent = PAGES[editTarget].name;
+    document.getElementById('edPvName').style.color = draftColor;
+  }
+
+  document.getElementById('edEmojiInput').addEventListener('input', function(){
+    const v = this.value.trim();
+    if(v){ draftIcon = v; syncEmojiSel(); updatePreview(); }
+  });
+  document.getElementById('edColorPick').addEventListener('input', function(){ setColor(this.value); });
+  document.getElementById('edColorHex').addEventListener('input', function(){
+    let v = this.value.trim(); if(v && v[0]!=='#') v='#'+v;
+    if(/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v);
+  });
+
+  document.getElementById('edCancel').addEventListener('click', closeEditor);
+  modal.addEventListener('click', function(e){ if(e.target===modal) closeEditor(); });
+  function closeEditor(){ modal.classList.remove('active'); editTarget=null; }
+
+  document.getElementById('edApply').addEventListener('click', function(){
+    if(editTarget===null) return;
+    PAGES[editTarget].icon = draftIcon;
+    PAGES[editTarget].color = draftColor;
+    closeEditor();
+    render();
+  });
+
+  /* 꾸미기 모드 토글 */
+  document.getElementById('editToggle').addEventListener('click', function(){
+    if(sortMode){ // 정렬 모드였다면 끄기
+      sortMode=false; document.getElementById('sortBar').classList.remove('active');
+      document.getElementById('sortToggle').textContent='카드 순서 바꾸기';
+    }
+    editMode = !editMode;
+    document.getElementById('editBar').classList.toggle('active', editMode);
+    this.textContent = editMode ? '꾸미기 끝내기' : '카드 꾸미기';
+    render();
+  });
+
+  /* 변경 저장 (코드 복사) — 순서 저장과 동일 형식 */
+  document.getElementById('editSave').addEventListener('click', copyPagesCode);
+
+  function copyPagesCode(){
+    const lines = order.map(function(idx){
+      const p = PAGES[idx];
+      const parts = ['name:"'+p.name+'"','url:"'+p.url+'"','desc:"'+(p.desc||'')+'"'];
+      if(p.icon) parts.push('icon:"'+p.icon+'"');
+      if(p.color) parts.push('color:"'+p.color+'"');
+      return '    { '+parts.join(', ')+' },';
+    }).join('\n');
+    const code = '  const PAGES = [\n'+lines+'\n  ];';
+    navigator.clipboard.writeText(code).then(function(){
+      alert('변경된 카드 코드가 복사되었습니다.\n\nGitHub에서 hub.html 을 열고,\n기존 "const PAGES = [ ... ];" 부분을 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
+    }).catch(function(){
+      prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
+    });
+  }
+
   /* 정렬 모드 토글 */
   document.getElementById('sortToggle').addEventListener('click', function(){
+    if(editMode){ // 꾸미기 모드였다면 끄기
+      editMode=false; document.getElementById('editBar').classList.remove('active');
+      document.getElementById('editToggle').textContent='카드 꾸미기';
+    }
     sortMode = !sortMode;
     document.getElementById('sortBar').classList.toggle('active', sortMode);
     this.textContent = sortMode ? '정렬 끝내기' : '카드 순서 바꾸기';

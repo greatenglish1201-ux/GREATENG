@@ -46,3 +46,35 @@
 ### 참고 (제출일 데이터 위치)
 - 사진/로그 items에는 제출일 정보 존재: `it.ts`(제출시각), `it.due`(숙제 날짜). (renderInspectPhotos L515~, 로그표 L943~)
 - day 객체(`renderInspectDays`)에는 기존엔 `date`,`status`만 있었음 — 이번 작업의 핵심 격차.
+
+---
+
+## hub.html
+
+### 이번 변경 (카드 꾸미기 — 아이콘·색 화면 편집)
+- 목적: 코드 직접수정 없이 허브 화면에서 카드 **아이콘(이모지)·왼쪽 색선**을 클릭·선택으로 변경. 저장은 기존 '순서 저장'과 동일한 "코드 복사 → PAGES 붙여넣기 → 커밋" 흐름.
+- **CSS 추가** (`.sort-bar` @media 뒤): `.edit-btn`(카드 우상단 ✎), `.tile.editable`, `.modal-back`/`.modal`, `.emoji-grid`/`.emoji-cell`/`.emoji-input`, `.color-grid`/`.color-cell`/`.color-custom`, `.modal-preview`, `.modal-actions`/`.btn-cancel`/`.btn-apply`. 기존 토큰(--wine/--gold/--line/--fill) 재사용, 신규 스타일 없음.
+- **툴바 변경**: `.sort-ctrl` 안에 `#editToggle`("카드 꾸미기") 버튼을 `#sortToggle` 옆에 배치(flex gap). `#editBar`(꾸미기 저장 바) 추가.
+- **모달 마크업**: `.wrap` 닫힘 `</div>` 직후 `#editModal`(미리보기 + 이모지그리드 + 직접입력 + 색상그리드 + color picker + hex + 취소/적용) 추가.
+- **render()**: `editMode` 분기 추가 — 편집 모드 시 `<a>` 대신 `<div class="tile editable">` + `.edit-btn`(data-edit=idx) 렌더, 링크 비활성. 끝에 `if(editMode) bindEdit();`.
+- **JS 로직 추가** (`정렬 모드 토글` 바로 앞): 상수 `EMOJIS`(32개), `COLORS`(12개). 함수 `bindEdit`, `openEditor(idx)`, `syncEmojiSel`, `setColor(hex)`, `updatePreview`, `closeEditor`, `copyPagesCode`. 이벤트: 이모지셀 클릭 / 직접입력(input) / color picker / hex input / 취소 / 배경클릭 닫기 / 적용(PAGES[idx].icon·color 갱신 후 render) / editToggle / editSave.
+- **상호배타 처리**: `editToggle`은 sortMode 켜져있으면 끄고, `sortToggle`은 editMode 켜져있으면 끔. (두 모드 동시 활성 방지)
+- **적용 3경로 검증**: 이모지 그리드 클릭 / 이모지 직접붙여넣기 / 색상 HEX 직접입력 모두 정상. softBg()로 아이콘 배경 자동 연화.
+
+### 검증
+- node --check: JS 문법 PASS.
+- Playwright(headless, auth 게이트 제거 후): 카드 11개 렌더, 편집버튼 11개, 모달 open/apply 정상, JS 콘솔에러 없음(403은 로컬 auth.js 원격검증 실패로 기능 무관).
+
+### 진행 중 / 후속 필요
+- 저장은 **수동 흐름 유지**(정적 사이트라 자동저장 불가): 꾸미기 후 '변경 저장(코드 복사)' → GitHub에서 hub.html의 `const PAGES = [ ... ];`(L116~ 부근) 통째 교체 → 커밋. copyPagesCode()가 순서까지 포함해 출력하므로 순서·꾸미기 어느 쪽 저장이든 최신 PAGES 전체가 복사됨.
+- `auth.js` 게이트가 실제 배포 환경에서 편집 버튼 클릭을 막지 않는지 로그인 후 확인 필요(로컬 테스트에선 게이트 제거하고 검증). 로그인 통과 상태면 게이트 div가 사라지므로 정상 동작 예상.
+
+### 산출물
+- `hub.html`: 카드 꾸미기 기능 포함 전체본(456줄). 기존 순서편집·드래그·PAGES 구조 모두 보존, diff 기준 추가만 함.
+
+---
+
+## 위젯 (네이버 블로그) — 참고 메모
+- 여름특강 위젯: link `summer.html`, img `image/summer.png`.
+- 수능파이널 위젯: link `suneung_2026.html`, img `image/sf_widget_banner.png`(구 `suneung_final.png`는 영문라벨 "Summer Intensive" 오타 → `sf_widget_banner.png`로 교체, 라벨 "Final Class"). width=170 권장(네 위젯 통일).
+- 네이버 위젯 제약: 가로 170px·세로 600px 한계, JS/iframe 불가, `<a><img></a>` 형태만. 이미지 파일명 공백 금지(URL %20 이슈).
