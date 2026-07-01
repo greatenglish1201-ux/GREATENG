@@ -840,9 +840,7 @@
             </div>
             <div class="fee-adminbtns">
               <button class="fab fab-add" id="feeAddBtn">+ 반 추가</button>
-              <button class="fab fab-save" id="feeSaveBtn">이 브라우저에 저장</button>
-              <button class="fab fab-copy" id="feeCopyBtn">수정된 코드 복사</button>
-              <button class="fab fab-reset" id="feeResetBtn">기본값으로 초기화</button>
+              <button class="fab fab-save" id="feeSaveBtn">저장</button>
               <button class="fab fab-done" id="feeDoneBtn">저장 후 종료</button>
             </div>
           </div>
@@ -901,17 +899,12 @@
 
 <script>
   /* ════════════════════════════════════════════
-     ▼▼▼  시간표·교육비 수정은 여기만 고치세요  ▼▼▼
-     · 반을 추가하려면 { } 한 줄을 복사해 아래에 붙이고 내용만 바꾸면 됩니다.
-     · 반을 빼려면 해당 { } 줄을 지우면 됩니다.
-     · fee 는 숫자만 적으면 자동으로 "원"이 붙습니다.
-
-     ※ 코드를 직접 안 고쳐도, 페이지 하단의 작은 점(·)을 눌러
-       관리자 비밀번호를 넣으면 화면에서 바로 편집할 수 있습니다.
+     ▼▼▼  시간표·교육비 편집 안내  ▼▼▼
+     · 평소엔 페이지 하단의 작은 점(·)을 눌러 관리자 비밀번호를 넣으면
+       화면에서 바로 편집·저장할 수 있습니다. (저장하면 모든 방문자에게 즉시 반영)
+     · 아래 TUITION / NOTE_TEXT 는 서버에 저장된 값이 없을 때만 쓰이는 기본값입니다.
+       (한 번이라도 화면에서 저장하면 서버 값이 우선합니다.)
   ════════════════════════════════════════════ */
-
-  /* 관리자 비밀번호 — 바꾸려면 따옴표 안만 고치세요 */
-  const ADMIN_PW = "admin4625";
 
   const TUITION = [
     { name:"중등 기초", days:"화 · 목", time:"오후 5:30 ~ 7:00",  fee:300000 },
@@ -921,37 +914,59 @@
     { name:"고등 B",   days:"화 · 목", time:"오후 8:30 ~ 10:00", fee:400000 },
   ];
 
-  /* 시간표 아래 안내 문구 — 바꾸려면 따옴표 안만 고치세요 */
+  /* 시간표 아래 안내 문구 (기본값) */
   const NOTE_TEXT = "※ 교육비는 월 기준 최종 납부금액입니다. 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.";
-  /* ▲▲▲  여기까지만 고치면 됩니다  ▲▲▲ */
+  /* ▲▲▲  기본값 여기까지  ▲▲▲ */
 
-  /* localStorage 저장 키 */
-  const FEE_LS_KEY = 'greateng_parentguide_fee_v1';
+  /* ── GAS(숙제점검) 백엔드 저장 ── */
+  const SCHED_GAS_URL = 'https://script.google.com/macros/s/AKfycbwu_6vMigAhIXq8o-4mda7Gyd1dfiC5nSsT0Ei9Ckwlwuc_OGMAEb9FybGB6lOJcsbL/exec';
 
-  /* 저장된 값 불러오기 (없으면 코드의 기본값 사용) */
-  function loadSaved(){
-    try{
-      const raw = localStorage.getItem(FEE_LS_KEY);
-      if(!raw) return null;
-      const o = JSON.parse(raw);
-      if(o && Array.isArray(o.fee)) return o;
-    }catch(e){}
-    return null;
-  }
-  const _saved = loadSaved();
-
-  /* 화면에 보여줄 현재 데이터 (편집 시 이 값이 바뀜) */
-  let feeData = _saved ? _saved.fee.map(r=>({...r})) : TUITION.map(r=>({...r}));
-  let noteData = (_saved && typeof _saved.note === 'string') ? _saved.note : NOTE_TEXT;
-  let curPw = ADMIN_PW;
+  /* 화면에 보여줄 현재 데이터 (편집 시 이 값이 바뀜) — 처음엔 코드 기본값, 이후 GAS 값으로 덮어씀 */
+  let feeData = TUITION.map(r=>({...r}));
+  let noteData = NOTE_TEXT;
+  let curPw = '';
   let editMode = false;
 
-  /* 현재 편집값을 이 브라우저에 저장 */
-  function saveLocal(){
+  /* JSONP 로 GAS 호출 (CORS 회피) */
+  function gasJsonp(params){
+    return new Promise((resolve, reject)=>{
+      const cbName = 'schedCb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+      const timer = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, 12000);
+      function cleanup(){
+        clearTimeout(timer);
+        try{ delete window[cbName]; }catch(e){ window[cbName] = undefined; }
+        if(s && s.parentNode) s.parentNode.removeChild(s);
+      }
+      window[cbName] = (data)=>{ cleanup(); resolve(data); };
+      const qs = Object.keys(params).map(k=> encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
+      const s = document.createElement('script');
+      s.src = SCHED_GAS_URL + '?' + qs + '&callback=' + cbName;
+      s.onerror = ()=>{ cleanup(); reject(new Error('network')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* GAS 에서 저장된 시간표 불러오기 */
+  async function loadFromGAS(){
     try{
-      localStorage.setItem(FEE_LS_KEY, JSON.stringify({ fee: feeData, note: noteData }));
-      return true;
-    }catch(e){ return false; }
+      const res = await gasJsonp({ type:'getSchedule' });
+      if(res && res.ok && res.data && Array.isArray(res.data.fee)){
+        feeData = res.data.fee.map(r=>({...r}));
+        if(typeof res.data.note === 'string') noteData = res.data.note;
+        renderFee();
+        renderNote();
+      }
+    }catch(e){ /* 실패 시 코드 기본값 유지 */ }
+  }
+
+  /* GAS 로 저장 (모든 방문자 반영). 성공 여부 반환 */
+  async function saveToGAS(){
+    const payload = JSON.stringify({ fee: feeData, note: noteData });
+    try{
+      const res = await gasJsonp({ type:'saveSchedule', pw: curPw, data: payload });
+      if(res && res.ok) return { ok:true };
+      return { ok:false, msg:(res && res.msg) ? res.msg : '저장 실패' };
+    }catch(e){ return { ok:false, msg:'통신 오류: ' + e.message }; }
   }
 
   const feeBody = document.getElementById('feeBody');
@@ -1003,30 +1018,37 @@
   }
   renderFee();
   renderNote();
-
-  /* ── 관리자 편집 모드 ── */
-  function enterEdit(){
+  loadFromGAS();   // 저장된 시간표가 있으면 GAS에서 불러와 덮어씀
+  function enterEdit(pw){
     editMode = true;
-    curPw = ADMIN_PW;
+    curPw = pw || '';
     renderFee();
     renderNote();
     const pwInput = document.getElementById('feePwInput');
     if(pwInput){ pwInput.value = curPw; }
     document.getElementById('feeAdminBar').style.display = 'flex';
   }
-  function exitEdit(){
-    saveLocal();               // 이 브라우저에 저장(유지)
+  async function exitEdit(){
+    const btn = document.getElementById('feeDoneBtn');
+    if(btn){ btn.disabled = true; btn.textContent = '저장 중…'; }
+    const r = await saveToGAS();
+    if(btn){ btn.disabled = false; btn.textContent = '저장 후 종료'; }
+    if(!r.ok){
+      alert('저장 실패: ' + (r.msg||'') + '\n\n(비밀번호를 확인하거나 잠시 후 다시 시도하세요. 편집 내용은 유지됩니다.)');
+      return;   // 저장 실패 시 편집 모드 유지
+    }
     editMode = false;
     renderFee();
     renderNote();
     document.getElementById('feeAdminBar').style.display = 'none';
+    alert('저장되었습니다. 모든 방문자 화면에 반영됩니다.');
   }
-  // 점(·) 클릭 → 비번 확인
+  // 점(·) 클릭 → 비번 입력 후 편집 진입 (실제 검증은 저장 시 GAS가 수행)
   document.getElementById('feeAdminDot').addEventListener('click',()=>{
     const pw = prompt('관리자 비밀번호를 입력하세요');
     if(pw===null) return;
-    if(pw===ADMIN_PW){ enterEdit(); }
-    else { alert('비밀번호가 올바르지 않습니다.'); }
+    if(!pw){ alert('비밀번호를 입력하세요.'); return; }
+    enterEdit(pw);
   });
   // 반 추가
   document.getElementById('feeAddBtn').addEventListener('click',()=>{
@@ -1040,33 +1062,14 @@
       pwInput.addEventListener('input', e=>{ curPw = e.target.value; });
     }
   })();
-  // 코드 복사 (비밀번호 + 시간표 함께)
-  document.getElementById('feeCopyBtn').addEventListener('click',()=>{
-    const pw = (curPw||'').replace(/"/g,'\\"');
-    const lines = feeData.map(r=>
-      `    { name:"${r.name}", days:"${r.days}", time:"${r.time}", fee:${Number(r.fee)||0} },`
-    ).join('\n');
-    const noteEsc = (noteData||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,' ');
-    const code = `  const ADMIN_PW = "${pw}";\n\n  const TUITION = [\n${lines}\n  ];\n\n  /* 시간표 아래 안내 문구 — 바꾸려면 따옴표 안만 고치세요 */\n  const NOTE_TEXT = "${noteEsc}";`;
-    navigator.clipboard.writeText(code).then(()=>{
-      alert('새 코드(비밀번호 + 시간표 + 안내문구)가 복사되었습니다.\n\nGitHub에서 parent_guide.html 을 열고,\n기존 \'const ADMIN_PW = "..."; \' 부터\n\'const NOTE_TEXT = "...";\' 까지를 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
-    }).catch(()=>{
-      prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
-    });
-  });
-  // 이 브라우저에 저장
-  document.getElementById('feeSaveBtn').addEventListener('click',()=>{
-    if(saveLocal()){ alert('이 브라우저에 저장되었습니다.\n\n※ 모든 방문자에게 반영하려면 \'수정된 코드 복사\' 후 GitHub Commit 이 필요합니다.'); }
-    else { alert('저장에 실패했습니다.'); }
-  });
-  // 기본값으로 초기화 (저장값 삭제)
-  document.getElementById('feeResetBtn').addEventListener('click',()=>{
-    if(!confirm('저장된 수정값을 지우고 코드의 기본값으로 되돌립니다.\n계속할까요?')) return;
-    try{ localStorage.removeItem(FEE_LS_KEY); }catch(e){}
-    feeData = TUITION.map(r=>({...r}));
-    noteData = NOTE_TEXT;
-    renderFee();
-    renderNote();
+  // 저장 (GAS — 모든 방문자 반영)
+  document.getElementById('feeSaveBtn').addEventListener('click', async ()=>{
+    const btn = document.getElementById('feeSaveBtn');
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = '저장 중…';
+    const r = await saveToGAS();
+    btn.disabled = false; btn.textContent = orig;
+    if(r.ok){ alert('저장되었습니다. 모든 방문자 화면에 반영됩니다.'); }
+    else { alert('저장 실패: ' + (r.msg||'') + '\n\n비밀번호를 확인하거나 잠시 후 다시 시도하세요.'); }
   });
   // 편집 종료
   document.getElementById('feeDoneBtn').addEventListener('click', exitEdit);
