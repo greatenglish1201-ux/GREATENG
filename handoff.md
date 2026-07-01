@@ -72,6 +72,46 @@
 ### 산출물
 - `hub.html`: 카드 꾸미기 기능 포함 전체본(456줄). 기존 순서편집·드래그·PAGES 구조 모두 보존, diff 기준 추가만 함.
 
+### 추가 변경 (제목·설명 텍스트 편집)
+- 편집창에 **제목(name)·설명(desc) 입력칸** 추가 → 이제 편집창 하나에서 제목·설명·아이콘·색 4가지 편집.
+- 모달 마크업: 미리보기 아래 `.text-input#edNameInput`(maxlength 20), `#edDescInput`(maxlength 40) 추가. 미리보기에 `.pv-desc#edPvDesc` 추가(제목 아래 설명 표시).
+- CSS: `.text-input`(emoji-input과 동일 스타일), `.modal-preview .pv-desc` 추가.
+- JS: draft 변수 `draftName`/`draftDesc` 추가. `openEditor`에서 초기값 세팅 + 입력칸 value 채움. `edTitle`은 이제 항상 "카드 꾸미기"(카드명 미포함, 편집 중 제목바뀜 대응). `updatePreview`가 `draftName`/`draftDesc` 실시간 반영(기존 `PAGES[editTarget].name` 직접참조 제거). name/desc input 이벤트 추가. `적용` 시 `PAGES[idx].name/desc`도 저장, **빈 제목이면 alert 후 차단**(카드 깨짐 방지).
+- 검증: node --check PASS. Playwright — 초기값 로드/텍스트 편집 반영/적용 후 카드 텍스트 변경/빈제목 방어(모달 유지) 정상, JS 에러 없음.
+- 전체본 486줄.
+
+### 추가 변경 (페이지 추가·삭제 + URL 편집)
+- 편집창에서 **URL(연결 주소) 편집** 가능 + **새 카드 추가** + **카드 삭제**까지. 이제 화면만으로 카드 CRUD 전부.
+- 모달 마크업: 설명 아래 `#edUrlInput`(연결 주소, maxlength 300) 추가. 액션 버튼 아래 `.modal-delete#edDelete`("이 카드 삭제") 추가.
+- CSS: `.tile.add-tile`(점선 + 카드, hover 와인), `.modal-delete`(연한 적색 톤) 추가.
+- render: editMode일 때 그리드 끝에 `#addTile`("+ 새 카드") insertAdjacentHTML로 append → click=openNewCard. edit-btn title "이 카드 편집"로 변경.
+- JS 상태: `isNewCard` 플래그, `draftUrl` 추가. **openEditor를 `fillEditor()`로 리팩터**(그리드 렌더 공통화) + `openNewCard()`(빈 draft, 삭제버튼 숨김, 제목 "새 카드 추가") 신설. openEditor는 제목 "카드 편집", 삭제버튼 표시.
+- 적용 로직 재작성: 제목·**URL 둘 다 필수**(빈값이면 alert 차단). `isNewCard`면 `PAGES.push(...)` + `order.push(끝인덱스)`, 아니면 기존 인덱스 갱신(url 포함).
+- 삭제: confirm 후 `PAGES.splice(del,1)` + **order 재구성**(삭제 idx 제거 + del보다 큰 인덱스 -1). 저장 전이면 새로고침으로 복구 가능(안내 포함).
+- ⚠️ 저장은 여전히 수동: 추가·삭제·편집 뒤 '변경 저장(코드 복사)' → hub.html의 `const PAGES` 통째 교체 → 커밋. copyPagesCode는 order 순서대로 출력하므로 추가분·삭제분·순서 모두 반영됨.
+- 검증: node --check PASS. Playwright — 새카드 추가(11→12) / 신규모달 삭제버튼 숨김 / URL 빈값 방어 / 편집모달 URL 로드 / 삭제(12→11, order 정합) 전부 정상, JS 에러 없음.
+
+### 산출물 (최종)
+- `hub.html`: 카드 꾸미기(아이콘·색) + 텍스트(제목·설명) + URL 편집 + 카드 추가/삭제 전체본(554줄). 기존 순서편집·드래그·PAGES·auth 게이트 모두 보존, diff 기준 추가만.
+
+### 추가 변경 (그룹핑 — 그룹 묶기·접기·관리)
+- 카드를 **그룹으로 묶고**, 자주 안 쓰는 그룹은 **접으면 텍스트 칩으로 가로 좁게** 표시. 그룹 접힘 상태는 코드 저장(전 기기 동일).
+- **데이터 구조**: 각 카드에 `group:"그룹명"` 필드 추가(없으면 '기타'). 신규 `const GROUPS = [{name, collapsed}]`(순서=표시순서, PAGES 정의 바로 아래). 카드의 group이 GROUPS에 없으면 '기타' 섹션으로.
+- **CSS**: `.group-sec/.group-head`(chevron·count배지·라인), `.chip-row/.chip`(접힌 그룹용 좌측 컬러바 칩), `.group-drop`(꾸미기 모드 드롭영역), 그룹관리 모달용 `.grp-row/.grp-move/.grp-name/.grp-collapse/.grp-del/.grp-add`.
+- **render 전면 재구성**: 단일 `order.map` → `groupedOrder()`로 그룹별 버킷 분류 후 섹션 렌더. 헬퍼 분리: `cardTile(idx)`·`cardChip(idx)`. 펼침=`.grid` 타일, 접힘=`.chip-row` 칩. 정렬(sortMode)은 그룹 없이 평면 유지 → `renderFlatSort()`로 분리(display 토글 grid↔block). `collapsedState{}` 런타임 상태(GROUPS.collapsed에서 초기화). `bindGroupHeads`(헤더 클릭 접기/펼치기), `bindCardDrag`(카드 dragstart + group-drop에 drop→PAGES[i].group 변경).
+- **편집창**: URL 아래 `#edGroupInput`(select) 추가 — GROUPS + '기타(미분류)' 옵션. `draftGroup` 추가, openEditor/openNewCard에서 세팅, 적용 시 `PAGES[i].group` 저장(신규는 GROUPS[0] 기본).
+- **그룹 관리 모달**(`#groupModal`): 툴바 `#groupToggle`("그룹 관리")로 열림. 그룹별 순서 ▲▼·이름 인라인 수정·기본접힘 체크·삭제(🗑), "+ 그룹 추가". `grpDraft` 복제본으로 편집 후 **적용 시 검증**(빈이름/중복 차단) → 이름변경분 카드 group에 전파(orig→new), 삭제 그룹 카드는 '기타'로, GROUPS·collapsedState 재구성.
+- **저장 통합**: `buildPagesCode()` 신설 — PAGES(group 필드 포함) + GROUPS(현재 collapsedState 반영) 두 블록 한 번에 출력. 꾸미기 저장·순서 저장 둘 다 이 함수 사용. ⚠️ 붙여넣을 때 **PAGES와 GROUPS 두 블록 모두 교체** 필요(alert 안내 수정됨).
+- **검증**: node --check PASS. Playwright — 그룹 4섹션 렌더/운영 기본접힘→칩2개/헤더클릭 펼침/그룹관리 모달 4행·추가5행·적용/편집창 그룹 select 5옵션·변경반영/꾸미기 드롭영역 4개/buildPagesCode에 GROUPS·group 포함 전부 정상, JS 에러 없음.
+
+### 진행 중 / 주의
+- ⚠️ **저장 시 이제 두 블록**: '변경 저장' 코드에 `const PAGES`와 `const GROUPS`가 함께 나옴. GitHub hub.html에서 두 블록 모두 교체해야 함(하나만 바꾸면 불일치). alert 문구에 반영됨.
+- 카드→그룹 **드래그**는 데스크톱 마우스 기준. 모바일 터치 드래그는 미검증(터치 환경에선 편집창의 그룹 select로 배정 권장).
+- 접힘 상태 저장은 '기본 접힘'(GROUPS.collapsed) 기준. 화면에서 헤더 클릭으로 접었다 편 것도 저장 시 현재 상태로 코드에 반영됨(collapsedState 기준).
+
+### 산출물 (그룹핑 포함 최종)
+- `hub.html`: 위 모든 기능 + 그룹핑 전체본(808줄). 기존 구조·auth 게이트 보존, diff 기준 추가·render 재구성만.
+
 ---
 
 ## 위젯 (네이버 블로그) — 참고 메모
