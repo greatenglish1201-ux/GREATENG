@@ -919,6 +919,26 @@
     }
 
     window.onload = async () =>{
+        // 자동 로그인 시도 함수 — DB 로드 성공/실패와 무관하게 실행되도록 분리
+        function tryAutoLogin(){
+            try {
+                let savedName = '', savedPw = '', remember = '';
+                try { remember = localStorage.getItem('voca_remember') || ''; } catch(e){}
+                try { savedName = localStorage.getItem('voca_name') || ''; } catch(e){}
+                try { savedPw = localStorage.getItem('voca_pw') || ''; } catch(e){}
+                if(remember && savedName){
+                    const nmEl = document.getElementById('st-name');
+                    const pwEl = document.getElementById('st-pw');
+                    const rmEl = document.getElementById('st-remember');
+                    if(nmEl) nmEl.value = savedName;
+                    if(rmEl) rmEl.checked = true;
+                    if(savedPw && pwEl){
+                        pwEl.value = savedPw;
+                        checkConfig();   // 이름·비번 기억된 경우 자동 로그인
+                    }
+                }
+            } catch(e){}
+        }
         try {
             await loadSharedDB();
             document.getElementById('status-msg').innerText = "시스템 준비 완료";
@@ -929,21 +949,7 @@
                 hwGrade  = localStorage.getItem('hw_grade')  || hwGrade;
                 hwCourse = localStorage.getItem('hw_course') || hwCourse;
             } catch(e){}
-            // 저장된 로그인 정보 (자동 로그인 체크한 기기만)
-            let savedName = '', savedPw = '', remember = '';
-            try { remember = localStorage.getItem('voca_remember') || ''; } catch(e){}
-            try { savedName = localStorage.getItem('voca_name') || ''; } catch(e){}
-            try { savedPw = localStorage.getItem('voca_pw') || ''; } catch(e){}
-            if(remember && savedName){
-                document.getElementById('st-name').value = savedName;
-                const pwEl = document.getElementById('st-pw');
-                const rmEl = document.getElementById('st-remember');
-                if(rmEl) rmEl.checked = true;
-                if(savedPw && pwEl){
-                    pwEl.value = savedPw;
-                    checkConfig();   // 이름·비번 기억된 경우 자동 로그인
-                }
-            }
+            tryAutoLogin();
         } catch(e) {
             document.getElementById('status-msg').innerText = e.message || "DB 로드 실패";
         }
@@ -2164,6 +2170,20 @@
             window.stStartDate = auth.startDate || '';
             window.stExpiry = auth.expiry || '';
         } catch(e){}
+        // 자동 로그인 정보 저장 — 인증 성공 직후에 처리해야 모든 경로(미션無 학생 포함)에서 확실히 저장됨
+        try {
+            const rememberEl = document.getElementById('st-remember');
+            const remember = rememberEl ? rememberEl.checked : false;
+            if(remember){
+                localStorage.setItem('voca_name', stName || '');
+                if(stPw) localStorage.setItem('voca_pw', stPw);
+                localStorage.setItem('voca_remember', '1');
+            } else {
+                localStorage.removeItem('voca_name');
+                localStorage.removeItem('voca_pw');
+                localStorage.removeItem('voca_remember');
+            }
+        } catch(e){}
         try {
             const res = await fetch(APP_URL + "?name=" + encodeURIComponent(stName) + "&t=" + Date.now());
             const data = await res.json();
@@ -2244,21 +2264,6 @@
         let metaParts = [gradeStr, courseStr, '대단한영어 멤버스'].filter(Boolean);
         if(meta) meta.innerText = metaParts.join(' · ');
         document.getElementById('student-home').style.display = 'block';
-        // 이름 기억 (개인 폰)
-        // 자동 로그인: 체크 시에만 이름·비번 기억 (학생 기기 설정에 따름)
-        try {
-            const remember = document.getElementById('st-remember')?.checked;
-            if(remember){
-                localStorage.setItem('voca_name', stName || '');
-                const pw=(document.getElementById('st-pw')?.value||'').trim();
-                if(pw) localStorage.setItem('voca_pw', pw);
-                localStorage.setItem('voca_remember', '1');
-            } else {
-                localStorage.removeItem('voca_name');
-                localStorage.removeItem('voca_pw');
-                localStorage.removeItem('voca_remember');
-            }
-        } catch(e){}
     }
 
     // 홈 카드: 단어 미션 → 미션 정보/시작 영역 펼침
