@@ -97,6 +97,8 @@
   .sort-save{ border:none; background:var(--wine); color:#fff; font-size:13px; font-weight:600;
     padding:9px 16px; border-radius:980px; cursor:pointer; font-family:inherit; white-space:nowrap; transition:opacity .15s ease; }
   .sort-save:hover{ opacity:.88; }
+  .sort-save-alt{ background:var(--card); color:var(--ink-2); border:1px solid var(--line); }
+  .sort-save-alt:hover{ background:var(--fill); opacity:1; }
   .tile.sortable{ cursor:grab; user-select:none; }
   .tile.sortable:active{ cursor:grabbing; }
   .tile.editable{ cursor:grab; }
@@ -203,7 +205,10 @@
     </div>
     <div id="editBar" class="sort-bar">
       <span>카드를 끌어 순서·그룹을 바꾸고, ✎로 내용을 고친 뒤 저장하세요</span>
-      <button id="editSave" class="sort-save">변경 저장 (코드 복사)</button>
+      <div style="display:flex; gap:8px;">
+        <button id="editSaveGit" class="sort-save">GitHub에 저장</button>
+        <button id="editSave" class="sort-save sort-save-alt">코드 복사</button>
+      </div>
     </div>
   </div>
   <div class="grid" id="grid"></div>
@@ -651,6 +656,10 @@
     render();
   });
 
+  /* 저장 버튼: GitHub 자동저장 + 코드복사(백업) */
+  document.getElementById('editSaveGit').addEventListener('click', saveToGitHub);
+  document.getElementById('editSave').addEventListener('click', copyPagesCode);
+
   /* ===== 그룹 관리 모달 ===== */
   const groupModal = document.getElementById('groupModal');
   let grpDraft = []; // [{name, collapsed, orig}] 편집용 복제본
@@ -735,8 +744,8 @@
 
 
 
-  /* PAGES + GROUPS 전체 코드 생성 (group 필드·접힘 상태 포함) */
-  function buildPagesCode(){
+  /* PAGES + GROUPS 블록 각각 생성 */
+  function buildBlocks(){
     const pageLines = order.map(function(idx){
       const p = PAGES[idx];
       const parts = ['name:"'+p.name+'"','url:"'+p.url+'"','desc:"'+(p.desc||'')+'"'];
@@ -749,8 +758,51 @@
       const col = !!collapsedState[g.name];
       return '    { name:"'+g.name+'", collapsed:'+col+' },';
     }).join('\n');
-    return '  const PAGES = [\n'+pageLines+'\n  ];\n'
-      + '  const GROUPS = [\n'+groupLines+'\n  ];';
+    return {
+      pagesBlock:  '  const PAGES = [\n'+pageLines+'\n  ];',
+      groupsBlock: '  const GROUPS = [\n'+groupLines+'\n  ];'
+    };
+  }
+
+  /* PAGES + GROUPS 전체 코드 생성 (group 필드·접힘 상태 포함) */
+  function buildPagesCode(){
+    const b = buildBlocks();
+    return b.pagesBlock + '\n' + b.groupsBlock;
+  }
+
+  /* ===== GitHub 자동 저장 (GAS 연동) ===== */
+  const SAVE_GAS_URL = 'https://script.google.com/macros/s/AKfycbztcH995RNBgmweWK_zrc8h9uazM3MexBs4VPWRpzn0lDnU_kQODtr3URvDzh-10QAY/exec';
+  const SAVE_SECRET  = 'greateng-hub-2026';
+  let saving = false;
+
+  function saveToGitHub(){
+    if(saving) return;
+    const b = buildBlocks();
+    const btn = document.getElementById('editSaveGit');
+    saving = true;
+    if(btn){ btn.disabled = true; btn.textContent = '저장 중…'; }
+    // GAS CORS 회피: text/plain 단순요청 + JSON 문자열 본문
+    fetch(SAVE_GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ secret: SAVE_SECRET, pagesBlock: b.pagesBlock, groupsBlock: b.groupsBlock })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(res && res.ok){
+        if(res.unchanged) alert('변경 사항이 없습니다.');
+        else alert('GitHub에 저장되었습니다.\n1~2분 뒤 사이트에 반영됩니다. (다른 기기는 새로고침)');
+      } else {
+        alert('저장 실패: ' + ((res && res.error) || '알 수 없는 오류') + '\n\n아래 "코드 복사"로 수동 저장하세요.');
+      }
+    })
+    .catch(function(err){
+      alert('저장 요청 실패: ' + err + '\n\n아래 "코드 복사"로 수동 저장하세요.');
+    })
+    .then(function(){
+      saving = false;
+      if(btn){ btn.disabled = false; btn.textContent = 'GitHub에 저장'; }
+    });
   }
 
   function copyPagesCode(){
