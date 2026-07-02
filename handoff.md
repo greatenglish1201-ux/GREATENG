@@ -60,7 +60,9 @@
 
 0. **파비콘 — ✅ 크림슨(nvw_2) 확정, 세트 제작 + HTML 삽입 완료 (남은 건 GitHub 업로드)**
    - 최종: 투명배경 3단 계단, 골드 #F0DFA8 → 크림슨 #A31F38 → 네이비 #22345C. 세트=favicon.svg/ico/16·32·192·512.png + apple-touch-icon.png(크림배경 #FBF7EF, `make_apple_bg.py`)
-   - **⚠️ 파비콘 파일은 저장소 `image/` 폴더에 위치** (루트 아님). 따라서 모든 HTML의 link href = `image/favicon.svg` 등 `image/` 접두어. 7개 HTML 전부 경로 수정 완료(각 5개 경로).
+   - **⚠️ 파비콘 파일은 저장소 `image/` 폴더에 위치** (루트 아님). 저장소 최신본에서 image/favicon.svg·ico·32·192·512·apple-touch-icon.png 6개 존재 확인.
+   - **경로 = 절대경로 `/GREATENG/image/...`** (프로젝트 페이지라 저장소명 GREATENG 포함 필수). 상대경로 `image/...`에서 절대경로로 변경 완료(7개 HTML 각 5경로). 이유: 프로젝트 페이지에서 브라우저가 파비콘을 사이트 루트에서 찾으려다 실패하는 문제 방지.
+   - 정확한 파비콘 URL = `greatenglish1201-ux.github.io/GREATENG/image/favicon.svg` (진단 시 이 주소 직접 열어 확인)
    - HTML 삽입 완료: summer/main/hub.html + **suneung_2026·pohang_highschools·parent_guide·voca.html** 전부 `<title>` 바로 뒤 5줄 link 블록(href=`image/...`). 태그 균형 통과. voca.html 포함 favicon 5줄 외 원본과 100% 동일(diff 검증) — auth게이트·GAS백엔드 무손상. 저장소 zip(main, 7/2 재다운로드해 변경없음 확인) 기준 작업.
    - 남은 작업(필립): ① 파비콘 7파일을 저장소 **`image/` 폴더**에 업로드(루트 아님) ② 수정된 7개 HTML(summer·main·hub·suneung_2026·pohang_highschools·parent_guide·voca) 교체 커밋 ③ 파비콘 캐시 강하니 Ctrl+F5/시크릿창 확인
    - (이력) 원본 `logo.png`(260×260, 와인배경+골드 월계관+"대단한영어" 텍스트)는 파비콘 부적합: 16/32px 축소 시 텍스트·문양 뭉개짐 (검증 완료)
@@ -134,6 +136,7 @@
 - **✅ 파비콘 최종 확정 = nvw_2 크림슨** (골드#F0DFA8→크림슨#A31F38→네이비#22345C, 투명배경 3단 계단). favicon 세트 제작(svg/ico/16·32·192·512png/apple-touch-icon, `make_apple_bg.py`) + summer/main/hub.html `<title>` 뒤 5줄 link 삽입 완료. 설치 안내 문서(`파비콘_설치안내.txt`) 작성.
 - **나머지 4개 페이지 파비콘 삽입 완료**: 저장소 zip(main) 재다운로드→변경없음 확인 후 suneung_2026·pohang_highschools·parent_guide·voca.html의 `<title>` 뒤 5줄 삽입. diff로 favicon 외 무변경 검증(voca 3970→3975줄, 기능 무손상). 남은 건 GitHub 업로드+커밋.
 - **파비콘 경로 image/ 폴더로 수정**: 필립이 파비콘을 저장소 `image/` 폴더에 업로드 → 7개 HTML 전부 href를 `favicon.svg`→`image/favicon.svg` 등으로 변경(각 5경로). 설치안내 문서도 image/ 경로+업로드 위치로 갱신.
+- **파비콘 안 뜸 → 절대경로로 수정**: 저장소 재확인(image/에 6파일 정상 존재). 원인=프로젝트 페이지 상대경로 문제 추정. 7개 HTML href를 `image/...`→`/GREATENG/image/...` 절대경로로 변경. 진단용 정확 URL = greatenglish1201-ux.github.io/GREATENG/image/favicon.svg. 필립이 이 주소 직접 열어 파일 접근 가능 여부 확인 중(안 열린다 보고 → 주소 오타 or Pages 반영지연 or 커밋 미완 가능성).
 
 ---
 
