@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script src="auth.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Google tag (gtag.js) -->
@@ -13,6 +12,11 @@
   gtag('config', 'G-12E7VM1SQ8');
 </script>
 <title>대단한영어 · 관리자 허브</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -33,56 +37,30 @@
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     letter-spacing:-0.01em;
   }
-  .wrap{ max-width:960px; margin:0 auto; }
+  .wrap{ max-width:860px; margin:0 auto; }
   header{ text-align:center; margin-bottom:40px; }
   .brand{ font-size:14px; font-weight:600; color:var(--wine); letter-spacing:0.04em; margin-bottom:10px; }
   header h1{ margin:0; font-size:30px; font-weight:700; letter-spacing:-0.03em; }
   header p{ margin:9px 0 0; font-size:14px; color:var(--ink-3); font-weight:500; }
-  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px; }
-  @media (min-width:520px){ .grid{ grid-template-columns:repeat(auto-fill,190px); justify-content:start; } }
-  /* 그룹 섹션 */
-  .group-sec{ margin-bottom:26px; }
-  .group-head{ display:flex; align-items:center; gap:10px; margin:0 2px 14px; cursor:pointer;
-    user-select:none; }
-  .group-head .chev{ font-size:12px; color:var(--ink-3); transition:transform .18s ease; width:12px; }
-  .group-head.collapsed .chev{ transform:rotate(-90deg); }
-  .group-head h2{ margin:0; font-size:15px; font-weight:700; letter-spacing:-0.01em; color:var(--ink); }
-  .group-head .count{ font-size:12px; color:var(--ink-3); font-weight:600;
-    background:var(--fill); padding:2px 9px; border-radius:980px; }
-  .group-head .line{ flex:1; height:1px; background:var(--line); }
-  /* 접힌 그룹: 텍스트 칩 가로 나열 */
-  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin:0 2px; }
-  .chip{ display:inline-flex; align-items:center; gap:7px; text-decoration:none; color:var(--ink-2);
-    background:var(--card); border:1px solid var(--line); border-left:3px solid var(--accent,var(--wine));
-    border-radius:980px; padding:6px 14px 6px 12px; font-size:13px; font-weight:600;
-    box-shadow:var(--shadow); transition:transform .14s ease, box-shadow .14s ease; }
-  .chip:hover{ transform:translateY(-1px); box-shadow:var(--shadow-hover); }
-  .chip .chip-ico{ font-size:14px; }
-  /* 그룹 드롭 타깃(꾸미기 모드) */
-  .group-sec.drop-target .group-head h2{ color:var(--wine); }
-  .group-drop{ display:none; border:2px dashed var(--line); border-radius:16px;
-    padding:14px; text-align:center; font-size:13px; color:var(--ink-3); font-weight:600; margin:0 2px; }
-  .group-sec.editing .group-drop{ display:block; }
-  .group-sec.drop-over .group-drop{ border-color:var(--wine); color:var(--wine); background:var(--card); }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
   .tile{
-    display:flex; flex-direction:column; text-decoration:none; color:inherit;
+    display:block; text-decoration:none; color:inherit;
     background:var(--card); border:1px solid rgba(0,0,0,.03);
-    border-radius:16px; padding:16px; box-shadow:var(--shadow);
+    border-radius:20px; padding:24px; box-shadow:var(--shadow);
     transition:transform .18s ease, box-shadow .18s ease;
-    position:relative; overflow:hidden; aspect-ratio:1 / 1;
+    position:relative; overflow:hidden;
   }
   .tile:hover{ transform:translateY(-3px); box-shadow:var(--shadow-hover); }
   .tile:active{ transform:translateY(-1px); }
   .tile::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent,var(--wine)); }
   .tile .ico{
-    width:40px; height:40px; border-radius:11px;
+    width:46px; height:46px; border-radius:13px;
     display:flex; align-items:center; justify-content:center;
-    font-size:19px; margin-bottom:12px; background:var(--accent-soft,#f3eee5); flex-shrink:0;
+    font-size:22px; margin-bottom:16px; background:var(--accent-soft,#f3eee5);
   }
-  .tile h2{ margin:0 0 4px; font-size:15px; font-weight:600; letter-spacing:-0.02em; }
-  .tile p{ margin:0; font-size:12px; color:var(--ink-3); line-height:1.45; font-weight:500;
-    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-  .tile .go{ margin-top:auto; padding-top:10px; font-size:12px; font-weight:600; color:var(--wine); }
+  .tile h2{ margin:0 0 5px; font-size:17px; font-weight:600; letter-spacing:-0.02em; }
+  .tile p{ margin:0; font-size:13px; color:var(--ink-3); line-height:1.5; font-weight:500; }
+  .tile .go{ margin-top:14px; font-size:13px; font-weight:600; color:var(--wine); }
   footer{ text-align:center; margin-top:40px; font-size:12px; color:var(--ink-3); }
   /* 카드 순서 정렬 */
   .sort-ctrl{ display:flex; flex-direction:column; align-items:flex-end; gap:10px; margin-bottom:16px; }
@@ -97,97 +75,12 @@
   .sort-save{ border:none; background:var(--wine); color:#fff; font-size:13px; font-weight:600;
     padding:9px 16px; border-radius:980px; cursor:pointer; font-family:inherit; white-space:nowrap; transition:opacity .15s ease; }
   .sort-save:hover{ opacity:.88; }
-  .sort-save-alt{ background:var(--card); color:var(--ink-2); border:1px solid var(--line); }
-  .sort-save-alt:hover{ background:var(--fill); opacity:1; }
   .tile.sortable{ cursor:grab; user-select:none; }
   .tile.sortable:active{ cursor:grabbing; }
-  .tile.editable{ cursor:grab; }
-  .tile.editable:active{ cursor:grabbing; }
   .tile.dragging{ opacity:.4; }
   .tile.drag-over{ outline:2px dashed var(--wine); outline-offset:3px; }
   .drag-grip{ position:absolute; top:14px; right:16px; font-size:18px; color:var(--ink-3); letter-spacing:-2px; }
   @media (max-width:560px){ .sort-bar{ flex-direction:column; align-items:stretch; } .sort-bar span{ text-align:center; } }
-  /* 카드 꾸미기 (아이콘·색상 편집) */
-  .edit-btn{ position:absolute; top:12px; right:14px; width:30px; height:30px; border-radius:9px;
-    border:1px solid var(--line); background:var(--card); color:var(--ink-2); cursor:pointer;
-    display:flex; align-items:center; justify-content:center; font-size:14px; font-family:inherit;
-    box-shadow:0 1px 3px rgba(0,0,0,.06); transition:background .15s ease; z-index:2; }
-  .edit-btn:hover{ background:var(--fill); }
-  .modal-back{ position:fixed; inset:0; background:rgba(29,29,31,.42); backdrop-filter:blur(2px);
-    display:none; align-items:center; justify-content:center; padding:20px; z-index:50; }
-  .modal-back.active{ display:flex; }
-  .modal{ background:var(--card); border-radius:20px; width:100%; max-width:420px; max-height:88vh; overflow:auto;
-    box-shadow:0 24px 60px rgba(44,36,32,.28); padding:24px; }
-  .modal h3{ margin:0 0 4px; font-size:18px; font-weight:700; letter-spacing:-0.02em; }
-  .modal .sub{ margin:0 0 20px; font-size:13px; color:var(--ink-3); font-weight:500; }
-  .modal .field-label{ font-size:12px; font-weight:600; color:var(--ink-2); margin:0 0 9px; letter-spacing:0.01em; }
-  .emoji-grid{ display:grid; grid-template-columns:repeat(8,1fr); gap:5px; margin-bottom:20px; }
-  .emoji-cell{ aspect-ratio:1; border:1px solid transparent; border-radius:10px; background:var(--fill);
-    font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:transform .1s ease, border-color .1s ease; padding:0; font-family:inherit; }
-  .emoji-cell:hover{ transform:scale(1.08); }
-  .emoji-cell.sel{ border-color:var(--wine); background:#fff; box-shadow:0 0 0 2px rgba(142,21,48,.14); }
-  .emoji-input{ width:100%; border:1px solid var(--line); border-radius:11px; padding:10px 12px;
-    font-size:14px; font-family:inherit; margin-bottom:20px; box-sizing:border-box; color:var(--ink); }
-  .emoji-input:focus{ outline:none; border-color:var(--wine); }
-  .color-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:14px; }
-  .color-cell{ aspect-ratio:1; border-radius:11px; cursor:pointer; border:2px solid transparent;
-    position:relative; transition:transform .1s ease; }
-  .color-cell:hover{ transform:scale(1.08); }
-  .color-cell.sel{ border-color:var(--ink); box-shadow:0 0 0 2px #fff inset; }
-  .color-custom{ display:flex; align-items:center; gap:9px; margin-bottom:22px; }
-  .color-custom input[type=color]{ width:38px; height:38px; border:1px solid var(--line); border-radius:10px;
-    padding:0; background:none; cursor:pointer; }
-  .color-custom .hexbox{ flex:1; border:1px solid var(--line); border-radius:11px; padding:10px 12px;
-    font-size:14px; font-family:inherit; color:var(--ink); box-sizing:border-box; }
-  .color-custom .hexbox:focus{ outline:none; border-color:var(--wine); }
-  .modal-preview{ display:flex; align-items:center; gap:12px; background:var(--fill); border-radius:14px;
-    padding:14px 16px; margin-bottom:22px; }
-  .modal-preview .pv-ico{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center;
-    justify-content:center; font-size:21px; flex-shrink:0; }
-  .modal-preview .pv-name{ font-size:15px; font-weight:600; }
-  .modal-preview .pv-desc{ font-size:12px; color:var(--ink-3); font-weight:500; margin-top:2px; }
-  .text-input{ width:100%; border:1px solid var(--line); border-radius:11px; padding:10px 12px;
-    font-size:14px; font-family:inherit; margin-bottom:20px; box-sizing:border-box; color:var(--ink); }
-  .text-input:focus{ outline:none; border-color:var(--wine); }
-  .modal-actions{ display:flex; gap:10px; }
-  .modal-actions button{ flex:1; border-radius:980px; padding:11px 16px; font-size:14px; font-weight:600;
-    font-family:inherit; cursor:pointer; transition:opacity .15s ease, background .15s ease; }
-  .btn-cancel{ border:1px solid var(--line); background:var(--card); color:var(--ink-2); }
-  .btn-cancel:hover{ background:var(--fill); }
-  .btn-apply{ border:none; background:var(--wine); color:#fff; }
-  .btn-apply:hover{ opacity:.88; }
-  /* 새 카드 추가 타일 */
-  .tile.add-tile{ display:flex; flex-direction:column; align-items:center; justify-content:center;
-    min-height:150px; border:2px dashed var(--line); background:transparent; box-shadow:none;
-    color:var(--ink-3); cursor:pointer; gap:8px; }
-  .tile.add-tile:hover{ border-color:var(--wine); color:var(--wine); background:var(--card); transform:translateY(-3px); }
-  .tile.add-tile::before{ display:none; }
-  .tile.add-tile .plus{ font-size:34px; font-weight:300; line-height:1; }
-  .tile.add-tile .lbl{ font-size:14px; font-weight:600; }
-  /* 편집창 삭제 버튼 */
-  .modal-delete{ width:100%; margin-top:12px; border:1px solid #e8c9c9; background:#fdf4f4; color:#a83232;
-    border-radius:980px; padding:10px 16px; font-size:13px; font-weight:600; font-family:inherit;
-    cursor:pointer; transition:background .15s ease; }
-  .modal-delete:hover{ background:#f8e9e9; }
-  /* 그룹 관리 모달 */
-  .grp-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--line); }
-  .grp-row:last-of-type{ border-bottom:none; }
-  .grp-move{ display:flex; flex-direction:column; gap:1px; }
-  .grp-move button{ border:1px solid var(--line); background:var(--card); color:var(--ink-2); width:24px; height:17px;
-    line-height:1; font-size:10px; cursor:pointer; padding:0; border-radius:5px; font-family:inherit; }
-  .grp-move button:hover{ background:var(--fill); }
-  .grp-name{ flex:1; border:1px solid transparent; border-radius:9px; padding:8px 10px; font-size:14px;
-    font-family:inherit; font-weight:600; color:var(--ink); background:var(--fill); box-sizing:border-box; }
-  .grp-name:focus{ outline:none; border-color:var(--wine); background:#fff; }
-  .grp-collapse{ display:flex; align-items:center; gap:5px; font-size:12px; color:var(--ink-3);
-    font-weight:600; white-space:nowrap; cursor:pointer; user-select:none; }
-  .grp-del{ border:1px solid #e8c9c9; background:#fdf4f4; color:#a83232; border-radius:8px; width:28px; height:28px;
-    cursor:pointer; font-size:14px; padding:0; font-family:inherit; }
-  .grp-del:hover{ background:#f8e9e9; }
-  .grp-add{ width:100%; margin-top:14px; border:1px dashed var(--line); background:transparent; color:var(--ink-2);
-    border-radius:11px; padding:11px; font-size:13px; font-weight:600; font-family:inherit; cursor:pointer; }
-  .grp-add:hover{ border-color:var(--wine); color:var(--wine); }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 </head>
@@ -199,77 +92,14 @@
     <p>모든 도구를 한곳에서</p>
   </header>
   <div class="sort-ctrl">
-    <div style="display:flex; gap:8px;">
-      <button id="editToggle" class="sort-btn">카드 편집</button>
-      <button id="groupToggle" class="sort-btn">그룹 관리</button>
-    </div>
-    <div id="editBar" class="sort-bar">
-      <span>카드를 끌어 순서·그룹을 바꾸고, ✎로 내용을 고친 뒤 저장하세요</span>
-      <div style="display:flex; gap:8px;">
-        <button id="editSaveGit" class="sort-save">GitHub에 저장</button>
-        <button id="editSave" class="sort-save sort-save-alt">코드 복사</button>
-      </div>
+    <button id="sortToggle" class="sort-btn">카드 순서 바꾸기</button>
+    <div id="sortBar" class="sort-bar">
+      <span>카드를 끌어서 순서를 바꾼 뒤 저장하세요</span>
+      <button id="sortSave" class="sort-save">순서 저장 (코드 복사)</button>
     </div>
   </div>
   <div class="grid" id="grid"></div>
   <footer>대단한영어 · 탁월함이 습관이 되도록</footer>
-</div>
-
-<div class="modal-back" id="editModal">
-  <div class="modal">
-    <h3 id="edTitle">카드 꾸미기</h3>
-    <p class="sub">제목·설명·아이콘·색을 바꾼 뒤 적용하세요.</p>
-
-    <div class="modal-preview">
-      <div class="pv-ico" id="edPvIco"></div>
-      <div>
-        <div class="pv-name" id="edPvName"></div>
-        <div class="pv-desc" id="edPvDesc"></div>
-      </div>
-    </div>
-
-    <p class="field-label">제목</p>
-    <input class="text-input" id="edNameInput" maxlength="20" placeholder="카드 제목">
-
-    <p class="field-label">설명</p>
-    <input class="text-input" id="edDescInput" maxlength="40" placeholder="한 줄 설명">
-
-    <p class="field-label">연결 주소 (URL)</p>
-    <input class="text-input" id="edUrlInput" maxlength="300" placeholder="예: voca.html 또는 https://...">
-
-    <p class="field-label">그룹</p>
-    <select class="text-input" id="edGroupInput"></select>
-
-    <p class="field-label">아이콘</p>
-    <div class="emoji-grid" id="edEmojiGrid"></div>
-    <input class="emoji-input" id="edEmojiInput" maxlength="4" placeholder="또는 직접 이모지 붙여넣기">
-
-    <p class="field-label">왼쪽 색</p>
-    <div class="color-grid" id="edColorGrid"></div>
-    <div class="color-custom">
-      <input type="color" id="edColorPick" value="#8e1530">
-      <input class="hexbox" id="edColorHex" maxlength="7" placeholder="#8e1530">
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-cancel" id="edCancel">취소</button>
-      <button class="btn-apply" id="edApply">적용</button>
-    </div>
-    <button class="modal-delete" id="edDelete">이 카드 삭제</button>
-  </div>
-</div>
-
-<div class="modal-back" id="groupModal">
-  <div class="modal">
-    <h3>그룹 관리</h3>
-    <p class="sub">그룹 이름·순서·기본 접힘을 정하세요. 카드는 꾸미기 모드에서 그룹으로 끌어다 배정합니다.</p>
-    <div id="grpList"></div>
-    <button class="grp-add" id="grpAdd">+ 그룹 추가</button>
-    <div class="modal-actions" style="margin-top:22px;">
-      <button class="btn-cancel" id="grpCancel">취소</button>
-      <button class="btn-apply" id="grpApply">적용</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -288,25 +118,18 @@
        { name:"새 도구", url:"newtool.html", desc:"설명", icon:"\u2b50", color:"#3a8a5c" },
      ============================================================ */
   const PAGES = [
-    { name:"숙제 현황", url:"hw-monitor.html", desc:"제출 현황 · 사진 확인 · 학부모 리포트", icon:"📊", color:"#2b5b8a", group:"학생 관리" },
-    { name:"교사 분석 툴", url:"teacher.html", desc:"지문 작성 · 문항 생성 · 분석", icon:"🧑‍🏫", color:"#6f0f24", group:"수업 도구" },
-    { name:"멤버스 (보카)", url:"voca.html", desc:"단어 시험 · 숙제 제출 · 관리자", icon:"📚", color:"#b08a3e", group:"학생 관리" },
-    { name:"학생 퀴즈", url:"index.html", desc:"학생용 퀴즈 앱 · 관리자 패널", icon:"📝", color:"#8e1530", group:"수업 도구" },
-    { name:"출제 허브", url:"exam-analysis.html", desc:"기출 분석 · 예상문제 생성", icon:"🎯", color:"#7a5a9a", group:"수업 도구" },
-    { name:"메인 페이지", url:"main.html", desc:"학원 대표 홈 · 소개 · 후기 · 비즈채널", icon:"🏛️", color:"#8e1530", group:"안내" },
-    { name:"학부모 안내", url:"parent_guide.html", desc:"수업 방식 · 상담 가이드 · 시간표/교육비", icon:"📋", color:"#9a3a5a", group:"안내" },
-    { name:"수능대비반", url:"suneung_2026.html", desc:"고3 수능대비반 안내 페이지", icon:"🎓", color:"#c06a2c", group:"안내" },
-    { name:"학교 정보", url:"pohang_highschools.html", desc:"포항 학교 지도 · 입시 정보", icon:"🏫", color:"#3a8a5c", group:"안내" },
-    { name:"애널리틱스", url:"https://analytics.google.com/analytics/web/#/a398325140p542064683/reports/intelligenthome", desc:"방문자 · 트래픽 통계 (GA4)", icon:"📈", color:"#d4a017", group:"운영" },
-    { name:"썸네일 생성기", url:"greateng_thumbnail_pro2_2.html", desc:"블로그 썸네일 · 위젯배너 제작", icon:"🎨", color:"#c0568e", group:"운영" },
-  ];
-  /* 그룹 목록 — name(그룹명) · collapsed(기본 접힘 여부). 순서가 화면 표시 순서.
-     카드의 group 값과 name이 일치하면 그 그룹에 묶임. 어디에도 없으면 '기타'로 표시. */
-  const GROUPS = [
-    { name:"학생 관리", collapsed:false },
-    { name:"수업 도구", collapsed:false },
-    { name:"운영", collapsed:false },
-    { name:"안내", collapsed:true },
+    { name:"학생 퀴즈",     url:"index.html",              desc:"학생용 퀴즈 앱 · 관리자 패널",        icon:"\ud83d\udcdd", color:"#8e1530" },
+    { name:"교사 분석 툴",  url:"teacher.html",            desc:"지문 작성 · 문항 생성 · 분석",        icon:"\ud83e\uddd1\u200d\ud83c\udfeb", color:"#6f0f24" },
+    { name:"멤버스 (보카)", url:"voca.html",               desc:"단어 시험 · 숙제 제출 · 관리자",      icon:"\ud83d\udcda", color:"#b08a3e" },
+    { name:"숙제 현황",     url:"hw-monitor.html",         desc:"제출 현황 · 사진 확인 · 학부모 리포트", icon:"\ud83d\udcca", color:"#2b5b8a" },
+    { name:"출제 허브",     url:"exam-analysis.html",      desc:"기출 분석 · 예상문제 생성",            icon:"\ud83c\udfaf", color:"#7a5a9a" },
+    { name:"학교 정보",     url:"pohang_highschools.html", desc:"포항 학교 지도 · 입시 정보",          icon:"\ud83c\udfeb", color:"#3a8a5c" },
+    { name:"수능대비반",    url:"suneung_2026.html",       desc:"고3 수능대비반 안내 페이지",          icon:"\ud83c\udf93", color:"#c06a2c" },
+    { name:"애널리틱스",    url:"https://analytics.google.com/analytics/web/#/a398325140p542064683/reports/intelligenthome", desc:"방문자 · 트래픽 통계 (GA4)", icon:"\ud83d\udcc8", color:"#d4a017" },
+    /* ▼ 새 페이지는 이 아래에 추가 ▼ */
+    { name:"메인 페이지",   url:"main.html",               desc:"학원 대표 홈 · 소개 · 후기 · 비즈채널", icon:"\ud83c\udfdb\ufe0f", color:"#8e1530" },
+    { name:"학부모 안내",   url:"parent_guide.html",       desc:"수업 방식 · 상담 가이드 · 시간표/교육비", icon:"\ud83d\udccb", color:"#9a3a5a" },
+
   ];
   /* ▲▲▲ 여기까지만 고치면 됩니다 ▲▲▲ */
 
@@ -320,497 +143,88 @@
 
   /* 현재 순서를 담는 작업용 배열 */
   let order = PAGES.map((p,i)=>i);
-  let editMode = false;
-  /* 그룹 접힘 상태 (런타임) — GROUPS.collapsed에서 초기화, '기타'는 별도 */
-  let collapsedState = {};
-  GROUPS.forEach(function(g){ collapsedState[g.name] = !!g.collapsed; });
+  let sortMode = false;
 
   const grid = document.getElementById('grid');
 
-  function cardTile(idx){
-    const p = PAGES[idx];
-    const color = p.color || 'var(--wine)';
-    const soft = (p.color ? softBg(p.color) : '#f3eee5');
-    if(editMode){
-      return '<div class="tile editable" draggable="true" data-idx="'+idx+'" style="--accent:'+color+'; --accent-soft:'+soft+';">'
-        + '<button class="edit-btn" data-edit="'+idx+'" title="이 카드 편집">✎</button>'
+  function render(){
+    grid.innerHTML = order.map(function(idx){
+      const p = PAGES[idx];
+      const color = p.color || 'var(--wine)';
+      const soft = (p.color ? softBg(p.color) : '#f3eee5');
+      if(sortMode){
+        // 정렬 모드: 링크 비활성 + 드래그 가능
+        return '<div class="tile sortable" draggable="true" data-idx="'+idx+'" style="--accent:'+color+'; --accent-soft:'+soft+';">'
+          + '<div class="drag-grip">⠿</div>'
+          + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
+          + '<h2>'+esc(p.name)+'</h2>'
+          + '<p>'+esc(p.desc||'')+'</p>'
+          + '</div>';
+      }
+      return '<a class="tile" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+'; --accent-soft:'+soft+';">'
         + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
         + '<h2>'+esc(p.name)+'</h2>'
         + '<p>'+esc(p.desc||'')+'</p>'
-        + '</div>';
-    }
-    return '<a class="tile" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+'; --accent-soft:'+soft+';">'
-      + '<div class="ico">'+esc(p.icon||'\ud83d\udd17')+'</div>'
-      + '<h2>'+esc(p.name)+'</h2>'
-      + '<p>'+esc(p.desc||'')+'</p>'
-      + '<div class="go">열기 →</div>'
-      + '</a>';
-  }
-
-  function cardChip(idx){
-    const p = PAGES[idx];
-    const color = p.color || 'var(--wine)';
-    return '<a class="chip" href="'+esc(p.url)+'" target="_blank" rel="noopener" style="--accent:'+color+';">'
-      + '<span class="chip-ico">'+esc(p.icon||'\ud83d\udd17')+'</span>'+esc(p.name)+'</a>';
-  }
-
-  /* 그룹 순서대로 카드 인덱스를 묶는다. GROUPS에 없는 group값/누락은 '기타'로. */
-  function groupedOrder(){
-    const buckets = {}; // groupName -> [idx...]
-    const groupNames = GROUPS.map(function(g){ return g.name; });
-    order.forEach(function(idx){
-      let g = PAGES[idx].group;
-      if(!g || groupNames.indexOf(g)===-1) g = '기타';
-      (buckets[g] = buckets[g] || []).push(idx);
-    });
-    const seq = [];
-    GROUPS.forEach(function(g){ if(buckets[g.name]) seq.push({ name:g.name, idxs:buckets[g.name] }); });
-    if(buckets['기타']) seq.push({ name:'기타', idxs:buckets['기타'] });
-    return seq;
-  }
-
-  function render(){
-    grid.style.display='block';
-    const seq = groupedOrder();
-    grid.innerHTML = seq.map(function(sec){
-      const collapsed = !!collapsedState[sec.name];
-      const head = '<div class="group-head'+(collapsed?' collapsed':'')+'" data-group="'+esc(sec.name)+'">'
-        + '<span class="chev">▼</span><h2>'+esc(sec.name)+'</h2>'
-        + '<span class="count">'+sec.idxs.length+'</span><span class="line"></span></div>';
-      let body;
-      if(collapsed){
-        body = '<div class="chip-row">'+sec.idxs.map(cardChip).join('')+'</div>';
-      } else {
-        body = '<div class="grid">'+sec.idxs.map(cardTile).join('')+'</div>';
-      }
-      const drop = '<div class="group-drop" data-dropgroup="'+esc(sec.name)+'">여기로 카드를 끌어다 놓기</div>';
-      return '<div class="group-sec'+(editMode?' editing':'')+'" data-group="'+esc(sec.name)+'">'+head+body+drop+'</div>';
+        + '<div class="go">열기 →</div>'
+        + '</a>';
     }).join('');
-
-    if(editMode){
-      grid.insertAdjacentHTML('beforeend',
-        '<div style="text-align:center; margin-top:8px;"><button class="sort-btn" id="addTile">+ 새 카드 추가</button></div>');
-      const at = document.getElementById('addTile');
-      if(at) at.addEventListener('click', openNewCard);
-      bindEdit();
-      bindCardDrag();
-    }
-    bindGroupHeads();
+    if(sortMode) bindDrag();
   }
 
-  /* 그룹 헤더 클릭 → 접기/펼치기 */
-  function bindGroupHeads(){
-    grid.querySelectorAll('.group-head').forEach(function(h){
-      h.addEventListener('click', function(){
-        const g = h.dataset.group;
-        collapsedState[g] = !collapsedState[g];
-        render();
-      });
-    });
-  }
-
-  /* 카드 드래그 = 순서변경 + 그룹이동 통합 (카드 편집 모드)
-     - 다른 카드 위에 놓기 → 그 카드 앞으로 이동 + 그 카드의 그룹으로 편입
-     - 그룹 빈 영역(group-drop)에 놓기 → 그 그룹 맨 끝으로 이동 */
-  let cardDragIdx = null;
-  function moveCard(fromIdx, toGroup, beforeIdx){
-    // 그룹 지정
-    PAGES[fromIdx].group = (toGroup==='기타') ? '' : toGroup;
-    // order에서 빼고, 목표 위치에 삽입
-    const fromPos = order.indexOf(fromIdx);
-    order.splice(fromPos,1);
-    if(beforeIdx===null || beforeIdx===undefined){
-      // 그룹 끝으로: order상 그 그룹의 마지막 카드 뒤에 삽입
-      let lastPos = -1;
-      order.forEach(function(idx,pos){
-        let g = PAGES[idx].group; if(!g) g='기타';
-        const tg = (toGroup==='기타')?'기타':toGroup;
-        if(g===tg || (tg==='기타' && !PAGES[idx].group)) lastPos = pos;
-      });
-      order.splice(lastPos+1, 0, fromIdx);
-    } else {
-      const bpos = order.indexOf(beforeIdx);
-      order.splice(bpos, 0, fromIdx);
-    }
-  }
-  function bindCardDrag(){
-    grid.querySelectorAll('.tile.editable').forEach(function(t){
+  /* 드래그 정렬 */
+  let dragFrom = null;
+  function bindDrag(){
+    const tiles = grid.querySelectorAll('.sortable');
+    tiles.forEach(function(t){
       t.addEventListener('dragstart', function(e){
-        cardDragIdx = +t.dataset.idx; t.classList.add('dragging');
+        dragFrom = +t.dataset.idx;
+        t.classList.add('dragging');
         e.dataTransfer.effectAllowed='move';
       });
       t.addEventListener('dragend', function(){ t.classList.remove('dragging'); });
       t.addEventListener('dragover', function(e){ e.preventDefault();
-        const over = grid.querySelector('.tile.drag-over');
+        const over = grid.querySelector('.drag-over');
         if(over && over!==t) over.classList.remove('drag-over');
         t.classList.add('drag-over');
       });
       t.addEventListener('dragleave', function(){ t.classList.remove('drag-over'); });
       t.addEventListener('drop', function(e){
-        e.preventDefault(); t.classList.remove('drag-over');
+        e.preventDefault();
+        t.classList.remove('drag-over');
         const to = +t.dataset.idx;
-        if(cardDragIdx===null || cardDragIdx===to){ cardDragIdx=null; return; }
-        // 놓인 카드가 속한 그룹 + 그 카드 앞에 삽입
-        let tg = PAGES[to].group; if(!tg) tg='기타';
-        moveCard(cardDragIdx, tg, to);
-        cardDragIdx=null; render();
-      });
-    });
-    // 그룹 빈 영역: 그 그룹 끝으로 이동
-    grid.querySelectorAll('.group-drop').forEach(function(d){
-      const sec = d.closest('.group-sec');
-      d.addEventListener('dragover', function(e){ e.preventDefault(); sec.classList.add('drop-over'); });
-      d.addEventListener('dragleave', function(){ sec.classList.remove('drop-over'); });
-      d.addEventListener('drop', function(e){
-        e.preventDefault(); sec.classList.remove('drop-over');
-        if(cardDragIdx===null) return;
-        moveCard(cardDragIdx, d.dataset.dropgroup, null);
-        cardDragIdx=null; render();
+        if(dragFrom===null || dragFrom===to) return;
+        const fromPos = order.indexOf(dragFrom);
+        const toPos = order.indexOf(to);
+        order.splice(toPos,0, order.splice(fromPos,1)[0]);
+        render();
       });
     });
   }
 
-  /* ===== 카드 꾸미기 (아이콘·색 편집) ===== */
-  const EMOJIS = ['\ud83d\udcdd','\ud83d\udcda','\ud83d\udcd6','\u270f\ufe0f','\ud83d\udccb','\ud83d\udcc8','\ud83d\udcca','\ud83c\udfaf',
-    '\ud83c\udf93','\ud83c\udfeb','\ud83c\udfdb\ufe0f','\ud83e\uddd1\u200d\ud83c\udfeb','\ud83d\uddc2\ufe0f','\ud83d\udd16','\ud83e\udde9','\u2b50',
-    '\ud83d\udd25','\ud83d\udca1','\ud83c\udfc6','\ud83c\udfa8','\ud83d\uddbc\ufe0f','\ud83d\udcbb','\ud83d\udda5\ufe0f','\ud83d\udcf1',
-    '\ud83d\udd0d','\u2705','\ud83d\udcc5','\ud83d\udd14','\ud83d\udce3','\ud83d\udcac','\ud83c\udf1f','\ud83d\ude80'];
-  const COLORS = ['#8e1530','#6f0f24','#b08a3e','#2b5b8a','#7a5a9a','#3a8a5c',
-    '#c06a2c','#d4a017','#c0568e','#2a9d8f','#4a5568','#a83232'];
-
-  let editTarget = null;        // 현재 편집 중인 PAGES 인덱스 (신규는 null + isNewCard)
-  let isNewCard = false;
-  let draftIcon = '', draftColor = '', draftName = '', draftDesc = '', draftUrl = '', draftGroup = '';
-  const modal = document.getElementById('editModal');
-
-  function bindEdit(){
-    grid.querySelectorAll('.edit-btn').forEach(function(b){
-      b.addEventListener('click', function(e){
-        e.stopPropagation();
-        openEditor(+b.dataset.edit);
-      });
-    });
-  }
-
-  function openEditor(idx){
-    editTarget = idx;
-    isNewCard = false;
-    const p = PAGES[idx];
-    draftIcon = p.icon || '\ud83d\udd17';
-    draftColor = p.color || '#8e1530';
-    draftName = p.name || '';
-    draftDesc = p.desc || '';
-    draftUrl = p.url || '';
-    draftGroup = p.group || '';
-    document.getElementById('edTitle').textContent = '카드 편집';
-    document.getElementById('edDelete').style.display = '';
-    fillEditor();
-  }
-
-  function openNewCard(){
-    editTarget = null;
-    isNewCard = true;
-    draftIcon = '\ud83d\udd17';
-    draftColor = '#8e1530';
-    draftName = '';
-    draftDesc = '';
-    draftUrl = '';
-    draftGroup = (GROUPS[0] ? GROUPS[0].name : '');
-    document.getElementById('edTitle').textContent = '새 카드 추가';
-    document.getElementById('edDelete').style.display = 'none';
-    fillEditor();
-  }
-
-  function fillEditor(){
-    document.getElementById('edNameInput').value = draftName;
-    document.getElementById('edDescInput').value = draftDesc;
-    document.getElementById('edUrlInput').value = draftUrl;
-
-    // 그룹 선택 (GROUPS + 기타)
-    const gsel = document.getElementById('edGroupInput');
-    let opts = GROUPS.map(function(g){
-      return '<option value="'+esc(g.name)+'"'+(g.name===draftGroup?' selected':'')+'>'+esc(g.name)+'</option>';
-    });
-    const inGroups = GROUPS.some(function(g){ return g.name===draftGroup; });
-    opts.push('<option value=""'+((!draftGroup||!inGroups)?' selected':'')+'>기타 (미분류)</option>');
-    gsel.innerHTML = opts.join('');
-
-    // 이모지 그리드
-    const eg = document.getElementById('edEmojiGrid');
-    eg.innerHTML = EMOJIS.map(function(em){
-      return '<button class="emoji-cell'+(em===draftIcon?' sel':'')+'" data-em="'+em+'">'+em+'</button>';
-    }).join('');
-    eg.querySelectorAll('.emoji-cell').forEach(function(c){
-      c.addEventListener('click', function(){ draftIcon = c.dataset.em;
-        document.getElementById('edEmojiInput').value=''; syncEmojiSel(); updatePreview(); });
-    });
-    document.getElementById('edEmojiInput').value='';
-
-    // 색상 그리드
-    const cg = document.getElementById('edColorGrid');
-    cg.innerHTML = COLORS.map(function(c){
-      return '<button class="color-cell'+(c.toLowerCase()===draftColor.toLowerCase()?' sel':'')+'" data-c="'+c+'" style="background:'+c+';"></button>';
-    }).join('');
-    cg.querySelectorAll('.color-cell').forEach(function(c){
-      c.addEventListener('click', function(){ setColor(c.dataset.c); });
-    });
-    document.getElementById('edColorPick').value = draftColor;
-    document.getElementById('edColorHex').value = draftColor;
-
-    updatePreview();
-    modal.classList.add('active');
-  }
-
-  function syncEmojiSel(){
-    document.querySelectorAll('#edEmojiGrid .emoji-cell').forEach(function(c){
-      c.classList.toggle('sel', c.dataset.em===draftIcon);
-    });
-  }
-  function setColor(hex){
-    draftColor = hex;
-    document.getElementById('edColorPick').value = /^#[0-9a-fA-F]{6}$/.test(hex)?hex:'#8e1530';
-    document.getElementById('edColorHex').value = hex;
-    document.querySelectorAll('#edColorGrid .color-cell').forEach(function(c){
-      c.classList.toggle('sel', c.dataset.c.toLowerCase()===hex.toLowerCase());
-    });
-    updatePreview();
-  }
-  function updatePreview(){
-    const soft = /^#[0-9a-fA-F]{6}$/.test(draftColor)?softBg(draftColor):'#f3eee5';
-    const pv = document.getElementById('edPvIco');
-    pv.textContent = draftIcon;
-    pv.style.background = soft;
-    const nm = document.getElementById('edPvName');
-    nm.textContent = draftName || '(제목 없음)';
-    nm.style.color = draftColor;
-    document.getElementById('edPvDesc').textContent = draftDesc || '';
-  }
-
-  document.getElementById('edNameInput').addEventListener('input', function(){
-    draftName = this.value; updatePreview();
-  });
-  document.getElementById('edDescInput').addEventListener('input', function(){
-    draftDesc = this.value; updatePreview();
-  });
-  document.getElementById('edUrlInput').addEventListener('input', function(){
-    draftUrl = this.value;
-  });
-  document.getElementById('edGroupInput').addEventListener('change', function(){
-    draftGroup = this.value;
-  });
-
-  document.getElementById('edEmojiInput').addEventListener('input', function(){
-    const v = this.value.trim();
-    if(v){ draftIcon = v; syncEmojiSel(); updatePreview(); }
-  });
-  document.getElementById('edColorPick').addEventListener('input', function(){ setColor(this.value); });
-  document.getElementById('edColorHex').addEventListener('input', function(){
-    let v = this.value.trim(); if(v && v[0]!=='#') v='#'+v;
-    if(/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v);
-  });
-
-  document.getElementById('edCancel').addEventListener('click', closeEditor);
-  modal.addEventListener('click', function(e){ if(e.target===modal) closeEditor(); });
-  function closeEditor(){ modal.classList.remove('active'); editTarget=null; isNewCard=false; }
-
-  document.getElementById('edApply').addEventListener('click', function(){
-    const nm = draftName.trim();
-    const url = draftUrl.trim();
-    if(!nm){ alert('제목을 입력해 주세요.'); document.getElementById('edNameInput').focus(); return; }
-    if(!url){ alert('연결 주소(URL)를 입력해 주세요.'); document.getElementById('edUrlInput').focus(); return; }
-    if(isNewCard){
-      // 새 카드: PAGES 끝에 추가하고 order에도 반영
-      PAGES.push({ name:nm, url:url, desc:draftDesc.trim(), icon:draftIcon, color:draftColor, group:draftGroup });
-      order.push(PAGES.length-1);
-    } else {
-      if(editTarget===null) return;
-      PAGES[editTarget].name = nm;
-      PAGES[editTarget].desc = draftDesc.trim();
-      PAGES[editTarget].url = url;
-      PAGES[editTarget].icon = draftIcon;
-      PAGES[editTarget].color = draftColor;
-      PAGES[editTarget].group = draftGroup;
-    }
-    closeEditor();
+  /* 정렬 모드 토글 */
+  document.getElementById('sortToggle').addEventListener('click', function(){
+    sortMode = !sortMode;
+    document.getElementById('sortBar').classList.toggle('active', sortMode);
+    this.textContent = sortMode ? '정렬 끝내기' : '카드 순서 바꾸기';
     render();
   });
 
-  document.getElementById('edDelete').addEventListener('click', function(){
-    if(editTarget===null) return;
-    if(!confirm('"'+PAGES[editTarget].name+'" 카드를 삭제할까요?\n\n(저장 전이면 되돌릴 수 있습니다 — 페이지를 새로고침하면 원상복구됩니다.)')) return;
-    const del = editTarget;
-    PAGES.splice(del,1);
-    // order 재구성: 삭제 인덱스 제거 + 뒤 인덱스 당김
-    order = order.filter(function(i){ return i!==del; }).map(function(i){ return i>del ? i-1 : i; });
-    closeEditor();
-    render();
-  });
-
-  /* 카드 편집 모드 토글 */
-  document.getElementById('editToggle').addEventListener('click', function(){
-    editMode = !editMode;
-    document.getElementById('editBar').classList.toggle('active', editMode);
-    this.textContent = editMode ? '편집 끝내기' : '카드 편집';
-    render();
-  });
-
-  /* 저장 버튼: GitHub 자동저장 + 코드복사(백업) */
-  document.getElementById('editSaveGit').addEventListener('click', saveToGitHub);
-  document.getElementById('editSave').addEventListener('click', copyPagesCode);
-
-  /* ===== 그룹 관리 모달 ===== */
-  const groupModal = document.getElementById('groupModal');
-  let grpDraft = []; // [{name, collapsed, orig}] 편집용 복제본
-
-  document.getElementById('groupToggle').addEventListener('click', openGroupManager);
-
-  function openGroupManager(){
-    grpDraft = GROUPS.map(function(g){ return { name:g.name, collapsed:!!collapsedState[g.name], orig:g.name }; });
-    renderGrpList();
-    groupModal.classList.add('active');
-  }
-  function renderGrpList(){
-    const box = document.getElementById('grpList');
-    box.innerHTML = grpDraft.map(function(g,i){
-      return '<div class="grp-row" data-i="'+i+'">'
-        + '<div class="grp-move"><button data-up="'+i+'"'+(i===0?' disabled style="opacity:.3;"':'')+'>▲</button>'
-        + '<button data-down="'+i+'"'+(i===grpDraft.length-1?' disabled style="opacity:.3;"':'')+'>▼</button></div>'
-        + '<input class="grp-name" data-name="'+i+'" value="'+esc(g.name)+'" maxlength="16">'
-        + '<label class="grp-collapse"><input type="checkbox" data-col="'+i+'"'+(g.collapsed?' checked':'')+'>기본 접힘</label>'
-        + '<button class="grp-del" data-del="'+i+'" title="그룹 삭제">🗑</button>'
-        + '</div>';
-    }).join('');
-    // 이벤트 바인딩
-    box.querySelectorAll('[data-name]').forEach(function(inp){
-      inp.addEventListener('input', function(){ grpDraft[+inp.dataset.name].name = inp.value; });
-    });
-    box.querySelectorAll('[data-col]').forEach(function(cb){
-      cb.addEventListener('change', function(){ grpDraft[+cb.dataset.col].collapsed = cb.checked; });
-    });
-    box.querySelectorAll('[data-up]').forEach(function(b){
-      b.addEventListener('click', function(){ const i=+b.dataset.up; if(i>0){ const t=grpDraft[i]; grpDraft[i]=grpDraft[i-1]; grpDraft[i-1]=t; renderGrpList(); } });
-    });
-    box.querySelectorAll('[data-down]').forEach(function(b){
-      b.addEventListener('click', function(){ const i=+b.dataset.down; if(i<grpDraft.length-1){ const t=grpDraft[i]; grpDraft[i]=grpDraft[i+1]; grpDraft[i+1]=t; renderGrpList(); } });
-    });
-    box.querySelectorAll('[data-del]').forEach(function(b){
-      b.addEventListener('click', function(){
-        const i=+b.dataset.del;
-        if(confirm('"'+grpDraft[i].name+'" 그룹을 삭제할까요?\n(이 그룹의 카드는 삭제되지 않고 "기타"로 이동합니다.)')){
-          grpDraft.splice(i,1); renderGrpList();
-        }
-      });
-    });
-  }
-  document.getElementById('grpAdd').addEventListener('click', function(){
-    grpDraft.push({ name:'새 그룹', collapsed:false, orig:null });
-    renderGrpList();
-    // 새로 추가된 입력에 포커스
-    const inps = document.querySelectorAll('#grpList .grp-name');
-    if(inps.length){ const last=inps[inps.length-1]; last.focus(); last.select(); }
-  });
-  document.getElementById('grpCancel').addEventListener('click', function(){ groupModal.classList.remove('active'); });
-  groupModal.addEventListener('click', function(e){ if(e.target===groupModal) groupModal.classList.remove('active'); });
-
-  document.getElementById('grpApply').addEventListener('click', function(){
-    // 이름 검증: 빈 이름 금지, 중복 금지
-    const names = grpDraft.map(function(g){ return g.name.trim(); });
-    if(names.some(function(n){ return !n; })){ alert('그룹 이름을 비워둘 수 없습니다.'); return; }
-    const dup = names.filter(function(n,i){ return names.indexOf(n)!==i; });
-    if(dup.length){ alert('그룹 이름이 중복됩니다: '+dup[0]); return; }
-    // 이름 변경분을 카드 group에 반영 (orig → new)
-    grpDraft.forEach(function(g){
-      const nn = g.name.trim();
-      if(g.orig && g.orig!==nn){
-        PAGES.forEach(function(p){ if(p.group===g.orig) p.group = nn; });
-      }
-    });
-    // 삭제된 그룹의 카드는 '기타'로 (남은 그룹명 목록에 없는 group값 비우기)
-    const keep = grpDraft.map(function(g){ return g.name.trim(); });
-    PAGES.forEach(function(p){ if(p.group && keep.indexOf(p.group)===-1) p.group=''; });
-    // GROUPS 재구성
-    GROUPS.length = 0;
-    collapsedState = {};
-    grpDraft.forEach(function(g){
-      const nn = g.name.trim();
-      GROUPS.push({ name:nn, collapsed:g.collapsed });
-      collapsedState[nn] = g.collapsed;
-    });
-    groupModal.classList.remove('active');
-    render();
-  });
-
-
-
-  /* PAGES + GROUPS 블록 각각 생성 */
-  function buildBlocks(){
-    const pageLines = order.map(function(idx){
+  /* 순서 저장 (코드 복사) */
+  document.getElementById('sortSave').addEventListener('click', function(){
+    const lines = order.map(function(idx){
       const p = PAGES[idx];
       const parts = ['name:"'+p.name+'"','url:"'+p.url+'"','desc:"'+(p.desc||'')+'"'];
       if(p.icon) parts.push('icon:"'+p.icon+'"');
       if(p.color) parts.push('color:"'+p.color+'"');
-      if(p.group) parts.push('group:"'+p.group+'"');
       return '    { '+parts.join(', ')+' },';
     }).join('\n');
-    const groupLines = GROUPS.map(function(g){
-      const col = !!collapsedState[g.name];
-      return '    { name:"'+g.name+'", collapsed:'+col+' },';
-    }).join('\n');
-    return {
-      pagesBlock:  '  const PAGES = [\n'+pageLines+'\n  ];',
-      groupsBlock: '  const GROUPS = [\n'+groupLines+'\n  ];'
-    };
-  }
-
-  /* PAGES + GROUPS 전체 코드 생성 (group 필드·접힘 상태 포함) */
-  function buildPagesCode(){
-    const b = buildBlocks();
-    return b.pagesBlock + '\n' + b.groupsBlock;
-  }
-
-  /* ===== GitHub 자동 저장 (GAS 연동) ===== */
-  const SAVE_GAS_URL = 'https://script.google.com/macros/s/AKfycbztcH995RNBgmweWK_zrc8h9uazM3MexBs4VPWRpzn0lDnU_kQODtr3URvDzh-10QAY/exec';
-  const SAVE_SECRET  = 'greateng-hub-2026';
-  let saving = false;
-
-  function saveToGitHub(){
-    if(saving) return;
-    const b = buildBlocks();
-    const btn = document.getElementById('editSaveGit');
-    saving = true;
-    if(btn){ btn.disabled = true; btn.textContent = '저장 중…'; }
-    // GAS CORS 회피: text/plain 단순요청 + JSON 문자열 본문
-    fetch(SAVE_GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ secret: SAVE_SECRET, pagesBlock: b.pagesBlock, groupsBlock: b.groupsBlock })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(res){
-      if(res && res.ok){
-        if(res.unchanged) alert('변경 사항이 없습니다.');
-        else alert('GitHub에 저장되었습니다.\n1~2분 뒤 사이트에 반영됩니다. (다른 기기는 새로고침)');
-      } else {
-        alert('저장 실패: ' + ((res && res.error) || '알 수 없는 오류') + '\n\n아래 "코드 복사"로 수동 저장하세요.');
-      }
-    })
-    .catch(function(err){
-      alert('저장 요청 실패: ' + err + '\n\n아래 "코드 복사"로 수동 저장하세요.');
-    })
-    .then(function(){
-      saving = false;
-      if(btn){ btn.disabled = false; btn.textContent = 'GitHub에 저장'; }
-    });
-  }
-
-  function copyPagesCode(){
-    const code = buildPagesCode();
+    const code = '  const PAGES = [\n'+lines+'\n  ];';
     navigator.clipboard.writeText(code).then(function(){
-      alert('변경된 카드·그룹 코드가 복사되었습니다.\n\nGitHub에서 hub.html 을 열고,\n기존 "const PAGES = [ ... ];" 와 "const GROUPS = [ ... ];"\n두 블록을 통째로 지운 뒤 붙여넣기(Ctrl+V) 하고 Commit 하세요.');
+      alert('새 순서 코드가 복사되었습니다.\n\nGitHub에서 hub.html 을 열고,\n기존 "const PAGES = [ ... ];" 부분을 통째로 지운 뒤\n붙여넣기(Ctrl+V) 하고 Commit 하세요.');
     }).catch(function(){
       prompt('아래 코드를 전체 복사해서 붙여넣으세요:', code);
     });
-  }
+  });
 
   render();
 </script>
