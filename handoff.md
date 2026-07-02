@@ -1,126 +1,144 @@
-# GREATENG handoff
+# GREATENG · 여름특강 안내 작업 handoff
 
-## hw-monitor.html
-
-### 이번 변경 (지연제출 일수 표기)
-- **검수 격자에 "+N일" 배지 추가**: 학생 점검(homeworkStatus) 격자에서 status가 `지연제출`인 칸에 숙제 날짜 대비 며칠 뒤 제출인지 `+N일`로 표기.
-- 추가 함수 `lateDaysOf(d)` (renderInspectDays 바로 위): `d.submitDate || d.submittedAt || d.submitTs || d.ts` 중 존재하는 제출일을 읽어 `d.date`와의 일수 차이(올림, 양수만) 반환. 후보 필드가 없으면 0 → 배지 미표시(기존 동작 유지).
-- `renderInspectDays`: day 칸 렌더에 `lateBadge` 추가. ld>0일 때 `+N일`(font 10px, var(--late), weight 800) 출력.
-
-### 진행 중 / 후속 필요 (정밀)
-- **GAS 의존성**: 위 배지는 백엔드가 day 객체에 제출일을 실어 보내야 동작.
-  - 대상 GAS: **숙제점검 GAS** (단어시험/index 로그인 GAS 아님)
-  - 핸들러 `homeworkStatus`의 `days` 배열 생성부에서, status가 `지연제출`인 day에 해당 row의 제출 타임스탬프를 `submitDate`(YYYY-MM-DD 또는 ISO) 필드로 추가 필요.
-  - HTML은 `submitDate/submittedAt/submitTs/ts` 어느 키든 자동 인식. ⚠️ GAS 수정 시: 전체 백업 → 부분 붙여넣기 금지 → '새 버전으로 배포'.
-- 확인 필요: `homeworkStatus` 응답 day 객체에 이미 `ts`류 필드가 들어있다면 GAS 수정 없이 바로 표시됨. 응답 샘플 확인 후 확정.
-
-### 추가 변경 (전체 그리드 "+N일" 표기)
-- 사용자가 본 화면은 개별 검수가 아니라 **전체 그리드(adminGrid → renderGrid L883~)**. △ 글자만 찍던 곳.
-- `buildGrid` L876: `row.statuses[i] || ''` → `(!== undefined && !== null) ? : ''`. 객체값(0/falsy 객체) 보존 위해.
-- `renderGrid` 셀 렌더 L897~: `statusByStudent[nm][dt]`가 **문자열("지연제출") 또는 객체({s:"지연제출", late:N})** 둘 다 허용하도록 정규화. st/lateN 분리 추출. 지연이고 late>0이면 `<sup>+N</sup>` 부착.
-- 구버전 문자열 status 그대로 동작(하위호환). 단위테스트 통과(O/X/△/◎/시/빈값 + 객체형 △+N).
-
-### 진행 중 / GAS 후속 (그리드용, 정밀)
-- ⚠️ **숙제점검 GAS `adminGrid` 핸들러 수정 필요**: status가 `지연제출`인 칸을 `'지연제출'`(문자열) 대신 `{s:'지연제출', late: (제출일-숙제날짜) 일수}` 객체로 push.
-  - 위치: adminGrid에서 `statuses` 배열 채우는 루프(학생×날짜). 지연 판정 시점에 해당 row 제출 타임스탬프 보유 중이면 거기서 late 계산.
-  - 이 변경 없으면 그리드는 기존처럼 △만 표시(오류 없음).
-- 개별 검수(renderInspectDays)용 GAS 후속은 위 항목과 별개 — homeworkStatus day에 submitDate 추가.
-
-### GAS 수정 확정안 (숙제점검 GAS — adminGrid)
-- **상태 시트엔 제출시각 없음.** 지연일수는 응답 시트(설문지 응답 시트 1) A열(타임스탬프)·D열(숙제날짜)에서 계산해야 함.
-- 수정 대상: **`hw_getAdminGrid_(days)` 함수 1개만 전체 교체.** (hw_getStatus_ 등 타 함수 불변)
-- 추가 로직:
-  1) 응답 시트 순회 → `earliestSubmit` Map: key `_norm(이름):숙제날짜ms` → 가장 이른 제출 ts(ms). `type==='단어쓰기'` 제외(refreshStatus와 동일).
-  2) `lateDaysFor_(nameKey, dms)`: 제출일 0시 − 숙제날짜 0시 일수차(올림→round, 양수만).
-  3) statuses 빌드 시 값이 `'지연제출'`이면 `{s:'지연제출', late:N}` 객체, 그 외는 기존 문자열 그대로.
-- 지연일수 정의: 숙제날짜 기준 며칠 뒤 제출(예 6/1숙제 6/3제출 = +2). cutoff(48h) 기준 아님 — 화면 직관 우선.
-- ⚠️ 배포: 전체 백업 → 함수 블록만 교체 → 저장 → '새 버전으로 배포'(덮어쓰기 아님). 대상=숙제점검 GAS.
-
-### 추가 변경 (그리드 지연일수 글자 키움)
-- renderGrid L905 `lateSup`: `<sup>` 9px → `<span>` 13px, weight 900, vertical-align baseline. 위첨자 제거하고 마크(△)와 같은 줄 일반 크기로 표시. 예: `△+2`.
-
-### 산출물
-- `숙제관리_GAS_전체.gs`: 전체 통합본 (hw_getAdminGrid_만 교체, 나머지 25개 함수 원본 동일). 구문검증 PASS. 이걸로 GAS 전체 교체 후 '새 버전으로 배포'.
-- `hw_getAdminGrid_교체본.gs`: 함수 1개만 바꾸고 싶을 때용.
-
-### 참고 (제출일 데이터 위치)
-- 사진/로그 items에는 제출일 정보 존재: `it.ts`(제출시각), `it.due`(숙제 날짜). (renderInspectPhotos L515~, 로그표 L943~)
-- day 객체(`renderInspectDays`)에는 기존엔 `date`,`status`만 있었음 — 이번 작업의 핵심 격차.
-
-### 추가 변경 (리포트 총평 — 지연多+미제출 케이스 불일치 수정)
-- 증상: 제출12·지연8·미제출2 → `teacherComment`(L770~)에서 `l/total ≥ 0.3`(36%)이 `m ≥ 2` 검사보다 먼저 걸려 `[습관 형성]` 반환. 이 문구가 미제출을 전혀 언급하지 않아 데이터(미제출 2)와 총평이 불일치.
-- 수정: `teacherComment` 내 `l/total >= 0.3` 분기를 블록으로 확장(수정 후 L774~777). `m >= 1`이면 "…기한을 넘겨 제출하는 경우가 많고, 미제출도 N회 있었습니다…" 문구, `m === 0`이면 기존 문구 그대로(하위호환).
-- 회귀테스트 8케이스 통과: (12,8,2)→습관형성(미제출 언급), (12,8,0)→습관형성(기존문구), (10,0,3)→관심필요, (20,1,1)→양호, (22,0,0)→최우수, (21,1,0)→우수, (18,4,0)→성실, (15,3,2)→보완권장.
-- 참고: 우수/성실/최우수 분기는 분기 순서상 m=0일 때만 도달하므로 추가 수정 불요. GAS 수정 없음(프론트 문구 로직만).
+> 이 문서는 세션 간 연속성을 위한 인수인계 노트입니다. 통째로 새로 쓰지 말고 **변경분만 누적**하세요.
+> '진행 중' 항목은 파일·줄번호·함수명까지 정밀하게 적습니다.
 
 ---
 
-## hub.html
+## 최종 산출물 (outputs/)
 
-### 이번 변경 (카드 꾸미기 — 아이콘·색 화면 편집)
-- 목적: 코드 직접수정 없이 허브 화면에서 카드 **아이콘(이모지)·왼쪽 색선**을 클릭·선택으로 변경. 저장은 기존 '순서 저장'과 동일한 "코드 복사 → PAGES 붙여넣기 → 커밋" 흐름.
-- **CSS 추가** (`.sort-bar` @media 뒤): `.edit-btn`(카드 우상단 ✎), `.tile.editable`, `.modal-back`/`.modal`, `.emoji-grid`/`.emoji-cell`/`.emoji-input`, `.color-grid`/`.color-cell`/`.color-custom`, `.modal-preview`, `.modal-actions`/`.btn-cancel`/`.btn-apply`. 기존 토큰(--wine/--gold/--line/--fill) 재사용, 신규 스타일 없음.
-- **툴바 변경**: `.sort-ctrl` 안에 `#editToggle`("카드 꾸미기") 버튼을 `#sortToggle` 옆에 배치(flex gap). `#editBar`(꾸미기 저장 바) 추가.
-- **모달 마크업**: `.wrap` 닫힘 `</div>` 직후 `#editModal`(미리보기 + 이모지그리드 + 직접입력 + 색상그리드 + color picker + hex + 취소/적용) 추가.
-- **render()**: `editMode` 분기 추가 — 편집 모드 시 `<a>` 대신 `<div class="tile editable">` + `.edit-btn`(data-edit=idx) 렌더, 링크 비활성. 끝에 `if(editMode) bindEdit();`.
-- **JS 로직 추가** (`정렬 모드 토글` 바로 앞): 상수 `EMOJIS`(32개), `COLORS`(12개). 함수 `bindEdit`, `openEditor(idx)`, `syncEmojiSel`, `setColor(hex)`, `updatePreview`, `closeEditor`, `copyPagesCode`. 이벤트: 이모지셀 클릭 / 직접입력(input) / color picker / hex input / 취소 / 배경클릭 닫기 / 적용(PAGES[idx].icon·color 갱신 후 render) / editToggle / editSave.
-- **상호배타 처리**: `editToggle`은 sortMode 켜져있으면 끄고, `sortToggle`은 editMode 켜져있으면 끔. (두 모드 동시 활성 방지)
-- **적용 3경로 검증**: 이모지 그리드 클릭 / 이모지 직접붙여넣기 / 색상 HEX 직접입력 모두 정상. softBg()로 아이콘 배경 자동 연화.
-
-### 검증
-- node --check: JS 문법 PASS.
-- Playwright(headless, auth 게이트 제거 후): 카드 11개 렌더, 편집버튼 11개, 모달 open/apply 정상, JS 콘솔에러 없음(403은 로컬 auth.js 원격검증 실패로 기능 무관).
-
-### 진행 중 / 후속 필요
-- 저장은 **수동 흐름 유지**(정적 사이트라 자동저장 불가): 꾸미기 후 '변경 저장(코드 복사)' → GitHub에서 hub.html의 `const PAGES = [ ... ];`(L116~ 부근) 통째 교체 → 커밋. copyPagesCode()가 순서까지 포함해 출력하므로 순서·꾸미기 어느 쪽 저장이든 최신 PAGES 전체가 복사됨.
-- `auth.js` 게이트가 실제 배포 환경에서 편집 버튼 클릭을 막지 않는지 로그인 후 확인 필요(로컬 테스트에선 게이트 제거하고 검증). 로그인 통과 상태면 게이트 div가 사라지므로 정상 동작 예상.
-
-### 산출물
-- `hub.html`: 카드 꾸미기 기능 포함 전체본(456줄). 기존 순서편집·드래그·PAGES 구조 모두 보존, diff 기준 추가만 함.
-
-### 추가 변경 (제목·설명 텍스트 편집)
-- 편집창에 **제목(name)·설명(desc) 입력칸** 추가 → 이제 편집창 하나에서 제목·설명·아이콘·색 4가지 편집.
-- 모달 마크업: 미리보기 아래 `.text-input#edNameInput`(maxlength 20), `#edDescInput`(maxlength 40) 추가. 미리보기에 `.pv-desc#edPvDesc` 추가(제목 아래 설명 표시).
-- CSS: `.text-input`(emoji-input과 동일 스타일), `.modal-preview .pv-desc` 추가.
-- JS: draft 변수 `draftName`/`draftDesc` 추가. `openEditor`에서 초기값 세팅 + 입력칸 value 채움. `edTitle`은 이제 항상 "카드 꾸미기"(카드명 미포함, 편집 중 제목바뀜 대응). `updatePreview`가 `draftName`/`draftDesc` 실시간 반영(기존 `PAGES[editTarget].name` 직접참조 제거). name/desc input 이벤트 추가. `적용` 시 `PAGES[idx].name/desc`도 저장, **빈 제목이면 alert 후 차단**(카드 깨짐 방지).
-- 검증: node --check PASS. Playwright — 초기값 로드/텍스트 편집 반영/적용 후 카드 텍스트 변경/빈제목 방어(모달 유지) 정상, JS 에러 없음.
-- 전체본 486줄.
-
-### 추가 변경 (페이지 추가·삭제 + URL 편집)
-- 편집창에서 **URL(연결 주소) 편집** 가능 + **새 카드 추가** + **카드 삭제**까지. 이제 화면만으로 카드 CRUD 전부.
-- 모달 마크업: 설명 아래 `#edUrlInput`(연결 주소, maxlength 300) 추가. 액션 버튼 아래 `.modal-delete#edDelete`("이 카드 삭제") 추가.
-- CSS: `.tile.add-tile`(점선 + 카드, hover 와인), `.modal-delete`(연한 적색 톤) 추가.
-- render: editMode일 때 그리드 끝에 `#addTile`("+ 새 카드") insertAdjacentHTML로 append → click=openNewCard. edit-btn title "이 카드 편집"로 변경.
-- JS 상태: `isNewCard` 플래그, `draftUrl` 추가. **openEditor를 `fillEditor()`로 리팩터**(그리드 렌더 공통화) + `openNewCard()`(빈 draft, 삭제버튼 숨김, 제목 "새 카드 추가") 신설. openEditor는 제목 "카드 편집", 삭제버튼 표시.
-- 적용 로직 재작성: 제목·**URL 둘 다 필수**(빈값이면 alert 차단). `isNewCard`면 `PAGES.push(...)` + `order.push(끝인덱스)`, 아니면 기존 인덱스 갱신(url 포함).
-- 삭제: confirm 후 `PAGES.splice(del,1)` + **order 재구성**(삭제 idx 제거 + del보다 큰 인덱스 -1). 저장 전이면 새로고침으로 복구 가능(안내 포함).
-- ⚠️ 저장은 여전히 수동: 추가·삭제·편집 뒤 '변경 저장(코드 복사)' → hub.html의 `const PAGES` 통째 교체 → 커밋. copyPagesCode는 order 순서대로 출력하므로 추가분·삭제분·순서 모두 반영됨.
-- 검증: node --check PASS. Playwright — 새카드 추가(11→12) / 신규모달 삭제버튼 숨김 / URL 빈값 방어 / 편집모달 URL 로드 / 삭제(12→11, order 정합) 전부 정상, JS 에러 없음.
-
-### 산출물 (최종)
-- `hub.html`: 카드 꾸미기(아이콘·색) + 텍스트(제목·설명) + URL 편집 + 카드 추가/삭제 전체본(554줄). 기존 순서편집·드래그·PAGES·auth 게이트 모두 보존, diff 기준 추가만.
-
-### 추가 변경 (그룹핑 — 그룹 묶기·접기·관리)
-- 카드를 **그룹으로 묶고**, 자주 안 쓰는 그룹은 **접으면 텍스트 칩으로 가로 좁게** 표시. 그룹 접힘 상태는 코드 저장(전 기기 동일).
-- **데이터 구조**: 각 카드에 `group:"그룹명"` 필드 추가(없으면 '기타'). 신규 `const GROUPS = [{name, collapsed}]`(순서=표시순서, PAGES 정의 바로 아래). 카드의 group이 GROUPS에 없으면 '기타' 섹션으로.
-- **CSS**: `.group-sec/.group-head`(chevron·count배지·라인), `.chip-row/.chip`(접힌 그룹용 좌측 컬러바 칩), `.group-drop`(꾸미기 모드 드롭영역), 그룹관리 모달용 `.grp-row/.grp-move/.grp-name/.grp-collapse/.grp-del/.grp-add`.
-- **render 전면 재구성**: 단일 `order.map` → `groupedOrder()`로 그룹별 버킷 분류 후 섹션 렌더. 헬퍼 분리: `cardTile(idx)`·`cardChip(idx)`. 펼침=`.grid` 타일, 접힘=`.chip-row` 칩. 정렬(sortMode)은 그룹 없이 평면 유지 → `renderFlatSort()`로 분리(display 토글 grid↔block). `collapsedState{}` 런타임 상태(GROUPS.collapsed에서 초기화). `bindGroupHeads`(헤더 클릭 접기/펼치기), `bindCardDrag`(카드 dragstart + group-drop에 drop→PAGES[i].group 변경).
-- **편집창**: URL 아래 `#edGroupInput`(select) 추가 — GROUPS + '기타(미분류)' 옵션. `draftGroup` 추가, openEditor/openNewCard에서 세팅, 적용 시 `PAGES[i].group` 저장(신규는 GROUPS[0] 기본).
-- **그룹 관리 모달**(`#groupModal`): 툴바 `#groupToggle`("그룹 관리")로 열림. 그룹별 순서 ▲▼·이름 인라인 수정·기본접힘 체크·삭제(🗑), "+ 그룹 추가". `grpDraft` 복제본으로 편집 후 **적용 시 검증**(빈이름/중복 차단) → 이름변경분 카드 group에 전파(orig→new), 삭제 그룹 카드는 '기타'로, GROUPS·collapsedState 재구성.
-- **저장 통합**: `buildPagesCode()` 신설 — PAGES(group 필드 포함) + GROUPS(현재 collapsedState 반영) 두 블록 한 번에 출력. 꾸미기 저장·순서 저장 둘 다 이 함수 사용. ⚠️ 붙여넣을 때 **PAGES와 GROUPS 두 블록 모두 교체** 필요(alert 안내 수정됨).
-- **검증**: node --check PASS. Playwright — 그룹 4섹션 렌더/운영 기본접힘→칩2개/헤더클릭 펼침/그룹관리 모달 4행·추가5행·적용/편집창 그룹 select 5옵션·변경반영/꾸미기 드롭영역 4개/buildPagesCode에 GROUPS·group 포함 전부 정상, JS 에러 없음.
-
-### 진행 중 / 주의
-- ⚠️ **저장 시 이제 두 블록**: '변경 저장' 코드에 `const PAGES`와 `const GROUPS`가 함께 나옴. GitHub hub.html에서 두 블록 모두 교체해야 함(하나만 바꾸면 불일치). alert 문구에 반영됨.
-- 카드→그룹 **드래그**는 데스크톱 마우스 기준. 모바일 터치 드래그는 미검증(터치 환경에선 편집창의 그룹 select로 배정 권장).
-- 접힘 상태 저장은 '기본 접힘'(GROUPS.collapsed) 기준. 화면에서 헤더 클릭으로 접었다 편 것도 저장 시 현재 상태로 코드에 반영됨(collapsedState 기준).
-
-### 산출물 (그룹핑 포함 최종)
-- `hub.html`: 위 모든 기능 + 그룹핑 전체본(808줄). 기존 구조·auth 게이트 보존, diff 기준 추가·render 재구성만.
+| 파일 | 용도 | 상태 |
+|---|---|---|
+| `summer.html` | 여름특강 안내 웹페이지 (학부모·신규 대상) + **파비콘 삽입됨** | 배포 대기 |
+| `main.html` | 학원 대표 홈 (여름특강 링크 연결) + **파비콘 삽입됨** | 배포 대기 |
+| `hub.html` | 관리자 허브 (GA4 태그 + **파비콘 삽입됨**) | 배포 대기 |
+| `favicon.svg` / `favicon.ico` / `favicon-16/32/192/512.png` / `apple-touch-icon.png` | **확정 파비콘 세트** (크림슨 nvw_2: 골드→크림슨→네이비 계단) | **완료** |
+| `파비콘_설치안내.txt` | 파비콘 업로드·HTML 삽입·확인 안내 | 완료 |
+| `suneung_2026.html` / `pohang_highschools.html` / `parent_guide.html` / `voca.html` | 저장소 최신본에 **파비콘 5줄만 삽입** (그 외 100% 원본 동일, voca 무손상) | 배포 대기 |
+| `summer_notice_print.html` | 컬러 A4 가정통신문 (와인&잉크, 웹 인쇄용) | 완료 |
+| `summer_notice_bw.docx` | **흑백 A4 가정통신문 (재원생용, 최종)** | 완료 |
+| `summer_intensive_2026.html` | 내부 설계 문서 (배포 금지·민감정보 포함) | 참고용 |
+| `blog_post_summer.txt` | 네이버 블로그 게시글 (외부 공개용, 가격 제외) | 완료 |
+| `favicon_A_대.svg` / `favicon_B_G.svg` / `favicon_C_월계관.svg` | 파비콘 시안 3종 기본형 (와인 #7A0F24 + 골드 #C2A05A) | 구버전 |
+| `favicon_고급_A_대.svg` / `favicon_고급_B_G.svg` / `favicon_고급_D_원형.svg` | 파비콘 고급 버전 3종 (금속 골드 그라데이션·광택·비네팅) | 글자형(반려) |
+| `favicon_sym1_상승` ~ `favicon_sym5_방패ㄷ` (.svg/.png) | 파비콘 상징형 5안 (광택·비네팅 버전) | 과한마감(반려) |
+| `favicon_ap_A_화살크림` ~ `favicon_ap_F_셰브론` (.svg/.png) | 파비콘 애플/크롬 느낌 6안 (사각배경+심볼) | 배경형(반려) |
+| `favicon_sh1_원화살` ~ `favicon_sh6_물방울` (.svg/.png) | 파비콘 실루엣형 6안 (형태 자체가 아이콘) | 후보군 |
+| `favicon_shd_A_셰브론` ~ `favicon_shd_D_순수` (.svg/.png) | 방패 고급 4안 (기존 심볼군, 전면 재검토로 보류) | 보류 |
+| `favicon_st_A_계단` ~ `favicon_st_E_계단상승선` (.svg/.png) | 계단/막대형 5안 (와인 고정) | 후보군 |
+| `favicon_lx_navy_stairs` 등 8종 (.svg/.png) | 추상 고급 8안 (색 다양화 + 골드) | 후보군 |
+| `favicon_sg_A_명도` ~ `favicon_sg_H_4단` (.svg/.png) | 투명배경 계단+단별 그라데이션 8안 | 후보군 |
+| `favicon_nv_1_반전투명` ~ `favicon_nv_4_네이비바탕명도` (.svg/.png) | 네이비-골드 역방향 4안 (nv_1 채택됨) | nv_1 채택 |
+| `favicon_nvw_0_원안회갈` ~ `favicon_nvw_3_진골드와인` (.svg/.png) | **nv_1 중간색 변형 4안** (회갈/와인/크림슨/진골드+와인) | **선택 대기** |
+| `favicon_중간색변형_비교.png` | nv_1 중간색 변형 비교 (체크무늬=투명) | 참고용 |
+| `favicon_네이비역방향_4안_비교.png` | 역방향 4안 비교 (체크무늬=투명) | 참고용 |
+| `favicon_계단그라데_8안_비교.png` | 계단 그라데 8안 비교 (체크무늬=투명 확인) | 참고용 |
+| `favicon_추상고급_8안_비교.png` | 추상 고급 8안 크기별 비교 | 참고용 |
+| `favicon_계단_5안_비교.png` | 계단형 5안 크기별(원본/32/16px) 비교 | 참고용 |
+| `favicon_방패고급_4안_비교.png` | 방패 고급 4안 크기별(원본/32/16px) 비교 | 참고용 |
+| `favicon_실루엣형_6안_비교.png` | 실루엣형 6안 크기별(원본/32/16px) 비교 | 참고용 |
+| `favicon_애플느낌_6안_비교.png` | 애플느낌 6안 크기별(원본/32/16px) 비교 | 참고용 |
+| `favicon_상징형_5안_비교.png` | 상징형 5안 크기별(원본/32/16px) 비교 | 참고용 |
+| `favicon_고급_3안_비교.png` | 고급 3안 크기별(원본/48/32/16px) 비교 | 참고용 |
+| `favicon_3안_비교.png` | 파비콘 3안 크기별(원본/48/32/16px) 비교 이미지 | 참고용 |
 
 ---
 
-## 위젯 (네이버 블로그) — 참고 메모
-- 여름특강 위젯: link `summer.html`, img `image/summer.png`.
-- 수능파이널 위젯: link `suneung_2026.html`, img `image/sf_widget_banner.png`(구 `suneung_final.png`는 영문라벨 "Summer Intensive" 오타 → `sf_widget_banner.png`로 교체, 라벨 "Final Class"). width=170 권장(네 위젯 통일).
-- 네이버 위젯 제약: 가로 170px·세로 600px 한계, JS/iframe 불가, `<a><img></a>` 형태만. 이미지 파일명 공백 금지(URL %20 이슈).
+## 확정 사항 (2026 여름특강)
+
+- **일정: 7/25 · 8/1 · 8/8 (토), 3주 과정 / 변경 가능** ← (월요일 7/27·8/3·8/10에서 토요일로 변경됨)
+- 중등 2학기 내신반: 토 오후 1시~3시, 2시간 수업(암기 테스트 포함), 학교별 2학기 내신시험 대비(어법·독해)
+- 고등 수능 어법반: 토 오후 3시 30분~6시, 2시간 30분, 수능 빈출 어법 / **예비고1(현 중3) 포함**
+- 신청 마감: 7/11(금) 선착순
+- 수강료(재원생 기준): 중등 15만 / 고등 22만  · 비재원생가(20만/27만)는 안내문에서 제외, "재원생 기준" 표기만
+- 신청 방법(재원생 안내문): **문자 회신만** (자녀 이름·희망 반) — 온라인 신청서·톡톡·링크 제거
+- 디자인: C 와인&잉크 팔레트, 애플식 버튼(높이 52px, radius 14px), 흑백 인쇄물은 검정 배경 금지(선·괘선·굵기 강조)
+
+---
+
+## 진행 중 / 미완 항목
+
+0. **파비콘 — ✅ 크림슨(nvw_2) 확정, 세트 제작 + HTML 삽입 완료 (남은 건 GitHub 업로드)**
+   - 최종: 투명배경 3단 계단, 골드 #F0DFA8 → 크림슨 #A31F38 → 네이비 #22345C. 세트=favicon.svg/ico/16·32·192·512.png + apple-touch-icon.png(크림배경 #FBF7EF, `make_apple_bg.py`)
+   - **⚠️ 파비콘 파일은 저장소 `image/` 폴더에 위치** (루트 아님). 따라서 모든 HTML의 link href = `image/favicon.svg` 등 `image/` 접두어. 7개 HTML 전부 경로 수정 완료(각 5개 경로).
+   - HTML 삽입 완료: summer/main/hub.html + **suneung_2026·pohang_highschools·parent_guide·voca.html** 전부 `<title>` 바로 뒤 5줄 link 블록(href=`image/...`). 태그 균형 통과. voca.html 포함 favicon 5줄 외 원본과 100% 동일(diff 검증) — auth게이트·GAS백엔드 무손상. 저장소 zip(main, 7/2 재다운로드해 변경없음 확인) 기준 작업.
+   - 남은 작업(필립): ① 파비콘 7파일을 저장소 **`image/` 폴더**에 업로드(루트 아님) ② 수정된 7개 HTML(summer·main·hub·suneung_2026·pohang_highschools·parent_guide·voca) 교체 커밋 ③ 파비콘 캐시 강하니 Ctrl+F5/시크릿창 확인
+   - (이력) 원본 `logo.png`(260×260, 와인배경+골드 월계관+"대단한영어" 텍스트)는 파비콘 부적합: 16/32px 축소 시 텍스트·문양 뭉개짐 (검증 완료)
+   - 파비콘 전용 단순화 3안 제작: A(대) / B(G) / C(월계관+대). 추천 = **A안**(작은 크기 가독성 최상)
+   - **고급 버전 추가** (`make_favicons_lux.py` → lux_A/B/D): 금속 골드 그라데이션(하이라이트#F0DFA8→섀도#846127), 상단 광택(sheen), 방사형 와인 배경 + 비네팅, drop-shadow. D안=원형 엠블럼(원본 방패 계승). 색: 와인 #7A0F24, 골드 본색 #C9A85E
+   - **글자형(대/G) 반려** → 추상·상징형 5안 제작 (`make_favicons_symbol.py`): sym1(상승/화살촉), sym2(펼친 책), sym3(월계관+체크), sym4(8각 별), sym5(방패+ㄷ 모노그램).
+   - **과한 마감 반려** → 애플/크롬 느낌 플랫 6안 (`make_favicons_apple.py`): 광택·비네팅·drop-shadow 제거, 은은한 세로 그라데이션만, 넉넉한 여백, 애플 squircle(rx=114). ap_A/B(상승화살 크림/골드), ap_C(방패+ㄷ 라인), ap_D(5각별), ap_E(원링+대), ap_F(이중 셰브론). 색: 와인 #7A0F24, 골드 #D4B36A, 크림 #F5EEDF.
+   - **사각 배경형 반려** → 배경 없는 실루엣형 6안 (`make_favicons_shape.py`): 사각 배경 제거, 형태 자체가 아이콘. sh1(원+화살), sh2(방패 실루엣+ㄷ), sh3(육각+이중셰브론), sh4(화살 실루엣 자체), sh5(원+링+획, 크롬스타일), sh6(물방울/펜촉). 투명 배경, 와인 그라데이션 형태 + 골드 심볼.
+   - **방패 방향 채택 + ㄷ 제거 + 고급화** (`make_shield_lux.py` → shd_A~D): 방패 실루엣(SHIELD/SHIELD_IN 이중 경로)에 골드 외곽 + 와인 내부 + 상단 글로우. 내부 심볼: A(이중 셰브론)/B(별)/C(상승화살)/D(순수 테두리만). 색: 와인그라데 #A01E38→#560A1A, 골드그라데 #F0DFA8→#8A6A2E.
+     주의: A안 생성 시 첫 path에 오타(`url(#goldv A)`) 있었음 → `sed`로 제거 완료. 재생성 시 스크립트의 A안 첫 줄 확인 필요.
+   - **기존 심볼군(방패·화살·별) 전면 재검토** → 모토 "탁월함이 습관이 되도록(Excellence as a Habit)" 기반으로 새 출발. 핵심 해석 = 반복·축적이 쌓여 탁월함에 이름. 계단/막대형 5안 제작 (`make_stairs.py` → st_A~E): st_A(3단 계단), st_B(계단+정점 마름모), st_C(계단 실루엣, 배경없음), st_D(막대 4개 그래프), st_E(계단+상승선+정점 원). 색: 와인 #7A0F24, 골드그라데 #8A6A2E→#F0DFA8.
+   - **와인색 고정 해제 + 추상·고급화** (`make_lux_abstract.py` → lx_*): 팔레트 6종(navy #1B2A4A / charcoal #2B2B30 / forest #183A32 / ink #20242C / plum #2E1B3A / black #1A1A1A) 각각 골드/실버 악센트. 모티프 4종: motif_stairs(미니멀 3단), motif_strokes(3획 상승 사선), motif_trajectory(궤적 곡선+정점 원), motif_layers(겹친 삼각 축적). 대표 8조합 생성.
+     주의: PAL['ink'] 초기값에 오타("D8B familia") 있었으나 다음 줄에서 재정의로 덮어씀 — 재사용 시 첫 정의 라인 정리 권장.
+   - **투명배경 계단+단별 그라데이션 8안** (`make_stairs_grad.py` → sg_A~H): 배경 사각형 제거(형태 자체가 아이콘), 3단 계단(STEPS 좌표: (96,300,108,142)/(202,226,108,216)/(308,138,108,304))에 단별 그라데. sg_A(명도 어두운→밝은골드 #8A6A2E→#EBC96A), sg_B(단별 세로그라데), sg_C(와인#7A0F24→골드 색전이), sg_D(네이비#22345C→골드), sg_E(대각 공유면 그라데), sg_F(불투명도 0.5→1.0 상승), sg_G(얇은 막대+대각), sg_H(4단 명도).
+   - **네이비-골드 역방향 4안** (`make_navy_reverse.py` → nv_1~4): sg_D(아래네이비→위골드)의 역. 색순서 반전 2안(nv_1 투명배경 아래골드#F0DFA8→위네이비#22345C, nv_2 대각공유면 골드→네이비) + 배경/전경 반전 2안(nv_3 네이비바탕 squircle+골드계단, nv_4 네이비바탕+골드 명도그라데). 네이비 #22345C, 골드 #CBAA62.
+   - **✅ nv_1 채택 → 중간색 nvw_2(크림슨 #A31F38) 최종 확정** (`make_nv1_variants.py` → nvw_0~3 중 nvw_2). 3단 = 골드#F0DFA8 / 크림슨#A31F38 / 네이비#22345C. 이 SVG로 favicon 세트 제작 완료(위 항목 0 참조).
+   - 추출 색: 원본 골드 #AE8956, 와인 #66091B → 파비콘엔 밝은 버전 골드 #C2A05A, 와인 #7A0F24 사용
+   - 생성 스크립트: `/home/claude/work/make_favicons.py`
+   - **다음 단계(선택 후)**: ① favicon.svg + apple-touch-icon(180px PNG) + 32/16px PNG 세트 생성 ② 각 HTML `<head>`에 link 코드 삽입(main·summer·hub 등 통일) ③ GitHub 루트에 아이콘 파일 업로드
+   - 삽입할 `<head>` 코드 예시:
+     `<link rel="icon" type="image/svg+xml" href="favicon.svg">`
+     `<link rel="apple-touch-icon" href="apple-touch-icon.png">`
+
+1. **웹 summer.html ↔ 흑백 DOCX 불일치** (통일 필요)
+   - DOCX에는 반영됐으나 summer.html에 **미반영**된 항목:
+     - 일정 토요일(7/25·8/1·8/8) — summer.html은 아직 이전 상태일 수 있음 (요일·날짜 확인 필요)
+     - 고등반 "예비고1(현 중3) 포함" 대상 — summer.html 고등 카드에 미추가
+   - summer.html 파일 위치: 최신 라이브본은 `/home/claude/work/summer_live.html` (사용자 업로드본 기준으로 작업)
+   - 관련 줄: 고등반 카드 대상 행, 중등반 카드 일정/회차 행
+
+2. **다른 페이지 네비 "여름특강" 링크 통일 미완**
+   - `parent_guide.html`, `suneung_2026.html`, `pohang_highschools.html` — 파일 미확보 상태. 네비에 여름특강 링크 추가 필요.
+   - 완료된 것: main.html(네비+본문 카드), summer.html(네비 active)
+
+3. **중1 4개 교과서별 내신 프린트(c안) 제작 대기**
+   - 교과서 확정: 이동중=능률(김기택) / 유강중=천재(이상기) / 포여중=동아(윤정미) / 제철중=YBM(박준언), **전원 중1**
+   - 2학기 범위 표준 가정: 중간 Lesson 5~6, 기말 7~8 (학교 평가계획 확정 시 조정)
+   - 저작권: 교과서 본문은 필립이 제공해야 출제 가능
+
+---
+
+## GA4
+
+- 측정 ID: G-12E7VM1SQ8
+- hub.html에 gtag 코드 `<head>` 삽입 완료 (태그 누락 경고 해소)
+- 내부 트래픽 IP 필터: 필립이 GA4 설정에서 완료함
+
+---
+
+## 이번 세션 변경 로그
+
+- 일정을 월요일(7/27·8/3·8/10) → **토요일(7/25·8/1·8/8)**로 변경 (DOCX 반영 완료, 웹 미반영)
+  - `make_docx2.js` L80(상단 일정), L112(중등 시간), L125(고등 시간): "월"→"토" 및 날짜 교체
+- 재원생 안내문(DOCX) 수강료 문구: 비재원생 금액 제거 → "※ 위 교육비는 재원생 기준입니다." (`make_docx2.js` L153)
+- 고등반 대상에 "예비고1(현 중3) 포함" 추가 (`make_docx2.js` 고등 셀)
+- 신청 방법: 문자 회신만 남기고 온라인 신청서·톡톡·링크 제거
+- 학부모 확인 요청 문자 3종 작성(간결/인사포함/초간단) — 메시지 도구, 파일 아님
+- 김목은 학부모(유강중, 중등 내신반) 답장 2종 작성 — 7/25 결석 시 보강 안내, 메시지 도구
+- **네이버 블로그 게시글 작성** (`blog_post_summer.txt`): 외부 공개용 — 가격 제외("상담 문의"), 재원생 문구 제거, 신청은 전화·톡톡·상담링크, 검색 키워드(포항 영어학원 등)·태그 포함, 일정 7/25·8/1·8/8(토) 반영, 고등반 예비고1(현 중3) 포함 반영, 학교명 미노출
+- **파비콘 시안 3종 제작** (`make_favicons.py` → favicon_A/B/C): GitHub 저장소 zip 받아 `logo.png` 확인 → 파비콘 부적합 판정(축소 시 뭉개짐) → 전용 단순화 SVG 3안(대/G/월계관+대). 선택 대기 상태.
+- **파비콘 고급 버전 제작** (`make_favicons_lux.py` → lux_A/B/D): 금속 골드 그라데이션·상단 광택·비네팅·drop-shadow 적용. A(대)/B(G)/D(원형 엠블럼). 선택 대기.
+- **파비콘 상징형 5안 제작** (`make_favicons_symbol.py` → sym1~5): 글자형(대/G) 반려 후 추상 심볼로 전환 — 상승/책/월계관+체크/별/방패+ㄷ. 원본 와인+금속골드 톤 계승. 선택 대기.
+- **파비콘 애플/크롬 느낌 6안 제작** (`make_favicons_apple.py` → ap_A~F): 과한 마감 반려 후 플랫·미니멀로 전환 — 광택/비네팅 제거, squircle 배경, 넉넉한 여백. 상승화살(크림/골드)·방패ㄷ·별·원링+대·이중셰브론. 선택 대기.
+- **파비콘 실루엣형 6안 제작** (`make_favicons_shape.py` → sh1~6): 사각 배경형 반려 후 "형태 자체가 아이콘"으로 전환 — 사각 배경 제거, 투명+와인그라데이션 실루엣. 원+화살·방패·육각+셰브론·화살실루엣·원+링(크롬스타일)·물방울. 선택 대기.
+- **방패 고급 4안 제작** (`make_shield_lux.py` → shd_A~D): 실루엣형 중 방패 채택 → ㄷ 제거 + 고급화(이중테두리·금속골드 그라데·상단 글로우). 내부 심볼 셰브론/별/화살/순수. 보류.
+- **계단/막대형 5안 제작** (`make_stairs.py` → st_A~E): 기존 심볼군 전면 재검토, 모토("탁월함이 습관이 되도록") 기반으로 새 출발. 반복·축적→탁월함 서사를 계단·막대로 시각화. 후보군.
+- **추상 고급 8안 제작** (`make_lux_abstract.py` → lx_*): 와인색 고정 해제, 팔레트 6종(네이비/블랙/딥그린/차콜/플럼/잉크)×모티프 4종(계단/3획/궤적/레이어)에서 대표 8조합. 후보군.
+- **투명배경 계단+단별 그라데이션 8안 제작** (`make_stairs_grad.py` → sg_A~H): 배경 제거 + 계단 형태 자체가 아이콘 + 단별 그라데(명도/색전이/불투명도/대각공유). 후보군.
+- **네이비-골드 역방향 4안 제작** (`make_navy_reverse.py` → nv_1~4): sg_D 방향 반전 요청 — 색순서 반전(아래골드→위네이비) 2안 + 배경/전경 반전(네이비바탕+골드계단) 2안. nv_1 채택.
+- **nv_1 중간색 변형 4안 제작** (`make_nv1_variants.py` → nvw_0~3): nv_1의 중간 단 색을 회갈(원안)/와인/크림슨/진골드+와인으로. 골드→와인→네이비 조합은 브랜드 와인색을 중간에 계승.
+- **✅ 파비콘 최종 확정 = nvw_2 크림슨** (골드#F0DFA8→크림슨#A31F38→네이비#22345C, 투명배경 3단 계단). favicon 세트 제작(svg/ico/16·32·192·512png/apple-touch-icon, `make_apple_bg.py`) + summer/main/hub.html `<title>` 뒤 5줄 link 삽입 완료. 설치 안내 문서(`파비콘_설치안내.txt`) 작성.
+- **나머지 4개 페이지 파비콘 삽입 완료**: 저장소 zip(main) 재다운로드→변경없음 확인 후 suneung_2026·pohang_highschools·parent_guide·voca.html의 `<title>` 뒤 5줄 삽입. diff로 favicon 외 무변경 검증(voca 3970→3975줄, 기능 무손상). 남은 건 GitHub 업로드+커밋.
+- **파비콘 경로 image/ 폴더로 수정**: 필립이 파비콘을 저장소 `image/` 폴더에 업로드 → 7개 HTML 전부 href를 `favicon.svg`→`image/favicon.svg` 등으로 변경(각 5경로). 설치안내 문서도 image/ 경로+업로드 위치로 갱신.
+
+---
+
+## 주의 (안전 규칙)
+
+- **GAS 작업 시**: 전체 백업 → 전체 파일 교체(부분 붙여넣기 금지) → '새 버전으로 배포' → 어느 GAS인지 확인
+- **passages.js / teacher.html**: 기존 필드 제거·필드명 변경 금지, 전체 재작성 시 기존 파일 diff 기준
+- **민감정보**: 재적 인원·귀국학생·폐강·학교명 등 공개/학부모 자료에 절대 노출 금지
