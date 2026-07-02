@@ -288,27 +288,25 @@
        { name:"새 도구", url:"newtool.html", desc:"설명", icon:"\u2b50", color:"#3a8a5c" },
      ============================================================ */
   const PAGES = [
-    { name:"학생 퀴즈",     url:"index.html",              desc:"학생용 퀴즈 앱 · 관리자 패널",        icon:"\ud83d\udcdd", color:"#8e1530", group:"학생용" },
-    { name:"교사 분석 툴",  url:"teacher.html",            desc:"지문 작성 · 문항 생성 · 분석",        icon:"\ud83e\uddd1\u200d\ud83c\udfeb", color:"#6f0f24", group:"수업 도구" },
-    { name:"멤버스 (보카)", url:"voca.html",               desc:"단어 시험 · 숙제 제출 · 관리자",      icon:"\ud83d\udcda", color:"#b08a3e", group:"학생용" },
-    { name:"숙제 현황",     url:"hw-monitor.html",         desc:"제출 현황 · 사진 확인 · 학부모 리포트", icon:"\ud83d\udcca", color:"#2b5b8a", group:"수업 도구" },
-    { name:"출제 허브",     url:"exam-analysis.html",      desc:"기출 분석 · 예상문제 생성",            icon:"\ud83c\udfaf", color:"#7a5a9a", group:"수업 도구" },
-    { name:"학교 정보",     url:"pohang_highschools.html", desc:"포항 학교 지도 · 입시 정보",          icon:"\ud83c\udfeb", color:"#3a8a5c", group:"안내" },
-    { name:"수능대비반",    url:"suneung_2026.html",       desc:"고3 수능대비반 안내 페이지",          icon:"\ud83c\udf93", color:"#c06a2c", group:"안내" },
-    { name:"애널리틱스",    url:"https://analytics.google.com/analytics/web/#/a398325140p542064683/reports/intelligenthome", desc:"방문자 · 트래픽 통계 (GA4)", icon:"\ud83d\udcc8", color:"#d4a017", group:"운영" },
-    /* ▼ 새 페이지는 이 아래에 추가 ▼ */
-    { name:"메인 페이지",   url:"main.html",               desc:"학원 대표 홈 · 소개 · 후기 · 비즈채널", icon:"\ud83c\udfdb\ufe0f", color:"#8e1530", group:"안내" },
-    { name:"학부모 안내",   url:"parent_guide.html",       desc:"수업 방식 · 상담 가이드 · 시간표/교육비", icon:"\ud83d\udccb", color:"#9a3a5a", group:"안내" },
-    { name:"썸네일 생성기", url:"greateng_thumbnail_pro2_2.html", desc:"블로그 썸네일 · 위젯배너 제작", icon:"\ud83c\udfa8", color:"#c0568e", group:"운영" },
-
+    { name:"숙제 현황", url:"hw-monitor.html", desc:"제출 현황 · 사진 확인 · 학부모 리포트", icon:"📊", color:"#2b5b8a", group:"학생용" },
+    { name:"교사 분석 툴", url:"teacher.html", desc:"지문 작성 · 문항 생성 · 분석", icon:"🧑‍🏫", color:"#6f0f24", group:"수업 도구" },
+    { name:"멤버스 (보카)", url:"voca.html", desc:"단어 시험 · 숙제 제출 · 관리자", icon:"📚", color:"#b08a3e", group:"학생용" },
+    { name:"학생 퀴즈", url:"index.html", desc:"학생용 퀴즈 앱 · 관리자 패널", icon:"📝", color:"#8e1530", group:"수업 도구" },
+    { name:"출제 허브", url:"exam-analysis.html", desc:"기출 분석 · 예상문제 생성", icon:"🎯", color:"#7a5a9a", group:"수업 도구" },
+    { name:"메인 페이지", url:"main.html", desc:"학원 대표 홈 · 소개 · 후기 · 비즈채널", icon:"🏛️", color:"#8e1530", group:"안내" },
+    { name:"학부모 안내", url:"parent_guide.html", desc:"수업 방식 · 상담 가이드 · 시간표/교육비", icon:"📋", color:"#9a3a5a", group:"안내" },
+    { name:"수능대비반", url:"suneung_2026.html", desc:"고3 수능대비반 안내 페이지", icon:"🎓", color:"#c06a2c", group:"안내" },
+    { name:"학교 정보", url:"pohang_highschools.html", desc:"포항 학교 지도 · 입시 정보", icon:"🏫", color:"#3a8a5c", group:"안내" },
+    { name:"애널리틱스", url:"https://analytics.google.com/analytics/web/#/a398325140p542064683/reports/intelligenthome", desc:"방문자 · 트래픽 통계 (GA4)", icon:"📈", color:"#d4a017", group:"운영" },
+    { name:"썸네일 생성기", url:"greateng_thumbnail_pro2_2.html", desc:"블로그 썸네일 · 위젯배너 제작", icon:"🎨", color:"#c0568e", group:"운영" },
   ];
   /* 그룹 목록 — name(그룹명) · collapsed(기본 접힘 여부). 순서가 화면 표시 순서.
      카드의 group 값과 name이 일치하면 그 그룹에 묶임. 어디에도 없으면 '기타'로 표시. */
   const GROUPS = [
-    { name:"학생용",    collapsed:false },
+    { name:"학생용", collapsed:false },
     { name:"수업 도구", collapsed:false },
-    { name:"안내",      collapsed:false },
-    { name:"운영",      collapsed:true  },
+    { name:"운영", collapsed:false },
+    { name:"안내", collapsed:true },
   ];
   /* ▲▲▲ 여기까지만 고치면 됩니다 ▲▲▲ */
 
