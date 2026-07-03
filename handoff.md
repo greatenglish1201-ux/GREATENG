@@ -11,9 +11,19 @@
 |---|---|---|
 | `summer.html` | 여름특강 안내 웹페이지 (학부모·신규 대상) + **파비콘 삽입됨** | 배포 대기 |
 | `main.html` | 학원 대표 홈 (여름특강 링크 연결) + **파비콘 삽입됨** | 배포 대기 |
-| `hub.html` | 관리자 허브 (GA4 태그 + **파비콘 삽입됨**) | 배포 대기 |
+| `hub.html` | 관리자 허브 — **✅ 카드편집·그룹·드래그·GAS자동저장 복구본(823줄) + favicon** | **복구완료·배포대기** |
 | `favicon.svg` / `favicon.ico` / `favicon-16/32/192/512.png` / `apple-touch-icon.png` | **확정 파비콘 세트** (크림슨 nvw_2: 골드→크림슨→네이비 계단) | **완료** |
 | `파비콘_설치안내.txt` | 파비콘 업로드·HTML 삽입·확인 안내 | 완료 |
+| `appicon_app_A_네이비` ~ `app_F_크림슨` (.png) | 앱 아이콘 시안 6안 (512px, 세로 중앙정렬) | A·F 채택→다듬기 |
+| `appicon_af_A1~A3`, `af_F1~F3` (.png) | A(네이비)·F(크림슨) 다듬기 각 3변형 | A2 채택→색 확장 |
+| `appicon_a2_c1~c10` (.png) | A2 색 다양화 10안 (네이비 배경, 3단 각기 다른 색) | c8 채택 |
+| `favicon.svg` / `favicon.ico` / `favicon-16/32/192/512.png` | **✅ 에메랄드 파비콘 세트** (에메랄드→골드→크림슨 계단, 투명, 84% 크기) | **완료·덮어쓰기 대기** |
+| `apple-touch-icon.png` | **✅ 애플 아이콘 = c8 글로시** (에메랄드·골드·크림슨, 네이비 배경, 유리광택) | **완료·덮어쓰기 대기** |
+| `favicon_emerald_source.svg` | 에메랄드 파비콘 원본 SVG | 완료 |
+| `appicon_c8_glossy.svg` / `appicon_c8_glossy_final.png` | c8 글로시 원본 SVG·미리보기 | 완료 |
+| `앱아이콘_A2색상_10안.png` | A2 색상 10안 비교 | 참고용 |
+| `앱아이콘_AF다듬기_비교.png` | AF 다듬기 6안 비교 | 참고용 |
+| `앱아이콘_6안_비교.png` | 앱 아이콘 6안 비교 (바탕화면 라운드 적용) | 참고용 |
 | `suneung_2026.html` / `pohang_highschools.html` / `parent_guide.html` / `voca.html` | 저장소 최신본에 **파비콘 5줄만 삽입** (그 외 100% 원본 동일, voca 무손상) | 배포 대기 |
 | `summer_notice_print.html` | 컬러 A4 가정통신문 (와인&잉크, 웹 인쇄용) | 완료 |
 | `summer_notice_bw.docx` | **흑백 A4 가정통신문 (재원생용, 최종)** | 완료 |
@@ -58,11 +68,45 @@
 
 ## 진행 중 / 미완 항목
 
-0. **파비콘 — ✅ 크림슨(nvw_2) 확정, 세트 제작 + HTML 삽입 완료 (남은 건 GitHub 업로드)**
+0-B. **✅ favicon 작업 7개 파일 소실 정밀 점검 완료 (hub 외 전부 안전)**
+   - 방법: 각 파일의 현최신(154072f) 커밋에서 favicon 5줄 제거 → favicon 직전 실작업 커밋과 diff. 일치하면 소실 없음.
+   - **voca.html ✅** 안전: 154072f−favicon = 5067933(7/1) 100% 일치. auth게이트·GAS 무손상 (3970→3975줄).
+   - **summer.html ✅** 안전: c77308a와 favicon 경로차(상대→절대 `/GREATENG/image/`)만. 여름특강 작업(meta desc·애플버튼) 정상 반영됨.
+   - **main.html ✅** 안전: c77308a와 favicon 경로차만.
+   - **suneung_2026.html ✅** 안전: 154072f−favicon = 68bb5ddc92(6/30) 일치 (805→810줄).
+   - **pohang_highschools.html ✅** 안전: db55e5328d(6/29) 일치 (1354→1359줄).
+   - **parent_guide.html ✅** 안전: 32ae514afa(7/1) 일치 (1172→1177줄).
+   - **hub.html ⚠️→✅**: 유일한 사고. 232줄로 소실 → 7486533에서 823줄 복구(항목 0-A).
+   - **교훈(재발방지)**: 핵심 파일(hub·index·voca·teacher, 특히 GAS 자동저장 붙은 것)은 zip 다운로드본을 최신이라 가정 말고 **커밋 히스토리로 진짜 최신 검증** 후 작업. 파일이 예상보다 짧거나 있어야 할 기능이 없으면 즉시 의심.
+
+0-A. **⚠️→✅ hub.html 카드편집·그룹 기능 소실 사고 → 복구 완료**
+   - 사고: favicon 작업 시 받은 저장소 hub.html이 232줄 단순버전(카드편집·그룹·드래그·GAS저장 전부 없음)이었음. 필립의 커스터마이징 작업본이 사라진 상태였음. (원인: favicon 커밋 과정 or 그 이전부터 main에 단순버전이 올라가 있었을 수 있음)
+   - **복구**: GitHub 커밋 히스토리(`github.com/greatenglish1201-ux/GREATENG/commits/main/hub.html`)에서 **커밋 7486533** [7/2 02:48 "hub: update PAGES/GROUPS via 허브 저장"] = GAS 자동저장이 커밋한 818줄 완전본 발견. raw(`raw.githubusercontent.com/.../7486533/hub.html`)로 가져옴. 카드편집·그룹관리·드래그(moveCard/bindCardDrag)·GAS저장(SAVE_GAS_URL, SECRET greateng-hub-2026, editSaveGit)·auth게이트 전부 확인.
+   - favicon 5줄(`/GREATENG/image/` 절대경로) 삽입 → **823줄 복구본**. favicon 외 원본과 100% 동일(diff), 태그 균형·GAS URL·SECRET·auth 전부 검증. `/mnt/user-data/outputs/hub.html`.
+   - **남은 작업(필립)**: GitHub Desktop에서 Pull 먼저 → 이 823줄 hub.html로 교체 커밋. (⚠️ 232줄 버전이 다시 덮지 않도록 주의). 복구 후 GAS 자동저장이 정상 동작하는지 확인.
+   - 참고: 관련 GAS = hub 전용 자동저장 프로젝트(`doPost` {secret,pagesBlock,groupsBlock} → 정규식으로 PAGES/GROUPS 2블록 교체 → GitHub API 커밋). CONFIG: SECRET greateng-hub-2026, OWNER greatenglish1201-ux, REPO GREATENG, PATH hub.html, BRANCH main.
+
+0. **파비콘 — ✅ 에메랄드 통일 + 크기 키움 (최신, 이미지 덮어쓰기 대기)**
+   - **에메랄드 통일 완료** (`make_favicon_emerald.py` → favicon_emerald.svg): 탭 파비콘도 앱아이콘과 색 통일 → 낮은단 에메랄드 #2E9E7A → 골드 #E6CD86 → 크림슨 #A31F38 (투명배경). 계단 크기 여백40=캔버스 84%로 키움(기존 62%, 즐겨찾기서 작아보이던 문제 해결). 바닥정렬 비율 0.52:0.72:1.0.
+   - 세트(favicon_emerald_set→outputs): favicon.svg(투명 에메랄드 큰계단) / favicon.ico(16+32) / favicon-16·32·192·512.png / apple-touch-icon.png(=c8_glossy 에메랄드 글로시 네이비배경 180). **파일명 기존과 동일 → HTML 수정 불필요, image 폴더에 덮어쓰기 커밋만 하면 됨**.
+   - 색 순서 주의: 앱아이콘(c8_glossy)·탭파비콘 모두 에메랄드→골드→크림슨으로 통일됨.
+   - (이전 크림슨 버전 이력) 골드→크림슨→네이비 3단 계단(nvw_2)이 직전 확정본이었으나, 에메랄드 통일 요청으로 교체.
+
+0-이전. **파비콘 크림슨(nvw_2) 이력 — 에메랄드로 대체됨 (배포·트러블슈팅 기록 보존)**
    - 최종: 투명배경 3단 계단, 골드 #F0DFA8 → 크림슨 #A31F38 → 네이비 #22345C. 세트=favicon.svg/ico/16·32·192·512.png + apple-touch-icon.png(크림배경 #FBF7EF, `make_apple_bg.py`)
    - **⚠️ 파비콘 파일은 저장소 `image/` 폴더에 위치** (루트 아님). 저장소 최신본에서 image/favicon.svg·ico·32·192·512·apple-touch-icon.png 6개 존재 확인.
    - **경로 = 절대경로 `/GREATENG/image/...`** (프로젝트 페이지라 저장소명 GREATENG 포함 필수). 상대경로 `image/...`에서 절대경로로 변경 완료(7개 HTML 각 5경로). 이유: 프로젝트 페이지에서 브라우저가 파비콘을 사이트 루트에서 찾으려다 실패하는 문제 방지.
-   - 정확한 파비콘 URL = `greatenglish1201-ux.github.io/GREATENG/image/favicon.svg` (진단 시 이 주소 직접 열어 확인)
+   - **🔍 진단 결과(중요)**: raw.githubusercontent 확인 → `image/favicon.svg` HTTP 200, 내용 우리 크림슨 계단과 100% 동일. 저장소 배포 HTML(summer 등)에 favicon 5줄 정상 존재(경로 `image/favicon.svg` 상대경로 버전). 파일·HTML 모두 저장소엔 정상.
+   - **⚠️ 필립 확인: Pages 주소 favicon.svg → 404 확정**. raw는 5개 파일 모두 200, 폴더명 소문자 `image` 정확. → 저장소 정상, Pages 배포만 문제.
+   - **logo.png 테스트 무효**: logo.png는 image 폴더가 아니라 **루트**에 있음(내가 경로 잘못 안내). `image/logo.png`는 원래 없어서 404가 정상. logo.png 정확한 경로는 루트 `/GREATENG/logo.png`.
+   - **핵심 발견**: main.html이 예전부터 `image/cert_bachelor.jpg` 등 image 폴더 이미지 참조 중. → **image 폴더의 기존 이미지(cert_bachelor.jpg)가 Pages에서 열리는지가 원인 확정 열쇠**. 필립 확인 요청: (A)`.../GREATENG/image/cert_bachelor.jpg` (B)`.../GREATENG/image/favicon.svg`. A열림+B404=파비콘 커밋만 빌드 미반영 / A·B둘다404=image폴더 통째 Pages 미배포(빌드실패/설정).
+   - **✅ 원인 확정: A(cert)=열림, B(favicon)=404 → image 폴더는 Pages 정상, 파비콘 커밋만 Pages 빌드 미반영**. summer.html(루트)도 열림. 즉 저장소·코드·폴더 전부 정상, 순수하게 GitHub Pages 빌드가 파비콘 추가 커밋을 아직 배포 안 한 상태.
+   - **해결(필립)**: ①10~30분 대기 후 재시도(빌드 밀림) ②Actions 탭에서 "pages build and deployment" 상태 확인(노랑=진행중 대기 / 빨강=실패 → 재배포 / 초록=완료면 잠시후 재시도) ③급하면 빈 커밋(README 공백 추가 등)이나 Settings→Pages Source None→main 재저장으로 빌드 강제 재실행.
+   - 조사 완료: `.nojekyll` 없음, `.gitignore` 없음, `_config.yml` 없음. (Jekyll 기본 빌드 상태. 밑줄 폴더 아니라 image가 Jekyll에 무시될 이유는 표면상 없음 → 빌드 미완/실패 쪽이 유력)
+   - **⚠️ 시크릿창에서도 안 뜬다고 함 → 캐시 문제 아님**. Claude 환경은 github.io가 네트워크 allowlist에 없어 Pages 직접 접근 불가(raw.githubusercontent만 가능) → Claude가 대신 Pages 확인 불가, 필립이 직접 확인 필요.
+   - 남은 가능성 3개: (1)GitHub Pages 빌드 미반영/실패(Settings→Pages 빌드상태·커밋 체크표시 확인) (2)브라우저가 SVG 파비콘 우선 시도 실패 (3)해당 경로 파일 실제 404.
+   - **대응: favicon link 순서를 ico 우선으로 재배치** (SVG 마지막). 순서: shortcut icon(ico) → png32 → png192 → svg → apple-touch. 7개 HTML 전부 적용(절대경로 `/GREATENG/image/` 유지). SVG를 브라우저가 못 받아들이는 경우(가능성2) 대비.
+   - **다음 확인 요청**: 주소창에 `https://greatenglish1201-ux.github.io/GREATENG/image/favicon.svg` 직접 입력 → 계단 그림이면 파일정상(순서문제), 404면 Pages/커밋 문제.
    - HTML 삽입 완료: summer/main/hub.html + **suneung_2026·pohang_highschools·parent_guide·voca.html** 전부 `<title>` 바로 뒤 5줄 link 블록(href=`image/...`). 태그 균형 통과. voca.html 포함 favicon 5줄 외 원본과 100% 동일(diff 검증) — auth게이트·GAS백엔드 무손상. 저장소 zip(main, 7/2 재다운로드해 변경없음 확인) 기준 작업.
    - 남은 작업(필립): ① 파비콘 7파일을 저장소 **`image/` 폴더**에 업로드(루트 아님) ② 수정된 7개 HTML(summer·main·hub·suneung_2026·pohang_highschools·parent_guide·voca) 교체 커밋 ③ 파비콘 캐시 강하니 Ctrl+F5/시크릿창 확인
    - (이력) 원본 `logo.png`(260×260, 와인배경+골드 월계관+"대단한영어" 텍스트)는 파비콘 부적합: 16/32px 축소 시 텍스트·문양 뭉개짐 (검증 완료)
@@ -114,6 +158,11 @@
 
 ## 이번 세션 변경 로그
 
+- **✅ 파비콘 에메랄드 통일 + 크기 키움** (`make_favicon_emerald.py` → favicon_emerald.svg): 탭 파비콘을 앱아이콘(c8)과 색 통일 — 에메랄드 #2E9E7A→골드 #E6CD86→크림슨 #A31F38 투명 계단. 크기 여백40=84%(기존 62%, 즐겨찾기서 작던 문제 해결). 세트 재생성(svg/ico/16·32·192·512png) + apple-touch-icon=c8_glossy(180). 파일명 동일해 HTML 수정 불필요, image 덮어쓰기만. 픽셀 검증(색·84%·투명).
+
+- **✅ favicon 7개 파일 소실 정밀 점검 완료**: 각 파일 현최신(154072f)−favicon vs 직전 실작업 커밋 diff 검증. voca(5067933)·suneung(68bb5ddc92)·pohang(db55e5328d)·parent_guide(32ae514afa) 전부 favicon만 추가·소실 없음. summer/main은 favicon 경로차(상대→절대)만. **hub.html만 사고였고 복구 완료**. 결론: 6개 안전, hub 복구.
+- **✅ hub.html 복구 (카드편집·그룹·드래그·GAS저장 소실 → 커밋 히스토리에서 되살림)**: 저장소 hub.html이 232줄 단순버전으로 소실된 것 발견 → 커밋 7486533(GAS 자동저장분, 818줄)을 raw로 복구 → favicon 5줄 삽입해 823줄 완성. favicon 외 100% 원본 동일 검증. outputs/hub.html.
+
 - 일정을 월요일(7/27·8/3·8/10) → **토요일(7/25·8/1·8/8)**로 변경 (DOCX 반영 완료, 웹 미반영)
   - `make_docx2.js` L80(상단 일정), L112(중등 시간), L125(고등 시간): "월"→"토" 및 날짜 교체
 - 재원생 안내문(DOCX) 수강료 문구: 비재원생 금액 제거 → "※ 위 교육비는 재원생 기준입니다." (`make_docx2.js` L153)
@@ -137,6 +186,17 @@
 - **나머지 4개 페이지 파비콘 삽입 완료**: 저장소 zip(main) 재다운로드→변경없음 확인 후 suneung_2026·pohang_highschools·parent_guide·voca.html의 `<title>` 뒤 5줄 삽입. diff로 favicon 외 무변경 검증(voca 3970→3975줄, 기능 무손상). 남은 건 GitHub 업로드+커밋.
 - **파비콘 경로 image/ 폴더로 수정**: 필립이 파비콘을 저장소 `image/` 폴더에 업로드 → 7개 HTML 전부 href를 `favicon.svg`→`image/favicon.svg` 등으로 변경(각 5경로). 설치안내 문서도 image/ 경로+업로드 위치로 갱신.
 - **파비콘 안 뜸 → 절대경로로 수정**: 저장소 재확인(image/에 6파일 정상 존재). 원인=프로젝트 페이지 상대경로 문제 추정. 7개 HTML href를 `image/...`→`/GREATENG/image/...` 절대경로로 변경. 진단용 정확 URL = greatenglish1201-ux.github.io/GREATENG/image/favicon.svg. 필립이 이 주소 직접 열어 파일 접근 가능 여부 확인 중(안 열린다 보고 → 주소 오타 or Pages 반영지연 or 커밋 미완 가능성).
+- **파비콘 최종 진단**: raw.githubusercontent로 확인 결과 favicon.svg HTTP 200 + 내용 일치, 배포 HTML에 5줄 favicon 정상 포함. **파일·코드 모두 정상 → 원인은 순전히 브라우저/Pages 파비콘 캐시**. 해결=시크릿창 테스트+캐시 비우기+시간 경과. 절대경로 전환은 불필요했으나 outputs엔 절대경로 버전 HTML도 보관(무해).
+- **파비콘 시크릿창도 실패 → 캐시 배제**: Claude가 github.io 접근 시 403(네트워크 미허용, 제 쪽 제한). raw는 200. 원인 후보를 빌드 미반영/구버전 HTML/폴더 미반영으로 좁힘. 필립에게 ①favicon.svg 주소 직접 입력 결과(계단 vs 404) ②Settings→Pages 빌드상태 확인 요청. 결과 대기 중.
+- **파비콘 Pages 404 확정 → 빌드 문제로 진단**: raw로 image/ 5개 파비콘 전부 200 재확인(폴더명·파일명·대소문자 정상). Pages만 404 → 저장소 정상·Pages 배포 문제. 필립에게 logo.png(기존이미지) Pages 접근 여부 + Settings→Pages(Source/Branch/live주소/빌드실패) 확인 요청. 최유력=Pages 빌드 미완/실패로 파비콘 커밋 미반영.
+- **logo.png 경로 오류 정정 + cert 테스트로 재진단**: logo.png는 루트에 있음(image/ 아님) → `image/logo.png` 404는 정상, 테스트 무효. main.html이 예전부터 `image/cert_*.jpg` 참조 확인 → 기존 image 이미지 cert_bachelor.jpg의 Pages 접근 여부로 재확정 요청. .nojekyll/.gitignore/_config.yml 모두 없음 확인(빌드 미완/실패 유력). A(cert)열림+B(favicon)404=파비콘커밋 미반영, 둘다404=image폴더 통째 미배포.
+- **✅ 파비콘 원인 최종 확정**: 필립 확인 A(cert_bachelor.jpg)=열림, B(favicon.svg)=404. → image 폴더·코드·저장소 전부 정상, **파비콘 추가 커밋이 GitHub Pages에 아직 빌드·배포 안 된 것**. 해결=대기/Actions 빌드상태 확인/빈 커밋으로 재배포. 코드 수정 불필요(이미 완료). 필립 액션만 남음.
+- **✅ 파비콘 배포 문제 해결됨**: Settings→Pages "Last deployed 8 hours ago"로 배포 멈춰있던 것 확인 → Branch None↔main 재저장(또는 재배포)으로 강제 재배포 → 파비콘 정상 표시. 바탕화면 앱아이콘도 "앱으로 설치"로 크롬 배지 없이 적용 완료. (Pages 설정: Source=Deploy from a branch, main /(root), live at greatenglish1201-ux.github.io/GREATENG/)
+- **앱 아이콘 시안 6안 제작** (`make_appicon.py` → app_A~F): 기존 apple-touch(크림배경 180)가 흐리고 정사각 배경 언밸런스 지적 → 512px 재설계, 계단 중앙정렬 여백균등. A(네이비단색), B(네이비그라데), C(크림), D(흰), E(네이비 꽉찬계단), F(크림슨배경). 네이비 배경일 땐 3단 중 최상단을 밝은골드로(네이비끼리 안 겹치게). 선택 대기.
+- **앱 아이콘 계단 세로 중앙정렬 수정**: 아래로 쏠림 지적(위여백156/아래74) → `make_appicon.py` cy_shift 6→-35 (A~D,F), E안 꽉찬계단 좌표 y-23 반영. 결과 위/아래 여백 115/115 균등(픽셀 검증). 6안 전부 재생성.
+- **A(네이비)·F(크림슨) 다듬기 각 3변형** (`make_af_refine.py` → af_A1~A3, af_F1~F3): 금속골드 그라데(mg그라디언트 #B89043→#F4E4B0), 배경 그라데+상단 글로우 추가. A1(골드3단)/A2(골드·크림슨·골드=크림슨포인트)/A3(골드+drop-shadow입체), F1(골드·네이비·크림)/F2(금속골드3단)/F3(네이비·골드·크림). STEPS 좌표=세로중앙 (102,265,96,132)/(206,197,96,200)/(310,115,96,282). 추천 A2/F2.
+- **A2 색 다양화 10안** (`make_a2_colors.py` → a2_c1~c10): A2가 양끝 다 골드라 뻔하다는 지적 → 3단 각기 다른 색. c1(크림슨·골드·아이스)/c2(틸·골드·크림)/c3(크림슨·골드·에메랄드)/c4(코퍼·골드·아이스)/c5(버건디·크림슨·골드)/c6(틸·골드·크림슨=보색)/c7(스카이·골드·크림슨)/c8(에메랄드·골드·크림슨)/c9(로즈·골드·아이스)/c10(앰버·크림슨·아이스). 네이비 배경 공통. 추천 c6/c5/c8.
+- **✅ 앱 아이콘 최종 확정 = c8 에메랄드·골드·크림슨 + 글로시** (`make_c8_glossy.py` → c8_glossy.svg): 각 막대 세로 그라데(하이라이트→base→deep) + 상단 유리 하이라이트(glassTop, 위 42%) + drop-shadow 입체. 색: 에메랄드 #2E9E7A/골드 #E6CD86/크림슨 #A31F38, 네이비배경 그라데 #3A5488→#16233F. 픽셀 검증(막대 상단 밝음/하단 진함 확인). 앱아이콘 세트 생성: apple-touch-icon.png(180)·favicon-192.png·favicon-512.png. **탭 파비콘(favicon.svg/32/ico)은 크림슨 계단 투명 유지, 앱아이콘만 이 글로시로 교체 방향**(통일 원하면 favicon.svg도 교체 가능 — 필립 확인 대기).
 
 ---
 
