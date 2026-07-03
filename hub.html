@@ -401,6 +401,22 @@
       bindCardDrag();
     }
     bindGroupHeads();
+    bindCardOpen();
+  }
+
+  /* 카드(tile/chip) 클릭 → 항상 시스템 브라우저 새 탭에서 열기.
+     크롬 '앱으로 설치'(PWA) 상태에서 target="_blank"가 앱 창으로 열리는 것을 방지.
+     편집모드에서는 링크 이동을 막고 편집 UI가 동작하도록 통과시킨다. */
+  function bindCardOpen(){
+    grid.querySelectorAll('a.tile, a.chip').forEach(function(a){
+      a.addEventListener('click', function(e){
+        if(editMode) return;               // 편집모드면 관여 안 함
+        const url = a.getAttribute('href');
+        if(!url) return;
+        e.preventDefault();                 // 기본 링크(앱 창) 동작 차단
+        window.open(url, '_blank', 'noopener');  // 브라우저 새 탭으로 강제
+      });
+    });
   }
 
   /* 그룹 헤더 클릭 → 접기/펼치기 */
