@@ -15,12 +15,12 @@
 | `jechulgo3_2026_1f_적중분석.html` | 위 적중분석의 HTML 버전 (동일 브랜드 템플릿) | **완료** |
 | `hit_compare_blog.html` | 적중 7건 비교카드(와인#7a1020·골드#c9a84c 브랜드 톤, compare-row 2열: 기출+출처+유형변형 ↔ 예상문제 적중내용) — 블로그 삽입용 이미지/스크린샷 소스 | **완료** |
 | `hit_compare_table.md` | 위와 동일 내용의 마크다운 표 + 블로그 복붙용 문구 | **완료** |
-| `jechulgo3_2026_1f_출처전수대조.md` / `.html` | 실제 기출 30문항을 Google Drive 원문(27STYD 1~12강 PDF/HWPX 전체 + 정답과 해설 PDF + 제철고 자체 기출 아카이브)과 fullText 검색으로 대조 — 27STYD 확인 11건 / 외부 확인·추정 15건 / 순수 미검색 4건 (30건 중 87% 규명) | **4차(최종) 갱신 완료** (아래 0-G 참조, 남은 4건은 재개 시 이어서 검색) |
-| `jechulgo3_2026_1f_기말_pattern.json` / `.md` | 실제 기출(복원본) 기준 번호별 유형·배점·정답·출처 패턴 파일. key=`제철고_3학년_2026_1학기_기말`. JSON 유효성·배점합계(100.0) 검증 완료. 다음 시험 예상문제 출제 시 `pattern_key`로 참조할 용도 | **완료** |
+| `jechulgo3_2026_1f_출처전수대조.md` / `.html` | 실제 기출 30문항을 Google Drive 원문(27STYD 1~12강 PDF/HWPX 전체 + 정답과 해설 PDF + 제철고 자체 기출 아카이브)과 fullText 검색으로 대조 — **30문항 전수 규명 완료(100%)**: 27STYD 확인 11건 / 외부 확인·추정 19건 | **5차(전수완료)** — 더 이상 미검색 없음 |
+| `jechulgo3_2026_1f_기말_pattern.json` / `.md` | 실제 기출(복원본) 기준 번호별 유형·배점·정답·출처 패턴 파일. key=`제철고_3학년_2026_1학기_기말`. 5·20·27·28번 source_status를 unverified→external로 갱신 완료(전수 규명 반영) | **완료** (JSON 유효성 재검증: confirmed 11 / external 18 / external_confirmed 1) |
+| `기출_원장_템플릿.csv` | 위 원장 스키마에 이번 기말 30문항을 실제로 채운 시드 데이터. 5·20·27·28번 행의 source_status/source_detail/confidence를 external/27STYD 전체 미검출/indirect로 갱신 완료 | **완료** (30행, UTF-8-SIG) |
 | `기출패턴_누적관리_플랜.md` | 배점 필드 제외한 표준 패턴 스키마(`type_sequence`+`source_status` 3분류), 명명규칙(`jechulgo` vs `jechul` 접두사 구분), `통합분석어시스트`에 `patterns` 탭 신설 제안, 회차별 작업 루틴 5단계, 2회차(중간·기말) 예시로 본 누적효과 시연, 다음 시험(2학기 중간) 실행계획 | **완료** |
 | `기출패턴_구조설계_원장방식.md` | "회차별 패턴 JSON" 방식의 구조적 한계(집계 완료 후 저장·파일 산재·스키마 표류·이른 확정) 진단 + **누적 원장(long-format) 방식**으로 전환 제안. 문항=1행, `position_pct`(상대위치)·`confidence`(direct/indirect)·`predicted_flag`/`type_changed` 등 컬럼 설계, 일반화 전 통계 원칙(최소 4회차, 혼입변수 분리, 절대번호 대신 상대위치, confidence 분리 집계), 유형 전이표(transition matrix) 등 파생 뷰 설계 | **완료** |
-| `기출_원장_템플릿.csv` | 위 원장 스키마에 이번 기말 30문항을 실제로 채운 시드 데이터(exam_id, num, position_pct, qtype, source_status, source_detail, predicted_flag, predicted_qtype, type_changed, confidence 등 17열). 다음 회차부터 이 표에 행만 이어붙이면 됨 | **완료** (30행, UTF-8-SIG로 엑셀 한글 깨짐 방지) |
-| Google Sheet `기출DB_제철고` (통합분석어시스트 내 탭) | 위 CSV를 Google Sheets로 생성 후 필립이 `통합분석어시스트`로 복사·`기출DB_제철고`로 명명 완료. 원본 fileId=`1jhmjRssAd4y2jJWopdingySLQtyrzDtK-m2yXE3C2Rk`(독립본, `read_file_content`로 30행 반영 재확인함) | **완료** (통합 반영은 필립이 수동 처리, 탭명 `기출DB_제철고`로 최종 확정) |
+| Google Sheet `기출DB_제철고` (통합분석어시스트 내 탭) | 위 CSV를 Google Sheets로 생성 후 필립이 `통합분석어시스트`로 복사·`기출DB_제철고`로 명명 완료. 원본 fileId=`1jhmjRssAd4y2jJWopdingySLQtyrzDtK-m2yXE3C2Rk`(독립본, `read_file_content`로 30행 반영 재확인함) | **⚠️ 시트 자체는 미갱신** — 5·20·27·28번 출처 갱신이 CSV에는 반영됐으나 이미 통합된 시트에는 반영 안 됨(아래 0-N 참조, 수동 갱신 필요) |
 | `jechulgo3_2026_1f_기출복원.docx` | 위 복원본의 Word 버전. `docx`(npm) 스크립트로 md→docx 변환, LibreOffice PDF 렌더+pdftotext로 검증. 본문은 실제 기출형식과 같은 2단(다단) 레이아웃, 표지·정답표는 단단. **본문 30문항에는 정답을 표시하지 않고, 문서 맨 끝에서만 표시**: (1) 전체 30문항 정답 그리드(6열×5행) → (2) "정답 및 출처(27STYD 확인분)" 표(1·2·3·7·9·10·11·12·13·14·15번 11문항만, 외부지문·미확인 19문항 제외) | **완료** (9페이지, 재검증 완료) |
 | `제철고3_기말_블로그포스팅_초안.txt` | 학생·학부모 대상 쉬운 언어 블로그 원고(적중률 7/30, 유형 변형 강조, 후반부 외부지문 발견 언급) + 제목 후보 3종 + 해시태그 + 업로드 가이드. 시험 원문(지문·선택지)은 저작권 때문에 요약 설명으로만 서술, 그대로 인용하지 않음 | **완료** (전화번호 입력란 미채움, 메인파일 카드 삽입은 위치 확인 후 진행 예정) |
 
@@ -45,6 +45,17 @@
 ---
 
 ## 진행 중 / 미완 항목
+
+0-N. **✅ 5차(최종) 검색 라운드: 5·20·27·28번 전부 외부 추정 확정 — 30문항 전수 규명 완료(100%)**
+   - 필립 지시("다 채워야지")로 마지막 남은 4건(5·20·27·28번) 검색 완료.
+   - 4건 전부 Drive 전체 fullText 검색(각각 "visible sign of trust within a team", "governments explicitly discriminate against foreign companies", "experimenters confederates + conformity", "confusing people a little bit is") 실행 — 27STYD 어느 파일에서도 매칭 안 됨, 학생 답안 이미지(`TalkMedia_i_*.jpg`)와 우리 자체 산출물(`jechulgo3_2026_1f_기출복원_3.docx` — 이미 Drive에 동기화된 것)만 검색됨 → **전부 external(외부 추정)으로 확정**.
+   - **최종 상태**: 27STYD 확인 11건(직접대조 6: 3·7·9·11·12·15번 / 간접 5: 1·2·10·13·14번) + 외부 확인·추정 19건(확정 2: 4·25번 / 추정 17: 5·6·8·16·17·18·19·20·21·22·23·24·26·27·28·29·30번) = **30/30(100%) 전수 규명 완료**.
+   - **갱신 반영한 파일 3종**(수정 위치 정밀 기록):
+     1. `jechulgo3_2026_1f_출처전수대조.md`(`/home/claude/restore/`) — 5·20·27·28번 행을 "미확인(미검색)"→"27STYD 전체 미검출(외부 추정)"으로 개별 str_replace, 요약 표를 "5차 최종본"으로 재작성(구분 4종→3종: 확인 11 + 외부추정 17 + 외부확정 2, 미확인 행 삭제), 하단 "이번 대조에서 확인된 중요 사실" 3번 항목과 "다음 확인 작업" 섹션도 전수완료 기준으로 재작성, 중복돼 있던 구버전 "최종 패턴 정리" 문단 1개 삭제. `.html`도 동일 로직으로 재생성(outputs 반영).
+     2. `jechulgo3_2026_1f_기말_pattern.json`(`/home/claude/pattern/`) — `pattern` 배열의 num=5,20,27,28 네 항목의 `source`/`source_status`를 각각 `"미확인"/"unverified"` → `"27STYD 전체 미검출(외부 추정)"/"external"`로 수정. 재검증 결과 `source_status` 분포: confirmed 11 / external 18 / external_confirmed 1 (정상, outputs 반영).
+     3. `jechulgo3_2026_1f_기말_pattern.md` 표의 5·20·27·28행 "출처" 열을 "미확인"→"외부 추정"으로 수정(outputs 반영).
+     4. `기출_원장_템플릿.csv`(`/home/claude/pattern/`) — python csv 모듈로 num∈{5,20,27,28} 행의 `source_status`→`external`, `source_detail`→`27STYD 전체 미검출`, `confidence`→`indirect`로 일괄 갱신(outputs 반영).
+   - **⚠️ 미반영 — 다음 세션 필수 확인**: 0-M에서 이미 Google Sheets `기출DB_제철고`(통합분석어시스트 내 탭)로 통합 완료된 상태인데, **이번 4건 갱신은 로컬 CSV에만 반영됐고 실제 그 시트에는 반영 안 됨**(도구상 기존 시트 셀 수정 기능이 없어 자동 반영 불가). 필립에게 안내한 수동 갱신 내용: `기출DB_제철고` 탭에서 num=5,20,27,28 행의 `source_status`를 `external`로, `source_detail`을 `27STYD 전체 미검출`로, `confidence`를 `indirect`로 4행×3열만 손으로 고치면 CSV와 동기화됨(전체 재붙여넣기 불필요, 딱 12칸만 수정).
 
 0-M. **✅ 완료: 원장을 `통합분석어시스트` 내 `기출DB_제철고` 탭으로 통합 확정**
    - 필립이 구글시트 UI에서 탭 우클릭 → "복사본 만들기" → `통합분석어시스트`로 직접 이동 완료. **최종 탭 이름은 `기출DB_제철고`**(제가 제안한 `기출원장_제철고`가 아니라 필립이 `기출DB_제철고`로 명명 — 앞으로 이 이름으로 지칭·검색할 것).
