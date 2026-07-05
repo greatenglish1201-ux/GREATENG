@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>포항제철고3 기말고사 분석 | 대단한영어</title>
+<style>
+  :root{
+    --wine:#7a1020;
+    --gold:#c9a84c;
+    --ink:#3a2a20;
+    --bg:#fdfaf5;
+    --line:#e7ddc9;
+  }
+  body{
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    margin:0;
+    padding:0;
+  }
+  .page{max-width:760px;margin:0 auto;padding:40px 24px 60px;}
+  .eyebrow{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--wine);
+    letter-spacing:0.5px;
+    margin-bottom:8px;
+  }
+  h1{
+    font-size:25px;
+    font-weight:800;
+    color:var(--ink);
+    line-height:1.4;
+    margin:0 0 6px;
+  }
+  .sub{
+    font-size:13.5px;
+    color:#8a7a63;
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:2px solid var(--gold);
+  }
+  h2{
+    font-size:18px;
+    color:var(--wine);
+    margin-top:38px;
+    margin-bottom:14px;
+    padding-left:12px;
+    border-left:4px solid var(--gold);
+  }
+  p{
+    font-size:15.5px;
+    line-height:1.85;
+    margin:14px 0;
+  }
+  .stat-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:10px;
+    margin:22px 0;
+  }
+  .stat-box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 10px;
+    text-align:center;
+  }
+  .stat-box .num{
+    font-size:24px;
+    font-weight:800;
+    color:var(--wine);
+    display:block;
+  }
+  .stat-box .label{
+    font-size:12px;
+    color:#8a7a63;
+    margin-top:4px;
+    display:block;
+  }
+  .callout{
+    background:#faf3e3;
+    border-left:4px solid var(--gold);
+    border-radius:6px;
+    padding:16px 18px;
+    margin:20px 0;
+    font-size:15px;
+    line-height:1.8;
+    color:#5a4a38;
+  }
+  .callout strong{color:var(--wine);}
+  .compare-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  .col{padding:13px 15px;}
+  .col.left{border-right:1px dashed var(--line);}
+  .qnum{
+    display:inline-block;
+    background:var(--wine);
+    color:#fff;
+    font-size:10.5px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    margin-bottom:5px;
+  }
+  .qtitle{font-size:14px;font-weight:700;margin-bottom:3px;}
+  .hit-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:#eef6ea;
+    color:#3f7d3a;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:999px;
+    margin-bottom:5px;
+  }
+  .hit-badge.full{background:#fff3d6;color:#a1741a;}
+  .dot{width:6px;height:6px;border-radius:50%;background:#3f7d3a;}
+  .dot.gold{background:#a1741a;}
+  .hitline{font-size:12.5px;line-height:1.5;}
+  .exam-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 20px;
+    margin:16px 0;
+    box-shadow:0 1px 4px rgba(122,16,32,0.05);
+  }
+  .exam-tag{
+    display:inline-block;
+    background:#faf3e3;
+    color:var(--wine);
+    font-size:11.5px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+  }
+  .exam-stem{
+    font-size:14.5px;
+    font-weight:700;
+    margin-bottom:8px;
+    line-height:1.6;
+  }
+  .exam-passage{
+    font-size:12.5px;
+    color:#8a7a63;
+    background:#fbf7ee;
+    border-radius:6px;
+    padding:8px 12px;
+    margin-bottom:10px;
+  }
+  .exam-choices{
+    font-size:13px;
+    line-height:1.9;
+    color:#4a3a2c;
+  }
+  .exam-choices .ans{color:#3f7d3a;font-weight:800;}
+  .exam-note{
+    margin-top:10px;
+    font-size:12.5px;
+    color:var(--wine);
+    font-weight:600;
+    border-top:1px dashed var(--line);
+    padding-top:9px;
+  }
+  .cta{
+    margin-top:36px;
+    background:linear-gradient(135deg, var(--wine), #5a0c18);
+    color:#fff;
+    border-radius:16px;
+    padding:26px 24px;
+    text-align:center;
+  }
+  .cta .big{font-size:17px;font-weight:800;margin-bottom:6px;}
+  .cta .small{font-size:13px;opacity:0.85;}
+  .tag-row{margin-top:28px;font-size:12.5px;color:#a99a83;line-height:2;}
+  .footnote{font-size:11.5px;color:#a99a83;margin-top:24px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">대단한영어 GREATENG · 포항제철고 영어 전문</div>
+  <h1>"우리 아이가 공부한 게 시험에 나왔을까?"<br>포항제철고3 기말고사 분석</h1>
+  <div class="sub">2026학년도 3학년 1학기 기말고사 영어Ⅱ (2026.7.3 실시) 결과 분석</div>
+
+  <p>시험이 끝나면 학부모님들이 가장 궁금해하시는 게 있습니다. "우리 아이가 그동안 공부한 내용이 실제 시험에 나오긴 한 걸까?" 학원을 다니는 이유도 결국 이겁니다. 막연히 문제를 많이 풀리는 게 아니라, 실제로 나올 만한 걸 미리 짚어주는 것. 그래서 저희는 시험이 끝날 때마다 실제 기출과 미리 준비한 자료를 하나하나 대조합니다. 이번 결과를 그대로 공유드립니다.</p>
+
+  <div class="stat-grid">
+    <div class="stat-box"><span class="num">15</span><span class="label">교재 범위 내 출제 문항</span></div>
+    <div class="stat-box"><span class="num">7</span><span class="label">사전 지문 적중</span></div>
+    <div class="stat-box"><span class="num">47%</span><span class="label">교재 범위 적중률</span></div>
+  </div>
+
+  <h2>준비한 지문, 얼마나 나왔나</h2>
+  <p>이번 시험 30문항의 출처를 전부 원문과 대조해본 결과, 지정 교재(수능특강 영어독해연습)에서 나온 문항은 <strong>15문항</strong>이었고 나머지 15문항은 교재 밖 외부 지문이었습니다. 외부 지문은 어느 학원도 교재만으로는 맞힐 수 없는 영역입니다. 그래서 정직하게, <strong>교재 범위에서 출제된 15문항</strong>을 기준으로 말씀드립니다.</p>
+
+  <p>이 15문항 중 <strong>7문항</strong>이 저희가 시험 전 학생들에게 훈련시킨 예상문제와 같은 지문에서 나왔습니다. 교재 전체 지문이 100개 가까이 되는 것을 감안하면, 교재 범위 출제분의 <strong>절반 가까이(47%)</strong>를 미리 짚은 셈입니다.</p>
+
+  <p>더 중요한 건 따로 있습니다. 7개 중 6개는 저희가 예상했던 문제 유형과 실제 출제된 유형이 달랐습니다. "제목을 묻는 문제"로 준비시켰는데 "요지를 묻는 문제"로 나오고, "빈칸 채우기"로 준비시켰는데 "문단 순서 배열"로 나오는 식이었습니다.</p>
+
+  <div class="compare-row">
+    <div class="col left">
+      <span class="qnum">기출 1번</span>
+      <div class="qtitle">역사가의 서사 구성</div>
+    </div>
+    <div class="col right">
+      <span class="hit-badge"><span class="dot"></span>지문 적중</span>
+      <div class="hitline">사전 준비 지문 그대로 출제 — 발문 유형만 변형</div>
+    </div>
+  </div>
+  <div class="compare-row">
+    <div class="col left">
+      <span class="qnum">기출 3번</span>
+      <div class="qtitle">동물보호법 vs 동물권</div>
+    </div>
+    <div class="col right">
+      <span class="hit-badge full"><span class="dot gold"></span>완전 적중</span>
+      <div class="hitline">지문·유형 모두 사전 준비와 일치</div>
+    </div>
+  </div>
+  <div class="compare-row">
+    <div class="col left">
+      <span class="qnum">기출 13번</span>
+      <div class="qtitle">창업 위해 퇴사하는 직원들</div>
+    </div>
+    <div class="col right">
+      <span class="hit-badge"><span class="dot"></span>지문 적중</span>
+      <div class="hitline">사전 준비 지문 그대로 출제 — 발문 유형만 변형</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    만약 학생이 지문을 "제목 고르는 요령"으로만 외웠다면, 실제 시험에서 "순서 배열" 문제로 나왔을 때 당황했을 겁니다. 하지만 지문의 내용 자체를 제대로 이해하고 있었다면 문제 유형이 바뀌어도 흔들리지 않습니다. <strong>문제 유형별 요령 암기가 아니라 지문의 논리와 내용을 정확히 이해하는 공부가 결국 진짜 실력이 됩니다.</strong>
+  </div>
+
+  <h2>실제로 나눠드렸던 예상문제, 직접 보여드립니다</h2>
+  <p>"미리 준비했다"는 말만으로는 부족하다고 생각합니다. 시험 전 학생들에게 실제로 풀린 예상문제 중, 이번에 적중한 문항을 그대로 보여드립니다. (지문은 저작권 보호를 위해 주제만 표기하고, 저희가 직접 제작한 발문과 선택지를 공개합니다.)</p>
+
+  <div class="exam-card">
+    <div class="exam-tag">대단한영어 예상문제 27번 · 어휘 → 실제 기출 3번으로 <b>완전 적중</b></div>
+    <div class="exam-stem">다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?</div>
+    <div class="exam-passage">[지문: 동물보호법과 동물권 논쟁 — 수특영독 5강]</div>
+    <div class="exam-choices">① adequate &nbsp; ② increased &nbsp; ③ accepts &nbsp; ④ trivial &nbsp; ⑤ resources</div>
+    <div class="exam-note">→ 실제 시험에서 <b>같은 지문·같은 어휘 유형</b>으로 출제 (번호만 3번으로 이동)</div>
+  </div>
+
+  <div class="exam-card">
+    <div class="exam-tag">대단한영어 예상문제 13번 · 함축의미 → 실제 기출 13번(순서)으로 지문 적중</div>
+    <div class="exam-stem">밑줄 친 <u>that nest egg may make them more likely to make the leap</u>가 의미하는 바로 가장 적절한 것은?</div>
+    <div class="exam-passage">[지문: 직원들이 창업을 위해 회사를 떠나는 조건 — 수특영독 8강]</div>
+    <div class="exam-choices">
+      ① Saving money discourages employees from ever becoming founders.<br>
+      ② Employees with low pay are the most reluctant to leave their jobs.<br>
+      ③ High savings give well-paid employees the financial cushion to risk founding a startup. <span class="ans">✔</span><br>
+      ④ Star performers always earn higher wages than average employees.<br>
+      ⑤ Company growth rates determine the salaries of all employees.
+    </div>
+    <div class="exam-note">→ 실제 시험에서 <b>같은 지문</b>이 순서 배열 유형으로 변형 출제 — 지문을 이해한 학생은 유형이 바뀌어도 풀 수 있었습니다</div>
+  </div>
+
+  <div class="exam-card">
+    <div class="exam-tag">대단한영어 예상문제 1번 · 제목 → 실제 기출 1번(요지)으로 지문 적중</div>
+    <div class="exam-stem">다음 글의 제목으로 가장 적절한 것은?</div>
+    <div class="exam-passage">[지문: 역사가가 증거를 서사로 구성하는 방식 — 수특영독 3강]</div>
+    <div class="exam-choices">
+      ① The Danger of Romanticizing Political Leaders<br>
+      ② Why Chronological Order Is the Only Valid History<br>
+      ③ Various Ways Historians Shape Events into Narrative <span class="ans">✔</span><br>
+      ④ How Irony Distorts Our Understanding of the Past<br>
+      ⑤ Objective Facts: The Sole Foundation of History
+    </div>
+    <div class="exam-note">→ 실제 시험 1번에서 <b>같은 지문</b>이 요지 유형으로 출제</div>
+  </div>
+
+  <h2>시험 뒷부분은 어땠나 — 전수 검증으로 확인한 사실</h2>
+  <p>앞서 말씀드린 외부 지문 15문항도 그냥 넘기지 않았습니다. 30문항 전체의 출처를 하나하나 원문과 대조해 100% 확인했고, 그 결과 시험 앞부분(1~15번)은 지정 교재 안에서, 뒷부분(16~30번)은 대부분 교재 밖에서 출제된다는 이 학교의 뚜렷한 출제 구조를 파악했습니다.</p>
+
+  <p>그중 한 문항(25번)은 놀랍게도 <strong>작년 2학년 중간고사에 나왔던 지문이 그대로 다시 출제</strong>된 것으로 확인됐습니다. 이 학교는 정해진 교재 하나만 보고 출제하지 않고, 학교 자체 기출 문제도 다시 활용한다는 뜻입니다.</p>
+
+  <div class="callout">
+    저희는 이번 전수 검증을 통해 이 사실을 새로 파악했고, 다음 시험부터는 이 학교의 자체 기출 데이터까지 함께 대조해서 준비 범위를 넓히겠습니다.
+  </div>
+
+  <h2>마무리</h2>
+  <p>시험이 끝난 지금이 다음 시험을 준비하기에 가장 좋은 시점입니다. 대단한영어는 이번 시험을 통해 확인한 내용을 바탕으로 2학기 중간고사 대비 자료를 이미 준비하고 있습니다.</p>
+
+  <div class="cta">
+    <div class="big">포항제철고 3학년 영어, 대단한영어와 함께 준비하세요</div>
+    <div class="small">포항 남구 대이로 105 · 상담 문의 환영</div>
+  </div>
+
+  <div class="tag-row">
+    #포항제철고영어 #포항제철고3학년 #포항제철고내신 #포항고등영어학원 #내신영어분석 #기말고사분석 #포항영어학원 #고3영어 #대단한영어 #GREATENG
+  </div>
+
+  <div class="footnote">
+    * 예상문제의 발문·선택지는 대단한영어가 직접 제작한 자체 콘텐츠이며, 교재 지문 원문은 저작권 보호를 위해 주제 표기로 대체했습니다. 실제 시험 문제 원문도 학교 저작권이 있어 요약 설명으로만 서술했습니다.<br>
+    * 적중률 산정 기준: 시험 30문항 중 지정 교재(수능특강 영어독해연습) 범위에서 출제된 15문항 대비, 사전 예상문제와 동일 지문이 출제된 7문항 (7/15 = 47%). 교재 밖 외부 지문 15문항은 산정에서 제외.<br>
+    * 출처: 2026학년도 포항제철고 3학년 1학기 기말고사 영어Ⅱ(2026.7.3 실시) / 대단한영어 사전 예상문제 및 원문 대조 자체 분석(30문항 출처 전수 확인 완료).
+  </div>
+
+</div>
+</body>
+</html>
