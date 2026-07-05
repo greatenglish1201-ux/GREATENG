@@ -24,7 +24,12 @@
 | `jechulgo3_2026_1f_기출복원.docx` | 위 복원본의 Word 버전. `docx`(npm) 스크립트로 md→docx 변환, LibreOffice PDF 렌더+pdftotext로 검증. 본문은 실제 기출형식과 같은 2단(다단) 레이아웃, 표지·정답표는 단단. **본문 30문항에는 정답을 표시하지 않고, 문서 맨 끝에서만 표시**: (1) 전체 30문항 정답 그리드(6열×5행) → (2) "정답 및 출처(27STYD 확인분)" 표(1·2·3·7·9·10·11·12·13·14·15번 11문항만, 외부지문·미확인 19문항 제외) | **완료** (9페이지, 재검증 완료) |
 | `제철고3_기말_블로그포스팅_초안.txt` | 학생·학부모 대상 쉬운 언어 블로그 원고(적중률 7/30, 유형 변형 강조, 후반부 외부지문 발견 언급) + 제목 후보 3종 + 해시태그 + 업로드 가이드. 시험 원문(지문·선택지)은 저작권 때문에 요약 설명으로만 서술, 그대로 인용하지 않음 | **완료** (전화번호 입력란 미채움, 메인파일 카드 삽입은 위치 확인 후 진행 예정) |
 | `제철고3_기말_블로그_최종.html` | 블로그 홍보용 최종 HTML(캡처용). **필립 지시로 2차 개편**: (1) 통계를 "30문항 중 7적중(23%)"에서 **"교재 범위 내 15문항 중 7적중(47%)"**으로 재구성 — 외부지문 15문항은 산정 제외, 각주에 산정기준 명시 (2) **적중 예상문제 실물 3개 카드**(`.exam-card`) 추가: 예상 27번(어휘, 완전적중)·13번(함축의미)·1번(제목) — 자체 제작한 발문·선택지만 노출, 교재(EBS) 지문 원문은 저작권 보호 위해 `[지문: 주제 — 수특영독 N강]` 메모로 대체 (3) 후반부 서술도 15/15 이원구조 프레임으로 연결 | **완료** (2차 개편본) |
-| `메인삽입_아카이브_플랜.md` | 적중분석을 main.html에 노출+영구 아카이브하는 반복 구조 플랜. 지난 세션 `results.js` 누적 구조 재활용 전제, `analysis/` 폴더 신설(영문 파일명 `jechulgo3_2026_1f.html`), detailUrl 연결, 공개용(지문 주제메모)/내부용(원문 포함) 분리 원칙, 시험마다 2동작(커밋+results.js 추가) 반복 루틴 | **완료** (STEP 1 파일 3종 수령 대기) |
+| `메인삽입_아카이브_플랜.md` | 적중분석을 main.html에 노출+영구 아카이브하는 반복 구조 플랜. 지난 세션 `results.js` 누적 구조 재활용 전제, `analysis/` 폴더 신설(영문 파일명 `jechulgo3_2026_1f.html`), detailUrl 연결, 공개용(지문 주제메모)/내부용(원문 포함) 분리 원칙, 시험마다 2동작(커밋+results.js 추가) 반복 루틴 | **완료** |
+| `results.js` | 적중사례 데이터 저장소. `RESULTS` 배열에 시험 1건=객체 1개. 필드: school·exam·date·total·hit·basis·detailUrl·blogUrl·hits[{topic,predicted,actual}]. 현재 2건(제철고3 7/15, 이동고3 17/25) 수록. 새 시험은 배열 맨 앞에 덩어리만 추가 | **완료** |
+| `results.html` | `results.js`를 읽어 자동 렌더하는 독립 적중사례 페이지. 최신순 정렬, 상단 요약 3박스(시험수/누적적중/평균적중률=시험별 비율 단순평균), 카드 클릭 시 적중지문 펼침(최신 기본 펼침), detailUrl/blogUrl 링크, 하단 정직 표기(산정기준 공개) | **완료** (node 렌더 검증) |
+| `results-summary.js` | main.html의 `#hsGrid`에 최근 2건 카드를 자동 렌더하는 분리 스크립트. results.js 다음에 로드 | **완료** |
+| `main_적중요약_스니펫.html` | main.html에 붙일 "내신 적중 사례" 요약 섹션(스타일+`<section>`) + 적용 안내 3단계(네비 링크/섹션 삽입/스크립트 2개 로드) | **완료** |
+| `jechulgo3_2026_1f.html` | `제철고3_기말_블로그_최종.html`의 아카이브용 영문 파일명 버전(GitHub `analysis/` 커밋용). 상단에 메인·적중사례 복귀 네비 추가. 내용 동일(공개용, 지문=주제메모) | **완료** |
 
 ---
 
@@ -47,6 +52,18 @@
 ---
 
 ## 진행 중 / 미완 항목
+
+**▶ 이번 세션 마무리(DONE): results.js 누적 구조 구축 완료** — 지난 세션에 미완이던 results.js 구조를 이 세션에서 완성(0-S 참조). 5개 파일(results.js/results.html/results-summary.js/main_적중요약_스니펫.html/jechulgo3_2026_1f.html) outputs 반영, node로 렌더 로직 검증 완료. **남은 건 GitHub 반영뿐**(필립 수동): (1) results.js·results.html·results-summary.js를 레포 루트에 커밋 (2) jechulgo3_2026_1f.html을 analysis/ 폴더에 커밋 (3) main.html에 스니펫 3곳 반영. 상세는 0-S.
+
+0-S. **✅ results.js 누적 적중사례 구조 구축 완료 (0-H·0-R의 실행)**
+   - 필립 지시("아니 리절트 저번에 하던걸 마루리하자고")로, 지난 세션에 미완이던 `results.js` 3종 구조를 이 세션에서 완성. conversation_search로 원문 복구 시도했으나 해당 세션이 안 잡혀 원문 확보 실패 → 이 세션에서 확정한 스키마로 신규 구축.
+   - **`results.js`**(`/home/claude/blogfinal/`): `const RESULTS = [...]` 배열. 필드 school·exam·date·total·hit·basis·detailUrl·blogUrl·hits[{topic,predicted,actual}]. 2건 수록 — 제철고3(total:15,hit:7,basis="교재범위 15문항 기준·외부15 제외",detailUrl="analysis/jechulgo3_2026_1f.html",hits 7건) + 이동고3(total:25,hit:17,basis="전체 25문항 기준",date 2026-07-01 /* TODO 정확한 시험일 확인 */,hits []). ⚠️ 지문·문제 원문 절대 넣지 말 것 주석 명시.
+   - **`results.html`**: `results.js` 로드 후 IIFE로 자동 렌더. 최신순 정렬(date localeCompare 내림차순), 상단 요약 3박스. **avgRate는 시험별 비율의 단순평균**(Σ(hit/total)/n) — basis가 시험마다 달라 단순 합산 왜곡 피하기 위함. 카드 클릭 토글(최신 i===0 기본 open), esc() XSS 방지, detailUrl/blogUrl 조건부 링크.
+   - **`results-summary.js`**: main.html `#hsGrid`에 최근 2건만 렌더(.slice(0,2)). results.js에 grade 필드 없어 r.grade 참조 제거하고 school만 표시.
+   - **`main_적중요약_스니펫.html`**: `.hit-summary` 섹션 + 적용 안내 3단계((a)네비 `.gnav-links`에 적중사례 링크 (b)섹션 삽입 (c)`</body>` 위 results.js+results-summary.js 2개 로드, 중복로드 금지).
+   - **`jechulgo3_2026_1f.html`**: `제철고3_기말_블로그_최종.html`을 영문명 복사 + 상단 메인/적중사례 복귀 nav 추가. GitHub `analysis/` 커밋용(공개 아카이브, 지문=주제메모라 저작권 안전).
+   - **검증**: node로 results.js 로드 → 시험 2건·요약(시험2회/누적적중24문항/평균적중률57%)·최신순 정렬·메인 최근2건 렌더 정상 확인. HTML 태그 균형(div 0, script 짝) 확인.
+   - **⏳ 남은 것 = GitHub 반영(필립 수동)**: (1) results.js·results.html·results-summary.js 레포 루트 커밋 (2) jechulgo3_2026_1f.html을 analysis/ 폴더 신설해 커밋 (3) main.html에 스니펫 3곳 반영 (4) 이동고3 date 정확한 시험일 확인해 수정.
 
 0-R. **✅ 메인 삽입+아카이브 플랜 수립 완료 — 0-H(results.js 구조)의 실행 계획으로 연결**
    - 필립 지시("이걸 메인 html 페이지에 삽입할 방법과 아카이브할 방법 플랜")로 `메인삽입_아카이브_플랜.md` 작성.

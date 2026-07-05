@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>적중사례 | 대단한영어 GREATENG</title>
+<style>
+  :root{
+    --wine:#7a1020;
+    --gold:#c9a84c;
+    --ink:#3a2a20;
+    --bg:#fdfaf5;
+    --line:#e7ddc9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:-apple-system,"Apple SD Gothic Neo","Pretendard",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    margin:0;
+  }
+  .gnav{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:960px;
+    margin:0 auto;
+  }
+  .gnav .brand{font-weight:800;color:var(--wine);font-size:16px;text-decoration:none;}
+  .gnav a{color:var(--ink);text-decoration:none;font-size:14px;}
+  .wrap{max-width:760px;margin:0 auto;padding:36px 20px 70px;}
+  h1{font-size:23px;color:var(--wine);margin:0 0 6px;}
+  .sub{font-size:13.5px;color:#8a7a63;margin-bottom:24px;}
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:30px;
+  }
+  .summary .box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 10px;
+    text-align:center;
+  }
+  .summary .num{font-size:23px;font-weight:800;color:var(--wine);display:block;}
+  .summary .label{font-size:11.5px;color:#8a7a63;margin-top:4px;display:block;}
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .card-head{
+    padding:18px 20px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .card-head .left .school{font-size:16px;font-weight:800;}
+  .card-head .left .exam{font-size:12.5px;color:#8a7a63;margin-top:2px;}
+  .card-head .left .basis{font-size:11px;color:#a99a83;margin-top:4px;}
+  .card-head .rate{
+    text-align:right;
+    flex-shrink:0;
+  }
+  .card-head .rate .pct{font-size:21px;font-weight:800;color:var(--wine);}
+  .card-head .rate .frac{font-size:11.5px;color:#8a7a63;}
+  .card-body{
+    display:none;
+    border-top:1px dashed var(--line);
+    padding:14px 20px 18px;
+  }
+  .card.open .card-body{display:block;}
+  .hit-row{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    padding:7px 0;
+    border-bottom:1px solid #f4eee1;
+    font-size:13px;
+  }
+  .hit-row:last-child{border-bottom:none;}
+  .hit-row .topic{flex:1;font-weight:600;}
+  .hit-row .types{color:#8a7a63;font-size:12px;white-space:nowrap;}
+  .hit-row .types b{color:var(--wine);}
+  .empty-note{font-size:12.5px;color:#a99a83;padding:6px 0;}
+  .links{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+  .links a{
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    text-decoration:none;
+    padding:7px 14px;
+    border-radius:999px;
+    border:1.5px solid var(--wine);
+    color:var(--wine);
+  }
+  .honest{
+    margin-top:26px;
+    font-size:12px;
+    color:#a99a83;
+    line-height:1.8;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="gnav">
+  <a class="brand" href="main.html">대단한영어 GREATENG</a>
+  <a href="main.html">메인으로 ←</a>
+</nav>
+
+<div class="wrap">
+  <h1>내신 적중사례</h1>
+  <div class="sub">시험이 끝날 때마다 실제 기출과 사전 예상문제를 전수 대조해 기록합니다. 카드를 누르면 적중 지문 목록이 열립니다.</div>
+
+  <div class="summary" id="summary"></div>
+  <div id="cards"></div>
+
+  <div class="honest">
+    * 적중률은 각 카드에 표기된 산정 기준(분모)에 따릅니다 — 시험마다 교재 범위·문항 수가 달라 기준을 함께 공개합니다.<br>
+    * "적중"은 사전 예상문제와 동일한 지문이 실제 시험에 출제된 경우를 뜻하며, 발문 유형이 변형되어 출제된 경우를 포함합니다(유형까지 일치하면 "완전 적중"으로 별도 표기).<br>
+    * 시험 문제·지문 원문은 학교 저작권 보호를 위해 게시하지 않습니다.
+  </div>
+</div>
+
+<script src="results.js"></script>
+<script>
+(function(){
+  if (typeof RESULTS === "undefined" || !Array.isArray(RESULTS) || RESULTS.length === 0) {
+    document.getElementById("cards").innerHTML = "<p>등록된 적중사례가 없습니다.</p>";
+    return;
+  }
+
+  // 최신순 정렬 (date 내림차순)
+  const data = RESULTS.slice().sort((a,b) => (b.date||"").localeCompare(a.date||""));
+
+  // 상단 요약: 시험 수 / 누적 적중 문항 / 평균 적중률(각 시험 비율의 단순 평균)
+  const examCount = data.length;
+  const totalHits = data.reduce((s,r)=>s+(r.hit||0),0);
+  const avgRate = Math.round(
+    data.reduce((s,r)=> s + (r.total ? r.hit/r.total : 0), 0) / examCount * 100
+  );
+  document.getElementById("summary").innerHTML =
+    box(examCount + "회", "분석한 시험") +
+    box(totalHits + "문항", "누적 적중") +
+    box(avgRate + "%", "평균 적중률");
+
+  function box(num,label){
+    return '<div class="box"><span class="num">'+num+'</span><span class="label">'+label+'</span></div>';
+  }
+
+  // 카드 렌더 (최신 시험은 기본 펼침)
+  const cardsEl = document.getElementById("cards");
+  data.forEach(function(r, i){
+    const pct = r.total ? Math.round(r.hit/r.total*100) : 0;
+    const card = document.createElement("div");
+    card.className = "card" + (i===0 ? " open" : "");
+
+    let hitsHtml = "";
+    if (r.hits && r.hits.length){
+      hitsHtml = r.hits.map(function(h){
+        return '<div class="hit-row"><span class="topic">'+esc(h.topic)+'</span>'+
+               '<span class="types">'+esc(h.predicted)+' → <b>'+esc(h.actual)+'</b></span></div>';
+      }).join("");
+    } else {
+      hitsHtml = '<div class="empty-note">적중 지문 상세는 준비 중입니다.</div>';
+    }
+
+    let linksHtml = "";
+    if (r.detailUrl) linksHtml += '<a href="'+esc(r.detailUrl)+'">전체 분석 보기</a>';
+    if (r.blogUrl)   linksHtml += '<a href="'+esc(r.blogUrl)+'" target="_blank" rel="noopener">블로그 후기</a>';
+    if (linksHtml) linksHtml = '<div class="links">'+linksHtml+'</div>';
+
+    card.innerHTML =
+      '<div class="card-head">' +
+        '<div class="left">' +
+          '<div class="school">'+esc(r.school)+'</div>' +
+          '<div class="exam">'+esc(r.exam)+' · '+esc(r.date||"")+'</div>' +
+          '<div class="basis">'+esc(r.basis||"")+'</div>' +
+        '</div>' +
+        '<div class="rate"><div class="pct">'+pct+'%</div><div class="frac">'+r.hit+' / '+r.total+' 적중</div></div>' +
+      '</div>' +
+      '<div class="card-body">'+hitsHtml+linksHtml+'</div>';
+
+    card.querySelector(".card-head").addEventListener("click", function(){
+      card.classList.toggle("open");
+    });
+    cardsEl.appendChild(card);
+  });
+
+  function esc(s){
+    return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+})();
+</script>
+</body>
+</html>
