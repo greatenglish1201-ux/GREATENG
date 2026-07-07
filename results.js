@@ -8,6 +8,8 @@
       date     : 시험일 YYYY-MM-DD (최신순 정렬 기준)
       total    : 분모 문항수
       hit      : 적중 문항수
+      hideRate : (선택) true면 적중률 % 대신 "지문 N개 적중"으로 표기하고
+                 상단 평균 적중률 계산에서도 제외 (분모 기준이 달라 왜곡 방지용)
       basis    : 분모 산정 기준 문구 (카드에 그대로 표기 — 정직 표기용)
       detailUrl: 상세 분석 아카이브 링크 (analysis/ 폴더, 없으면 "")
       blogUrl  : 네이버 블로그 포스팅 링크 (없으면 "")
@@ -17,6 +19,56 @@
    ▶ 주의: 지문 원문·시험 문제 원문은 절대 넣지 말 것 (저작권)
    ============================================================ */
 const RESULTS = [
+  {
+    school: "포항제철고",
+    exam: "1학년 1학기 기말 (공통영어1)",
+    date: "2026-07-06",
+    total: 28,
+    hit: 6,
+    hideRate: true,   /* 적중률 % 대신 "지문 N개 적중" 표기 · 평균 계산 제외 */
+    basis: "사전 배포 예상문제와 동일 지문 출제 6개 기준",
+    detailUrl: "",
+    blogUrl: "",
+    hits: [
+        { topic: "권태와 자기주도 놀이", predicted: "흐름무관", actual: "흐름무관 (완전 적중)" },
+        { topic: "신경망 AI와 예술", predicted: "제목", actual: "제목 (유형 적중)" },
+        { topic: "디지털·가상 공간의 실재성", predicted: "빈칸추론", actual: "문장삽입 (지문 적중)" },
+        { topic: "뇌과학과 사고력", predicted: "빈칸추론", actual: "제목 (지문 적중)" },
+        { topic: "영어의 지역적 변이(Englishes)", predicted: "내용일치", actual: "제목" },
+        { topic: "확증편향과 정보처리", predicted: "요약문완성", actual: "빈칸추론" }
+    ]
+  },
+  {
+    school: "포항제철중",
+    exam: "3학년 1학기 기말 (비상 김진완 L3·L4)",
+    date: "2026-07-01",
+    total: 26,
+    hit: 19,
+    basis: "완전 적중 9 + 부분 적중 10 = 총 19문항 / 전체 26문항",
+    detailUrl: "",
+    blogUrl: "",
+    hits: [
+        { topic: "L3 파락호 — 어법 밑줄", predicted: "L3 어법 밑줄형", actual: "어법 (완전 적중)" },
+        { topic: "L3 파락호 — 내용 일치/불일치", predicted: "L3 내용일치", actual: "내용 불일치 (완전 적중)" },
+        { topic: "공통 어법 — if 명사절 판별", predicted: "if 용법 구별", actual: "if 용법 (완전 적중)" },
+        { topic: "L4 정크오케스트라 — 내용 일치", predicted: "L4 내용일치", actual: "내용 일치 (완전 적중)" },
+        { topic: "공통 어법 — 가목적어 it", predicted: "가목적어 it 판별", actual: "가목적어 it (완전 적중)" },
+        { topic: "공통 어법 — 어법상 옳은 것", predicted: "어법 옳은 문장", actual: "어법 (완전 적중)" },
+        { topic: "공통 어휘 — 영영풀이 매칭", predicted: "영영풀이 판별", actual: "영영풀이 (완전 적중)" },
+        { topic: "공통 대화 — [A][B] 불일치", predicted: "대화 일치/불일치", actual: "대화 불일치 (완전 적중)" },
+        { topic: "공통 대화 — [A][B] 일치", predicted: "대화 일치", actual: "대화 일치 (완전 적중)" },
+        { topic: "L3 결혼·궤짝 — 어법 밑줄", predicted: "어법 밑줄형", actual: "어법 밑줄 ①~⑤" },
+        { topic: "L3 결혼·궤짝 — 핵심어휘 빈칸", predicted: "핵심어휘 빈칸", actual: "빈칸 어휘" },
+        { topic: "공통 어법 — 밑줄 오류 판별", predicted: "어법 밑줄 짝", actual: "어법 밑줄 짝" },
+        { topic: "L4 정크 — 빈칸 어휘 짝", predicted: "L4 빈칸 어휘", actual: "빈칸 어휘 ⓐⓑ" },
+        { topic: "L4 정크 — 내용 이해", predicted: "L4 내용 판별", actual: "댓글 이해" },
+        { topic: "공통 어법 — 올바른 형태", predicted: "어법 형태 고치기", actual: "어법 형태" },
+        { topic: "공통 어법 — 분사 후치수식", predicted: "분사 후치수식", actual: "분사 playing 쓰임" },
+        { topic: "공통 어휘 — 핵심어휘 빈칸", predicted: "핵심어휘 빈칸", actual: "어휘 빈칸" },
+        { topic: "공통 어휘 — 어휘 빈칸(가)", predicted: "어휘 빈칸", actual: "빈칸 어휘(가)" },
+        { topic: "공통 대화 — 속담·표현", predicted: "대화 속 속담", actual: "속담(No pain no gain)" }
+    ]
+  },
   {
     school: "포항제철고",
     exam: "3학년 1학기 기말 (영어Ⅱ)",

@@ -256,6 +256,28 @@
   .foot-blog{display:inline-block;font-size:13px;font-weight:700;color:#03c75a;
     border:1px solid #03c75a;border-radius:980px;padding:8px 18px;text-decoration:none;transition:all .15s ease}
   .foot-blog:hover{background:#03c75a;color:#fff}
+
+  /* ===== 내신 적중 요약 섹션 ===== */
+  .hit-summary{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:56px 20px}
+  .hs-wrap{max-width:900px;margin:0 auto}
+  .hs-head{text-align:center;margin-bottom:26px}
+  .hs-head h2{font-size:24px;color:var(--wine);margin:0 0 8px;letter-spacing:-0.02em}
+  .hs-head p{font-size:14px;color:#8a8f9c;margin:0}
+  .hs-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:540px;margin:0 auto 26px}
+  .hs-kpi .box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 8px;text-align:center}
+  .hs-kpi .num{font-size:24px;font-weight:800;color:var(--wine);display:block}
+  .hs-kpi .lab{font-size:11.5px;color:#8a8f9c;margin-top:4px;display:block}
+  .hs-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .hs-cards .c{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+  .hs-cards .c .sch{font-size:16px;font-weight:800;color:var(--ink)}
+  .hs-cards .c .ex{font-size:12.5px;color:#8a8f9c;margin:3px 0 12px}
+  .hs-cards .c .rate{font-size:26px;font-weight:800;color:var(--wine)}
+  .hs-cards .c .rate small{font-size:12.5px;color:#8a8f9c;font-weight:600;margin-left:6px}
+  .hs-cards .c .rate.hide{font-size:17px}
+  .hs-cards .c .rate.hide b{font-size:26px}
+  .hs-more{text-align:center;margin-top:24px}
+  .hs-more a{display:inline-block;font-size:13.5px;font-weight:700;color:var(--wine);text-decoration:none;border:1.5px solid var(--wine);border-radius:999px;padding:10px 22px}
+  @media(max-width:560px){.hs-cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -267,6 +289,7 @@
     <a href="summer.html">여름특강</a>
     <a href="suneung_2026.html">수능대비반</a>
     <a href="pohang_highschools.html">학교정보</a>
+    <a href="results.html">적중사례</a>
     <a class="gnav-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">내신자료</a>
   </div>
 </nav>
@@ -407,6 +430,20 @@
   </div>
 </section>
 
+<!-- ===== 내신 적중 요약 (results.js 자동 갱신 · 시험 추가는 results.js만 수정) ===== -->
+<section class="hit-summary" id="hitSummary">
+  <div class="hs-wrap">
+    <div class="hs-head">
+      <h2>내신 적중 현황</h2>
+      <p>시험이 끝날 때마다 실제 기출과 사전 예상문제를 전수 대조해 기록합니다.</p>
+    </div>
+    <div class="hs-kpi" id="hsKpi"></div>
+    <div class="hs-cards" id="hsCards"></div>
+    <div class="hs-more"><a href="results.html">적중사례 전체 보기 →</a></div>
+  </div>
+</section>
+
+
 <!-- 페이지 허브 -->
 <section class="sec">
   <div class="sec-eyebrow">더 알아보기</div>
@@ -460,5 +497,32 @@
   <a class="foot-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">학원 블로그 바로가기</a>
 </footer>
 
+
+<!-- 내신 적중 요약 데이터·렌더 (results.js는 레포 루트에 있어야 함) -->
+<script src="results.js"></script>
+<script>
+(function(){
+  if (typeof RESULTS === "undefined" || !Array.isArray(RESULTS) || !RESULTS.length) return;
+  var data = RESULTS.slice().sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  var examCount = data.length;
+  var totalHits = data.reduce(function(s,r){ return s+(r.hit||0); }, 0);
+  var rateExams = data.filter(function(r){ return !r.hideRate && r.total; });
+  var avgRate = rateExams.length ? Math.round(
+    rateExams.reduce(function(s,r){ return s + r.hit/r.total; }, 0) / rateExams.length * 100) : 0;
+  var kpi = document.getElementById("hsKpi");
+  if (kpi) kpi.innerHTML = kbox(examCount+"회","분석한 시험")+kbox(totalHits+"문항","누적 적중")+kbox(avgRate+"%","평균 적중률");
+  function kbox(n,l){ return '<div class="box"><span class="num">'+n+'</span><span class="lab">'+l+'</span></div>'; }
+  var cards = document.getElementById("hsCards");
+  if (cards) cards.innerHTML = data.slice(0,2).map(function(r){
+    var pct = r.total ? Math.round(r.hit/r.total*100) : 0;
+    var rate = r.hideRate
+      ? '<div class="rate hide">지문 <b>'+r.hit+'</b>개 적중</div>'
+      : '<div class="rate">'+pct+'%<small>'+r.hit+' / '+r.total+'</small></div>';
+    return '<div class="c"><div class="sch">'+esc(r.school)+'</div><div class="ex">'+esc(r.exam)+'</div>'+rate+'</div>';
+  }).join("");
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+})();
+</script>
 </body>
 </html>
