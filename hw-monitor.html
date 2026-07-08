@@ -127,6 +127,8 @@
   td.s-휴일{ background:#e8e8ec; color:#86868b; }
   td.clickable{ cursor:pointer; }
   td.clickable:hover{ box-shadow:inset 0 0 0 2px var(--wine); }
+  .exempt-tab{ background:#e4edf7; color:#5a7089; }
+  .exempt-tab.active{ background:#234e84; color:#fff; }
 
   /* 사진 */
   .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); gap:14px; }
@@ -220,7 +222,74 @@ function toggleHubMenu(){
     </div>
     <div class="controls">
       <button class="btn btn-primary" onclick="loadAll()">새로고침</button>
+      <button class="btn" id="exempt-mode-btn" onclick="toggleExemptMode()" style="border:1px solid #cdddf5; background:#eef5fd; color:#234e84; font-weight:700;">면제·휴일·시험 설정</button>
       <span class="muted" id="grid-info"></span>
+    </div>
+    <div id="exempt-panel" style="display:none; margin:4px 0 12px; padding:14px; border-radius:12px; background:#f4f8fd; border:1px solid #d6e6f7;">
+      <!-- 탭 -->
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        <button class="exempt-tab active" data-tab="exempt" onclick="switchExemptTab('exempt')" style="padding:7px 13px; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">시험 면제 <span style="font-weight:500; opacity:.7;">· 학생별</span></button>
+        <button class="exempt-tab" data-tab="holiday" onclick="switchExemptTab('holiday')" style="padding:7px 13px; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">공휴일 <span style="font-weight:500; opacity:.7;">· 전체</span></button>
+        <button class="exempt-tab" data-tab="schoolExam" onclick="switchExemptTab('schoolExam')" style="padding:7px 13px; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">시험기간 <span style="font-weight:500; opacity:.7;">· 학교·학년</span></button>
+      </div>
+
+      <!-- 탭1: 시험 면제 (학생별) -->
+      <div id="exempt-tab-exempt" class="exempt-section">
+        <div style="font-size:12.5px; color:#6b7c90; margin-bottom:8px;">면제된 날은 '시험'으로 처리되어 그 학생 숙제에서 빠집니다.</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-size:13px;">
+          <select id="exempt-student" style="padding:8px 10px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px; min-width:130px;"><option value="">학생 선택</option></select>
+          <input type="date" id="exempt-start" style="padding:8px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+          <span style="color:#6b7c90;">~</span>
+          <input type="date" id="exempt-end" style="padding:8px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+          <button class="btn" onclick="applyExempt('add')" style="background:#234e84; color:#fff; font-weight:700;">면제</button>
+          <button class="btn" onclick="applyExempt('remove')" style="background:#fff; color:#c0392b; border:1px solid #e0b4b0; font-weight:700;">해제</button>
+          <span id="exempt-msg" style="font-size:12.5px; color:#234e84;"></span>
+        </div>
+        <div id="exempt-toggle-hint" style="display:none; margin-top:9px; font-size:12.5px; color:#234e84; background:#dfeefb; padding:7px 10px; border-radius:8px;">
+          📌 <b>칸 토글 모드 켜짐</b> — 그리드에서 칸을 누르면 그 날짜가 <b>면제↔해제</b>로 바뀝니다. (사진 보기는 잠시 꺼집니다)
+        </div>
+        <label style="display:inline-flex; align-items:center; gap:6px; margin-top:9px; font-size:12.5px; color:#234e84; cursor:pointer; user-select:none;">
+          <input type="checkbox" id="exempt-cell-toggle" onchange="onExemptCellToggle()" style="width:16px; height:16px; accent-color:#234e84;">
+          그리드 칸 클릭으로 하루씩 면제/해제
+        </label>
+      </div>
+
+      <!-- 탭2: 공휴일 (전체) -->
+      <div id="exempt-tab-holiday" class="exempt-section" style="display:none;">
+        <div style="font-size:12.5px; color:#6b7c90; margin-bottom:8px;">공휴일로 지정한 날은 <b>전체 학생</b>이 '휴일'로 처리됩니다.</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-size:13px;">
+          <input type="date" id="holiday-start" style="padding:8px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+          <span style="color:#6b7c90;">~</span>
+          <input type="date" id="holiday-end" style="padding:8px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+          <button class="btn" onclick="applyHoliday('add')" style="background:#234e84; color:#fff; font-weight:700;">휴일 지정</button>
+          <button class="btn" onclick="applyHoliday('remove')" style="background:#fff; color:#c0392b; border:1px solid #e0b4b0; font-weight:700;">해제</button>
+          <span id="holiday-msg" style="font-size:12.5px; color:#234e84;"></span>
+        </div>
+        <div id="holiday-toggle-hint" style="display:none; margin-top:9px; font-size:12.5px; color:#234e84; background:#dfeefb; padding:7px 10px; border-radius:8px;">
+          📌 <b>날짜 헤더 토글 모드 켜짐</b> — 그리드 상단 <b>날짜(열 제목)</b>를 누르면 그날이 <b>휴일↔해제</b>로 바뀝니다.
+        </div>
+        <label style="display:inline-flex; align-items:center; gap:6px; margin-top:9px; font-size:12.5px; color:#234e84; cursor:pointer; user-select:none;">
+          <input type="checkbox" id="holiday-header-toggle" onchange="onHolidayHeaderToggle()" style="width:16px; height:16px; accent-color:#234e84;">
+          그리드 날짜 헤더 클릭으로 하루씩 휴일/해제
+        </label>
+      </div>
+
+      <!-- 탭3: 시험기간 (학교·학년) -->
+      <div id="exempt-tab-schoolExam" class="exempt-section" style="display:none;">
+        <div style="font-size:12.5px; color:#6b7c90; margin-bottom:8px;">지정한 학교·학년 학생 전원이 해당 기간 '시험'으로 처리됩니다.</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-size:13px;">
+          <input type="text" id="sexam-school" placeholder="학교 (예: 제철고)" style="padding:8px 10px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px; width:130px;">
+          <select id="sexam-grade" style="padding:8px 10px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+            <option value="">학년</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option>
+          </select>
+          <input type="date" id="sexam-start" style="padding:8px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+          <span style="color:#6b7c90;">~</span>
+          <input type="date" id="sexam-end" style="padding:8px; border:1px solid #c9d6e5; border-radius:8px; font-size:13px;">
+          <button class="btn" onclick="applySchoolExam('add')" style="background:#234e84; color:#fff; font-weight:700;">시험 지정</button>
+          <button class="btn" onclick="applySchoolExam('remove')" style="background:#fff; color:#c0392b; border:1px solid #e0b4b0; font-weight:700;">해제</button>
+          <span id="sexam-msg" style="font-size:12.5px; color:#234e84;"></span>
+        </div>
+      </div>
     </div>
     <div class="grid-scroll"><div id="grid-area"><div class="loading">불러오는 중...</div></div></div>
     <div class="legend">
@@ -771,10 +840,7 @@ function toggleHubMenu(){
     const total = c + l + m;
     if(total === 0) return '해당 기간 동안 집계된 숙제 데이터가 없습니다.';
     if(m/total >= 0.2) return '[관심 필요]\n최근 숙제 미제출이 다소 잦은 편입니다. 학습의 흐름이 끊기지 않으려면 꾸준한 제출이 중요한 시기인 만큼, 가정에서도 한 번씩 챙겨주시면 큰 힘이 되겠습니다.';
-    if(l/total >= 0.3){
-      if(m >= 1) return '[습관 형성]\n숙제는 대체로 해오고 있으나 기한을 넘겨 제출하는 경우가 많고, 미제출도 ' + m + '회 있었습니다. 미뤄서 한 번에 하기보다 매일 조금씩 나누어 하는 편이 학습 효과가 훨씬 높으니, 기한 내 제출 습관과 함께 규칙적인 학습 리듬을 잡아가면 좋겠습니다.';
-      return '[습관 형성]\n숙제는 대부분 해오고 있으나 기한을 넘겨 제출하는 경우가 많습니다. 미뤄서 한 번에 하기보다 매일 조금씩 나누어 하는 편이 학습 효과가 훨씬 높으니, 규칙적인 학습 습관을 함께 잡아가면 좋겠습니다.';
-    }
+    if(l/total >= 0.3) return '[습관 형성]\n숙제는 대부분 해오고 있으나 기한을 넘겨 제출하는 경우가 많습니다. 미뤄서 한 번에 하기보다 매일 조금씩 나누어 하는 편이 학습 효과가 훨씬 높으니, 규칙적인 학습 습관을 함께 잡아가면 좋겠습니다.';
     if(m >= 2) return '[보완 권장]\n전반적으로 성실하게 임하고 있으나, 간혹 미제출이 있습니다. 기한 내 제출하는 습관이 자리 잡으면 더욱 안정적으로 학습할 수 있을 것입니다. 가정에서도 가볍게 독려해 주시기를 부탁드립니다.';
     if(m === 1) return '[양호]\n거의 모든 숙제를 빠짐없이 해오고 있습니다. 아쉽게 한 번의 미제출이 있었는데, 다음 달에는 완벽한 제출을 기대해 봅니다. 작은 격려가 큰 동기가 됩니다.';
     if((m + l) === 0) return '[최우수]\n한 달간 단 한 번의 지각이나 미제출 없이 모든 숙제를 완수했습니다. 성실함이 돋보이는 한 달이었습니다. 가정에서도 아낌없는 칭찬 부탁드립니다.';
@@ -862,6 +928,8 @@ function toggleHubMenu(){
   }
 
   let allGridNames = [];
+  let exemptCellMode = false;    // 면제 칸 토글 모드 (renderGrid보다 먼저 선언 필요)
+  let holidayHeaderMode = false; // 공휴일 헤더 토글 모드 (renderGrid보다 먼저 선언 필요)
 
   // 격자: adminGrid 한 번 호출로 전체 받기 (로딩 최적화)
   async function buildGrid(ov){
@@ -892,7 +960,8 @@ function toggleHubMenu(){
     let h = '<table class="grid"><thead><tr><th class="name">학생</th>';
     allDates.forEach(dt=>{
       const [y,m,d] = dt.split('-');
-      h += '<th>'+parseInt(m)+'/'+parseInt(d)+'</th>';
+      const hdrClick = holidayHeaderMode ? (' style="cursor:pointer; text-decoration:underline; color:#234e84;" onclick="toggleHolidayHeader(\''+dt+'\')"') : '';
+      h += '<th'+hdrClick+'>'+parseInt(m)+'/'+parseInt(d)+'</th>';
     });
     h += '</tr></thead><tbody>';
     filtered.forEach(nm=>{
@@ -916,14 +985,153 @@ function toggleHubMenu(){
     const scroller = area.closest('.grid-scroll');
     if(scroller){ requestAnimationFrame(()=>{ scroller.scrollLeft = scroller.scrollWidth; }); }
   }
-  // 격자 칸 클릭 → 그 학생/날짜 사진
+  // 격자 칸 클릭 → 그 학생/날짜 사진 (단, 면제 칸토글 모드면 면제/해제)
   async function openDay(name, date){
+    if(exemptCellMode){
+      const cur = statusByStudent[name] && statusByStudent[name][date];
+      const st = (cur && typeof cur === 'object') ? (cur.s||'') : (cur||'');
+      const mode = (st === '시험') ? 'remove' : 'add';   // 이미 시험(면제)이면 해제, 아니면 면제
+      await sendExempt(name, date, date, mode);
+      return;
+    }
     document.getElementById('photo-student').value = '';
     const area = document.getElementById('photo-area');
     area.innerHTML = '<div class="loading">' + name + ' · ' + date + ' 사진 불러오는 중...</div>';
     const d = await jsonp('type=adminSubmissions&name=' + encodeURIComponent(name) + '&date=' + encodeURIComponent(date));
     renderPhotos(d, name + ' · ' + date);
     document.querySelector('.card:last-of-type').scrollIntoView({behavior:'smooth'});
+  }
+
+  // ===== 시험 면제 =====
+  function toggleExemptMode(){
+    const panel = document.getElementById('exempt-panel');
+    const open = panel.style.display === 'none' || !panel.style.display;
+    panel.style.display = open ? 'block' : 'none';
+    if(open) fillExemptStudents();
+  }
+  function fillExemptStudents(){
+    const sel = document.getElementById('exempt-student');
+    if(!sel) return;
+    const cur = sel.value;
+    const names = (allGridNames||[]).filter(inClass);
+    sel.innerHTML = '<option value="">학생 선택</option>';
+    names.forEach(n=> sel.add(new Option(n, n)));
+    if(cur) sel.value = cur;
+  }
+  function onExemptCellToggle(){
+    exemptCellMode = document.getElementById('exempt-cell-toggle').checked;
+    document.getElementById('exempt-toggle-hint').style.display = exemptCellMode ? 'block' : 'none';
+  }
+  // 날짜 범위 면제/해제 (패널 버튼)
+  async function applyExempt(mode){
+    const name = document.getElementById('exempt-student').value;
+    const start = document.getElementById('exempt-start').value;
+    const end = document.getElementById('exempt-end').value || start;
+    const msg = document.getElementById('exempt-msg');
+    if(!name){ msg.style.color='#c0392b'; msg.textContent='학생을 선택하세요.'; return; }
+    if(!start){ msg.style.color='#c0392b'; msg.textContent='시작일을 입력하세요.'; return; }
+    if(end < start){ msg.style.color='#c0392b'; msg.textContent='종료일이 시작일보다 빠릅니다.'; return; }
+    await sendExempt(name, start, end, mode, msg);
+  }
+  // 공통 전송 함수 (칸토글·범위 모두 사용)
+  async function sendExempt(name, start, end, mode, msgEl){
+    const msg = msgEl || document.getElementById('exempt-msg');
+    if(msg){ msg.style.color='#234e84'; msg.textContent = (mode==='add'?'면제':'해제') + ' 처리 중...'; }
+    const pw = (typeof AUTH_PW !== 'undefined' && AUTH_PW) ? AUTH_PW : 'vlfl2125';
+    const params = 'type=setExempt&pw=' + encodeURIComponent(pw)
+      + '&name=' + encodeURIComponent(name)
+      + '&start=' + encodeURIComponent(start)
+      + '&end=' + encodeURIComponent(end)
+      + '&mode=' + encodeURIComponent(mode);
+    const r = await jsonp(params);
+    if(!r || !r.ok){
+      if(msg){ msg.style.color='#c0392b'; msg.textContent = '실패: ' + ((r&&r.msg)||'응답 없음'); }
+      return;
+    }
+    if(msg){
+      msg.style.color='#1f7a3f';
+      msg.textContent = (mode==='add' ? ('면제 '+ (r.added||0) +'일 적용') : ('해제 '+ (r.removed||0) +'일 적용'))
+        + (r.warn ? (' · '+r.warn) : '');
+    }
+    // 그리드 갱신 (재계산 결과 반영)
+    await loadAll();
+    if(document.getElementById('exempt-panel').style.display !== 'none') fillExemptStudents();
+  }
+
+  // ===== 탭 전환 =====
+  function switchExemptTab(tab){
+    ['exempt','holiday','schoolExam'].forEach(t=>{
+      const sec = document.getElementById('exempt-tab-'+t);
+      if(sec) sec.style.display = (t===tab) ? 'block' : 'none';
+    });
+    document.querySelectorAll('.exempt-tab').forEach(b=>{
+      b.classList.toggle('active', b.dataset.tab === tab);
+    });
+    // 탭 바꾸면 다른 탭의 헤더/칸 토글 모드는 꺼서 혼선 방지
+    if(tab !== 'exempt'){ const c=document.getElementById('exempt-cell-toggle'); if(c&&c.checked){ c.checked=false; onExemptCellToggle(); } }
+    if(tab !== 'holiday'){ const c=document.getElementById('holiday-header-toggle'); if(c&&c.checked){ c.checked=false; onHolidayHeaderToggle(); } }
+  }
+
+  // ===== 공휴일 (전체) =====
+  function onHolidayHeaderToggle(){
+    holidayHeaderMode = document.getElementById('holiday-header-toggle').checked;
+    document.getElementById('holiday-toggle-hint').style.display = holidayHeaderMode ? 'block' : 'none';
+    renderGrid(allGridNames);   // 헤더 클릭 가능 표시 갱신
+  }
+  async function applyHoliday(mode){
+    const start = document.getElementById('holiday-start').value;
+    const end = document.getElementById('holiday-end').value || start;
+    const msg = document.getElementById('holiday-msg');
+    if(!start){ msg.style.color='#c0392b'; msg.textContent='시작일을 입력하세요.'; return; }
+    if(end < start){ msg.style.color='#c0392b'; msg.textContent='종료일이 시작일보다 빠릅니다.'; return; }
+    await sendHoliday(start, end, mode, msg);
+  }
+  async function sendHoliday(start, end, mode, msgEl){
+    const msg = msgEl || document.getElementById('holiday-msg');
+    if(msg){ msg.style.color='#234e84'; msg.textContent = (mode==='add'?'휴일 지정':'해제') + ' 처리 중...'; }
+    const pw = (typeof AUTH_PW !== 'undefined' && AUTH_PW) ? AUTH_PW : 'vlfl2125';
+    const params = 'type=setHoliday&pw=' + encodeURIComponent(pw)
+      + '&start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(end) + '&mode=' + encodeURIComponent(mode);
+    const r = await jsonp(params);
+    if(!r || !r.ok){ if(msg){ msg.style.color='#c0392b'; msg.textContent = '실패: ' + ((r&&r.msg)||'응답 없음'); } return; }
+    if(msg){ msg.style.color='#1f7a3f'; msg.textContent = (mode==='add' ? ('휴일 '+(r.added||0)+'일 지정') : ('해제 '+(r.removed||0)+'일')) + (r.warn?(' · '+r.warn):''); }
+    await loadAll();
+  }
+
+  // ===== 시험기간 (학교·학년) =====
+  async function applySchoolExam(mode){
+    const school = document.getElementById('sexam-school').value.trim();
+    const grade = document.getElementById('sexam-grade').value;
+    const start = document.getElementById('sexam-start').value;
+    const end = document.getElementById('sexam-end').value || start;
+    const msg = document.getElementById('sexam-msg');
+    if(!school){ msg.style.color='#c0392b'; msg.textContent='학교를 입력하세요.'; return; }
+    if(!grade){ msg.style.color='#c0392b'; msg.textContent='학년을 선택하세요.'; return; }
+    if(!start){ msg.style.color='#c0392b'; msg.textContent='시작일을 입력하세요.'; return; }
+    if(end < start){ msg.style.color='#c0392b'; msg.textContent='종료일이 시작일보다 빠릅니다.'; return; }
+    if(msg){ msg.style.color='#234e84'; msg.textContent = (mode==='add'?'시험 지정':'해제') + ' 처리 중...'; }
+    const pw = (typeof AUTH_PW !== 'undefined' && AUTH_PW) ? AUTH_PW : 'vlfl2125';
+    const params = 'type=setSchoolExam&pw=' + encodeURIComponent(pw)
+      + '&school=' + encodeURIComponent(school) + '&grade=' + encodeURIComponent(grade)
+      + '&start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(end) + '&mode=' + encodeURIComponent(mode);
+    const r = await jsonp(params);
+    if(!r || !r.ok){ if(msg){ msg.style.color='#c0392b'; msg.textContent = '실패: ' + ((r&&r.msg)||'응답 없음'); } return; }
+    if(msg){ msg.style.color='#1f7a3f'; msg.textContent = (mode==='add' ? ('시험 '+(r.added||0)+'일 지정') : ('해제 '+(r.removed||0)+'일')) + (r.warn?(' · '+r.warn):''); }
+    await loadAll();
+  }
+
+  // 그리드 날짜 헤더 클릭 → 공휴일 토글 (holidayHeaderMode일 때만)
+  async function toggleHolidayHeader(date){
+    if(!holidayHeaderMode) return;
+    // 그날 전체가 이미 휴일인지 판단: 아무 학생의 그 날짜 상태가 '휴일'이면 해제, 아니면 지정
+    let isHoliday = false;
+    const names = (allGridNames||[]);
+    for(const nm of names){
+      const raw = statusByStudent[nm] && statusByStudent[nm][date];
+      const st = (raw && typeof raw === 'object') ? (raw.s||'') : (raw||'');
+      if(st === '휴일'){ isHoliday = true; break; }
+    }
+    await sendHoliday(date, date, isHoliday ? 'remove' : 'add', document.getElementById('holiday-msg'));
   }
 
   function fillPhotoStudents(ov){
