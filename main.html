@@ -51,6 +51,23 @@
   }
   a{color:inherit}
 
+  /* ── 2학기 대비 공고 배너 ── */
+  .promo{background:var(--wine);color:#fff;border-bottom:1px solid rgba(201,168,76,.35)}
+  .promo-in{max-width:880px;margin:0 auto;padding:16px 22px;display:flex;align-items:center;
+    justify-content:space-between;gap:18px;text-decoration:none;color:#fff}
+  .promo-t{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--gold-soft);
+    margin-bottom:3px}
+  .promo-m{font-size:15px;font-weight:600;letter-spacing:-0.02em;line-height:1.5}
+  .promo-m b{color:var(--gold-soft);font-weight:800}
+  .promo-go{flex-shrink:0;font-size:13.5px;font-weight:700;border:1px solid rgba(255,255,255,.5);
+    padding:8px 16px;border-radius:980px;white-space:nowrap;transition:background .15s ease}
+  .promo-in:hover .promo-go{background:rgba(255,255,255,.14)}
+  @media(max-width:600px){
+    .promo-in{padding:14px 18px;gap:12px}
+    .promo-m{font-size:13.5px}
+    .promo-go{font-size:12.5px;padding:7px 12px}
+  }
+
   /* ── 상단 네비 ── */
   .gnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
     padding:14px 22px;background:rgba(14,22,38,.92);backdrop-filter:saturate(150%) blur(12px);
@@ -285,14 +302,25 @@
 <nav class="gnav">
   <a class="gnav-brand" href="main.html"><b>대단한영어</b><span class="sub"> · GREATENG</span></a>
   <div class="gnav-links">
+    <a href="newclass.html">2학기대비</a>
     <a href="parent_guide.html">수업안내</a>
-    <a href="summer.html">여름특강</a>
     <a href="suneung_2026.html">수능대비반</a>
     <a href="pohang_highschools.html">학교정보</a>
     <a href="results.html">적중사례</a>
     <a class="gnav-blog" href="https://blog.naver.com/pkf78" target="_blank" rel="noopener">내신자료</a>
   </div>
 </nav>
+
+<!-- 2학기 대비 공고 배너 -->
+<div class="promo">
+  <a class="promo-in" href="newclass.html">
+    <div>
+      <div class="promo-t">2026 · 2학기 중간고사 대비</div>
+      <div class="promo-m">시험은 9월 말~10월 초. <b>8월 중순</b>부터 대비를 시작합니다 — 고1 · 중3 예비고 · 중1</div>
+    </div>
+    <span class="promo-go">안내 보기</span>
+  </a>
+</div>
 
 <!-- 히어로 -->
 <header class="hero">
@@ -456,16 +484,16 @@
       <p>중등·고등 수업이 어떻게 진행되고 학교 시험은 어떻게 대비하는지, 시간표·교육비와 함께 안내합니다.</p>
       <div class="hc-go">자세히 보기 →</div>
     </a>
-    <a class="hcard" href="summer.html" style="--accent:#a31f38">
-      <div class="hc-label">2026 여름방학</div>
-      <h3>여름방학 집중 특강</h3>
-      <p>방학 동안 한 단계 끌어올리는 주말 집중 과정. 고등 수능 어법반과 중등 2학기 내신 대비반을 운영합니다.</p>
-      <div class="hc-go">특강 보기 →</div>
+    <a class="hcard" href="newclass.html" style="--accent:#a31f38">
+      <div class="hc-label">2026 2학기</div>
+      <h3>2학기 중간고사 대비</h3>
+      <p>고1 중간고사 대비반, 중3 예비고반, 중1 첫 시험 대비반을 운영합니다. 시험은 9월 말~10월 초입니다.</p>
+      <div class="hc-go">안내 보기 →</div>
     </a>
     <a class="hcard" href="suneung_2026.html" style="--accent:#c06a2c">
       <div class="hc-label">고3 수능 파이널</div>
       <h3>2027 수능대비반</h3>
-      <p>흐름 독해를 중심으로 수능 영어를 체계적으로 마무리하는 고3 파이널 과정. 7월 개강 안내입니다.</p>
+      <p>흐름 독해를 중심으로 수능 영어를 체계적으로 마무리하는 고3 파이널 과정을 운영합니다.</p>
       <div class="hc-go">과정 보기 →</div>
     </a>
     <a class="hcard" href="pohang_highschools.html" style="--accent:#3a8a5c">
