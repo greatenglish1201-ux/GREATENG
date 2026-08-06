@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대단한영어 · 수능 파이널 워크시트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wine:#7a1020; --wine-soft:#9a2435; --gold:#C9A84C; --gold-soft:#e3cf95;
+  --ink:#3a2a20; --paper:#fbf8f2; --line:#e0d6c0; --grey:#8b8378; --green:#3b6d5a;
+}
+*{box-sizing:border-box}
+body{margin:0; background:#e8e4dc; color:var(--ink);
+  font-family:'Noto Sans KR',sans-serif; font-size:14px; line-height:1.6}
+.g{color:var(--grey)}
+i.it{font-style:italic}
+
+/* ---------- 툴바 (화면 전용) ---------- */
+.toolbar{position:sticky; top:0; z-index:50; display:flex; gap:8px; align-items:center;
+  flex-wrap:wrap; padding:9px 14px; background:var(--wine); color:#fff}
+.toolbar .brand{font-family:'Space Grotesk',sans-serif; font-weight:700;
+  letter-spacing:.04em; font-size:13px; margin-right:6px}
+.toolbar label{font-size:11px; opacity:.85; margin-left:6px}
+.toolbar select,.toolbar button{font-family:'Noto Sans KR',sans-serif; font-size:12.5px;
+  padding:5px 10px; border-radius:2px; border:1px solid rgba(255,255,255,.45);
+  background:transparent; color:#fff; cursor:pointer}
+.toolbar select option{color:#222}
+.toolbar button:hover,.toolbar select:hover{background:rgba(255,255,255,.14)}
+.toolbar button.on{background:var(--gold); border-color:var(--gold); color:#2a1a10; font-weight:700}
+.toolbar button:focus-visible,.toolbar select:focus-visible{outline:2px solid var(--gold-soft); outline-offset:2px}
+.toolbar .sp{margin-left:auto}
+
+.empty{max-width:640px; margin:60px auto; background:#fff; border:1px solid var(--line);
+  padding:26px 30px; line-height:1.9}
+.empty h2{margin:0 0 10px; font-size:17px; color:var(--wine)}
+.empty code{background:#f2ece0; padding:1px 5px; font-family:'Space Grotesk',monospace}
+
+/* ---------- 용지 ---------- */
+.sheet{width:210mm; min-height:297mm; margin:16px auto; padding:12mm 13mm;
+  background:var(--paper); box-shadow:0 2px 14px rgba(0,0,0,.16)}
+.sheet.hide{display:none}
+
+.head{display:flex; align-items:flex-end; justify-content:space-between;
+  border-bottom:2px solid var(--wine); padding-bottom:5px; margin-bottom:3.5mm}
+.head .t1{font-size:10.5px; letter-spacing:.14em; color:var(--wine); font-weight:700}
+.head .t2{font-size:17px; font-weight:900; margin-top:2px}
+.head .meta{font-family:'Space Grotesk',sans-serif; font-size:10.5px;
+  color:var(--grey); text-align:right; line-height:1.6}
+.sheet-b .head{border-bottom-color:var(--green)}
+.sheet-b .head .t1{color:var(--green)}
+.sheet-b .step-h .n{background:var(--green)}
+
+.namebar{display:flex; border:1px solid var(--line); margin-bottom:3.5mm; font-size:10.5px}
+.namebar div{padding:4px 8px; border-right:1px solid var(--line); color:var(--grey)}
+.namebar div:last-child{border-right:0; flex:1}
+
+/* ---------- 지문 ---------- */
+.qnum{font-weight:700; font-size:14px; margin-bottom:3px}
+.passage{border:1px solid var(--line); background:#fff; padding:7px 11px;
+  font-family:'Noto Serif',serif; font-size:13.4px; line-height:1.78;
+  text-align:justify; margin-bottom:2.5mm}
+.snum{font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700;
+  color:var(--wine); vertical-align:.25em; margin-right:2px}
+/* 문항 밑줄 — 발문과 범위가 일치해야 함. 줄바꿈돼도 끊기지 않게 */
+.passage u, .exam-col u{
+  text-decoration-line:underline; text-decoration-thickness:1.1px;
+  text-underline-offset:3.5px; text-decoration-skip-ink:none;
+  box-decoration-break:clone; -webkit-box-decoration-break:clone}
+/* 번호 붙은 밑줄(30번 어휘형) — ①~⑤ 자동 부여 */
+.passage u[class^="n"]::before, .exam-col u[class^="n"]::before{
+  font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700;
+  color:var(--wine); vertical-align:.25em; margin-right:2px;
+  text-decoration:none; display:inline-block}
+.passage u.n1::before,.exam-col u.n1::before{content:'①'}
+.passage u.n2::before,.exam-col u.n2::before{content:'②'}
+.passage u.n3::before,.exam-col u.n3::before{content:'③'}
+.passage u.n4::before,.exam-col u.n4::before{content:'④'}
+.passage u.n5::before,.exam-col u.n5::before{content:'⑤'}
+.note{text-align:right; font-size:10.5px; color:var(--grey); margin-bottom:2mm}
+.choices{font-family:'Noto Serif',serif; font-size:12.5px; line-height:1.72; margin-bottom:3.5mm}
+.choices div .cn{font-family:'Space Grotesk',sans-serif; color:var(--grey); margin-right:5px}
+
+/* ---------- STEP ---------- */
+.step{margin-bottom:3.5mm; break-inside:avoid}
+.step-h{display:flex; align-items:center; gap:7px; margin-bottom:5px;
+  border-bottom:1px solid var(--line); padding-bottom:3px}
+.step-h .n{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:10px;
+  background:var(--wine); color:#fff; padding:1px 6px; letter-spacing:.05em}
+.step-h .ttl{font-weight:700; font-size:13px}
+.step-h .hint{font-size:10.5px; color:var(--grey); margin-left:auto; font-weight:400}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 12px}
+.grid3{display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:0 12px}
+.field{margin-bottom:6px}
+.field label{display:block; font-size:10.5px; color:var(--grey); margin-bottom:2px}
+.blank{border-bottom:1px solid var(--ink); height:21px}
+.blank.tall{height:34px}
+.box{border:1px solid var(--line); background:#fff; min-height:30px; padding:5px 8px}
+.box.tall{min-height:46px}
+
+.pick{display:flex; gap:16px; font-size:11.5px; align-items:center; padding-top:3px}
+.pick span{display:inline-flex; align-items:center; gap:4px}
+.chk{display:inline-block; width:11px; height:11px; border:1.2px solid var(--ink)}
+.note-if{margin-top:6px; font-size:10.5px; color:var(--wine-soft);
+  border-left:2px solid var(--gold); padding:3px 0 3px 8px; background:#fff}
+
+table{width:100%; border-collapse:collapse; font-size:11.5px}
+th,td{border:1px solid var(--line); padding:4px 8px; vertical-align:top}
+th{background:#f2ece0; font-weight:700; font-size:10.5px; text-align:left}
+td.eng{font-family:'Noto Serif',serif; width:47%}
+td.mine{height:27px}
+
+/* ---------- 트리 ---------- */
+.tree{border:1px solid var(--line); background:#fff; padding:8px 11px}
+.trunk-label{font-size:10px; letter-spacing:.1em; color:var(--wine);
+  font-weight:700; margin-bottom:4px}
+.node{display:flex; align-items:stretch; gap:8px; margin-bottom:4px}
+.node .tag{flex:0 0 104px; display:flex; align-items:center; gap:5px; font-size:10.5px;
+  padding:3px 6px; border:1px solid var(--line); background:#f7f2e7}
+.node .tag .sn{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--wine)}
+.node .tag .lb{font-weight:700}
+.node.head-node .tag{background:var(--gold-soft); border-color:var(--gold)}
+.node .wr{flex:1; border-bottom:1px solid var(--line); min-height:31px}
+.node.sub{padding-left:22px; position:relative}
+.node.sub::before{content:""; position:absolute; left:9px; top:0; bottom:0;
+  border-left:1px solid var(--line)}
+.switchline{display:flex; align-items:center; gap:8px; margin:6px 0;
+  font-size:10px; letter-spacing:.1em; color:var(--wine); font-weight:700}
+.switchline::before,.switchline::after{content:""; flex:1; border-top:1.5px dashed var(--wine-soft)}
+.switchline.blank-line{color:var(--grey)}
+
+.answer-row{display:flex; gap:10px; align-items:center; margin-top:2mm}
+.answer-row .lab{font-size:11px; color:var(--grey)}
+.circle{width:23px; height:23px; border:1.2px solid var(--ink); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Space Grotesk',sans-serif; font-size:11px; color:var(--grey)}
+
+/* ---------- 교사용 ---------- */
+.ans{display:none}
+body.show-ans .ans{display:block}
+.ans-box{border:1px solid var(--wine-soft); background:#fdf6f6;
+  padding:7px 10px; font-size:11.5px; margin-top:6px}
+.ans-box .k{font-weight:700; color:var(--wine); margin-right:5px}
+.ans-box .tip{margin-top:4px; color:var(--wine-soft)}
+
+/* ---------- 속독지 ---------- */
+.sheet-f .head{border-bottom-color:var(--gold)}
+.sheet-f .head .t1{color:var(--gold)}
+.fast-item{border-top:1px solid var(--line); padding-top:2.2mm; margin-bottom:1.8mm; break-inside:avoid}
+.fast-item:first-of-type{border-top:0; padding-top:0}
+/* 3문항을 A4 한 장에 담기 위한 압축 — 훈련지보다 촘촘하다 */
+.sheet-f .passage{margin-bottom:1.4mm; padding:5px 8px; line-height:1.42; font-size:11.4px}
+.sheet-f .qnum{font-size:12.4px; margin-bottom:2px}
+.sheet-f .field{margin-bottom:2px}
+.sheet-f .field label{margin-bottom:1px}
+.sheet-f .blank{height:17px}
+.sheet-f .answer-row{margin-top:.8mm}
+.sheet-f .circle{width:19px; height:19px}
+.sheet-f .legend{padding:3px 8px; margin-bottom:2.2mm; gap:11px; font-size:10px}
+.sheet-f .namebar{margin-bottom:2.2mm; font-size:10px}
+.sheet-f .foot{margin-top:2mm}
+.sheet-f .head{margin-bottom:2.4mm; padding-bottom:4px}
+.sheet-f .head .t2{font-size:15.5px}
+/* 교사용 해설을 켠 채로 인쇄하면 3문항이 한 장을 넘어감 → 해설만 압축 */
+.sheet-f .ans-box{font-size:10.5px; padding:5px 8px; margin-top:4px; break-inside:avoid}
+
+/* ---------- B지 ---------- */
+.legend{border:1px solid var(--line); background:#fff; padding:7px 11px; margin-bottom:4mm;
+  display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:11px}
+.legend .lgttl{font-size:10px; letter-spacing:.1em; color:var(--green); font-weight:700}
+.legend b{font-family:'Space Grotesk',sans-serif; font-size:13px; color:var(--ink)}
+.exam-wrap{display:flex; margin-bottom:4mm}
+.exam-col{flex:0 0 118mm; border:1px solid var(--line); background:#fff; padding:10px 13px;
+  font-family:'Noto Serif',serif; font-size:13.5px; line-height:2.05; text-align:justify}
+.exam-col p{margin:0 0 8px; text-indent:1.2em}
+.exam-col .ch{text-indent:0; font-size:12.5px; line-height:1.95; margin-top:10px}
+.margin-col{flex:1; border:1px dashed var(--line); border-left:0; position:relative;
+  background:repeating-linear-gradient(transparent,transparent 23px,#f0ebe0 23px,#f0ebe0 24px)}
+.margin-col .mtag{position:absolute; top:5px; left:6px; font-size:9.5px;
+  color:var(--grey); letter-spacing:.08em}
+.timer{display:inline-flex; align-items:center; gap:5px; border:1px solid var(--green);
+  color:var(--green); font-size:11px; font-weight:700; padding:2px 9px}
+.check-strip{display:grid; grid-template-columns:1fr 1fr 2fr; gap:0 12px}
+
+.foot{margin-top:4mm; padding-top:4px; border-top:1px solid var(--line);
+  font-size:9.5px; color:var(--grey); display:flex; justify-content:space-between;
+  break-inside:avoid; break-before:avoid; page-break-before:avoid}
+
+/* ---------- 인쇄 ---------- */
+@page{size:A4; margin:11mm}
+@media print{
+  body{background:#fff}
+  .toolbar,.empty{display:none}
+  .sheet{width:auto; min-height:auto; margin:0; padding:0; box-shadow:none; background:#fff}
+  .sheet + .sheet{page-break-before:always}
+  .sheet{page-break-after:auto; overflow:visible}
+  /* 푸터가 홀로 넘어가지 않도록: 마지막 STEP + 푸터를 붙여둔다 */
+  .step:last-of-type{break-after:avoid; page-break-after:avoid}
+  .foot{break-before:avoid; page-break-before:avoid; break-inside:avoid}
+  /* 빈 페이지 생성 방지 */
+  .sheet:last-child{page-break-after:avoid}
+  .passage,.box,.tree,.exam-col,.legend{background:#fff}
+  .node .tag{background:#f4f4f4 !important; border-color:#bbb}
+  .node.head-node .tag{background:#dcdcdc !important; border-color:#666}
+  th{background:#f0f0f0}
+  .passage u,.exam-col u{text-decoration-color:#000; text-decoration-thickness:1.2px}
+  .ans-box{background:#f8f8f8; border-color:#999}
+}
+@media (max-width:820px){
+  .sheet{width:auto; padding:16px}
+  .grid2,.grid3,.check-strip{grid-template-columns:1fr}
+  .exam-wrap{flex-direction:column}
+  .exam-col{flex:1}
+  .margin-col{border-left:1px dashed var(--line); border-top:0; min-height:120px}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="brand">대단한영어 · 수능 파이널 워크시트</span>
+
+  <label for="selP">지문</label>
+  <select id="selP"></select>
+
+  <label for="selL">빈칸 단계</label>
+  <select id="selL">
+    <option value="1">1 · 번호+라벨 제공 (8월)</option>
+    <option value="2">2 · 머리 라벨만 (9월)</option>
+    <option value="3">3 · 번호만, 라벨 백지 (10월 초)</option>
+    <option value="4">4 · 완전 백지 + 시간 (10월 후반~11월)</option>
+  </select>
+
+  <span class="sp"></span>
+  <span id="warnAns" style="display:none; font-size:11px; color:#ffe08a">
+    해설 ON — 인쇄하면 장수가 늘어납니다
+  </span>
+  <button id="btnAns" type="button">교사용 해설 보기</button>
+  <button type="button" onclick="window.print()">인쇄</button>
+</div>
+
+<div id="root"></div>
+
+<script src="passages_final.js"></script>
+<script>
+(function(){
+  var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
+  var root = document.getElementById('root');
+  var selP = document.getElementById('selP');
+  var selL = document.getElementById('selL');
+  var btn  = document.getElementById('btnAns');
+
+  var DATA = window.PASSAGES;
+  if(!DATA || !DATA.length){
+    root.innerHTML = '<div class="empty"><h2>지문 데이터를 찾을 수 없습니다</h2>'
+      + '<code>passages_final.js</code> 파일이 이 HTML과 <b>같은 폴더</b>에 있어야 합니다.<br>'
+      + '두 파일을 함께 내려받아 한 폴더에 넣고 다시 열어주세요.</div>';
+    document.querySelector('.toolbar .sp').previousElementSibling;
+    return;
+  }
+
+  function esc(s){ return s == null ? '' : String(s); }
+  function cn(i){ return CN.charAt(i-1) || ('('+i+')'); }
+
+  /* ---------- 조각 ---------- */
+  function head(p, part, total, extra){
+    var titles = {1:['FLOW READING · 훈련지 A', '흐름 독해 — 원문과 첫 해부'],
+                  2:['FLOW READING · 훈련지 A', '흐름 독해 — 트리와 요지'],
+                  3:['TRANSFER · 실전 전이지 B', '시험지 위에서 흐름 잡기']};
+    var t = titles[part];
+    return '<div class="head"><div><div class="t1">'+t[0]+'</div><div class="t2">'+t[1]+'</div></div>'
+      + '<div class="meta">'+esc(p.src)+' · '+esc(p.qtype)+'<br>'
+      + '난이도 '+ new Array((p.star||1)+1).join('★') + (extra ? ' · '+extra : '')
+      + '<br><span class="g">'+part+' / '+total+'</span></div></div>';
+  }
+  function namebar(cols){
+    return '<div class="namebar">'+cols.map(function(c){return '<div>'+c+'</div>'}).join('')+'<div></div></div>';
+  }
+  function stepH(n, ttl, hint){
+    return '<div class="step-h"><span class="n">'+n+'</span><span class="ttl">'+ttl+'</span>'
+      + (hint ? '<span class="hint">'+hint+'</span>' : '')+'</div>';
+  }
+  function choices(p){
+    if(p.vocab) return '';   // 어휘형: 선택지 = 지문 속 밑줄. 목록 중복 렌더 안 함
+    return '<div class="choices">'+p.choices.map(function(c,i){
+      return '<div><span class="cn">'+cn(i+1)+'</span>'+c+'</div>';
+    }).join('')+'</div>';
+  }
+
+  /* ---------- A-1 ---------- */
+  function sheetA1(p, lv){
+    var passage = p.sents.map(function(s,i){
+      return '<span><span class="snum">'+cn(i+1)+'</span>'+s+' </span>';
+    }).join('');
+
+    var h = '<section class="sheet sheet-a" data-id="'+p.id+'">';
+    h += head(p, 1, 3, '단계 '+lv);
+    h += namebar(['이름','날짜','맞은 문항']);
+    h += '<div class="qnum">'+p.qnum+'. '+p.qtext+'</div>';
+    h += '<div class="passage">'+passage+'</div>';
+    if(p.note) h += '<div class="note">'+p.note+'</div>';
+    h += choices(p);
+
+    /* STEP 1 */
+    h += '<div class="step">'+stepH('STEP 1','첫 문장 해부', cn(1)+'번 문장만 보고 쓴다')
+      + '<div class="grid2">'
+      + '<div class="field"><label>소재 (핵심어)</label><div class="blank"></div></div>'
+      + '<div class="field"><label>속성 (어떻게 보고 있나)</label><div class="blank"></div></div></div>'
+      + '<div class="field"><label>속성 방향</label><div class="pick">'
+      + '<span><i class="chk"></i> 긍정</span><span><i class="chk"></i> 부정</span>'
+      + '<span><i class="chk"></i> 통념 · 양보</span></div>'
+      + (lv <= 2 ? '<div class="note-if">통념·양보에 표시했다면 → 뒤에 <b>However / But / though / Rather</b>로 뒤집힌다. 그 자리를 먼저 찾아라.</div>' : '')
+      + '</div>'
+      + '<div class="ans"><div class="ans-box">'
+      + '<div><span class="k">소재</span>'+esc(p.key)+'</div>'
+      + '<div><span class="k">속성</span>'+esc(p.attr)+'</div>'
+      + '<div><span class="k">방향</span><b>'+esc(p.dir)+'</b></div></div></div></div>';
+
+    /* STEP 2 */
+    if(p.simplify && p.simplify.length){
+      h += '<div class="step">'+stepH('STEP 2','내 말로 바꾸기','직역 말고, 내가 쓰는 말로 한 줄')
+        + '<table><tr><th>지문 표현</th><th>내 말로</th></tr>'
+        + p.simplify.map(function(r){
+            return '<tr><td class="eng">'+r[0]+'</td><td class="mine"></td></tr>';
+          }).join('')
+        + '</table><div class="ans"><div class="ans-box">'
+        + p.simplify.map(function(r,i){
+            return '<div><span class="k">'+(i+1)+'</span>'+r[1]+'</div>';
+          }).join('')
+        + '</div></div></div>';
+    }
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-1</span></div></section>';
+  }
+
+  /* ---------- A-2 ---------- */
+  function sheetA2(p, lv){
+    var h = '<section class="sheet sheet-a" data-id="'+p.id+'">';
+    h += head(p, 2, 3, '단계 '+lv);
+
+    var hintMap = {1:'라벨은 주어져 있다 — 내용만 채운다',
+                   2:'머리만 표시했다 — 딸림 라벨은 직접',
+                   3:'번호만 있다 — 라벨·내용 모두 직접',
+                   4:'백지 — 줄기부터 직접 나눈다'};
+    h += '<div class="step">'+stepH('STEP 3','흐름 트리', hintMap[lv]);
+    h += '<div class="tree">';
+
+    if(lv >= 4){
+      h += '<div class="trunk-label">줄기 1 ______________________</div>';
+      for(var i=0;i<3;i++) h += '<div class="node"><div class="tag"></div><div class="wr"></div></div>';
+      h += '<div class="switchline blank-line">흐름 전환</div>';
+      h += '<div class="trunk-label">줄기 2 ______________________</div>';
+      for(var j=0;j<5;j++) h += '<div class="node"><div class="tag"></div><div class="wr"></div></div>';
+    } else {
+      h += '<div class="trunk-label">줄기 1 — '+(lv<=2 ? esc(p.trunk1) : '______________')+'</div>';
+      p.tree.forEach(function(nd){
+        if(p.pivotAt && nd.n === p.pivotAt){
+          h += (lv <= 2)
+            ? '<div class="switchline">흐름 전환</div><div class="trunk-label">줄기 2 — '+esc(p.trunk2)+'</div>'
+            : '<div class="switchline blank-line">흐름 전환 — 어디인지 직접 긋기</div><div class="trunk-label">줄기 2 — ______________</div>';
+        }
+        var showLb = (lv === 1) || (lv === 2 && nd.head);
+        h += '<div class="node '+(nd.head?'head-node':'sub')+'">'
+          + '<div class="tag"><span class="sn">'+cn(nd.n)+'</span>'
+          + (showLb ? '<span class="lb">'+esc(nd.lb)+'</span>' : '')
+          + '</div><div class="wr"></div></div>';
+      });
+    }
+    h += '</div>';
+
+    h += '<div class="ans"><div class="ans-box">'
+      + p.tree.map(function(nd){
+          return '<div><span class="k">'+cn(nd.n)+' '+esc(nd.lb)+'</span>'+esc(nd.txt)+'</div>';
+        }).join('')
+      + '</div></div></div>';
+
+    /* STEP 4 */
+    h += '<div class="step">'+stepH('STEP 4','흐름 전환점')
+      + '<div class="grid3">'
+      + '<div class="field"><label>신호어</label><div class="blank"></div></div>'
+      + '<div class="field"><label>몇 번 문장</label><div class="blank"></div></div>'
+      + '<div class="field"><label>무엇 → 무엇으로</label><div class="blank"></div></div></div>'
+      + '<div class="ans"><div class="ans-box"><span class="k">'+esc(p.pivot.sig)+'</span>'
+      + cn(p.pivot.at)+'번 문장 / '+esc(p.pivot.from)+' → '+esc(p.pivot.to)
+      + (p.pivotSub ? '<div class="tip">'+esc(p.pivotSub)+'</div>' : '')
+      + '</div></div></div>';
+
+    /* STEP 8 — 밑줄 방향 판정 (vocab 필드가 있는 지문만) */
+    if(p.vocab && p.vocab.length){
+      h += '<div class="step">'+stepH('STEP 8','밑줄 방향 판정','STEP 1의 방향을 밑줄마다 다시 적용')
+        + '<table><tr><th style="width:8%">번호</th><th style="width:22%">밑줄</th>'
+        + '<th style="width:24%">흐름과 같은 방향?</th><th>그렇게 본 근거</th></tr>'
+        + p.vocab.map(function(v){
+            return '<tr><td style="text-align:center;font-family:\'Space Grotesk\',sans-serif;'
+              + 'font-weight:700;color:var(--wine)">'+cn(v.n)+'</td>'
+              + '<td class="eng" style="width:auto"><b>'+esc(v.word)+'</b></td>'
+              + '<td style="font-size:11px;color:var(--grey)">순행 <i class="chk"></i>'
+              + '&nbsp;&nbsp;역행 <i class="chk"></i></td>'
+              + '<td style="height:29px"></td></tr>';
+          }).join('')
+        + '</table>'
+        + '<div class="note-if">역행에 표시한 것이 <b>하나뿐</b>이어야 한다. 둘 이상이면 STEP 1의 방향부터 다시.</div>'
+        + '<div class="ans"><div class="ans-box">'
+        + p.vocab.map(function(v){
+            return '<div><span class="k">'+cn(v.n)+' '+esc(v.word)+'</span>'
+              + (v.ok ? '순행 — ' : '<b style="color:var(--wine)">역행 ← 정답</b> — ')
+              + esc(v.why) + (v.fix ? ' <b>→ '+esc(v.fix)+'</b>' : '')+'</div>';
+          }).join('')
+        + '</div></div></div>';
+    }
+
+    /* STEP 7 — 함축 역추적 (implied 필드가 있는 지문만) */
+    if(p.implied){
+      h += '<div class="step">'+stepH('STEP 7','함축 역추적','밑줄을 <b>지문 안의 다른 문장</b>으로 되돌린다')
+        + '<div class="box" style="font-family:\'Noto Serif\',serif; margin-bottom:7px">'
+        + '밑줄 : <b>'+esc(p.implied.phrase)+'</b></div>'
+        + '<div class="grid2">'
+        + '<div class="field"><label>같은 말을 다시 하는 문장은 몇 번?</label><div class="blank"></div></div>'
+        + '<div class="field"><label>그 문장을 내 말로</label><div class="blank"></div></div></div>'
+        + '<div class="field"><label>그래서 밑줄의 뜻은</label><div class="blank tall"></div></div>'
+        + '<div class="ans"><div class="ans-box">'
+        + '<div><span class="k">되찾을 문장</span>'
+        + p.implied.restateAt.map(function(n){return cn(n)}).join(' · ')+'번</div>'
+        + '<div><span class="k">뜻</span>'+esc(p.implied.model)+'</div>'
+        + '<div class="tip">※ 어휘력으로 푸는 문항이 아님. <b>지문 안에서 되찾기</b>가 21번의 정체.</div>'
+        + '</div></div></div>';
+    }
+
+    /* STEP 5 */
+    var heads = p.tree.filter(function(n){return n.head}).map(function(n){return cn(n.n)}).join('·');
+    h += '<div class="step">'+stepH('STEP 5','요지 재구성', lv<=3 ? '머리 문장('+heads+')만 이어서 한 문장으로' : '한 문장으로')
+      + '<div class="box tall"></div>'
+      + '<div class="answer-row"><span class="lab">정답</span><span class="circle">?</span>'
+      + '<span class="lab" style="margin-left:14px">근거 문장 번호</span>'
+      + '<div class="blank" style="flex:1"></div></div>'
+      + '<div class="ans"><div class="ans-box">'
+      + '<div><span class="k">요지</span>'+esc(p.gist)+'</div>'
+      + '<div><span class="k">정답</span><b>'+cn(p.ans)+'</b> '+esc(p.choices[p.ans-1])+'</div>'
+      + '<div class="tip"><b>오답</b> '
+      + Object.keys(p.wrong||{}).map(function(k){return cn(+k)+' '+p.wrong[k]}).join(' · ')
+      + '</div>'
+      + (p.wrongNote ? '<div class="tip">※ '+esc(p.wrongNote)+'</div>' : '')
+      + '</div></div></div>';
+
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-2</span></div></section>';
+  }
+
+  /* ---------- B ---------- */
+  function sheetB(p, lv){
+    var flat = p.sents.join(' ');
+    var h = '<section class="sheet sheet-b" data-id="'+p.id+'">';
+    h += head(p, 3, 3, '');
+    h += namebar(['이름','날짜','걸린 시간']);
+
+    if(lv <= 3){
+      h += '<div class="legend"><span class="lgttl">약식 표기</span>'
+        + '<span><b>●</b> 머리 문장</span><span><b>–</b> 딸림(예시·부연)</span>'
+        + '<span><b>○</b> 신호어에 동그라미</span><span><b>/</b> 전환점에 빗금</span>'
+        + '<span><b>+ −</b> 속성 방향</span>'
+        + '<span class="g" style="font-size:10px">트리는 머릿속으로. 종이엔 이 기호만.</span></div>';
+    }
+
+    h += '<div class="qnum" style="display:flex;align-items:center;gap:10px">'
+      + '<span>'+p.qnum+'. '+p.qtext+'</span>'
+      + '<span class="timer">목표 '+(p.time||60)+'초</span></div>';
+
+    h += '<div class="exam-wrap"><div class="exam-col"><p>'+flat+'</p>'
+      + (p.note ? '<p style="text-align:right;text-indent:0;font-size:11px;margin-bottom:2px">'+p.note+'</p>' : '')
+      + (p.vocab ? '' : '<div class="ch">'+p.choices.map(function(c,i){
+          return cn(i+1)+' '+c;
+        }).join('<br>')+'</div>')+'</div>'
+      + '<div class="margin-col"><span class="mtag">여백 — 여기까지만 쓴다</span></div></div>';
+
+    h += '<div class="step">'+stepH('확인','푼 다음 30초 안에','A지 트리를 안 보고 채운다')
+      + '<div class="check-strip">'
+      + '<div class="field"><label>핵심어</label><div class="blank"></div></div>'
+      + '<div class="field"><label>방향 (+ / −)</label><div class="blank"></div></div>'
+      + '<div class="field"><label>머리 문장은 어디였나 (첫 3단어)</label><div class="blank"></div></div></div>'
+      + '<div class="field"><label>요지 한 줄</label><div class="blank tall"></div></div>'
+      + '<div class="answer-row"><span class="lab">정답</span><span class="circle">?</span>'
+      + '<span class="lab" style="margin-left:14px">A지 때와 답이 달랐다면 이유</span>'
+      + '<div class="blank" style="flex:1"></div></div></div>';
+
+    h += '<div class="step">'+stepH('교사','전이 점검')
+      + '<table><tr><th style="width:64%">확인 항목</th><th>됨</th><th>안 됨</th></tr>'
+      + '<tr><td>여백에 기호만 썼는가 (문장 번역을 쓰지 않았는가)</td><td></td><td></td></tr>'
+      + '<tr><td>전환 신호어를 스스로 찾아 표시했는가</td><td></td><td></td></tr>'
+      + '<tr><td>머리 문장을 딸림과 헷갈리지 않았는가</td><td></td><td></td></tr>'
+      + '<tr><td>'+(p.time||60)+'초 안에 끝났는가</td><td></td><td></td></tr></table>'
+      + (p.teachNote ? '<div class="ans"><div class="ans-box"><span class="k">지도 메모</span>'+esc(p.teachNote)+'</div></div>' : '')
+      + '</div>';
+
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>실전 전이지 B</span></div></section>';
+  }
+
+  /* ---------- 속독지 (fast:true 지문 3개를 한 장에) ---------- */
+  function sheetFast(list, lv){
+    var h = '<section class="sheet sheet-f">';
+    h += '<div class="head"><div><div class="t1">SPEED · 속독지</div>'
+      + '<div class="t2">첫 문장만 보고 끝낸다</div></div>'
+      + '<div class="meta">18 · 19 · 20번<br><span class="timer">3문항 합계 목표 150초</span></div></div>';
+    h += namebar(['이름','날짜','걸린 시간']);
+
+    h += '<div class="legend" style="border-color:var(--gold)">'
+      + '<span class="lgttl" style="color:var(--wine)">규칙</span>'
+      + '<span>트리 <b>안 그린다</b></span>'
+      + '<span>STEP 1(소재·속성·방향)만</span>'
+      + '<span>막히면 <b>넘긴다</b> — 여기서 시간 쓰면 뒤가 무너진다</span></div>';
+
+    list.forEach(function(p, i){
+      h += '<div class="fast-item">'
+        + '<div class="qnum" style="display:flex;align-items:center;gap:8px">'
+        + '<span>'+p.qnum+'. '+p.qtext+'</span>'
+        + '<span class="timer">'+(p.time||50)+'초</span></div>'
+        + '<div class="passage">'+p.sents.join(' ')
+        + (p.note ? '<div class="note" style="margin:2px 0 0">'+p.note+'</div>' : '')
+        + '</div>';
+
+      if(p.fastMode === 'mood'){
+        /* 19번 심경 — 방향이 아니라 '앞→뒤 변화' */
+        h += '<div class="grid3" style="grid-template-columns:1fr 1fr 1.4fr">'
+          + '<div class="field"><label>앞부분 심경</label><div class="blank"></div></div>'
+          + '<div class="field"><label>뒷부분 심경</label><div class="blank"></div></div>'
+          + '<div class="field"><label>바뀐 지점 (단서 한 단어)</label><div class="blank"></div></div></div>';
+      } else {
+        h += '<div class="grid3">'
+          + '<div class="field"><label>소재</label><div class="blank"></div></div>'
+          + '<div class="field"><label>속성</label><div class="blank"></div></div>'
+          + '<div class="field"><label>방향</label>'
+          + '<div class="pick" style="gap:11px"><span><i class="chk"></i>+</span>'
+          + '<span><i class="chk"></i>−</span><span><i class="chk"></i>통념</span></div></div></div>';
+      }
+
+      h += '<div class="answer-row" style="margin-top:1mm">'
+        + '<span class="lab">정답</span><span class="circle">?</span>'
+        + '<span class="lab" style="margin-left:12px">고른 근거 (몇 번째 문장)</span>'
+        + '<div class="blank" style="flex:1"></div></div>';
+
+      h += '<div class="ans"><div class="ans-box">'
+        + '<div><span class="k">정답</span><b>'+cn(p.ans)+'</b> '+esc(p.choices[p.ans-1])+'</div>'
+        + '<div><span class="k">근거</span>'+esc(p.fastWhy)+'</div>'
+        + (p.teachNote ? '<div class="tip">'+esc(p.teachNote)+'</div>' : '')
+        + '</div></div>';
+      h += '</div>';
+    });
+
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>속독지</span></div></section>';
+  }
+
+  /* ---------- 정렬: 문항번호 오름차순, 같으면 출처순 ---------- */
+  var SORTED = DATA.slice().sort(function(a,b){
+    return (a.qnum - b.qnum) || String(a.src).localeCompare(String(b.src));
+  });
+  function srcShort(s){ return String(s).replace(/\s*\d+번\s*$/, ''); }
+
+  /* ---------- 렌더 ---------- */
+  function render(){
+    var lv = +selL.value, pick = selP.value, html = '';
+    var sel = SORTED.filter(function(p){
+      if(pick === '__all__') return true;
+      if(pick.indexOf('__fast__') === 0) return p.fast && srcShort(p.src) === pick.slice(8);
+      return p.id === pick;
+    });
+
+    // 속독 지문은 출처(회차)별로 묶어 한 장으로
+    var fast = sel.filter(function(p){ return p.fast; });
+    var norm = sel.filter(function(p){ return !p.fast; });
+    var byYear = {};
+    fast.forEach(function(p){ (byYear[srcShort(p.src)] = byYear[srcShort(p.src)] || []).push(p); });
+    Object.keys(byYear).forEach(function(y){ html += sheetFast(byYear[y], lv); });
+
+    norm.forEach(function(p){ html += sheetA1(p,lv) + sheetA2(p,lv) + sheetB(p,lv); });
+    root.innerHTML = html || '<div class="empty">표시할 지문이 없습니다.</div>';
+  }
+
+  var fastSeen = {};
+  SORTED.forEach(function(p){
+    var o = document.createElement('option');
+    if(p.fast){
+      var y = srcShort(p.src);
+      if(fastSeen[y]) return;          // 회차당 한 항목만
+      fastSeen[y] = true;
+      o.value = '__fast__' + y;
+      o.textContent = '18·19·20번 속독 · ' + y;
+    } else {
+      o.value = p.id;
+      o.textContent = p.qnum + '번 ' + p.qtype + ' · ' + srcShort(p.src);
+    }
+    selP.appendChild(o);
+  });
+  var all = document.createElement('option');
+  all.value = '__all__'; all.textContent = '전체 ('+DATA.length+'지문)';
+  selP.insertBefore(all, selP.firstChild);
+  selP.value = SORTED[0].fast ? ('__fast__' + srcShort(SORTED[0].src)) : SORTED[0].id;
+
+  selP.addEventListener('change', render);
+  selL.addEventListener('change', render);
+  btn.addEventListener('click', function(){
+    var on = document.body.classList.toggle('show-ans');
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? '교사용 해설 숨기기' : '교사용 해설 보기';
+    document.getElementById('warnAns').style.display = on ? 'inline' : 'none';
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
