@@ -1250,7 +1250,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState('');
   // 학생 추가/편집 폼
-  const [form,setForm]=useState({name:'',password:'',expiry:'',startDate:'',active:true});
+  const [form,setForm]=useState({name:'',password:'',expiry:'',startDate:'',statsFrom:'',active:true});
   const [editName,setEditName]=useState(null);
   const [blindLowThreshold,setBlindLowThreshold]=useState(1); // 관리자: '적게 푼' 기준 (N회 이하)
   // 결과 필터
@@ -1285,7 +1285,8 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
           const normalized=(d.students||[]).map(s=>({
             ...s,
             expiry:normDate(s.expiry),
-            startDate:normDate(s.startDate)
+            startDate:normDate(s.startDate),
+            statsFrom:normDate(s.statsFrom)
           }));
           setStudents(normalized);
           saveStudentsLocal(normalized);
@@ -1390,7 +1391,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     // 로컬 저장
     const arr=getStudentsLocal();
     const idx=arr.findIndex(s=>s.name===form.name);
-    const obj={name:form.name,password:form.password,expiry:form.expiry||'',startDate:form.startDate||'',active:form.active!==false};
+    const obj={name:form.name,password:form.password,expiry:form.expiry||'',startDate:form.startDate||'',statsFrom:form.statsFrom||'',active:form.active!==false};
     if(idx>=0)arr[idx]=obj;else arr.push(obj);
     saveStudentsLocal(arr);
     // 서버 저장
@@ -1398,7 +1399,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       try{await api({action:'saveStudent',...form});}catch(e){}
     }
     setMsg('저장 완료!');
-    setForm({name:'',password:'',expiry:'',startDate:'',active:true});
+    setForm({name:'',password:'',expiry:'',startDate:'',statsFrom:'',active:true});
     setEditName(null);
     await loadStudents();
     setLoading(false);
@@ -1483,7 +1484,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     setLoading(false);
   };
 
-  const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',startDate:s.startDate||'',active:s.active});};
+  const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',startDate:s.startDate||'',statsFrom:s.statsFrom||'',active:s.active});};
 
   // ── 약점/커버리지 공통 계산 (화면 카드 = 인쇄 동일 보장) ──
   const computeWeakness=()=>{
@@ -1893,15 +1894,32 @@ ${ESC_}
                 style={{flex:'1 1 120px',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13.5,outline:'none'}}/>
               <input value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="비밀번호"
                 style={{flex:'1 1 120px',padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13.5,outline:'none'}}/>
-              <div style={{display:'flex',flexDirection:'column',gap:2}}>
-                <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600,paddingLeft:2}}>학습 시작일</span>
-                <input type="date" value={form.startDate} onChange={e=>setForm({...form,startDate:e.target.value})}
-                  style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none'}}/>
+              <div style={{display:'flex',flexDirection:'column',gap:3,padding:'6px 10px 8px',background:'#fdfaf4',border:'1px solid #ece0c8',borderRadius:10}}>
+                <span style={{fontSize:9.5,color:'#b08d3f',fontWeight:800,letterSpacing:.5}}>📅 수강 관리</span>
+                <div style={{display:'flex',gap:8}}>
+                  <div style={{display:'flex',flexDirection:'column',gap:2}}>
+                    <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600,paddingLeft:2}}>학습 시작일</span>
+                    <input type="date" value={form.startDate} onChange={e=>setForm({...form,startDate:e.target.value})}
+                      title="진도 계획 계산 기준일 (성적 집계와 무관)"
+                      style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none'}}/>
+                  </div>
+                  <div style={{display:'flex',flexDirection:'column',gap:2}}>
+                    <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600,paddingLeft:2}}>만료일</span>
+                    <input type="date" value={form.expiry} onChange={e=>setForm({...form,expiry:e.target.value})}
+                      title="이 날짜가 지나면 로그인 차단"
+                      style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none'}}/>
+                  </div>
+                </div>
               </div>
-              <div style={{display:'flex',flexDirection:'column',gap:2}}>
-                <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600,paddingLeft:2}}>만료일</span>
-                <input type="date" value={form.expiry} onChange={e=>setForm({...form,expiry:e.target.value})}
-                  style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none'}}/>
+              <div style={{display:'flex',flexDirection:'column',gap:3,padding:'6px 10px 8px',background:'#f6f9f6',border:'1px solid #cfe0d2',borderRadius:10}}>
+                <span style={{fontSize:9.5,color:'#3f7a55',fontWeight:800,letterSpacing:.5}}>📊 성적 집계</span>
+                <div style={{display:'flex',flexDirection:'column',gap:2}}>
+                  <span style={{fontSize:10.5,color:'#6b8a74',fontWeight:600,paddingLeft:2}}>통계 기준일</span>
+                  <input type="date" value={form.statsFrom} onChange={e=>setForm({...form,statsFrom:e.target.value})}
+                    title="이 날짜 이후 기록만 랭킹·오답복습·약점분석에 반영됩니다. 비우면 전체 기간. 기록은 삭제되지 않습니다."
+                    style={{padding:'9px 12px',borderRadius:9,border:'1px solid #cfe0d2',fontSize:13,outline:'none',background:'#fff'}}/>
+                  <span style={{fontSize:9.5,color:'#7b9d86',paddingLeft:2}}>비우면 전체 기간 · 삭제 아님</span>
+                </div>
               </div>
               <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:'#3a2a20',cursor:'pointer'}}>
                 <input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 활성화
@@ -1911,7 +1929,7 @@ ${ESC_}
               <button onClick={saveStudent} disabled={loading} style={{padding:'9px 20px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>
                 {loading?'저장 중...':'저장'}
               </button>
-              {editName&&<button onClick={()=>{setEditName(null);setForm({name:'',password:'',expiry:'',startDate:'',active:true});}} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>취소</button>}
+              {editName&&<button onClick={()=>{setEditName(null);setForm({name:'',password:'',expiry:'',startDate:'',statsFrom:'',active:true});}} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>취소</button>}
             </div>
             {msg&&<p style={{fontSize:12,marginTop:8,color:msg.includes('완료')?'#16a34a':'#dc2626'}}>{msg}</p>}
           </div>
@@ -1925,6 +1943,7 @@ ${ESC_}
                 <div style={{flex:1}}>
                   <span style={{fontSize:14,fontWeight:600,color:'#3a2a20'}}>{s.name}</span>
                   <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>{s.startDate?`시작 ${s.startDate}`:'시작일 미설정'} · {s.expiry||'만료없음'}</span>
+                  {s.statsFrom&&<span style={{fontSize:10,color:'#3f7a55',background:'#eaf3ec',border:'1px solid #cfe0d2',borderRadius:20,padding:'1px 7px',marginLeft:6,fontWeight:700}} title="이 날짜 이후 기록만 성적 집계에 반영">📊 {s.statsFrom}~</span>}
                 </div>
                 <span style={{fontSize:11,padding:'2px 8px',borderRadius:8,background:s.active?'#dcfce7':'#fee2e2',color:s.active?'#166534':'#991b1b',fontWeight:600}}>{s.active?'활성':'비활성'}</span>
                 <button onClick={()=>startEdit(s)} style={{fontSize:12,padding:'5px 10px',borderRadius:8,border:'1px solid #e6dcc6',background:'#fff',cursor:'pointer',color:'#3a2a20'}}>수정</button>
