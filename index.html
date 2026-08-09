@@ -5062,7 +5062,28 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
     const dateStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     const details=questions.map((q,i)=>{
       const ans=userAns[i];
-      return `${q.passage.id}|${TYPES.find(t=>t.id===q.type)?.name||q.type}|${ans?.correct?'O':'X'}`;
+      // ── 진단용 확장: 정답값·선택값을 유형 무관 문자열로 직렬화 ──
+      //   포맷: pid|유형명|O/X|정답|선택   (뒤 2필드는 하위호환 추가분)
+      //   기존 파서(parts.length>=3)는 앞 3필드만 읽으므로 안 깨짐
+      let corr='', chosen='';
+      if(q.type==='summary'){
+        const ca=(q.aOpts||[]).findIndex(o=>o&&o.correct);
+        const cb=(q.bOpts||[]).findIndex(o=>o&&o.correct);
+        corr=`${ca}+${cb}`;
+        chosen=(ans && ans.selectedA!=null && ans.selectedB!=null)?`${ans.selectedA}+${ans.selectedB}`:'';
+      } else if(q.type==='insert'){
+        corr=(q.correctPos!=null)?String(q.correctPos):'';
+        chosen=(ans && ans.selected!=null)?String(ans.selected):'';
+      } else if(q.type==='irrelevant'){
+        corr=(q.correctNum!=null)?String(q.correctNum):'';
+        chosen=(ans && ans.selected!=null)?String(ans.selected):'';
+      } else {
+        const ci=(q.options||[]).findIndex(o=>o&&o.correct);
+        corr=(ci>=0)?String(ci):'';
+        chosen=(ans && ans.selected!=null)?String(ans.selected):'';
+      }
+      if(ans && ans.expired) chosen='expired';
+      return `${q.passage.id}|${TYPES.find(t=>t.id===q.type)?.name||q.type}|${ans?.correct?'O':'X'}|${corr}|${chosen}`;
     }).join('||');
     const payload={
       action: 'saveResult',

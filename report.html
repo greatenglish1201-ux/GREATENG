@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학부모 상담 리포트 · 대단한영어</title>
+<!-- 관리자 게이트: 반드시 다른 스크립트보다 먼저 -->
+<script src="auth.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
+<style>
+  :root{
+    --wine:#7a1020; --wine-deep:#5a0c18; --gold:#C9A84C; --gold-soft:#e3cd8f;
+    --ink:#3a2a20; --ink-soft:#6b5647; --paper:#faf7f2; --card:#ffffff;
+    --line:#ece3d4; --good:#2f7a4f; --warn:#b8862f; --bad:#a3382f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:840px; margin:0 auto; padding:0 16px 96px;}
+
+  /* ── 상단 바 ── */
+  .topbar{
+    position:sticky; top:0; z-index:20; background:rgba(250,247,242,.92);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
+    padding:14px 16px; margin-bottom:20px;
+  }
+  .topbar-inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .brand{font-size:12px; letter-spacing:3px; font-weight:800; color:var(--gold);}
+  .brand b{color:var(--wine);}
+  .controls{display:flex; gap:8px; flex:1; flex-wrap:wrap; justify-content:flex-end;}
+  select, .btn{
+    font-family:inherit; font-size:13px; padding:9px 13px; border-radius:10px;
+    border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer;
+  }
+  select:focus{outline:none; border-color:var(--gold);}
+  .btn-primary{background:var(--wine); color:#fff; border-color:var(--wine); font-weight:700;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost:hover{border-color:var(--gold);}
+
+  /* ── 히어로 헤더 ── */
+  .hero{
+    background:linear-gradient(135deg,var(--wine-deep) 0%,var(--wine) 70%);
+    color:#fff; border-radius:20px; padding:28px 26px; margin-bottom:20px;
+    box-shadow:0 12px 34px rgba(122,16,32,.22); position:relative; overflow:hidden;
+  }
+  .hero::after{
+    content:''; position:absolute; right:-40px; top:-40px; width:180px; height:180px;
+    background:radial-gradient(circle,rgba(201,168,76,.35),transparent 70%);
+  }
+  .hero .eyebrow{font-size:11px; letter-spacing:2px; color:var(--gold-soft); font-weight:700; margin-bottom:10px;}
+  .hero h1{margin:0 0 4px; font-size:26px; font-weight:800; letter-spacing:-.5px;}
+  .hero .sub{font-size:13.5px; color:rgba(255,255,255,.78);}
+  .hero .stats{display:flex; gap:26px; margin-top:20px; flex-wrap:wrap;}
+  .hero .stat .n{font-size:30px; font-weight:800; line-height:1;}
+  .hero .stat .n small{font-size:15px; font-weight:600; color:var(--gold-soft);}
+  .hero .stat .l{font-size:11.5px; color:rgba(255,255,255,.7); margin-top:5px;}
+
+  /* ── 카드 ── */
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:22px 22px; margin-bottom:16px; box-shadow:0 2px 10px rgba(58,42,32,.04);
+  }
+  .card h2{
+    margin:0 0 4px; font-size:15px; font-weight:800; color:var(--wine);
+    display:flex; align-items:center; gap:8px;
+  }
+  .card .hint{font-size:12px; color:var(--ink-soft); margin:0 0 16px;}
+  .card h2 .tag{
+    font-size:10.5px; font-weight:700; color:var(--gold); background:rgba(201,168,76,.14);
+    padding:2px 8px; border-radius:20px; letter-spacing:.3px;
+  }
+
+  /* ── 유형별 진단 바 ── */
+  .typerow{display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--paper);}
+  .typerow:last-child{border-bottom:none;}
+  .typerow .name{width:112px; font-size:13px; font-weight:700; flex-shrink:0;}
+  .typerow .bar{flex:1; height:9px; background:#f0eadf; border-radius:6px; overflow:hidden;}
+  .typerow .bar i{display:block; height:100%; border-radius:6px;}
+  .typerow .val{width:96px; text-align:right; font-size:12px; color:var(--ink-soft); flex-shrink:0;}
+  .typerow .val b{color:var(--ink); font-size:13px;}
+  .lv-good i{background:linear-gradient(90deg,#3f9a63,#2f7a4f);}
+  .lv-warn i{background:linear-gradient(90deg,#d9a94a,#b8862f);}
+  .lv-bad  i{background:linear-gradient(90deg,#c8564a,#a3382f);}
+  .nbadge{font-size:10.5px; color:var(--ink-soft); background:var(--paper); padding:1px 6px; border-radius:10px; margin-left:6px;}
+  .small-n{color:var(--warn); font-weight:700;}
+
+  /* ── 회차 테이블 ── */
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th{text-align:left; font-size:11px; color:var(--ink-soft); font-weight:700; padding:6px 8px; border-bottom:2px solid var(--line);}
+  td{padding:8px; border-bottom:1px solid var(--paper);}
+  td.r, th.r{text-align:right;}
+  .pill{display:inline-block; min-width:44px; text-align:center; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:20px;}
+  .p-good{background:rgba(47,122,79,.12); color:var(--good);}
+  .p-warn{background:rgba(184,134,47,.14); color:var(--warn);}
+  .p-bad{background:rgba(163,56,47,.12); color:var(--bad);}
+
+  /* ── 진단 요약(자동 초안) ── */
+  .diag{background:var(--paper); border:1px dashed var(--gold); border-radius:12px; padding:16px 18px; margin-top:4px;}
+  .diag .lead{font-size:12px; font-weight:700; color:var(--gold); letter-spacing:.5px; margin-bottom:8px;}
+  .diag ul{margin:0; padding-left:18px;}
+  .diag li{font-size:13px; line-height:1.7; margin-bottom:4px;}
+  .diag .draft-note{font-size:11px; color:var(--ink-soft); margin-top:10px; font-style:italic;}
+
+  /* ── 선생님 총평 슬롯 ── */
+  .comment textarea{
+    width:100%; min-height:96px; resize:vertical; font-family:inherit; font-size:13.5px; line-height:1.7;
+    padding:13px 15px; border:1.5px solid var(--line); border-radius:12px; background:var(--paper); color:var(--ink);
+  }
+  .comment textarea:focus{outline:none; border-color:var(--gold); background:#fff;}
+  .comment .ph{font-size:12px; color:var(--ink-soft); margin-top:8px;}
+
+  /* ── 상태/빈 화면 ── */
+  .empty{text-align:center; padding:56px 20px; color:var(--ink-soft);}
+  .empty .big{font-size:40px; margin-bottom:12px;}
+  .empty h3{margin:0 0 6px; color:var(--ink); font-size:16px;}
+  .empty p{margin:0; font-size:13px;}
+  .loading{text-align:center; padding:48px; color:var(--ink-soft); font-size:13px;}
+  .spinner{width:26px; height:26px; border:3px solid var(--line); border-top-color:var(--wine); border-radius:50%; margin:0 auto 14px; animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ── 인쇄 ── */
+  @media print{
+    .topbar, .btn, .no-print{display:none !important;}
+    body{background:#fff;}
+    .wrap{padding:0;}
+    .card, .hero{box-shadow:none; break-inside:avoid;}
+    .comment textarea{border:1px solid #ccc; background:#fff;}
+  }
+  @media (max-width:520px){
+    .hero h1{font-size:22px;}
+    .typerow .name{width:88px;}
+    .typerow .val{width:78px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><b>GREATENG</b> · 상담 리포트</div>
+    <div class="controls">
+      <select id="periodSel" title="시험기간 선택"><option value="">시험기간 로딩…</option></select>
+      <select id="studentSel" title="학생 선택"><option value="">학생 선택</option></select>
+      <button class="btn btn-ghost" id="reloadBtn">↻ 조회</button>
+      <button class="btn btn-primary" id="printBtn">🖨 인쇄</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="root">
+  <div class="empty">
+    <div class="big">📋</div>
+    <h3>시험기간과 학생을 선택하세요</h3>
+    <p>본문시험 결과를 종합해 상담용 리포트를 만듭니다.</p>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ⚠️ index 로그인 GAS URL (index.html의 HARDCODED_URL과 동일해야 함)
+var GAS_URL='https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec';
+
+// ── JSONP (index.html과 동일 규약) ──
+function jsonp(params){
+  return new Promise(function(resolve,reject){
+    var cb='__rep_cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);
+    var q=Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);}).join('&');
+    var s=document.createElement('script');
+    var done=false;
+    window[cb]=function(data){done=true;resolve(data);cleanup();};
+    function cleanup(){try{delete window[cb];}catch(e){window[cb]=undefined;} if(s.parentNode)s.parentNode.removeChild(s);}
+    s.onerror=function(){if(!done){cleanup();reject(new Error('네트워크 오류'));}};
+    s.src=GAS_URL+'?'+q+'&callback='+cb;
+    document.body.appendChild(s);
+    setTimeout(function(){if(!done){cleanup();reject(new Error('시간 초과'));}},15000);
+  });
+}
+
+var el=function(id){return document.getElementById(id);};
+var state={period:'', student:'', data:null};
+
+function levelClass(rate){return rate>=80?'lv-good':rate>=60?'lv-warn':'lv-bad';}
+function pillClass(rate){return rate>=80?'p-good':rate>=60?'p-warn':'p-bad';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+// ── 초기: 시험기간 목록 로드 ──
+function loadPeriods(){
+  jsonp({action:'listExamPeriods'}).then(function(r){
+    var sel=el('periodSel'); sel.innerHTML='';
+    var opts=['<option value="전체">전체 기간</option>'];
+    (r&&r.periods||[]).forEach(function(p){opts.push('<option value="'+esc(p)+'">'+esc(p)+'</option>');});
+    sel.innerHTML=opts.join('');
+    // 현재 설정된 시험기간이 있으면 기본 선택
+    jsonp({action:'getExamPeriod'}).then(function(g){
+      if(g&&g.period){ sel.value=g.period; }
+      loadStudents();
+    }).catch(loadStudents);
+  }).catch(function(){
+    el('periodSel').innerHTML='<option value="전체">전체 기간</option>';
+    loadStudents();
+  });
+}
+
+// ── 학생 목록 (선택 기간의 데이터가 있는 학생) ──
+function loadStudents(){
+  state.period=el('periodSel').value||'전체';
+  jsonp({action:'getStatsDetailed', period:state.period}).then(function(r){
+    var sel=el('studentSel');
+    var cur=sel.value;
+    var opts=['<option value="">학생 선택</option>'];
+    (r&&r.students||[]).forEach(function(s){opts.push('<option value="'+esc(s.name)+'">'+esc(s.name)+' ('+s.correct+'/'+s.total+')</option>');});
+    sel.innerHTML=opts.join('');
+    if(cur) sel.value=cur;
+  }).catch(function(){});
+}
+
+// ── 리포트 렌더 ──
+function render(){
+  state.period=el('periodSel').value||'전체';
+  state.student=el('studentSel').value||'';
+  if(!state.student){
+    el('root').innerHTML='<div class="empty"><div class="big">📋</div><h3>학생을 선택하세요</h3><p>선택한 시험기간의 본문시험 결과를 종합합니다.</p></div>';
+    return;
+  }
+  el('root').innerHTML='<div class="loading"><div class="spinner"></div>리포트를 불러오는 중…</div>';
+  jsonp({action:'getStatsDetailed', period:state.period, student:state.student}).then(function(r){
+    var stu=(r&&r.students||[]).find(function(s){return s.name===state.student;});
+    if(!stu){
+      el('root').innerHTML='<div class="empty"><div class="big">🗒️</div><h3>기록이 없습니다</h3><p>이 시험기간에 '+esc(state.student)+' 학생의 응시 기록이 없습니다.</p></div>';
+      return;
+    }
+    el('root').innerHTML=buildReport(stu);
+  }).catch(function(e){
+    el('root').innerHTML='<div class="empty"><div class="big">⚠️</div><h3>불러오기 실패</h3><p>'+esc(e.message||'네트워크 오류')+' — 조회를 다시 눌러 주세요.</p></div>';
+  });
+}
+
+function buildReport(stu){
+  var period=state.period==='전체'?'전체 학습기간':state.period;
+  var sessions=stu.sessions||[];
+  var types=stu.typeStats||[];
+  var rate=stu.rate||0;
+
+  // 히어로
+  var hero=''
+   +'<div class="hero">'
+   +'<div class="eyebrow">학부모 상담 자료 · '+esc(period)+'</div>'
+   +'<h1>'+esc(stu.name)+' 학생 학습 리포트</h1>'
+   +'<div class="sub">본문시험 응시 기록 종합 · 대단한영어</div>'
+   +'<div class="stats">'
+     +'<div class="stat"><div class="n">'+rate+'<small>%</small></div><div class="l">평균 정답률</div></div>'
+     +'<div class="stat"><div class="n">'+stu.correct+'<small>/'+stu.total+'</small></div><div class="l">누적 정답 문항</div></div>'
+     +'<div class="stat"><div class="n">'+sessions.length+'<small>회</small></div><div class="l">응시 회차</div></div>'
+   +'</div></div>';
+
+  // 유형별 진단
+  var typeRows=types.map(function(t){
+    var small=t.total<5;
+    return '<div class="typerow '+levelClass(t.rate)+'">'
+      +'<div class="name">'+esc(t.type)+'</div>'
+      +'<div class="bar"><i style="width:'+t.rate+'%"></i></div>'
+      +'<div class="val"><b>'+t.rate+'%</b> '
+      +'<span class="nbadge'+(small?' small-n':'')+'">n='+t.total+'</span></div>'
+      +'</div>';
+  }).join('');
+  var typeCard='<div class="card"><h2>유형별 정답률 <span class="tag">취약 순</span></h2>'
+    +'<p class="hint">정답률이 낮은 유형이 위쪽입니다. n은 응시 문항 수로, 표본이 적으면(n&lt;5) 경향 해석에 주의가 필요합니다.</p>'
+    +(typeRows||'<p class="hint">유형별 데이터가 없습니다.</p>')+'</div>';
+
+  // 회차별 추이
+  var sessRows=sessions.map(function(s){
+    var d=String(s.date||'').slice(0,16);
+    return '<tr><td>'+esc(d)+'</td><td class="r">'+s.correct+' / '+s.total+'</td>'
+      +'<td class="r"><span class="pill '+pillClass(s.rate)+'">'+s.rate+'%</span></td></tr>';
+  }).join('');
+  var sessCard='<div class="card"><h2>회차별 추이</h2>'
+    +'<p class="hint">응시일 순서입니다. 후반부로 갈수록 정답률이 오르면 개선 흐름으로 볼 수 있습니다.</p>'
+    +'<table><thead><tr><th>응시일시</th><th class="r">정답</th><th class="r">정답률</th></tr></thead>'
+    +'<tbody>'+(sessRows||'<tr><td colspan="3" style="text-align:center;color:#999;padding:20px">기록 없음</td></tr>')+'</tbody></table></div>';
+
+  // 자동 진단 초안
+  var diag=buildDiagnosis(stu);
+
+  // 선생님 총평 슬롯
+  var commentCard='<div class="card comment"><h2>선생님 종합 총평 <span class="tag no-print">상담 전 작성</span></h2>'
+    +'<p class="hint">아래 자동 진단은 초안입니다. 최종 상담 문구는 선생님이 직접 확정해 주세요. (인쇄 시 함께 출력됩니다)</p>'
+    +'<textarea placeholder="예) '+esc(stu.name)+' 학생은 이번 시험기간 동안 꾸준히 응시했고, 어법 유형에서 오답이 반복되는 경향이 보입니다. 다음 달에는…"></textarea>'
+    +'</div>';
+
+  return hero+diag+typeCard+sessCard+commentCard;
+}
+
+// 자동 진단 초안 — 단정 대신 경향 표현, 표본 n 명시
+function buildDiagnosis(stu){
+  var types=(stu.typeStats||[]).filter(function(t){return t.total>0;});
+  var items=[];
+  if(types.length){
+    // 취약(하위) 유형
+    var weak=types.slice().sort(function(a,b){return a.rate-b.rate;})[0];
+    var strong=types.slice().sort(function(a,b){return b.rate-a.rate;})[0];
+    if(weak){
+      var wn=weak.total<5?'(표본 적음, n='+weak.total+')':'(n='+weak.total+')';
+      items.push('<b>'+esc(weak.type)+'</b> 유형에서 오답이 상대적으로 잦습니다 — 정답률 '+weak.rate+'% '+wn+'. 다음 학습에서 보완이 필요해 보입니다.');
+    }
+    if(strong && strong.type!==(weak&&weak.type)){
+      items.push('<b>'+esc(strong.type)+'</b> 유형은 안정적입니다 — 정답률 '+strong.rate+'% (n='+strong.total+').');
+    }
+  }
+  var sess=stu.sessions||[];
+  if(sess.length>=2){
+    var first=sess[0].rate, last=sess[sess.length-1].rate;
+    if(last-first>=10) items.push('회차가 진행되며 정답률이 '+first+'% → '+last+'%로 오르는 개선 흐름이 관찰됩니다.');
+    else if(first-last>=10) items.push('후반 회차 정답률('+last+'%)이 초반('+first+'%)보다 낮아, 난도 상승 또는 컨디션 요인을 함께 살펴볼 필요가 있습니다.');
+  }
+  if(sess.length>=1){
+    items.push('이 기간 총 '+sess.length+'회 응시, 누적 '+stu.correct+'/'+stu.total+'문항 정답(정답률 '+stu.rate+'%).');
+  }
+  if(!items.length) items.push('해석할 만한 데이터가 아직 충분하지 않습니다.');
+
+  return '<div class="card"><h2>자동 진단 초안 <span class="tag">참고용</span></h2>'
+    +'<div class="diag"><div class="lead">데이터 기반 관찰</div><ul>'
+    +items.map(function(x){return '<li>'+x+'</li>';}).join('')
+    +'</ul><div class="draft-note">※ 위 문장은 응시 데이터에서 자동 생성된 초안입니다. 표본이 작은 항목은 단정하지 말고 경향으로만 참고하세요.</div></div></div>';
+}
+
+// ── 이벤트 ──
+el('periodSel').addEventListener('change', function(){ loadStudents(); });
+el('studentSel').addEventListener('change', render);
+el('reloadBtn').addEventListener('click', render);
+el('printBtn').addEventListener('click', function(){ window.print(); });
+
+// ── 시작 ──
+loadPeriods();
+</script>
+</body>
+</html>
