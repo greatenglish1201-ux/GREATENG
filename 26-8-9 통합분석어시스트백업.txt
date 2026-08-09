@@ -1,0 +1,819 @@
+// ════════════════════════════════════════════════════════════
+// GREATENG GAS — 전체본
+// 반영: 학생 시작일/만료일 + getStats 랭킹 간격보정(τ=3)
+// 변경된 함수: getStats (그 외 모두 기존과 동일)
+//
+// [중요] '학생' 시트 E1 셀에 「시작일」 헤더가 있어야 함(기존 적용됐으면 OK)
+// [중요] 붙여넣고 저장 → 배포 관리 → 새 버전 배포
+// ════════════════════════════════════════════════════════════
+
+const SHEET_PASSAGE  = '지문DB';
+const SHEET_QUESTION = '출제DB';
+const SHEET_STUDENT  = '학생';
+const SHEET_RESULT   = '결과';
+const SHEET_BOOKS    = '교재목록';
+const PROP_ADMIN_PW  = 'ADMIN_PW';
+const DEFAULT_ADMIN_PW = 'great2025';
+
+function doGet(e) {
+  const p   = e.parameter;
+  const cb  = p.callback || 'callback';
+  let result;
+  try { result = route(p); }
+  catch (err) { result = { ok: false, error: err.message }; }
+  return ContentService
+    .createTextOutput(cb + '(' + JSON.stringify(result) + ')')
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+function doPost(e) {
+  let result;
+  let cb = 'cb';
+  try {
+    let p = e.parameter || {};
+    if (p.payload) {
+      try { const parsed = JSON.parse(p.payload); p = Object.assign({}, p, parsed); }
+      catch (parseErr) { throw new Error('payload JSON 파싱 실패: ' + parseErr.message); }
+    }
+    cb = p.callback || 'cb';
+    result = route(p);
+  } catch (err) { result = { ok: false, error: err.message }; }
+  const json = JSON.stringify(result)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const html = '<!DOCTYPE html><html><body>'
+    + '<textarea id="__greateng_response__">' + json + '</textarea>'
+    + '</body></html>';
+  return HtmlService.createHtmlOutput(html)
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+function route(p) {
+  const action = p.action;
+  switch (action) {
+    case 'savePassage':     return savePassage(p);
+    case 'getPassages':     return getPassages(p);
+    case 'saveQuestions':   return saveQuestions(p);
+    case 'getQuestions':    return getQuestions(p);
+    case 'getQuestionPids': return getQuestionPids();
+    case 'login':           return login(p);
+    case 'getStudents':     return getStudents(p);
+    case 'saveStudent':     return saveStudent(p);
+    case 'deleteStudent':   return deleteStudent(p);
+    case 'changeAdminPw':   return changeAdminPw(p);
+    case 'saveResult':      return saveResult(p);
+    case 'getResults':      return getResults(p);
+    case 'getStats':        return getStats(p);
+    case 'getRank':         return getRank(p);
+    case 'initSheets':      return initSheets();
+    case 'saveAnalysis':    return saveAnalysis(p);
+    case 'getAnalysisList': return getAnalysisList(p);
+    case 'saveHitResult':   return saveHitResult(p);
+    case 'getHitResults':   return getHitResults(p);
+    case 'saveMiddlePassage':  return saveMiddlePassage(p);
+    case 'getMiddlePassages':  return getMiddlePassages(p);
+    case 'saveExam':        return saveExam(p);
+    case 'getExamList':     return getExamList();
+    case 'getBooks':        return getBooks(p);
+    case 'saveBooks':       return saveBooks(p);
+    case 'savePreset':      return savePreset(p);
+    case 'getPresets':      return getPresets(p);
+    case 'deletePreset':    return deletePreset(p);
+    default:
+      return { ok: false, error: 'Unknown action: ' + action };
+  }
+}
+
+function initSheets() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss.getSheetByName(SHEET_PASSAGE)) {
+    const sh = ss.insertSheet(SHEET_PASSAGE);
+    sh.appendRow(['id','source','chapter','number','difficulty','title','abstract',
+                  'sentences_json','flow_json','blockSummaries_json','is_public','updated_at',
+                  'is_hot','chapter_org']);
+    sh.setFrozenRows(1);
+  }
+  if (!ss.getSheetByName(SHEET_QUESTION)) {
+    const sh = ss.insertSheet(SHEET_QUESTION);
+    sh.appendRow(['pid','type','data_json','answer','updated_at']);
+    sh.setFrozenRows(1);
+  }
+  if (!ss.getSheetByName(SHEET_STUDENT)) {
+    const sh = ss.insertSheet(SHEET_STUDENT);
+    sh.appendRow(['이름','비밀번호','만료일','활성화','시작일']);
+    sh.setFrozenRows(1);
+  }
+  if (!ss.getSheetByName(SHEET_RESULT)) {
+    const sh = ss.insertSheet(SHEET_RESULT);
+    sh.appendRow(['날짜','이름','점수','정답률','상세']);
+    sh.setFrozenRows(1);
+  }
+  if (!ss.getSheetByName(SHEET_BOOKS)) {
+    const sh = ss.insertSheet(SHEET_BOOKS);
+    sh.appendRow(['id','label','storage','meta_json','updated_at']);
+    sh.setFrozenRows(1);
+  }
+  return { ok: true, message: '시트 초기화 완료' };
+}
+
+function savePassage(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_PASSAGE);
+  if (!sh) throw new Error('지문DB 시트 없음. initSheets 먼저 실행');
+  const id = p.id;
+  if (!id) throw new Error('id 필수');
+  const headers = sh.getRange(1,1,1,sh.getLastColumn()).getValues()[0];
+  const now = new Date().toISOString();
+  const data = sh.getDataRange().getValues();
+  let rowIdx = -1;
+  for (let i=1; i<data.length; i++) { if (data[i][0]===id) { rowIdx=i+1; break; } }
+  const colMap = {};
+  headers.forEach((h,i) => { colMap[h]=i; });
+  const row = rowIdx>0 ? sh.getRange(rowIdx,1,1,headers.length).getValues()[0] : new Array(headers.length).fill('');
+  const set = (col,val) => { if (col in colMap && val!==undefined) row[colMap[col]]=val; };
+  set('id',id); set('source',p.source); set('chapter',p.chapter); set('chapter_org', p.chapter_org); set('number',p.number);
+  set('difficulty',p.difficulty); set('title',p.title); set('abstract',p.abstract);
+  set('sentences_json',p.sentences_json); set('flow_json',p.flow_json);
+  set('blockSummaries_json',p.blockSummaries_json); set('is_public',p.is_public);
+  set('is_hot',p.is_hot);
+  set('updated_at',now);
+  if (rowIdx>0) { sh.getRange(rowIdx,1,1,headers.length).setValues([row]); }
+  else { sh.appendRow(row); }
+  return { ok:true, id, action: rowIdx>0?'updated':'inserted' };
+}
+
+function getPassages(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_PASSAGE);
+  if (!sh) return { ok:true, passages:[] };
+  const data = sh.getDataRange().getValues();
+  if (data.length<2) return { ok:true, passages:[] };
+  const headers = data[0];
+  const col = {};
+  headers.forEach((h,i) => { col[h]=i; });
+  const filterSource = p.source||'';
+  const filterId     = p.id||'';
+  const publicOnly   = p.public_only==='true';
+  const passages = [];
+  for (let i=1; i<data.length; i++) {
+    const row = data[i];
+    if (!row[col['id']]) continue;
+    if (filterSource && row[col['source']]!==filterSource) continue;
+    if (filterId     && row[col['id']]!==filterId) continue;
+    if (publicOnly) { const pub=row[col['is_public']]; if (pub!=='TRUE'&&pub!==true) continue; }
+    passages.push({
+      id: row[col['id']], source: row[col['source']], chapter: row[col['chapter']],
+      chapter_org: ('chapter_org' in col) ? (row[col['chapter_org']]||'') : '',
+      number: row[col['number']], difficulty: row[col['difficulty']],
+      title: row[col['title']], abstract: row[col['abstract']],
+      sentences_json: row[col['sentences_json']]||'',
+      flow_json: row[col['flow_json']]||'',
+      blockSummaries_json: row[col['blockSummaries_json']]||'',
+      is_public: row[col['is_public']]||'',
+      is_hot: row[col['is_hot']]||'',
+      updated_at: row[col['updated_at']]||'',
+    });
+  }
+  return { ok:true, passages };
+}
+
+function saveQuestions(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_QUESTION);
+  if (!sh) throw new Error('출제DB 시트 없음. initSheets 먼저 실행');
+  const pid = p.pid;
+  if (!pid) throw new Error('pid 필수');
+  let questions;
+  try { questions=JSON.parse(p.questions_json); }
+  catch(e) { throw new Error('questions_json 파싱 실패: '+e.message); }
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const col = {};
+  headers.forEach((h,i) => { col[h]=i; });
+  const now = new Date().toISOString();
+  questions.forEach(q => {
+    const type=q.type; if (!type) return;
+    let rowIdx=-1;
+    for (let i=1; i<data.length; i++) {
+      if (data[i][col['pid']]===pid && data[i][col['type']]===type) { rowIdx=i+1; break; }
+    }
+    const row = rowIdx>0 ? sh.getRange(rowIdx,1,1,headers.length).getValues()[0] : new Array(headers.length).fill('');
+    row[col['pid']]=pid; row[col['type']]=type;
+    row[col['data_json']]=q.data_json||'';
+    row[col['answer']]=q.answer!==undefined?q.answer:'';
+    row[col['updated_at']]=now;
+    if (rowIdx>0) { sh.getRange(rowIdx,1,1,headers.length).setValues([row]); }
+    else { sh.appendRow(row); }
+  });
+  return { ok:true, pid, saved:questions.length };
+}
+
+function getQuestions(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_QUESTION);
+  if (!sh) return { ok:true, questions:[] };
+  const pid=p.pid; if (!pid) throw new Error('pid 필수');
+  const data = sh.getDataRange().getValues();
+  if (data.length<2) return { ok:true, questions:[] };
+  const headers=data[0]; const col={};
+  headers.forEach((h,i) => { col[h]=i; });
+  const questions=[];
+  for (let i=1; i<data.length; i++) {
+    const row=data[i]; if (row[col['pid']]!==pid) continue;
+    questions.push({ pid:row[col['pid']], type:row[col['type']],
+      data_json:row[col['data_json']]||'', answer:row[col['answer']],
+      updated_at:row[col['updated_at']]||'' });
+  }
+  return { ok:true, questions };
+}
+
+function getQuestionPids() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_QUESTION);
+  if (!sh) return { ok:true, pids:[] };
+  const data = sh.getDataRange().getValues();
+  if (data.length<2) return { ok:true, pids:[] };
+  const ci = data[0].indexOf('pid');
+  if (ci<0) return { ok:true, pids:[] };
+  const set = {};
+  for (let i=1; i<data.length; i++) {
+    const v = String(data[i][ci]||'').trim();
+    if (v) set[v]=true;
+  }
+  return { ok:true, pids:Object.keys(set) };
+}
+
+function login(p) {
+  const name=(p.name||'').trim(); const pw=p.password||'';
+  const adminPw=PropertiesService.getScriptProperties().getProperty(PROP_ADMIN_PW)||DEFAULT_ADMIN_PW;
+  if (name==='관리자'&&pw===adminPw) return { ok:true, role:'admin', name:'관리자' };
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_STUDENT);
+  if (!sh) return { ok:false, error:'학생 시트 없음' };
+  const data=sh.getDataRange().getDisplayValues();
+  for (let i=1; i<data.length; i++) {
+    const sName=data[i][0], sPw=data[i][1], expiry=data[i][2], active=data[i][3], startDate=data[i][4]||'';
+    if (sName!==name) continue;
+    if (String(active).trim()==='FALSE'||String(active).trim()==='비활성') return { ok:false, error:'비활성 계정입니다' };
+    if (expiry) { const exp=new Date(expiry); if (!isNaN(exp)&&exp<new Date()) return { ok:false, error:'만료된 계정입니다' }; }
+    if (String(sPw)!==String(pw)) return { ok:false, error:'비밀번호가 틀렸습니다' };
+    return { ok:true, role:'student', name, startDate:String(startDate||''), expiry:String(expiry||'') };
+  }
+  return { ok:false, error:'존재하지 않는 학생입니다' };
+}
+
+function getStudents(p) {
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_STUDENT);
+  if (!sh) return { ok:true, students:[] };
+  const data=sh.getDataRange().getDisplayValues(); const students=[];
+  for (let i=1; i<data.length; i++) {
+    const name=data[i][0], pw=data[i][1], expiry=data[i][2], active=data[i][3], startDate=data[i][4]||'';
+    if (!name) continue;
+    students.push({ name, password:pw, expiry:expiry?String(expiry):'', active, startDate:startDate?String(startDate):'' });
+  }
+  return { ok:true, students };
+}
+
+function saveStudent(p) {
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_STUDENT);
+  if (!sh) throw new Error('학생 시트 없음');
+  const name=(p.name||'').trim(); const pw=p.password||'';
+  const expiry=p.expiry||''; const active=p.active!==undefined?p.active:'TRUE';
+  const startDate=p.startDate||'';
+  if (!name) throw new Error('이름 필수');
+  const data=sh.getDataRange().getDisplayValues();
+  for (let i=1; i<data.length; i++) {
+    if (data[i][0]===name) { sh.getRange(i+1,1,1,5).setValues([[name,pw,expiry,active,startDate]]); return { ok:true, action:'updated' }; }
+  }
+  sh.appendRow([name,pw,expiry,active,startDate]);
+  return { ok:true, action:'inserted' };
+}
+
+function deleteStudent(p) {
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_STUDENT);
+  if (!sh) throw new Error('학생 시트 없음');
+  const name=(p.name||'').trim(); if (!name) throw new Error('이름 필수');
+  const data=sh.getDataRange().getDisplayValues();
+  for (let i=data.length-1; i>=1; i--) {
+    if (data[i][0]===name) { sh.deleteRow(i+1); return { ok:true }; }
+  }
+  return { ok:false, error:'학생 없음' };
+}
+
+function changeAdminPw(p) {
+  const oldPw=p.oldPw||''; const newPw=p.newPw||'';
+  const adminPw=PropertiesService.getScriptProperties().getProperty(PROP_ADMIN_PW)||DEFAULT_ADMIN_PW;
+  if (oldPw!==adminPw) return { ok:false, error:'현재 비밀번호 틀림' };
+  if (!newPw) return { ok:false, error:'새 비밀번호 필수' };
+  PropertiesService.getScriptProperties().setProperty(PROP_ADMIN_PW,newPw);
+  return { ok:true };
+}
+
+function saveResult(p) {
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_RESULT);
+  if (!sh) throw new Error('결과 시트 없음');
+  const now=new Date();
+  const kst=new Date(now.getTime()+9*60*60*1000);
+  const dateStr=kst.toISOString().slice(0,16).replace('T',' ');
+  sh.appendRow(["'"+dateStr,p.name||'',p.score||'',p.rate||'',p.detail||'']);
+  return { ok:true };
+}
+
+function getResults(p) {
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_RESULT);
+  if (!sh) return { ok:true, results:[] };
+  const data=sh.getDataRange().getDisplayValues(); const filter=p.student||''; const results=[];
+  for (let i=1; i<data.length; i++) {
+    const [date,name,score,rate,detail]=data[i];
+    if (filter&&name!==filter) continue;
+    results.push({ date,name,score,rate,detail });
+  }
+  return { ok:true, results };
+}
+
+// ★ 변경: 랭킹포인트(adjRate)에 간격 보정(τ=3) 적용
+//   - 첫 시도 정답=1.0 온전히 인정 / 반복 정답=1-exp(-gap/3) / 오답=0
+//   - 표시용 rate(단순 정답률), typeStats/bookStats/wrongRanking은 기존과 동일
+function getStats(p) {
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const sh=ss.getSheetByName(SHEET_RESULT);
+  if (!sh) return { ok:true, studentStats:[],typeStats:[],bookStats:[],wrongRanking:[] };
+  const data=sh.getDataRange().getDisplayValues();
+  if (data.length<2) return { ok:true, studentStats:[],typeStats:[],bookStats:[],wrongRanking:[] };
+  const filterStudent=(p.student||'').trim();
+  const TAU=3; // 간격 신뢰도 기준(일)
+
+  const byStudent={}; const byType={}; const byBook={}; const byPid={}; const sessions=[];
+  const histByStudent={}; // { name: { 'pid|type': [{day, ok}, ...] } }
+
+  for (let i=1; i<data.length; i++) {
+    const [date,name,score,rate,detail]=data[i];
+    if (!name||!detail) continue;
+    if (filterStudent&&name!==filterStudent) continue;
+    if (!byStudent[name]) byStudent[name]={total:0,correct:0,count:0};
+    byStudent[name].count++;
+    if (filterStudent) sessions.push({ date:String(date),score:String(score),rate:String(rate),detail:String(detail) });
+
+    const dt=new Date(String(date).replace(' ','T'));
+    const dayNum=isNaN(dt)?null:Math.floor(dt.getTime()/86400000);
+    if (!histByStudent[name]) histByStudent[name]={};
+
+    const items=String(detail).split('||').filter(x=>x.trim());
+    items.forEach(item => {
+      const parts=item.split('|'); if (parts.length<3) return;
+      const pid=parts[0].trim(); const type=parts[1].trim(); const ox=parts[2].trim();
+      const correct=ox==='O'?1:0;
+      byStudent[name].total++; byStudent[name].correct+=correct;
+
+      const key=pid+'|'+type;
+      if (!histByStudent[name][key]) histByStudent[name][key]=[];
+      histByStudent[name][key].push({day:dayNum, ok:correct===1});
+
+      if (!byType[type]) byType[type]={total:0,correct:0};
+      byType[type].total++; byType[type].correct+=correct;
+      let book='';
+      if      (pid.startsWith('ABSO_TYPE')) book='ABSO_TYPE';
+      else if (pid.startsWith('27ST_E'))    book='27ST_E';
+      else if (pid.startsWith('27STYD'))    book='27STYD';
+      else book=pid.split('_')[0];
+      if (!byBook[book]) byBook[book]={total:0,correct:0};
+      byBook[book].total++; byBook[book].correct+=correct;
+      if (!byPid[pid]) byPid[pid] = { wrong: 0, total: 0, types: {} };
+      byPid[pid].total++;
+      if (!correct) {
+        byPid[pid].wrong++;
+        byPid[pid].types[type] = (byPid[pid].types[type] || 0) + 1;
+      }
+    });
+  }
+  const pct=(c,t)=>t>0?Math.round(c/t*100):0;
+
+  // ── 유효 정답/시도 합계(간격 보정, 분자·분모 대칭) ──
+  //   각 시도 가중치 w:
+  //     - 첫 시도(직전 없음) → 1
+  //     - 반복 정답 → 1-exp(-gap/τ)  (간격 짧을수록 작게 = '또 맞힘'은 덜 인정)
+  //     - 반복 오답 → 1              (반복해 틀린 건 온전히 약점으로 셈)
+  //   유효정답 = Σ(정답일 때 w),  유효시도 = Σ w
+  //   → 같은 날 반복 정답은 분자·분모 모두 거의 0 → 좁게 파도 비율 안 오름
+  //   → 많이 풀어도(간격 정상) 분자·분모 함께 커져 손해 없음
+  const effByStudent={}; // { name: {ec, en} }
+  Object.keys(histByStudent).forEach(name=>{
+    let ec=0, en=0;
+    const keys=histByStudent[name];
+    Object.keys(keys).forEach(key=>{
+      const arr=keys[key];
+      let prevDay=null;
+      arr.forEach(a=>{
+        let w;
+        if (prevDay==null || a.day==null) { w=1; }
+        else if (a.ok) { const gap=Math.max(0, a.day-prevDay); w=1-Math.exp(-gap/TAU); }
+        else { w=1; }
+        en+=w; if (a.ok) ec+=w;
+        if (a.day!=null) prevDay=a.day;
+      });
+    });
+    effByStudent[name]={ec,en};
+  });
+
+  const _names=Object.keys(byStudent).filter(n=>n!=='관리자');
+  const _effCorrect=_names.reduce((a,n)=>a+((effByStudent[n]&&effByStudent[n].ec)||0),0);
+  const _effItems=_names.reduce((a,n)=>a+((effByStudent[n]&&effByStudent[n].en)||0),0);
+  const _globalRate=_effItems>0?_effCorrect/_effItems:0;
+  const _avgItems=_names.length>0?_effItems/_names.length:0;
+  const C=Math.max(30, Math.round(_avgItems));
+  // adjRate: 유효 정답/유효 시도 기반 베이지안 보정 (분자·분모 모두 유효화)
+  const adjRate=(ec,en)=>Math.round((_globalRate*C + ec)/(C + en)*100);
+
+  const studentStats=Object.entries(byStudent).map(([name,v])=>{
+    const eb=effByStudent[name]||{ec:0,en:0};
+    return {
+      name, count:v.count, correct:v.correct, total:v.total,
+      rate:pct(v.correct,v.total),       // 표시용: 단순 정답률
+      adjRate:adjRate(eb.ec, eb.en)      // 랭킹: 간격 보정(대칭)
+    };
+  }).sort((a,b)=>b.adjRate-a.adjRate);
+
+  const typeStats=Object.entries(byType).map(([type,v])=>({ type,correct:v.correct,total:v.total,rate:pct(v.correct,v.total) })).sort((a,b)=>b.rate-a.rate);
+  const bookLabels={'27ST_E':'27수특영어','27STYD':'27영독','ABSO_TYPE':'절대유형'};
+  const bookStats=Object.entries(byBook).map(([book,v])=>({ book,label:bookLabels[book]||book,correct:v.correct,total:v.total,rate:pct(v.correct,v.total) })).sort((a,b)=>b.rate-a.rate);
+  const wrongRanking = Object.entries(byPid).map(([pid, v]) => ({
+    pid,
+    wrong: v.wrong,
+    total: v.total,
+    rate: pct(v.total - v.wrong, v.total),
+    types: Object.entries(v.types)
+      .map(([t, w]) => ({ type: t, wrong: w }))
+      .sort((a, b) => b.wrong - a.wrong)
+  })).filter(x => x.wrong > 0)
+    .sort((a, b) => b.wrong !== a.wrong ? b.wrong - a.wrong : b.total - a.total)
+    .slice(0, 20);
+  const result={ ok:true, studentStats, typeStats, bookStats, wrongRanking };
+  if (filterStudent) result.sessionStats=sessions;
+  return result;
+}
+
+function saveHitResult(p) {
+  try {
+    const ss=SpreadsheetApp.getActiveSpreadsheet();
+    let sheet=ss.getSheetByName('적중률');
+    if (!sheet) {
+      sheet=ss.insertSheet('적중률');
+      sheet.appendRow(['key','school','grade','year','semester','exam',
+                       'type_hit','type_total','type_hit_rate',
+                       'pred_patterns_json','actual_patterns_json','summary','saved_at']);
+      sheet.setFrozenRows(1);
+    }
+    const data=JSON.parse(p.data||'{}');
+    const row=[data.key||'',data.school||'',data.grade||'',data.year||'',
+               data.semester||'',data.exam||'',
+               data.typeHit||0,data.typeTotal||0,data.typeHitRate||0,
+               JSON.stringify(data.predPatterns||{}),
+               JSON.stringify(data.actualPatterns||{}),
+               data.summary||'',new Date().toISOString()];
+    sheet.appendRow(row);
+    return { ok:true };
+  } catch(e) { return { ok:false, error:e.message }; }
+}
+
+function getHitResults(p) {
+  try {
+    const ss=SpreadsheetApp.getActiveSpreadsheet();
+    const sheet=ss.getSheetByName('적중률');
+    if (!sheet) return { ok:true, list:[] };
+    const rows=sheet.getDataRange().getValues();
+    if (rows.length<=1) return { ok:true, list:[] };
+    const headers=rows[0];
+    const list=rows.slice(1).map(row => {
+      const obj={}; headers.forEach((h,i) => { obj[h]=row[i]; });
+      try { obj.predPatterns=JSON.parse(obj.pred_patterns_json); } catch(e){}
+      try { obj.actualPatterns=JSON.parse(obj.actual_patterns_json); } catch(e){}
+      return obj;
+    });
+    return { ok:true, list };
+  } catch(e) { return { ok:false, error:e.message }; }
+}
+
+function saveAnalysis(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName('기출패턴');
+  if (!sh) sh = ss.insertSheet('기출패턴');
+  const key = p.key;
+  const json = JSON.stringify(p.data);
+  const savedAt = new Date().toISOString();
+  const data = sh.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === key) {
+      sh.getRange(i+1, 1, 1, 3).setValues([[key, json, savedAt]]);
+      return {ok: true, key};
+    }
+  }
+  sh.appendRow([key, json, savedAt]);
+  return {ok: true, key};
+}
+
+function getAnalysisList(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName('기출패턴');
+  if (!sh) return {ok: true, list: []};
+  const data = sh.getDataRange().getValues();
+  const list = [];
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0]) {
+      try {
+        list.push({key: data[i][0], data: JSON.parse(data[i][1]), savedAt: data[i][2]});
+      } catch(e) {}
+    }
+  }
+  return {ok: true, list};
+}
+
+function saveMiddlePassage(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName('중등지문');
+  if (!sh) {
+    sh = ss.insertSheet('중등지문');
+    sh.appendRow(['school','grade','publisher','author','year','semester','lesson','body_text','dialog_text','grammar_points','saved_at']);
+  }
+  const row = [
+    p.school||'', p.grade||'', p.publisher||'', p.author||'',
+    p.year||'', p.semester||'', p.lesson||'',
+    p.body_text||'', p.dialog_text||'', p.grammar_points||'',
+    new Date().toISOString()
+  ];
+  const data = sh.getDataRange().getValues();
+  for(let i=1; i<data.length; i++){
+    if(data[i][0]===row[0] && data[i][1]===row[1] &&
+       data[i][2]===row[2] && data[i][3]===row[3] &&
+       data[i][6]===row[6]){
+      sh.getRange(i+1,1,1,row.length).setValues([row]);
+      return {ok:true, updated:true};
+    }
+  }
+  sh.appendRow(row);
+  return {ok:true, updated:false};
+}
+
+function getMiddlePassages(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName('중등지문');
+  if (!sh) return {ok:true, list:[]};
+  const rows = sh.getDataRange().getValues();
+  const headers = rows[0];
+  const eq = (a, b) => String(a == null ? '' : a).trim() === String(b == null ? '' : b).trim();
+  const list = rows.slice(1).filter(r=>r[0]).map(r=>{
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=r[i]);
+    return obj;
+  }).filter(r=>
+    (!p.school    || eq(r.school,    p.school)) &&
+    (!p.grade     || eq(r.grade,     p.grade)) &&
+    (!p.year      || eq(r.year,      p.year)) &&
+    (!p.semester  || eq(r.semester,  p.semester)) &&
+    (!p.publisher || eq(r.publisher, p.publisher)) &&
+    (!p.author    || eq(r.author,    p.author)) &&
+    (!p.lesson    || eq(r.lesson,    p.lesson))
+  );
+  return {ok:true, list};
+}
+
+function getBooks(p) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sh = ss.getSheetByName(SHEET_BOOKS);
+    if (!sh) return { ok: true, books: [] };
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return { ok: true, books: [] };
+    const headers = data[0];
+    const col = {};
+    headers.forEach((h, i) => { col[h] = i; });
+    const books = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const id = row[col['id']];
+      if (!id) continue;
+      const book = {
+        id: String(id),
+        label: String(row[col['label']] || id),
+        storage: String(row[col['storage']] || 'sheet')
+      };
+      const metaRaw = row[col['meta_json']];
+      if (metaRaw) { try { Object.assign(book, JSON.parse(metaRaw)); } catch (e) {} }
+      books.push(book);
+    }
+    return { ok: true, books };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+function saveBooks(p) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sh = ss.getSheetByName(SHEET_BOOKS);
+    if (!sh) {
+      sh = ss.insertSheet(SHEET_BOOKS);
+      sh.appendRow(['id', 'label', 'storage', 'meta_json', 'updated_at']);
+      sh.setFrozenRows(1);
+    }
+    let books;
+    try { books = JSON.parse(p.books_json || '[]'); }
+    catch (e) { throw new Error('books_json 파싱 실패: ' + e.message); }
+    if (!Array.isArray(books)) throw new Error('books_json은 배열이어야 함');
+
+    const now = new Date().toISOString();
+    const data = sh.getDataRange().getValues();
+    const headers = data[0];
+    const col = {};
+    headers.forEach((h, i) => { col[h] = i; });
+
+    const idRow = {};
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][col['id']]) idRow[String(data[i][col['id']])] = i + 1;
+    }
+
+    books.forEach(b => {
+      if (!b || !b.id) return;
+      const meta = {};
+      Object.keys(b).forEach(k => {
+        if (k !== 'id' && k !== 'label' && k !== 'storage') meta[k] = b[k];
+      });
+      const row = [
+        String(b.id),
+        String(b.label || b.id),
+        String(b.storage || 'sheet'),
+        Object.keys(meta).length ? JSON.stringify(meta) : '',
+        now
+      ];
+      const existing = idRow[String(b.id)];
+      if (existing) { sh.getRange(existing, 1, 1, row.length).setValues([row]); }
+      else { sh.appendRow(row); idRow[String(b.id)] = sh.getLastRow(); }
+    });
+    return { ok: true, saved: books.length };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+function getExamSheet_() {
+  const ss = SpreadsheetApp.getActive();
+  let sh = ss.getSheetByName('exams');
+  if (!sh) {
+    sh = ss.insertSheet('exams');
+    sh.appendRow(['key','school','grade','year','semester','exam','total','savedAt','json']);
+  }
+  return sh;
+}
+
+function saveExam(p) {
+  const d = JSON.parse(p.data || p.payload || '{}');
+  if (!d.key) return { ok: false, error: 'key 없음' };
+  const sh = getExamSheet_();
+  const rows = sh.getDataRange().getValues();
+  const m = d.meta || {};
+  const row = [d.key, m.school||'', m.grade||'', m.year||'', m.semester||'',
+               m.exam||'', m.total||'', d.savedAt||new Date().toISOString(),
+               JSON.stringify(d)];
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]) === String(d.key)) {
+      sh.getRange(i + 1, 1, 1, row.length).setValues([row]);
+      return { ok: true, updated: true };
+    }
+  }
+  sh.appendRow(row);
+  return { ok: true, created: true };
+}
+
+function getExamList() {
+  const sh = getExamSheet_();
+  const rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return { ok: true, list: [] };
+  const list = [];
+  for (let i = 1; i < rows.length; i++) {
+    if (!rows[i][0]) continue;
+    list.push({
+      key: rows[i][0], school: rows[i][1], grade: rows[i][2],
+      year: rows[i][3], semester: rows[i][4], exam: rows[i][5],
+      total: rows[i][6], savedAt: rows[i][7]
+    });
+  }
+  return { ok: true, list };
+}
+
+function getRank(p) {
+  const MIN_ITEMS = 100;
+  const TOP_N = 3;
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_RESULT);
+  if (!sh) return { ok: true, show: false };
+  const data = sh.getDataRange().getDisplayValues();
+  if (data.length < 2) return { ok: true, show: false };
+  const me = (p.student || '').trim();
+  if (!me) return { ok: true, show: false };
+
+  const acc = {};
+  for (let i = 1; i < data.length; i++) {
+    const [date, name, score, rate, detail] = data[i];
+    if (!name || !detail || name === '관리자') continue;
+    if (!acc[name]) acc[name] = { correct: 0, total: 0 };
+    String(detail).split('||').filter(x => x.trim()).forEach(item => {
+      const parts = item.split('|');
+      if (parts.length < 3) return;
+      acc[name].total++;
+      if (parts[2].trim() === 'O') acc[name].correct++;
+    });
+  }
+
+  const allNames = Object.keys(acc);
+  const gCorrect = allNames.reduce((a, n) => a + acc[n].correct, 0);
+  const gItems = allNames.reduce((a, n) => a + acc[n].total, 0);
+  const gRate = gItems > 0 ? gCorrect / gItems : 0;
+  const avgItems = allNames.length > 0 ? gItems / allNames.length : 0;
+  const C = Math.max(30, Math.round(avgItems));
+
+  const ranked = allNames
+    .filter(n => acc[n].total >= MIN_ITEMS)
+    .map(n => ({ n, rate: (gRate * C + acc[n].correct) / (C + acc[n].total) }))
+    .sort((a, b) => b.rate - a.rate);
+
+  const idx = ranked.findIndex(r => r.n === me);
+  if (idx === -1 || idx >= TOP_N) return { ok: true, show: false };
+  return { ok: true, show: true, rank: idx + 1, total: ranked.length };
+}
+
+// ════════ 시험범위 프리셋 (공용) ════════
+const SHEET_PRESET = '프리셋';
+
+function getPresetSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(SHEET_PRESET);
+  if (!sh) {
+    sh = ss.insertSheet(SHEET_PRESET);
+    sh.appendRow(['id', 'name', 'ranges_json', 'updated_at']);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function getPresets(p) {
+  try {
+    const sh = getPresetSheet_();
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return { ok: true, presets: [] };
+    const presets = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (!row[0]) continue;
+      let ranges = [];
+      try { ranges = JSON.parse(row[2] || '[]'); } catch (e) { ranges = []; }
+      presets.push({
+        id: String(row[0]),
+        name: String(row[1] || ''),
+        ranges: Array.isArray(ranges) ? ranges : [],
+        updated_at: row[3] ? String(row[3]) : ''
+      });
+    }
+    presets.sort((a, b) => String(b.updated_at).localeCompare(String(a.updated_at)));
+    return { ok: true, presets };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+function savePreset(p) {
+  try {
+    const name = (p.name || '').trim();
+    if (!name) throw new Error('name 필수');
+    let ranges;
+    try { ranges = JSON.parse(p.ranges_json || '[]'); }
+    catch (e) { throw new Error('ranges_json 파싱 실패: ' + e.message); }
+    if (!Array.isArray(ranges)) throw new Error('ranges_json은 배열이어야 함');
+
+    const sh = getPresetSheet_();
+    const now = new Date().toISOString();
+    const id = (p.id || '').trim() || ('PR_' + Date.now());
+    const rangesStr = JSON.stringify(ranges);
+    const data = sh.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === id) {
+        sh.getRange(i + 1, 1, 1, 4).setValues([[id, name, rangesStr, now]]);
+        return { ok: true, id, action: 'updated' };
+      }
+    }
+    sh.appendRow([id, name, rangesStr, now]);
+    return { ok: true, id, action: 'inserted' };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+function deletePreset(p) {
+  try {
+    const id = (p.id || '').trim();
+    if (!id) throw new Error('id 필수');
+    const sh = getPresetSheet_();
+    const data = sh.getDataRange().getValues();
+    for (let i = data.length - 1; i >= 1; i--) {
+      if (String(data[i][0]) === id) {
+        sh.deleteRow(i + 1);
+        return { ok: true, id };
+      }
+    }
+    return { ok: false, error: '프리셋 없음' };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
