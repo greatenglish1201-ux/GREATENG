@@ -885,14 +885,7 @@
         let idxEE = header.findIndex(h =>h.includes('영영') || h.includes('ee') || h.includes('def'));
         let idxEX = header.findIndex(h =>h.includes('예문') || h.includes('ex') || h.includes('sen'));
 
-        if(idxB === -1) idxB = 0; if(idxU === -1) idxU = 1;
-        // '세부' 헤더가 없을 때만 3번째 열(C)을 세부로 사용.
-        // 단, 그 자리가 이미 번호·유닛·교재·단어·뜻 열이면 세부 없음(-1)으로 둔다.
-        // (예: 교재|day|번호|단어|뜻 구조에서 번호를 세부로 오인 → day1-1처럼 단어별로 쪼개지던 문제)
-        if(idxD === -1){
-            const taken = [idxB, idxU, idxNo, idxEng, idxKor].filter(i => i >= 0);
-            idxD = taken.includes(2) ? -1 : 2;
-        }
+        if(idxB === -1) idxB = 0; if(idxU === -1) idxU = 1; if(idxD === -1) idxD = 2;
         if(idxEng === -1) idxEng = 3; if(idxKor === -1) idxKor = 4;
 
         return result.map(c =>{
@@ -926,6 +919,7 @@
             throw new Error("DB 로딩 실패 (웹 게시 확인 요망)");
         }
         db = parseCSV(text);
+        _useDetailCache = {};   // 교재별 세부 사용 판단 캐시 초기화
         dbReady = true;
         return db;
     }
@@ -2041,6 +2035,27 @@
         updateUnits();
     }
 
+    // ── 교재별로 '세부(번호)'를 범위 구분에 쓸지 자동 판단 ──
+    // 번호 열의 의미가 교재마다 달라서 생기는 문제 해결:
+    //   · 문항 번호형(예: 빈순삽합 — 1강 4번 문항의 단어 40개) → 세부 그룹당 단어 여러 개 → 세부 사용 O
+    //   · 단어 일련번호형(예: 수능2000 — 단어마다 1,2,3…)      → 세부 그룹당 단어 1개   → 세부 사용 X
+    // 세부를 쓰면 체크리스트가 단어 하나하나로 쪼개지므로, 그룹당 평균 단어 수로 판별한다.
+    let _useDetailCache = {};
+    function useDetailFor(book){
+        if(_useDetailCache.hasOwnProperty(book)) return _useDetailCache[book];
+        const rows = db.filter(x => x.book === book && x.detail);
+        let use = false;
+        if(rows.length){
+            const groups = {};
+            rows.forEach(x => { const k = x.unit + "::" + x.detail; groups[k] = (groups[k]||0) + 1; });
+            const counts = Object.values(groups);
+            const avg = counts.reduce((a,b) => a+b, 0) / counts.length;
+            use = avg >= 2;   // 그룹당 평균 2개 이상이면 의미 있는 묶음
+        }
+        _useDetailCache[book] = use;
+        return use;
+    }
+
     function updateUnits() {
         let book = document.getElementById('sel-book').value;
         let unitContainer = document.getElementById('unit-checkboxes');
@@ -2051,7 +2066,7 @@
         }
 
         let items = [...new Set(db.filter(x =>x.book === book).map(x =>{
-            return x.detail ? x.unit + "::" + x.detail : x.unit;
+            return useDetailFor(book) && x.detail ? x.unit + "::" + x.detail : x.unit;
         }))].filter(Boolean);
 
         items.sort((a, b) =>{
@@ -2105,7 +2120,7 @@
 
         let filtered = db.filter(x =>{
             if (x.book !== book) return false;
-            let itemKey = x.detail ? x.unit + "::" + x.detail : x.unit;
+            let itemKey = useDetailFor(x.book) && x.detail ? x.unit + "::" + x.detail : x.unit;
             return selectedItems.includes(itemKey);
         });
 
