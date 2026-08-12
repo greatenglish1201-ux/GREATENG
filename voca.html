@@ -919,7 +919,6 @@
             throw new Error("DB 로딩 실패 (웹 게시 확인 요망)");
         }
         db = parseCSV(text);
-        _useDetailCache = {};   // 교재별 세부 사용 판단 캐시 초기화
         dbReady = true;
         return db;
     }
@@ -2035,27 +2034,6 @@
         updateUnits();
     }
 
-    // ── 교재별로 '세부(번호)'를 범위 구분에 쓸지 자동 판단 ──
-    // 번호 열의 의미가 교재마다 달라서 생기는 문제 해결:
-    //   · 문항 번호형(예: 빈순삽합 — 1강 4번 문항의 단어 40개) → 세부 그룹당 단어 여러 개 → 세부 사용 O
-    //   · 단어 일련번호형(예: 수능2000 — 단어마다 1,2,3…)      → 세부 그룹당 단어 1개   → 세부 사용 X
-    // 세부를 쓰면 체크리스트가 단어 하나하나로 쪼개지므로, 그룹당 평균 단어 수로 판별한다.
-    let _useDetailCache = {};
-    function useDetailFor(book){
-        if(_useDetailCache.hasOwnProperty(book)) return _useDetailCache[book];
-        const rows = db.filter(x => x.book === book && x.detail);
-        let use = false;
-        if(rows.length){
-            const groups = {};
-            rows.forEach(x => { const k = x.unit + "::" + x.detail; groups[k] = (groups[k]||0) + 1; });
-            const counts = Object.values(groups);
-            const avg = counts.reduce((a,b) => a+b, 0) / counts.length;
-            use = avg >= 2;   // 그룹당 평균 2개 이상이면 의미 있는 묶음
-        }
-        _useDetailCache[book] = use;
-        return use;
-    }
-
     function updateUnits() {
         let book = document.getElementById('sel-book').value;
         let unitContainer = document.getElementById('unit-checkboxes');
@@ -2065,26 +2043,21 @@
             return;
         }
 
-        let items = [...new Set(db.filter(x =>x.book === book).map(x =>{
-            return useDetailFor(book) && x.detail ? x.unit + "::" + x.detail : x.unit;
-        }))].filter(Boolean);
+        // 범위 선택은 '단위(강/day)' 기준으로만 — 세부(번호·문항)로 쪼개지 않는다.
+        let items = [...new Set(db.filter(x =>x.book === book).map(x => x.unit))].filter(Boolean);
 
         items.sort((a, b) =>{
-            let partsA = a.split("::"); let partsB = b.split("::");
-            let numA = parseInt(partsA[0].replace(/[^0-9]/g, '')) || 0;
-            let numB = parseInt(partsB[0].replace(/[^0-9]/g, '')) || 0;
+            // 숫자가 들어있으면 숫자 크기순(day2 < day10), 같으면 문자순
+            let numA = parseInt(String(a).replace(/[^0-9]/g, '')) || 0;
+            let numB = parseInt(String(b).replace(/[^0-9]/g, '')) || 0;
             if (numA !== numB) return numA - numB;
-
-            let detA = partsA[1] ? (parseInt(partsA[1].replace(/[^0-9]/g, '')) || 0) : 0;
-            let detB = partsB[1] ? (parseInt(partsB[1].replace(/[^0-9]/g, '')) || 0) : 0;
-            return detA - detB;
+            return String(a).localeCompare(String(b), 'ko', {numeric:true});
         });
 
         let html = `<label class="chk-label" style="display:block; margin-bottom:8px; font-weight:600; color:var(--ink-soft);"><input type="checkbox" id="chk-all-units" onchange="toggleAllUnits(this)" checked>전체 선택</label><hr style="border:0; border-top:1px dashed #ddd; margin:8px 0;">`;
 
         items.forEach((item, i) =>{
-            let displayTxt = item.includes("::") ? item.replace("::", " - ") : item;
-            html += `<label class="chk-label" style="display:inline-block; width:48%; margin-bottom:8px;"><input type="checkbox" class="chk-unit" value="${item}" checked onchange="checkUnitAllState()">${displayTxt}</label>`;
+            html += `<label class="chk-label" style="display:inline-block; width:48%; margin-bottom:8px;"><input type="checkbox" class="chk-unit" value="${item}" checked onchange="checkUnitAllState()">${item}</label>`;
         });
 
         unitContainer.innerHTML = html;
@@ -2120,7 +2093,7 @@
 
         let filtered = db.filter(x =>{
             if (x.book !== book) return false;
-            let itemKey = useDetailFor(x.book) && x.detail ? x.unit + "::" + x.detail : x.unit;
+            let itemKey = x.unit;   // 단위(강/day) 단위로 선택 — 세부 무시
             return selectedItems.includes(itemKey);
         });
 
