@@ -1757,8 +1757,9 @@
             const r=results[nm];
             if(r && r.__error){ errStudents[nm]=true; perStudent[nm]=[]; return; }
             let ms=(Array.isArray(r)?r:[]).filter(m=> String(m.range||'').indexOf('오답노트')<0 );
-            // 날짜 키 (assignDate 우선, 없으면 lastDate)
-            ms.forEach(m=>{ m._dk = (fmtExamDate(m.assignDate)!=='날짜 미상'? fmtExamDate(m.assignDate): fmtExamDate(m.lastDate)); });
+            // 날짜 키 — 실제 응시일(lastDate) 우선, 없으면 배정일(assignDate)
+            // 시트 A열(제출 시각)과 일치시키기 위함. 회차 묶음은 GAS가 assignDate로 이미 처리.
+            ms.forEach(m=>{ m._dk = (fmtExamDate(m.lastDate)!=='날짜 미상'? fmtExamDate(m.lastDate): fmtExamDate(m.assignDate)); });
             ms.sort((a,b)=> String(b._dk).localeCompare(String(a._dk)) );
             ms=ms.slice(0,8);
             perStudent[nm]=ms;
@@ -1897,9 +1898,9 @@
                 : (m.attempts + '회 응시 후 불합격');
             const detailColor = pass ? '#16a34a' : '#dc2626';
             const detailBg = pass ? '#f0fdf4' : '#fef2f2';
-            // 배정날짜가 완전하면 그것, 아니면 시험친 시각(lastDate) 시도
-            let dateStr = fmtExamDate(m.assignDate);
-            if(dateStr==='날짜 미상') dateStr = fmtExamDate(m.lastDate);
+            // 실제 응시일(lastDate) 우선 — 시트 A열과 일치. 없으면 배정일.
+            let dateStr = fmtExamDate(m.lastDate);
+            if(dateStr==='날짜 미상') dateStr = fmtExamDate(m.assignDate);
             const rg = fmtRange(m.range);
             html += '<div style="border:1px solid #eee; border-radius:12px; padding:14px 16px; margin-bottom:10px;">';
             html += '<div style="display:flex; align-items:stretch; gap:14px;">';
