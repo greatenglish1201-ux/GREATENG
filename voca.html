@@ -885,7 +885,14 @@
         let idxEE = header.findIndex(h =>h.includes('영영') || h.includes('ee') || h.includes('def'));
         let idxEX = header.findIndex(h =>h.includes('예문') || h.includes('ex') || h.includes('sen'));
 
-        if(idxB === -1) idxB = 0; if(idxU === -1) idxU = 1; if(idxD === -1) idxD = 2;
+        if(idxB === -1) idxB = 0; if(idxU === -1) idxU = 1;
+        // '세부' 헤더가 없을 때만 3번째 열(C)을 세부로 사용.
+        // 단, 그 자리가 이미 번호·유닛·교재·단어·뜻 열이면 세부 없음(-1)으로 둔다.
+        // (예: 교재|day|번호|단어|뜻 구조에서 번호를 세부로 오인 → day1-1처럼 단어별로 쪼개지던 문제)
+        if(idxD === -1){
+            const taken = [idxB, idxU, idxNo, idxEng, idxKor].filter(i => i >= 0);
+            idxD = taken.includes(2) ? -1 : 2;
+        }
         if(idxEng === -1) idxEng = 3; if(idxKor === -1) idxKor = 4;
 
         return result.map(c =>{
