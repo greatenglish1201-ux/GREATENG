@@ -20,6 +20,10 @@
             why  : 학생용 힌트. 초·중급(lv≤2)에서만 노출
             ⚠️ 첫 문장이 비유·정의·인용이면 소재·속성이 안 잡힘 → to를 2~3으로 늘릴 것
    key/attr/dir   STEP1 모범답안. dir는 "긍정" | "부정" | "통념"
+   ⚠️ key·attr에는 **본문에 실제로 나온 영어 표현**을 <b class=w>…</b>로 감싸 넣을 것.
+      학생이 '지문 어디를 보고 그렇게 판단했는지' 역추적할 수 있어야 함.
+      한국어 요약만 있으면 어디를 봐야 할지 알 수 없다.
+   dirWord  방향을 결정지은 본문 표현 (영어). 방향 체크칸 옆에 근거로 표시됨
    simplify [[지문표현, 모범 단순화], ...]  ← STEP2
    trunk1/trunk2  줄기 이름
    tree     [{n:문장번호, lb:라벨, head:true면 머리, txt:모범내용}]
@@ -95,9 +99,10 @@ window.PASSAGES = [
   ans: 3,
 
   lead: {to:1, note:"①의 can make sense in contexts where…가 조건부 인정 = 양보. 첫 문장으로 충분"},
-  key:  "speed vs frequency — 대중교통에서 어느 쪽을 중시하나",
-  attr: "속도를 빈도보다 앞세우는 것이 \"말이 되는\" 경우가 있다",
+  key:  "<b class=w>speed over frequency</b> — 속도와 빈도 중 어느 쪽을 앞세우나",
+  attr: "<b class=w>can make sense in contexts where…</b> — 어떤 상황에서는 말이 된다 (조건부 인정)",
   dir:  "통념",
+  dirWord: "can make sense <b class=w>in contexts where</b> — 범위를 한정하면 곧 뒤집힌다",
 
   simplify: [
     ["a common motorist's error <span class=g>(②)</span>", "운전자 머리로 생각해서 생기는 착각"],
@@ -172,9 +177,10 @@ window.PASSAGES = [
     note:"①은 밑줄 문장 자체이자 비유(sticky)라 여기서 속성을 잡을 수 없다. "
        + "②의 modularised·commoditised·standardised, ties…disconnected가 sticky를 풀어준 첫 자리",
     why:"①의 <b>sticky</b>는 비유라 뜻이 아직 안 잡힌다. <b>②번까지</b> 읽고 속성을 정하라."},
-  key:  "디지털 플랫폼과 일 — 일이 장소에 묶이는 정도",
-  attr: "일이 잘게 쪼개지고 표준화되면서 특정 장소와의 연결이 끊어진다",
+  key:  "<b class=w>Digital platforms</b> + <b class=w>work</b> — 일이 장소에 묶이는 정도",
+  attr: "<b class=w>ties between service work and particular places can be disconnected</b> ②<br>— 일과 장소의 끈이 끊어진다",
   dir:  "긍정",
+  dirWord: "<b class=w>modularised, commoditised and standardised</b> ② — 셋 다 같은 방향으로 나열",
 
   simplify: [
     ["made a lot of work less sticky <span class=g>(①)</span>", "일이 특정 장소에 들러붙어 있지 않게 만들었다"],
@@ -259,9 +265,10 @@ window.PASSAGES = [
   lead: {to:3,
     note:"①은 용어만 던지고 ②가 정의, ③이 '왜 중요한가'. 세 문장이 한 덩어리로 도입부",
     why:"①만으로는 coopetition이 뭔지 모른다. <b>③번까지</b> 읽어라."},
-  key:  "coopetition — 스포츠 기업의 협력과 경쟁",
-  attr: "스포츠 생태계는 협력·경쟁이 어떻게 섞이느냐에 따라 성립한다",
+  key:  "<b class=w>coopetition</b> — 협력(cooperation)과 경쟁(competition)의 합성어",
+  attr: "<b class=w>the simultaneous pursuit of cooperation and competition</b> ②<br>— 둘을 동시에 추구하는 것",
   dir:  "긍정",
+  dirWord: "<b class=w>a useful way to understand</b> ③ — 유용하다고 평가 = 긍정",
 
   simplify: [
     ["the simultaneous pursuit of cooperation and competition <span class=g>(②)</span>", "협력과 경쟁을 동시에 밀고 나가는 것"],
@@ -336,9 +343,10 @@ window.PASSAGES = [
   ans: 2,
 
   lead: {to:1, note:"①에 소재·속성·방향(양보)이 다 있다. 도입부 확장 불필요"},
-  key:  "culturtainment — 문화의 상업화",
-  attr: "경제적 이익 때문에 정치인·정책 입안자에게 매력적이다",
+  key:  "<b class=w>culturtainment</b> — 문화(culture)와 오락(entertainment)의 합성어",
+  attr: "<b class=w>The economic benefit … makes it attractive</b> ① — 돈이 되니 매력적이다",
   dir:  "통념",
+  dirWord: "<b class=w>attractive to politicians</b>로 장점부터 — 장점 먼저 = 양보. However를 기다려라",
 
   simplify: [
     ["coupled with their demand for related goods and services <span class=g>(②)</span>", "관광객이 늘면 딸려오는 소비까지"],
@@ -409,9 +417,10 @@ window.PASSAGES = [
     note:"①은 용어 정의라 방향이 없다. ②의 casting aside absolute standards와 "
        + "③의 the end justifies the means까지 가야 '결과 우선'이라는 방향이 잡힘",
     why:"①은 <b>정의문</b>이라 방향이 안 보인다. <b>③번까지</b> 읽어라."},
-  key:  "situational ethics — 상황에 따라 판단하는 윤리",
-  attr: "보편 기준을 치우고 결과로 판단한다 (결과 우선)",
+  key:  "<b class=w>Situational ethics</b> — 상황을 따져 판단하는 윤리",
+  attr: "<b class=w>casting aside absolute moral standards</b> ② / <b class=w>the end justifies the means</b> ③<br>— 절대 기준을 치우고 결과로 판단",
   dir:  "긍정",
+  dirWord: "<b class=w>what matters is the outcome or consequences</b> ③ — 결과 우선이 글의 방향",
 
   simplify: [
     ["takes into account the context <span class=g>(①)</span>", "그때그때 상황을 따져본다"],
@@ -486,9 +495,11 @@ window.PASSAGES = [
     "동아리 신규 회원 모집을 공지하려고",
     "방과 후 활동 프로그램을 설명하려고"
   ],
-  key: "동아리 개설", attr: "제안서를 내라는 요청", dir: "긍정",
+  key: "<b class=w>school clubs</b> — 동아리 개설",
+  attr: "<b class=w>submit a proposal for a new club</b> ⑥ — 제안서를 내라",
+  dir: "긍정",
   ans: 2,
-  fastWhy: "⑥번 문장 Therefore + I am encouraging you to submit a proposal. 목적문은 거의 항상 "
+  fastWhy: "⑥ <b class=w>Therefore, I am encouraging you to submit a proposal</b>. 목적문은 거의 항상 "
          + "Therefore·So 뒤의 요청 동사에 있다. 앞 5문장은 배경이라 안 읽어도 됨.",
   teachNote: "목적 문항은 <b>맨 끝에서 두세 번째 문장</b>부터 읽으라고 지도할 것. 위에서부터 읽으면 시간만 쓴다."
 },
@@ -521,8 +532,8 @@ window.PASSAGES = [
     "bored → excited"
   ],
   ans: 1,
-  moodPivot: "Suddenly (⑥)",
-  fastWhy: "앞 = Uncertain · awkwardly · unsure (혼란) / 뒤 = smiled brightly · At last · finally found (만족). "
+  moodPivot: "<b class=w>Suddenly</b> ⑥",
+  fastWhy: "앞 <b class=w>Uncertain · awkwardly · unsure</b> (혼란) → 뒤 <b class=w>smiled brightly · At last · finally found</b> (만족). "
          + "전환 지점은 ⑥번 <b>Suddenly</b>. 심경 문항의 전환은 거의 언제나 Suddenly·Then·But 뒤.",
   teachNote: "심경은 '방향(+/−)'이 아니라 <b>앞뒤 두 지점</b>을 잡는 문항. 그래서 속독지에서도 칸이 다르다. "
          + "선택지를 먼저 보고 앞 감정 후보만 훑게 하면 20초에 끝난다."
@@ -550,10 +561,12 @@ window.PASSAGES = [
     "문학 작품을 감상하기 위해 스토리텔링 기법을 이해해야 한다.",
     "문학 작품과 가사에 사용되는 언어의 차이를 연구해야 한다.",
   ],
-  key: "작사가의 언어·문학 기여", attr: "학계가 인정하지 않아 왔다", dir: "부정",
+  key: "<b class=w>modern musical lyricists</b> — 작사가의 언어·문학 기여",
+  attr: "<b class=w>has repeatedly failed to recognize</b> ① — 학계가 계속 인정하지 않아 왔다",
+  dir: "부정",
   ans: 2,
   fastWhy: "①번 문장에서 이미 소재(작사가의 기여)와 방향(−, 인정받지 못함)이 다 나온다. "
-         + "마지막 <b>must be recognized</b>가 확인 사살. 주장 문항은 첫 문장 + must/should 문장 두 개면 끝.",
+         + "마지막 <b class=w>must be recognized</b>가 확인 사살. 주장 문항은 첫 문장 + must/should 문장 두 개면 끝.",
   teachNote: "속독 훈련의 표본. STEP 1만으로 ①에서 답이 잡히고, 중간 ③④는 근거라 건너뛰어도 된다. "
          + "첫 시간에 이 지문으로 '다 읽지 않아도 된다'를 체감시킬 것."
 }

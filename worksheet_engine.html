@@ -140,6 +140,11 @@ td.mine{height:27px}
 body.show-ans .circle.filled{border-color:var(--wine); border-width:1.5px}
 body.show-ans .circle.filled .fx{color:var(--wine)}
 
+/* 본문에서 따온 영어 표현 — 학생이 지문에서 찾아볼 자리 */
+.w{font-family:'Noto Serif',serif; font-weight:400; font-style:italic;
+  background:#f6efdd; padding:0 3px; border-bottom:1px dotted var(--gold);
+  box-decoration-break:clone; -webkit-box-decoration-break:clone}
+
 /* ---------- 교사용 ---------- */
 /* 빈칸 자리에 직접 채우기 — 해설 ON일 때만 글자가 보인다 */
 .filled .fx{display:none}
@@ -147,6 +152,7 @@ body.show-ans .filled .fx{display:inline; color:var(--wine); font-weight:500}
 body.show-ans .blank.filled{border-bottom-color:var(--wine-soft)}
 body.show-ans .box.filled{border-color:var(--wine-soft); background:#fdf9f9}
 .blank.filled{display:flex; align-items:flex-end; padding-bottom:1px}
+body.show-ans .blank.filled{height:auto; min-height:21px; padding-top:1px}
 .blank.filled .fx{font-size:11.5px; line-height:1.35}
 .box.filled .fx{font-size:11.5px; line-height:1.5}
 td.filled .fx{display:none}
@@ -222,6 +228,7 @@ body.show-ans .ans{display:block}
   th{background:#f0f0f0}
   .passage u,.exam-col u{text-decoration-color:#000; text-decoration-thickness:1.2px}
   body.show-ans .filled .fx{color:#000 !important}
+  .w{background:#f0f0f0 !important; border-bottom-color:#999}
   body.show-ans .blank.filled{border-bottom-color:#000}
   .ans-box{background:#f8f8f8; border-color:#999}
 }
@@ -260,7 +267,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260805c"></script>
+<script src="passages_final.js?v=20260805d"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -346,6 +353,8 @@ body.show-ans .ans{display:block}
           return '<span><i class="chk"></i> '+d+(hit?'<span class="fx">✓</span>':'')+'</span>';
         }).join('')
       + '</div>'
+      + (p.dirWord ? '<div class="ans" style="margin-top:3px"><div style="font-size:10.5px;'
+          + 'color:var(--wine-soft);padding-left:2px">근거 · '+p.dirWord+'</div></div>' : '')
       + (lv <= 2 && lead.why
           ? '<div class="note-if">'+esc(lead.why)+'</div>'
           : (lv <= 2 ? '<div class="note-if">통념·양보에 표시했다면 → 뒤에 <b>However / But / though / Rather</b>로 뒤집힌다. 그 자리를 먼저 찾아라.</div>' : ''))
