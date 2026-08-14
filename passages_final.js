@@ -14,6 +14,11 @@
       30번처럼 번호 붙은 밑줄은 <u class="n1">…</u> 형태로, 번호는 CSS가 자동 부여
    sents    문장 배열 → A지는 ①②③ 자동 부여, B지는 통짜로 이어붙임 (원문 1회만 저장)
    choices  선택지 5개           ans 정답번호(1~5)
+   lead     {to:2, note:"...", why:"..."}  ← STEP1을 **어디까지 읽고** 잡는가
+            to   : 도입부 마지막 문장 번호 (없으면 1 = 첫 문장만)
+            note : 왜 거기까지인지 (교사용 해설에 표시)
+            why  : 학생용 힌트. 초·중급(lv≤2)에서만 노출
+            ⚠️ 첫 문장이 비유·정의·인용이면 소재·속성이 안 잡힘 → to를 2~3으로 늘릴 것
    key/attr/dir   STEP1 모범답안. dir는 "긍정" | "부정" | "통념"
    simplify [[지문표현, 모범 단순화], ...]  ← STEP2
    trunk1/trunk2  줄기 이름
@@ -89,6 +94,7 @@ window.PASSAGES = [
   ],
   ans: 3,
 
+  lead: {to:1, note:"①의 can make sense in contexts where…가 조건부 인정 = 양보. 첫 문장으로 충분"},
   key:  "speed vs frequency — 대중교통에서 어느 쪽을 중시하나",
   attr: "속도를 빈도보다 앞세우는 것이 \"말이 되는\" 경우가 있다",
   dir:  "통념",
@@ -162,8 +168,12 @@ window.PASSAGES = [
   ],
   ans: 2,
 
+  lead: {to:2,
+    note:"①은 밑줄 문장 자체이자 비유(sticky)라 여기서 속성을 잡을 수 없다. "
+       + "②의 modularised·commoditised·standardised, ties…disconnected가 sticky를 풀어준 첫 자리",
+    why:"①의 <b>sticky</b>는 비유라 뜻이 아직 안 잡힌다. <b>②번까지</b> 읽고 속성을 정하라."},
   key:  "디지털 플랫폼과 일 — 일이 장소에 묶이는 정도",
-  attr: "일이 특정 장소에 \"들러붙어(sticky)\" 있지 않게 되었다",
+  attr: "일이 잘게 쪼개지고 표준화되면서 특정 장소와의 연결이 끊어진다",
   dir:  "긍정",
 
   simplify: [
@@ -172,22 +182,26 @@ window.PASSAGES = [
     ["leaves behind no material traces <span class=g>(⑦)</span>", "그 지역에 아무 흔적도 남기지 않는다"]
   ],
 
-  trunk1: "핵심 주장과 그 원리",
-  trunk2: "예전 방식과 무엇이 달라졌나",
-  pivotAt: 3,
+  trunk1: "일이 장소에서 풀려났다 — 처음부터 끝까지 한 방향",
+  trunk2: "",
+  pivotAt: 0,   // ⚠️ 전환점 없음. While(③)은 줄기 전환이 아니라 과거와의 비교(딸림)
 
   tree: [
     {n:1, lb:"주제도입",    head:true ,  txt:"디지털 플랫폼이 일을 장소에서 떼어냈다 ← 밑줄 = 글의 머리"},
     {n:2, lb:"부연",        head:false, txt:"일이 쪼개지고·상품화·표준화되며 장소와의 끈이 끊김 (원리)"},
-    {n:3, lb:"대조·반전",  head:false, txt:"1990년대 아웃소싱 ↔ 클라우드워크 — 규모와 잘게 쪼개는 정도가 다름"},
+    {n:3, lb:"근거",       head:false, txt:"1990년대 아웃소싱과 견줌 — 규모·세분화가 다를 뿐 방향은 같음 (줄기 전환 아님)"},
     {n:4, lb:"예시",        head:false, txt:"뉴욕 소기업이 오늘은 나이로비, 내일은 뉴델리 사람을 고용"},
     {n:5, lb:"부연",        head:false, txt:"사무실·규제·세금 어느 것도 그 지역에 얽히지 않음"},
     {n:6, lb:"부연",        head:false, txt:"이메일 몇 통·클릭 몇 번으로 생산망이 갈아탐"},
     {n:7, lb:"재진술",      head:true ,  txt:"고용주가 그 지역에 아무 물리적 흔적도 남기지 않는다"}
   ],
 
-  pivot: {sig:"While", at:3, from:"과거 아웃소싱(콜센터 이전)", to:"클라우드워크(규모·세분화가 다름)"},
-  pivotSub: "⚠️ 이 지문은 통념 반전형이 아님 — 주장 제시 후 원리·대조·예시로 확장하는 형. 전환 신호가 약한 대신 딸림이 길다.",
+  pivot: {sig:"없음", at:0,
+    from:"이 글에는 흐름 전환이 없다",
+    to:"①의 방향이 ⑦까지 그대로 이어진다"},
+  pivotSub: "③의 <b>While</b>은 <u>줄기를 바꾸지 않는다</u> — 과거 아웃소싱과 클라우드워크를 견주는 "
+          + "<b>딸림 문장</b>일 뿐, 둘 다 '일이 장소에서 풀려난다'는 같은 방향이다. "
+          + "<b>전환점이 없는 글도 있다</b>는 것을 가르치는 지문.",
 
   implied: {
     phrase: "made a lot of work less sticky",
@@ -242,6 +256,9 @@ window.PASSAGES = [
   ],
   ans: 1,
 
+  lead: {to:3,
+    note:"①은 용어만 던지고 ②가 정의, ③이 '왜 중요한가'. 세 문장이 한 덩어리로 도입부",
+    why:"①만으로는 coopetition이 뭔지 모른다. <b>③번까지</b> 읽어라."},
   key:  "coopetition — 스포츠 기업의 협력과 경쟁",
   attr: "스포츠 생태계는 협력·경쟁이 어떻게 섞이느냐에 따라 성립한다",
   dir:  "긍정",
@@ -269,8 +286,10 @@ window.PASSAGES = [
     {n:10, lb:"근거",        head:false, txt:"그래야 한쪽을 희생시키지 않는다"}
   ],
 
-  pivot: {sig:"should (조동사)", at:4, from:"개념 설명", to:"이렇게 해야 한다는 주장"},
-  pivotSub: "⚠️ However·But 같은 신호어가 없는 전환. <b>조동사(should / may be required / might be better)</b>가 전환 신호. 신호어만 찾는 학생이 놓치는 유형.",
+  pivot: {sig:"should (조동사)", at:4, from:"개념 설명(무엇인가)", to:"주장(어떻게 해야 하는가)"},
+  pivotSub: "⚠️ However·But이 <u>하나도 없는</u> 전환. <b>조동사(should · may be required · might be better)</b>가 "
+          + "전환 신호다. 신호어만 찾는 학생이 통째로 놓치는 유형. "
+          + "여기서 바뀌는 것은 <b>방향이 아니라 성격</b>(설명 → 주장)임에 유의.",
 
   gist: "스포츠 산업에서는 협력과 경쟁 어느 한쪽에 치우치지 않도록 균형 있게 관리해야 한다.",
 
@@ -316,6 +335,7 @@ window.PASSAGES = [
   ],
   ans: 2,
 
+  lead: {to:1, note:"①에 소재·속성·방향(양보)이 다 있다. 도입부 확장 불필요"},
   key:  "culturtainment — 문화의 상업화",
   attr: "경제적 이익 때문에 정치인·정책 입안자에게 매력적이다",
   dir:  "통념",
@@ -336,7 +356,7 @@ window.PASSAGES = [
     {n:3, lb:"대조·반전",  head:true ,  txt:"그러나 상업화는 획일화·본래 메시지 상실의 위험 ← 글의 머리"},
     {n:4, lb:"부연",        head:false, txt:"독립 행사가 따로 생겨 관객이 더 쪼개질 수도"},
     {n:5, lb:"주장",        head:true ,  txt:"기획자·이해관계자가 금전적 이익과 저울질해야 할 문제"},
-    {n:6, lb:"부연",        head:false, txt:"사회가 바뀌면 새 문화와 새 culturtainment가 계속 나온다"},
+    {n:6, lb:"주제도입",    head:true ,  txt:"(새 화제) 사회가 바뀌면 새 문화·새 culturtainment가 계속 나온다 — 앞의 위험 얘기와 별개"},
     {n:7, lb:"재진술",      head:true ,  txt:"건강한 성장 분야지만, 본질상 착취에 취약하다"}
   ],
 
@@ -353,7 +373,9 @@ window.PASSAGES = [
   },
   wrongNote: "①과 ④가 정확히 반대 방향의 함정. 한 줄기만 읽으면 둘 중 하나로 간다. 제목은 <b>두 줄기를 다 담은 것</b>이라야 한다.",
 
-  teachNote: "제목 문항이 주제 문항과 다른 지점을 보여주기에 가장 좋은 지문. 정답 ②가 'Cash or Soul?'이라는 "
+  teachNote: "⑥번은 앞의 위험 얘기와 무관한 <b>새 화제</b>다. 여기서 '왜 갑자기 이 말이 나오지?'를 못 느끼면 "
+           + "글의 구조를 못 읽은 것. 다만 새 화제여도 ⑦이 두 줄기를 다시 묶으므로 제목은 바뀌지 않는다. "
+           + "제목 문항이 주제 문항과 다른 지점을 보여주기에 가장 좋은 지문. 정답 ②가 'Cash or Soul?'이라는 "
            + "비유·의문형이라 STEP 5의 요지를 그대로 옮기면 안 되고 한 번 더 변환해야 함. "
            + "①④를 고른 학생은 트리의 전환선을 못 그은 것이므로 STEP 3으로 되돌릴 것."
 },
@@ -383,8 +405,12 @@ window.PASSAGES = [
   choices: ["absolute", "justifies", "keep", "concern", "abandon"],
   ans: 5,
 
+  lead: {to:3,
+    note:"①은 용어 정의라 방향이 없다. ②의 casting aside absolute standards와 "
+       + "③의 the end justifies the means까지 가야 '결과 우선'이라는 방향이 잡힘",
+    why:"①은 <b>정의문</b>이라 방향이 안 보인다. <b>③번까지</b> 읽어라."},
   key:  "situational ethics — 상황에 따라 판단하는 윤리",
-  attr: "행위의 맥락을 따져서 윤리성을 판단한다",
+  attr: "보편 기준을 치우고 결과로 판단한다 (결과 우선)",
   dir:  "긍정",
 
   simplify: [
@@ -460,6 +486,7 @@ window.PASSAGES = [
     "동아리 신규 회원 모집을 공지하려고",
     "방과 후 활동 프로그램을 설명하려고"
   ],
+  key: "동아리 개설", attr: "제안서를 내라는 요청", dir: "긍정",
   ans: 2,
   fastWhy: "⑥번 문장 Therefore + I am encouraging you to submit a proposal. 목적문은 거의 항상 "
          + "Therefore·So 뒤의 요청 동사에 있다. 앞 5문장은 배경이라 안 읽어도 됨.",
@@ -494,6 +521,7 @@ window.PASSAGES = [
     "bored → excited"
   ],
   ans: 1,
+  moodPivot: "Suddenly (⑥)",
   fastWhy: "앞 = Uncertain · awkwardly · unsure (혼란) / 뒤 = smiled brightly · At last · finally found (만족). "
          + "전환 지점은 ⑥번 <b>Suddenly</b>. 심경 문항의 전환은 거의 언제나 Suddenly·Then·But 뒤.",
   teachNote: "심경은 '방향(+/−)'이 아니라 <b>앞뒤 두 지점</b>을 잡는 문항. 그래서 속독지에서도 칸이 다르다. "
@@ -522,6 +550,7 @@ window.PASSAGES = [
     "문학 작품을 감상하기 위해 스토리텔링 기법을 이해해야 한다.",
     "문학 작품과 가사에 사용되는 언어의 차이를 연구해야 한다.",
   ],
+  key: "작사가의 언어·문학 기여", attr: "학계가 인정하지 않아 왔다", dir: "부정",
   ans: 2,
   fastWhy: "①번 문장에서 이미 소재(작사가의 기여)와 방향(−, 인정받지 못함)이 다 나온다. "
          + "마지막 <b>must be recognized</b>가 확인 사살. 주장 문항은 첫 문장 + must/should 문장 두 개면 끝.",
