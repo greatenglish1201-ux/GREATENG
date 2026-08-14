@@ -10,7 +10,7 @@
 <style>
 :root{
   --wine:#7a1020; --wine-soft:#9a2435; --gold:#C9A84C; --gold-soft:#e3cf95;
-  --ink:#3a2a20; --paper:#fbf8f2; --line:#e0d6c0; --grey:#8b8378; --green:#3b6d5a;
+  --ink:#3a2a20; --paper:#fbf8f2; --line:#e0d6c0; --grey:#8b8378; --green:#3b6d5a; --steel2:#3f5a72;
 }
 *{box-sizing:border-box}
 body{margin:0; background:#e8e4dc; color:var(--ink);
@@ -166,6 +166,24 @@ body.show-ans .ans{display:block}
 .ans-box .k{font-weight:700; color:var(--wine); margin-right:5px}
 .ans-box .tip{margin-top:4px; color:var(--wine-soft)}
 
+/* ---------- 장문 배열 (43~45) ---------- */
+.sheet-o .head{border-bottom-color:var(--steel2)}
+.sheet-o .head .t1{color:var(--steel2)}
+.sheet-o .step-h .n{background:var(--steel2)}
+.para{display:flex; gap:8px; margin-bottom:2.4mm; break-inside:avoid}
+.para-tag{flex:0 0 26px; font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:11px; color:var(--steel2); text-align:center; padding-top:6px}
+.para-b{flex:1; border:1px solid var(--line); background:#fff; padding:6px 10px;
+  font-family:'Noto Serif',serif; font-size:11.6px; line-height:1.55; text-align:justify}
+.para-b u{text-decoration-thickness:1.1px; text-underline-offset:3px;
+  text-decoration-skip-ink:none; box-decoration-break:clone}
+.order-row{display:flex; align-items:center; gap:6px; margin-bottom:2mm}
+.order-row .ob{width:44px; height:26px; border:1px solid var(--line); background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700}
+.order-row .oa{color:var(--grey); font-size:12px}
+body.show-ans .order-row .ob.filled{border-color:var(--wine); color:var(--wine)}
+
 /* ---------- 속독지 ---------- */
 .sheet-f .head{border-bottom-color:var(--gold)}
 .sheet-f .head .t1{color:var(--gold)}
@@ -267,7 +285,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260805d"></script>
+<script src="passages_final.js?v=20260805f"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -544,6 +562,87 @@ body.show-ans .ans{display:block}
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>실전 전이지 B</span></div></section>';
   }
 
+  /* ---------- 장문 순서배열 (43~45형) ---------- */
+  function sheetOrder(p, lv){
+    var h = '<section class="sheet sheet-o">';
+    h += '<div class="head"><div><div class="t1">LONG · 단락 배열</div>'
+      + '<div class="t2">시간축과 지칭으로 잇는다</div></div>'
+      + '<div class="meta">'+esc(p.src)+'<br><span class="timer">목표 '+(p.time||150)+'초</span></div></div>';
+    h += namebar(['이름','날짜','걸린 시간']);
+
+    h += '<div class="legend" style="border-color:var(--steel2)">'
+      + '<span class="lgttl" style="color:var(--steel2)">이 유형은 흐름 트리를 그리지 않는다</span>'
+      + '<span>① <b>시간 순서</b>로 잇는다</span>'
+      + '<span>② 대명사가 <b>누구</b>인지 따라간다</span>'
+      + '<span>③ 각 단락 <b>첫 문장</b>만 봐도 순서가 보인다</span></div>';
+
+    p.paras.forEach(function(pa){
+      h += '<div class="para"><div class="para-tag">('+pa.tag+')</div>'
+        + '<div class="para-b">'+pa.text+'</div></div>';
+    });
+    if(p.note) h += '<div class="note">'+p.note+'</div>';
+
+    /* 단락 첫 문장 요약 */
+    h += '<div class="step">'+stepH('STEP A','단락별 한 줄','첫 문장만 보고 쓴다')
+      + '<table><tr><th style="width:8%">단락</th><th style="width:46%">무슨 일이 있었나</th>'
+      + '<th>그래서 앞뒤 어디에 오나</th></tr>'
+      + p.paras.map(function(pa){
+          return '<tr><td style="text-align:center" class="cn">('+pa.tag+')</td>'
+            + '<td class="filled" style="height:27px"><span class="fx">'+esc(pa.gist)+'</span></td>'
+            + '<td class="filled"><span class="fx">'+esc(pa.cue)+'</span></td></tr>';
+        }).join('')
+      + '</table></div>';
+
+    h += '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span>'
+      + '<span>장문 배열 1/2</span></div></section>';
+
+    /* ===== 2장 ===== */
+    h += '<section class="sheet sheet-o">';
+    h += '<div class="head"><div><div class="t1">LONG · 단락 배열</div>'
+      + '<div class="t2">순서와 지칭</div></div>'
+      + '<div class="meta">'+esc(p.src)+'<br><span class="g">2 / 2</span></div></div>';
+
+    /* 순서 */
+    h += '<div class="step">'+stepH('STEP B','순서 세우기')
+      + '<div class="order-row">'
+      + '<span class="ob">(A)</span><span class="oa">→</span>'
+      + p.orderAns.map(function(t,i){
+          return '<span class="ob filled"><span class="fx">('+t+')</span></span>'
+            + (i<p.orderAns.length-1 ? '<span class="oa">→</span>' : '');
+        }).join('')
+      + '</div>'
+      + '<div class="answer-row"><span class="lab">43번 정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
+      + cn(p.ans43)+'</span></span>'
+      + '<span class="lab" style="margin-left:14px">그렇게 본 근거</span>'
+      + fill(esc(p.orderWhy))+'</div></div>';
+
+    /* 지칭 */
+    h += '<div class="step">'+stepH('STEP C','지칭 추적','44번 - 하나만 다른 사람을 가리킨다')
+      + '<table><tr><th style="width:10%">밑줄</th><th style="width:24%">표현</th>'
+      + '<th style="width:26%">누구를 가리키나</th><th>근거</th></tr>'
+      + p.refs.map(function(r){
+          return '<tr><td style="text-align:center" class="cn">('+r.tag+')</td>'
+            + '<td class="eng" style="width:auto"><b>'+esc(r.word)+'</b></td>'
+            + '<td class="filled" style="height:27px"><span class="fx">'
+            + (r.who===p.refOdd ? '<b style="color:var(--wine)">'+esc(r.who)+' ← 정답</b>' : esc(r.who))
+            + '</span></td>'
+            + '<td class="filled"><span class="fx">'+esc(r.why)+'</span></td></tr>';
+        }).join('')
+      + '</table>'
+      + '<div class="answer-row"><span class="lab">44번 정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
+      + cn(p.ans44)+'</span></span>'
+      + '<span class="lab" style="margin-left:14px">45번 정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
+      + cn(p.ans45)+'</span></span>'
+      + '<span class="lab" style="margin-left:14px">45번 틀린 이유</span>'
+      + fill(esc(p.why45))+'</div></div>';
+
+    h += (p.teachNote ? '<div class="ans"><div class="ans-box">'+p.teachNote+'</div></div>' : '');
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열 2/2</span></div></section>';
+  }
+
   /* ---------- 속독지 (fast:true 지문 3개를 한 장에) ---------- */
   function sheetFast(list, lv){
     var h = '<section class="sheet sheet-f">';
@@ -624,7 +723,10 @@ body.show-ans .ans{display:block}
     fast.forEach(function(p){ (byYear[srcShort(p.src)] = byYear[srcShort(p.src)] || []).push(p); });
     Object.keys(byYear).forEach(function(y){ html += sheetFast(byYear[y], lv); });
 
-    norm.forEach(function(p){ html += sheetA1(p,lv) + sheetA2(p,lv) + sheetB(p,lv); });
+    norm.forEach(function(p){
+      if(p.paras){ html += sheetOrder(p,lv); return; }   // 43~45형
+      html += sheetA1(p,lv) + sheetA2(p,lv) + sheetB(p,lv);
+    });
     root.innerHTML = html || '<div class="empty">표시할 지문이 없습니다.</div>';
   }
 
@@ -639,7 +741,7 @@ body.show-ans .ans{display:block}
       o.textContent = '18·19·20번 속독 · ' + y;
     } else {
       o.value = p.id;
-      o.textContent = p.qnum + '번 ' + p.qtype + ' · ' + srcShort(p.src);
+      o.textContent = (p.qlabel || (p.qnum + '번')) + ' ' + p.qtype + ' · ' + srcShort(p.src);
     }
     selP.appendChild(o);
   });

@@ -569,6 +569,144 @@ window.PASSAGES = [
          + "마지막 <b class=w>must be recognized</b>가 확인 사살. 주장 문항은 첫 문장 + must/should 문장 두 개면 끝.",
   teachNote: "속독 훈련의 표본. STEP 1만으로 ①에서 답이 잡히고, 중간 ③④는 근거라 건너뛰어도 된다. "
          + "첫 시간에 이 지문으로 '다 읽지 않아도 된다'를 체감시킬 것."
+},
+
+/* ===== 장문 =================================================== */
+{
+  id: "s26_4142_dress",
+  src: "2026수능 41-42번", qnum: 41, qlabel: "41-42번", qtype: "장문",
+  qtext: "윗글의 제목으로 가장 적절한 것은? [3점]",
+  star: 3, time: 180,
+  note: "* garment: 의복",
+
+  sents: [
+    "There is an obvious problem with the history of dress in all of its displays and that is, although textiles survive from early periods and cultures of recorded history, actual garments do not provide an uninterrupted flow of evidence across the same long time-span.",
+    "Therefore, to give the study of dress equal significance to other areas such as architecture, painting, prints, drawings and sculpture, it was <u class=\"n1\">inevitable</u> that these other areas would provide much of the source material.",
+    "The history of surviving dress really only starts in the 17th century, and like all artefacts described as fine or decorative art, is a highly visual subject.",
+    "However, unlike most of the categories of collection and study that make up those areas, it is fluid rather than static.",
+    "Garments should be seen in <u class=\"n2\">movement</u> on a human body, not frozen on a display figure.",
+    "This is one of the many difficulties when curating collections of costume and also why some modern writers find costume collections physically and intellectually <u class=\"n3\">lifeless</u>.",
+    "Fortunately, in the period after 1660, when more items of dress survive to enrich our understanding of the history of the subject, there are also many painted, printed, photographed and filmed sources of evidence of people in clothing, caught in movement.",
+    "Often a variety of different types of illustrative examples will <u class=\"n4\">provide</u> evidence about how a garment was worn within the period in which it was made.",
+    "Without the information contained in art in all of its forms, from drawing to sculpture, it is <u class=\"n5\">unlikely</u> that displays of historic dress would be awkward imitations of the intentions of their original makers and owners."
+  ],
+
+  choices: [
+    "Dress as Visual Arts: Record What You Wear Now!",
+    "Visual Sources: Filling in the Gaps of Dress History",
+    "Why Do Collectors Want the Unknown Dresses of History?",
+    "Dress Culture: Searching for the Origin of Human Clothing",
+    "Seeing Is Believing! Importance of Illustration in Dress Design"
+  ],
+  ans: 2,
+
+  lead: {to:2,
+    note:"1번이 문제 제기(의복 증거가 끊긴다), 2번이 그래서 다른 분야가 자료를 댄다는 해법. 두 문장이 한 덩어리",
+    why:"1번은 <b>문제 제기</b>만 한다. 2번의 <b>Therefore</b>까지 읽어야 방향이 보인다."},
+  key:  "<b class=w>the history of dress</b> - 의복사 연구의 자료 문제",
+  attr: "<b class=w>actual garments do not provide an uninterrupted flow of evidence</b> (1)<br>- 실물 의복만으로는 증거가 끊긴다",
+  dir:  "부정",
+  dirWord: "<b class=w>an obvious problem</b> (1) - 대놓고 problem이라 했으니 부정. 뒤에 해법이 온다",
+
+  simplify: [
+    ["an uninterrupted flow of evidence <span class=g>(1)</span>", "끊기지 않고 죽 이어지는 증거"],
+    ["fluid rather than static <span class=g>(4)</span>", "가만히 있는 게 아니라 움직이는 것"],
+    ["frozen on a display figure <span class=g>(5)</span>", "마네킹에 얼어붙어 있는 상태"]
+  ],
+
+  trunk1: "문제 - 실물 의복만으로는 증거가 끊긴다",
+  trunk2: "해법 - 그림·사진이 그 빈틈을 메운다",
+  pivotAt: 7,
+
+  tree: [
+    {n:1, lb:"주제도입",   head:true,  txt:"의복사에는 명백한 문제 - 실물 의복의 증거가 끊긴다"},
+    {n:2, lb:"주장",       head:true,  txt:"그래서 건축·회화 등 다른 분야가 자료를 대는 게 불가피했다"},
+    {n:3, lb:"부연",       head:false, txt:"남아 있는 의복사는 17세기부터. 시각적 주제다"},
+    {n:4, lb:"부연",       head:false, txt:"다만 다른 분야와 달리 의복은 고정이 아니라 유동적"},
+    {n:5, lb:"부연",       head:false, txt:"몸 위에서 움직이는 상태로 봐야 한다"},
+    {n:6, lb:"근거",       head:false, txt:"그래서 전시가 어렵고, 생기 없다는 말을 듣는다"},
+    {n:7, lb:"대조·반전",  head:true,  txt:"다행히 1660년 이후엔 움직임을 담은 그림·사진 자료가 많다"},
+    {n:8, lb:"부연",       head:false, txt:"그 예시들이 옷을 어떻게 입었는지 증거를 준다"},
+    {n:9, lb:"재진술",     head:true,  txt:"예술 속 정보가 없었다면 역사 의복 전시는 어설픈 흉내가 됐을 것"}
+  ],
+
+  pivot: {sig:"Fortunately", at:7, from:"증거가 끊기고 전시도 어렵다(문제)", to:"그림·사진이 빈틈을 메운다(해법)"},
+  pivotSub: "4번의 <b>However</b>는 줄기를 바꾸지 않는다 - 문제를 더 파고드는 딸림. "
+          + "진짜 전환은 7번의 <b>Fortunately</b>. <u>However가 늘 전환점은 아니다</u>는 것을 보여주는 지문.",
+
+  vocab: [
+    {n:1, word:"inevitable", ok:true,
+     why:"실물 증거가 끊기니 다른 분야에 기댈 수밖에 - '불가피'가 맞음"},
+    {n:2, word:"movement",   ok:true,
+     why:"fluid rather than static과 순행. 몸 위 '움직임'으로 봐야 한다"},
+    {n:3, word:"lifeless",   ok:true,
+     why:"마네킹에 얼어붙은 상태 = '생기 없다'. 앞 문장과 순행"},
+    {n:4, word:"provide",    ok:true,
+     why:"7번의 '자료가 많다'를 이어받아 증거를 '준다'"},
+    {n:5, word:"unlikely",   ok:false, fix:"likely",
+     why:"예술 정보가 <b>없었다면</b> 전시가 어설픈 흉내가 <b>됐을 것</b>이라는 뜻. Without 가정문이라 방향이 뒤집힘"}
+  ],
+
+  gist: "의복사는 실물 증거가 끊기지만, 그림·사진 등 시각 자료가 그 빈틈을 메워준다.",
+  wrong: {
+    "1": "지금 옷을 기록하라는 실천 제안이 아님",
+    "3": "수집가의 욕망을 다룬 글이 아님",
+    "4": "의복의 기원 탐색이 아님 - 자료 문제를 다룸",
+    "5": "의복 '디자인'에서 삽화의 중요성이 아니라 '역사 연구'의 자료 문제"
+  },
+  wrongNote: "제목에 <b>Gaps</b>(빈틈)와 <b>Filling in</b>(메우기)이 둘 다 들어간 2번만 두 줄기를 다 담는다.",
+
+  teachNote: "42번(어휘)이 붙은 장문이라 STEP 8까지 다 쓴다. 5번 unlikely는 <b>Without 가정문</b>이 방향을 뒤집는 자리라 "
+           + "3등급이 가장 많이 놓친다. '없었다면 ~했을 것'을 우리말로 옮겨보게 할 것. "
+           + "4번 However를 전환점으로 잘못 잡는 학생이 많으니 STEP 4에서 반드시 확인."
+},
+
+{
+  id: "s26_4345_mia",
+  src: "2026수능 43-45번", qnum: 43, qlabel: "43-45번", qtype: "장문 배열",
+  star: 2, time: 150,
+  note: "",
+
+  paras: [
+    {tag:"A",
+     text:"\u201cMia, let\u2019s go walk our dog!\u201d Julia called out, but there was no answer. She checked her daughter\u2019s room and found that Mia was absorbed in her smartphone, wearing her earbuds. Julia was concerned about her daughter. She turned to her husband, Sam. \u201cMia seems to live inside her phone, not with us.\u201d Sam nodded, \u201cI know. I feel like <u class=\"n1\">(a) she</u> is growing distant from us. Why don\u2019t we set up a family reading club?\u201d Julia brightened at the suggestion, and Sam promised to talk with Mia about it.",
+     gist:"Julia가 스마트폰에 빠진 Mia를 걱정 → Sam이 독서 모임 제안",
+     cue:"주어진 글. 모든 일의 출발"},
+    {tag:"B",
+     text:"Mia\u2019s family held their first book club meeting on Saturday afternoon. Everyone enjoyed the book Mia had chosen. Julia was the first to speak: \u201cDr. Duvall nearly invented a drug for eternal life, yet disappeared one day and ended up running Caf\u00e9 Paris. That\u2019s such a mystery.\u201d Mia responded, her eyes bright, and Sam listened to <u class=\"n2\">(b) his daughter</u>, and their conversation grew lively. During the discussion, Mia felt reconnected with her parents and already looked forward to their next book club meeting.",
+     gist:"첫 모임 - Mia가 고른 책으로 대화, 가족과 다시 이어짐",
+     cue:"결말. <b>first book club meeting</b>이라 책을 고른 뒤"},
+    {tag:"C",
+     text:"At the library, Mia scanned the shelves for nearly an hour, feeling lost among the endless titles. Then, a librarian approached and asked, \u201cLooking for something in particular?\u201d \u201cI need a book for my family\u2019s reading club,\u201d Mia admitted. \u201cWhat genre do you enjoy?\u201d she asked kindly. \u201cHmm, I like mysteries,\u201d Mia replied. The librarian handed her a book titled <i>Caf\u00e9 Paris</i> and said with a smile, \u201cYou\u2019ll love this one.\u201d Mia thanked <u class=\"n3\">(c) her</u> and checked it out.",
+     gist:"도서관에서 사서 도움으로 <i>Caf\u00e9 Paris</i>를 고름",
+     cue:"승낙 뒤, 모임 전. <b>이미 reading club이 정해진 상태</b>"},
+    {tag:"D",
+     text:"When Sam suggested starting a family reading club, Mia immediately shook her head and said, \u201cNo, Dad. I don\u2019t have time to read books. You know how busy <u class=\"n4\">(d) I</u> am with exams all semester.\u201d He didn\u2019t give up. \u201cBut wouldn\u2019t it be fun if we all read the same story and shared our thoughts? You could simply read for 20 minutes, maybe during your lunch break.\u201d After some persuasion, Mia reluctantly agreed. Deep down, <u class=\"n5\">(e) she</u> knew she was spending too much time on her phone. So she asked, \u201cDad, can I choose the first book?\u201d Sam gladly said, \u201cYes.\u201d",
+     gist:"Sam이 제안 → Mia 거절 → 설득 끝에 승낙, 책 고르기를 자청",
+     cue:"(A)의 <b>promised to talk with Mia</b>를 바로 받음"}
+  ],
+
+  orderAns: ["D","C","B"],
+  ans43: 5,
+  orderWhy: "(A) 제안하기로 함 → (D) 실제로 제안·승낙 → (C) 책 고름 → (B) 첫 모임. 시간 순서 그대로",
+
+  refs: [
+    {tag:"a", word:"she",          who:"Mia",           why:"Sam이 '우리와 멀어진다'고 말하는 대상 = 딸"},
+    {tag:"b", word:"his daughter", who:"Mia",           why:"Sam의 딸"},
+    {tag:"c", word:"her",          who:"the librarian", why:"Mia가 <b>감사한</b> 대상 = 책을 건넨 사서"},
+    {tag:"d", word:"I",            who:"Mia",           why:"Mia가 아빠에게 하는 말 속의 '나'"},
+    {tag:"e", word:"she",          who:"Mia",           why:"속으로 폰을 너무 많이 본다고 느낀 사람"}
+  ],
+  refOdd: "the librarian",
+  ans44: 3,
+
+  ans45: 5,
+  why45: "(D)에서 Mia는 <b class=w>immediately shook her head</b>로 <b>거절</b>했다가 설득 끝에 마지못해 승낙 - '처음부터 환영'은 반대",
+
+  teachNote: "43~45는 <b>흐름 트리를 그리지 않는다.</b> 시간 순서와 지칭만 따라가면 3문항이 한꺼번에 풀린다. "
+           + "속독 병행 훈련(10월)의 주력 유형이므로 여기서 '단락 첫 문장만 보고 순서 잡기'를 반드시 몸에 붙일 것. "
+           + "44번은 <b>(c) her</b>가 사서인 것만 잡으면 끝 - 나머지 넷은 다 Mia다. "
+           + "45번은 선택지를 먼저 읽고 단락을 훑는 순서로 지도할 것."
 }
 
 ];
