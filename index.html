@@ -124,11 +124,11 @@ function jsonpFetch(url, data) {
     });
     params.append('callback', cbName);
     
-    // 타임아웃 (15초)
+    // 타임아웃 (45초) — 캐시 미스 시 첫 집계가 오래 걸릴 수 있어 여유 확보
     const timeout = setTimeout(() => {
       cleanup();
       reject(new Error('서버 응답 시간 초과'));
-    }, 15000);
+    }, 45000);
     
     const cleanup = () => {
       clearTimeout(timeout);
