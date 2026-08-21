@@ -31,6 +31,7 @@
    pivot    {sig:신호어, at:문장번호, from:"", to:""}
    gist     요지 모범답안
    wrong    {"선택지번호":"오답 이유"}
+   ans42    41-42형 전용. vocab이 있는 장문은 41번(ans)과 42번(ans42) 정답이 다름
    extra    "함축"이면 STEP7, "순서"면 STEP6 추가 (없으면 생략)
 
    ------------------------------------------------------------
@@ -104,11 +105,16 @@ window.PASSAGES = [
   dir:  "통념",
   dirWord: "can make sense <b class=w>in contexts where</b> — 범위를 한정하면 곧 뒤집힌다",
 
-  simplify: [
-    ["a common motorist's error <span class=g>(②)</span>", "운전자 머리로 생각해서 생기는 착각"],
-    ["waiting time will wipe out any time savings <span class=g>(⑦)</span>", "기다리다 보면 빨라서 아낀 시간이 다 날아간다"],
-    ["screams about speed and whispers about frequency <span class=g>(⑧)</span>", "속도는 크게 써놓고 배차 간격은 작게 써놓은 노선도"]
+  skip: [
+    {n:2, head:"In all other contexts, though...", skip:false},
+    {n:3, head:"Roads are there all the time...", skip:false},
+    {n:4, head:"But transit is only there if...", skip:false},
+    {n:5, head:"If you have a car, you can use a road...", skip:false},
+    {n:6, head:"But transit has to exist when you need it...", skip:false},
+    {n:7, head:"Otherwise, waiting time will wipe out...", skip:false},
+    {n:8, head:"Unless you\u2019re comfortable planning your life...", skip:false}
   ],
+
 
   trunk1: "인정하고 들어가는 부분",
   trunk2: "진짜 하고 싶은 말",
@@ -182,11 +188,17 @@ window.PASSAGES = [
   dir:  "긍정",
   dirWord: "<b class=w>modularised, commoditised and standardised</b> ② — 셋 다 같은 방향으로 나열",
 
-  simplify: [
-    ["made a lot of work less sticky <span class=g>(①)</span>", "일이 특정 장소에 들러붙어 있지 않게 만들었다"],
-    ["a ‘global reserve army’ <span class=g>(③)</span>", "값싸게 쓸 수 있는 해외 인력 예비군"],
-    ["leaves behind no material traces <span class=g>(⑦)</span>", "그 지역에 아무 흔적도 남기지 않는다"]
+  skip: [
+    {n:2, head:"As work becomes ever more modularised...", skip:false},
+    {n:3, head:"While the business process of outsourcing that emerged in <b>the 1990s</b>...", skip:true,
+     why:"<b>연도</b>(1990s) - 과거 사례를 드는 자리"},
+    {n:4, head:"A small business in <b>New York</b> can hire... in <b>Nairobi</b>... <b>New Delhi</b>", skip:true,
+     why:"<b>지명</b>(New York/Nairobi/New Delhi) - 전형적인 예시"},
+    {n:5, head:"No offices or factories need to be built...", skip:false},
+    {n:6, head:"The switch in the production network...", skip:false},
+    {n:7, head:"And, in this way, the employer leaves behind...", skip:false}
   ],
+
 
   trunk1: "일이 장소에서 풀려났다 — 처음부터 끝까지 한 방향",
   trunk2: "",
@@ -270,11 +282,18 @@ window.PASSAGES = [
   dir:  "긍정",
   dirWord: "<b class=w>a useful way to understand</b> ③ — 유용하다고 평가 = 긍정",
 
-  simplify: [
-    ["the simultaneous pursuit of cooperation and competition <span class=g>(②)</span>", "협력과 경쟁을 동시에 밀고 나가는 것"],
-    ["a careful balancing act may be required <span class=g>(⑥)</span>", "어느 쪽에 힘을 얼마나 줄지 조심스럽게 조절해야 한다"],
-    ["one is not neglected at the expense of the other <span class=g>(⑩)</span>", "한쪽 챙기다가 다른 쪽을 놓치지 않게"]
+  skip: [
+    {n:2,  head:"Coopetition is defined as...", skip:false},
+    {n:3,  head:"It is a useful way to understand...", skip:false},
+    {n:4,  head:"This special relationship should be managed...", skip:false},
+    {n:5,  head:"It can be challenging to be collaborative...", skip:false},
+    {n:6,  head:"This means a careful balancing act...", skip:false},
+    {n:7,  head:"Often sport managers will try...", skip:false},
+    {n:8,  head:"By necessity they may need to share...", skip:false},
+    {n:9,  head:"This means it might be better...", skip:false},
+    {n:10, head:"This will ensure one is not neglected...", skip:false}
   ],
+
 
   trunk1: "개념 — 협력과 경쟁이 함께 있다",
   trunk2: "주장 — 그래서 균형 있게 관리하라",
@@ -348,11 +367,15 @@ window.PASSAGES = [
   dir:  "통념",
   dirWord: "<b class=w>attractive to politicians</b>로 장점부터 — 장점 먼저 = 양보. However를 기다려라",
 
-  simplify: [
-    ["coupled with their demand for related goods and services <span class=g>(②)</span>", "관광객이 늘면 딸려오는 소비까지"],
-    ["losing its original ‘message’ <span class=g>(③)</span>", "원래 전하려던 뜻이 사라진다"],
-    ["delicate in the face of exploitation <span class=g>(⑦)</span>", "이익만 노리고 파고들면 쉽게 망가진다"]
+  skip: [
+    {n:2, head:"A potential increase in inbound visitor numbers...", skip:false},
+    {n:3, head:"However, such commercialization risks...", skip:false},
+    {n:4, head:"This could also lead to smaller...", skip:false},
+    {n:5, head:"This is something that planners...", skip:false},
+    {n:6, head:"Changing political, social and religious landscapes...", skip:false},
+    {n:7, head:"Overall this is a healthy growth sector...", skip:false}
   ],
+
 
   trunk1: "돈이 되는 쪽 — 왜 매력적인가",
   trunk2: "잃는 쪽 — 무엇이 위험한가",
@@ -422,11 +445,17 @@ window.PASSAGES = [
   dir:  "긍정",
   dirWord: "<b class=w>what matters is the outcome or consequences</b> ③ — 결과 우선이 글의 방향",
 
-  simplify: [
-    ["takes into account the context <span class=g>(①)</span>", "그때그때 상황을 따져본다"],
-    ["the end justifies the means <span class=g>(③)</span>", "결과만 좋으면 방법은 상관없다"],
-    ["trying to get away with as many actions as possible <span class=g>(⑧)</span>", "최대한 안 걸리고 넘어가려 한다"]
+  skip: [
+    {n:2, head:"Supporters of this theory willingly permit...", skip:false},
+    {n:3, head:"In the absence of a universal standard...", skip:false},
+    {n:4, head:"Possibly the following contrasting realities...", skip:false},
+    {n:5, head:"In a <b>pickup game of basketball</b> played among friends...", skip:true,
+     why:"구체적 장면(친구들끼리 하는 농구) - 앞말을 보여주는 예시"},
+    {n:6, head:"Caring about one\u2019s friends and maybe getting to keep...", skip:false},
+    {n:7, head:"But, once an organized game is played...", skip:false},
+    {n:8, head:"Situational ethics has been extended...", skip:false}
   ],
+
 
   trunk1: "상황윤리란 무엇인가 — 그리고 친구끼리 하는 경기",
   trunk2: "공식 경기에서는 정반대가 된다",
@@ -591,6 +620,7 @@ window.PASSAGES = [
     "Without the information contained in art in all of its forms, from drawing to sculpture, it is <u class=\"n5\">unlikely</u> that displays of historic dress would be awkward imitations of the intentions of their original makers and owners."
   ],
 
+  ans42: 5,   // ⚠️ 41-42는 문항이 둘. ans=41번(제목) 정답, ans42=42번(어휘) 정답
   choices: [
     "Dress as Visual Arts: Record What You Wear Now!",
     "Visual Sources: Filling in the Gaps of Dress History",
@@ -608,11 +638,19 @@ window.PASSAGES = [
   dir:  "부정",
   dirWord: "<b class=w>an obvious problem</b> (1) - 대놓고 problem이라 했으니 부정. 뒤에 해법이 온다",
 
-  simplify: [
-    ["an uninterrupted flow of evidence <span class=g>(1)</span>", "끊기지 않고 죽 이어지는 증거"],
-    ["fluid rather than static <span class=g>(4)</span>", "가만히 있는 게 아니라 움직이는 것"],
-    ["frozen on a display figure <span class=g>(5)</span>", "마네킹에 얼어붙어 있는 상태"]
+  skip: [
+    {n:2, head:"Therefore, to give the study of dress equal significance...", skip:false},
+    {n:3, head:"The history of surviving dress really only starts in the <b>17th century</b>...", skip:true,
+     why:"<b>연도</b>(17th century) - 배경 정보"},
+    {n:4, head:"However, unlike most of the categories...", skip:false},
+    {n:5, head:"Garments should be seen in movement...", skip:false},
+    {n:6, head:"This is one of the many difficulties...", skip:false},
+    {n:7, head:"Fortunately, in the period after <b>1660</b>...", skip:false,
+     why:"연도가 있지만 <b>Fortunately</b>가 전환 신호 - 표지가 겹치면 읽는다"},
+    {n:8, head:"Often a variety of different types...", skip:false},
+    {n:9, head:"Without the information contained in art...", skip:false}
   ],
+
 
   trunk1: "문제 - 실물 의복만으로는 증거가 끊긴다",
   trunk2: "해법 - 그림·사진이 그 빈틈을 메운다",
@@ -707,6 +745,372 @@ window.PASSAGES = [
            + "속독 병행 훈련(10월)의 주력 유형이므로 여기서 '단락 첫 문장만 보고 순서 잡기'를 반드시 몸에 붙일 것. "
            + "44번은 <b>(c) her</b>가 사서인 것만 잡으면 끝 - 나머지 넷은 다 Mia다. "
            + "45번은 선택지를 먼저 읽고 단락을 훑는 순서로 지도할 것."
+},
+
+/* ===== 2025수능 ============================================== */
+{
+  id: "s25_23_industrial",
+  src: "2025수능 23번", qnum: 23, qtype: "주제",
+  qtext: "다음 글의 주제로 가장 적절한 것은?",
+  star: 2, time: 60,
+  note: "* widget: 제품",
+
+  sents: [
+    "The arrival of the Industrial Age changed the relationship among time, labor, and capital.",
+    "Factories could produce around the clock, and they could do so with greater speed and volume than ever before.",
+    "A machine that runs twelve hours a day will produce more widgets than one that runs for only eight hours per day — and a machine that runs twenty-four hours per day will produce the most widgets of all.",
+    "As such, at many factories, the workday is divided into eight-hour shifts, so that there will always be people on hand to keep the widget machines humming.",
+    "Industrialization raised the potential value of every single work hour — the more hours you worked, the more widgets you produced, and the more money you made — and thus wages became tied to effort and production.",
+    "Labor, previously guided by harvest cycles, became clock-oriented, and society started to reorganize around new principles of productivity."
+  ],
+  choices: [
+    "shift in the work-time paradigm brought about by industrialization",
+    "effects of standardizing production procedures on labor markets",
+    "influence of industrialization on the machine-human relationship",
+    "efficient ways to increase the value of time in the Industrial Age",
+    "problems that excessive work hours have caused for laborers"
+  ],
+  ans: 1,
+
+  lead: {to:1, note:"1번에 소재와 속성이 다 있다. changed가 방향까지 잡아준다"},
+  key:  "<b class=w>the Industrial Age</b> - 시간·노동·자본의 관계",
+  attr: "<b class=w>changed the relationship among time, labor, and capital</b> (1) - 셋의 관계를 바꿨다",
+  dir:  "긍정",
+  dirWord: "<b class=w>changed</b> (1) - 무엇이 어떻게 바뀌었는지가 끝까지 이어진다. 전환 없음",
+
+  skip: [
+    {n:2, head:"Factories could produce around the clock...", skip:false},
+    {n:3, head:"A machine that runs <b>twelve hours</b> a day...", skip:true,
+     why:"<b>숫자</b>(twelve / eight / twenty-four) - 앞말을 숫자로 다시 설명"},
+    {n:4, head:"As such, at many factories, the workday...", skip:false},
+    {n:5, head:"Industrialization raised the potential value...", skip:false},
+    {n:6, head:"Labor, previously guided by harvest cycles...", skip:false}
+  ],
+
+  trunk1: "산업화가 시간·노동·자본의 관계를 바꿨다 - 한 방향",
+  trunk2: "",
+  pivotAt: 0,
+
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"산업화가 시간·노동·자본의 관계를 바꿨다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"공장은 24시간 더 빠르고 많이 생산할 수 있게 됨"},
+    {n:3, lb:"예시",     head:false, to:2, txt:"12시간 > 8시간, 24시간이 가장 많이 생산 (숫자 예시)"},
+    {n:4, lb:"근거",     head:false, to:2, txt:"그래서 8시간 교대제가 생김"},
+    {n:5, lb:"주장",     head:true,  txt:"산업화가 노동 1시간의 가치를 올렸고 임금이 노력·생산에 묶임"},
+    {n:6, lb:"재진술",   head:true,  txt:"수확 주기를 따르던 노동이 시계 중심이 되고 사회가 재편됨"}
+  ],
+
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "However·But이 하나도 없다. <b>As such</b>(4) <b>and thus</b>(5)는 전환이 아니라 <u>인과 연결</u>이다. "
+          + "'그래서 그래서'로 이어지는 글은 전환점이 없다.",
+
+  gist: "산업화로 시간이 노동·임금의 기준이 되면서 일하는 시간의 개념이 바뀌었다.",
+  wrong: {
+    "2": "생산 절차 '표준화'가 아니라 시간 개념의 변화",
+    "3": "기계와 인간의 관계가 아니라 시간과 노동의 관계",
+    "4": "시간 가치를 높이는 '방법'을 알려주는 글이 아님",
+    "5": "장시간 노동의 '문제'를 지적하는 글이 아님 - 서술일 뿐"
+  },
+  wrongNote: "④⑤가 함정. 지문에 나온 소재(시간의 가치, 긴 노동시간)를 쓰지만 <b>글의 태도가 다르다</b>. 이 글은 비판하지 않고 설명만 한다.",
+
+  teachNote: "전환점이 없는 글의 표본. 21번(2026)과 묶어서 <b>'전환 없는 글'</b>을 가르치기 좋다. "
+           + "그리고 3번 문장이 숫자 예시라 건너뛰기 훈련에 딱 맞는다 - 12/8/24를 계산하려 드는 학생이 여기서 시간을 버린다."
+},
+
+{
+  id: "s25_24_selfie",
+  src: "2025수능 24번", qnum: 24, qtype: "제목",
+  qtext: "다음 글의 제목으로 가장 적절한 것은?",
+  star: 2, time: 65,
+  note: "* resonate: 공명(共鳴)하다  ** depict: 그리다",
+
+  sents: [
+    "The selfie resonates not because it is new, but because it expresses, develops, expands, and intensifies the long history of the self-portrait.",
+    "The self-portrait showed to others the status of the person depicted.",
+    "In this sense, what we have come to call our own \u201cimage\u201d — the interface of the way we think we look and the way others see us — is the first and fundamental object of global visual culture.",
+    "The selfie depicts the drama of our own daily performance of ourselves in tension with our inner emotions that may or may not be expressed as we wish.",
+    "At each stage of the self-portrait\u2019s expansion, more and more people have been able to depict themselves.",
+    "Today\u2019s young, urban, networked majority has reworked the history of the self-portrait to make the selfie into the first visual signature of the new era."
+  ],
+  choices: [
+    "Are Selfies Just a Temporary Trend in Art History?",
+    "Fantasy or Reality: Your Selfie Is Not the Real You",
+    "The Selfie: A Symbol of Self-oriented Global Culture",
+    "The End of Self-portraits: How Selfies Are Taking Over",
+    "Selfies, the Latest Innovation in Representing Ourselves"
+  ],
+  ans: 5,
+
+  lead: {to:1,
+    note:"1번의 not A but B 구조에 소재·속성·방향이 다 들어 있다. B쪽(자화상의 역사를 잇는다)이 글의 방향",
+    why:"1번의 <b>not ~ but ~</b>을 놓치지 마라. <b>but 뒤</b>가 필자의 주장이다."},
+  key:  "<b class=w>The selfie</b> + <b class=w>the long history of the self-portrait</b> - 셀피와 자화상의 역사",
+  attr: "<b class=w>not because it is new, but because it expresses... the long history of the self-portrait</b> (1)<br>- 새로워서가 아니라 자화상의 역사를 잇기 때문",
+  dir:  "긍정",
+  dirWord: "<b class=w>not because it is new, but because...</b> (1) - not A but B에서 <b>B가 방향</b>",
+
+  skip: [
+    {n:2, head:"The self-portrait showed to others...", skip:false},
+    {n:3, head:"In this sense, what we have come to call...", skip:false},
+    {n:4, head:"The selfie depicts the drama...", skip:false},
+    {n:5, head:"At each stage of the self-portrait\u2019s expansion...", skip:false},
+    {n:6, head:"Today\u2019s young, urban, networked majority...", skip:false}
+  ],
+
+  trunk1: "셀피는 자화상의 역사를 잇고 확장한 것 - 한 방향",
+  trunk2: "",
+  pivotAt: 0,
+
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"셀피가 울림을 주는 이유 - 새로워서가 아니라 자화상의 역사를 확장하기 때문"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"자화상은 그려진 사람의 지위를 남에게 보여줬다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"그래서 '이미지'는 시각문화의 근본 대상이 된다"},
+    {n:4, lb:"부연",     head:false, to:1, txt:"셀피는 겉으로 보이는 나와 속마음의 긴장을 그린다"},
+    {n:5, lb:"근거",     head:false, to:1, txt:"자화상이 확장될 때마다 더 많은 사람이 자기를 그릴 수 있게 됐다"},
+    {n:6, lb:"재진술",   head:true,  txt:"오늘의 다수가 자화상의 역사를 새로 써서 셀피를 새 시대의 첫 시각적 서명으로 만들었다"}
+  ],
+
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "1번의 <b>not A but B</b>가 전환처럼 보이지만 <u>한 문장 안</u>에서 끝난다. "
+          + "이런 건 줄기를 나누는 전환이 아니라 <b>방향을 정하는 장치</b>다.",
+
+  gist: "셀피는 자화상의 오랜 역사를 이어받아 확장한, 우리를 표현하는 가장 최근의 방식이다.",
+  wrong: {
+    "1": "일시적 유행이냐고 묻는 글이 아님 - 오히려 역사를 잇는다고 함",
+    "2": "진짜 나냐 아니냐를 따지는 글이 아님. 4번의 소재를 제목으로 오인",
+    "3": "'자기중심적 문화의 상징'이라는 비판이 없음 - 방향이 다름",
+    "4": "자화상의 <b>끝</b>이 아니라 <b>연장</b>. 1번의 not A but B를 정반대로 읽은 답"
+  },
+  wrongNote: "④가 최대 함정. 1번을 대충 읽으면 '셀피가 자화상을 대체했다'로 오해한다. <b>not new but history</b>가 핵심.",
+
+  teachNote: "not A but B가 방향을 정하는 유형. 전환점이 없는데도 1번 안에 대조가 있어서 학생이 헷갈린다. "
+           + "STEP 4에서 '전환이 없다'에 표시하게 하고, <b>한 문장 안의 대조는 전환이 아니다</b>를 못 박을 것. "
+           + "정답 ⑤의 the Latest Innovation이 1번의 not new와 충돌하는 것처럼 보이지만, "
+           + "'새롭지 않다'는 것은 <u>역사와 단절되지 않았다</u>는 뜻이지 최신이 아니라는 뜻이 아니다."
+},
+
+{
+  id: "s25_21_shadow",
+  src: "2025수능 21번", qnum: 21, qtype: "함축",
+  qtext: "밑줄 친 <b>hunting the shadow, not the substance</b>가 다음 글에서 의미하는 바로 가장 적절한 것은? [3점]",
+  star: 3, time: 90,
+  note: "",
+
+  sents: [
+    "The position of the architect rose during the Roman Empire, as architecture symbolically became a particularly important political statement.",
+    "Cicero classed the architect with the physician and the teacher and Vitruvius spoke of \u201cso great a profession as this.\u201d",
+    "Marcus Vitruvius Pollio, a practicing architect during the rule of Augustus Caesar, recognized that architecture requires both practical and theoretical knowledge, and he listed the disciplines he felt the aspiring architect should master: literature and writing, draftsmanship, mathematics, history, philosophy, music, medicine, law, and astronomy \u2014 a curriculum that still has much to recommend it.",
+    "All of this study was necessary, he argued, because architects who have aimed at acquiring manual skill without scholarship have never been able to reach a position of authority to correspond to their plans, while those who have relied only upon theories and scholarship were obviously <u>\u201chunting the shadow, not the substance.\u201d</u>"
+  ],
+  choices: [
+    "seeking abstract knowledge emphasized by architectural tradition",
+    "discounting the subjects necessary to achieve architectural goals",
+    "pursuing the ideals of architecture without the practical skills",
+    "prioritizing architecture\u2019s material aspects over its artistic ones",
+    "following historical precedents without regard to current standards"
+  ],
+  ans: 3,
+
+  lead: {to:3,
+    note:"1번은 배경(건축가의 지위 상승), 2번은 인용 예시. 3번의 <b>both practical and theoretical</b>이 이 글의 축이다",
+    why:"1·2번은 배경과 예시다. <b>3번의 both A and B</b>까지 읽어야 축이 보인다."},
+  key:  "<b class=w>architecture requires both practical and theoretical knowledge</b> (3) - 실무와 이론 둘 다",
+  attr: "둘 중 <b>하나만</b> 가진 건축가는 실패한다",
+  dir:  "긍정",
+  dirWord: "<b class=w>both practical and theoretical</b> (3) - 이항대립. 어느 한쪽만으로는 안 된다는 방향",
+
+  skip: [
+    {n:2, head:"<b>Cicero</b> classed the architect... and <b>Vitruvius</b> spoke of...", skip:true,
+     why:"<b>고유명사</b>(Cicero, Vitruvius) - 지위가 높았다는 것을 보여주는 인용 예시"},
+    {n:3, head:"<b>Marcus Vitruvius Pollio</b>, a practicing architect during the rule of <b>Augustus Caesar</b>...", skip:false,
+     why:"고유명사가 있지만 여기서 <b>글의 축(both A and B)</b>이 나온다 - 이름 뒤를 봐야 한다"},
+    {n:4, head:"All of this study was necessary, he argued, because...", skip:false}
+  ],
+
+  trunk1: "건축가는 실무와 이론을 둘 다 갖춰야 한다 - 한 방향",
+  trunk2: "",
+  pivotAt: 0,
+
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"로마 시대에 건축가의 지위가 올라갔다 (배경)"},
+    {n:2, lb:"예시",     head:false, to:1, txt:"Cicero와 Vitruvius의 말 - 지위가 높았다는 증거"},
+    {n:3, lb:"주장",     head:true,  txt:"건축은 <b>실무 지식과 이론 지식 둘 다</b> 필요하다 - 글의 축"},
+    {n:4, lb:"근거",     head:false, to:3, txt:"실무만 있으면 권위를 못 얻고, 이론만 있으면 '그림자를 쫓는 것'"}
+  ],
+
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"3번의 both A and B가 4번에서 두 경우로 나뉠 뿐"},
+  pivotSub: "4번의 <b>while</b>은 전환이 아니라 <u>두 경우를 나란히 놓는 대조</u>다. "
+          + "실무만 vs 이론만 - 둘 다 <b>같은 결론</b>(하나만으론 안 된다)으로 간다.",
+
+  implied: {
+    phrase: "hunting the shadow, not the substance",
+    restateAt: [3, 4],
+    model: "이론·학문만 붙들고 실무 기술이 없는 상태 - 실체 없이 그림자만 좇는 것"
+  },
+
+  gist: "건축가는 실무 기술과 이론 학문을 모두 갖춰야 하며, 어느 한쪽만으로는 부족하다.",
+  wrong: {
+    "1": "'건축 전통이 강조한' 추상 지식이 아님 - 전통 얘기가 없다",
+    "2": "필요한 과목을 <b>무시</b>하는 게 아니라 이론만 <b>붙드는</b> 것",
+    "4": "물질적 측면을 예술적 측면보다 앞세우는 것 - 방향이 정반대",
+    "5": "역사적 선례를 따르는 것과 무관"
+  },
+  wrongNote: "④가 정반대 함정. shadow를 '실체 없는 것 = 물질이 아닌 것'까지는 갔는데, <b>어느 쪽이 shadow인지</b>를 뒤집어 읽은 답.",
+
+  teachNote: "21번의 정석. shadow/substance를 사전 뜻으로 풀면 안 되고, <b>4번 문장 안에서 짝을 찾아야</b> 한다 - "
+           + "while 앞이 실무만, 뒤가 이론만. 밑줄은 <u>뒤쪽</u>에 붙어 있다. "
+           + "2번 문장(Cicero·Vitruvius)은 건너뛰어도 되지만 3번은 이름으로 시작해도 읽어야 한다는 것을 "
+           + "<b>건너뛰기 규칙의 예외 훈련</b>으로 쓸 것 - 이름 뒤에 뭐가 오는지 보고 판단."
+},
+
+{
+  id: "s25_22_emotion",
+  src: "2025수능 22번", qnum: 22, qtype: "요지",
+  qtext: "다음 글의 요지로 가장 적절한 것은?",
+  star: 2, time: 60,
+  note: "",
+
+  sents: [
+    "The ability to understand emotions \u2014 to have a diverse emotion vocabulary and to understand the causes and consequences of emotion \u2014 is particularly relevant in group settings.",
+    "Individuals who are skilled in this domain are able to express emotions, feelings and moods accurately and thus, may facilitate clear communication between co-workers.",
+    "Furthermore, they may be more likely to act in ways that accommodate their own needs as well as the needs of others (i.e. cooperate).",
+    "In a group conflict situation, for example, a member with a strong ability to understand emotion will be able to express how he feels about the problem and why he feels this way.",
+    "He also should be able to take the perspective of the other group members and understand why they are reacting in a certain manner.",
+    "Appreciation of differences creates an arena for open communication and promotes constructive conflict resolution and improved group functioning."
+  ],
+  choices: [
+    "집단 구성원 간 갈등 해소를 위해 감정 조절이 중요하다.",
+    "감정 이해 능력은 집단 내 원활한 소통과 협력을 촉진한다.",
+    "타인에 대한 공감 능력은 자신의 감정 표현 능력을 향상한다.",
+    "감정 관련 어휘에 대한 지식은 공감 능력 발달의 기반이 된다.",
+    "자신의 감정 상태에 대한 이해는 사회성 함양에 필수적 요소이다."
+  ],
+  ans: 2,
+
+  lead: {to:1, note:"1번에 소재와 속성이 다 있다. 대시(\u2014) 사이는 소재를 풀어 쓴 것이라 건너뛰어도 된다"},
+  key:  "<b class=w>The ability to understand emotions</b> - 감정을 이해하는 능력",
+  attr: "<b class=w>is particularly relevant in group settings</b> (1) - 집단 상황에서 특히 중요하다",
+  dir:  "긍정",
+  dirWord: "<b class=w>particularly relevant</b> (1) - 중요하다는 긍정 방향이 끝까지 이어진다",
+
+  skip: [
+    {n:2, head:"Individuals who are skilled in this domain...", skip:false},
+    {n:3, head:"Furthermore, they may be more likely to act...", skip:false},
+    {n:4, head:"In a group conflict situation, <b>for example</b>...", skip:true,
+     why:"<b>for example</b> - 앞말을 상황으로 보여주는 예시"},
+    {n:5, head:"He also should be able to take the perspective...", skip:true,
+     why:"4번 예시의 <b>연장</b>(He = 예시 속 인물) - 예시가 끝나는 곳까지 함께 건너뛴다"},
+    {n:6, head:"Appreciation of differences creates an arena...", skip:false}
+  ],
+
+  trunk1: "감정 이해 능력이 집단에서 소통과 협력을 돕는다 - 한 방향",
+  trunk2: "",
+  pivotAt: 0,
+
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"감정 이해 능력은 집단 상황에서 특히 중요하다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"감정을 정확히 표현해서 동료 간 소통을 원활하게 한다"},
+    {n:3, lb:"근거",     head:false, to:1, txt:"게다가 자기 욕구와 타인 욕구를 함께 맞추는 협력을 한다"},
+    {n:4, lb:"예시",     head:false, to:3, txt:"갈등 상황에서 자기 감정과 이유를 말할 수 있다"},
+    {n:5, lb:"예시",     head:false, to:4, txt:"상대 입장에서 왜 그렇게 반응하는지도 이해한다"},
+    {n:6, lb:"재진술",   head:true,  txt:"차이를 인정하면 열린 소통과 건설적 갈등 해결, 집단 기능 향상으로 이어진다"}
+  ],
+
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "<b>Furthermore</b>(3)는 전환이 아니라 <u>같은 방향으로 하나 더 얹는</u> 신호다. "
+          + "전환 신호(But·However)와 <b>덧붙임 신호</b>(Furthermore·Moreover·In addition)를 구별할 것.",
+
+  gist: "감정을 이해하는 능력은 집단 안에서 소통을 원활하게 하고 협력을 이끌어낸다.",
+  wrong: {
+    "1": "'감정 조절'이 아니라 '감정 이해'. 갈등 해소는 6번의 결과 중 하나일 뿐",
+    "3": "공감이 표현 능력을 향상시킨다는 인과가 없음 - 순서가 거꾸로",
+    "4": "감정 어휘는 1번 대시 안의 <b>부분 소재</b>. 이걸 요지로 삼으면 안 됨",
+    "5": "<b>자신의</b> 감정 이해가 아니라 감정 이해 능력 일반. '사회성 함양'도 지문에 없음"
+  },
+  wrongNote: "④가 전형적 함정. 1번의 대시(\u2014) 안에 나온 말을 요지로 오인한다. <b>대시 안은 소재 설명</b>이지 주장이 아니다.",
+
+  teachNote: "건너뛰기 훈련에 좋다 - 4·5번이 한 덩어리 예시라 <b>예시가 어디서 끝나는지</b>를 가르칠 수 있다. "
+           + "for example이 붙은 문장만 건너뛰고 5번을 읽는 학생이 많은데, He가 예시 속 인물이면 계속 예시다. "
+           + "그리고 Furthermore를 전환으로 잡는 학생이 반드시 나온다 - STEP 4에서 '전환 없음'을 확인시킬 것."
+},
+
+{
+  id: "s25_30_competition",
+  src: "2025수능 30번", qnum: 30, qtype: "어휘",
+  qtext: "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 <b>않은</b> 것은? [3점]",
+  star: 3, time: 80,
+  note: "* taint: 더럽히다  ** altruistic: 이타주의의",
+
+  sents: [
+    "Studies in psychology have reported cases in which competitive incentives resulted in lower task effort, and their focus was on the psychological underpinnings of the reduction in motivation.",
+    "For example, competition presents an inevitable conflict between the motivation to achieve one\u2019s personal goal and the <u class=\"n1\">desire</u> to maintain good relationships with others.",
+    "When the maintenance of interpersonal relationships is important, with their counterparts in particular or with others generally, competitors experience an <u class=\"n2\">internal</u> conflict that can harm their desire to achieve their goal and taint the good feeling brought about by winning.",
+    "Exline and Lobel found that the perception of oneself as a target for upward social comparison often makes people <u class=\"n3\">uncomfortable</u>.",
+    "When they believe that others are making envious comparisons with them, people feel uneasiness, distress, or sorrow.",
+    "Feelings of guilt, an emotion generally associated with high motivation for goal-achievement, lead to <u class=\"n4\">stronger</u> motivation and performance in the pursuit of competitive goals.",
+    "Consequences of this emotional state include lower task motivation in a competition and preferences for more cooperative and altruistic outcomes, such as <u class=\"n5\">diminishing</u> the significance of the outcome or sharing the winner\u2019s reward."
+  ],
+  choices: ["desire", "internal", "uncomfortable", "stronger", "diminishing"],
+  ans: 4,
+
+  lead: {to:1,
+    note:"1번의 <b>lower task effort</b>와 <b>reduction in motivation</b>이 방향을 정한다. 경쟁이 동기를 <b>낮춘다</b>",
+    why:"1번의 <b>lower</b>와 <b>reduction</b>을 잡아라. 이 글은 경쟁이 동기를 <b>떨어뜨린다</b>는 방향이다."},
+  key:  "<b class=w>competitive incentives</b> - 경쟁이 동기에 미치는 영향",
+  attr: "<b class=w>resulted in lower task effort</b> / <b class=w>the reduction in motivation</b> (1)<br>- 경쟁이 오히려 노력과 동기를 떨어뜨린다",
+  dir:  "부정",
+  dirWord: "<b class=w>lower</b> · <b class=w>reduction</b> (1) - 밑줄 5개를 전부 이 방향에 대보면 된다",
+
+  skip: [
+    {n:2, head:"<b>For example</b>, competition presents an inevitable conflict...", skip:true,
+     why:"<b>For example</b> - 다만 <u>밑줄이 있으면 그 단어만은 확인</u>한다"},
+    {n:3, head:"When the maintenance of interpersonal relationships...", skip:false},
+    {n:4, head:"<b>Exline and Lobel</b> found that...", skip:true,
+     why:"<b>고유명사</b>(연구자 이름) - 연구 인용은 앞말을 뒷받침하는 예시"},
+    {n:5, head:"When they believe that others are making envious...", skip:false},
+    {n:6, head:"Feelings of guilt, an emotion generally associated...", skip:false},
+    {n:7, head:"Consequences of this emotional state include...", skip:false}
+  ],
+
+  trunk1: "경쟁이 동기를 떨어뜨린다 - 한 방향",
+  trunk2: "",
+  pivotAt: 0,
+
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"경쟁 유인이 오히려 과제 노력을 떨어뜨린다는 연구들"},
+    {n:2, lb:"예시",     head:false, to:1, txt:"개인 목표 달성 동기와 관계 유지 욕구가 충돌한다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"관계가 중요할 때 내적 갈등이 생겨 목표 의욕과 승리의 기쁨을 해친다"},
+    {n:4, lb:"근거",     head:false, to:3, txt:"비교 대상이 되면 불편해진다는 연구 (Exline and Lobel)"},
+    {n:5, lb:"부연",     head:false, to:4, txt:"남이 시샘하며 비교한다고 느끼면 불안·괴로움·슬픔을 느낀다"},
+    {n:6, lb:"주장",     head:true,  txt:"죄책감은 경쟁 목표 추구에서 동기와 수행을 <b>떨어뜨린다</b>"},
+    {n:7, lb:"재진술",   head:true,  txt:"그 결과 과제 동기가 낮아지고 협력적·이타적 결과를 선호하게 된다"}
+  ],
+
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 부정 방향이 7번까지 그대로 간다"},
+  pivotSub: "전환이 없다는 것이 <b>30번 풀이의 열쇠</b>다. 방향이 한 번도 안 바뀌므로 "
+          + "밑줄 5개가 모두 같은 방향이어야 하고, <u>혼자 반대인 것</u>이 답이다.",
+
+  vocab: [
+    {n:1, word:"desire",        ok:true,
+     why:"관계를 유지하려는 '욕구'가 목표 달성 동기와 충돌한다 - 자연스러움"},
+    {n:2, word:"internal",      ok:true,
+     why:"두 동기가 마음 안에서 부딪치므로 '내적' 갈등이 맞다"},
+    {n:3, word:"uncomfortable", ok:true,
+     why:"5번의 uneasiness·distress·sorrow와 순행"},
+    {n:4, word:"stronger",      ok:false, fix:"lower / weaker",
+     why:"7번이 <b>lower task motivation</b>이라고 못 박는다. 죄책감이 동기를 <b>떨어뜨리는</b> 흐름인데 혼자 '더 강한'이라 방향이 뒤집힘"},
+    {n:5, word:"diminishing",   ok:true,
+     why:"협력적·이타적 결과의 예 - 결과의 중요성을 '축소'하거나 보상을 나눈다"}
+  ],
+
+  gist: "경쟁은 관계 유지 욕구·죄책감과 충돌하여 오히려 과제 동기를 떨어뜨린다.",
+  wrong: {},
+  wrongNote: "④만 방향이 반대. 나머지 넷은 모두 '경쟁이 동기를 떨어뜨린다'와 순행한다.",
+
+  teachNote: "④의 앞뒤 문장이 <b>an emotion generally associated with high motivation</b>이라 "
+           + "'high'에 끌려 stronger를 자연스럽게 읽는 학생이 많다. 삽입구는 죄책감의 <u>일반적 성격</u>일 뿐이고, "
+           + "이 글에서는 7번이 lower라고 못 박는다는 것을 짚을 것. "
+           + "<b>글 전체 방향 &gt; 바로 앞 단어</b>라는 30번의 원칙을 각인시키기에 최적."
 }
 
 ];
