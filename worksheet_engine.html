@@ -166,6 +166,26 @@ body.show-ans .ans{display:block}
 .ans-box .k{font-weight:700; color:var(--wine); margin-right:5px}
 .ans-box .tip{margin-top:4px; color:var(--wine-soft)}
 
+/* 긴 지문(10문장 이상) 자동 압축 — A4 1장 유지 */
+.sheet.dense .passage{font-size:12.2px; line-height:1.55; padding:6px 9px; margin-bottom:2mm}
+.sheet.dense .choices{font-size:11.6px; line-height:1.55; margin-bottom:2.5mm}
+.sheet.dense .step{margin-bottom:2.5mm}
+.sheet.dense .step-h{margin-bottom:3px}
+.sheet.dense th,.sheet.dense td{padding:3px 7px; font-size:10.8px}
+.sheet.dense td.mine,.sheet.dense td.filled{height:22px}
+.sheet.dense .blank{height:19px}
+.sheet.dense .field{margin-bottom:4px}
+.sheet.dense .node{margin-bottom:2px}
+.sheet.dense .node .wr{min-height:25px}
+.sheet.dense .node .tag{font-size:10px; padding:2px 5px}
+.sheet.dense .tree{padding:6px 9px}
+.sheet.dense .box.tall{min-height:38px}
+.sheet.dense .note-if{font-size:10px; padding:2px 0 2px 7px}
+.sheet.dense .legend{padding:4px 8px; font-size:10px; margin-bottom:3px}
+.sheet.dense .head{margin-bottom:2.5mm; padding-bottom:4px}
+.sheet.dense .namebar{margin-bottom:2.5mm}
+.sheet.dense .foot{margin-top:2.5mm}
+
 /* ---------- 장문 배열 (43~45) ---------- */
 .sheet-o .head{border-bottom-color:var(--steel2)}
 .sheet-o .head .t1{color:var(--steel2)}
@@ -294,7 +314,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260806d"></script>
+<script src="passages_final.js?v=20260806e"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -353,7 +373,8 @@ body.show-ans .ans{display:block}
       return '<span><span class="snum">'+cn(i+1)+'</span>'+s+' </span>';
     }).join('');
 
-    var h = '<section class="sheet sheet-a" data-id="'+p.id+'">';
+    var dense = p.sents.length >= 10 ? ' dense' : '';
+    var h = '<section class="sheet sheet-a'+dense+'" data-id="'+p.id+'">';
     h += head(p, 1, 3, '단계 '+lv);
     h += namebar(['이름','날짜','맞은 문항']);
     h += '<div class="qnum">'+p.qnum+'. '+p.qtext+'</div>';
@@ -402,7 +423,17 @@ body.show-ans .ans{display:block}
         + '<span class="g" style="font-size:10px">셋 중 하나면 ✗. 뜻을 몰라도 된다.</span></div>'
         + '<table><tr><th style="width:8%">문장</th><th style="width:44%">첫머리</th>'
         + '<th style="width:14%">판정</th><th>표지가 무엇인가</th></tr>'
-        + p.skip.map(function(r){
+        + (function(){
+            // 10문장 이상이면 표가 너무 길어져 1장을 넘김 → 건너뛸 문장 + 앞뒤만 남긴다
+            var rows = p.skip;
+            if(p.sents.length >= 10){
+              var keep = {};
+              p.skip.forEach(function(r,i){ if(r.skip){ keep[i]=1; keep[i-1]=1; keep[i+1]=1; } });
+              var picked = p.skip.filter(function(r,i){ return keep[i]; });
+              if(picked.length >= 3) rows = picked;
+            }
+            return rows;
+          })().map(function(r){
             return '<tr><td style="text-align:center;font-family:\'Space Grotesk\',sans-serif;'
               + 'font-weight:700;color:var(--wine)">'+cn(r.n)+'</td>'
               + '<td class="eng" style="width:auto">'+esc(r.head)+'</td>'
@@ -415,7 +446,9 @@ body.show-ans .ans{display:block}
           }).join('')
         + '</table>'
         + '<div class="note-if">건너뛴 문장은 <b>앞말을 다시 하는 것</b>뿐이다. '
-        + '어려운 단어가 나와도 결론은 이미 알고 있다.</div>'
+        + '어려운 단어가 나와도 결론은 이미 알고 있다.'
+        + (p.sents.length >= 10 ? '<br><span class="g">※ 긴 지문이라 <b>표지가 있는 자리와 그 앞뒤</b>만 실었다.</span>' : '')
+        + '</div>'
         + '</div>';
     }
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-1</span></div></section>';
@@ -423,7 +456,8 @@ body.show-ans .ans{display:block}
 
   /* ---------- A-2 ---------- */
   function sheetA2(p, lv){
-    var h = '<section class="sheet sheet-a" data-id="'+p.id+'">';
+    var dense = p.tree.length >= 10 ? ' dense' : '';
+    var h = '<section class="sheet sheet-a'+dense+'" data-id="'+p.id+'">';
     h += head(p, 2, 3, '단계 '+lv);
 
     var hintMap = {0:'라벨 없이 <b>코어/서포트</b>만 가른다',
@@ -774,8 +808,9 @@ body.show-ans .ans{display:block}
   var cnt  = document.getElementById('cnt');
 
   var SORTED = DATA.slice().sort(function(a,b){
-    return String(b.src).localeCompare(String(a.src))    // 최신 연도 먼저
-        || (a.qnum - b.qnum);
+    var ya = yearOf(a.src), yb = yearOf(b.src);
+    if(ya !== yb) return yb.localeCompare(ya);   // 연도는 최신 먼저
+    return a.qnum - b.qnum;                      // 문항은 오름차순 (18→19→20)
   });
 
   function opt(sel, val, txt){

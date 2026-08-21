@@ -1210,6 +1210,162 @@ window.PASSAGES = [
   teachNote: "<b>통념 반전형 주장문의 표본.</b> 2026-20번(첫 문장에 방향이 다 나옴)과 대비시켜 두 유형을 가르칠 것. "
            + "1번만 읽고 ③·⑤(게임을 경계하자)를 고르는 학생이 반드시 나온다 - <u>universally accept는 필자 생각이 아니다</u>를 못 박을 것. "
            + "속독이라도 <b>Rather·Instead·However가 보이면 거기까지는 가야 한다</b>는 예외를 여기서 심는다."
+},
+
+/* ===== 2025수능 장문 ===== */
+{
+  id: "s25_4142_hand",
+  src: "2025수능 41-42번", qnum: 41, qlabel: "41-42번", qtype: "장문",
+  qtext: "윗글의 제목으로 가장 적절한 것은?",
+  star: 3, time: 180,
+  note: "* primate: 영장류  ** anatomy: 해부학  *** subsistence: 생계",
+
+  sents: [
+    "Imagine grabbing a piece of paper between your thumb and index finger.",
+    "Maybe you already are, as you turn this page.",
+    "We use this type of forceful, pad-to-pad precision gripping without thinking about it, and literally in a snap.",
+    "Yet it was a breakthrough in human evolution.",
+    "Other primates exhibit some kinds of precision grips in the handling and use of objects, but not with the kind of <u class=\"n1\">efficient</u> opposition that our hand anatomy allows.",
+    "In a single hand, humans can easily hold and manipulate objects, even small and delicate ones, while adjusting our fingers to their shape and reorienting them with <u class=\"n2\">displacements</u> of our fingertip pads.",
+    "Our relatively long, powerful thumb and other anatomical attributes, including our flat nails (which nearly all primates possess), make this <u class=\"n3\">possible</u>.",
+    "Just picture trying \u2014 and failing \u2014 to dog-ear this page with pointy, curved claws.",
+    "With a unique combination of traits, the human hand shaped our history.",
+    "No question, stone tools couldn\u2019t have become a keystone of human technology and subsistence <u class=\"n4\">without</u> hands that could do the job, along with a nervous system that could regulate and coordinate the necessary signals.",
+    "Anybody who\u2019s ever attempted to make a spear tip or arrowhead from a rock knows that it <u class=\"n5\">excludes</u> strong grips, constant rotation and repositioning, and forceful, careful strikes with another hard object.",
+    "And even with a fair amount of know-how, it can be a bloody business."
+  ],
+  choices: [
+    "Anatomical Distance Between Humans and Other Primates",
+    "Human Hands: A Decisive Leap in the Evolutionary Path",
+    "Our Hands: An Unexpected Outcome of Evolution",
+    "Human Grip: The Dilemma of Human Survival",
+    "Hidden Power of the Daily Use of Tools"
+  ],
+  ans: 2,
+  ans42: 5,   // 42번(어휘) 정답
+
+  lead: {to:4,
+    note:"1~3번은 종이를 집는 장면을 그려보게 하는 도입. 4번 <b>Yet it was a breakthrough</b>에서 방향이 나온다",
+    why:"1~3번은 <b>장면 묘사</b>다. 4번의 <b>Yet</b>까지 읽어야 필자의 방향이 보인다."},
+  key:  "<b class=w>precision gripping</b> - 손으로 정밀하게 쥐는 능력",
+  attr: "<b class=w>it was a breakthrough in human evolution</b> (4) - 인류 진화의 도약이었다",
+  dir:  "긍정",
+  dirWord: "<b class=w>Yet it was a breakthrough</b> (4) - 아무렇지 않아 보이지만(1~3) 사실은 대단하다는 뒤집기",
+
+  skip: [
+    {n:2,  head:"Maybe you already are, as you turn this page.", skip:false},
+    {n:3,  head:"We use this type of forceful, pad-to-pad...", skip:false},
+    {n:4,  head:"Yet it was a breakthrough in human evolution.", skip:false},
+    {n:5,  head:"Other primates exhibit some kinds of precision grips...", skip:false},
+    {n:6,  head:"In a single hand, humans can easily hold...", skip:false},
+    {n:7,  head:"Our relatively long, powerful thumb...", skip:false},
+    {n:8,  head:"Just picture trying \u2014 and failing \u2014 to dog-ear...", skip:true,
+     why:"<b>Just picture</b> - 상상해 보라는 <u>예시</u>. 앞말을 그림으로 보여줄 뿐"},
+    {n:9,  head:"With a unique combination of traits...", skip:false},
+    {n:10, head:"No question, stone tools couldn\u2019t have become...", skip:false},
+    {n:11, head:"<b>Anybody who\u2019s ever attempted</b> to make a spear tip...", skip:true,
+     why:"구체적 장면(창끝 만들기) - 앞말을 뒷받침하는 예시. <u>다만 밑줄이 있으면 그 단어만 확인</u>"},
+    {n:12, head:"And even with a fair amount of know-how...", skip:true,
+     why:"11번 예시의 <b>연장</b> - 예시가 끝나는 곳까지 함께 건너뛴다"}
+  ],
+
+  trunk1: "손의 정밀한 쥐기가 인류 진화의 도약이었다 - 한 방향",
+  trunk2: "",
+  pivotAt: 0,
+
+  tree: [
+    {n:1,  lb:"주제도입", head:true,  txt:"엄지와 검지로 종이를 집는 장면을 떠올려 보라"},
+    {n:2,  lb:"부연",     head:false, to:1,  txt:"지금 책장을 넘기며 이미 하고 있을 것이다"},
+    {n:3,  lb:"부연",     head:false, to:1,  txt:"우리는 이 정밀한 쥐기를 생각 없이 순식간에 한다"},
+    {n:4,  lb:"주장",     head:true,  txt:"그러나 이것은 인류 진화의 <b>도약</b>이었다 - 글의 축"},
+    {n:5,  lb:"근거",     head:false, to:4,  txt:"다른 영장류도 정밀한 쥐기를 하지만 우리만큼 효율적이지 않다"},
+    {n:6,  lb:"부연",     head:false, to:5,  txt:"인간은 한 손으로 작고 섬세한 것도 잡고 조작한다"},
+    {n:7,  lb:"근거",     head:false, to:6,  txt:"긴 엄지와 평평한 손톱 같은 해부학적 특징이 이를 가능하게 한다"},
+    {n:8,  lb:"예시",     head:false, to:7,  txt:"뾰족한 발톱으로 책장 모서리를 접어보라 - 안 된다"},
+    {n:9,  lb:"주장",     head:true,  txt:"이 독특한 특징 조합이 인류의 역사를 만들었다"},
+    {n:10, lb:"근거",     head:false, to:9,  txt:"손과 신경계가 없었다면 석기가 기술의 초석이 될 수 없었다"},
+    {n:11, lb:"예시",     head:false, to:10, txt:"창끝을 만들어 본 사람은 강한 쥐기와 회전이 필요함을 안다"},
+    {n:12, lb:"예시",     head:false, to:11, txt:"요령이 있어도 피 보는 일이다"}
+  ],
+
+  pivot: {sig:"없음", at:0, from:"이 글에는 줄기를 바꾸는 전환이 없다", to:"4번의 방향이 12번까지 그대로 간다"},
+  pivotSub: "4번의 <b>Yet</b>은 <u>줄기를 바꾸는 전환이 아니라</u> '별것 아닌 듯하지만 사실은'이라는 <b>방향 설정</b>이다. "
+          + "5번의 <b>but</b>도 다른 영장류와 견주는 딸림일 뿐. <b>신호어가 있다고 다 전환은 아니다.</b>",
+
+  vocab: [
+    {n:1, word:"efficient",    ok:true,
+     why:"다른 영장류는 우리만큼 '효율적'인 맞섬이 안 된다 - 인간 손의 우월성과 순행"},
+    {n:2, word:"displacements", ok:true,
+     why:"손끝을 '옮겨가며' 방향을 바꾼다 - 조작의 정밀함"},
+    {n:3, word:"possible",     ok:true,
+     why:"엄지와 손톱이 이것을 '가능하게' 한다"},
+    {n:4, word:"without",      ok:true,
+     why:"손이 '없었다면' 석기가 초석이 될 수 없었다 - 손의 필요성 강조"},
+    {n:5, word:"excludes",     ok:false, fix:"requires / involves",
+     why:"창끝 만들기가 강한 쥐기와 회전을 <b>배제한다</b>가 아니라 <b>요구한다</b>. 손의 중요성을 말하는 글인데 혼자 방향이 뒤집힘"}
+  ],
+
+  gist: "손의 정밀한 쥐기 능력은 인류 진화의 결정적 도약이었고, 인류의 역사를 만들었다.",
+  wrong: {
+    "1": "인간과 영장류의 '해부학적 거리'를 재는 글이 아님 - 5번의 소재일 뿐",
+    "3": "'뜻밖의 결과'가 아니라 <b>결정적 도약</b>. Unexpected가 방향을 흐린다",
+    "4": "생존의 '딜레마'가 없음 - 갈등 구조가 아님",
+    "5": "도구의 일상적 사용이 아니라 <b>손 자체</b>의 능력"
+  },
+  wrongNote: "③이 최대 함정. Our Hands까지는 맞지만 <b>Unexpected Outcome</b>이 글의 방향과 어긋난다. "
+           + "필자는 손을 '뜻밖의 산물'이 아니라 <b>결정적 도약</b>으로 본다.",
+
+  teachNote: "42번 정답 ⑤ excludes는 <b>글 전체 방향</b>으로만 잡힌다 - 11번 문장만 보면 어색함을 못 느낀다. "
+           + "손이 중요하다는 글에서 '손 쓰기를 배제한다'가 말이 되나를 물을 것. "
+           + "그리고 <b>Yet(4)·but(5)이 전환이 아니라는 것</b>을 STEP 4에서 확인시킬 것 - 2026-41번의 However와 같은 함정이다."
+},
+
+{
+  id: "s25_4345_ethan",
+  src: "2025수능 43-45번", qnum: 43, qlabel: "43-45번", qtype: "장문 배열",
+  star: 2, time: 150,
+  note: "",
+
+  paras: [
+    {tag:"A",
+     text:"\u201cDo you remember when Sean used to tell me that I was the best dad in the world?\u201d Ethan asked his wife, Grace. \u201cYes, I do. I always envied your relationship with Sean,\u201d she replied. Ethan then shared how things had changed since <u class=\"n1\">(a) his</u> son started middle school. Grace had noticed Ethan often pushing Sean to study harder. \u201cMaybe he isn\u2019t that into school right now. How about going hiking, just the two of you?\u201d she suggested. He agreed, and realizing that both his and Sean\u2019s hiking jackets were still at the laundry, he asked his wife to go and pick them up with him.",
+     gist:"Ethan이 아들과 멀어진 것을 아내와 이야기 → 하이킹 제안, 세탁소에 재킷 찾으러 가기로",
+     cue:"주어진 글. <b>세탁소로 가기로 한 것</b>이 다음을 부른다"},
+    {tag:"B",
+     text:"Ethan and Grace came back home with the jackets and checked if Sean had everything else he needed for hiking. Luckily, in his drawers they found his hat, shoes, sunglasses, and hiking sticks. When Sean returned from school, Ethan softly said, \u201cSean, let\u2019s go hiking this Saturday, just the two of us.\u201d Though Sean thanked <u class=\"n2\">(b) him</u> for the suggestion, he said he had to go to the library. Grace stepped in, \u201cYou know, the weather this weekend will be the best of the year. Why not enjoy it?\u201d After a moment\u2019s hesitation, <u class=\"n3\">(c) he</u> agreed.",
+     gist:"재킷을 갖고 <b>돌아와</b> 준비 확인 → Sean에게 제안, 망설이다 승낙",
+     cue:"<b>came back home with the jackets</b> - 세탁소 다녀온 <u>뒤</u>"},
+    {tag:"C",
+     text:"\u201cWhen did you bring the jackets in?\u201d the clerk at the laundry asked. \u201cMaybe two weeks ago,\u201d Ethan replied. Then, Grace quickly reminded <u class=\"n4\">(d) him</u>, \u201cHoney, we actually left them here a month ago.\u201d The clerk went into the storage area to look for the clothes. Finally, he returned with the jackets and handed them to Ethan. The clerk politely said, \u201cI am sorry, but please collect your items earlier next time. Our storage is too full.\u201d Ethan felt embarrassed for the late collection and apologized.",
+     gist:"세탁소에서 재킷을 찾음. 늦게 찾아 민망해함",
+     cue:"(A)의 <b>go and pick them up</b>을 바로 받음"},
+    {tag:"D",
+     text:"The weather was perfect. Ethan and Sean set off hiking along the valley by Aicken Mountain. They walked in silence until Sean fell over a rock and twisted his ankle. Realizing he couldn\u2019t walk, Ethan carried his son down on his back. He felt Sean\u2019s heartbeat, something he hadn\u2019t felt since Sean was a baby. Suddenly, Sean said, \u201cDad, I\u2019m sorry. At some point, I started to become afraid of disappointing <u class=\"n5\">(e) you</u>. But you are still the best dad.\u201d Energized, he felt no weight on his back and replied, \u201cYou are the best son, no matter what.\u201d",
+     gist:"토요일 하이킹 → Sean이 다침 → 업고 내려오며 마음을 나눔",
+     cue:"결말. 승낙한 <b>그 주 토요일</b>"}
+  ],
+
+  orderAns: ["C","B","D"],
+  ans43: 2,
+  orderWhy: "(A) 세탁소 가기로 함 → (C) 세탁소에서 찾음 → (B) 갖고 돌아와 제안·승낙 → (D) 토요일 하이킹. 시간 순서 그대로",
+
+  refs: [
+    {tag:"a", word:"his",  who:"Ethan", why:"Ethan의 아들 = his son"},
+    {tag:"b", word:"him",  who:"Ethan", why:"Sean이 <b>제안에</b> 고마워한 대상 = 제안한 아빠"},
+    {tag:"c", word:"he",   who:"Sean",  why:"망설이다 <b>승낙한</b> 사람 = 제안을 받은 아들"},
+    {tag:"d", word:"him",  who:"Ethan", why:"Grace가 일깨워 준 상대 = 남편"},
+    {tag:"e", word:"you",  who:"Ethan", why:"Sean이 실망시킬까 두려웠던 대상 = 아빠"}
+  ],
+  refOdd: "Sean",
+  ans44: 3,
+
+  ans45: 4,
+  why45: "(A)에서 Ethan은 <b class=w>asked his wife to go and pick them up with him</b> - 아내와 <b>함께</b> 갔다. '혼자서'는 반대",
+
+  teachNote: "2026-43~45(Mia)와 같은 구조지만 <b>인물이 셋(Ethan·Grace·Sean)</b>이라 지칭이 더 까다롭다. "
+           + "44번은 (c) he만 Sean이고 나머지 넷은 Ethan - <b>제안한 쪽과 받은 쪽</b>을 가르는 것이 전부다. "
+           + "순서는 <b>재킷의 이동</b>만 따라가면 잡힌다: 맡겨둠(A) → 찾음(C) → 갖고 옴(B) → 입고 감(D). "
+           + "<u>사물의 위치를 따라가는 것</u>도 시간축 추적의 한 방법임을 가르칠 것."
 }
 
 ];
