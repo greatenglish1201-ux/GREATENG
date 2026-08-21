@@ -1111,6 +1111,105 @@ window.PASSAGES = [
            + "'high'에 끌려 stronger를 자연스럽게 읽는 학생이 많다. 삽입구는 죄책감의 <u>일반적 성격</u>일 뿐이고, "
            + "이 글에서는 7번이 lower라고 못 박는다는 것을 짚을 것. "
            + "<b>글 전체 방향 &gt; 바로 앞 단어</b>라는 30번의 원칙을 각인시키기에 최적."
+},
+
+/* ===== 2025수능 속독 (18·19·20) ===== */
+{
+  id: "s25_18_marathon",
+  src: "2025수능 18번", qnum: 18, qtype: "목적",
+  qtext: "다음 글의 목적으로 가장 적절한 것은?",
+  star: 1, time: 40,
+  fast: true,
+
+  sents: [
+    "Dear Rosydale City Marathon Racers,",
+    "We are really grateful to all of you who have signed up for the 10th Rosydale City Marathon that was scheduled for this coming Saturday at 10 a.m.",
+    "Unfortunately, as you may already know, the weather forecast says that there is going to be a downpour throughout the race day.",
+    "We truly hoped that the race would go smoothly.",
+    "However, it is likely that the heavy rain will make the roads too slippery and dangerous for the racers to run safely.",
+    "As a result, we have decided to cancel the race.",
+    "We hope you understand and we promise to hold another race in the near future.",
+    "Sincerely, Martha Kingsley, Race Manager"
+  ],
+  choices: [
+    "마라톤 경기 취소 사실을 공지하려고",
+    "마라톤 경기 사전 행사 참여를 독려하려고",
+    "마라톤 경기 참가비 환불 절차를 설명하려고",
+    "마라톤 경기 참여 시 규칙 준수를 당부하려고",
+    "마라톤 경기 진행에 따른 도로 통제를 안내하려고"
+  ],
+  ans: 1,
+  key: "<b class=w>Rosydale City Marathon</b> - 마라톤 대회",
+  attr: "<b class=w>we have decided to cancel the race</b> (6) - 경기를 취소하기로 했다",
+  dir: "부정",
+  fastWhy: "6번 <b class=w>As a result, we have decided to cancel the race</b>. "
+         + "목적문은 <b>As a result / Therefore</b> 뒤의 결정 동사에 있다. 앞 5문장은 사정 설명이라 안 읽어도 된다.",
+  teachNote: "2026-18번(Therefore + 요청)과 같은 구조. <b>맨 끝에서 두세 번째 문장</b>부터 읽는 습관을 여기서 굳힐 것. "
+           + "다만 Unfortunately(3)·However(5)가 있어 학생이 중간에 멈추기 쉽다 - 그것들은 <u>사정 설명</u>이고 결론은 6번이다."
+},
+
+{
+  id: "s25_19_peter",
+  src: "2025수능 19번", qnum: 19, qtype: "심경",
+  qtext: "다음 글에 드러난 Peter의 심경 변화로 가장 적절한 것은?",
+  star: 1, time: 45,
+  fast: true, fastMode: "mood",
+
+  sents: [
+    "It was Valentine\u2019s Day on Friday and Peter was certain that his wife, Amy, was going to love his surprise.",
+    "Peter had spent a long time searching online for an event that would be a new way to spend time with Amy.",
+    "He had finally found the perfect thing for her.",
+    "She often told him that she liked to go to places she had never visited before, and he was absolutely sure that she would love going to the new, five-star restaurant downtown.",
+    "He smiled as he called the restaurant and asked for a reservation for Friday.",
+    "Unfortunately, his smile quickly disappeared when he was told that the restaurant was fully reserved.",
+    "\u201cThat\u2019s too bad,\u201d he said quietly. \u201cI thought that I had found the right place.\u201d"
+  ],
+  choices: [
+    "relaxed → indifferent",
+    "confident → disappointed",
+    "confused → satisfied",
+    "jealous → discouraged",
+    "embarrassed → joyful"
+  ],
+  ans: 2,
+  moodPivot: "<b class=w>Unfortunately</b> (6)",
+  fastWhy: "앞 <b class=w>was certain · perfect · absolutely sure · smiled</b> (자신감) → "
+         + "뒤 <b class=w>smile quickly disappeared · That\u2019s too bad</b> (실망). 전환은 6번 <b>Unfortunately</b>.",
+  teachNote: "2026-19번의 Suddenly와 짝. 심경 전환 신호어 <b>Unfortunately · Suddenly · However · But</b>을 "
+           + "여기서 목록으로 정리해 줄 것. 선택지를 먼저 보고 <u>앞 감정</u>만 훑으면 20초에 끝난다."
+},
+
+{
+  id: "s25_20_games",
+  src: "2025수능 20번", qnum: 20, qtype: "주장",
+  qtext: "다음 글에서 필자가 주장하는 바로 가장 적절한 것은?",
+  star: 1, time: 50,
+  fast: true,
+
+  sents: [
+    "We almost universally accept that playing video games is at best a pleasant break from a student\u2019s learning and more often what prevents a student from accomplishing their goals.",
+    "Games catch and hold attention in a way that few things can.",
+    "And yet once they have our focus, they rarely seem to offer anything meaningful to help students grow in their lives outside the games.",
+    "While this may be true for many games, we are too easily ignoring a valuable tool that could be used to enhance productivity instead of derailing it.",
+    "Rather, it is desirable that we develop games that connect to the learning outcomes we want for our students.",
+    "This will enable educators to take advantage of games\u2019 attention commanding capacities and allow our students to enjoy their games while learning."
+  ],
+  choices: [
+    "학습 효과 증진에 활용될 수 있는 게임을 개발해야 한다.",
+    "교육 현장에서 학습과 게임 활동을 적절하게 분배해야 한다.",
+    "학습 활동에 게임이 초래하는 집중력 저하를 경계해야 한다.",
+    "여가 시간에 게임을 활용함으로써 학습 효율을 향상해야 한다.",
+    "게임의 부정적 영향을 줄이기 위해 학습 공동체가 노력해야 한다."
+  ],
+  ans: 1,
+  key: "<b class=w>playing video games</b> + 학습 - 게임을 학습에 쓸 수 있나",
+  attr: "<b class=w>We almost universally accept that... prevents a student from accomplishing their goals</b> (1)<br>- 게임이 학습을 방해한다는 <b>통념</b>",
+  dir: "통념",
+  fastWhy: "1번 <b class=w>We almost universally accept</b>가 <b>통념 신호</b>. 4번 <b class=w>While this may be true</b>에서 뒤집히고 "
+         + "5번 <b class=w>Rather, it is desirable that we develop games</b>가 주장. 통념형은 <b>Rather / Instead</b> 뒤가 답이다.",
+  teachNote: "<b>통념 반전형 주장문의 표본.</b> 2026-20번(첫 문장에 방향이 다 나옴)과 대비시켜 두 유형을 가르칠 것. "
+           + "1번만 읽고 ③·⑤(게임을 경계하자)를 고르는 학생이 반드시 나온다 - <u>universally accept는 필자 생각이 아니다</u>를 못 박을 것. "
+           + "속독이라도 <b>Rather·Instead·However가 보이면 거기까지는 가야 한다</b>는 예외를 여기서 심는다."
 }
 
 ];

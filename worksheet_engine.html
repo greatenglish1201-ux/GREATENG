@@ -264,8 +264,16 @@ body.show-ans .ans{display:block}
 <div class="toolbar">
   <span class="brand">대단한영어 · 수능 파이널 워크시트</span>
 
+  <label for="selY">연도</label>
+  <select id="selY"></select>
+
+  <label for="selQ">문항</label>
+  <select id="selQ"></select>
+
   <label for="selP">지문</label>
   <select id="selP"></select>
+
+  <span id="cnt" style="font-size:11px; opacity:.8"></span>
 
   <label for="selL">빈칸 단계</label>
   <select id="selL">
@@ -286,7 +294,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260806b"></script>
+<script src="passages_final.js?v=20260806d"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -745,22 +753,106 @@ body.show-ans .ans{display:block}
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>속독지</span></div></section>';
   }
 
-  /* ---------- 정렬: 문항번호 오름차순, 같으면 출처순 ---------- */
-  var SORTED = DATA.slice().sort(function(a,b){
-    return (a.qnum - b.qnum) || String(a.src).localeCompare(String(b.src));
-  });
-  function srcShort(s){ return String(s).replace(/\s*\d+번\s*$/, ''); }
+  /* ---------- 분류 ---------- */
+  function srcShort(x){ return String(x).replace(/\s*[\d–\-]+번\s*$/, ''); }   // "2025수능"
+  function yearOf(x){ var m = String(x).match(/(\d{4})/); return m ? m[1] : '기타'; }
+  function qKey(p){                                        // 문항 묶음 키
+    if(p.fast) return 'fast';
+    if(p.paras) return '43';
+    if(p.qlabel) return String(p.qnum);
+    return String(p.qnum);
+  }
+  function qLabelOf(p){
+    if(p.fast) return '18·19·20 속독';
+    if(p.paras) return '43–45 장문 배열';
+    if(p.qlabel) return p.qlabel + ' ' + p.qtype;
+    return p.qnum + '번 ' + p.qtype;
+  }
 
-  /* ---------- 렌더 ---------- */
-  function render(){
-    var lv = +selL.value, pick = selP.value, html = '';
-    var sel = SORTED.filter(function(p){
+  var selY = document.getElementById('selY');
+  var selQ = document.getElementById('selQ');
+  var cnt  = document.getElementById('cnt');
+
+  var SORTED = DATA.slice().sort(function(a,b){
+    return String(b.src).localeCompare(String(a.src))    // 최신 연도 먼저
+        || (a.qnum - b.qnum);
+  });
+
+  function opt(sel, val, txt){
+    var o = document.createElement('option');
+    o.value = val; o.textContent = txt; sel.appendChild(o);
+  }
+
+  /* 연도 채우기 */
+  function fillYears(){
+    selY.innerHTML = '';
+    opt(selY, '__all__', '전체 연도');
+    var years = {};
+    DATA.forEach(function(p){ var y = yearOf(p.src); years[y] = (years[y] || 0) + 1; });
+    Object.keys(years).sort().reverse().forEach(function(y){    // 최신 연도가 위
+      opt(selY, y, y + '수능 (' + years[y] + ')');
+    });
+  }
+
+  /* 선택된 연도에 맞춰 문항 채우기 */
+  function fillQs(){
+    var y = selY.value;
+    var pool = SORTED.filter(function(p){ return y === '__all__' || yearOf(p.src) === y; });
+    selQ.innerHTML = '';
+    opt(selQ, '__all__', '전체 문항');
+    var seen = {}, keys = [];
+    pool.forEach(function(p){
+      var k = qKey(p);
+      if(seen[k]) return; seen[k] = qLabelOf(p); keys.push(k);
+    });
+    keys.sort(function(a,b){
+      var na = a === 'fast' ? 18 : parseInt(a, 10);
+      var nb = b === 'fast' ? 18 : parseInt(b, 10);
+      return na - nb;
+    });
+    keys.forEach(function(k){
+      var n = pool.filter(function(p){ return qKey(p) === k; }).length;
+      opt(selQ, k, seen[k] + (n > 1 ? ' (' + n + ')' : ''));
+    });
+  }
+
+  /* 위 두 조건에 맞는 개별 지문 채우기 */
+  function fillPs(){
+    var y = selY.value, q = selQ.value;
+    var pool = SORTED.filter(function(p){
+      return (y === '__all__' || yearOf(p.src) === y)
+          && (q === '__all__' || qKey(p) === q);
+    });
+    selP.innerHTML = '';
+    opt(selP, '__all__', '해당 전체 (' + pool.length + ')');
+    var fastSeen = {};
+    pool.forEach(function(p){
+      if(p.fast){
+        var sy = srcShort(p.src);
+        if(fastSeen[sy]) return; fastSeen[sy] = 1;
+        opt(selP, '__fast__' + sy, '18·19·20 속독 · ' + sy);
+      } else {
+        opt(selP, p.id, (p.qlabel || (p.qnum + '번')) + ' ' + p.qtype + ' · ' + srcShort(p.src));
+      }
+    });
+  }
+
+  function currentList(){
+    var y = selY.value, q = selQ.value, pick = selP.value;
+    return SORTED.filter(function(p){
+      if(y !== '__all__' && yearOf(p.src) !== y) return false;
+      if(q !== '__all__' && qKey(p) !== q) return false;
       if(pick === '__all__') return true;
       if(pick.indexOf('__fast__') === 0) return p.fast && srcShort(p.src) === pick.slice(8);
       return p.id === pick;
     });
+  }
 
-    // 속독 지문은 출처(회차)별로 묶어 한 장으로
+  /* ---------- 렌더 ---------- */
+  function render(){
+    var lv = +selL.value, html = '';
+    var sel = currentList();
+
     var fast = sel.filter(function(p){ return p.fast; });
     var norm = sel.filter(function(p){ return !p.fast; });
     var byYear = {};
@@ -768,34 +860,24 @@ body.show-ans .ans{display:block}
     Object.keys(byYear).forEach(function(y){ html += sheetFast(byYear[y], lv); });
 
     norm.forEach(function(p){
-      if(p.paras){ html += sheetOrder(p,lv); return; }   // 43~45형
-      html += sheetA1(p,lv) + sheetA2(p,lv) + sheetB(p,lv);
+      if(p.paras){ html += sheetOrder(p, lv); return; }
+      html += sheetA1(p, lv) + sheetA2(p, lv) + sheetB(p, lv);
     });
-    root.innerHTML = html || '<div class="empty">표시할 지문이 없습니다.</div>';
+
+    var pages = sel.reduce(function(a, p){
+      return a + (p.fast ? 0 : (p.paras ? 2 : 3));
+    }, 0) + (fast.length ? Object.keys(byYear).length : 0);
+    cnt.textContent = sel.length + '지문 · ' + pages + '장';
+
+    root.innerHTML = html || '<div class="empty">조건에 맞는 지문이 없습니다.</div>';
   }
 
-  var fastSeen = {};
-  SORTED.forEach(function(p){
-    var o = document.createElement('option');
-    if(p.fast){
-      var y = srcShort(p.src);
-      if(fastSeen[y]) return;          // 회차당 한 항목만
-      fastSeen[y] = true;
-      o.value = '__fast__' + y;
-      o.textContent = '18·19·20번 속독 · ' + y;
-    } else {
-      o.value = p.id;
-      o.textContent = (p.qlabel || (p.qnum + '번')) + ' ' + p.qtype + ' · ' + srcShort(p.src);
-    }
-    selP.appendChild(o);
-  });
-  var all = document.createElement('option');
-  all.value = '__all__'; all.textContent = '전체 ('+DATA.length+'지문)';
-  selP.insertBefore(all, selP.firstChild);
-  selP.value = SORTED[0].fast ? ('__fast__' + srcShort(SORTED[0].src)) : SORTED[0].id;
-
+  fillYears(); fillQs(); fillPs();
+  selY.addEventListener('change', function(){ fillQs(); fillPs(); render(); });
+  selQ.addEventListener('change', function(){ fillPs(); render(); });
   selP.addEventListener('change', render);
   selL.addEventListener('change', render);
+
   btn.addEventListener('click', function(){
     var on = document.body.classList.toggle('show-ans');
     btn.classList.toggle('on', on);
