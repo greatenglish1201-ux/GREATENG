@@ -87,6 +87,16 @@ function textOrNum(v,dflt){
   const n=Number(v);
   return isNaN(n)?String(v):n;
 }
+// ★ 문항번호 정렬: '기출' 같은 텍스트 번호를 숫자 번호보다 먼저(맨 위로), 숫자는 오름차순
+//   (기존 localeCompare(numeric)·Number() 비교는 텍스트 번호를 맨 뒤로 보내거나 순서가 불안정했음)
+function cmpNumberField(a,b){
+  const na=Number(a),nb=Number(b);
+  const ta=isNaN(na),tb=isNaN(nb);
+  if(ta&&tb)return String(a).localeCompare(String(b)); // 텍스트끼리는 가나다순
+  if(ta)return -1; // 텍스트('기출' 등) 먼저
+  if(tb)return 1;
+  return na-nb;    // 숫자 오름차순
+}
 // ★ 지문 id → {source,chapter,number} 역파싱
 //   교재 id에 '_'가 들어감(BOOK_26_NE능률_빈순삽합, MOGO_2406) → split('_')[0] 방식은 'BOOK'만 집어내 오작동.
 //   뒤에서부터 잘라야 함: 비MOGO는 마지막 2칸이 강·번호, MOGO는 마지막 1칸이 번호.
@@ -880,7 +890,7 @@ function buildDOCX(slot,mode,opts){
     styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},
     sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},footers:{default:docFooter},children:ch}]
   });
-  Packer.toBlob(doc).then(blob=>saveAs(blob,id+'_'+(opts?(opts.showAnswers?'교사용':'학생용'):(IS?'학생용':'교사용'))+'.docx'));
+  Packer.toBlob(doc).then(blob=>saveBlobAs(blob,id+'_'+(opts?(opts.showAnswers?'교사용':'학생용'):(IS?'학생용':'교사용'))+'.docx'));
 }
 
 
@@ -897,7 +907,7 @@ function buildAllDOCX(slots,mode,opts){
     return{properties:{page:{size:{width:11906,height:16838},margin:{top:700,right:700,bottom:700,left:700}}},footers:{default:allFooter},children:ch};
   });
   const doc=new Document({styles:{default:{document:{run:{font:'Malgun Gothic',size:18}}}},sections});
-  Packer.toBlob(doc).then(blob=>saveAs(blob,'전체_'+(opts?(opts.showAnswers?'교사용':'학생용'):(IS?'학생용':'교사용'))+'.docx'));
+  Packer.toBlob(doc).then(blob=>saveBlobAs(blob,'전체_'+(opts?(opts.showAnswers?'교사용':'학생용'):(IS?'학생용':'교사용'))+'.docx'));
 }
 
 /* ── DOM 캡처 출력 ── */
@@ -1062,14 +1072,39 @@ function buildHTML(slot,mode,opts){
     +'</body></html>';
 }
 
+// ★ 저장 위치 선택 다이얼로그로 저장 (Chrome/Edge의 showSaveFilePicker)
+//   - 다운로드 버튼 클릭 → OS '다른 이름으로 저장' 창이 바로 열려 폴더를 골라 저장
+//   - 사용자가 취소하면 아무것도 안 함 / 미지원 브라우저·실패 시엔 기존 자동 다운로드로 폴백
+async function saveBlobAs(blob,filename){
+  if(window.showSaveFilePicker){
+    try{
+      const ext=filename.slice(filename.lastIndexOf('.')).toLowerCase();
+      const TYPES={
+        '.html':{description:'HTML 문서',accept:{'text/html':['.html']}},
+        '.docx':{description:'Word 문서',accept:{'application/vnd.openxmlformats-officedocument.wordprocessingml.document':['.docx']}},
+        '.json':{description:'JSON 파일',accept:{'application/json':['.json']}},
+      };
+      const handle=await window.showSaveFilePicker({suggestedName:filename,types:TYPES[ext]?[TYPES[ext]]:undefined});
+      const w=await handle.createWritable();
+      await w.write(blob);await w.close();
+      return true;
+    }catch(e){
+      if(e&&e.name==='AbortError')return false; // 사용자가 저장 창을 취소 → 다운로드도 안 함
+      // 그 외 실패(권한·시간 초과 등) → 아래 기존 방식으로 폴백
+    }
+  }
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  return true;
+}
+
 function dlHTML(slot,mode,opts){
   const html=buildHTML(slot,mode,opts);
   const id=makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=id+'_'+(mode==='teacher'?'교사용':'학생용')+'.html';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  saveBlobAs(blob,id+'_'+(mode==='teacher'?'교사용':'학생용')+'.html');
 }
 
 // ========== AUTHORING TOOL ==========
@@ -3016,7 +3051,7 @@ function App(){
           if(s)return s;
           const c=String(a.chapter||'').localeCompare(String(b.chapter||''),undefined,{numeric:true});
           if(c)return c;
-          return String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true})
+          return cmpNumberField(a.number,b.number)
             ||String(a.id||'').localeCompare(String(b.id||''),undefined,{numeric:true});
         });
       const qResults=await Promise.all(validSps.map(sp=>
@@ -3349,10 +3384,9 @@ function App(){
               <button onClick={()=>{
                 const data={te_slots:localStorage.getItem('te_slots'),te_claude_key:localStorage.getItem('te_claude_key'),te_apps_script_url:localStorage.getItem('te_apps_script_url'),gh_token:localStorage.getItem('gh_token'),gh_repo:localStorage.getItem('gh_repo'),backup_date:new Date().toISOString()};
                 const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-                const a=document.createElement('a');a.href=URL.createObjectURL(blob);
                 const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
-                a.download='teacher_backup_'+ts+'.json';a.click();URL.revokeObjectURL(a.href);
-                flash('백업 다운로드 ✓');setGhDd(false);
+                saveBlobAs(blob,'teacher_backup_'+ts+'.json').then(ok=>{if(ok)flash('백업 저장 ✓');});
+                setGhDd(false);
               }} style={{width:'100%',padding:'9px 14px',background:'none',color:'#93c5fd',border:'none',cursor:'pointer',fontSize:12,fontWeight:600,textAlign:'left',display:'flex',alignItems:'center',gap:7}}>
                 ⤓ 백업 다운로드
               </button>
@@ -3523,7 +3557,7 @@ function App(){
                 {isSrcExpanded&&<div style={{padding:'8px',display:'flex',flexDirection:'column',gap:4,background:'#fff'}}>
                   {sg.isMogo?(
                     <div style={{display:'flex',flexWrap:'wrap',gap:4,padding:'4px 2px'}}>
-                      {sg.passages.sort((a,b)=>Number(a.number||0)-Number(b.number||0)).map(p=>{
+                      {sg.passages.sort((a,b)=>cmpNumberField(a.number,b.number)).map(p=>{
                         const sel=!!sheetLoadSel[p.id];
                         return(<label key={p.id} style={{display:'inline-flex',alignItems:'center',gap:4,
                           padding:'3px 8px',border:`0.5px solid ${sel?'#185FA5':'#ddd'}`,
@@ -3561,7 +3595,7 @@ function App(){
                       {isExpanded&&(
                         <div style={{padding:'6px 10px 8px',background:'rgba(0,0,0,.02)',borderTop:'0.5px solid #D2D2D7',
                           display:'flex',flexWrap:'wrap',gap:4}}>
-                          {g.passages.sort((a,b)=>Number(a.number||0)-Number(b.number||0)).map(p=>{
+                          {g.passages.sort((a,b)=>cmpNumberField(a.number,b.number)).map(p=>{
                             const sel=!!sheetLoadSel[p.id];
                             return(<label key={p.id} style={{display:'inline-flex',alignItems:'center',gap:4,
                               padding:'3px 8px',border:`0.5px solid ${sel?'#185FA5':'#ddd'}`,
@@ -3708,13 +3742,8 @@ function App(){
             <button onClick={()=>{
               const data={te_slots:localStorage.getItem('te_slots'),te_claude_key:localStorage.getItem('te_claude_key'),te_apps_script_url:localStorage.getItem('te_apps_script_url'),gh_token:localStorage.getItem('gh_token'),gh_repo:localStorage.getItem('gh_repo'),backup_date:new Date().toISOString()};
               const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-              const a=document.createElement('a');
-              a.href=URL.createObjectURL(blob);
               const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
-              a.download='teacher_backup_'+ts+'.json';
-              a.click();
-              URL.revokeObjectURL(a.href);
-              flash('백업 다운로드 ✓');
+              saveBlobAs(blob,'teacher_backup_'+ts+'.json').then(ok=>{if(ok)flash('백업 저장 ✓');});
             }} style={{background:'#E8F1FD',color:'#0058B0',border:'none',borderRadius:6,
               padding:'7px 14px',fontSize:12.5,cursor:'pointer',fontWeight:500}}>⤓ 백업 다운로드</button>
             <label style={{background:'#F2EBFB',color:'#5E2E9E',border:'none',borderRadius:6,
