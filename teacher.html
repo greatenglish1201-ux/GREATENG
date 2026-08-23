@@ -1165,6 +1165,19 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       if(pd.insert_candidates?.length){
         pd.insert_candidates=pd.insert_candidates.filter(c=>c&&typeof c==='object'&&c.sentence);
       }
+      // ★ 지문 ID 보정: 슬롯 분석 결과(passageData)에는 id가 없을 수 있음 → meta 기반 생성
+      //   (id가 없으면 saveCurrentTabToSheet/saveCurrentQuestionsToSheet가 '지문 ID가 없습니다'로 중단됨)
+      if(!pd.id){
+        const _src=initialMeta?.source||pd.source;
+        const _ch=initialMeta?.chapter??pd.chapter;
+        const _nu=initialMeta?.number??pd.number;
+        // number까지 있어야 생성 (없으면 'SRC_undefined_undefined' 같은 오염 id 방지 — pidOf가 저장 시점에 재시도)
+        if(_src&&_nu!=null&&_nu!==''&&(_ch!=null||String(_src).startsWith('MOGO_')))
+          pd.id=makePassageId(_src,_ch??'',_nu);
+      }
+      if(!pd.source&&initialMeta?.source)pd.source=initialMeta.source;
+      if(pd.chapter==null&&initialMeta?.chapter!=null)pd.chapter=initialMeta.chapter;
+      if(pd.number==null&&initialMeta?.number!=null)pd.number=initialMeta.number;
       if((!pd.insert_candidates||!pd.insert_candidates.length)&&pd.insert_sentence){
         pd.insert_candidates=[{sentence:pd.insert_sentence,pos:pd.insert_answer||1}];
         pd.insert_sel=0;
@@ -1188,6 +1201,17 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
   const [err,setErr]=useState('');
   const [ghSaving,setGhSaving]=useState(false);
   const [genLoading,setGenLoading]=useState('');
+
+  // ★ 지문 ID 확보 (p.id 없으면 meta/설정값으로 생성) — 단일/전체 유형 저장 공통
+  const pidOf=(p)=>{
+    if(p?.id)return p.id;
+    // meta(슬롯 메타)를 우선 — syncIds/saveSlotToSheet와 동일한 "메타가 정본" 규칙
+    const src=initialMeta?.source||p?.source||pfx;
+    if(!src)return '';
+    const ch=initialMeta?.chapter??p?.chapter??chapter;
+    const nu=initialMeta?.number??p?.number??(startNum+pi);
+    return makePassageId(src,ch,nu);
+  };
 
   const saveToGitHub=async(jsonText)=>{
     if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 먼저 입력해주세요.');return;}
@@ -1222,8 +1246,9 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
     const p=passages.find(pg=>pg.id===pi)?.data;
     if(!p){alert('저장할 지문 데이터가 없습니다.');return;}
-    const id=p.id;
-    if(!id){alert('지문 ID가 없습니다.');return;}
+    const id=pidOf(p);
+    if(!id){alert('지문 ID를 만들 수 없습니다.\n교재(출처)·강·문항번호를 확인해주세요.');return;}
+    if(!p.id)upP({id});
     setSheetSaving(true);
     try{
       const tabTypes=['topic','blank','order','summary','implication','irrelevant','insert','grammar','vocab'];
@@ -1242,7 +1267,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify([q])});
       if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
       flash('✓ '+AUTHOR_TABS[at].lb+' 저장 완료');
-      if(onSaveComplete)onSaveComplete(p);
+      if(onSaveComplete)onSaveComplete({...p,id});
     }catch(e){alert('시트 저장 실패: '+e.message);}
     setSheetSaving(false);
   };
@@ -1250,8 +1275,9 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
     if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
     const p=passages.find(p=>p.id===pi)?.data;
     if(!p){alert('저장할 지문 데이터가 없습니다.');return;}
-    const id=p.id;
-    if(!id){alert('지문 ID가 없습니다.');return;}
+    const id=pidOf(p);
+    if(!id){alert('지문 ID를 만들 수 없습니다.\n교재(출처)·강·문항번호를 확인해주세요.');return;}
+    if(!p.id)upP({id});
     setSheetSaving(true);
     try{
       const gs=(p.grammar_sets||[])[p.grammar_sel??0]||{items:[],answer:1};
@@ -1304,7 +1330,7 @@ function AuthoringTool({apiKey, ghToken, ghRepo, appsUrl, slots, onSlotChange, o
       const r=await formPostFetch(appsUrl,{action:'saveQuestions',pid:id,questions_json:JSON.stringify(questions)});
       if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
       flash('✓ 시트 저장 완료 ('+id+', 출제 '+questions.length+'유형)');
-      if(onSaveComplete)onSaveComplete(p);
+      if(onSaveComplete)onSaveComplete({...p,id});
     }catch(e){
       alert('시트 저장 실패: '+e.message);
     }
@@ -2614,6 +2640,9 @@ function App(){
     const report=[];
     for(const s of targets){
       const pd={...(s.passageData||{...(s.analysis||{})})};
+      // ★ 근본 원인: 시트 저장 전 슬롯은 passageData가 없어 analysis만 복사됨 → id 없는 passageData가 슬롯에 박힘
+      //   (이후 '출제' 진입 → 단일/전체 유형 저장에서 '지문 ID가 없습니다' 발생)
+      if(!pd.id&&s.meta?.source)pd.id=makePassageId(s.meta.source,s.meta.chapter,s.meta.number);
       const sents=pd.sentences||[];
       const passage=sents.map((x,i)=>`[${i}] ${typeof x==='string'?x:x.text||''}`).join('\n');
       const label=`${s.meta?.source||''} ${s.meta?.chapter||''}강 ${s.meta?.number||''}번`.trim();
@@ -3957,7 +3986,12 @@ function App(){
     }catch(e){console.warn('슬롯 전환 시트 조회 실패:',e);}
   }
   setAuthorInitPassageData(pd);setAuthorInitMeta(meta);setAuthorKey(k=>k+1);
-}} onSaveComplete={(pd)=>{if(!pd)return;setSlots(prev=>prev.map(s=>s.passageData?.id===pd.id?{...s,passageData:{...s.passageData,...pd}}:s));}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
+}} onSaveComplete={(pd)=>{if(!pd||!pd.id)return;setSlots(prev=>prev.map(s=>{
+  // ★ 슬롯 passageData에 id가 없을 수 있으므로 meta 기반 id로도 매칭
+  //   (기존: 양쪽 id가 모두 undefined면 undefined===undefined 로 '빈 슬롯까지' 덮어쓰던 버그도 함께 차단)
+  const sid=s.passageData?.id||(s.meta?.source?makePassageId(s.meta.source,s.meta.chapter,s.meta.number):null);
+  return sid===pd.id?{...s,passageData:{...(s.passageData||{}),...pd}}:s;
+}));}} initialText={authorInitText} initialMeta={authorInitMeta} initialPassageData={authorInitPassageData}/>:
       <div style={{maxWidth:'min(1400px,100%)',margin:'0 auto',padding:'clamp(8px,2vw,24px) clamp(8px,2vw,20px)'}}>
         {!keyOk&&<div style={{background:'#FFF8E6',border:'0.5px solid #F0C040',borderRadius:8,
           padding:'10px 16px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
