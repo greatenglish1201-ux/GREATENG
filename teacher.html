@@ -80,6 +80,42 @@ function makePassageId(source,chapter,number){
   if(isMogo)return source+'_'+ns;
   return source+'_'+String(chapter).padStart(2,'0')+'_'+ns;
 }
+// ★ 시트 값이 '기출' 같은 텍스트면 그대로 보존, 숫자면 숫자로 (chapter 처리와 동일 규칙)
+//   기존 `Number(sp.number)||1` 은 '기출'을 NaN→1 로 바꿔버려, 1번 지문과 번호가 겹쳤음
+function textOrNum(v,dflt){
+  if(v==null||String(v).trim()==='')return dflt; // 공백만 있는 셀도 기본값 (Number(' ')=0 오동작 방지)
+  const n=Number(v);
+  return isNaN(n)?String(v):n;
+}
+// ★ 지문 id → {source,chapter,number} 역파싱
+//   교재 id에 '_'가 들어감(BOOK_26_NE능률_빈순삽합, MOGO_2406) → split('_')[0] 방식은 'BOOK'만 집어내 오작동.
+//   뒤에서부터 잘라야 함: 비MOGO는 마지막 2칸이 강·번호, MOGO는 마지막 1칸이 번호.
+function parsePassageId(id){
+  const parts=String(id||'').split('_');
+  if(parts[0]==='MOGO'&&parts.length>=2){
+    const number=parts.pop();
+    return {source:parts.join('_'),chapter:'',number};
+  }
+  if(parts.length>=3){
+    const number=parts.pop(),chapter=parts.pop();
+    return {source:parts.join('_'),chapter,number};
+  }
+  return {source:parts.join('_'),chapter:'01',number:'001'};
+}
+// ★ 슬롯의 실효 지문 ID 후보 (passageData.id + meta 기반 id) — 둘 중 하나만 맞아도 같은 지문으로 간주
+//   구버전 슬롯은 passageData에 id가 없고(→meta로 매칭),
+//   반대로 메타를 고친 뒤 저장 안 한 슬롯은 passageData.id가 낡아 있음(→passageData.id로 매칭).
+//   한쪽만 보면 시트 로드 시 기존 슬롯을 못 찾아 빈 슬롯에 중복으로 다시 채워짐.
+function slotIdCandidates(s){
+  const out=[];
+  if(s?.passageData?.id)out.push(s.passageData.id);
+  if(s?.meta?.source){
+    const m=makePassageId(s.meta.source,s.meta.chapter,s.meta.number);
+    if(!out.includes(m))out.push(m);
+  }
+  return out;
+}
+function slotMatchesId(s,id){ return !!id&&slotIdCandidates(s).includes(id); }
 // 출력물 제목: 교재라벨 + 강 + 문항번호 (모의고사는 강 생략)
 function chapterLabel(ch){
   if(ch==null||ch==='')return'';
@@ -2890,7 +2926,8 @@ function App(){
       setSlots(prev=>prev.map(s=>{
         if(!okIds.includes(s.id))return s;
         const pid=makePassageId(s.meta?.source,s.meta?.chapter,s.meta?.number);
-        return{...s,status:'saved',passageData:s.passageData||{id:pid,...(s.analysis||{})}};
+        // ★ passageData가 이미 있어도 id가 없으면 채워 넣음 (로드 시 매칭 실패 → 중복 슬롯 방지)
+        return{...s,status:'saved',passageData:s.passageData?{...s.passageData,id:s.passageData.id||pid}:{id:pid,...(s.analysis||{})}};
       }));
     }
     setSheetSaving(false);
@@ -3080,7 +3117,8 @@ function App(){
         let idx=0;
         for(const {sp,pd,blockSummaries} of restored){
           // ★ 같은 ID 슬롯이 이미 있으면 그 슬롯을 덮어쓰기 (isPublic 등 시트 상태 반영)
-          const existingIdx=next.findIndex(s=>s.passageData?.id===pd.id);
+          //   passageData.id가 없는 구버전 슬롯도 meta 기반 id로 매칭 (중복 슬롯 생성 방지)
+          const existingIdx=next.findIndex(s=>slotMatchesId(s,pd.id));
           let targetIdx;
           if(existingIdx>=0){
             targetIdx=existingIdx;
@@ -3095,7 +3133,7 @@ function App(){
           next[targetIdx]={
             ...next[targetIdx],
             text:sentenceText,
-            meta:{source:sp.source||'',chapter:(sp.chapter!=null&&sp.chapter!==''&&isNaN(Number(sp.chapter)))?String(sp.chapter):(Number(sp.chapter)||1),chapterOrg:sp.chapter_org||'',number:Number(sp.number)||1,difficulty:sp.difficulty||'중'},
+            meta:{source:sp.source||'',chapter:textOrNum(sp.chapter,1),chapterOrg:sp.chapter_org||'',number:textOrNum(sp.number,1),difficulty:sp.difficulty||'중'},
             status:'saved',
             analysis:{sentences:pd.sentences||[],flow:pd.flow||{},grammar:{difficultSentences:(pd.flow&&pd.flow.difficultSentences)||[]}},
             passageData:pd,
@@ -3194,12 +3232,13 @@ function App(){
     const normed=normalizeSentences(p.sentences);
     const sents=p.sentences&&p.sentences.length&&typeof p.sentences[0]==='object'&&p.sentences[0].symbol?p.sentences:normed;
     const text=normed.map(s=>s.text||'').join(' ');
+    // ★ 같은 지문이 이미 슬롯에 있으면 그 슬롯을 갱신 (중복 슬롯 방지), 없으면 빈 슬롯
+    const matchIdx=slots.findIndex(s=>slotMatchesId(s,p.id));
     const emptyIdx=slots.findIndex(s=>!s.text.trim()&&s.status==='idle');
-    const idx=emptyIdx>=0?emptyIdx:0;
+    const idx=matchIdx>=0?matchIdx:(emptyIdx>=0?emptyIdx:0);
     upSlot(slots[idx].id,{
       text,
-      meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
-        number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
+      meta:{...parsePassageId(p.id),difficulty:p.difficulty||'중'},
       status:'saved',
       passageData:restorePassageData(p),
       analysis:{sentences:sents,flow:p.flow||{},grammar:p.grammar||{}},
@@ -3221,8 +3260,8 @@ function App(){
       // 빈 슬롯 인덱스 목록
       const getEmptyIdx=()=>next.findIndex(s=>!s.text.trim()&&s.status==='idle');
       selected.forEach((p,i)=>{
-        // 이미 슬롯에 있는 지문은 해당 슬롯 업데이트
-        let slotIdx=next.findIndex(s=>s.passageData?.id===p.id);
+        // 이미 슬롯에 있는 지문은 해당 슬롯 업데이트 (id 없는 구버전 슬롯은 meta 기반 매칭)
+        let slotIdx=next.findIndex(s=>slotMatchesId(s,p.id));
         console.log(`[${i}] ${p.id} - 기존 슬롯:`,slotIdx);
         if(slotIdx<0){
           // 없으면 빈 슬롯 찾기
@@ -3239,8 +3278,7 @@ function App(){
         const sents=p.sentences&&p.sentences.length&&typeof p.sentences[0]==='object'&&p.sentences[0].symbol?p.sentences:normed;
         const text=normed.map(s=>s.text||'').join(' ');
         next[slotIdx]={...next[slotIdx],text,
-          meta:{source:p.id.split('_')[0],chapter:p.id.split('_')[1]||'01',
-            number:p.id.split('_')[2]||'001',difficulty:p.difficulty||'중'},
+          meta:{...parsePassageId(p.id),difficulty:p.difficulty||'중'},
           status:'saved',passageData:restorePassageData(p),
           analysis:{sentences:sents,flow:p.flow||{},grammar:p.grammar||{}},
           blockSummaries:Array.isArray(p.blockSummaries)?p.blockSummaries:null,
@@ -3353,7 +3391,8 @@ function App(){
               <select value={loadSrc} onChange={e=>setLoadSrc(e.target.value)}
                 style={{padding:'6px 10px',border:'1px solid #ddd',borderRadius:7,fontSize:13,outline:'none'}}>
                 <option value="">전체 교재</option>
-                {[...new Set(loadedPassages.map(p=>p.id.split('_')[0]))].sort().map(s=>(
+                {/* ★ 교재 id에 '_'가 있으면 split('_')[0]은 'BOOK' 하나로 뭉개짐 → 역파싱 source 사용 */}
+                {[...new Set(loadedPassages.map(p=>parsePassageId(p.id).source))].sort().map(s=>(
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
@@ -4133,7 +4172,7 @@ function App(){
             onToggle={()=>upSlot(slot.id,{open:!slot.open})}
             onConfirm={()=>upSlot(slot.id,{status:'confirmed'})}
             onSave={()=>upSlot(slot.id,{status:'saved'})}
-            onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok){const pid=makePassageId(slot.meta?.source,slot.meta?.chapter,slot.meta?.number);upSlot(slot.id,{status:'saved',passageData:slot.passageData||{id:pid,...(slot.analysis||{})}});flash('시트 저장 ✓');}}}
+            onSheetSave={async()=>{const ok=await saveSlotToSheet(slot);if(ok){const pid=makePassageId(slot.meta?.source,slot.meta?.chapter,slot.meta?.number);upSlot(slot.id,{status:'saved',passageData:slot.passageData?{...slot.passageData,id:slot.passageData.id||pid}:{id:pid,...(slot.analysis||{})}});flash('시트 저장 ✓');}}}
             onTogglePublic={async()=>{
               const next=!slot.isPublic;
               if(!appsUrl){
