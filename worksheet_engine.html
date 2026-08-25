@@ -96,10 +96,10 @@ i.it{font-style:italic}
 .grid3{display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:0 12px}
 .field{margin-bottom:6px}
 .field label{display:block; font-size:10.5px; color:var(--grey); margin-bottom:2px}
-.blank{border-bottom:1px solid var(--ink); height:26px}
-.blank.tall{height:44px}
+.blank{border-bottom:1px solid var(--ink); height:21px}
+.blank.tall{height:32px}
 .box{border:1px solid var(--line); background:#fff; min-height:30px; padding:5px 8px}
-.box.tall{min-height:64px}
+.box.tall{min-height:40px}
 
 .pick{display:flex; gap:16px; font-size:11.5px; align-items:center; padding-top:3px}
 .pick span{display:inline-flex; align-items:center; gap:4px}
@@ -111,19 +111,19 @@ table{width:100%; border-collapse:collapse; font-size:11.5px}
 th,td{border:1px solid var(--line); padding:4px 8px; vertical-align:top}
 th{background:#f2ece0; font-weight:700; font-size:10.5px; text-align:left}
 td.eng{font-family:'Noto Serif',serif; width:47%}
-td.mine{height:34px}
+td.mine{height:25px}
 
 /* ---------- 트리 ---------- */
 .tree{border:1px solid var(--line); background:#fff; padding:8px 11px}
 .trunk-label{font-size:10px; letter-spacing:.1em; color:var(--wine);
   font-weight:700; margin-bottom:4px}
-.node{display:flex; align-items:stretch; gap:8px; margin-bottom:6px}
+.node{display:flex; align-items:stretch; gap:7px; margin-bottom:3px}
 .node .tag{flex:0 0 104px; display:flex; align-items:center; gap:5px; font-size:10.5px;
   padding:3px 6px; border:1px solid var(--line); background:#f7f2e7}
 .node .tag .sn{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--wine)}
 .node .tag .lb{font-weight:700}
 .node.head-node .tag{background:var(--gold-soft); border-color:var(--gold)}
-.node .wr{flex:1; border-bottom:1px solid var(--line); min-height:44px}
+.node .wr{flex:1; border-bottom:1px solid var(--line); min-height:27px}
 .node.sub{padding-left:22px; position:relative}
 .node.sub::before{content:""; position:absolute; left:9px; top:0; bottom:0;
   border-left:1px solid var(--line)}
@@ -179,16 +179,52 @@ body.show-ans .ans{display:block}
   .step-grow .blank.tall{flex:1 1 auto}
   .sheet-b .margin-col{min-height:0}
   .sheet-b .exam-wrap{flex:0 0 auto}
-  .fast-item{flex:1 1 auto}
+  .sheet-f .fast-item{flex:0 0 auto}      /* 속독지는 늘리지 않는다 */
+  .sheet-f{min-height:0}
 }
 .sheet-a2 .node .wr{display:flex}
 
+/* A-1+A-2 한 장 — 최대 압축 */
+.sheet.merged{padding:10mm 12mm}
+.sheet.merged .head{margin-bottom:2mm; padding-bottom:3px}
+.sheet.merged .head .t2{font-size:14.5px}
+.sheet.merged .namebar{margin-bottom:2mm; font-size:10px}
+.sheet.merged .namebar div{padding:2px 7px}
+.sheet.merged .qnum{font-size:12.4px; margin-bottom:2px}
+.sheet.merged .passage{font-size:11px; line-height:1.42; padding:5px 8px; margin-bottom:1.6mm}
+.sheet.merged .note{font-size:9.5px; margin-bottom:1.4mm}
+.sheet.merged .choices{font-size:10.4px; line-height:1.45; margin-bottom:1.6mm}
+.sheet.merged .step{margin-bottom:1.6mm}
+.sheet.merged .step-h{margin-bottom:3px; padding-bottom:2px}
+.sheet.merged .step-h .ttl{font-size:12px}
+.sheet.merged .step-h .hint{font-size:9.5px}
+.sheet.merged .field{margin-bottom:3px}
+.sheet.merged .field label{font-size:9.8px; margin-bottom:1px}
+.sheet.merged .blank{height:16px}
+.sheet.merged .blank.tall{height:24px}
+.sheet.merged .node .wr{min-height:19px}
+.sheet.merged .node{margin-bottom:2px; gap:6px}
+.sheet.merged .node .tag{flex:0 0 92px; font-size:9.8px; padding:1px 5px}
+.sheet.merged .tree{padding:5px 8px}
+.sheet.merged .trunk-label{font-size:9.5px; margin-bottom:3px}
+.sheet.merged .switchline{margin:4px 0; font-size:9.5px}
+.sheet.merged .box.tall{min-height:26px}
+.sheet.merged th,.sheet.merged td{padding:2px 6px; font-size:10px}
+.sheet.merged td.mine,.sheet.merged td.filled{height:18px}
+.sheet.merged .note-if{font-size:9.5px; padding:2px 0 2px 6px; margin-top:3px}
+.sheet.merged .legend{padding:3px 7px; font-size:9.5px; gap:9px; margin-bottom:3px}
+.sheet.merged .pick{font-size:10.5px; gap:12px}
+.sheet.merged .answer-row{margin-top:1.5mm}
+.sheet.merged .circle{width:19px; height:19px}
+.sheet.merged .foot{margin-top:2mm; font-size:9px}
+.sheet.merged .ans-box{font-size:10px; padding:4px 7px; margin-top:3px}
+
 /* STEP 7·8이 붙는 A-2 — 트리 칸을 줄여 1장 유지 */
-.sheet.hasx .node .wr{min-height:34px}
+.sheet.hasx .node .wr{min-height:24px}
 .sheet.hasx .node{margin-bottom:4px}
 .sheet.hasx.dense .node .wr{min-height:27px}
 .sheet.hasx.dense .node{margin-bottom:3px}
-.sheet.hasx .box.tall{min-height:50px}
+.sheet.hasx .box.tall{min-height:36px}
 .sheet.hasx .step{margin-bottom:3mm}
 
 /* 긴 지문(10문장 이상) 자동 압축 — A4 1장 유지 */
@@ -197,14 +233,14 @@ body.show-ans .ans{display:block}
 .sheet.dense .step{margin-bottom:2.5mm}
 .sheet.dense .step-h{margin-bottom:3px}
 .sheet.dense th,.sheet.dense td{padding:3px 7px; font-size:10.8px}
-.sheet.dense td.mine,.sheet.dense td.filled{height:26px}
-.sheet.dense .blank{height:22px}
+.sheet.dense td.mine,.sheet.dense td.filled{height:22px}
+.sheet.dense .blank{height:19px}
 .sheet.dense .field{margin-bottom:4px}
 .sheet.dense .node{margin-bottom:2px}
-.sheet.dense .node .wr{min-height:34px}
+.sheet.dense .node .wr{min-height:23px}
 .sheet.dense .node .tag{font-size:10px; padding:2px 5px}
 .sheet.dense .tree{padding:6px 9px}
-.sheet.dense .box.tall{min-height:48px}
+.sheet.dense .box.tall{min-height:34px}
 .sheet.dense .note-if{font-size:10px; padding:2px 0 2px 7px}
 .sheet.dense .legend{padding:4px 8px; font-size:10px; margin-bottom:3px}
 .sheet.dense .head{margin-bottom:2.5mm; padding-bottom:4px}
@@ -234,7 +270,8 @@ body.show-ans .ans{display:block}
 .fast-item{border-top:1px solid var(--line); padding-top:2.2mm; margin-bottom:1.8mm; break-inside:avoid}
 .fast-item:first-of-type{border-top:0; padding-top:0}
 /* 3문항을 A4 한 장에 담기 위한 압축 — 훈련지보다 촘촘하다 */
-.sheet-f .passage{margin-bottom:1.4mm; padding:5px 8px; line-height:1.42; font-size:11.4px}
+.sheet-f{padding:10mm 12mm}
+.sheet-f .passage{margin-bottom:1.2mm; padding:5px 8px; line-height:1.4; font-size:11px}
 .sheet-f .qnum{font-size:12.4px; margin-bottom:2px}
 .sheet-f .field{margin-bottom:2px}
 .sheet-f .field label{margin-bottom:1px}
@@ -320,6 +357,13 @@ body.show-ans .ans{display:block}
 
   <span id="cnt" style="font-size:11px; opacity:.8"></span>
 
+  <label for="selO">출력</label>
+  <select id="selO">
+    <option value="ab">A지 2장 + B지 (3장)</option>
+    <option value="a" selected>A지만 (2장) — 8~9월</option>
+    <option value="b">B지만 (1장) — 10월 이후</option>
+  </select>
+
   <label for="selL">빈칸 단계</label>
   <select id="selL">
     <option value="0">0 · 코어/서포트만 (라벨 없음) — 입문</option>
@@ -339,7 +383,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260806f"></script>
+<script src="passages_final.js?v=20260806h"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -399,9 +443,26 @@ body.show-ans .ans{display:block}
     }).join('');
 
     var plain = p.sents.join(' ').replace(/<[^>]+>/g,'');
-    var dense = (plain.length >= 1300 || p.sents.length >= 10) ? ' dense' : '';
-    var h = '<section class="sheet sheet-a'+dense+'" data-id="'+p.id+'">';
-    h += head(p, 1, 3, '단계 '+lv);
+    // A-1+A-2를 한 장에 담을 수 있는지 세로 길이를 추정해서 판정한다.
+    // (merged 스타일 기준: 지문 11px/1.42, 트리 노드 21px, 표 행 18px)
+    p._merge = (function(){
+      var W = 660, lines = function(ch, fs){ return Math.ceil(ch / Math.floor(W / (fs*0.495))); };
+      var t = 66;                                        // 머리글 + 이름칸 + 발문
+      t += lines(plain.length, 11) * 11 * 1.42 + 16;     // 지문
+      t += lines(p.choices.join(' ').length, 10.4) * 10.4 * 1.45 + 6;
+      t += 17 + 56 + 42 + 6;                             // STEP 1
+      t += 17 + (p.skip ? p.skip.length*18+18 : 0) + 26 + 6;   // STEP 2
+      t += 17 + p.tree.length*21 + 36 + 6;               // STEP 3
+      t += 17 + 28 + 6;                                  // STEP 4
+      if(p.vocab)   t += 17 + p.vocab.length*18 + 42 + 6; // STEP 8
+      if(p.implied) t += 17 + 28 + 38 + 6;               // STEP 7
+      t += 17 + 26 + 22 + 40;                            // STEP 5 + 푸터
+      return t * 25.4 / 96 <= 268;                       // A4 인쇄영역 여유분
+    })();
+    var dense = p._merge ? ' dense merged'
+              : ((plain.length >= 1300 || p.sents.length >= 10) ? ' dense' : '');
+    var h = '<section class="sheet sheet-a sheet-a2'+dense+'" data-id="'+p.id+'">';
+    h += head(p, 1, p._merge ? 1 : 3, '단계 '+lv);
     h += namebar(['이름','날짜','맞은 문항']);
     h += '<div class="qnum">'+p.qnum+'. '+p.qtext+'</div>';
     h += '<div class="passage">'+passage+'</div>';
@@ -466,7 +527,7 @@ body.show-ans .ans{display:block}
               + '<td style="font-size:11px;color:var(--grey)">읽기 <i class="chk"></i>'
               + (r.skip?'':'<span class="fx">✓</span>')
               + '&nbsp; 건너뜀 <i class="chk"></i>'+(r.skip?'<span class="fx">✓</span>':'')+'</td>'
-              + '<td class="filled" style="height:32px"><span class="fx">'
+              + '<td class="filled" style="height:24px"><span class="fx">'
               + (r.skip ? esc(r.why) : '<span style="color:var(--grey)">표지 없음 — 읽는다</span>')
               + '</span></td></tr>';
           }).join('')
@@ -477,15 +538,19 @@ body.show-ans .ans{display:block}
         + '</div>'
         + '</div>';
     }
+    if(p._merge) return h;   // A-2가 같은 장에 이어붙는다
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-1</span></div></section>';
   }
 
   /* ---------- A-2 ---------- */
   function sheetA2(p, lv){
     // STEP 7·8이 붙으면 세로가 길어지므로 트리 칸을 조금 줄인다
-    var dense = (p.tree.length >= 10 ? ' dense' : '') + (p.vocab || p.implied ? ' hasx' : '');
-    var h = '<section class="sheet sheet-a sheet-a2'+dense+'" data-id="'+p.id+'">';
-    h += head(p, 2, 3, '단계 '+lv);
+    var dense = (p._merge || p.tree.length >= 10 ? ' dense' : '') + (p.vocab || p.implied ? ' hasx' : '');
+    var h = '';
+    if(!p._merge){
+      h = '<section class="sheet sheet-a sheet-a2'+dense+'" data-id="'+p.id+'">'
+        + head(p, 2, 3, '단계 '+lv);
+    }
 
     var hintMap = {0:'라벨 없이 <b>코어/서포트</b>만 가른다',
                    1:'라벨은 주어져 있다 — 내용만 채운다',
@@ -512,7 +577,7 @@ body.show-ans .ans{display:block}
               + '&nbsp;&nbsp; 서포트 <i class="chk"></i>'+(nd.head?'':'<span class="fx">✓</span>')+'</td>'
               + '<td class="filled" style="text-align:center"><span class="fx">'
               + (nd.head ? '<span style="color:var(--grey)">—</span>' : cn(nd.to || 1)) + '</span></td>'
-              + '<td class="filled" style="height:32px"><span class="fx">'
+              + '<td class="filled" style="height:24px"><span class="fx">'
               + (nd.head ? esc(nd.txt) : '<span style="color:var(--grey)">쓰지 않는다</span>')
               + '</span></td></tr>';
           }).join('')
@@ -575,7 +640,7 @@ body.show-ans .ans{display:block}
               + (v.ok?'<span class="fx">✓</span>':'')
               + '&nbsp;&nbsp;역행 <i class="chk"></i>'
               + (v.ok?'':'<span class="fx">✓</span>')+'</td>'
-              + '<td class="filled" style="height:34px"><span class="fx">'+esc(v.why)
+              + '<td class="filled" style="height:25px"><span class="fx">'+esc(v.why)
               + (v.fix?' <b>→ '+esc(v.fix)+'</b>':'')+'</span></td></tr>';
           }).join('')
         + '</table>'
@@ -619,7 +684,7 @@ body.show-ans .ans{display:block}
             + '</div></div>' : '')
       + '</div>';
 
-    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-2</span></div></section>';
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span>'+(p._merge?'훈련지 A':'훈련지 A-2')+'</div></section>';
   }
 
   /* ---------- B ---------- */
@@ -701,7 +766,7 @@ body.show-ans .ans{display:block}
       + '<th>그래서 앞뒤 어디에 오나</th></tr>'
       + p.paras.map(function(pa){
           return '<tr><td style="text-align:center" class="cn">('+pa.tag+')</td>'
-            + '<td class="filled" style="height:32px"><span class="fx">'+esc(pa.gist)+'</span></td>'
+            + '<td class="filled" style="height:24px"><span class="fx">'+esc(pa.gist)+'</span></td>'
             + '<td class="filled"><span class="fx">'+esc(pa.cue)+'</span></td></tr>';
         }).join('')
       + '</table></div>';
@@ -737,7 +802,7 @@ body.show-ans .ans{display:block}
       + p.refs.map(function(r){
           return '<tr><td style="text-align:center" class="cn">('+r.tag+')</td>'
             + '<td class="eng" style="width:auto"><b>'+esc(r.word)+'</b></td>'
-            + '<td class="filled" style="height:32px"><span class="fx">'
+            + '<td class="filled" style="height:24px"><span class="fx">'
             + (r.who===p.refOdd ? '<b style="color:var(--wine)">'+esc(r.who)+' ← 정답</b>' : esc(r.who))
             + '</span></td>'
             + '<td class="filled"><span class="fx">'+esc(r.why)+'</span></td></tr>';
@@ -833,6 +898,7 @@ body.show-ans .ans{display:block}
   var selY = document.getElementById('selY');
   var selQ = document.getElementById('selQ');
   var cnt  = document.getElementById('cnt');
+  var selO = document.getElementById('selO');
 
   var SORTED = DATA.slice().sort(function(a,b){
     var ya = yearOf(a.src), yb = yearOf(b.src);
@@ -921,13 +987,18 @@ body.show-ans .ans{display:block}
     fast.forEach(function(p){ (byYear[srcShort(p.src)] = byYear[srcShort(p.src)] || []).push(p); });
     Object.keys(byYear).forEach(function(y){ html += sheetFast(byYear[y], lv); });
 
+    var mode = selO.value;
     norm.forEach(function(p){
       if(p.paras){ html += sheetOrder(p, lv); return; }
-      html += sheetA1(p, lv) + sheetA2(p, lv) + sheetB(p, lv);
+      if(mode !== 'b') html += sheetA1(p, lv) + sheetA2(p, lv);
+      if(mode !== 'a') html += sheetB(p, lv);
     });
 
     var pages = sel.reduce(function(a, p){
-      return a + (p.fast ? 0 : (p.paras ? 2 : 3));
+      if(p.fast) return a;
+      if(p.paras) return a + 2;
+      var aPages = p._merge ? 1 : 2;
+      return a + (mode === 'ab' ? aPages + 1 : (mode === 'a' ? aPages : 1));
     }, 0) + (fast.length ? Object.keys(byYear).length : 0);
     cnt.textContent = sel.length + '지문 · ' + pages + '장';
 
@@ -939,6 +1010,7 @@ body.show-ans .ans{display:block}
   selQ.addEventListener('change', function(){ fillPs(); render(); });
   selP.addEventListener('change', render);
   selL.addEventListener('change', render);
+  selO.addEventListener('change', render);
 
   btn.addEventListener('click', function(){
     var on = document.body.classList.toggle('show-ans');
