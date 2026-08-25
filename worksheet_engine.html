@@ -96,10 +96,10 @@ i.it{font-style:italic}
 .grid3{display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:0 12px}
 .field{margin-bottom:6px}
 .field label{display:block; font-size:10.5px; color:var(--grey); margin-bottom:2px}
-.blank{border-bottom:1px solid var(--ink); height:21px}
-.blank.tall{height:34px}
+.blank{border-bottom:1px solid var(--ink); height:26px}
+.blank.tall{height:44px}
 .box{border:1px solid var(--line); background:#fff; min-height:30px; padding:5px 8px}
-.box.tall{min-height:46px}
+.box.tall{min-height:64px}
 
 .pick{display:flex; gap:16px; font-size:11.5px; align-items:center; padding-top:3px}
 .pick span{display:inline-flex; align-items:center; gap:4px}
@@ -111,19 +111,19 @@ table{width:100%; border-collapse:collapse; font-size:11.5px}
 th,td{border:1px solid var(--line); padding:4px 8px; vertical-align:top}
 th{background:#f2ece0; font-weight:700; font-size:10.5px; text-align:left}
 td.eng{font-family:'Noto Serif',serif; width:47%}
-td.mine{height:27px}
+td.mine{height:34px}
 
 /* ---------- 트리 ---------- */
 .tree{border:1px solid var(--line); background:#fff; padding:8px 11px}
 .trunk-label{font-size:10px; letter-spacing:.1em; color:var(--wine);
   font-weight:700; margin-bottom:4px}
-.node{display:flex; align-items:stretch; gap:8px; margin-bottom:4px}
+.node{display:flex; align-items:stretch; gap:8px; margin-bottom:6px}
 .node .tag{flex:0 0 104px; display:flex; align-items:center; gap:5px; font-size:10.5px;
   padding:3px 6px; border:1px solid var(--line); background:#f7f2e7}
 .node .tag .sn{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--wine)}
 .node .tag .lb{font-weight:700}
 .node.head-node .tag{background:var(--gold-soft); border-color:var(--gold)}
-.node .wr{flex:1; border-bottom:1px solid var(--line); min-height:31px}
+.node .wr{flex:1; border-bottom:1px solid var(--line); min-height:44px}
 .node.sub{padding-left:22px; position:relative}
 .node.sub::before{content:""; position:absolute; left:9px; top:0; bottom:0;
   border-left:1px solid var(--line)}
@@ -166,20 +166,45 @@ body.show-ans .ans{display:block}
 .ans-box .k{font-weight:700; color:var(--wine); margin-right:5px}
 .ans-box .tip{margin-top:4px; color:var(--wine-soft)}
 
+/* A-2는 남는 세로를 칸이 흡수하도록 — 아래쪽 백지 방지
+   (짧은 지문일수록 트리 칸과 요지 박스가 자동으로 커진다) */
+@media print{
+  /* 모든 용지: 푸터를 맨 아래로 밀어 붙이고, 지정한 칸이 남는 세로를 흡수 */
+  .sheet{display:flex; flex-direction:column; min-height:273mm}
+  .sheet .foot{margin-top:auto}
+  .sheet-a2 .tree{display:flex; flex-direction:column}
+  .sheet-a2 .node{flex:1 1 auto}
+  .step-grow{flex:1 1 auto; display:flex; flex-direction:column}
+  .step-grow .box.tall,
+  .step-grow .blank.tall{flex:1 1 auto}
+  .sheet-b .margin-col{min-height:0}
+  .sheet-b .exam-wrap{flex:0 0 auto}
+  .fast-item{flex:1 1 auto}
+}
+.sheet-a2 .node .wr{display:flex}
+
+/* STEP 7·8이 붙는 A-2 — 트리 칸을 줄여 1장 유지 */
+.sheet.hasx .node .wr{min-height:34px}
+.sheet.hasx .node{margin-bottom:4px}
+.sheet.hasx.dense .node .wr{min-height:27px}
+.sheet.hasx.dense .node{margin-bottom:3px}
+.sheet.hasx .box.tall{min-height:50px}
+.sheet.hasx .step{margin-bottom:3mm}
+
 /* 긴 지문(10문장 이상) 자동 압축 — A4 1장 유지 */
 .sheet.dense .passage{font-size:12.2px; line-height:1.55; padding:6px 9px; margin-bottom:2mm}
 .sheet.dense .choices{font-size:11.6px; line-height:1.55; margin-bottom:2.5mm}
 .sheet.dense .step{margin-bottom:2.5mm}
 .sheet.dense .step-h{margin-bottom:3px}
 .sheet.dense th,.sheet.dense td{padding:3px 7px; font-size:10.8px}
-.sheet.dense td.mine,.sheet.dense td.filled{height:22px}
-.sheet.dense .blank{height:19px}
+.sheet.dense td.mine,.sheet.dense td.filled{height:26px}
+.sheet.dense .blank{height:22px}
 .sheet.dense .field{margin-bottom:4px}
 .sheet.dense .node{margin-bottom:2px}
-.sheet.dense .node .wr{min-height:25px}
+.sheet.dense .node .wr{min-height:34px}
 .sheet.dense .node .tag{font-size:10px; padding:2px 5px}
 .sheet.dense .tree{padding:6px 9px}
-.sheet.dense .box.tall{min-height:38px}
+.sheet.dense .box.tall{min-height:48px}
 .sheet.dense .note-if{font-size:10px; padding:2px 0 2px 7px}
 .sheet.dense .legend{padding:4px 8px; font-size:10px; margin-bottom:3px}
 .sheet.dense .head{margin-bottom:2.5mm; padding-bottom:4px}
@@ -314,7 +339,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260806e"></script>
+<script src="passages_final.js?v=20260806f"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -373,7 +398,8 @@ body.show-ans .ans{display:block}
       return '<span><span class="snum">'+cn(i+1)+'</span>'+s+' </span>';
     }).join('');
 
-    var dense = p.sents.length >= 10 ? ' dense' : '';
+    var plain = p.sents.join(' ').replace(/<[^>]+>/g,'');
+    var dense = (plain.length >= 1300 || p.sents.length >= 10) ? ' dense' : '';
     var h = '<section class="sheet sheet-a'+dense+'" data-id="'+p.id+'">';
     h += head(p, 1, 3, '단계 '+lv);
     h += namebar(['이름','날짜','맞은 문항']);
@@ -440,7 +466,7 @@ body.show-ans .ans{display:block}
               + '<td style="font-size:11px;color:var(--grey)">읽기 <i class="chk"></i>'
               + (r.skip?'':'<span class="fx">✓</span>')
               + '&nbsp; 건너뜀 <i class="chk"></i>'+(r.skip?'<span class="fx">✓</span>':'')+'</td>'
-              + '<td class="filled" style="height:26px"><span class="fx">'
+              + '<td class="filled" style="height:32px"><span class="fx">'
               + (r.skip ? esc(r.why) : '<span style="color:var(--grey)">표지 없음 — 읽는다</span>')
               + '</span></td></tr>';
           }).join('')
@@ -456,8 +482,9 @@ body.show-ans .ans{display:block}
 
   /* ---------- A-2 ---------- */
   function sheetA2(p, lv){
-    var dense = p.tree.length >= 10 ? ' dense' : '';
-    var h = '<section class="sheet sheet-a'+dense+'" data-id="'+p.id+'">';
+    // STEP 7·8이 붙으면 세로가 길어지므로 트리 칸을 조금 줄인다
+    var dense = (p.tree.length >= 10 ? ' dense' : '') + (p.vocab || p.implied ? ' hasx' : '');
+    var h = '<section class="sheet sheet-a sheet-a2'+dense+'" data-id="'+p.id+'">';
     h += head(p, 2, 3, '단계 '+lv);
 
     var hintMap = {0:'라벨 없이 <b>코어/서포트</b>만 가른다',
@@ -485,7 +512,7 @@ body.show-ans .ans{display:block}
               + '&nbsp;&nbsp; 서포트 <i class="chk"></i>'+(nd.head?'':'<span class="fx">✓</span>')+'</td>'
               + '<td class="filled" style="text-align:center"><span class="fx">'
               + (nd.head ? '<span style="color:var(--grey)">—</span>' : cn(nd.to || 1)) + '</span></td>'
-              + '<td class="filled" style="height:26px"><span class="fx">'
+              + '<td class="filled" style="height:32px"><span class="fx">'
               + (nd.head ? esc(nd.txt) : '<span style="color:var(--grey)">쓰지 않는다</span>')
               + '</span></td></tr>';
           }).join('')
@@ -548,7 +575,7 @@ body.show-ans .ans{display:block}
               + (v.ok?'<span class="fx">✓</span>':'')
               + '&nbsp;&nbsp;역행 <i class="chk"></i>'
               + (v.ok?'':'<span class="fx">✓</span>')+'</td>'
-              + '<td class="filled" style="height:29px"><span class="fx">'+esc(v.why)
+              + '<td class="filled" style="height:34px"><span class="fx">'+esc(v.why)
               + (v.fix?' <b>→ '+esc(v.fix)+'</b>':'')+'</span></td></tr>';
           }).join('')
         + '</table>'
@@ -575,7 +602,7 @@ body.show-ans .ans{display:block}
 
     /* STEP 5 */
     var heads = p.tree.filter(function(n){return n.head}).map(function(n){return cn(n.n)}).join('·');
-    h += '<div class="step">'+stepH('STEP 5','요지 재구성', lv<=3 ? '머리 문장('+heads+')만 이어서 한 문장으로' : '한 문장으로')
+    h += '<div class="step step-grow">'+stepH('STEP 5','요지 재구성', lv<=3 ? '머리 문장('+heads+')만 이어서 한 문장으로' : '한 문장으로')
       + fill(esc(p.gist), 'box tall')
       + '<div class="answer-row"><span class="lab">정답</span>'
       + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
@@ -621,7 +648,7 @@ body.show-ans .ans{display:block}
         }).join('<br>')+'</div>')+'</div>'
       + '<div class="margin-col"><span class="mtag">여백 — 여기까지만 쓴다</span></div></div>';
 
-    h += '<div class="step">'+stepH('확인','푼 다음 30초 안에','A지 트리를 안 보고 채운다')
+    h += '<div class="step step-grow">'+stepH('확인','푼 다음 30초 안에','A지 트리를 안 보고 채운다')
       + '<div class="check-strip">'
       + '<div class="field"><label>핵심어</label>'+fill(esc(p.key))+'</div>'
       + '<div class="field"><label>방향 (+ / −)</label>'
@@ -674,7 +701,7 @@ body.show-ans .ans{display:block}
       + '<th>그래서 앞뒤 어디에 오나</th></tr>'
       + p.paras.map(function(pa){
           return '<tr><td style="text-align:center" class="cn">('+pa.tag+')</td>'
-            + '<td class="filled" style="height:27px"><span class="fx">'+esc(pa.gist)+'</span></td>'
+            + '<td class="filled" style="height:32px"><span class="fx">'+esc(pa.gist)+'</span></td>'
             + '<td class="filled"><span class="fx">'+esc(pa.cue)+'</span></td></tr>';
         }).join('')
       + '</table></div>';
@@ -710,7 +737,7 @@ body.show-ans .ans{display:block}
       + p.refs.map(function(r){
           return '<tr><td style="text-align:center" class="cn">('+r.tag+')</td>'
             + '<td class="eng" style="width:auto"><b>'+esc(r.word)+'</b></td>'
-            + '<td class="filled" style="height:27px"><span class="fx">'
+            + '<td class="filled" style="height:32px"><span class="fx">'
             + (r.who===p.refOdd ? '<b style="color:var(--wine)">'+esc(r.who)+' ← 정답</b>' : esc(r.who))
             + '</span></td>'
             + '<td class="filled"><span class="fx">'+esc(r.why)+'</span></td></tr>';
