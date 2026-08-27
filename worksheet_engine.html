@@ -184,6 +184,18 @@ body.show-ans .ans{display:block}
 }
 .sheet-a2 .node .wr{display:flex}
 
+/* STEP 6 다시 풀기 */
+.regrip{display:flex; gap:12px; align-items:flex-end}
+.rg-cell{display:flex; flex-direction:column; gap:3px}
+.rg-cell.wide{flex:1}
+.rg-cell label{font-size:10.5px; color:var(--grey)}
+.rg-cell .circle{width:26px; height:26px}
+.sheet.merged .rg-cell .circle{width:22px; height:22px}
+.sheet.merged .rg-cell label{font-size:9.8px}
+.sheet-f .rg-cell .circle{width:20px; height:20px}
+.sheet-f .rg-cell label{font-size:9.8px}
+.sheet-f .regrip{gap:9px}
+
 /* A-1+A-2 한 장 — 최대 압축 */
 .sheet.merged{padding:10mm 12mm}
 .sheet.merged .head{margin-bottom:2mm; padding-bottom:3px}
@@ -383,7 +395,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260806h"></script>
+<script src="passages_final.js?v=20260806j"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -451,12 +463,13 @@ body.show-ans .ans{display:block}
       t += lines(plain.length, 11) * 11 * 1.42 + 16;     // 지문
       t += lines(p.choices.join(' ').length, 10.4) * 10.4 * 1.45 + 6;
       t += 17 + 56 + 42 + 6;                             // STEP 1
-      t += 17 + (p.skip ? p.skip.length*18+18 : 0) + 26 + 6;   // STEP 2
+      t += 17 + 26 + 6;                                  // STEP 2 (안내만, 표 없음)
       t += 17 + p.tree.length*21 + 36 + 6;               // STEP 3
       t += 17 + 28 + 6;                                  // STEP 4
       if(p.vocab)   t += 17 + p.vocab.length*18 + 42 + 6; // STEP 8
       if(p.implied) t += 17 + 28 + 38 + 6;               // STEP 7
-      t += 17 + 26 + 22 + 40;                            // STEP 5 + 푸터
+      t += 17 + 26 + 22 + 6;                             // STEP 5
+      t += 17 + 28 + 22 + 40;                            // STEP 6 + 푸터
       return t * 25.4 / 96 <= 268;                       // A4 인쇄영역 여유분
     })();
     var dense = p._merge ? ' dense merged'
@@ -499,45 +512,28 @@ body.show-ans .ans{display:block}
           + '</div></div>' : '')
       + '</div>';
 
-    /* STEP 2 — 건너뛸 문장 찾기 */
+    /* STEP 2 — 건너뛸 문장 표시 (표 없이 지문에 직접) */
     if(p.skip && p.skip.length){
-      h += '<div class="step">'+stepH('STEP 2','건너뛸 문장 찾기','<b>표지</b>가 보이면 읽지 않는다')
-        + '<div class="legend" style="border-color:var(--gold); margin-bottom:5px">'
+      var nSkip = p.skip.filter(function(r){ return r.skip; }).length;
+      h += '<div class="step">'+stepH('STEP 2','건너뛸 문장 <b>지문에 ✗</b>','표지가 보이면 읽지 않는다')
+        + '<div class="legend" style="border-color:var(--gold)">'
         + '<span class="lgttl" style="color:var(--wine)">표지</span>'
         + '<span><b>For example / For instance</b></span>'
-        + '<span><b>대문자 이름</b> (Cicero, New York)</span>'
-        + '<span><b>연도 · 숫자</b> (In 1973, twelve hours)</span>'
-        + '<span class="g" style="font-size:10px">셋 중 하나면 ✗. 뜻을 몰라도 된다.</span></div>'
-        + '<table><tr><th style="width:8%">문장</th><th style="width:44%">첫머리</th>'
-        + '<th style="width:14%">판정</th><th>표지가 무엇인가</th></tr>'
-        + (function(){
-            // 10문장 이상이면 표가 너무 길어져 1장을 넘김 → 건너뛸 문장 + 앞뒤만 남긴다
-            var rows = p.skip;
-            if(p.sents.length >= 10){
-              var keep = {};
-              p.skip.forEach(function(r,i){ if(r.skip){ keep[i]=1; keep[i-1]=1; keep[i+1]=1; } });
-              var picked = p.skip.filter(function(r,i){ return keep[i]; });
-              if(picked.length >= 3) rows = picked;
-            }
-            return rows;
-          })().map(function(r){
-            return '<tr><td style="text-align:center;font-family:\'Space Grotesk\',sans-serif;'
-              + 'font-weight:700;color:var(--wine)">'+cn(r.n)+'</td>'
-              + '<td class="eng" style="width:auto">'+esc(r.head)+'</td>'
-              + '<td style="font-size:11px;color:var(--grey)">읽기 <i class="chk"></i>'
-              + (r.skip?'':'<span class="fx">✓</span>')
-              + '&nbsp; 건너뜀 <i class="chk"></i>'+(r.skip?'<span class="fx">✓</span>':'')+'</td>'
-              + '<td class="filled" style="height:24px"><span class="fx">'
-              + (r.skip ? esc(r.why) : '<span style="color:var(--grey)">표지 없음 — 읽는다</span>')
-              + '</span></td></tr>';
-          }).join('')
-        + '</table>'
-        + '<div class="note-if">건너뛴 문장은 <b>앞말을 다시 하는 것</b>뿐이다. '
-        + '어려운 단어가 나와도 결론은 이미 알고 있다.'
-        + (p.sents.length >= 10 ? '<br><span class="g">※ 긴 지문이라 <b>표지가 있는 자리와 그 앞뒤</b>만 실었다.</span>' : '')
+        + '<span><b>대문자 이름</b></span>'
+        + '<span><b>연도 · 숫자</b></span>'
+        + '<span class="g">→ 위 지문에서 그 문장 앞에 <b>✗</b>를 쳐라</span></div>'
+        + '<div class="note-if">이 글에서 건너뛸 문장은 <b>'+nSkip+'개</b>. '
+        + (nSkip ? '건너뛴 문장은 앞말을 다시 하는 것뿐이라 어려운 단어가 나와도 결론은 이미 안다.'
+                 : '표지가 하나도 없다 — <b>건너뛸 게 없는 글</b>도 있다.')
         + '</div>'
-        + '</div>';
+        + '<div class="ans"><div class="ans-box">'
+        + p.skip.filter(function(r){ return r.skip; }).map(function(r){
+            return '<div><span class="k">'+cn(r.n)+'</span>'+esc(r.why)+'</div>';
+          }).join('')
+        + (nSkip ? '' : '<div>표지 없음 — 전 문장을 읽는다</div>')
+        + '</div></div></div>';
     }
+
     if(p._merge) return h;   // A-2가 같은 장에 이어붙는다
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-1</span></div></section>';
   }
@@ -684,7 +680,21 @@ body.show-ans .ans{display:block}
             + '</div></div>' : '')
       + '</div>';
 
-    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span>'+(p._merge?'훈련지 A':'훈련지 A-2')+'</div></section>';
+    /* STEP 6 — 다시 풀기 */
+    h += '<div class="step">'+stepH('STEP 6','다시 풀기','트리를 그린 <b>뒤에</b> 다시 고른다')
+      + '<div class="regrip">'
+      + '<div class="rg-cell"><label>처음 답</label><div class="circle"></div></div>'
+      + '<div class="rg-cell"><label>다시 고른 답</label>'
+      + '<div class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+      + cn(p.ans)+'</span></div></div>'
+      + '<div class="rg-cell wide"><label>답이 바뀌었다면 <b>무엇을 놓쳤나</b> / 그대로면 <b>근거 문장 번호</b></label>'
+      + '<div class="blank"></div></div></div>'
+      + '<div class="note-if">답이 바뀌었다면 <b>트리가 일한 것</b>이다. '
+      + '그대로라면 근거 문장을 댈 수 있는지 확인하라 — 찍어서 맞힌 것과 구별된다.</div>'
+      + '</div>';
+
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span>'
+      + '<span>'+(p._merge ? '훈련지 A' : '훈련지 A-2')+'</span></div></section>';
   }
 
   /* ---------- B ---------- */
@@ -722,11 +732,13 @@ body.show-ans .ans{display:block}
       + fill(p.tree.filter(function(n){return n.head})
              .map(function(n){return cn(n.n)}).join(' · '))+'</div></div>'
       + '<div class="field"><label>요지 한 줄</label>'+fill(esc(p.gist),'blank tall')+'</div>'
-      + '<div class="answer-row"><span class="lab">정답</span>'
-      + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
-      + cn(p.ans)+'</span></span>'
-      + '<span class="lab" style="margin-left:14px">A지 때와 답이 달랐다면 이유</span>'
-      + '<div class="blank" style="flex:1"></div></div></div>';
+      + '<div class="regrip">'
+      + '<div class="rg-cell"><label>처음 답</label><div class="circle"></div></div>'
+      + '<div class="rg-cell"><label>다시 고른 답</label>'
+      + '<div class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+      + cn(p.ans)+'</span></div></div>'
+      + '<div class="rg-cell wide"><label>A지 때와 답이 달랐다면 이유</label>'
+      + '<div class="blank"></div></div></div></div>';
 
     h += '<div class="step">'+stepH('교사','전이 점검')
       + '<table><tr><th style="width:64%">확인 항목</th><th>됨</th><th>안 됨</th></tr>'
@@ -817,6 +829,20 @@ body.show-ans .ans{display:block}
       + '<span class="lab" style="margin-left:14px">45번 틀린 이유</span>'
       + fill(esc(p.why45))+'</div></div>';
 
+    /* STEP D — 다시 풀기 */
+    h += '<div class="step">'+stepH('STEP D','다시 풀기','순서·지칭을 잡은 <b>뒤에</b> 다시 고른다')
+      + '<table><tr><th style="width:16%">문항</th><th style="width:16%">처음 답</th>'
+      + '<th style="width:16%">다시 고른 답</th><th>바뀌었다면 무엇을 놓쳤나</th></tr>'
+      + [[43,p.ans43],[44,p.ans44],[45,p.ans45]].map(function(r){
+          return '<tr><td style="text-align:center" class="cn">'+r[0]+'번</td>'
+            + '<td style="height:26px"></td>'
+            + '<td class="filled" style="text-align:center"><span class="fx" '
+            + 'style="font-weight:700">'+cn(r[1])+'</span></td><td></td></tr>';
+        }).join('')
+      + '</table>'
+      + '<div class="note-if">순서를 다시 세운 뒤 답이 바뀌었다면 <b>단락 첫 문장 읽기가 일한 것</b>이다.</div>'
+      + '</div>';
+
     h += (p.teachNote ? '<div class="ans"><div class="ans-box">'+p.teachNote+'</div></div>' : '');
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열 2/2</span></div></section>';
   }
@@ -865,12 +891,13 @@ body.show-ans .ans{display:block}
           + '</div></div></div>';
       }
 
-      h += '<div class="answer-row" style="margin-top:1mm">'
-        + '<span class="lab">정답</span>'
-        + '<span class="circle filled"><span class="fx" style="font-size:12.5px;font-weight:700">'
-        + cn(p.ans)+'</span></span>'
-        + '<span class="lab" style="margin-left:12px">고른 근거</span>'
-        + '<div class="blank filled" style="flex:1"><span class="fx">'+esc(p.fastWhy)+'</span></div></div>';
+      h += '<div class="regrip" style="margin-top:1mm">'
+        + '<div class="rg-cell"><label>처음</label><div class="circle"></div></div>'
+        + '<div class="rg-cell"><label>다시</label>'
+        + '<div class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+        + cn(p.ans)+'</span></div></div>'
+        + '<div class="rg-cell wide"><label>고른 근거 (몇 번째 문장 · 단서)</label>'
+        + '<div class="blank filled"><span class="fx">'+esc(p.fastWhy)+'</span></div></div></div>';
 
       h += (p.teachNote ? '<div class="ans"><div class="ans-box">'+esc(p.teachNote)+'</div></div>' : '');
       h += '</div>';
