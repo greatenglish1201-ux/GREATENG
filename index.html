@@ -2041,16 +2041,25 @@ ${ESC_}
                 <span>👥 학생별 정답률</span>
                 <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600}}>랭킹포인트 = 문항 수 보정 점수</span>
               </div>
-              {(stats.studentStats||[]).filter(s=>s.name!=='관리자').map((s,i)=>{
+              {(()=>{
+                const list=(stats.studentStats||[]).filter(s=>s.name!=='관리자');
+                // GAS가 ranked(표본 충족)를 보내면 그 값으로, 없으면 100문항 기준으로 판정
+                const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.total)||0)>=100);
+                let rankNo=0;
+                return list.map((s,i)=>{
                 const rc=v=>v>=80?'#16a34a':v>=60?'#f59e0b':'#dc2626';
                 const hasAdj=s.adjRate!=null;
-                return <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',gap:10}}
+                const ranked=isRanked(s);
+                if(ranked) rankNo++;
+                const need=s.needMore!=null?s.needMore:Math.max(0,100-(Number(s.total)||0));
+                return <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',gap:10,background:ranked?'transparent':'#fcfaf5'}}
                   onClick={()=>{setSelectedStudent(s.name);loadStats(s.name);}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,minWidth:0}}>
-                    <span style={{fontSize:13,fontWeight:800,color:i<3?'#C9A84C':'#c9bda5',minWidth:18,textAlign:'center'}}>{i+1}</span>
+                    <span style={{fontSize:13,fontWeight:800,color:ranked?(rankNo<=3?'#C9A84C':'#c9bda5'):'#d8cdb8',minWidth:18,textAlign:'center'}}>{ranked?rankNo:'—'}</span>
                     <div style={{minWidth:0}}>
                       <span style={{fontSize:13,fontWeight:700,color:'#3a2a20'}}>{s.name}</span>
                       <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항</span>
+                      {!ranked&&<span style={{fontSize:10,color:'#b08968',marginLeft:6,background:'#fdf6e9',border:'1px solid #ead9bd',borderRadius:6,padding:'1px 6px',whiteSpace:'nowrap'}}>랭킹 진입까지 {need}문항</span>}
                     </div>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
@@ -2064,7 +2073,8 @@ ${ESC_}
                     </div>}
                   </div>
                 </div>;
-              })}
+                });
+              })()}
             </div>}
             {/* 학생 선택 시: 종합 요약 */}
             {selectedStudent&&(stats.typeStats||[]).length>0&&(()=>{
