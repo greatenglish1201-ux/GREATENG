@@ -1347,36 +1347,42 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       .then(d=>setAllQPids((d&&d.ok&&d.pids)||[]))
       .catch(()=>setAllQPids([]));
   },[scriptUrl]);
-  // 숨김(비공개·보관) 지문 pid 집합 — 시험 범위 목록에서 제외용
-  const [hiddenPids,setHiddenPids]=useState(null);
+  // 지문DB(시트)에 살아있는 '공개' 지문 pid 집합.
+  //   시험 범위 목록은 이 집합을 기준으로 거릅니다.
+  //   → 숨김(is_public=FALSE)·보관(archived)은 물론,
+  //     지문DB에서 삭제·다른 시트로 옮긴 교재도 자동으로 목록에서 사라짐.
+  const [livePids,setLivePids]=useState(null);
   React.useEffect(()=>{
-    if(!scriptUrl){setHiddenPids(new Set());return;}
+    if(!scriptUrl){setLivePids(null);return;}
     jsonpFetch(scriptUrl,{action:'getPassages'})
       .then(d=>{
         const arr=(d&&d.passages)||[];
-        const hid=new Set();
+        if(!arr.length){setLivePids(null);return;} // 응답이 비면 필터 미적용(안전)
+        const live=new Set();
         arr.forEach(p=>{
           const pub=(p.is_public==='TRUE'||p.is_public===true);
-          if(!pub||isArchived(p)) hid.add(p.id);
+          if(pub&&!isArchived(p)) live.add(p.id);
         });
-        setHiddenPids(hid);
+        setLivePids(live);
       })
-      .catch(()=>setHiddenPids(new Set()));
+      .catch(()=>setLivePids(null));
   },[scriptUrl]);
   // 범위 트리/분모용 통합 pid 풀: passages.js(정적) ∪ 출제DB(GAS).
   // 정적은 allPassages 규칙과 동일하게 27STYD·27ST_E_test 제외(시트 전용).
-  // 숨김 처리된 교재/지문은 시험 범위 목록에서 제외.
+  // 시트 기반 pid는 지문DB에 살아있는 공개 지문만 포함(숨김·삭제·이동 교재 제외).
   const rangePidPool=useMemo(()=>{
-    const set=new Set();
+    const staticIds=new Set();
     try{ (typeof PASSAGES!=='undefined'?PASSAGES:[]).forEach(p=>{
       const id=p&&p.id||''; if(!id)return;
       if(id.startsWith('27STYD')||id.startsWith('27ST_E_test'))return;
-      set.add(id);
+      staticIds.add(id);
     }); }catch{}
+    const set=new Set(staticIds);
     (Array.isArray(allQPids)?allQPids:[]).forEach(pid=>set.add(pid));
-    if(hiddenPids&&hiddenPids.size) return [...set].filter(pid=>!hiddenPids.has(pid));
-    return [...set];
-  },[allQPids,hiddenPids]);
+    if(!livePids) return [...set]; // 지문DB 로딩 전/실패 시 필터 미적용
+    // 정적 파일 지문은 그대로 두고, 시트에서 온 pid만 '살아있는 공개 지문'으로 제한
+    return [...set].filter(pid=>staticIds.has(pid)||livePids.has(pid));
+  },[allQPids,livePids]);
   const [wrongSort,setWrongSort]=useState('count'); // 'count'=틀린 횟수순, 'ratio'=틀린 비율순
   // 화면·인쇄 공통 정렬 (어긋남 방지). sortMode 미지정 시 현재 wrongSort 사용.
   const sortWrongs=(arr,sortMode)=>{
