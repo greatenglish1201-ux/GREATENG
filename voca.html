@@ -940,6 +940,7 @@
                     if(rmEl) rmEl.checked = true;
                     if(savedPw && pwEl){
                         pwEl.value = savedPw;
+                        vocaAutoLoginTry = (savedName === '관리자');   // 관리자 자동 로그인 시도 표시
                         checkConfig();   // 이름·비번 기억된 경우 자동 로그인
                     }
                 }
@@ -966,6 +967,8 @@
        ============================================================ */
     let adminAuthed = (function(){ try{ var t=parseInt(localStorage.getItem('voca_admin_authed_at')||'0',10); return t && (Date.now()-t) < 7*24*60*60*1000; }catch(e){ return false; } })(); // 7일간 유지(새 탭·재시작 무관)
 
+    // 자동 로그인으로 관리자 인증을 시도 중인지 표시 (수동 입력 실패와 구분하기 위함)
+    let vocaAutoLoginTry = false;
     function tryGoAdmin() {
         const pw = document.getElementById('admin-pw-input').value;
         const errEl = document.getElementById('admin-pw-err');
@@ -980,20 +983,48 @@
             done = true; cleanup();
             if (data && data.ok) {
                 adminAuthed = true;
+                vocaAutoLoginTry = false;
                 try { localStorage.setItem('voca_admin_authed_at', String(Date.now())); } catch(e){}
+                // 자동 로그인 저장 — 관리자 경로도 학생과 동일하게 처리
+                // (checkConfig의 저장 블록은 학생 인증 뒤에만 있어서 관리자는 저장이 안 됐음)
+                try {
+                    const rememberEl = document.getElementById('st-remember');
+                    if(rememberEl && rememberEl.checked){
+                        localStorage.setItem('voca_name', '관리자');
+                        localStorage.setItem('voca_pw', pw);
+                        localStorage.setItem('voca_remember', '1');
+                    } else {
+                        localStorage.removeItem('voca_name');
+                        localStorage.removeItem('voca_pw');
+                        localStorage.removeItem('voca_remember');
+                    }
+                } catch(e){}
                 document.getElementById('admin-pw-input').value = "";
                 document.getElementById('admin-pw-modal').style.display = 'none';
                 enterAdmin();
             } else {
+                // 자동 로그인 시도에서 실패하면 저장된 정보가 낡은 것 —
+                // 매번 조용히 실패하지 않도록 지운다. 수동 입력 실패는 그대로 오류만 표시.
+                const wasAuto = vocaAutoLoginTry;
+                vocaAutoLoginTry = false;
+                if(wasAuto){
+                    try {
+                        localStorage.removeItem('voca_name');
+                        localStorage.removeItem('voca_pw');
+                        localStorage.removeItem('voca_remember');
+                    } catch(e){}
+                    document.getElementById('status-msg').innerText = "자동 로그인 정보가 만료되었습니다. 다시 로그인해 주세요.";
+                    return;
+                }
                 errEl.innerText = "비밀번호가 틀렸습니다."; errEl.style.display = "block";
             }
         };
         const s = document.createElement('script');
         s.id = cbName;
         s.src = HW_URL + "?type=adminCheck&pw=" + encodeURIComponent(pw) + "&callback=" + cbName + "&t=" + Date.now();
-        s.onerror = ()=>{ if(done) return; cleanup(); errEl.innerText="서버 연결 실패"; errEl.style.display="block"; };
+        s.onerror = ()=>{ if(done) return; cleanup(); vocaAutoLoginTry = false; errEl.innerText="서버 연결 실패"; errEl.style.display="block"; };
         document.body.appendChild(s);
-        setTimeout(()=>{ if(done) return; cleanup(); errEl.innerText="서버 연결 실패"; errEl.style.display="block"; }, 8000);
+        setTimeout(()=>{ if(done) return; cleanup(); vocaAutoLoginTry = false; errEl.innerText="서버 연결 실패"; errEl.style.display="block"; }, 8000);
     }
     function hw_closeAdminModal(){
         document.getElementById('admin-pw-modal').style.display = 'none';
