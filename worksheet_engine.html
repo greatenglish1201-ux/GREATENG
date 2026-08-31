@@ -54,9 +54,6 @@ i.it{font-style:italic}
 .sheet-b .head .t1{color:var(--green)}
 .sheet-b .step-h .n{background:var(--green)}
 
-.namebar{display:flex; border:1px solid var(--line); margin-bottom:3.5mm; font-size:10.5px}
-.namebar div{padding:4px 8px; border-right:1px solid var(--line); color:var(--grey)}
-.namebar div:last-child{border-right:0; flex:1}
 
 /* ---------- 지문 ---------- */
 .qnum{font-weight:700; font-size:14px; margin-bottom:3px}
@@ -272,9 +269,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 .sheet.merged{padding:10mm 12mm}
 .sheet.merged .head{margin-bottom:2mm; padding-bottom:3px}
 .sheet.merged .head .t2{font-size:15.5px}
-.sheet.merged .namebar{margin-bottom:2.4mm; font-size:10.6px}
-.sheet.merged .namebar div{padding:2px 7px}
-.sheet.merged .qnum{font-size:13.2px; margin-bottom:3px}
+.sheet.merged .sheet.merged .sheet.merged .qnum{font-size:13.2px; margin-bottom:3px}
 .sheet.merged .passage{font-size:12.6px; line-height:1.68; padding:7px 10px; margin-bottom:2.2mm}
 .sheet.merged .note{font-size:9.5px; margin-bottom:1.4mm}
 .sheet.merged .choices{font-size:11.8px; line-height:1.65; margin-bottom:2.2mm}
@@ -328,8 +323,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 .sheet.dense .note-if{font-size:10px; padding:2px 0 2px 7px}
 .sheet.dense .legend{padding:4px 8px; font-size:10px; margin-bottom:3px}
 .sheet.dense .head{margin-bottom:2.5mm; padding-bottom:4px}
-.sheet.dense .namebar{margin-bottom:2.5mm}
-.sheet.dense .foot{margin-top:2.5mm}
+.sheet.dense .sheet.dense .foot{margin-top:2.5mm}
 
 /* ---------- 장문 배열 (43~45) ---------- */
 .sheet-o .head{border-bottom-color:var(--steel2)}
@@ -367,8 +361,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 .sheet-f .answer-row{margin-top:.8mm}
 .sheet-f .circle{width:19px; height:19px}
 .sheet-f .legend{padding:5px 9px; margin-bottom:3mm; gap:12px; font-size:11px}
-.sheet-f .namebar{margin-bottom:2.2mm; font-size:10px}
-.sheet-f .foot{margin-top:2mm}
+.sheet-f .sheet-f .foot{margin-top:2mm}
 .sheet-f .head{margin-bottom:2.4mm; padding-bottom:4px}
 .sheet-f .head .t2{font-size:15.5px}
 /* 교사용 해설을 켠 채로 인쇄하면 3문항이 한 장을 넘어감 → 해설만 압축 */
@@ -469,7 +462,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260828o"></script>
+<script src="passages_final.js?v=20260828q"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -499,12 +492,9 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     return '<div class="head"><div><div class="t1">'+t[0]+'</div><div class="t2">'+t[1]+'</div></div>'
       + '<div class="meta">'+esc(p.src)+' · '+esc(p.qtype)
       + ' · 난이도 '+ new Array((p.star||1)+1).join('★') + (extra ? ' · '+extra : '')
-      + '<br><span class="nm">이름 ______________ &nbsp;/&nbsp; 날짜 ________</span>'
+      + '<br><span class="nm">이름 ____________</span>'
       + (total > 1 ? '<span class="g" style="margin-left:10px">'+part+'/'+total+'</span>' : '')
       + '</div></div>';
-  }
-  function namebar(cols){
-    return '<div class="namebar">'+cols.map(function(c){return '<div>'+c+'</div>'}).join('')+'<div></div></div>';
   }
   /* 해설 ON일 때 빈칸/박스 자리에 모범답안을 직접 넣는다.
      val이 없으면 빈칸 그대로. 인쇄 시 학생용은 해설 OFF로 뽑을 것. */
@@ -618,7 +608,6 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     var flat = p.sents.join(' ');
     var h = '<section class="sheet sheet-b" data-id="'+p.id+'">';
     h += head(p, 3, 3, '');
-    h += namebar(['이름','날짜','걸린 시간']);
 
     if(lv <= 3){
         + '<span><b>●</b> 머리 문장</span><span><b>–</b> 딸림(예시·부연)</span>'
@@ -637,22 +626,14 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
           return cn(i+1)+' '+c;
         }).join('<br>')+'</div>')+'</div></div>';
 
-    h += '<div class="step step-grow">'+stepH('확인','푼 다음 30초 안에','A지 트리를 안 보고 채운다')
-      + '<div class="check-strip">'
-      + '<div class="field"><label>핵심어</label>'+fill(esc(p.key))+'</div>'
-      + '<div class="field"><label>방향 (+ / −)</label>'
-      + fill(p.dir==='통념' ? '통념 → 반전' : (p.dir==='긍정'?'+':'−'))+'</div>'
-      + '<div class="field"><label>머리 문장은 어디였나 (첫 3단어)</label>'
-      + fill(p.tree.filter(function(n){return n.head})
-             .map(function(n){return cn(n.n)}).join(' · '))+'</div></div>'
-      + '<div class="field"><label>요지 한 줄</label>'+fill(esc(p.gist),'blank tall')+'</div>'
-      + '<div class="regrip">'
-      + '<div class="rg-cell"><label>처음 답</label><div class="circle"></div></div>'
-      + '<div class="rg-cell"><label>다시 고른 답</label>'
-      + '<div class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
-      + cn(p.ans)+'</span></div></div>'
-      + '<div class="rg-cell wide"><label>A지 때와 답이 달랐다면 이유</label>'
-      + '<div class="blank"></div></div></div></div>';
+    h += '<div class="step">'+stepH('확인','트리 없이 다시','핵심만 적는다')
+      + '<div class="fchk">'
+      + '<span class="fl">핵심어</span>'+fill(esc(p.key||'').replace(/<[^>]+>/g,''))
+      + '<span class="fl">정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+      + cn(p.ans)+'</span></span></div>'
+      + '<div class="fchk" style="margin-top:1.5mm">'
+      + '<span class="fl">요지 한 줄</span>'+fill(esc(p.gist))+'</div></div>';
 
     h += (p.teachNote ? '<div class="ans"><div class="ans-box">'
         + '<span class="k">점검</span>기호만 썼는가 · 신호어를 스스로 찾았는가 · '
@@ -668,7 +649,6 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     h += '<div class="head"><div><div class="t1">LONG · 단락 배열</div>'
       + '<div class="t2">시간축과 지칭으로 잇는다</div></div>'
       + '<div class="meta">'+esc(p.src)+'<br><span class="timer">목표 '+(p.time||150)+'초</span></div></div>';
-    h += namebar(['이름','날짜','걸린 시간']);
 
     h += '<div class="legend" style="border-color:var(--steel2)">'
       + '<span class="lgttl" style="color:var(--steel2)">이 유형은 흐름 트리를 그리지 않는다</span>'
@@ -682,25 +662,13 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     });
     if(p.note) h += '<div class="note">'+p.note+'</div>';
 
-    /* 단락 첫 문장 요약 */
-    h += '<div class="step">'+stepH('STEP A','단락별 한 줄','첫 문장만 보고 쓴다')
-      + '<table><tr><th style="width:8%">단락</th><th style="width:46%">무슨 일이 있었나</th>'
-      + '<th>그래서 앞뒤 어디에 오나</th></tr>'
+    /* 단락 요약은 해설로만 */
+    h += '<div class="ans"><div class="ans-box">'
       + p.paras.map(function(pa){
-          return '<tr><td style="text-align:center" class="cn">('+pa.tag+')</td>'
-            + '<td class="filled" style="height:24px"><span class="fx">'+esc(pa.gist)+'</span></td>'
-            + '<td class="filled"><span class="fx">'+esc(pa.cue)+'</span></td></tr>';
+          return '<div><span class="k">('+pa.tag+')</span>'+esc(pa.gist)+' — '+pa.cue+'</div>';
         }).join('')
-      + '</table></div>';
+      + '</div></div>';
 
-    h += '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span>'
-      + '<span>장문 배열 1/2</span></div></section>';
-
-    /* ===== 2장 ===== */
-    h += '<section class="sheet sheet-o">';
-    h += '<div class="head"><div><div class="t1">LONG · 단락 배열</div>'
-      + '<div class="t2">순서와 지칭</div></div>'
-      + '<div class="meta">'+esc(p.src)+'<br><span class="g">2 / 2</span></div></div>';
 
     /* 순서 */
     h += '<div class="step">'+stepH('STEP B','순서 세우기')
@@ -718,43 +686,27 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
       + fill(esc(p.orderWhy))+'</div></div>';
 
     /* 지칭 */
-    h += '<div class="step">'+stepH('STEP C','지칭 추적','44번 - 하나만 다른 사람을 가리킨다')
-      + '<table><tr><th style="width:10%">밑줄</th><th style="width:24%">표현</th>'
-      + '<th style="width:26%">누구를 가리키나</th><th>근거</th></tr>'
+    h += '<div class="step">'+stepH('STEP C','지칭 추적','44번 - 하나만 다른 사람')
+      + '<div class="fchk" style="flex-wrap:wrap; gap:6px 14px">'
       + p.refs.map(function(r){
-          return '<tr><td style="text-align:center" class="cn">('+r.tag+')</td>'
-            + '<td class="eng" style="width:auto"><b>'+esc(r.word)+'</b></td>'
-            + '<td class="filled" style="height:24px"><span class="fx">'
-            + (r.who===p.refOdd ? '<b style="color:var(--wine)">'+esc(r.who)+' ← 정답</b>' : esc(r.who))
-            + '</span></td>'
-            + '<td class="filled"><span class="fx">'+esc(r.why)+'</span></td></tr>';
+          return '<span class="fl">('+r.tag+') '+esc(r.word)+'</span>'
+            + '<span class="blank filled" style="flex:0 0 62px"><span class="fx">'
+            + (r.who===p.refOdd ? '<b style="color:var(--wine)">'+esc(r.who)+'</b>' : esc(r.who))
+            + '</span></span>';
         }).join('')
-      + '</table>'
-      + '<div class="answer-row"><span class="lab">44번 정답</span>'
-      + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
-      + cn(p.ans44)+'</span></span>'
-      + '<span class="lab" style="margin-left:14px">45번 정답</span>'
-      + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
-      + cn(p.ans45)+'</span></span>'
-      + '<span class="lab" style="margin-left:14px">45번 틀린 이유</span>'
-      + fill(esc(p.why45))+'</div></div>';
-
-    /* STEP D — 다시 풀기 */
-    h += '<div class="step">'+stepH('STEP D','다시 풀기','순서·지칭을 잡은 <b>뒤에</b> 다시 고른다')
-      + '<table><tr><th style="width:16%">문항</th><th style="width:16%">처음 답</th>'
-      + '<th style="width:16%">다시 고른 답</th><th>바뀌었다면 무엇을 놓쳤나</th></tr>'
-      + [[43,p.ans43],[44,p.ans44],[45,p.ans45]].map(function(r){
-          return '<tr><td style="text-align:center" class="cn">'+r[0]+'번</td>'
-            + '<td style="height:26px"></td>'
-            + '<td class="filled" style="text-align:center"><span class="fx" '
-            + 'style="font-weight:700">'+cn(r[1])+'</span></td><td></td></tr>';
-        }).join('')
-      + '</table>'
-      + '<div class="note-if">순서를 다시 세운 뒤 답이 바뀌었다면 <b>단락 첫 문장 읽기가 일한 것</b>이다.</div>'
-      + '</div>';
+      + '</div>'
+      + '<div class="fchk" style="margin-top:1.5mm">'
+      + '<span class="fl">44번</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'+cn(p.ans44)+'</span></span>'
+      + '<span class="fl">45번</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'+cn(p.ans45)+'</span></span>'
+      + '<span class="fl">45번 틀린 이유</span>'+fill(esc(p.why45))+'</div>'
+      + '<div class="ans"><div class="ans-box">'
+      + p.refs.map(function(r){ return '<div><span class="k">('+r.tag+')</span>'+esc(r.who)+' — '+r.why+'</div>'; }).join('')
+      + '</div></div></div>';
 
     h += (p.teachNote ? '<div class="ans"><div class="ans-box">'+p.teachNote+'</div></div>' : '');
-    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열 2/2</span></div></section>';
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열</span></div></section>';
   }
 
   /* ---------- 속독지 — 3문항 한 장, 최소 구성 ---------- */
