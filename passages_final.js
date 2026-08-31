@@ -1366,6 +1366,376 @@ window.PASSAGES = [
            + "44번은 (c) he만 Sean이고 나머지 넷은 Ethan - <b>제안한 쪽과 받은 쪽</b>을 가르는 것이 전부다. "
            + "순서는 <b>재킷의 이동</b>만 따라가면 잡힌다: 맡겨둠(A) → 찾음(C) → 갖고 옴(B) → 입고 감(D). "
            + "<u>사물의 위치를 따라가는 것</u>도 시간축 추적의 한 방법임을 가르칠 것."
+},
+
+/* ===== 2024수능 속독 ===== */
+{
+  id: "s24_18_webtoon", src: "2024수능 18번", qnum: 18, qtype: "목적",
+  qtext: "다음 글의 목적으로 가장 적절한 것은?", star: 1, time: 40, fast: true,
+  sents: [
+    "I\u2019m Charlie Reeves, manager of Toon Skills Company.",
+    "If you\u2019re interested in new webtoon-making skills and techniques, this post is for you.",
+    "This year, we\u2019ve launched special online courses, which contain a variety of contents about webtoon production.",
+    "Each course consists of ten units that help improve your drawing and story-telling skills.",
+    "Moreover, these courses are designed to suit any level, from beginner to advanced.",
+    "It costs $45 for one course, and you can watch your course as many times as you want for six months.",
+    "Our courses with talented and experienced instructors will open up a new world of creativity for you.",
+    "It\u2019s time to start creating your webtoon world at https://webtoonskills.com."
+  ],
+  choices: ["웹툰 제작 온라인 강좌를 홍보하려고","웹툰 작가 채용 정보를 제공하려고",
+            "신작 웹툰 공개 일정을 공지하려고","웹툰 창작 대회에 출품을 권유하려고",
+            "기초적인 웹툰 제작 방법을 설명하려고"],
+  ans: 1,
+  key: "<b class=w>online courses</b> - 웹툰 제작 온라인 강좌",
+  attr: "<b class=w>we\u2019ve launched special online courses</b> (3) - 강좌를 열었다",
+  dir: "긍정",
+  fastWhy: "3번 <b class=w>we\u2019ve launched special online courses</b>. 이후 구성·수강료·기간이 이어지므로 <b>홍보문</b>. "
+         + "안내문형은 <b>무엇을 열었나</b>만 잡으면 끝난다.",
+  teachNote: "2026·2025의 18번(요청·취소)과 달리 <b>홍보문</b>이다. 세 유형(요청·공지·홍보)을 여기서 비교해 줄 것."
+},
+{
+  id: "s24_19_david", src: "2024수능 19번", qnum: 19, qtype: "심경",
+  qtext: "다음 글에 드러난 David의 심경 변화로 가장 적절한 것은?", star: 1, time: 45,
+  fast: true, fastMode: "mood",
+  sents: [
+    "David was starting a new job in Vancouver, and he was waiting for his bus.",
+    "He kept looking back and forth between his watch and the direction the bus would come from.",
+    "He thought, \u201cMy bus isn\u2019t here yet. I can\u2019t be late on my first day.\u201d",
+    "David couldn\u2019t feel at ease.",
+    "When he looked up again, he saw a different bus coming that was going right to his work.",
+    "The bus stopped in front of him and opened its door.",
+    "He got on the bus thinking, \u201cPhew! Luckily, this bus came just in time so I won\u2019t be late.\u201d",
+    "He leaned back on an unoccupied seat in the bus and took a deep breath, finally able to relax."
+  ],
+  choices: ["nervous → relieved","lonely → hopeful","pleased → confused",
+            "indifferent → delighted","bored → thrilled"],
+  ans: 1,
+  moodPivot: "<b class=w>When he looked up again</b> (5)",
+  fastWhy: "앞 <b class=w>kept looking back and forth · couldn\u2019t feel at ease</b> (불안) → "
+         + "뒤 <b class=w>Phew! Luckily · took a deep breath, finally able to relax</b> (안도).",
+  teachNote: "전환 신호어가 <b>없는</b> 심경 변화. 2026(Suddenly)·2025(Unfortunately)와 대비 - "
+           + "<u>상황이 바뀌는 문장</u>(버스가 왔다)이 곧 전환점임을 가르칠 것."
+},
+{
+  id: "s24_20_playbook", src: "2024수능 20번", qnum: 20, qtype: "주장",
+  qtext: "다음 글에서 필자가 주장하는 바로 가장 적절한 것은?", star: 1, time: 50,
+  fast: true,
+  sents: [
+    "Values alone do not create and build culture.",
+    "Living your values only some of the time does not contribute to the creation and maintenance of culture.",
+    "Changing values into behaviors is only half the battle.",
+    "Certainly, this is a step in the right direction, but those behaviors must then be shared and distributed widely throughout the organization, along with a clear and concise description of what is expected.",
+    "It is not enough to simply talk about it.",
+    "It is critical to have a visual representation of the specific behaviors that leaders and all people managers can use to coach their people.",
+    "Just like a sports team has a playbook with specific plays designed to help them perform well and win, your company should have a playbook with the key shifts needed to transform your culture into action and turn your values into winning behaviors."
+  ],
+  choices: [
+    "조직 문화 혁신을 위해서 모든 구성원이 공유할 핵심 가치를 정립해야 한다.",
+    "조직 구성원의 행동을 변화시키려면 지도자는 명확한 가치관을 가져야 한다.",
+    "조직 내 문화가 공유되기 위해서 구성원의 자발적 행동이 뒷받침되어야 한다.",
+    "조직의 핵심 가치 실현을 위해 구성원 간의 지속적인 의사소통이 필수적이다.",
+    "조직의 문화 형성에는 가치를 반영한 행동의 공유를 위한 명시적 지침이 필요하다."
+  ],
+  ans: 5,
+  key: "<b class=w>values</b> + <b class=w>culture</b> - 가치와 조직 문화",
+  attr: "<b class=w>Values alone do not create and build culture</b> (1) - 가치만으로는 안 된다",
+  dir: "부정",
+  fastWhy: "1번 <b class=w>Values alone do not</b>가 방향(부정). 6번 <b class=w>It is critical to have a visual representation</b>, "
+         + "7번 <b class=w>your company should have a playbook</b>가 주장. <b>critical·should</b>가 답을 가리킨다.",
+  teachNote: "2025-20(통념 반전)과 달리 <b>처음부터 부정</b>으로 시작해 대안을 제시하는 형. "
+           + "주장 문항 3유형(첫문장 직진 / 통념반전 / 부정→대안)을 여기서 완성할 것."
+},
+
+/* ===== 2024수능 ===== */
+{
+  id: "s24_21_nonstick", src: "2024수능 21번", qnum: 21, qtype: "함축",
+  qtext: "밑줄 친 <b>a nonstick frying pan</b>이 다음 글에서 의미하는 바로 가장 적절한 것은? [3점]",
+  star: 3, time: 90, note: "* provoke: 유발시키다",
+  sents: [
+    "How you focus your attention plays a critical role in how you deal with stress.",
+    "Scattered attention harms your ability to let go of stress, because even though your attention is scattered, it is narrowly focused, for you are able to fixate only on the stressful parts of your experience.",
+    "When your attentional spotlight is widened, you can more easily let go of stress.",
+    "You can put in perspective many more aspects of any situation and not get locked into one part that ties you down to superficial and anxiety-provoking levels of attention.",
+    "A narrow focus heightens the stress level of each experience, but a widened focus turns down the stress level because you\u2019re better able to put each situation into a broader perspective.",
+    "One anxiety-provoking detail is less important than the bigger picture.",
+    "It\u2019s like transforming yourself into <u>a nonstick frying pan</u>.",
+    "You can still fry an egg, but the egg won\u2019t stick to the pan."
+  ],
+  choices: [
+    "never being confronted with any stressful experiences in daily life",
+    "broadening one\u2019s perspective to identify the cause of stress",
+    "rarely confining one\u2019s attention to positive aspects of an experience",
+    "having a larger view of an experience beyond its stressful aspects",
+    "taking stress into account as the source of developing a wide view"
+  ],
+  ans: 4,
+  key: "<b class=w>focus your attention</b> - 주의를 어떻게 두느냐",
+  attr: "<b class=w>plays a critical role in how you deal with stress</b> (1) - 스트레스 대처를 좌우한다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Scattered attention harms your ability...", skip:false},
+    {n:3, head:"When your attentional spotlight is widened...", skip:false},
+    {n:4, head:"You can put in perspective many more aspects...", skip:false},
+    {n:5, head:"A narrow focus heightens the stress level...", skip:false},
+    {n:6, head:"One anxiety-provoking detail is less important...", skip:false},
+    {n:7, head:"It\u2019s like transforming yourself into a nonstick frying pan.", skip:false},
+    {n:8, head:"You can still fry an egg, but the egg won\u2019t stick...", skip:false}
+  ],
+  trunk1: "주의를 넓게 두면 스트레스가 덜 붙는다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"주의를 어떻게 두느냐가 스트레스 대처를 좌우한다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"주의가 흩어지면 스트레스 부분에만 고착된다"},
+    {n:3, lb:"주장",     head:true,  txt:"주의의 초점을 <b>넓히면</b> 스트레스를 놓아버리기 쉽다"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"상황을 여러 각도로 보고 한 부분에 갇히지 않는다"},
+    {n:5, lb:"근거",     head:false, to:3, txt:"좁은 초점은 스트레스를 높이고 넓은 초점은 낮춘다"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"불안을 유발하는 한 가지 세부보다 큰 그림이 중요"},
+    {n:7, lb:"비유",     head:false, to:3, txt:"눌어붙지 않는 프라이팬이 되는 것과 같다"},
+    {n:8, lb:"부연",     head:false, to:7, txt:"계란은 여전히 부치지만 팬에 들러붙지 않는다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 8번까지 그대로 간다"},
+  pivotSub: "5번의 <b>but</b>은 좁은 초점 ↔ 넓은 초점을 <u>한 문장 안에서</u> 견주는 것. 줄기를 바꾸지 않는다.",
+  implied: {
+    phrase: "a nonstick frying pan",
+    restateAt: [3, 8],
+    model: "스트레스 경험을 <b>더 큰 시야로</b> 보아 그것이 나에게 들러붙지 않게 하는 상태"
+  },
+  gist: "주의의 초점을 넓히면 스트레스가 자신에게 들러붙지 않는다.",
+  wrong: {
+    "1": "스트레스를 <b>겪지 않는다</b>가 아님 - 8번 '계란은 여전히 부친다'가 반박",
+    "2": "스트레스의 <b>원인을 찾는</b> 글이 아님",
+    "3": "긍정적인 면에만 주의를 두라는 말이 아님",
+    "5": "스트레스를 <b>넓은 시야의 원천</b>으로 삼는 것 - 인과가 거꾸로"
+  },
+  wrongNote: "①이 최대 함정. nonstick을 '스트레스가 아예 없다'로 읽으면 걸린다. <b>8번이 정확히 그걸 막아준다</b> - 계란은 부친다.",
+  teachNote: "비유의 <b>뒷문장이 해설</b>인 전형. 7번만 보면 못 풀고 8번 <b>You can still fry an egg</b>를 봐야 한다. "
+           + "STEP 3(함축)에서 8번을 반드시 짚게 할 것."
+},
+{
+  id: "s24_22_compliment", src: "2024수능 22번", qnum: 22, qtype: "요지",
+  qtext: "다음 글의 요지로 가장 적절한 것은?", star: 2, time: 60, note: "* compliment: 칭찬",
+  sents: [
+    "Being able to prioritize your responses allows you to connect more deeply with individual customers, be it a one-off interaction around a particularly delightful or upsetting experience, or the development of a longer-term relationship with a significantly influential individual within your customer base.",
+    "If you\u2019ve ever posted a favorable comment \u2014 or any comment, for that matter \u2014 about a brand, product or service, think about what it would feel like if you were personally acknowledged by the brand manager, for example, as a result.",
+    "In general, people post because they have something to say \u2014 and because they want to be recognized for having said it.",
+    "In particular, when people post positive comments they are expressions of appreciation for the experience that led to the post.",
+    "While a compliment to the person standing next to you is typically answered with a response like \u201cThank You,\u201d the sad fact is that most brand compliments go unanswered.",
+    "These are lost opportunities to understand what drove the compliments and create a solid fan based on them."
+  ],
+  choices: [
+    "고객과의 관계 증진을 위해 고객의 브랜드 칭찬에 응답하는 것은 중요하다.",
+    "고객의 피드백을 면밀히 분석함으로써 브랜드의 성공 가능성을 높일 수 있다.",
+    "신속한 고객 응대를 통해서 고객의 긍정적인 반응을 이끌어 낼 수 있다.",
+    "브랜드 매니저에게는 고객의 부정적인 의견을 수용하는 태도가 요구된다.",
+    "고객의 의견을 경청하는 것은 브랜드의 새로운 이미지 창출에 도움이 된다."
+  ],
+  ans: 1,
+  key: "<b class=w>prioritize your responses</b> - 고객 반응에 응답하기",
+  attr: "<b class=w>allows you to connect more deeply with individual customers</b> (1) - 고객과 더 깊이 연결된다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"If you\u2019ve ever posted a favorable comment... <b>for example</b>", skip:true,
+     why:"<b>for example</b> - 독자에게 상황을 가정해 보게 하는 예시"},
+    {n:3, head:"In general, people post because...", skip:false},
+    {n:4, head:"In particular, when people post positive comments...", skip:false},
+    {n:5, head:"While a compliment to the person standing next to you...", skip:false},
+    {n:6, head:"These are lost opportunities to understand...", skip:false}
+  ],
+  trunk1: "응답하면 고객과 깊이 연결된다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"응답에 우선순위를 두면 고객과 더 깊이 연결된다"},
+    {n:2, lb:"예시",     head:false, to:1, txt:"내가 쓴 칭찬에 브랜드가 직접 답해준다면 어떨까"},
+    {n:3, lb:"근거",     head:false, to:1, txt:"사람들은 할 말이 있어서, 그리고 인정받고 싶어서 글을 쓴다"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"특히 긍정적 댓글은 좋은 경험에 대한 감사 표현이다"},
+    {n:5, lb:"근거",     head:false, to:1, txt:"옆사람 칭찬엔 고맙다고 하면서 브랜드 칭찬은 대개 무응답"},
+    {n:6, lb:"재진술",   head:true,  txt:"응답하지 않는 것은 팬을 만들 기회를 잃는 것이다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "5번의 <b>While</b>은 옆사람 ↔ 브랜드를 견주는 <u>대조</u>일 뿐 줄기 전환이 아니다.",
+  gist: "고객의 브랜드 칭찬에 응답하는 것이 고객과의 관계를 깊게 만든다.",
+  wrong: {
+    "2": "피드백 <b>분석</b>이 아니라 <b>응답</b>",
+    "3": "'신속한' 응대가 아니라 응답 자체의 중요성",
+    "4": "<b>부정적</b> 의견이 아니라 <b>칭찬</b>에 답하는 것",
+    "5": "'새 이미지 창출'이 아니라 팬 만들기·관계 증진"
+  },
+  wrongNote: "④가 방향 반대. 이 글은 <b>positive comments</b>를 다룬다.",
+  teachNote: "6번 <b>These are lost opportunities</b>가 요지를 뒤집어 말한 재진술. "
+           + "'하지 않으면 잃는다' = '해야 한다'로 바꿔 읽는 훈련을 시킬 것."
+},
+{
+  id: "s24_23_forest", src: "2024수능 23번", qnum: 23, qtype: "주제",
+  qtext: "다음 글의 주제로 가장 적절한 것은?", star: 2, time: 60,
+  note: "* exploitation: 이용  ** timber: 목재",
+  sents: [
+    "Managers of natural resources typically face market incentives that provide financial rewards for exploitation.",
+    "For example, owners of forest lands have a market incentive to cut down trees rather than manage the forest for carbon capture, wildlife habitat, flood protection, and other ecosystem services.",
+    "These services provide the owner with no financial benefits, and thus are unlikely to influence management decisions.",
+    "But the economic benefits provided by these services, based on their non-market values, may exceed the economic value of the timber.",
+    "For example, a United Nations initiative has estimated that the economic benefits of ecosystem services provided by tropical forests, including climate regulation, water purification, and erosion prevention, are over three times greater per hectare than the market benefits.",
+    "Thus cutting down the trees is economically inefficient, and markets are not sending the correct \u201csignal\u201d to favor ecosystem services over extractive uses."
+  ],
+  choices: [
+    "necessity of calculating the market values of ecosystem services",
+    "significance of weighing forest resources\u2019 non-market values",
+    "impact of using forest resources to maximize financial benefits",
+    "merits of balancing forests\u2019 market and non-market values",
+    "ways of increasing the efficiency of managing natural resources"
+  ],
+  ans: 2,
+  key: "<b class=w>natural resources</b> + <b class=w>market incentives</b> - 자원 관리와 시장 유인",
+  attr: "<b class=w>market incentives that provide financial rewards for exploitation</b> (1)<br>- 시장은 자원을 <b>써버리는</b> 쪽에 보상한다",
+  dir: "부정",
+  skip: [
+    {n:2, head:"<b>For example</b>, owners of forest lands...", skip:true,
+     why:"<b>For example</b> - 산림 소유자를 든 예시"},
+    {n:3, head:"These services provide the owner with no financial benefits...", skip:false},
+    {n:4, head:"But the economic benefits provided by these services...", skip:false},
+    {n:5, head:"<b>For example</b>, a <b>United Nations</b> initiative has estimated... <b>three times</b>", skip:true,
+     why:"<b>For example</b> + 기관명 + 숫자 - 앞말을 뒷받침하는 통계 예시"},
+    {n:6, head:"Thus cutting down the trees is economically inefficient...", skip:false}
+  ],
+  trunk1: "시장은 자원을 써버리는 쪽에 보상한다", trunk2: "그러나 비시장 가치가 더 클 수 있다",
+  pivotAt: 4,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"자원 관리자는 자원을 이용할수록 보상받는 시장 유인에 놓인다"},
+    {n:2, lb:"예시",     head:false, to:1, txt:"산림 소유자는 생태계 서비스보다 벌목에 유인이 있다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"생태계 서비스는 금전 이익이 없어 결정에 영향을 못 준다"},
+    {n:4, lb:"대조·반전", head:true, txt:"그러나 <b>비시장 가치</b>에 따른 경제적 이익이 목재 가치를 넘을 수 있다"},
+    {n:5, lb:"근거",     head:false, to:4, txt:"UN 추정 - 열대림 생태계 서비스가 시장 이익의 3배 이상"},
+    {n:6, lb:"재진술",   head:true,  txt:"따라서 벌목은 비효율이며 시장이 잘못된 신호를 보내고 있다"}
+  ],
+  pivot: {sig:"But", at:4, from:"시장 유인은 벌목 쪽", to:"비시장 가치가 더 크다"},
+  pivotSub: "<b>But</b>(4)이 진짜 전환. 3번까지는 '왜 벌목하나'를 설명하고, 4번부터 '그게 왜 틀렸나'로 넘어간다.",
+  gist: "산림의 비시장 가치가 목재 가치를 넘을 수 있으므로 이를 따져봐야 한다.",
+  wrong: {
+    "1": "<b>시장</b> 가치 계산이 아니라 <b>비시장</b> 가치 - 정반대",
+    "3": "금전 이익 극대화의 <b>영향</b>을 다룬 글이 아님",
+    "4": "둘의 <b>균형</b>이 아니라 비시장 가치를 따져봐야 한다는 주장",
+    "5": "관리 <b>효율을 높이는 방법</b>을 알려주는 글이 아님"
+  },
+  wrongNote: "④가 그럴듯한 함정. balancing은 중립적인데 이 글은 <b>비시장 쪽에 무게</b>를 싣는다.",
+  teachNote: "전환점이 <b>있는</b> 글이라 21·22번(전환 없음)과 묶어 대비시키기 좋다. "
+           + "For example이 <b>두 번</b> 나오는 것도 건너뛰기 훈련에 좋은 재료."
+},
+{
+  id: "s24_24_overtourism", src: "2024수능 24번", qnum: 24, qtype: "제목",
+  qtext: "다음 글의 제목으로 가장 적절한 것은? [3점]", star: 3, time: 70,
+  note: "* demarcate: 경계를 정하다",
+  sents: [
+    "The concept of overtourism rests on a particular assumption about people and places common in tourism studies and the social sciences in general.",
+    "Both are seen as clearly defined and demarcated.",
+    "People are framed as bounded social actors either playing the role of hosts or guests.",
+    "Places, in a similar way, are treated as stable containers with clear boundaries.",
+    "Hence, places can be full of tourists and thus suffer from overtourism.",
+    "But what does it mean for a place to be full of people?",
+    "Indeed, there are examples of particular attractions that have limited capacity and where there is actually no room for more visitors.",
+    "This is not least the case with some man-made constructions such as the Eiffel Tower.",
+    "However, with places such as cities, regions or even whole countries being promoted as destinations and described as victims of overtourism, things become more complex.",
+    "What is excessive or out of proportion is highly relative and might be more related to other aspects than physical capacity, such as natural degradation and economic leakages (not to mention politics and local power dynamics)."
+  ],
+  choices: [
+    "The Solutions to Overtourism: From Complex to Simple",
+    "What Makes Popular Destinations Attractive to Visitors?",
+    "Are Tourist Attractions Winners or Losers of Overtourism?",
+    "The Severity of Overtourism: Much Worse than Imagined",
+    "Overtourism: Not Simply a Matter of People and Places"
+  ],
+  ans: 5,
+  key: "<b class=w>overtourism</b> - 과잉관광이라는 개념",
+  attr: "<b class=w>rests on a particular assumption about people and places</b> (1)<br>- 사람과 장소에 대한 <b>어떤 전제</b>에 기대고 있다",
+  dir: "통념",
+  skip: [
+    {n:2, head:"Both are seen as clearly defined and demarcated.", skip:false},
+    {n:3, head:"People are framed as bounded social actors...", skip:false},
+    {n:4, head:"Places, in a similar way, are treated as stable containers...", skip:false},
+    {n:5, head:"Hence, places can be full of tourists...", skip:false},
+    {n:6, head:"But what does it mean for a place to be full of people?", skip:false},
+    {n:7, head:"Indeed, there are examples of particular attractions...", skip:false},
+    {n:8, head:"This is not least the case with... the <b>Eiffel Tower</b>.", skip:true,
+     why:"<b>고유명사</b>(Eiffel Tower) - 앞말을 보여주는 예시"},
+    {n:9, head:"However, with places such as cities, regions...", skip:false},
+    {n:10, head:"What is excessive or out of proportion is highly relative...", skip:false}
+  ],
+  trunk1: "과잉관광이 기대는 전제 - 사람도 장소도 경계가 뚜렷하다",
+  trunk2: "그러나 그 전제가 흔들린다 - 넘침은 상대적이다",
+  pivotAt: 6,
+  tree: [
+    {n:1,  lb:"주제도입", head:true,  txt:"과잉관광 개념은 사람·장소에 대한 어떤 전제에 기대고 있다"},
+    {n:2,  lb:"부연",     head:false, to:1, txt:"둘 다 뚜렷하게 정의되고 경계 지어진 것으로 본다"},
+    {n:3,  lb:"부연",     head:false, to:2, txt:"사람은 주인 아니면 손님이라는 틀에 갇힌다"},
+    {n:4,  lb:"부연",     head:false, to:2, txt:"장소도 경계가 분명한 안정된 그릇으로 다뤄진다"},
+    {n:5,  lb:"근거",     head:false, to:2, txt:"그래서 장소가 관광객으로 '가득 찰' 수 있다는 말이 성립"},
+    {n:6,  lb:"대조·반전", head:true, txt:"그런데 장소가 사람으로 가득 찬다는 건 무슨 뜻인가"},
+    {n:7,  lb:"부연",     head:false, to:6, txt:"수용 한계가 뚜렷한 명소도 분명 있다 (양보)"},
+    {n:8,  lb:"예시",     head:false, to:7, txt:"에펠탑 같은 인공 구조물이 그렇다"},
+    {n:9,  lb:"주장",     head:true,  txt:"그러나 도시·지역·국가 단위가 되면 문제가 훨씬 복잡해진다"},
+    {n:10, lb:"재진술",   head:true,  txt:"무엇이 '과함'인지는 매우 상대적이며 물리적 수용력만의 문제가 아니다"}
+  ],
+  pivot: {sig:"But", at:6, from:"경계가 뚜렷하다는 전제", to:"그 전제가 흔들린다"},
+  pivotSub: "<b>But</b>(6)이 큰 전환, <b>However</b>(9)가 한 번 더 눌러준다. "
+          + "7·8번은 <u>양보</u>(맞는 경우도 있다)이므로 9번의 However를 놓치면 방향을 반대로 잡는다.",
+  gist: "과잉관광은 사람·장소의 경계가 뚜렷하다는 전제에 기대지만, 무엇이 과한지는 상대적이다.",
+  wrong: {
+    "1": "해결책을 제시하는 글이 아님",
+    "2": "관광지의 매력 요인을 다루지 않음",
+    "3": "승자·패자를 가리는 글이 아님",
+    "4": "심각성을 강조하는 글이 아님 - 오히려 <b>개념 자체를 의심</b>한다"
+  },
+  wrongNote: "④가 최대 함정. 과잉관광을 다루니 '심각하다'로 읽기 쉽지만, 이 글은 <b>그 개념이 단순하지 않다</b>고 말한다. 정답 ⑤의 <b>Not Simply</b>가 그것.",
+  teachNote: "양보(7·8) 뒤의 <b>However</b>를 잡는 훈련. 2026-24번(culturtainment)과 같은 구조라 묶어서 가르칠 것."
+},
+{
+  id: "s24_30_bazaar", src: "2024수능 30번", qnum: 30, qtype: "어휘",
+  qtext: "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 <b>않은</b> 것은? [3점]",
+  star: 3, time: 80, note: "* constraint: 압박  ** consensus: 일치",
+  sents: [
+    "Bazaar economies feature an apparently flexible price-setting mechanism that sits atop more enduring ties of shared culture.",
+    "Both the buyer and seller are aware of each other\u2019s <u class=\"n1\">restrictions</u>.",
+    "In Delhi\u2019s bazaars, buyers and sellers can <u class=\"n2\">assess</u> to a large extent the financial constraints that other actors have in their everyday life.",
+    "Each actor belonging to a specific economic class understands what the other sees as a necessity and a luxury.",
+    "In the case of electronic products like video games, they are not a <u class=\"n3\">necessity</u> at the same level as other household purchases such as food items.",
+    "So, the seller in Delhi\u2019s bazaars is careful not to directly ask for very <u class=\"n4\">low</u> prices for video games because at no point will the buyer see possession of them as an absolute necessity.",
+    "Access to this type of knowledge establishes a price consensus by relating to each other\u2019s preferences and limitations of belonging to a <u class=\"n5\">similar</u> cultural and economic universe."
+  ],
+  choices: ["restrictions","assess","necessity","low","similar"],
+  ans: 4,
+  key: "<b class=w>Bazaar economies</b> - 바자르 경제의 가격 결정",
+  attr: "<b class=w>ties of shared culture</b> (1) - 공유된 문화의 끈 위에서 가격이 정해진다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Both the buyer and seller are aware...", skip:false},
+    {n:3, head:"In <b>Delhi</b>\u2019s bazaars, buyers and sellers can assess...", skip:false,
+     why:"지명이 있지만 밑줄이 있어 확인 필요"},
+    {n:4, head:"Each actor belonging to a specific economic class...", skip:false},
+    {n:5, head:"In the case of electronic products like video games...", skip:false},
+    {n:6, head:"So, the seller in Delhi\u2019s bazaars is careful...", skip:false},
+    {n:7, head:"Access to this type of knowledge establishes...", skip:false}
+  ],
+  trunk1: "서로의 사정을 알기에 가격 합의가 이뤄진다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"바자르 경제의 가격은 공유된 문화의 끈 위에서 정해진다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"사는 쪽과 파는 쪽이 서로의 제약을 안다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"델리 시장에선 상대의 재정 압박을 상당히 가늠할 수 있다"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"같은 경제 계층이라 무엇이 필수품이고 사치인지 안다"},
+    {n:5, lb:"예시",     head:false, to:4, txt:"비디오게임은 식료품만큼의 필수품이 아니다"},
+    {n:6, lb:"근거",     head:false, to:5, txt:"그래서 판매자는 게임에 <b>아주 높은</b> 값을 부르지 않는다"},
+    {n:7, lb:"재진술",   head:true,  txt:"이런 앎이 서로의 선호와 한계를 반영한 가격 합의를 만든다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "<b>So</b>(6)는 인과 연결이지 전환이 아니다. 방향이 한 번도 안 바뀌므로 밑줄 중 <u>혼자 반대인 것</u>이 답.",
+  vocab: [
+    {n:1, word:"restrictions", ok:true, why:"서로의 '제약'을 안다 - 3번 financial constraints와 순행"},
+    {n:2, word:"assess",       ok:true, why:"상대의 재정 압박을 '가늠한다' - 서로 안다는 흐름과 일치"},
+    {n:3, word:"necessity",    ok:true, why:"게임은 식료품만큼의 '필수품'이 아니다"},
+    {n:4, word:"low",          ok:false, fix:"high",
+     why:"필수품이 아니라고 <b>여기지 않으므로</b> 판매자는 <b>높은</b> 값을 못 부른다. 낮은 값을 조심할 이유가 없다"},
+    {n:5, word:"similar",      ok:true, why:"'비슷한' 문화·경제 세계에 속한 데서 오는 한계 - 1번 shared culture와 순행"}
+  ],
+  gist: "바자르에서는 서로의 경제적 사정을 알기에 가격 합의가 이뤄진다.",
+  wrong: {},
+  wrongNote: "④만 방향이 반대. 나머지 넷은 모두 '서로의 사정을 안다'는 흐름과 순행한다.",
+  teachNote: "④가 <b>부정어(not)와 겹쳐</b> 헷갈린다. 'not to ask for very low' = '낮은 값을 부르지 않으려 조심' - "
+           + "말이 되나? 필수품이 아니면 <u>비싸게</u> 못 부르는 것이다. 문장을 우리말로 뒤집어 읽게 할 것."
 }
 
 ];

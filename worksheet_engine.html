@@ -47,6 +47,7 @@ i.it{font-style:italic}
   border-bottom:2px solid var(--wine); padding-bottom:5px; margin-bottom:3.5mm}
 .head .t1{font-size:10.5px; letter-spacing:.14em; color:var(--wine); font-weight:700}
 .head .t2{font-size:17px; font-weight:900; margin-top:2px}
+.head .meta .nm{font-family:'Noto Sans KR',sans-serif; color:var(--ink)}
 .head .meta{font-family:'Space Grotesk',sans-serif; font-size:10.5px;
   color:var(--grey); text-align:right; line-height:1.6}
 .sheet-b .head{border-bottom-color:var(--green)}
@@ -60,7 +61,7 @@ i.it{font-style:italic}
 /* ---------- 지문 ---------- */
 .qnum{font-weight:700; font-size:14px; margin-bottom:3px}
 .passage{border:1px solid var(--line); background:#fff; padding:7px 11px;
-  font-family:'Noto Serif',serif; font-size:14.6px; line-height:1.9;
+  font-family:'Noto Serif',serif; font-size:15.6px; line-height:1.95;
   text-align:justify; margin-bottom:3mm}
 .snum{font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700;
   color:var(--wine); vertical-align:.25em; margin-right:2px}
@@ -80,7 +81,7 @@ i.it{font-style:italic}
 .passage u.n4::before,.exam-col u.n4::before{content:'④'}
 .passage u.n5::before,.exam-col u.n5::before{content:'⑤'}
 .note{text-align:right; font-size:10.5px; color:var(--grey); margin-bottom:2mm}
-.choices{font-family:'Noto Serif',serif; font-size:13.6px; line-height:1.85; margin-bottom:4mm}
+.choices{font-family:'Noto Serif',serif; font-size:14.4px; line-height:1.9; margin-bottom:4mm}
 .choices div .cn{font-family:'Space Grotesk',sans-serif; color:var(--grey); margin-right:5px}
 
 /* ---------- STEP ---------- */
@@ -187,6 +188,10 @@ body.show-ans .ans{display:block}
   .pt{break-inside:avoid}
   /* 배경·밑줄 흑백 대비 */
   .passage,.box,.tree,.exam-col,.legend,.para-b{background:#fff}
+  table.csbar{background:#fff}
+  table.csbar th{background:#f0f0f0}
+  body.show-ans table.csbar tr.isc{background:#eee !important}
+  body.show-ans table.csbar td.c2 .gl{border-left-color:#000}
   .node .tag{background:#f4f4f4 !important; border-color:#bbb}
   .node.head-node .tag{background:#dcdcdc !important; border-color:#666}
   th{background:#f0f0f0}
@@ -205,6 +210,46 @@ body.show-ans .ans{display:block}
   font-size:9px; color:var(--grey); background:#fff; padding:1px 5px; border:1px solid var(--line)}
 .sheet{position:relative}
 @media print{ .sheet[data-fit]::after{display:none} }
+
+/* 지문 + 오른쪽 코어/서포트 표 */
+.pwrap{display:flex; align-items:flex-start; margin-bottom:2.5mm; gap:0}
+.pwrap .passage{flex:1; margin-bottom:0; border:1px solid var(--ink); border-right:0;
+  align-self:stretch}
+table.csbar{flex:0 0 46mm; width:46mm; border-collapse:collapse;
+  border:1px solid var(--ink); background:#fff; table-layout:fixed}
+table.csbar th{background:#f2ece0; font-size:10.5px; color:var(--wine); font-weight:700;
+  text-align:center; padding:4px 2px; border:1px solid var(--ink);
+  white-space:nowrap; letter-spacing:0}
+table.csbar td{border:1px solid var(--ink); padding:0; height:26px;
+  text-align:center; vertical-align:middle; white-space:nowrap}
+table.csbar td.c0{font-family:'Space Grotesk',sans-serif; font-size:11.5px;
+  color:var(--wine); font-weight:700}
+table.csbar td.c1{font-size:14px}
+table.csbar td.c2{position:relative}
+table.csbar td.c3{font-family:'Noto Serif',serif; font-size:10.5px;
+  font-style:italic; color:var(--wine); padding:0 3px; white-space:normal}
+body.show-ans table.csbar tr.ispv{background:#f6ece9}
+body.show-ans table.csbar tr.ispv td{border-top:2px solid var(--wine-soft)}
+table.csbar th.cshelp{font-size:9.5px; font-weight:500; color:var(--ink);
+  background:#fbf8f2; padding:3px 4px; letter-spacing:0; white-space:normal}
+body.show-ans table.csbar tr.isc{background:#faf3e2}
+body.show-ans table.csbar td.c1 .fx{color:var(--wine); font-weight:700}
+body.show-ans .csrow.isc{background:#faf3e2}
+body.show-ans .csrow .c1 .fx{color:var(--wine); font-weight:700}
+/* 그룹 세로선 (해설) */
+body.show-ans table.csbar td.c2 .gl{display:block !important; position:absolute;
+  left:10px; top:0; bottom:0; border-left:2px solid var(--gold)}
+table.csbar td.c2 .gl{display:none}
+
+.csgrid{display:flex; flex-wrap:wrap; gap:6px}
+.cs{display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line);
+  background:#fff; padding:3px 8px 3px 6px}
+.cs b{font-family:'Space Grotesk',sans-serif; font-size:12px; color:var(--wine)}
+.cs .mk{width:22px; height:22px; border:1px solid var(--ink); display:inline-flex;
+  align-items:center; justify-content:center; font-style:normal; font-size:13px}
+body.show-ans .cs.isc{background:var(--gold-soft); border-color:var(--gold)}
+body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
+
 
 /* 재풀이 답 비교칸 (B지·속독지 공용) */
 .regrip{display:flex; gap:12px; align-items:flex-end}
@@ -262,8 +307,8 @@ body.show-ans .ans{display:block}
 .sheet.hasx .step{margin-bottom:3mm}
 
 /* 긴 지문(10문장 이상) 자동 압축 — A4 1장 유지 */
-.sheet.dense .passage{font-size:12.8px; line-height:1.7; padding:6px 9px; margin-bottom:2mm}
-.sheet.dense .choices{font-size:12.2px; line-height:1.68; margin-bottom:2.5mm}
+.sheet.dense .passage{font-size:14.2px; line-height:1.82; padding:6px 9px; margin-bottom:2mm}
+.sheet.dense .choices{font-size:13.4px; line-height:1.8; margin-bottom:2.5mm}
 .sheet.dense .step{margin-bottom:2.5mm}
 .sheet.dense .step-h{margin-bottom:3px}
 .sheet.dense th,.sheet.dense td{padding:3px 8px; font-size:11.2px}
@@ -326,14 +371,10 @@ body.show-ans .ans{display:block}
 .legend .lgttl{font-size:10.8px; letter-spacing:.1em; color:var(--green); font-weight:700}
 .legend b{font-family:'Space Grotesk',sans-serif; font-size:13px; color:var(--ink)}
 .exam-wrap{display:flex; margin-bottom:4mm}
-.exam-col{flex:0 0 118mm; border:1px solid var(--line); background:#fff; padding:11px 14px;
-  font-family:'Noto Serif',serif; font-size:14.4px; line-height:2.1; text-align:justify}
+.exam-col{flex:1; border:1px solid var(--ink); background:#fff; padding:10px 13px;
+  font-family:'Noto Serif',serif; font-size:15px; line-height:1.9; text-align:justify}
 .exam-col p{margin:0 0 8px; text-indent:1.2em}
-.exam-col .ch{text-indent:0; font-size:13.4px; line-height:2; margin-top:11px}
-.margin-col{flex:1; border:1px dashed var(--line); border-left:0; position:relative;
-  background:repeating-linear-gradient(transparent,transparent 23px,#f0ebe0 23px,#f0ebe0 24px)}
-.margin-col .mtag{position:absolute; top:5px; left:6px; font-size:9.5px;
-  color:var(--grey); letter-spacing:.08em}
+.exam-col .ch{text-indent:0; font-size:13.4px; line-height:1.85; margin-top:9px}
 .timer{display:inline-flex; align-items:center; gap:5px; border:1px solid var(--green);
   color:var(--green); font-size:11px; font-weight:700; padding:2px 9px}
 .check-strip{display:grid; grid-template-columns:1fr 1fr 2fr; gap:0 12px}
@@ -374,8 +415,7 @@ body.show-ans .ans{display:block}
   .grid2,.grid3,.check-strip{grid-template-columns:1fr}
   .exam-wrap{flex-direction:column}
   .exam-col{flex:1}
-  .margin-col{border-left:1px dashed var(--line); border-top:0; min-height:120px}
-}
+  }
 </style>
 </head>
 <body>
@@ -420,7 +460,7 @@ body.show-ans .ans{display:block}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260806p"></script>
+<script src="passages_final.js?v=20260828l"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -443,14 +483,16 @@ body.show-ans .ans{display:block}
 
   /* ---------- 조각 ---------- */
   function head(p, part, total, extra){
-    var titles = {1:['FLOW READING · 훈련지 A', '흐름 독해 — 원문과 첫 해부'],
-                  2:['FLOW READING · 훈련지 A', '흐름 독해 — 트리와 요지'],
+    var titles = {1:['FLOW READING · 훈련지 A', '코어를 찾아 흐름을 잡는다'],
+                  2:['FLOW READING · 훈련지 A', '흐름과 요지'],
                   3:['RESOLVE · 재풀이 B', '같은 지문을 다시 푼다']};
     var t = titles[part];
     return '<div class="head"><div><div class="t1">'+t[0]+'</div><div class="t2">'+t[1]+'</div></div>'
-      + '<div class="meta">'+esc(p.src)+' · '+esc(p.qtype)+'<br>'
-      + '난이도 '+ new Array((p.star||1)+1).join('★') + (extra ? ' · '+extra : '')
-      + '<br><span class="g">'+part+' / '+total+'</span></div></div>';
+      + '<div class="meta">'+esc(p.src)+' · '+esc(p.qtype)
+      + ' · 난이도 '+ new Array((p.star||1)+1).join('★') + (extra ? ' · '+extra : '')
+      + '<br><span class="nm">이름 ______________ &nbsp;/&nbsp; 날짜 ________</span>'
+      + (total > 1 ? '<span class="g" style="margin-left:10px">'+part+'/'+total+'</span>' : '')
+      + '</div></div>';
   }
   function namebar(cols){
     return '<div class="namebar">'+cols.map(function(c){return '<div>'+c+'</div>'}).join('')+'<div></div></div>';
@@ -475,91 +517,53 @@ body.show-ans .ans{display:block}
 
   /* ---------- A-1 ---------- */
   function sheetA1(p, lv){
+    // 문장별 span (표는 오른쪽에 균등 분할로 붙는다)
     var passage = p.sents.map(function(s,i){
-      return '<span><span class="snum">'+cn(i+1)+'</span>'+s+' </span>';
+      return '<span class="s" data-n="'+(i+1)+'"><span class="snum">'+cn(i+1)+'</span>'+s+' </span>';
     }).join('');
 
     var plain = p.sents.join(' ').replace(/<[^>]+>/g,'');
     // A-1+A-2를 한 장에 담을 수 있는지 세로 길이를 추정해서 판정한다.
     // (merged 스타일 기준: 지문 11px/1.42, 트리 노드 21px, 표 행 18px)
-    p._merge = (function(){
-      var W = 660, lines = function(ch, fs){ return Math.ceil(ch / Math.floor(W / (fs*0.495))); };
-      var t = 84;                                        // 머리글 + 이름칸 + 발문 + 각주
-      t += lines(plain.length, 11) * 11 * 1.42 + 22;     // 지문(테두리·여백 포함)
-      t += lines(p.choices.join(' ').length, 10.4) * 10.4 * 1.45 + 12;
-      t += 20 + 62 + 48 + 8;                             // STEP 1 (+힌트/근거줄)
-      t += 20 + 34 + 30 + 8;                             // STEP 2 (legend + note-if)
-      t += 20 + p.tree.length*23 + 46 + 8;               // STEP 3
-      t += 20 + 34 + 8;                                  // STEP 4
-      if(p.vocab)   t += 20 + p.vocab.length*22 + 50 + 8; // STEP 8
-      if(p.implied) t += 20 + 34 + 46 + 8;               // STEP 7
-      t += 20 + 32 + 28 + 8;                             // STEP 5
-      t += 46;                                           // 푸터
-      // 실측 자동축소(fitSheets)가 최대 0.78배까지 줄이므로 여유를 둔다
-      // 글자를 키웠으므로 확실히 여유 있는 지문만 1장으로 합친다
-      return t * 25.4 / 96 <= 250;
-    })();
+    // 전 지문 1장. 넘치면 fitSheets가 줄인다(하한 0.95)
+    p._merge = true;
     var dense = p._merge ? ' dense merged'
               : ((plain.length >= 1300 || p.sents.length >= 10) ? ' dense' : '');
     var h = '<section class="sheet sheet-a sheet-a2'+dense+'" data-id="'+p.id+'">';
     h += head(p, 1, p._merge ? 1 : 3, '단계 '+lv);
-    h += namebar(['이름','날짜','맞은 문항']);
     h += '<div class="qnum">'+p.qnum+'. '+p.qtext+'</div>';
-    h += '<div class="passage">'+passage+'</div>';
+    h += '<div class="pwrap" data-id="'+p.id+'">'
+      + '<div class="passage">'+passage+'</div>'
+      + '<table class="csbar">'
+      +   '<colgroup><col style="width:32px"><col style="width:32px"><col><col style="width:58px"></colgroup>'
+      +   '<tr><th colspan="4" class="cshelp">코어 <b>●</b> · 서포트 <b>세로선</b> · 전환점에 <b>신호어</b></th></tr>'
+      +   '<tr><th>문장</th><th>코어</th><th>서포트</th><th>전환</th></tr>'
+      +   p.tree.map(function(nd){
+            var isPv = p.pivotAt && nd.n === p.pivotAt;
+            return '<tr class="csrow'+(nd.head?' isc':'')+(isPv?' ispv':'')+'">'
+              + '<td class="c0">'+cn(nd.n)+'</td>'
+              + '<td class="c1"><span class="fx">'+(nd.head?'●':'')+'</span></td>'
+              + '<td class="c2"><span class="fx gl"></span></td>'
+              + '<td class="c3"><span class="fx">'+(isPv?esc(p.pivot.sig):'')+'</span></td></tr>';
+          }).join('')
+      + '</table></div>';
     if(p.note) h += '<div class="note">'+p.note+'</div>';
     h += choices(p);
 
     /* STEP 1 */
-    var lead = p.lead || {to:1};
-    var leadTxt = (lead.to > 1 ? cn(1)+'~'+cn(lead.to) : cn(1)) + '번 문장';
-    h += '<div class="step">'+stepH('STEP 1','도입부 해부', '읽는 범위 : '+leadTxt)
-      + '<div class="field"><label>어디까지 읽고 정했나 (문장 번호에 표시)</label>'
-      + '<div class="pick" style="gap:13px">'
-      + p.sents.slice(0, Math.min(5, p.sents.length)).map(function(_,i){
-          return '<span><i class="chk"></i> '+cn(i+1)+'</span>';
-        }).join('')
-      + '</div></div>'
-      + '<div class="grid2">'
-      + '<div class="field"><label>소재 (핵심어)</label>'+fill(esc(p.key))+'</div>'
-      + '<div class="field"><label>속성 (어떻게 보고 있나)</label>'+fill(esc(p.attr))+'</div></div>'
-      + '<div class="field"><label>속성 방향</label><div class="pick">'
-      + ['긍정','부정','통념 · 양보'].map(function(d){
-          var hit = (p.dir==='통념' ? d.indexOf('통념')===0 : d===p.dir);
-          return '<span><i class="chk"></i> '+d+(hit?'<span class="fx">✓</span>':'')+'</span>';
-        }).join('')
-      + '</div>'
-      + (p.dirWord ? '<div class="ans" style="margin-top:3px"><div style="font-size:10.5px;'
-          + 'color:var(--wine-soft);padding-left:2px">근거 · '+p.dirWord+'</div></div>' : '')
-      + (lv <= 2 && lead.why
-          ? '<div class="note-if">'+esc(lead.why)+'</div>'
-          : (lv <= 2 ? '<div class="note-if">통념·양보에 표시했다면 → 뒤에 <b>However / But / though / Rather</b>로 뒤집힌다. 그 자리를 먼저 찾아라.</div>' : ''))
-      + '</div>'
-      + (lead.note ? '<div class="ans"><div class="ans-box">'
-          + '<div><span class="k">왜 '+leadTxt+'까지인가</span>'+esc(lead.note)+'</div>'
-          + '</div></div>' : '')
-      + '</div>';
+    /* 건너뛰기·전환 해설만 (학생용에는 안 보임) */
+    var nSkip = p.skip ? p.skip.filter(function(r){ return r.skip; }).length : 0;
+    h += '<div class="ans"><div class="ans-box" style="margin:0 0 3mm">'
+      + (nSkip ? p.skip.filter(function(r){return r.skip;}).map(function(r){
+            return '<div><span class="k">'+cn(r.n)+' 건너뜀</span>'+esc(r.why)+'</div>'; }).join('')
+              : '<div><span class="k">건너뛰기</span>표지가 없는 글 — 전 문장을 읽는다</div>')
+      + (p.pivotSub ? '<div class="tip"><b>전환</b> '+esc(p.pivotSub)+'</div>'
+                    : '<div class="tip"><b>전환</b> 없음 — 처음 방향이 끝까지 간다</div>')
+      + '</div></div>';
 
-    /* STEP 2 — 건너뛸 문장 표시 (표 없이 지문에 직접) */
-    if(p.skip && p.skip.length){
-      var nSkip = p.skip.filter(function(r){ return r.skip; }).length;
-      h += '<div class="step">'+stepH('STEP 2','건너뛸 문장 <b>지문에 ✗</b>','표지가 보이면 읽지 않는다')
-        + '<div class="legend" style="border-color:var(--gold)">'
-        + '<span class="lgttl" style="color:var(--wine)">표지</span>'
-        + '<span><b>For example / For instance</b></span>'
-        + '<span><b>대문자 이름</b></span>'
-        + '<span><b>연도 · 숫자</b></span>'
-        + '<span class="g">→ 위 지문에서 그 문장 앞에 <b>✗</b>를 쳐라</span></div>'
-        + '<div class="note-if">이 글에서 건너뛸 문장은 <b>'+nSkip+'개</b>. '
-        + (nSkip ? '건너뛴 문장은 앞말을 다시 하는 것뿐이라 어려운 단어가 나와도 결론은 이미 안다.'
-                 : '표지가 하나도 없다 — <b>건너뛸 게 없는 글</b>도 있다.')
-        + '</div>'
-        + '<div class="ans"><div class="ans-box">'
-        + p.skip.filter(function(r){ return r.skip; }).map(function(r){
-            return '<div><span class="k">'+cn(r.n)+'</span>'+esc(r.why)+'</div>';
-          }).join('')
-        + (nSkip ? '' : '<div>표지 없음 — 전 문장을 읽는다</div>')
-        + '</div></div></div>';
-    }
+    h += '<div class="note-if" style="margin-top:4px">'
+      + '오른쪽 표에서 코어에 <b>●</b>. '
+      + '<b>서포트</b> 열에는 어느 코어에 붙는지 <b>세로선</b>으로 묶어라.</div></div>';
 
     if(p._merge) return h;   // A-2가 같은 장에 이어붙는다
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>훈련지 A-1</span></div></section>';
@@ -575,122 +579,11 @@ body.show-ans .ans{display:block}
         + head(p, 2, 3, '단계 '+lv);
     }
 
-    var hintMap = {0:'라벨 없이 <b>코어/서포트</b>만 가른다',
-                   1:'라벨은 주어져 있다 — 내용만 채운다',
-                   2:'머리만 표시했다 — 딸림 라벨은 직접',
-                   3:'번호만 있다 — 라벨·내용 모두 직접',
-                   4:'백지 — 줄기부터 직접 나눈다'};
-    h += '<div class="step">'+stepH('STEP 3', lv===0 ? '코어 찾기' : '흐름 트리', hintMap[lv]);
-    h += '<div class="tree">';
-
-    if(lv === 0){
-      var nHead = p.tree.filter(function(n){return n.head}).length;
-      h += '<div class="note-if" style="margin:0 0 7px">'
-        + '<b>앞 문장을 설명하고 있으면 서포트. 새로 말을 꺼내면 코어.</b><br>'
-        + '이 글의 <b>코어는 '+nHead+'개</b>입니다. 나머지 '+(p.tree.length-nHead)+'개는 전부 서포트.'
-        + '</div>';
-      h += '<table style="margin-bottom:0"><tr><th style="width:8%">문장</th>'
-        + '<th style="width:26%">코어 / 서포트</th>'
-        + '<th style="width:16%">서포트면 몇 번에 붙나</th>'
-        + '<th>코어면 한 줄 요약</th></tr>'
-        + p.tree.map(function(nd){
-            return '<tr><td style="text-align:center;font-family:\'Space Grotesk\',sans-serif;'
-              + 'font-weight:700;color:var(--wine)">'+cn(nd.n)+'</td>'
-              + '<td style="font-size:11.5px">코어 <i class="chk"></i>'+(nd.head?'<span class="fx">✓</span>':'')
-              + '&nbsp;&nbsp; 서포트 <i class="chk"></i>'+(nd.head?'':'<span class="fx">✓</span>')+'</td>'
-              + '<td class="filled" style="text-align:center"><span class="fx">'
-              + (nd.head ? '<span style="color:var(--grey)">—</span>' : cn(nd.to || 1)) + '</span></td>'
-              + '<td class="filled" style="height:24px"><span class="fx">'
-              + (nd.head ? esc(nd.txt) : '<span style="color:var(--grey)">쓰지 않는다</span>')
-              + '</span></td></tr>';
-          }).join('')
-        + '</table>';
-    } else if (lv >= 4){
-      h += '<div class="trunk-label">줄기 1 ______________________</div>';
-      for(var i=0;i<3;i++) h += '<div class="node"><div class="tag"></div><div class="wr"></div></div>';
-      h += '<div class="switchline blank-line">흐름 전환 — 없으면 긋지 않는다</div>';
-      h += '<div class="trunk-label">줄기 2 ______________________</div>';
-      for(var j=0;j<5;j++) h += '<div class="node"><div class="tag"></div><div class="wr"></div></div>';
-    } else {
-      var hasPivot = !!p.pivotAt;
-      h += '<div class="trunk-label">'
-        + (hasPivot ? '줄기 1 — ' : '한 줄기 — ')
-        + (lv<=2 ? esc(p.trunk1) : '______________')+'</div>';
-      p.tree.forEach(function(nd){
-        if(hasPivot && nd.n === p.pivotAt){
-          h += (lv <= 2)
-            ? '<div class="switchline">흐름 전환</div><div class="trunk-label">줄기 2 — '+esc(p.trunk2)+'</div>'
-            : '<div class="switchline blank-line">흐름 전환 — 어디인지 직접 긋기</div><div class="trunk-label">줄기 2 — ______________</div>';
-        }
-        var showLb = (lv === 1) || (lv === 2 && nd.head);
-        h += '<div class="node '+(nd.head?'head-node':'sub')+'">'
-          + '<div class="tag"><span class="sn">'+cn(nd.n)+'</span>'
-          + (showLb ? '<span class="lb">'+esc(nd.lb)+'</span>'
-                    : '<span class="lb fx">'+esc(nd.lb)+'</span>')
-          + '</div>'
-          + '<div class="wr filled"><span class="fx">'+esc(nd.txt)+'</span></div></div>';
-      });
-    }
-    h += '</div>';
-
-    h += '</div>';
-
     /* STEP 4 */
-    h += '<div class="step">'+stepH('STEP 4','흐름 전환점','전환이 <b>없는</b> 글도 있다')
-      + '<div class="field"><div class="pick">'
-      + '<span><i class="chk"></i> 전환이 있다'+(p.pivotAt?'<span class="fx">✓</span>':'')+'</span>'
-      + '<span><i class="chk"></i> 전환이 없다 — 처음 방향이 끝까지 간다'
-      + (p.pivotAt?'':'<span class="fx">✓</span>')+'</span></div></div>'
-      + '<div class="grid3">'
-      + '<div class="field"><label>신호어</label>'+fill(esc(p.pivot.sig))+'</div>'
-      + '<div class="field"><label>몇 번 문장</label>'
-      + fill(p.pivot.at ? cn(p.pivot.at)+'번' : '—')+'</div>'
-      + '<div class="field"><label>무엇 → 무엇으로</label>'
-      + fill(esc(p.pivot.from)+' → '+esc(p.pivot.to))+'</div></div>'
-      + (p.pivotSub ? '<div class="ans"><div class="ans-box">'+esc(p.pivotSub)+'</div></div>' : '')
-      + '</div>';
-
-    /* STEP 8 — 밑줄 방향 판정 (vocab 필드가 있는 지문만) */
-    if(p.vocab && p.vocab.length){
-      h += '<div class="step">'+stepH('STEP 8','밑줄 방향 판정','STEP 1의 방향을 밑줄마다 다시 적용')
-        + '<table><tr><th style="width:8%">번호</th><th style="width:22%">밑줄</th>'
-        + '<th style="width:24%">흐름과 같은 방향?</th><th>그렇게 본 근거</th></tr>'
-        + p.vocab.map(function(v){
-            return '<tr><td style="text-align:center;font-family:\'Space Grotesk\',sans-serif;'
-              + 'font-weight:700;color:var(--wine)">'+cn(v.n)+'</td>'
-              + '<td class="eng" style="width:auto"><b>'+esc(v.word)+'</b></td>'
-              + '<td style="font-size:11px;color:var(--grey)">순행 <i class="chk"></i>'
-              + (v.ok?'<span class="fx">✓</span>':'')
-              + '&nbsp;&nbsp;역행 <i class="chk"></i>'
-              + (v.ok?'':'<span class="fx">✓</span>')+'</td>'
-              + '<td class="filled" style="height:25px"><span class="fx">'+esc(v.why)
-              + (v.fix?' <b>→ '+esc(v.fix)+'</b>':'')+'</span></td></tr>';
-          }).join('')
-        + '</table>'
-        + '<div class="note-if">역행에 표시한 것이 <b>하나뿐</b>이어야 한다. 둘 이상이면 STEP 1의 방향부터 다시.</div>'
-        + (p.ans42 ? '<div class="answer-row"><span class="lab">'+(p.qnum+1)+'번 정답</span>'
-            + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
-            + cn(p.ans42)+'</span></span></div>' : '')
-        + '</div>';
-    }
-
-    /* STEP 7 — 함축 역추적 (implied 필드가 있는 지문만) */
-    if(p.implied){
-      h += '<div class="step">'+stepH('STEP 7','함축 역추적','밑줄을 <b>지문 안의 다른 문장</b>으로 되돌린다')
-        + '<div class="box" style="font-family:\'Noto Serif\',serif; margin-bottom:7px">'
-        + '밑줄 : <b>'+esc(p.implied.phrase)+'</b></div>'
-        + '<div class="field"><label>같은 말을 다시 하는 문장은 몇 번?</label>'
-        + fill(p.implied.restateAt.map(function(n){return cn(n)}).join(' · ')+'번')+'</div>'
-        + '<div class="field"><label>그래서 밑줄의 뜻은</label>'
-        + fill(esc(p.implied.model), 'blank tall')+'</div>'
-        + '<div class="ans"><div class="ans-box">'
-        + '※ 어휘력으로 푸는 문항이 아님. <b>지문 안에서 되찾기</b>가 21번의 정체.'
-        + '</div></div></div>';
-    }
 
     /* STEP 5 */
     var heads = p.tree.filter(function(n){return n.head}).map(function(n){return cn(n.n)}).join('·');
-    h += '<div class="step step-grow">'+stepH('STEP 5','요지 재구성', lv<=3 ? '머리 문장('+heads+')만 이어서 한 문장으로' : '한 문장으로')
+    h += '<div class="step step-grow">'+stepH('STEP 1','요지 재구성', lv<=3 ? '머리 문장('+heads+')만 이어서 한 문장으로' : '한 문장으로')
       + fill(esc(p.gist), 'box tall')
       + '<div class="answer-row"><span class="lab">정답</span>'
       + '<span class="circle filled"><span class="fx" style="font-size:13px;font-weight:700">'
@@ -719,7 +612,6 @@ body.show-ans .ans{display:block}
     h += namebar(['이름','날짜','걸린 시간']);
 
     if(lv <= 3){
-      h += '<div class="legend"><span class="lgttl">약식 표기</span>'
         + '<span><b>●</b> 머리 문장</span><span><b>–</b> 딸림(예시·부연)</span>'
         + '<span><b>○</b> 신호어에 동그라미</span><span><b>/</b> 전환점에 빗금</span>'
         + '<span><b>+ −</b> 속성 방향</span>'
@@ -734,8 +626,7 @@ body.show-ans .ans{display:block}
       + (p.note ? '<p style="text-align:right;text-indent:0;font-size:11px;margin-bottom:2px">'+p.note+'</p>' : '')
       + (p.vocab ? '' : '<div class="ch">'+p.choices.map(function(c,i){
           return cn(i+1)+' '+c;
-        }).join('<br>')+'</div>')+'</div>'
-      + '<div class="margin-col"><span class="mtag">여백 — 여기까지만 쓴다</span></div></div>';
+        }).join('<br>')+'</div>')+'</div></div>';
 
     h += '<div class="step step-grow">'+stepH('확인','푼 다음 30초 안에','A지 트리를 안 보고 채운다')
       + '<div class="check-strip">'
@@ -754,14 +645,10 @@ body.show-ans .ans{display:block}
       + '<div class="rg-cell wide"><label>A지 때와 답이 달랐다면 이유</label>'
       + '<div class="blank"></div></div></div></div>';
 
-    h += '<div class="step">'+stepH('교사','전이 점검')
-      + '<table><tr><th style="width:64%">확인 항목</th><th>됨</th><th>안 됨</th></tr>'
-      + '<tr><td>여백에 기호만 썼는가 (문장 번역을 쓰지 않았는가)</td><td></td><td></td></tr>'
-      + '<tr><td>전환 신호어를 스스로 찾아 표시했는가</td><td></td><td></td></tr>'
-      + '<tr><td>머리 문장을 딸림과 헷갈리지 않았는가</td><td></td><td></td></tr>'
-      + '<tr><td>'+(p.time||60)+'초 안에 끝났는가</td><td></td><td></td></tr></table>'
-      + (p.teachNote ? '<div class="ans"><div class="ans-box"><span class="k">지도 메모</span>'+esc(p.teachNote)+'</div></div>' : '')
-      + '</div>';
+    h += (p.teachNote ? '<div class="ans"><div class="ans-box">'
+        + '<span class="k">점검</span>기호만 썼는가 · 신호어를 스스로 찾았는가 · '
+        + '코어를 서포트와 헷갈리지 않았는가 · '+(p.time||60)+'초 안에 끝났는가'
+        + '<div class="tip">'+esc(p.teachNote)+'</div></div></div>' : '');
 
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>실전 전이지 B</span></div></section>';
   }
@@ -1061,9 +948,8 @@ body.show-ans .ans{display:block}
               + parseFloat(getComputedStyle(sh).paddingBottom);
       var need = inner + pad;
       if(need > LIMIT){
-        var z = (LIMIT - 4) / need;
-        if(z < 0.94) return;                    // 0.94 미만으로 줄이느니 2장으로 넘긴다
-        z = Math.min(1, z);
+        var z = Math.min(1, (LIMIT - 4) / need);
+        if(z < 0.95) z = 0.95;                  // 0.95 미만으로는 줄이지 않는다 (가독성)
         sh.style.zoom = z.toFixed(3);
         sh.dataset.fit = Math.round(z*100) + '%';
       } else {
@@ -1075,6 +961,10 @@ body.show-ans .ans{display:block}
   }
 
   fillYears(); fillQs(); fillPs();
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){ fitSheets(); });
+  }
+  window.addEventListener('beforeprint', fitSheets);
   selY.addEventListener('change', function(){ fillQs(); fillPs(); render(); });
   selQ.addEventListener('change', function(){ fillPs(); render(); });
   selP.addEventListener('change', render);
