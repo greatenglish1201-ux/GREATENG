@@ -163,9 +163,9 @@ body.show-ans .blank.filled{display:flex; align-items:flex-end; padding-bottom:1
 .blank.boxtdbody.show-ans td.ans{display:none}
 body.show-ans .ans{display:block}
 .ans-box{border:1px solid var(--wine-soft); background:#fdf6f6;
-  padding:7px 10px; font-size:11.5px; margin-top:6px}
+  padding:5px 8px; font-size:10.8px; line-height:1.45; margin-top:4px}
 .ans-box .k{font-weight:700; color:var(--wine); margin-right:5px}
-.ans-box .tip{margin-top:4px; color:var(--wine-soft)}
+.ans-box .tip{margin-top:3px; color:var(--wine-soft)}
 
 /* A-2는 남는 세로를 칸이 흡수하도록 — 아래쪽 백지 방지
    (짧은 지문일수록 트리 칸과 요지 박스가 자동으로 커진다) */
@@ -186,6 +186,11 @@ body.show-ans .ans{display:block}
   .fast-item{break-inside:avoid}
   .para{break-inside:avoid}
   .pt{break-inside:avoid}
+  /* 해설·마지막 블록이 홀로 다음 장으로 넘어가 여백을 낭비하지 않도록 */
+  .ans{break-inside:avoid; page-break-inside:avoid; break-before:avoid; page-break-before:avoid}
+  .ans-box{break-inside:avoid; page-break-inside:avoid}
+  .sheet > *:last-child{break-after:avoid; page-break-after:avoid}
+  .step:last-of-type .ans{break-before:avoid}
   /* 배경·밑줄 흑백 대비 */
   .passage,.box,.tree,.exam-col,.legend,.para-b{background:#fff}
   table.csbar{background:#fff}
@@ -344,6 +349,10 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 .order-row .oa{color:var(--grey); font-size:12px}
 
 /* ---------- 속독지 ---------- */
+.fchk{display:flex; align-items:center; gap:8px; margin-top:2mm}
+.fchk .fl{font-size:10.5px; color:var(--grey); white-space:nowrap}
+.fchk .blank{flex:1; min-width:70px}
+.fchk .circle{width:22px; height:22px; flex:0 0 22px}
 .sheet-f .head{border-bottom-color:var(--gold)}
 .sheet-f .head .t1{color:var(--gold)}
 .fast-item{border-top:1px solid var(--line); padding-top:2.2mm; margin-bottom:1.8mm; break-inside:avoid}
@@ -460,7 +469,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260828m"></script>
+<script src="passages_final.js?v=20260828o"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -748,21 +757,15 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열 2/2</span></div></section>';
   }
 
-  /* ---------- 속독지 (fast:true 지문 3개를 한 장에) ---------- */
+  /* ---------- 속독지 — 3문항 한 장, 최소 구성 ---------- */
   function sheetFast(list, lv){
     var h = '<section class="sheet sheet-f">';
     h += '<div class="head"><div><div class="t1">SPEED · 속독지</div>'
-      + '<div class="t2">첫 문장만 보고 끝낸다</div></div>'
-      + '<div class="meta">18 · 19 · 20번<br><span class="timer">3문항 합계 목표 150초</span></div></div>';
-    h += namebar(['이름','날짜','걸린 시간']);
+      + '<div class="t2">도입부만 보고 끝낸다</div></div>'
+      + '<div class="meta">18 · 19 · 20번 · '+esc(srcShort(list[0].src))+'<br>'
+      + '<span class="nm">이름 ____________ &nbsp;/&nbsp; 걸린 시간 ______</span></div></div>';
 
-    h += '<div class="legend" style="border-color:var(--gold)">'
-      + '<span class="lgttl" style="color:var(--wine)">규칙</span>'
-      + '<span>트리 <b>안 그린다</b></span>'
-      + '<span>도입부에서 소재·속성·방향만</span>'
-      + '<span>막히면 <b>넘긴다</b> — 여기서 시간 쓰면 뒤가 무너진다</span></div>';
-
-    list.forEach(function(p, i){
+    list.forEach(function(p){
       h += '<div class="fast-item">'
         + '<div class="qnum" style="display:flex;align-items:center;gap:8px">'
         + '<span>'+p.qnum+'. '+p.qtext+'</span>'
@@ -772,35 +775,25 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
         + '</div>';
 
       if(p.fastMode === 'mood'){
-        /* 19번 심경 — 방향이 아니라 '앞→뒤 변화' */
         var mood = (p.choices[p.ans-1]||'').split('→');
-        h += '<div class="grid3" style="grid-template-columns:1fr 1fr 1.4fr">'
-          + '<div class="field"><label>앞부분 심경</label>'+fill((mood[0]||'').trim())+'</div>'
-          + '<div class="field"><label>뒷부분 심경</label>'+fill((mood[1]||'').trim())+'</div>'
-          + '<div class="field"><label>바뀐 지점 (단서 한 단어)</label>'
-          + fill(esc(p.moodPivot||''))+'</div></div>';
+        h += '<div class="fchk">'
+          + '<span class="fl">앞 심경</span>'+fill((mood[0]||'').trim())
+          + '<span class="fl">뒤 심경</span>'+fill((mood[1]||'').trim())
+          + '<span class="fl">정답</span>'
+          + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+          + cn(p.ans)+'</span></span></div>';
       } else {
-        h += '<div class="grid3">'
-          + '<div class="field"><label>소재</label>'+fill(esc(p.key||''))+'</div>'
-          + '<div class="field"><label>속성</label>'+fill(esc(p.attr||''))+'</div>'
-          + '<div class="field"><label>방향</label>'
-          + '<div class="pick" style="gap:11px">'
-          + [['+','긍정'],['−','부정'],['통념','통념']].map(function(d){
-              return '<span><i class="chk"></i>'+d[0]
-                + (p.dir===d[1]?'<span class="fx">✓</span>':'')+'</span>';
-            }).join('')
-          + '</div></div></div>';
+        h += '<div class="fchk">'
+          + '<span class="fl">소재</span>'+fill(esc(p.key||''))
+          + '<span class="fl">속성</span>'+fill(esc(p.attr||''))
+          + '<span class="fl">정답</span>'
+          + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+          + cn(p.ans)+'</span></span></div>';
       }
 
-      h += '<div class="regrip" style="margin-top:1mm">'
-        + '<div class="rg-cell"><label>처음</label><div class="circle"></div></div>'
-        + '<div class="rg-cell"><label>다시</label>'
-        + '<div class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
-        + cn(p.ans)+'</span></div></div>'
-        + '<div class="rg-cell wide"><label>고른 근거 (몇 번째 문장 · 단서)</label>'
-        + '<div class="blank filled"><span class="fx">'+esc(p.fastWhy)+'</span></div></div></div>';
-
-      h += (p.teachNote ? '<div class="ans"><div class="ans-box">'+esc(p.teachNote)+'</div></div>' : '');
+      h += (p.fastWhy ? '<div class="ans"><div class="ans-box">'+esc(p.fastWhy)
+            + (p.teachNote ? '<div class="tip">'+esc(p.teachNote)+'</div>' : '')
+            + '</div></div>' : '');
       h += '</div>';
     });
 
@@ -948,8 +941,9 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
               + parseFloat(getComputedStyle(sh).paddingBottom);
       var need = inner + pad;
       if(need > LIMIT){
+        var floor = document.body.classList.contains('show-ans') ? 0.80 : 0.95;
         var z = Math.min(1, (LIMIT - 4) / need);
-        if(z < 0.95) z = 0.95;                  // 0.95 미만으로는 줄이지 않는다 (가독성)
+        if(z < floor) z = floor;   // 학생용은 0.95까지만, 교사용은 0.80까지 허용
         sh.style.zoom = z.toFixed(3);
         sh.dataset.fit = Math.round(z*100) + '%';
       } else {
@@ -976,6 +970,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     btn.classList.toggle('on', on);
     btn.textContent = on ? '교사용 해설 숨기기' : '교사용 해설 보기';
     document.getElementById('warnAns').style.display = on ? 'inline' : 'none';
+    fitSheets();          // 해설이 켜지면 용지가 길어지므로 다시 맞춘다
   });
 
   render();
