@@ -1736,6 +1736,127 @@ window.PASSAGES = [
   wrongNote: "④만 방향이 반대. 나머지 넷은 모두 '서로의 사정을 안다'는 흐름과 순행한다.",
   teachNote: "④가 <b>부정어(not)와 겹쳐</b> 헷갈린다. 'not to ask for very low' = '낮은 값을 부르지 않으려 조심' - "
            + "말이 되나? 필수품이 아니면 <u>비싸게</u> 못 부르는 것이다. 문장을 우리말로 뒤집어 읽게 할 것."
+},
+
+/* ===== 2024수능 장문 ===== */
+{
+  id: "s24_4142_media",
+  src: "2024수능 41-42번", qnum: 41, qlabel: "41-42번", qtype: "장문",
+  qtext: "윗글의 제목으로 가장 적절한 것은?",
+  star: 3, time: 180,
+  note: "* overhype: 과대광고하다  ** entanglement: 얽힘",
+  sents: [
+    "One way to avoid contributing to overhyping a story would be to say nothing.",
+    "However, that is not a realistic option for scientists who feel a strong sense of responsibility to inform the public and policymakers and/or to offer suggestions.",
+    "Speaking with members of the media has <u class=\"n1\">advantages</u> in getting a message out and perhaps receiving favorable recognition, but it runs the risk of misinterpretations, the need for repeated clarifications, and entanglement in never-ending controversy.",
+    "Hence, the decision of whether to speak with the media tends to be highly individualized.",
+    "Decades ago, it was <u class=\"n2\">unusual</u> for Earth scientists to have results that were of interest to the media, and consequently few media contacts were expected or encouraged.",
+    "In the 1970s, the few scientists who spoke frequently with the media were often <u class=\"n3\">criticized</u> by their fellow scientists for having done so.",
+    "The situation now is quite different, as many scientists feel a responsibility to speak out because of the importance of global warming and related issues, and many reporters share these feelings.",
+    "In addition, many scientists are finding that they <u class=\"n4\">enjoy</u> the media attention and the public recognition that comes with it.",
+    "At the same time, other scientists continue to resist speaking with reporters, thereby preserving more time for their science and <u class=\"n5\">running</u> the risk of being misquoted and the other unpleasantries associated with media coverage."
+  ],
+  choices: [
+    "The Troubling Relationship Between Scientists and the Media",
+    "A Scientist\u2019s Choice: To Be Exposed to the Media or Not?",
+    "Scientists! Be Cautious When Talking to the Media",
+    "The Dilemma over Scientific Truth and Media Attention",
+    "Who Are Responsible for Climate Issues, Scientists or the Media?"
+  ],
+  ans: 2,
+  ans42: 5,
+  key: "<b class=w>speak with the media</b> - 과학자가 언론과 말할 것인가",
+  attr: "<b class=w>the decision... tends to be highly individualized</b> (4) - 개인마다 다른 <b>선택</b>의 문제",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"However, that is not a realistic option...", skip:false},
+    {n:3, head:"Speaking with members of the media has advantages...", skip:false},
+    {n:4, head:"Hence, the decision of whether to speak...", skip:false},
+    {n:5, head:"<b>Decades ago</b>, it was unusual for Earth scientists...", skip:false,
+     why:"시점 표현이 있지만 밑줄이 있어 확인 필요"},
+    {n:6, head:"In the <b>1970s</b>, the few scientists who spoke frequently...", skip:false,
+     why:"연도가 있지만 밑줄이 있어 확인 필요"},
+    {n:7, head:"The situation now is quite different...", skip:false},
+    {n:8, head:"In addition, many scientists are finding...", skip:false},
+    {n:9, head:"At the same time, other scientists continue to resist...", skip:false}
+  ],
+  trunk1: "말하지 않는 것도 방법이지만 현실적이지 않다",
+  trunk2: "그래서 개인이 선택할 문제 - 말하는 쪽과 피하는 쪽",
+  pivotAt: 4,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"과대광고에 기여하지 않으려면 아무 말도 안 하면 된다 (통념)"},
+    {n:2, lb:"대조·반전", head:true, txt:"그러나 책임감을 느끼는 과학자에게 그건 현실적 선택이 아니다"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"언론과 말하면 장점도 있지만 오해·해명·논란의 위험도 있다"},
+    {n:4, lb:"주장",     head:true,  txt:"그래서 언론과 말할지는 <b>매우 개인적인 결정</b>이 된다"},
+    {n:5, lb:"근거",     head:false, to:4, txt:"수십 년 전엔 언론이 관심 가질 결과가 드물었다"},
+    {n:6, lb:"예시",     head:false, to:5, txt:"1970년대엔 언론과 자주 말하면 동료에게 비판받았다"},
+    {n:7, lb:"대조·반전", head:true, txt:"지금은 다르다 - 지구온난화 때문에 발언할 책임을 느낀다"},
+    {n:8, lb:"부연",     head:false, to:7, txt:"게다가 언론의 관심과 대중적 인정을 즐기는 과학자도 많다"},
+    {n:9, lb:"재진술",   head:true,  txt:"동시에 여전히 기자를 피하는 과학자도 있다 - 결국 각자의 선택"}
+  ],
+  pivot: {sig:"Hence", at:4, from:"말할까 말까의 장단점", to:"개인이 선택할 문제"},
+  pivotSub: "①의 통념을 ②의 <b>However</b>가 뒤집고, ④의 <b>Hence</b>가 결론을 낸다. "
+          + "⑦의 <b>The situation now is quite different</b>는 시간 대비이지 줄기 전환이 아니다.",
+  vocab: [
+    {n:1, word:"advantages", ok:true, why:"메시지를 알리고 인정받는 '장점' - 뒤의 but risk와 짝을 이룸"},
+    {n:2, word:"unusual",    ok:true, why:"예전엔 언론이 관심 가질 결과가 '드물었다' - 그래서 접촉도 적었다"},
+    {n:3, word:"criticized", ok:true, why:"1970년대엔 언론과 말하면 동료에게 '비판받았다' - 5번과 순행"},
+    {n:4, word:"enjoy",      ok:true, why:"지금은 언론 관심을 '즐긴다' - 7번 '상황이 달라졌다'와 순행"},
+    {n:5, word:"running",    ok:false, fix:"avoiding",
+     why:"기자를 <b>피하는</b> 과학자는 오보 위험을 <b>피하는</b> 것이지 '무릅쓰는' 게 아니다. thereby 뒤 preserving과 병렬"}
+  ],
+  gist: "언론과 말할지는 장단점이 모두 있어 과학자 개인이 선택할 문제다.",
+  wrong: {
+    "1": "'문제 있는 관계'라는 부정적 진단이 아님 - 선택의 문제로 본다",
+    "3": "'조심하라'는 경고문이 아님 - 양쪽 다 소개한다",
+    "4": "과학적 진실 대 언론 관심의 '딜레마'가 아니라 발언 여부의 선택",
+    "5": "기후 문제의 책임 소재를 따지는 글이 아님"
+  },
+  wrongNote: "정답 ②의 <b>To Be Exposed... or Not?</b>이 4번의 <b>individualized</b>를 그대로 옮긴 것.",
+  teachNote: "42번 정답 ⑤ running은 <b>thereby preserving</b>과의 <u>병렬</u>로 잡는다 - "
+           + "기자를 피해서 얻는 것이 둘 나열되는 자리인데 '위험을 무릅쓴다'는 이득이 아니다. "
+           + "밑줄 앞의 <b>and</b>를 보고 앞말과 짝인지 확인하는 훈련."
+},
+
+{
+  id: "s24_4345_emma",
+  src: "2024수능 43-45번", qnum: 43, qlabel: "43-45번", qtype: "장문 배열",
+  star: 2, time: 150, note: "",
+  paras: [
+    {tag:"A",
+     text:"Emma and Clara stood side by side on the beach road, with their eyes fixed on the boundless ocean. The breathtaking scene that surrounded them was beyond description. Just after sunrise, they finished their preparations for the bicycle ride along the beach road. Emma turned to Clara with a question, \u201cDo you think this will be your favorite ride ever?\u201d Clara\u2019s face lit up with a bright smile as she nodded. \u201cDefinitely! <u class=\"n1\">(a) I</u> can\u2019t wait to ride while watching those beautiful waves!\u201d",
+     gist:"일출 직후 해변 도로에서 자전거 탈 준비를 마침",
+     cue:"주어진 글. 출발 직전"},
+    {tag:"B",
+     text:"When they reached their destination, Emma and Clara stopped their bikes. Emma approached Clara, saying \u201cBicycle riding is unlike swimming, isn\u2019t it?\u201d Clara answered with a smile, \u201cQuite similar, actually. Just like swimming, riding makes me feel truly alive.\u201d She added, \u201cIt shows <u class=\"n2\">(b) me</u> what it means to live while facing life\u2019s tough challenges.\u201d Emma nodded in agreement and suggested, \u201cYour first beach bike ride was a great success. How about coming back next summer?\u201d Clara replied with delight, \u201cWith <u class=\"n3\">(c) you</u>, absolutely!\u201d",
+     gist:"목적지 도착 - 대화를 나누고 내년을 기약함",
+     cue:"결말. <b>reached their destination</b>"},
+    {tag:"C",
+     text:"Clara used to be a talented swimmer, but she had to give up her dream of becoming an Olympic medalist in swimming because of shoulder injuries. Yet she responded to the hardship in a constructive way. After years of hard training, she made an incredible recovery and found a new passion for bike riding. Emma saw how the painful past made her maturer and how it made <u class=\"n4\">(d) her</u> stronger in the end. One hour later, Clara, riding ahead of Emma, turned back and shouted, \u201cLook at the white cliff!\u201d",
+     gist:"Clara의 과거 - 수영을 접고 자전거를 새 열정으로. 한 시간 뒤 절벽을 외침",
+     cue:"<b>One hour later</b>가 다음을 부른다"},
+    {tag:"D",
+     text:"Emma and Clara jumped on their bikes and started to pedal toward the white cliff where the beach road ended. Speeding up and enjoying the wide blue sea, Emma couldn\u2019t hide her excitement and exclaimed, \u201cClara, the view is amazing!\u201d Clara\u2019s silence, however, seemed to say that she was lost in her thoughts. Emma understood the meaning of her silence. Watching Clara riding beside her, Emma thought about Clara\u2019s past tragedy, which <u class=\"n5\">(e) she</u> now seemed to have overcome.",
+     gist:"절벽을 향해 달림 - Clara의 침묵에서 과거를 떠올림",
+     cue:"(C)의 <b>Look at the white cliff!</b>를 바로 받음"}
+  ],
+  orderAns: ["C","D","B"],
+  ans43: 3,
+  orderWhy: "(A) 출발 준비 → (C) 과거 회상, 한 시간 뒤 절벽 발견 → (D) 절벽으로 달림 → (B) 도착. 시간 순서 그대로",
+  refs: [
+    {tag:"a", word:"I",   who:"Clara", why:"Clara가 대답 속에서 말하는 '나'"},
+    {tag:"b", word:"me",  who:"Clara", why:"자전거가 무엇을 보여주는지 말하는 사람 = Clara"},
+    {tag:"c", word:"you", who:"Emma",  why:"Clara가 <b>함께 오자</b>고 답한 상대 = Emma"},
+    {tag:"d", word:"her", who:"Clara", why:"아픈 과거가 강하게 만든 사람 = Clara"},
+    {tag:"e", word:"she", who:"Clara", why:"과거의 비극을 극복한 사람 = Clara"}
+  ],
+  refOdd: "Emma",
+  ans44: 3,
+  ans45: 3,
+  why45: "(C)에서 Clara는 어깨 부상으로 <b class=w>had to give up her dream of becoming an Olympic medalist</b> - 메달을 <b>따지 못했다</b>",
+  teachNote: "2026(Mia)·2025(Ethan)과 달리 <b>인물이 둘뿐</b>이라 지칭이 쉽다 - 44번은 (c) you만 Emma. "
+           + "순서는 <b>white cliff</b>가 (C) 끝과 (D) 처음을 잇는 고리. "
+           + "<u>같은 단어가 두 단락에 걸쳐 나오면 그 둘이 붙는다</u>를 가르치기 좋은 지문."
 }
 
 ];
