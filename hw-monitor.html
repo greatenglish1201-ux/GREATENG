@@ -349,6 +349,7 @@ function toggleHubMenu(){
       <button class="insp-period-btn" data-days="30" onclick="setInspPeriod(30)">30일</button>
       <button class="insp-period-btn" data-days="60" onclick="setInspPeriod(60)">60일</button>
       <button class="insp-period-btn" data-days="90" onclick="setInspPeriod(90)">90일</button>
+      <button class="insp-period-btn" data-days="lastmonth" onclick="setInspPeriod('lastmonth')">지난달</button>
     </div>
     <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px; letter-spacing:-0.02em;">제출 현황</div>
     <div id="insp-days" style="margin-bottom:14px;"></div>
@@ -363,6 +364,8 @@ function toggleHubMenu(){
       <div style="font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px; letter-spacing:-0.02em;">학부모 리포트</div>
       <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
         <select id="insp-report-period" style="padding:9px 11px;">
+          <option value="lastmonth" selected>지난달 (1일~말일)</option>
+          <option value="thismonth">이번달 (1일~어제)</option>
           <option value="30">최근 30일</option>
           <option value="180">최근 180일</option>
           <option value="365">최근 1년</option>
@@ -370,6 +373,7 @@ function toggleHubMenu(){
         <button class="btn btn-primary" onclick="genReport()">리포트 생성</button>
         <button class="btn btn-line" id="insp-copy-btn" onclick="copyReport()" style="display:none;">📋 복사</button>
       </div>
+      <div id="insp-report-warn" style="font-size:12.5px; color:var(--miss); min-height:16px; margin-bottom:6px;"></div>
       <textarea id="insp-report-text" readonly placeholder="리포트 생성을 누르면 학부모 전송용 텍스트가 만들어집니다." style="width:100%; min-height:220px; padding:13px; border:1px solid #ddd; border-radius:10px; font-size:13px; line-height:1.7; resize:vertical; font-family:inherit;"></textarea>
       <div id="insp-copy-msg" style="font-size:12.5px; color:var(--ok); text-align:center; min-height:16px; margin-top:5px;"></div>
     </div>
@@ -495,7 +499,7 @@ function toggleHubMenu(){
   function setInspPeriod(days){
     inspDays = days;
     document.querySelectorAll('.insp-period-btn').forEach(b=>{
-      b.classList.toggle('active', parseInt(b.dataset.days) === days);
+      b.classList.toggle('active', String(b.dataset.days) === String(days));
     });
     if(_inspCurName) loadInspDays(_inspCurName);
   }
@@ -515,10 +519,11 @@ function toggleHubMenu(){
     if(gbox){ gbox.style.display = 'none'; gbox.innerHTML = ''; gbox._loaded = false; }
     if(gtog) gtog.textContent = '성적 추이 보기';
     const rt = document.getElementById('insp-report-text'); if(rt) rt.value = '';
+    const rw = document.getElementById('insp-report-warn'); if(rw) rw.textContent = '';
     const cb = document.getElementById('insp-copy-btn'); if(cb) cb.style.display = 'none';
     // 기간 버튼 기본 30일 활성화
     document.querySelectorAll('.insp-period-btn').forEach(b=>{
-      b.classList.toggle('active', parseInt(b.dataset.days) === inspDays);
+      b.classList.toggle('active', String(b.dataset.days) === String(inspDays));
     });
     window.scrollTo(0,0);
 
@@ -533,8 +538,17 @@ function toggleHubMenu(){
   // 현황 + 요약 (기간별)
   async function loadInspDays(name){
     document.getElementById('insp-days').innerHTML = '<div class="loading">불러오는 중...</div>';
-    const st = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(name) + '&days=' + inspDays);
-    const days = (st && st.days) || [];
+    // '지난달'이면 그 달을 덮을 만큼 넉넉히 받아 날짜로 거른다
+    let reqDays = inspDays, sIso = '', eIso = '';
+    if(inspDays === 'lastmonth'){
+      const { start, end } = monthRange('lastmonth');
+      const t = new Date(); t.setHours(0,0,0,0);
+      reqDays = Math.ceil((t - start)/86400000) + 2;
+      sIso = _iso(start); eIso = _iso(end);
+    }
+    const st = await jsonp('type=homeworkStatus&name=' + encodeURIComponent(name) + '&days=' + reqDays);
+    let days = (st && st.days) || [];
+    if(sIso) days = days.filter(d => d.date >= sIso && d.date <= eIso);
     renderInspectDays(days);
 
     let sub=0,late=0,miss=0,pre=0;
@@ -822,12 +836,70 @@ function toggleHubMenu(){
 
   // ===== 학부모 리포트 생성 (시트 수식과 동일) =====
   let _inspName = '';
+
+  // 달 단위 구간 계산 — 'lastmonth': 지난달 1일~말일, 'thismonth': 이번달 1일~어제
+  function monthRange(kind){
+    const t = new Date(); t.setHours(0,0,0,0);
+    if(kind === 'lastmonth'){
+      const start = new Date(t.getFullYear(), t.getMonth()-1, 1);
+      const end   = new Date(t.getFullYear(), t.getMonth(), 0);   // 지난달 말일
+      return { start, end };
+    }
+    const start = new Date(t.getFullYear(), t.getMonth(), 1);
+    let end = new Date(t.getTime() - 86400000);                    // 어제
+    if(end < start) end = start;
+    return { start, end };
+  }
+  function _iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+
   function genReport(){
     const name = document.getElementById('insp-name').textContent;
     _inspName = name;
-    const days = parseInt(document.getElementById('insp-report-period').value) || 30;
+    const sel = document.getElementById('insp-report-period').value;
     const ta = document.getElementById('insp-report-text');
     ta.value = '리포트 생성 중...';
+
+    // 달 단위 — 서버는 '최근 N일'만 지원하므로, 넉넉히 받아 날짜로 걸러 집계
+    if(sel === 'lastmonth' || sel === 'thismonth'){
+      const { start, end } = monthRange(sel);
+      const t = new Date(); t.setHours(0,0,0,0);
+      const need = Math.ceil((t - start)/86400000) + 2;
+      const sIso = _iso(start), eIso = _iso(end);
+      Promise.all([
+        jsonp('type=homeworkStatus&name=' + encodeURIComponent(name) + '&days=' + need),
+        jsonp('type=adminSubmissions&name=' + encodeURIComponent(name))
+      ]).then(([st, ph])=>{
+        if(!st){ ta.value = '생성 실패 — 다시 시도해주세요.'; return; }
+        const days = (st.days || []).filter(d => d.date >= sIso && d.date <= eIso);
+        let c=0, l=0, m=0;
+        days.forEach(d=>{
+          if(d.status==='제출' || d.status==='선제출') c++;
+          else if(d.status==='지연제출') l++;
+          else if(d.status==='미제출') m++;
+        });
+        // 단어쓰기(재시) — 같은 구간, 서버 집계와 동일하게 '건수'로 계산
+        const items = (ph && ph.items) || [];
+        const ww = items
+          .filter(it => (it.type||'').includes('단어쓰기'))
+          .filter(it => it.due && it.due >= sIso && it.due <= eIso)
+          .length;
+        // 제출 이력은 최신 100건까지만 내려옴 — 구간을 다 못 덮으면 경고
+        const oldest = items.length ? (items[items.length-1].due || '') : '';
+        const truncated = items.length >= 100 && oldest && oldest > sIso;
+        const warnEl = document.getElementById('insp-report-warn');
+        if(warnEl){
+          warnEl.textContent = truncated
+            ? '⚠ 제출 이력이 최신 100건까지만 조회됩니다. 단어 재시 횟수가 실제보다 적을 수 있어요.'
+            : '';
+        }
+        ta.value = buildReportText({ name, submitted:c, late:l, missed:m, wordWrite:ww,
+                                     rangeStart:start, rangeEnd:end });
+        document.getElementById('insp-copy-btn').style.display = 'inline-block';
+      });
+      return;
+    }
+
+    const days = parseInt(sel) || 30;
     jsonp('type=adminReport&name=' + encodeURIComponent(name) + '&days=' + days).then(d=>{
       if(!d){ ta.value = '생성 실패 — 다시 시도해주세요.'; return; }
       ta.value = buildReportText(d);
@@ -862,9 +934,14 @@ function toggleHubMenu(){
     const days = d.days || 30;
     const total = c + l + m;
     const rate = total ? Math.round((c + l) / total * 100) : 0;
-    const today = new Date();
-    const start = new Date(today.getTime() - days*86400000);
-    const end = new Date(today.getTime() - 1*86400000);
+    let start, end;
+    if(d.rangeStart && d.rangeEnd){          // 달 단위 — 지정 구간 그대로
+      start = d.rangeStart; end = d.rangeEnd;
+    } else {                                  // 최근 N일 — 오늘 제외, 어제까지
+      const today = new Date();
+      start = new Date(today.getTime() - days*86400000);
+      end   = new Date(today.getTime() - 1*86400000);
+    }
     const s = fmtDate(start), e = fmtDate(end);
     const comment = teacherComment(c, l, m);
     return `[${name} 학생 학습 리포트]\n`
