@@ -308,7 +308,9 @@ body{font-size:15px}
     <div class="gnav-links">
       <a href="https://greatenglish1201-ux.github.io/GREATENG/main.html">메인</a>
       <a href="https://greatenglish1201-ux.github.io/GREATENG/parent_guide.html">수업안내</a>
+      <!-- [특강 슬롯] 방학 특강 시즌에만 노출. 겨울방학 때 아래 주석을 풀고 파일명·라벨만 교체할 것 (예: winter.html / 겨울특강)
       <a href="https://greatenglish1201-ux.github.io/GREATENG/summer.html">여름특강</a>
+      -->
       <a href="https://greatenglish1201-ux.github.io/GREATENG/suneung_2026.html">수능대비반</a>
       <a class="active" href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">학교정보</a>
     </div>
@@ -353,7 +355,7 @@ body{font-size:15px}
 <div class="adm-wrap">
   <button class="adm-toggle" onclick="toggleAdm(this)" style="border-bottom:2px solid var(--accent);">
     <div class="left-g">
-      <span>2026학년도 포항 고등학교 <b style="color:var(--accent)">입학전형 요강 전체보기</b> <span style="font-size:11px;font-weight:400;color:#f59e0b;margin-left:6px">※ 경북교육청 공식 공문 기준</span></span>
+      <span>2027학년도 포항 고등학교 <b style="color:var(--accent)">입학전형 요강 전체보기</b> <span style="font-size:11px;font-weight:400;color:#f59e0b;margin-left:6px">※ 경북교육청 공식 공문 기준</span></span>
     </div>
     <span class="adm-arrow" id="adm-arrow" style="font-size:18px;color:var(--accent);font-weight:700;background:#fff0f0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">▼</span>
   </button>
@@ -368,8 +370,8 @@ body{font-size:15px}
     <div style="background:#fff1f2;border:1.5px solid #fca5a5;border-radius:10px;padding:11px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">
       <span style="font-size:18px;flex-shrink:0">⚠️</span>
       <div style="font-size:13px;color:#991b1b;line-height:1.7">
-        <b>이 내용은 경상북도포항교육지원청이 공고한 「2026학년도 평준화지역(포항시) 일반고등학교 입학전형 요강」 공문을 기반으로 작성한 참고 요약입니다.</b><br>
-        2027학년도 전형 일정은 2026년 하반기(8~9월) 공고 예정이며 아직 미확정입니다. 입시 결정 전 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#991b1b;font-weight:700">경북 고입전형포털(hischoolgbe.kr)</a> 공식 원문을 확인하세요. 본 페이지의 오류·변경으로 인한 불이익에 대해 책임지지 않습니다.
+        <b>이 내용은 경상북도교육청(중등교육과)이 공고한 「2027학년도 평준화지역(포항시) 일반고등학교 입학전형 요강」(2026. 9.) 공문을 기반으로 작성한 참고 요약입니다.</b><br>
+        평준화 일반고 + <b>경북과학고 · 포항제철고 · 포항예술고</b>는 <b>2027학년도 확정 요강 기준</b>이며, 나머지 전기고(마이스터고·특성화고) 일정은 <b>2026학년도 기준 참고값</b>으로 학교별 2027학년도 요강이 나오면 변경됩니다. 입시 결정 전 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#991b1b;font-weight:700">경북 고입전형포털(hischoolgbe.kr)</a> 공식 원문을 확인하세요. 본 페이지의 오류·변경으로 인한 불이익에 대해 책임지지 않습니다.
       </div>
     </div>
 
@@ -379,10 +381,12 @@ body{font-size:15px}
         <div class="adm-card">
           <h4>🏫 포항 평준화 대상 (14개교)</h4>
           <ul>
-            <li>포항 학군 내 일반고 <b>14개교</b> 해당</li>
+            <li>포항 학군 내 일반고 <b>14개교</b> · 인가 <b>119학급</b> · 정원 <b>2,856명</b></li>
+            <li>남고 5교 / 여고 4교 / 공학 5교 (합격자 사정은 남녀 구분 없음)</li>
             <li>경상북도 소재 중학교 졸업(예정)자 또는 경북 거주자</li>
             <li>대구 군위군 소재 중학교 졸업예정자도 지원 가능</li>
-            <li>자사고·외고 동시 지원 가능 (불합격 시 평준화 2순위부터 배정)</li>
+            <li>자사고·국제고·외고 동시 지원 가능 (불합격 시 평준화 2순위부터 배정)</li>
+            <li>고등학교 졸업자의 재입학 제한 (교육부 지침 반영)</li>
           </ul>
         </div>
         <div class="adm-card">
@@ -395,13 +399,15 @@ body{font-size:15px}
           </ul>
         </div>
         <div class="adm-card">
-          <h4>📋 2026학년도 실제 일정</h4>
+          <h4>📋 2027학년도 확정 일정</h4>
           <ul>
-            <li>원서 접수: <b>2025. 12. 8(월) ~ 12. 12(금)</b></li>
-            <li>합격자(배정예정자) 발표: <b>2026. 1. 8(목) 14:00</b></li>
-            <li>학교 배정 발표: <b>2026. 1. 14(수) 14:00</b></li>
-            <li>입학 등록: <b>2026. 1. 14(수) ~ 1. 16(금)</b></li>
-            <li>타 시도 전입자 원서: <b>2026. 2. 10 ~ 2. 13</b></li>
+            <li>원서 접수: <b>2026. 12. 7(월) ~ 12. 11(금)</b></li>
+            <li>합격자(배정예정자) 발표: <b>2027. 1. 5(화) 14:00</b></li>
+            <li>학교 배정 발표: <b>2027. 1. 12(화) 14:00</b></li>
+            <li>입학 등록: <b>2027. 1. 12(화) ~ 1. 14(목) 17:00</b></li>
+            <li>타 시도 전입자 원서: <b>2027. 2. 10(수) ~ 2. 12(금)</b></li>
+            <li>전입자 배정 발표: <b>2027. 2. 19(금) 14:00</b> · 등록 2. 22~2. 23</li>
+            <li>전형료: <b>없음</b></li>
           </ul>
         </div>
         <div class="adm-card">
@@ -412,11 +418,15 @@ body{font-size:15px}
             <li>내신성적 300점으로 합격선 결정 후 <b>추첨 배정</b></li>
             <li>원서 제출 후 <b>수정 불가</b> (오류 책임은 학생·학부모)</li>
             <li>과학중점과정: 포항고·이동고 각 2학급 (1학년 후 선정)</li>
-            <li>형제자매 동일 학교 배정 희망 시 신청 가능</li>
+            <li>형제자매(2촌) 동일 학교 배정 희망 시 신청 가능(주민등록등본)</li>
+            <li><b style="color:var(--accent)">[2027 신설]</b> 다자녀 가정(3자녀 이상) 둘째부터 재학 형제·자매와 동일교 <b>우선 배정</b></li>
+            <li>가습기살균제 피해학생도 심의 후 지망교 우선 배정</li>
+            <li>교원-자녀 동일 학교 배정 제외(<b>상피제</b>) 적용</li>
+            <li>미등록 결원에 대한 <b>추가 합격 없음</b></li>
           </ul>
         </div>
       </div>
-      <div class="adm-note">📌 출처: 경상북도포항교육지원청 공고 「2026학년도 평준화지역(포항시) 일반고등학교 입학전형 요강」(2025. 9.) 원문 기준. 2027학년도 일정은 2026년 하반기 공고 예정. 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#92400e;font-weight:600">hischoolgbe.kr</a> 공식 원문 확인.</div>
+      <div class="adm-note">📌 출처: 경상북도교육청 중등교육과 「2027학년도 평준화지역(포항시) 일반고등학교 입학전형 요강」(2026. 9.) 원문 기준. 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#92400e;font-weight:600">hischoolgbe.kr</a> 공식 원문 확인.</div>
     </div>
 
     <!-- 전기 전형 탭 -->
@@ -435,32 +445,44 @@ body{font-size:15px}
             <td><b>경북과학고</b></td>
             <td><span class="tag-special">과학고</span></td>
             <td>
-              1단계(서류): 학생부·자소서·교사추천서+소집면담 → 1.5배수(90명)<br>
-              2단계(면접): 융합형 과제 제시, 창의성·자기주도·인성 종합평가<br>
-              ※ 수학·과학 교사 추천서 필수(봉인 등기우편)
+              1단계(서류+면담): 학생부(Ⅱ)·자소서(3,000자)·교사추천서(1,000자) → <b>1.5배수 약 90명</b><br>
+              2단계(면접): 융합형 과제 제시, 과학·수학 창의성·자기주도·인성 종합평가<br>
+              ※ 수학·과학 교사 추천서 필수(개별 봉인·인비 등기우편)<br>
+              ※ 학생부 원점수·표준편차, 영재기록, 3학년 행특 제외
             </td>
             <td>
-              60명 3학급(일반 48+사회통합 12)<br>
+              60명 3학급(일반 48 + 사회통합 12)<br>
+              정원 외: 특례입학 1명·국가유공자자녀 1명 이내<br>
               전원 기숙사 의무(숙식비 수익자 부담)<br>
-              의·치·한의·약학 진학 시 불이익<br>
-              원서: 8. 25~8. 29<br>
-              소집면담: 10. 16~10. 23<br>
-              1단계 발표: 10. 31<br>
-              면접: 11. 14<br>
-              최종 발표: 11. 21<br>
-              입학담당관: 054-240-2629
+              의·치·수의·한의·약학 진학 시 불이익<br>
+              <b>원서: 2026. 8. 24~8. 27</b><br>
+              1단계 면담: 10. 7~10. 8<br>
+              1단계 발표: 10. 30(금) 12:00<br>
+              면접: 11. 20(금)<br>
+              최종 발표: 11. 30(월) 12:00<br>
+              전형료 없음 · 입학담당관: 054-240-2629
             </td>
           </tr>
           <tr>
             <td><b>포항제철고</b></td>
             <td><span class="tag-early">자사고</span></td>
-            <td>1단계: 교과성적(160)+출결(10) → 2배수<br>2단계: 1단계성적(170)+면접(30)</td>
             <td>
-              총 300명 (10학급)<br>
-              ·자기주도: 포항60+전국60명<br>
-              ·포스코임직원자녀: 전국120명<br>
-              ·사회통합: 전국60명<br>
-              원서: 경북고입전형포털<br>
+              1단계: 교과성적(160)+출결(10)=170 → 2배수<br>
+              2단계: 1단계(170)+면접(30) = <b>총 200점</b><br>
+              ※ <b>임직원자녀 전형은 면접 없이 170점 일괄 선발</b><br>
+              교과 반영: 2-1·2-2 각 20%, 3-1·3-2 각 30%<br>
+              과목 비율: 국25·수30·영25·과10·사10<br>
+              자기소개서 1,500자 이내(면접 참고자료)
+            </td>
+            <td>
+              총 300명 (10학급) · 남녀 어느 한 성 60% 초과 불가<br>
+              ·자기주도학습: <b>전국70+포항50 = 120명(40%)</b><br>
+              ·포스코임직원자녀: 120명(40%, 포항 우선 10명)<br>
+              ·사회통합: 60명(20%, 기회균등 30명 우선)<br>
+              ·정원 외: 국가유공자·특례 각 9명(3%) 이내<br>
+              <b>원서: 2026. 12. 7~12. 11</b> (경북고입전형포털)<br>
+              전형료 3만원(임직원자녀 2만원, 기회균등 면제)<br>
+              기숙사 100명 이내(포항시 외 거주 우선)<br>
               입학홍보실: 054-279-9684
             </td>
           </tr>
@@ -480,16 +502,20 @@ body{font-size:15px}
             <td><b>포항예술고</b></td>
             <td><span class="tag-special">예술고</span></td>
             <td>
-              내신(음악 40%·미술 50%) + 실기(음악 60%·미술 50%)<br>
+              <b>총 500점</b> · 음악과 내신 200(40%)+실기 300(60%) / 미술과 내신 250(50%)+실기 250(50%)<br>
+              내신 = 교과(음악 160·미술 210) + 출석 30 + 봉사 10<br>
+              반영학기: 2-1 30%, 2-2 30%, 3-1 40% / 과목: 국·수·영·사(역사)<br>
               <b>면접 없음</b>, 실기고사 1일 집중 전형<br>
-              ※ 실기 결시 시 불합격 처리
+              ※ 실기 결시 시 불합격 · 동점자는 실기 고득점자 순
             </td>
             <td>
               음악과 46명·미술과 46명 총 92명(4학급)<br>
-              원서접수: 10. 20~10. 24<br>
-              실기고사: 10. 31(금) 09:00<br>
-              합격자 발표: 11. 7(금) 14:00<br>
-              실기전형료: 50,000원<br>
+              음악: 서양 15~30 / 한국 1~10 / 실용예술 10~30<br>
+              미술: 미술 23~36 / <b>애니메이션 10~23</b>(전공 확정 선발)<br>
+              <b>원서접수: 2026. 10. 19(월) ~ 10. 22(목) 17:00</b> (포털 12:00)<br>
+              실기고사: <b>2026. 10. 30(금) 09:00</b><br>
+              합격자 발표: <b>2026. 11. 4(수) 14:00</b><br>
+              실기전형료: 50,000원(기초수급·한부모 면제)<br>
               교무실: 054-262-5402
             </td>
           </tr>
@@ -519,23 +545,63 @@ body{font-size:15px}
           </tr>
         </tbody>
       </table>
-      <div class="adm-note">📌 전기고 원서는 hischoolgbe.kr 온라인 접수. 전기 불합격 시 후기(평준화/비평준화) 지원 가능. <b>각 학교 홈페이지 전형요강 반드시 개별 확인 필수.</b> 본 표는 2026학년도 기준 참고용이며, 매년 변경될 수 있습니다.</div>
+      <div class="adm-note">📌 전기고 원서는 hischoolgbe.kr 온라인 접수. 전기 불합격 시 후기(평준화/비평준화) 지원 가능. <b>각 학교 홈페이지 전형요강 반드시 개별 확인 필수.</b> <b style="color:#b45309">경북과학고·포항제철고·포항예술고는 2027학년도 확정 요강 반영</b>, 그 외 학교는 2026학년도 기준 참고값입니다.</div>
     </div>
 
     <!-- 일정 탭 -->
     <div class="adm-section" id="tab-일정">
       <div class="adm-grid">
         <div class="adm-card">
-          <h4><span class="tag-special">경북과학고</span> 실제 일정</h4>
+          <h4><span class="tag-early">자사고(포항제철고)</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
           <ul>
-            <li>서식 안내: <b>2025. 6. 27</b></li>
-            <li>원서접수: <b>2025. 8. 25(월) ~ 8. 29(금)</b></li>
-            <li>소집면담: <b>2025. 10. 16 ~ 10. 23</b></li>
-            <li>1단계 합격자 발표: <b>2025. 10. 31(금) 12:00</b></li>
-            <li>개별면접: <b>2025. 11. 14(금)</b></li>
-            <li>최종 합격자 발표: <b>2025. 11. 21(금) 12:00</b></li>
-            <li>합격자 등록: <b>11. 21 ~ 11. 25</b></li>
+            <li>전형요강 공고: <b>2026. 8. 28(금)</b> · 내신 작성 기준일 <b>11. 30(월)</b></li>
+            <li>원서접수: <b>2026. 12. 7(월) 09:00 ~ 12. 11(금) 12:00</b></li>
+            <li>서류제출(우편·방문): <b>~ 12. 11(금) 17:00</b></li>
+            <li>1단계 발표: <b>2026. 12. 15(화) 14:00</b> (2배수)</li>
+            <li>면접: <b>2026. 12. 18(금) 09:00~17:00</b></li>
+            <li>최종 합격자 발표: <b>2026. 12. 24(목) 14:00</b></li>
+            <li>합격자 등록: <b>12. 24 ~ 12. 29</b> · 추가등록 12. 30~12. 31</li>
+            <li>추가모집 공고 <b>2027. 1. 4</b> · 원서 <b>1. 14~1. 15</b> · 발표 <b>1. 21(목) 14:00</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4><span class="tag-early">포항 평준화 일반고</span> 후기 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <ul>
+            <li>원서 접수: <b>2026. 12. 7(월) ~ 12. 11(금)</b></li>
+            <li>합격자(배정예정자) 발표: <b>2027. 1. 5(화) 14:00</b></li>
+            <li>학교 배정 발표: <b>2027. 1. 12(화) 14:00</b></li>
+            <li>입학 등록: <b>2027. 1. 12(화) ~ 1. 14(목) 17:00</b></li>
+            <li>타 시도 전입자 원서: <b>2027. 2. 10(수) ~ 2. 12(금)</b></li>
+            <li>전입자 배정 발표: <b>2027. 2. 19(금) 14:00</b></li>
+          </ul>
+        </div>
+      <div class="adm-card">
+          <h4><span class="tag-special">경북과학고</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <ul>
+            <li>서식 안내: <b>2026. 6. 26(금)</b></li>
+            <li>원서접수·서류제출: <b>2026. 8. 24(월) 09:00 ~ 8. 27(목) 17:00</b> (포털 12:00까지)</li>
+            <li>서류평가: <b>2026. 8. 28 ~ 10. 6</b></li>
+            <li>1단계 면담평가: <b>2026. 10. 7(수) ~ 10. 8(목)</b></li>
+            <li>1단계 합격자 발표: <b>2026. 10. 30(금) 12:00</b></li>
+            <li>2단계 면접: <b>2026. 11. 20(금)</b></li>
+            <li>최종 합격자 발표: <b>2026. 11. 30(월) 12:00</b></li>
+            <li>합격자 등록: <b>11. 30 ~ 12. 2(수) 17:00</b></li>
+            <li>추가 합격자 등록: <b>12. 3 ~ 12. 4</b> · 예비소집 <b>12. 11(금)</b></li>
             <li>전형료: <b>없음</b></li>
+          </ul>
+        </div>
+        <div class="adm-card">
+          <h4><span class="tag-special">포항예술고</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <ul>
+            <li>내신 작성 기준일: <b>2026. 10. 2(금)</b></li>
+            <li>원서접수: <b>2026. 10. 19(월) ~ 10. 22(목) 17:00</b> (포털 12:00)</li>
+            <li>실기고사: <b>2026. 10. 30(금) 09:00</b> (본교 지정 고사실)</li>
+            <li>합격자 발표: <b>2026. 11. 4(수) 14:00</b></li>
+            <li>합격자 등록: <b>11. 4(수) ~ 11. 5(목)</b> · 추가등록 11. 6(금)</li>
+            <li>추가모집 공고: <b>2026. 12. 14(월)</b></li>
+            <li>추가모집 원서: <b>2027. 1. 6(수) ~ 1. 7(목)</b> · 실기 1. 8(금)</li>
+            <li>추가모집 발표: <b>2027. 1. 12(화)</b> · 등록 1. 12~1. 13</li>
+            <li>실기전형료: <b>50,000원</b> (기초수급·한부모 면제)</li>
           </ul>
         </div>
         <div class="adm-card">
@@ -548,18 +614,6 @@ body{font-size:15px}
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-special">포항예술고</span> 실제 일정</h4>
-          <ul>
-            <li>원서접수: <b>2025. 10. 20(월) ~ 10. 24(금)</b></li>
-            <li>실기고사: <b>2025. 10. 31(금) 09:00</b></li>
-            <li>합격자 발표: <b>2025. 11. 7(금) 14:00</b></li>
-            <li>합격자 등록: <b>11. 7 ~ 11. 11</b></li>
-            <li>추가모집 원서: <b>2026. 1. 5 ~ 1. 7</b></li>
-            <li>추가모집 실기: <b>2026. 1. 9(금)</b></li>
-            <li>실기전형료: <b>50,000원</b> (기초수급자 면제)</li>
-          </ul>
-        </div>
-        <div class="adm-card">
           <h4><span class="tag-late">특성화고</span> (협약형 포함)</h4>
           <ul>
             <li>원서 접수: <b>11월 24일 ~ 12월 3일</b></li>
@@ -567,29 +621,8 @@ body{font-size:15px}
             <li>등록: <b>12월 말</b></li>
           </ul>
         </div>
-        <div class="adm-card">
-          <h4><span class="tag-early">자사고(포항제철고)</span> 전기 전형</h4>
-          <ul>
-            <li>전형요강 공고: <b>2025. 8. 28</b></li>
-            <li>원서접수: <b>2025. 12. 8(월) ~ 12. 12(금)</b></li>
-            <li>1단계 발표: <b>2025. 12. 17(수) 16:00</b></li>
-            <li>면접: <b>2025. 12. 23(화)</b></li>
-            <li>최종 합격자 발표: <b>2025. 12. 26(금) 17:00</b></li>
-            <li>추가모집 원서: <b>2026. 1. 15 ~ 1. 16</b></li>
-          </ul>
         </div>
-        <div class="adm-card">
-          <h4><span class="tag-early">포항 평준화 일반고</span> 후기</h4>
-          <ul>
-            <li>원서 접수: <b>12. 8 ~ 12. 12</b></li>
-            <li>합격자(배정예정자) 발표: <b>1. 8(목) 14:00</b></li>
-            <li>학교 배정 발표: <b>1. 14(수) 14:00</b></li>
-            <li>입학 등록: <b>1. 14 ~ 1. 16</b></li>
-            <li>타 시도 전입자 원서: <b>2. 10 ~ 2. 13</b></li>
-          </ul>
-        </div>
-      </div>
-      <div class="adm-note">📌 평준화 일정은 경상북도포항교육지원청 공식 공문(2025. 9.) 기준. 전기고 일정은 2026학년도 경북교육청 고입전형 기준. <b>2027학년도 일정은 2026년 8~9월 이후 공고.</b> 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#92400e;font-weight:600">hischoolgbe.kr</a> 공식 원문 확인. 본 자료의 오류로 인한 불이익에 대해 책임지지 않습니다.</div>
+      <div class="adm-note">📌 평준화 일정은 경상북도교육청 공식 공문(2026. 9.) <b>2027학년도 확정본</b> 기준. 경북과학고·포항제철고·포항예술고는 <b>2027학년도 확정 요강</b> 기준. 마이스터고·특성화고는 <b>2026학년도 참고값</b>으로 2027학년도 요강 공고 시 변경됩니다. 반드시 <a href="https://hischoolgbe.kr" target="_blank" style="color:#92400e;font-weight:600">hischoolgbe.kr</a> 공식 원문 확인. 본 자료의 오류로 인한 불이익에 대해 책임지지 않습니다.</div>
     </div>
   </div>
 </div>
@@ -1222,7 +1255,7 @@ setTimeout(adjustAppHeight,100);
 </a>
 
 <footer style="background:#f8fafc;color:var(--muted);font-size:11px;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;border-top:1px solid var(--border)">
-  <span>📅 데이터 최종 업데이트: <b style="color:var(--accent)">2026년 5월</b> &nbsp;·&nbsp; 출처: 학교알리미·경북교육청 &nbsp;·&nbsp; 일부 미확인 정보 포함</span>
+  <span>📅 데이터 최종 업데이트: <b style="color:var(--accent)">2026년 9월 (2027학년도 평준화·경북과학고·포항제철고·포항예술고 요강 반영)</b> &nbsp;·&nbsp; 출처: 학교알리미·경북교육청 &nbsp;·&nbsp; 일부 미확인 정보 포함</span>
   <span>오류 제보: <a href="https://blog.naver.com/pkf78" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:500">대단한영어 블로그 ↗</a></span>
 </footer>
 <!-- 대단한영어 홍보 팝업 -->
