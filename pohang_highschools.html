@@ -71,6 +71,9 @@ header{background:var(--navy);color:#fff;padding:0 20px;height:56px;display:flex
 .tag-early{background:#fee2e2;color:#991b1b;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600}
 .tag-late{background:#dbeafe;color:#1e40af;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600}
 .tag-special{background:#f3e8ff;color:#6b21a8;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600}
+.tag-term{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:700;margin-bottom:3px}
+.tag-term.e{background:#1a3a5c;color:#fff}
+.tag-term.l{background:#f59e0b;color:#3a2a00}
 .adm-note{font-size:13px;color:var(--muted);margin-top:8px;padding:8px 12px;background:#fffbeb;border-radius:7px;border-left:3px solid var(--gold);line-height:1.6}
 
 /* MAIN LAYOUT */
@@ -155,7 +158,7 @@ body{font-size:15px}
 .atab{font-size:14px!important;padding:7px 14px!important}
   .adm-table{font-size:14px!important;display:block;overflow-x:auto}
 .adm-table th,.adm-table td{padding:9px 13px!important}
-.tag-early,.tag-late,.tag-special{font-size:12px!important}
+.tag-early,.tag-late,.tag-special,.tag-term{font-size:12px!important}
   .adm-note{font-size:13px!important}
 .sbox input{font-size:14px!important;padding:10px 13px 10px 38px!important}
 .fb{font-size:13px!important;padding:7px 13px!important}
@@ -192,7 +195,7 @@ body{font-size:15px}
   .adm-card ul{font-size:15px!important}
   .adm-table{font-size:15px!important}
   .adm-table th,.adm-table td{padding:12px 16px!important}
-  .tag-early,.tag-late,.tag-special{font-size:13px!important;padding:3px 10px!important}
+  .tag-early,.tag-late,.tag-special,.tag-term{font-size:13px!important;padding:3px 10px!important}
   .adm-note{font-size:14px!important;padding:12px 16px!important}
   .sf{padding:20px 22px!important}
   .sbox input{font-size:17px!important;padding:13px 16px 13px 46px!important}
@@ -362,7 +365,7 @@ body{font-size:15px}
   <div class="adm-body" id="adm-body">
     <div class="adm-tabs">
       <button class="atab active" onclick="showAdmTab('평준화',this)">📌 포항 평준화 배정</button>
-      <button class="atab" onclick="showAdmTab('전기',this)">🏆 전기 전형 학교</button>
+      <button class="atab" onclick="showAdmTab('전기',this)">🏆 평준화 외 지원 학교</button>
       <button class="atab" onclick="showAdmTab('일정',this)">📅 전형 일정</button>
     </div>
 
@@ -435,7 +438,7 @@ body{font-size:15px}
         <thead>
           <tr>
             <th>학교</th>
-            <th>유형</th>
+            <th>시기 · 유형</th>
             <th>전형 방법</th>
             <th>특이사항</th>
           </tr>
@@ -443,7 +446,7 @@ body{font-size:15px}
         <tbody>
           <tr>
             <td><b>경북과학고</b></td>
-            <td><span class="tag-special">과학고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-special">과학고</span></td>
             <td>
               1단계(서류+면담): 학생부(Ⅱ)·자소서(3,000자)·교사추천서(1,000자) → <b>1.5배수 약 90명</b><br>
               2단계(면접): 융합형 과제 제시, 과학·수학 창의성·자기주도·인성 종합평가<br>
@@ -465,7 +468,7 @@ body{font-size:15px}
           </tr>
           <tr>
             <td><b>포항제철고</b></td>
-            <td><span class="tag-early">자사고</span></td>
+            <td><span class="tag-term l">후기</span><br><span class="tag-early">자사고</span></td>
             <td>
               1단계: 교과성적(160)+출결(10)=170 → 2배수<br>
               2단계: 1단계(170)+면접(30) = <b>총 200점</b><br>
@@ -475,6 +478,8 @@ body{font-size:15px}
               자기소개서 1,500자 이내(면접 참고자료)
             </td>
             <td>
+              <b style="color:#b45309">후기 전형 — 평준화 일반고와 동시 지원 가능</b><br>
+              (불합격 시 평준화 2순위 희망교부터 추첨 배정)<br>
               총 300명 (10학급) · 남녀 어느 한 성 60% 초과 불가<br>
               ·자기주도학습: <b>전국70+포항50 = 120명(40%)</b><br>
               ·포스코임직원자녀: 120명(40%, 포항 우선 10명)<br>
@@ -488,19 +493,19 @@ body{font-size:15px}
           </tr>
           <tr>
             <td><b>포항제철공업고</b></td>
-            <td><span class="tag-special">마이스터고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-special">마이스터고</span></td>
             <td>출결·봉사·면접·실기</td>
             <td>전국 모집, 포스코 취업 연계</td>
           </tr>
           <tr>
             <td><b>한국해양마이스터고</b></td>
-            <td><span class="tag-special">마이스터고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-special">마이스터고</span></td>
             <td>출결·봉사·면접</td>
             <td>전국 모집, 해운·수산 특화</td>
           </tr>
           <tr>
             <td><b>포항예술고</b></td>
-            <td><span class="tag-special">예술고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-special">예술고</span></td>
             <td>
               <b>총 500점</b> · 음악과 내신 200(40%)+실기 300(60%) / 미술과 내신 250(50%)+실기 250(50%)<br>
               내신 = 교과(음악 160·미술 210) + 출석 30 + 봉사 10<br>
@@ -521,38 +526,38 @@ body{font-size:15px}
           </tr>
           <tr>
             <td><b>포항과학기술고</b></td>
-            <td><span class="tag-late">특성화고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
             <td>IT·전자, 현장실습 연계</td>
           </tr>
           <tr>
             <td><b>포항흥해공업고</b></td>
-            <td><span class="tag-late">특성화고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
             <td>기계·전기, 흥해읍 소재</td>
           </tr>
           <tr>
             <td><b>포항여자전자고</b></td>
-            <td><span class="tag-late">특성화고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
             <td>전자·정보통신, 여고</td>
           </tr>
           <tr>
             <td><b>포항보건고</b></td>
-            <td><span class="tag-late">특성화고</span></td>
+            <td><span class="tag-term e">전기</span><br><span class="tag-late">특성화고</span></td>
             <td>서류·면접</td>
             <td>보건·간호, 죽장면 소재</td>
           </tr>
         </tbody>
       </table>
-      <div class="adm-note">📌 전기고 원서는 hischoolgbe.kr 온라인 접수. 전기 불합격 시 후기(평준화/비평준화) 지원 가능. <b>각 학교 홈페이지 전형요강 반드시 개별 확인 필수.</b> <b style="color:#b45309">경북과학고·포항제철고·포항예술고는 2027학년도 확정 요강 반영</b>, 그 외 학교는 2026학년도 기준 참고값입니다.</div>
+      <div class="adm-note">📌 <b>전기</b>(과학고·마이스터고·예술고·특성화고)는 전국 1개교만 지원 가능하며, 불합격 시 후기(평준화/비평준화) 지원 가능. <b>후기</b>(자사고 포항제철고)는 <b>평준화 일반고와 동시 지원</b>이 되며 불합격 시 평준화 2순위 희망교부터 배정됩니다(비평준화 동시 지원 불가). 원서는 hischoolgbe.kr 온라인 접수. <b>각 학교 홈페이지 전형요강 반드시 개별 확인 필수.</b> <b style="color:#b45309">경북과학고·포항제철고·포항예술고는 2027학년도 확정 요강 반영</b>, 그 외 학교는 2026학년도 기준 참고값입니다.</div>
     </div>
 
     <!-- 일정 탭 -->
     <div class="adm-section" id="tab-일정">
       <div class="adm-grid">
         <div class="adm-card">
-          <h4><span class="tag-early">자사고(포항제철고)</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <h4><span class="tag-term l">후기</span> <span class="tag-early">자사고(포항제철고)</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
           <ul>
             <li>전형요강 공고: <b>2026. 8. 28(금)</b> · 내신 작성 기준일 <b>11. 30(월)</b></li>
             <li>원서접수: <b>2026. 12. 7(월) 09:00 ~ 12. 11(금) 12:00</b></li>
@@ -565,7 +570,7 @@ body{font-size:15px}
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-early">포항 평준화 일반고</span> 후기 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <h4><span class="tag-term l">후기</span> <span class="tag-early">포항 평준화 일반고</span> <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
           <ul>
             <li>원서 접수: <b>2026. 12. 7(월) ~ 12. 11(금)</b></li>
             <li>합격자(배정예정자) 발표: <b>2027. 1. 5(화) 14:00</b></li>
@@ -576,7 +581,7 @@ body{font-size:15px}
           </ul>
         </div>
       <div class="adm-card">
-          <h4><span class="tag-special">경북과학고</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <h4><span class="tag-term e">전기</span> <span class="tag-special">경북과학고</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
           <ul>
             <li>서식 안내: <b>2026. 6. 26(금)</b></li>
             <li>원서접수·서류제출: <b>2026. 8. 24(월) 09:00 ~ 8. 27(목) 17:00</b> (포털 12:00까지)</li>
@@ -591,7 +596,7 @@ body{font-size:15px}
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-special">포항예술고</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
+          <h4><span class="tag-term e">전기</span> <span class="tag-special">포항예술고</span> 일정 <span style="font-size:11px;color:var(--accent)">2027 확정</span></h4>
           <ul>
             <li>내신 작성 기준일: <b>2026. 10. 2(금)</b></li>
             <li>원서접수: <b>2026. 10. 19(월) ~ 10. 22(목) 17:00</b> (포털 12:00)</li>
@@ -605,7 +610,7 @@ body{font-size:15px}
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-special">마이스터고</span></h4>
+          <h4><span class="tag-term e">전기</span> <span class="tag-special">마이스터고</span></h4>
           <ul>
             <li>원서 접수: <b>9월 중순 ~ 10월 초</b></li>
             <li>전형 실시: <b>10~11월</b></li>
@@ -614,7 +619,7 @@ body{font-size:15px}
           </ul>
         </div>
         <div class="adm-card">
-          <h4><span class="tag-late">특성화고</span> (협약형 포함)</h4>
+          <h4><span class="tag-term e">전기</span> <span class="tag-late">특성화고</span> (협약형 포함)</h4>
           <ul>
             <li>원서 접수: <b>11월 24일 ~ 12월 3일</b></li>
             <li>합격자 발표: <b>12월 중</b></li>
