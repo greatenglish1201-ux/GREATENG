@@ -1309,6 +1309,85 @@ setTimeout(adjustAppHeight,100);
 .tab-label{font-size:11px;font-weight:700;line-height:1.2}
 .tab-label span{font-size:10px;font-weight:400;opacity:.7}
 </style>
+<!-- ===== 2027학년도 요강 업데이트 공지 팝업 =====
+     운영 메모: 게시 종료하려면 아래 <div id="nt-ov"> ~ </div> 블록과 하단 nt 스크립트를 주석 처리.
+     내용 갱신 시 NOTICE_KEY 값을 새 문자열로 바꾸면 이전에 '하루 보지 않기'를 누른 방문자에게도 다시 노출됨. -->
+<style>
+#nt-ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,30,.65);z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;animation:geFi .3s ease}
+#nt-box{width:min(92vw,380px);max-height:86vh;overflow-y:auto;background:#fff;border-radius:18px;box-shadow:0 16px 60px rgba(0,0,0,.28);animation:geSu .35s ease}
+#nt-bar{height:3px;background:linear-gradient(90deg,#e84545,#ff6b35,#f59e0b)}
+#nt-hd{background:linear-gradient(135deg,#1a3a5c,#2d5a8e);padding:20px 22px 18px;position:relative}
+#nt-tag{display:inline-block;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.5);color:#fbbf24;font-size:10px;font-weight:700;letter-spacing:.08em;padding:3px 9px;border-radius:20px}
+#nt-tt{color:#fff;font-size:18px;font-weight:800;line-height:1.4;margin-top:10px;letter-spacing:-.02em}
+#nt-sb{color:rgba(255,255,255,.72);font-size:12px;margin-top:6px;line-height:1.6}
+#nt-cl{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.14);border:none;color:#fff;width:26px;height:26px;border-radius:50%;font-size:13px;cursor:pointer;line-height:1}
+#nt-bd{padding:18px 22px 6px}
+.nt-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f1f1f1}
+.nt-row:last-child{border-bottom:none}
+.nt-ic{font-size:15px;flex-shrink:0;line-height:1.5}
+.nt-nm{font-size:13px;font-weight:700;color:#1a3a5c}
+.nt-dt{font-size:12px;color:#666;margin-top:2px;line-height:1.5}
+.nt-dt b{color:#c73838}
+#nt-new{margin:12px 0 4px;background:#fff8e6;border:1px solid #fcd97a;border-radius:10px;padding:10px 12px;font-size:12px;color:#7a5c00;line-height:1.65}
+#nt-ft{padding:14px 22px 18px;display:flex;flex-direction:column;gap:7px}
+.nt-btn{display:block;width:100%;padding:12px;border-radius:11px;font-size:14px;font-weight:700;text-align:center;text-decoration:none;box-sizing:border-box;cursor:pointer;border:none}
+.nt-btn.main{background:#7A0F24;color:#fff}
+.nt-btn.sub{background:#f0f6ff;color:#1a3a5c;font-size:13px;border:1px solid #bfdbfe}
+#nt-sk{font-size:11px;color:#bbb;text-align:center;margin-top:2px;cursor:pointer}
+#nt-sk:hover{color:#888}
+</style>
+<div id="nt-ov" onclick="if(event.target===this)ntClose()">
+  <div id="nt-box">
+    <div id="nt-bar"></div>
+    <div id="nt-hd">
+      <button id="nt-cl" onclick="ntClose()" aria-label="닫기">✕</button>
+      <span id="nt-tag">UPDATE · 2026. 9.</span>
+      <div id="nt-tt">2027학년도 입학전형 요강<br>업데이트 완료</div>
+      <div id="nt-sb">경상북도교육청 및 각 학교 공고 원문 기준으로<br>일정·정원·전형 방법을 반영했습니다.</div>
+    </div>
+    <div id="nt-bd">
+      <div class="nt-row">
+        <div class="nt-ic">🏫</div>
+        <div><div class="nt-nm">평준화 일반고 14개교</div><div class="nt-dt">원서 <b>2026. 12. 7 ~ 12. 11</b> · 배정 발표 2027. 1. 12</div></div>
+      </div>
+      <div class="nt-row">
+        <div class="nt-ic">🎨</div>
+        <div><div class="nt-nm">포항예술고</div><div class="nt-dt">원서 <b>2026. 10. 19 ~ 10. 22</b> · 실기 10. 30</div></div>
+      </div>
+      <div class="nt-row">
+        <div class="nt-ic">🏆</div>
+        <div><div class="nt-nm">포항제철고</div><div class="nt-dt">원서 <b>2026. 12. 7 ~ 12. 11</b> · 최종 발표 12. 24</div></div>
+      </div>
+      <div class="nt-row">
+        <div class="nt-ic">🔬</div>
+        <div><div class="nt-nm">경북과학고</div><div class="nt-dt">원서 마감(8. 27) · 1단계 발표 10. 30</div></div>
+      </div>
+      <div id="nt-new">✨ <b>달라진 점</b> — 평준화 <b>다자녀(3자녀 이상) 우선 배정</b> 신설, 포항예술고 <b>애니메이션 전공</b> 신설</div>
+    </div>
+    <div id="nt-ft">
+      <div class="nt-btn main" onclick="ntGo()">📋 입학전형 요강 전체보기</div>
+      <a class="nt-btn sub" href="https://hischoolgbe.kr" target="_blank" onclick="ntClose()">경북 고입전형포털에서 원문 확인 ↗</a>
+      <div id="nt-sk" onclick="ntSkip()">오늘 하루 보지 않기</div>
+    </div>
+  </div>
+</div>
+<script>
+var NOTICE_KEY='nt_skip_2027_v1';
+function ntClose(){var el=document.getElementById('nt-ov');if(!el)return;el.style.transition='opacity .2s';el.style.opacity='0';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},220);}
+function ntSkip(){try{localStorage.setItem(NOTICE_KEY,Date.now()+86400000);}catch(e){}ntClose();}
+function ntGo(){ntClose();var w=document.querySelector('.adm-wrap');if(!w)return;var b=w.querySelector('.adm-toggle'),d=document.getElementById('adm-body');if(d&&!d.classList.contains('open')&&b)b.click();setTimeout(function(){w.scrollIntoView({behavior:'smooth',block:'start'});},280);}
+(function(){
+  var show=true;
+  try{var v=localStorage.getItem(NOTICE_KEY);if(v&&Date.now()<parseInt(v))show=false;}catch(e){}
+  function apply(){
+    if(!show){var n=document.getElementById('nt-ov');if(n&&n.parentNode)n.parentNode.removeChild(n);return;}
+    // 공지가 뜨는 방문에서는 홍보 팝업이 겹치지 않도록 이번 방문만 숨김(다음 방문에 정상 노출)
+    var g=document.getElementById('ge-ov');if(g&&g.parentNode)g.parentNode.removeChild(g);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+})();
+</script>
+
 <div id="ge-ov" onclick="if(event.target===this)geClose()">
   <div id="ge-box">
     <div id="ge-bar"></div>
