@@ -1012,10 +1012,10 @@ function sel(id){
   const pl=document.getElementById('pl');pl.innerHTML='';
   if(s.web){const a=document.createElement('a');a.href=s.web;a.target='_blank';a.className='dlbtn';a.innerHTML='🌐 홈페이지';pl.appendChild(a);}
   const mb=document.createElement('a');
-  mb.href=`https://www.google.com/maps/search/${encodeURIComponent(s.name+' 포항')}`;
+  mb.href=s.lat&&s.lng?`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`:`https://www.google.com/maps/search/${encodeURIComponent(s.name+' 포항')}`;
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
   const mc=document.getElementById('mc');
-  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(s.addr)}&output=embed&z=17" loading="lazy" allowfullscreen title="${s.name} 지도" style="width:100%;height:100%;border:none;position:absolute;top:0;left:0"></iframe>`;
+  mc.innerHTML=`<iframe src="https://maps.google.com/maps?q=${s.lat&&s.lng?s.lat+","+s.lng:encodeURIComponent(s.addr)}&output=embed&z=17" loading="lazy" allowfullscreen title="${s.name} 지도" style="width:100%;height:100%;border:none;position:absolute;top:0;left:0"></iframe>`;
   document.getElementById('dp').classList.add('visible');
   // 모바일: right 패널 표시
   if(window.innerWidth<=768){document.getElementById('right-panel').classList.add('mobile-open');document.body.style.overflow='hidden';}
@@ -1211,7 +1211,7 @@ function selDetail(s){
   var mb=document.createElement('a');
   mb.href='https://www.google.com/maps/search/'+encodeURIComponent(s.name+' 포항');
   mb.target='_blank';mb.className='dlbtn pri';mb.innerHTML='📍 지도 열기';pl.appendChild(mb);
-  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+encodeURIComponent(s.addr)+'&output=embed&z=17" loading="lazy" allowfullscreen style="width:100%;height:100%;border:none;position:absolute;top:0;left:0"></iframe>';
+  document.getElementById('mc').innerHTML='<iframe src="https://maps.google.com/maps?q='+(s.lat&&s.lng?s.lat+','+s.lng:encodeURIComponent(s.addr))+'&output=embed&z=17" loading="lazy" allowfullscreen style="width:100%;height:100%;border:none;position:absolute;top:0;left:0"></iframe>';
   document.getElementById('dp').classList.add('visible');
   if(window.innerWidth<=768){document.getElementById('right-panel').classList.add('mobile-open');document.body.style.overflow='hidden';}
 }
@@ -1377,7 +1377,7 @@ setTimeout(adjustAppHeight,100);
   </div>
 </div>
 <script>
-var NOTICE_KEY='nt_skip_2027_v1';
+var NOTICE_KEY='nt_skip_2027_v2';
 function ntClose(){var el=document.getElementById('nt-ov');if(!el)return;el.style.transition='opacity .2s';el.style.opacity='0';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},220);}
 function ntSkip(){try{localStorage.setItem(NOTICE_KEY,Date.now()+86400000);}catch(e){}ntClose();}
 function ntGo(){ntClose();var w=document.querySelector('.adm-wrap');if(!w)return;var b=w.querySelector('.adm-toggle'),d=document.getElementById('adm-body');if(d&&!d.classList.contains('open')&&b)b.click();setTimeout(function(){w.scrollIntoView({behavior:'smooth',block:'start'});},280);}
