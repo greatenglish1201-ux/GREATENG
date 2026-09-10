@@ -1857,6 +1857,501 @@ window.PASSAGES = [
   teachNote: "2026(Mia)·2025(Ethan)과 달리 <b>인물이 둘뿐</b>이라 지칭이 쉽다 - 44번은 (c) you만 Emma. "
            + "순서는 <b>white cliff</b>가 (C) 끝과 (D) 처음을 잇는 고리. "
            + "<u>같은 단어가 두 단락에 걸쳐 나오면 그 둘이 붙는다</u>를 가르치기 좋은 지문."
+},
+
+/* ===== 2023수능 속독 ===== */
+{
+  id: "s23_18_birding", src: "2023수능 18번", qnum: 18, qtype: "목적",
+  qtext: "다음 글의 목적으로 가장 적절한 것은?", star: 1, time: 40, fast: true,
+  sents: [
+    "To whom it may concern,",
+    "My name is Michael Brown.",
+    "I have been a bird-watcher since childhood.",
+    "I have always enjoyed watching birds in my yard and identifying them by sight and sound.",
+    "Yesterday, I happened to read an article about your club.",
+    "I was surprised and excited to find out about a community of passionate bird-watchers who travel annually to go birding.",
+    "I would love to join your club, but your website appears to be under construction.",
+    "I could not find any information except for this contact email address.",
+    "I would like to know how to sign up for the club.",
+    "I look forward to your reply. Sincerely, Michael Brown"
+  ],
+  choices: ["조류 관찰 클럽에 가입하는 방법을 문의하려고","조류 관찰 시 주의해야 할 사항을 전달하려고",
+            "조류 관찰 협회의 새로운 규정을 확인하려고","조류 관찰과 관련된 웹 사이트를 소개하려고",
+            "조류 관찰 시 필요한 장비를 알아보려고"],
+  ans: 1,
+  key: "<b class=w>your club</b> - 조류 관찰 클럽",
+  attr: "<b class=w>I would like to know how to sign up</b> (9) - 가입 방법을 알고 싶다",
+  dir: "긍정",
+  fastWhy: "9번 <b class=w>I would like to know how to sign up for the club</b>. "
+         + "문의문은 <b>I would like to know</b> 같은 요청 표현에 목적이 있다. 앞부분 자기소개는 배경.",
+  teachNote: "18번 3유형(요청·공지·홍보) 중 <b>문의</b>형. 2024(홍보)·2025(취소 공지)·2026(요청)과 나란히 놓고 "
+           + "<u>끝에서 두세 번째 문장부터 읽는다</u>를 굳힐 것."
+},
+{
+  id: "s23_19_jamie", src: "2023수능 19번", qnum: 19, qtype: "심경",
+  qtext: "다음 글에 드러난 Jamie의 심경 변화로 가장 적절한 것은?", star: 1, time: 45,
+  fast: true, fastMode: "mood",
+  sents: [
+    "Putting all of her energy into her last steps of the running race, Jamie crossed the finish line.",
+    "To her disappointment, she had failed to beat her personal best time, again.",
+    "Jamie had pushed herself for months to finally break her record, but it was all for nothing.",
+    "Recognizing how she felt about her failure, Ken, her teammate, approached her and said, \u201cJamie, even though you didn\u2019t set a personal best time today, your performances have improved dramatically. Your running skills have progressed so much! You\u2019ll definitely break your personal best time in the next race!\u201d",
+    "After hearing his comments, she felt confident about herself.",
+    "Jamie, now motivated to keep pushing for her goal, replied with a smile. \u201cYou\u2019re right! Next race, I\u2019ll beat my best time for sure!\u201d"
+  ],
+  choices: ["indifferent → regretful","pleased → bored","frustrated → encouraged",
+            "nervous → fearful","calm → excited"],
+  ans: 3,
+  moodPivot: "<b class=w>After hearing his comments</b> (5)",
+  fastWhy: "앞 <b class=w>To her disappointment · all for nothing</b> (좌절) → "
+         + "뒤 <b class=w>felt confident · motivated · replied with a smile</b> (격려받음). "
+         + "전환은 동료의 말을 들은 5번.",
+  teachNote: "전환이 <b>남의 말</b>로 일어나는 유형. 2024(버스 도착=상황), 2025(Unfortunately=신호어), "
+           + "2026(Suddenly=신호어)과 함께 <u>전환의 3가지 방식</u>을 정리해 줄 것."
+},
+{
+  id: "s23_20_probability", src: "2023수능 20번", qnum: 20, qtype: "주장",
+  qtext: "다음 글에서 필자가 주장하는 바로 가장 적절한 것은?", star: 1, time: 50,
+  fast: true, note: "* junction: 분기점  ** suboptimal: 차선의",
+  sents: [
+    "At every step in our journey through life we encounter junctions with many different pathways leading into the distance.",
+    "Each choice involves uncertainty about which path will get you to your destination.",
+    "Trusting our intuition to make the choice often ends up with us making a suboptimal choice.",
+    "Turning the uncertainty into numbers has proved a potent way of analyzing the paths and finding the shortcut to your destination.",
+    "The mathematical theory of probability hasn\u2019t eliminated risk, but it allows us to manage that risk more effectively.",
+    "The strategy is to analyze all the possible scenarios that the future holds and then to see what proportion of them lead to success or failure.",
+    "This gives you a much better map of the future on which to base your decisions about which path to choose."
+  ],
+  choices: [
+    "성공적인 삶을 위해 미래에 대한 구체적인 계획을 세워야 한다.",
+    "중요한 결정을 내릴 때에는 자신의 직관에 따라 판단해야 한다.",
+    "더 나은 선택을 위해 성공 가능성을 확률적으로 분석해야 한다.",
+    "빠른 목표 달성을 위해 지름길로 가고자 할 때 신중해야 한다.",
+    "인생의 여정에서 선택에 따른 결과를 스스로 책임져야 한다."
+  ],
+  ans: 3,
+  key: "<b class=w>choice</b> + <b class=w>uncertainty</b> - 선택의 불확실성",
+  attr: "<b class=w>Trusting our intuition... ends up with us making a suboptimal choice</b> (3)<br>- 직관에 기대면 차선의 선택이 된다",
+  dir: "부정",
+  fastWhy: "3번이 <b class=w>직관은 차선</b>(부정) → 4번 <b class=w>Turning the uncertainty into numbers has proved a potent way</b>가 대안. "
+         + "<b>부정 → 대안</b> 구조라 4번 이후가 주장.",
+  teachNote: "2024-20번과 같은 <b>부정→대안</b>형. ②(직관에 따르라)는 3번을 정반대로 읽은 답 — "
+           + "<u>필자가 부정한 것을 주장으로 착각</u>하는 전형이라 반드시 짚을 것."
+},
+
+/* ===== 2023수능 ===== */
+{
+  id: "s23_21_diary", src: "2023수능 21번", qnum: 21, qtype: "함축",
+  qtext: "밑줄 친 <b>make oneself public to oneself</b>가 다음 글에서 의미하는 바로 가장 적절한 것은? [3점]",
+  star: 3, time: 90, note: "* disparate: 이질적인  ** render: 만들다",
+  sents: [
+    "Coming of age in the 18th and 19th centuries, the personal diary became a centerpiece in the construction of a modern subjectivity, at the heart of which is the application of reason and critique to the understanding of world and self, which allowed the creation of a new kind of knowledge.",
+    "Diaries were central media through which enlightened and free subjects could be constructed.",
+    "They provided a space where one could write daily about her whereabouts, feelings, and thoughts.",
+    "Over time and with rereading, disparate entries, events, and happenstances could be rendered into insights and narratives about the self, and allowed for the formation of subjectivity.",
+    "It is in that context that the idea of \u201cthe self [as] both made and explored with words\u201d emerges.",
+    "Diaries were personal and private; one would write for oneself, or, in Habermas\u2019s formulation, one would <u>make oneself public to oneself</u>.",
+    "By making the self public in a private sphere, the self also became an object for self-inspection and self-critique."
+  ],
+  choices: [
+    "use writing as a means of reflecting on oneself",
+    "build one\u2019s identity by reading others\u2019 diaries",
+    "exchange feedback in the process of writing",
+    "create an alternate ego to present to others",
+    "develop topics for writing about selfhood"
+  ],
+  ans: 1,
+  key: "<b class=w>the personal diary</b> - 개인 일기와 근대적 주체",
+  attr: "<b class=w>a centerpiece in the construction of a modern subjectivity</b> (1)<br>- 근대적 자아를 만드는 핵심 매체",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Diaries were central media through which...", skip:false},
+    {n:3, head:"They provided a space where one could write daily...", skip:false},
+    {n:4, head:"Over time and with rereading, disparate entries...", skip:false},
+    {n:5, head:"It is in that context that the idea of...", skip:false},
+    {n:6, head:"Diaries were personal and private... <b>Habermas</b>\u2019s formulation", skip:false,
+     why:"고유명사가 있지만 <b>밑줄이 있는 문장</b>이라 반드시 읽는다"},
+    {n:7, head:"By making the self public in a private sphere...", skip:false}
+  ],
+  trunk1: "일기가 근대적 자아를 만들었다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"개인 일기가 근대적 주체 형성의 핵심이 되었다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"일기는 계몽된 자유로운 주체를 만드는 매체였다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"매일 자기 행적·감정·생각을 쓰는 공간을 주었다"},
+    {n:4, lb:"근거",     head:false, to:3, txt:"다시 읽으며 흩어진 기록이 자기에 대한 통찰과 서사가 된다"},
+    {n:5, lb:"주장",     head:true,  txt:"그래서 '말로 만들어지고 탐구되는 자아'라는 생각이 나온다"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"일기는 사적이지만 자기 자신에게 자신을 공개하는 것"},
+    {n:7, lb:"재진술",   head:true,  txt:"사적 영역에서 자기를 공개함으로써 자기 점검·비평의 대상이 된다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "전환 신호어가 하나도 없다. <b>일기 → 자아 형성</b>이라는 한 방향이 끝까지 이어진다.",
+  gist: "일기는 자기 자신에게 자기를 드러내어 성찰하게 하는 글쓰기다.",
+  wrong: {
+    "2": "<b>남의</b> 일기를 읽는 것이 아니라 자기 일기를 쓰는 것",
+    "3": "피드백을 주고받는 글이 아님 - 일기는 <b>사적</b>이라고 못 박음",
+    "4": "남에게 보일 <b>다른 자아</b>를 만드는 것이 아님 - 정반대",
+    "5": "글쓰기 <b>소재</b>를 개발하는 것이 아님"
+  },
+  wrongNote: "④가 최대 함정. public을 '남에게 공개'로 읽으면 걸린다. <b>to oneself</b>가 핵심 — 대상이 자기 자신이다.",
+  teachNote: "밑줄의 <b>to oneself</b>를 놓치면 정반대(④)로 간다. 7번 <b>self-inspection and self-critique</b>가 "
+           + "해설 역할을 하므로 <u>밑줄 다음 문장</u>을 반드시 보게 할 것 — 2024-21번(nonstick)과 같은 구조."
+},
+{
+  id: "s23_22_bicycle", src: "2023수능 22번", qnum: 22, qtype: "요지",
+  qtext: "다음 글의 요지로 가장 적절한 것은?", star: 2, time: 60,
+  sents: [
+    "Urban delivery vehicles can be adapted to better suit the density of urban distribution, which often involves smaller vehicles such as vans, including bicycles.",
+    "The latter have the potential to become a preferred \u2018last-mile\u2019 vehicle, particularly in high-density and congested areas.",
+    "In locations where bicycle use is high, such as the Netherlands, delivery bicycles are also used to carry personal cargo (e.g. groceries).",
+    "Due to their low acquisition and maintenance costs, cargo bicycles convey much potential in developed and developing countries alike, such as the becak (a three-wheeled bicycle) in Indonesia.",
+    "Services using electrically assisted delivery tricycles have been successfully implemented in France and are gradually being adopted across Europe for services as varied as parcel and catering deliveries.",
+    "Using bicycles as cargo vehicles is particularly encouraged when combined with policies that restrict motor vehicle access to specific areas of a city, such as downtown or commercial districts, or with the extension of dedicated bike lanes."
+  ],
+  choices: [
+    "도시에서 자전거는 효율적인 배송 수단으로 사용될 수 있다.",
+    "자전거는 출퇴근 시간을 줄이기 위한 대안으로 선호되고 있다.",
+    "자전거는 배송 수단으로의 경제적 장단점을 모두 가질 수 있다.",
+    "수요자의 요구에 부합하는 다양한 용도의 자전거가 개발되고 있다.",
+    "세계 각국에서는 전기 자전거 사용을 장려하는 정책을 추진하고 있다."
+  ],
+  ans: 1,
+  key: "<b class=w>Urban delivery vehicles</b> + <b class=w>bicycles</b> - 도시 배송과 자전거",
+  attr: "<b class=w>can be adapted to better suit the density of urban distribution</b> (1)<br>- 도시 밀집도에 맞게 바뀔 수 있다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"The latter have the potential to become a preferred...", skip:false},
+    {n:3, head:"In locations where bicycle use is high, such as <b>the Netherlands</b>...", skip:true,
+     why:"<b>지명</b>(Netherlands) - 자전거 배송의 예시"},
+    {n:4, head:"Due to their low acquisition... the <b>becak</b> in <b>Indonesia</b>", skip:true,
+     why:"<b>지명·고유명사</b>(becak, Indonesia) - 또 다른 예시"},
+    {n:5, head:"Services using electrically assisted delivery tricycles... in <b>France</b>", skip:true,
+     why:"<b>지명</b>(France, Europe) - 세 번째 예시"},
+    {n:6, head:"Using bicycles as cargo vehicles is particularly encouraged...", skip:false}
+  ],
+  trunk1: "자전거가 도시 배송 수단이 될 수 있다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"도시 배송 차량은 밀집도에 맞게 작아질 수 있다 - 자전거 포함"},
+    {n:2, lb:"주장",     head:true,  txt:"자전거는 혼잡 지역의 <b>라스트마일</b> 수단이 될 잠재력이 있다"},
+    {n:3, lb:"예시",     head:false, to:2, txt:"네덜란드에서는 개인 화물 운반에도 쓴다"},
+    {n:4, lb:"예시",     head:false, to:2, txt:"인도네시아 becak - 비용이 낮아 선진국·개도국 모두 잠재력"},
+    {n:5, lb:"예시",     head:false, to:2, txt:"프랑스의 전기 삼륜차가 유럽으로 확산 중"},
+    {n:6, lb:"재진술",   head:true,  txt:"차량 진입 제한 정책·자전거 도로 확충과 함께하면 더욱 권장된다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "전환이 없고 <b>예시가 셋 연속</b>(③④⑤)이다. 건너뛰기 규칙이 가장 잘 먹히는 지문 — 6문장 중 3문장을 넘긴다.",
+  gist: "자전거는 도시의 배송 수단으로 효율적으로 쓰일 수 있다.",
+  wrong: {
+    "2": "<b>출퇴근</b>이 아니라 <b>배송</b>",
+    "3": "장단점을 <b>모두</b> 다루지 않음 - 단점 언급이 없다",
+    "4": "다양한 용도의 자전거 <b>개발</b>이 아니라 배송 활용",
+    "5": "<b>전기</b> 자전거 정책은 ⑤의 부분 소재일 뿐"
+  },
+  wrongNote: "⑤가 함정. 실제로 나온 말이지만 <b>예시 하나</b>의 소재다.",
+  teachNote: "<b>건너뛰기 훈련의 최고 표본.</b> ③④⑤가 전부 지명으로 시작하는 예시라 통째로 넘어간다. "
+           + "①②⑥만 읽어도 답이 나온다는 것을 직접 확인시킬 것."
+},
+{
+  id: "s23_23_disclosure", src: "2023수능 23번", qnum: 23, qtype: "주제",
+  qtext: "다음 글의 주제로 가장 적절한 것은? [3점]", star: 3, time: 65,
+  note: "* mandate: 명령  ** adverse: 거스르는  *** autonomy: 자율성",
+  sents: [
+    "An important advantage of disclosure, as opposed to more aggressive forms of regulation, is its flexibility and respect for the operation of free markets.",
+    "Regulatory mandates are blunt swords; they tend to neglect diversity and may have serious unintended adverse effects.",
+    "For example, energy efficiency requirements for appliances may produce goods that work less well or that have characteristics that consumers do not want.",
+    "Information provision, by contrast, respects freedom of choice.",
+    "If automobile manufacturers are required to measure and publicize the safety characteristics of cars, potential car purchasers can trade safety concerns against other attributes, such as price and styling.",
+    "If restaurant customers are informed of the calories in their meals, those who want to lose weight can make use of the information, leaving those who are unconcerned about calories unaffected.",
+    "Disclosure does not interfere with, and should even promote, the autonomy (and quality) of individual decision-making."
+  ],
+  choices: [
+    "steps to make public information accessible to customers",
+    "benefits of publicizing information to ensure free choices",
+    "strategies for companies to increase profits in a free market",
+    "necessities of identifying and analyzing current industry trends",
+    "effects of diversified markets on reasonable customer choices"
+  ],
+  ans: 2,
+  key: "<b class=w>disclosure</b> - 정보 공개(규제와 대비되는)",
+  attr: "<b class=w>its flexibility and respect for the operation of free markets</b> (1)<br>- 유연하고 자유시장을 존중한다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Regulatory mandates are blunt swords...", skip:false},
+    {n:3, head:"<b>For example</b>, energy efficiency requirements...", skip:true,
+     why:"<b>For example</b> - 규제의 부작용 예시"},
+    {n:4, head:"Information provision, by contrast, respects freedom of choice.", skip:false},
+    {n:5, head:"If automobile manufacturers are required to measure...", skip:false},
+    {n:6, head:"If restaurant customers are informed of the calories...", skip:false},
+    {n:7, head:"Disclosure does not interfere with, and should even promote...", skip:false}
+  ],
+  trunk1: "규제는 무디다", trunk2: "정보 공개는 선택의 자유를 지킨다",
+  pivotAt: 4,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"정보 공개는 규제와 달리 유연하고 자유시장을 존중한다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"규제 명령은 무딘 칼 - 다양성을 무시하고 부작용을 낳는다"},
+    {n:3, lb:"예시",     head:false, to:2, txt:"에너지 효율 규정이 성능 나쁜 제품을 만들 수 있다"},
+    {n:4, lb:"대조·반전", head:true, txt:"반면 정보 제공은 <b>선택의 자유</b>를 존중한다"},
+    {n:5, lb:"예시",     head:false, to:4, txt:"안전 정보를 알면 가격·스타일과 견주어 고를 수 있다"},
+    {n:6, lb:"예시",     head:false, to:4, txt:"칼로리를 알면 원하는 사람만 활용하고 나머지는 영향 없다"},
+    {n:7, lb:"재진술",   head:true,  txt:"공개는 개인 결정의 자율성을 방해하지 않고 오히려 촉진한다"}
+  ],
+  pivot: {sig:"by contrast", at:4, from:"규제 명령의 부작용", to:"정보 공개의 장점"},
+  pivotSub: "<b>by contrast</b>(4)가 전환. 2·3번은 <u>비교 대상</u>(규제)을 깔아주는 부분이고, 글의 주인공은 <b>disclosure</b>다.",
+  gist: "정보 공개는 규제와 달리 개인의 선택의 자유를 보장한다.",
+  wrong: {
+    "1": "정보를 <b>접근 가능하게 만드는 절차</b>가 아니라 공개의 <b>이점</b>",
+    "3": "기업의 이익 증대 전략이 아님",
+    "4": "산업 동향 파악과 무관",
+    "5": "시장 <b>다각화</b>의 효과가 아님"
+  },
+  wrongNote: "①이 그럴듯한 함정. steps(절차)와 benefits(이점)의 차이 — 이 글은 <b>왜 좋은가</b>를 말한다.",
+  teachNote: "5·6번이 <b>If로 시작하는 예시</b>인데 표지 규칙에는 안 걸린다(For example도 고유명사도 없음). "
+           + "<u>조건절이 연속되면 예시</u>라는 것을 보조 단서로 알려줄 것 - 규칙의 한계를 정직하게 다루는 지문."
+},
+{
+  id: "s23_24_visual", src: "2023수능 24번", qnum: 24, qtype: "제목",
+  qtext: "다음 글의 제목으로 가장 적절한 것은?", star: 2, time: 65,
+  sents: [
+    "Different parts of the brain\u2019s visual system get information on a need-to-know basis.",
+    "Cells that help your hand muscles reach out to an object need to know the size and location of the object, but they don\u2019t need to know about color.",
+    "They need to know a little about shape, but not in great detail.",
+    "Cells that help you recognize people\u2019s faces need to be extremely sensitive to details of shape, but they can pay less attention to location.",
+    "It is natural to assume that anyone who sees an object sees everything about it \u2014 the shape, color, location, and movement.",
+    "However, one part of your brain sees its shape, another sees color, another detects location, and another perceives movement.",
+    "Consequently, after localized brain damage, it is possible to see certain aspects of an object and not others.",
+    "Centuries ago, people found it difficult to imagine how someone could see an object without seeing what color it is.",
+    "Even today, you might find it surprising to learn about people who see an object without seeing where it is, or see it without seeing whether it is moving."
+  ],
+  choices: [
+    "Visual Systems Never Betray Our Trust!",
+    "Secret Missions of Color-Sensitive Brain Cells",
+    "Blind Spots: What Is Still Unknown About the Brain",
+    "Why Brain Cells Exemplify Nature\u2019s Recovery Process",
+    "Separate and Independent: Brain Cells\u2019 Visual Perceptions"
+  ],
+  ans: 5,
+  key: "<b class=w>the brain\u2019s visual system</b> - 뇌의 시각 체계",
+  attr: "<b class=w>get information on a need-to-know basis</b> (1)<br>- 각자 <b>필요한 것만</b> 안다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Cells that help your hand muscles reach out...", skip:false},
+    {n:3, head:"They need to know a little about shape...", skip:false},
+    {n:4, head:"Cells that help you recognize people\u2019s faces...", skip:false},
+    {n:5, head:"It is natural to assume that anyone who sees an object...", skip:false},
+    {n:6, head:"However, one part of your brain sees its shape...", skip:false},
+    {n:7, head:"Consequently, after localized brain damage...", skip:false},
+    {n:8, head:"<b>Centuries ago</b>, people found it difficult to imagine...", skip:true,
+     why:"<b>시점 표현</b>(Centuries ago) - 앞말을 보여주는 예시"},
+    {n:9, head:"Even today, you might find it surprising...", skip:true,
+     why:"8번 예시의 <b>연장</b>(Even today) - 예시가 끝나는 곳까지 함께 건너뛴다"}
+  ],
+  trunk1: "시각 세포는 각자 필요한 것만 안다", trunk2: "통념 - 다 본다고 생각하지만 사실은 나뉘어 있다",
+  pivotAt: 6,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"뇌의 시각 체계는 각 부분이 필요한 정보만 받는다"},
+    {n:2, lb:"예시",     head:false, to:1, txt:"손을 뻗게 하는 세포는 크기·위치만 알고 색은 몰라도 된다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"모양은 조금만 알면 되고 자세히는 필요 없다"},
+    {n:4, lb:"예시",     head:false, to:1, txt:"얼굴 인식 세포는 모양에 예민하지만 위치엔 덜 민감하다"},
+    {n:5, lb:"주제도입", head:true,  txt:"(통념) 무언가를 보면 모든 것을 다 본다고 여기기 쉽다"},
+    {n:6, lb:"대조·반전", head:true, txt:"그러나 뇌의 각 부분이 모양·색·위치·움직임을 <b>따로</b> 본다"},
+    {n:7, lb:"근거",     head:false, to:6, txt:"그래서 국소 뇌손상 후 일부만 보이는 일이 생긴다"},
+    {n:8, lb:"예시",     head:false, to:7, txt:"수백 년 전엔 색 없이 본다는 걸 상상하기 어려웠다"},
+    {n:9, lb:"예시",     head:false, to:7, txt:"오늘날에도 위치나 움직임 없이 본다는 게 놀랍다"}
+  ],
+  pivot: {sig:"However", at:6, from:"다 본다는 통념", to:"각 부분이 따로 본다"},
+  pivotSub: "5번이 <b>통념 제시</b>(It is natural to assume), 6번 <b>However</b>가 뒤집는다. "
+          + "1~4번은 이미 답을 말하고 있고, 5·6번은 그것을 <u>통념 대비로 한 번 더</u> 강조하는 구조.",
+  gist: "뇌의 시각 세포들은 각자 따로 독립적으로 정보를 처리한다.",
+  wrong: {
+    "1": "시각 체계를 신뢰하라는 글이 아님",
+    "2": "색 담당 세포만 다루지 않음",
+    "3": "'아직 모르는 것'을 말하는 글이 아님 - 이미 밝혀진 것을 설명",
+    "4": "회복 과정과 무관"
+  },
+  wrongNote: "③이 그럴듯한 함정. Blind Spots를 뇌손상과 연결하기 쉽지만, 이 글은 <b>모른다</b>가 아니라 <b>나뉘어 있다</b>를 말한다.",
+  teachNote: "통념(5)이 <b>글 중간</b>에 나오는 드문 구조. 보통 첫 문장에 오는데 여기는 1~4번이 먼저 설명하고 "
+           + "5·6번이 대비로 강조한다. <u>통념은 어디에나 올 수 있다</u>를 가르칠 것."
+},
+{
+  id: "s23_30_cyberspace", src: "2023수능 30번", qnum: 30, qtype: "어휘",
+  qtext: "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 <b>않은</b> 것은?",
+  star: 3, time: 80, note: "* hype: 과대광고  ** hallmark: 특징",
+  sents: [
+    "Everywhere we turn we hear about almighty \u201ccyberspace\u201d!",
+    "The hype promises that we will leave our boring lives, put on goggles and body suits, and enter some metallic, three-dimensional, multimedia otherworld.",
+    "When the Industrial Revolution arrived with its great innovation, the motor, we didn\u2019t leave our world to go to some <u class=\"n1\">remote</u> motorspace!",
+    "On the contrary, we brought the motors into our lives, as automobiles, refrigerators, drill presses, and pencil sharpeners.",
+    "This <u class=\"n2\">absorption</u> has been so complete that we refer to all these tools with names that declare their usage, not their \u201cmotorness.\u201d",
+    "These innovations led to a major socioeconomic movement precisely because they entered and <u class=\"n3\">affected</u> profoundly our everyday lives.",
+    "People have not changed fundamentally in thousands of years.",
+    "Technology changes constantly.",
+    "It\u2019s the one that must <u class=\"n4\">adapt</u> to us.",
+    "That\u2019s exactly what will happen with information technology and its devices under human-centric computing.",
+    "The longer we continue to believe that computers will take us to a magical new world, the longer we will <u class=\"n5\">maintain</u> their natural fusion with our lives, the hallmark of every major movement that aspires to be called a socioeconomic revolution."
+  ],
+  choices: ["remote","absorption","affected","adapt","maintain"],
+  ans: 5,
+  key: "<b class=w>cyberspace</b> - 기술은 우리 삶으로 들어온다",
+  attr: "<b class=w>we didn\u2019t leave our world... On the contrary, we brought the motors into our lives</b> (3-4)<br>- 딴 세상으로 가는 게 아니라 <b>삶 안으로 들여온다</b>",
+  dir: "부정",
+  skip: [
+    {n:2,  head:"The hype promises that we will leave our boring lives...", skip:false},
+    {n:3,  head:"When the <b>Industrial Revolution</b> arrived...", skip:false,
+     why:"고유명사가 있지만 밑줄이 있어 확인 필요"},
+    {n:4,  head:"On the contrary, we brought the motors into our lives...", skip:false},
+    {n:5,  head:"This absorption has been so complete...", skip:false},
+    {n:6,  head:"These innovations led to a major socioeconomic movement...", skip:false},
+    {n:7,  head:"People have not changed fundamentally in thousands of years.", skip:false},
+    {n:8,  head:"Technology changes constantly.", skip:false},
+    {n:9,  head:"It\u2019s the one that must adapt to us.", skip:false},
+    {n:10, head:"That\u2019s exactly what will happen with information technology...", skip:false},
+    {n:11, head:"The longer we continue to believe...", skip:false}
+  ],
+  trunk1: "사이버공간이라는 과대광고", trunk2: "기술은 딴 세상이 아니라 우리 삶으로 들어온다",
+  pivotAt: 3,
+  tree: [
+    {n:1,  lb:"주제도입", head:true,  txt:"어디서나 전능한 '사이버공간' 이야기를 듣는다 (통념)"},
+    {n:2,  lb:"부연",     head:false, to:1, txt:"고글과 슈트를 입고 딴 세상으로 간다는 과대광고"},
+    {n:3,  lb:"대조·반전", head:true, txt:"산업혁명 때도 우리는 <b>딴 세상으로 가지 않았다</b>"},
+    {n:4,  lb:"주장",     head:true,  txt:"오히려 모터를 자동차·냉장고로 우리 <b>삶 안에 들여왔다</b>"},
+    {n:5,  lb:"근거",     head:false, to:4, txt:"흡수가 완전해서 '모터성'이 아니라 용도로 부른다"},
+    {n:6,  lb:"근거",     head:false, to:4, txt:"일상에 들어와 영향을 주었기에 사회경제적 변화가 됐다"},
+    {n:7,  lb:"부연",     head:false, to:6, txt:"사람은 수천 년간 근본적으로 변하지 않았다"},
+    {n:8,  lb:"부연",     head:false, to:7, txt:"기술은 끊임없이 변한다"},
+    {n:9,  lb:"주장",     head:true,  txt:"적응해야 하는 쪽은 <b>기술</b>이다"},
+    {n:10, lb:"부연",     head:false, to:9, txt:"인간 중심 컴퓨팅에서 정보기술도 그렇게 될 것"},
+    {n:11, lb:"재진술",   head:true,  txt:"컴퓨터가 마법의 세계로 데려간다고 믿을수록 삶과의 융합이 <b>늦어진다</b>"}
+  ],
+  pivot: {sig:"When... On the contrary", at:3, from:"딴 세상으로 간다는 과대광고", to:"삶 안으로 들여온다"},
+  pivotSub: "3번의 <b>didn\u2019t</b>과 4번의 <b>On the contrary</b>가 함께 뒤집는다. 1·2번은 <u>반박할 통념</u>을 깔아둔 것.",
+  vocab: [
+    {n:1, word:"remote",     ok:true, why:"'멀리 떨어진' 모터 세상으로 가지 않았다 - 2번의 otherworld와 짝"},
+    {n:2, word:"absorption", ok:true, why:"삶 안으로 들여온 '흡수'가 완전했다 - 4번과 순행"},
+    {n:3, word:"affected",   ok:true, why:"일상에 들어와 깊이 '영향을 주었다'"},
+    {n:4, word:"adapt",      ok:true, why:"사람은 안 변하고 기술이 변하니 기술이 우리에게 '맞춰야' 한다"},
+    {n:5, word:"maintain",   ok:false, fix:"delay / postpone",
+     why:"마법의 세계라고 <b>믿을수록</b> 삶과의 융합이 <b>늦어진다</b>는 뜻. '유지한다'면 믿는 게 좋다는 말이 되어 방향이 뒤집힘"}
+  ],
+  gist: "기술은 우리를 딴 세상으로 데려가는 것이 아니라 우리 삶 속으로 들어와 융합된다.",
+  wrong: {},
+  wrongNote: "⑤만 방향이 반대. <b>The longer A, the longer B</b> 구문에서 A(잘못된 믿음)가 길어지면 B는 나빠져야 한다.",
+  teachNote: "<b>The 비교급, the 비교급</b> 구문이 방향을 결정한다. 앞이 부정적 믿음이면 뒤도 부정적 결과여야 한다. "
+           + "학생에게 <u>'믿을수록 융합을 유지한다'가 말이 되나</u>를 물어볼 것. 2024-30(not to ask for low)과 같은 <b>구문으로 푸는</b> 유형."
+},
+
+/* ===== 2023수능 장문 ===== */
+{
+  id: "s23_4142_algorithm",
+  src: "2023수능 41-42번", qnum: 41, qlabel: "41-42번", qtype: "장문",
+  qtext: "윗글의 제목으로 가장 적절한 것은?", star: 3, time: 180,
+  note: "* parole: 가석방  ** salient: 두드러진  *** pneumonia: 폐렴",
+  sents: [
+    "There is evidence that even very simple algorithms can outperform expert judgement on simple prediction problems.",
+    "For example, algorithms have proved more <u class=\"n1\">accurate</u> than humans in predicting whether a prisoner released on parole will go on to commit another crime, or in predicting whether a potential candidate will perform well in a job in future.",
+    "In over 100 studies across many different domains, half of all cases show simple formulas make <u class=\"n2\">better</u> significant predictions than human experts, and the remainder (except a very small handful), show a tie between the two.",
+    "When there are a lot of different factors involved and a situation is very uncertain, simple formulas can win out by focusing on the most important factors and being consistent, while human judgement is too easily influenced by particularly salient and perhaps <u class=\"n3\">irrelevant</u> considerations.",
+    "A similar idea is supported by further evidence that \u2018checklists\u2019 can improve the quality of expert decisions in a range of domains by ensuring that important steps or considerations aren\u2019t missed when people are feeling <u class=\"n4\">relaxed</u>.",
+    "For example, treating patients in intensive care can require hundreds of small actions per day, and one small error could cost a life.",
+    "Using checklists to ensure that no crucial steps are missed has proved to be remarkably <u class=\"n5\">effective</u> in a range of medical contexts, from preventing live infections to reducing pneumonia."
+  ],
+  choices: [
+    "The Power of Simple Formulas in Decision Making",
+    "Always Prioritise: Tips for Managing Big Data",
+    "Algorithms\u2019 Mistakes: The Myth of Simplicity",
+    "Be Prepared! Make a Checklist Just in Case",
+    "How Human Judgement Beats Algorithms"
+  ],
+  ans: 1,
+  ans42: 4,
+  key: "<b class=w>simple algorithms</b> vs <b class=w>expert judgement</b> - 단순 공식과 전문가 판단",
+  attr: "<b class=w>even very simple algorithms can outperform expert judgement</b> (1)<br>- 단순한 공식이 전문가를 능가할 수 있다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"<b>For example</b>, algorithms have proved more accurate...", skip:false,
+     why:"For example이지만 <b>밑줄이 있어</b> 그 단어는 확인"},
+    {n:3, head:"In over <b>100 studies</b>, half of all cases...", skip:false,
+     why:"숫자가 있지만 밑줄이 있어 확인 필요"},
+    {n:4, head:"When there are a lot of different factors involved...", skip:false},
+    {n:5, head:"A similar idea is supported by further evidence that \u2018checklists\u2019...", skip:false},
+    {n:6, head:"<b>For example</b>, treating patients in intensive care...", skip:true,
+     why:"<b>For example</b> - 체크리스트의 의료 예시. 밑줄 없음"},
+    {n:7, head:"Using checklists to ensure that no crucial steps are missed...", skip:false}
+  ],
+  trunk1: "단순 공식이 전문가 판단을 능가한다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"아주 단순한 알고리즘도 전문가 판단을 능가할 수 있다"},
+    {n:2, lb:"예시",     head:false, to:1, txt:"재범 예측, 채용 성과 예측에서 더 정확했다"},
+    {n:3, lb:"근거",     head:false, to:1, txt:"100건 넘는 연구 중 절반이 공식 우세, 나머지는 대등"},
+    {n:4, lb:"근거",     head:false, to:1, txt:"요인이 많고 불확실할 때 공식은 핵심에 집중하고 일관된다"},
+    {n:5, lb:"주장",     head:true,  txt:"체크리스트도 같은 원리 - 중요한 단계를 빠뜨리지 않게 한다"},
+    {n:6, lb:"예시",     head:false, to:5, txt:"중환자 치료는 하루 수백 가지 행위, 작은 실수가 생명을 앗는다"},
+    {n:7, lb:"재진술",   head:true,  txt:"체크리스트는 여러 의료 상황에서 효과가 뚜렷했다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "4번의 <b>while</b>은 공식 ↔ 인간 판단을 견주는 대조일 뿐 줄기를 바꾸지 않는다. "
+          + "5번의 <b>A similar idea</b>는 같은 방향으로 소재만 바꾸는 신호(알고리즘 → 체크리스트).",
+  vocab: [
+    {n:1, word:"accurate",   ok:true, why:"알고리즘이 사람보다 더 '정확'했다 - 1번 outperform과 순행"},
+    {n:2, word:"better",     ok:true, why:"단순 공식이 '더 나은' 예측을 한다"},
+    {n:3, word:"irrelevant", ok:true, why:"인간 판단은 두드러지되 '무관한' 요소에 휘둘린다 - 공식의 우위 근거"},
+    {n:4, word:"relaxed",    ok:false, fix:"tired / stressed / under pressure",
+     why:"체크리스트가 필요한 때는 사람이 <b>지치거나 압박받을 때</b>다. '느긋할 때'라면 실수할 이유가 없어 방향이 뒤집힘"},
+    {n:5, word:"effective",  ok:true, why:"체크리스트가 '효과적'이었다 - 5번 improve와 순행"}
+  ],
+  gist: "단순한 공식과 체크리스트가 복잡한 전문가 판단보다 나은 결과를 낼 수 있다.",
+  wrong: {
+    "2": "빅데이터 관리 요령이 아님",
+    "3": "알고리즘의 <b>실수</b>를 말하는 글이 아님 - 정반대",
+    "4": "체크리스트는 후반부 <b>예시</b>일 뿐 글 전체가 아님",
+    "5": "인간 판단이 알고리즘을 이긴다 - <b>정반대</b>"
+  },
+  wrongNote: "④가 함정. 체크리스트가 뒤에 길게 나와 제목으로 착각하기 쉽지만, 1번의 <b>simple algorithms</b>가 큰 틀이다.",
+  teachNote: "42번 ④ relaxed는 <b>왜 체크리스트가 필요한가</b>를 되물으면 잡힌다. "
+           + "느긋할 때 실수를 막으려 체크리스트를 쓰나? <u>지치고 바쁠 때</u> 쓴다. "
+           + "5번 <b>A similar idea</b>가 소재 전환 신호임을 짚어줄 것 - 전환점과 구별."
+},
+
+{
+  id: "s23_4345_hailey",
+  src: "2023수능 43-45번", qnum: 43, qlabel: "43-45번", qtype: "장문 배열",
+  star: 2, time: 150, note: "",
+  paras: [
+    {tag:"A",
+     text:"\u201cHailey, be careful!\u201d Camila yelled uneasily, watching her sister carrying a huge cake to the table. \u201cDon\u2019t worry, Camila,\u201d Hailey responded, smiling. Camila relaxed only when Hailey had safely placed the cake on the party table. \u201cDad will be here shortly. What gift did <u class=\"n1\">(a) you</u> buy for his birthday?\u201d Camila asked out of interest. \u201cDad will be surprised to find out what it is!\u201d Hailey answered with a wink.",
+     gist:"생일 파티 준비 - Camila가 Hailey에게 선물이 뭔지 물음",
+     cue:"주어진 글. <b>질문</b>이 다음을 부른다"},
+    {tag:"B",
+     text:"\u201cDad, these glasses can help correct your red-green color blindness,\u201d said Hailey. He slowly put them on, and stared at the birthday presents on the table. Seeing vivid red and green colors for the first time ever, he started to cry. \u201cIncredible! Look at those wonderful colors!\u201d He shouted in amazement. Hailey told him in tears, \u201cDad, I\u2019m glad you can now finally enjoy the true beauty of rainbows and roses. Red represents love and green represents health. You deserve both.\u201d Camila nodded, seeing how happy <u class=\"n2\">(b) her</u> gift of the glasses had made their dad.",
+     gist:"아버지가 안경을 쓰고 색을 봄 - 감동의 결말",
+     cue:"결말. 안경을 <b>쓴 뒤</b>"},
+    {tag:"C",
+     text:"\u201cHappy birthday! You\u2019re fifty today, Dad. We love you!\u201d Camila said before <u class=\"n3\">(c) her</u> sister handed him a small parcel. When he opened it, he discovered a pair of glasses inside. \u201cHailey, Dad doesn\u2019t have eyesight problems,\u201d Camila said, puzzled. \u201cActually Camila, I recently found out he has long been suffering from color blindness. He\u2019s kept it a secret so as not to worry us,\u201d Hailey explained.",
+     gist:"선물을 건넴 - 안경이 나오고 색맹 사실이 밝혀짐",
+     cue:"선물 <b>개봉</b>. (D)의 대화 뒤"},
+    {tag:"D",
+     text:"\u201cI bet <u class=\"n4\">(d) you</u> bought a wallet or a watch for him,\u201d Camila said. In reply, Hailey answered, \u201cNo. I bought something much more personal. By the way, there\u2019s something <u class=\"n5\">(e) you</u> should know about Dad...\u201d They were suddenly interrupted by the doorbell ringing. It was their dad and they were overjoyed to see him. \u201cMy lovely ladies, thank you for inviting me to your place for my birthday.\u201d He walked in joyfully, hugging his daughters. They all walked into the dining room, where he was greeted with a rainbow-colored birthday cake and fifty red roses.",
+     gist:"Camila의 추측 → 아버지 도착",
+     cue:"(A)의 <b>질문에 대한 답</b>으로 바로 이어짐"}
+  ],
+  orderAns: ["D","C","B"],
+  ans43: 5,
+  orderWhy: "(A) 선물이 뭐냐고 물음 → (D) 추측·아버지 도착 → (C) 선물 개봉, 색맹 밝혀짐 → (B) 안경 쓰고 감동. 시간 순서 그대로",
+  refs: [
+    {tag:"a", word:"you", who:"Hailey", why:"Camila가 선물을 샀냐고 <b>묻는 대상</b> = Hailey"},
+    {tag:"b", word:"her", who:"Hailey", why:"안경을 선물한 사람 = Hailey"},
+    {tag:"c", word:"her", who:"Camila", why:"<b>her sister</b>(그녀의 자매)에서 <u>her는 Camila</u> - 자매인 Hailey가 선물을 건넸다"},
+    {tag:"d", word:"you", who:"Hailey", why:"Camila가 추측하며 말하는 상대 = Hailey"},
+    {tag:"e", word:"you", who:"Camila", why:"Hailey가 \u2018there\u2019s something you should know\u2019라고 말하는 상대 = Camila"}
+  ],
+  refOdd: "Camila",
+  ans44: 0,   // ⚠️ 정답 미확정 — (c)와 (e) 둘 다 Camila로 읽힘. 필립 확인 필요
+  ans45: 4,
+  why45: "(D)에서 아버지가 <b class=w>thank you for inviting me to your place</b> - 딸들이 아버지 집을 방문한 게 아니라 <b>아버지가 딸들 집에 왔다</b>",
+  teachNote: "⚠️ <b>44번 정답 미확정</b> — 본문만 보면 (c) her는 Camila, (e) you도 Hailey가 Camila에게 하는 말이라 "
+           + "<u>둘 다 Camila</u>로 읽힌다. 평가원 정답지 확인 후 ans44를 채울 것. "
+           + "44번이 3개년 중 가장 까다롭다 - <b>(c) her sister</b>와 <b>(e) you</b> 둘 다 Camila 후보로 보인다. "
+           + "(c)는 <u>her sister = 그녀의 언니</u>이므로 her는 Camila, (e)는 Hailey가 말을 거는 상대라 Camila. "
+           + "정답은 (c)인데 <u>소유격이 가리키는 대상</u>과 <u>말을 듣는 대상</u>을 구별하는 훈련. "
+           + "순서는 <b>선물이 뭐냐(A) → 추측(D) → 개봉(C) → 착용(B)</b>로 사물의 흐름을 따라간다."
 }
 
 ];
