@@ -604,6 +604,7 @@
                         </div>
                     </div>
                     <div id="exam-grid-info" style="font-size:11.5px; color:#999; margin-bottom:6px;"></div>
+                    <div id="exam-class-tabs" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;"></div>
                     <div id="exam-grid-scroll" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
                         <div id="exam-grid-area"><p style="color:var(--ink-soft); font-size:12.5px; padding:6px 2px;">'불러오기'를 누르면 전체 학생의 최근 시험 결과가 표로 나옵니다.</p></div>
                     </div>
@@ -1672,13 +1673,53 @@
     // 결과 조회: 시험기록(미션별) + 불합격 시 단어쓰기 사진
     // ── 전체 단어시험 현황 그리드 (방법 A: 학생마다 불러 합치기, GAS 수정 없음) ──
     let examGridCache = null;   // {ts, students, results}
+    const EXAM_CACHE_KEY = 'voca_exam_grid_cache';
+    const EXAM_CACHE_TTL = 5*60*1000;
+
+    // 캐시를 localStorage에도 저장 → 새로고침해도 즉시 표시
+    function saveExamCache(students, results){
+        examGridCache = { ts: Date.now(), students: students, results: results };
+        try { localStorage.setItem(EXAM_CACHE_KEY, JSON.stringify(examGridCache)); } catch(e){}
+    }
+    function loadExamCache(){
+        if(examGridCache) return examGridCache;
+        try {
+            const raw = localStorage.getItem(EXAM_CACHE_KEY);
+            if(raw){
+                const c = JSON.parse(raw);
+                if(c && c.ts && c.students && c.results){ examGridCache = c; return c; }
+            }
+        } catch(e){}
+        return null;
+    }
+
+    // 전원 결과를 한 번에 조회 (GAS: type=adminExamResultsAll)
+    // 미지원 GAS면 null 반환 → 호출부에서 기존 학생별 방식으로 폴백
+    function fetchExamBatch(names){
+        return new Promise(resolve=>{
+            const cb='egall_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+            let fin=false;
+            const cleanup=()=>{ try{delete window[cb];}catch(e){window[cb]=undefined;} const s=document.getElementById(cb); if(s) s.remove(); };
+            window[cb]=(data)=>{
+                fin=true; cleanup();
+                resolve(data && data.byName ? data.byName : null);
+            };
+            const s=document.createElement('script'); s.id=cb;
+            s.src=APP_URL + "?type=adminExamResultsAll&limit=8&callback=" + cb + "&t=" + Date.now();
+            s.onerror=()=>{ if(fin)return; cleanup(); resolve(null); };
+            document.body.appendChild(s);
+            setTimeout(()=>{ if(fin)return; cleanup(); resolve(null); }, 15000);
+        });
+    }
+
     function loadExamGrid(force){
         const info=document.getElementById('exam-grid-info');
         const area=document.getElementById('exam-grid-area');
         // 캐시가 있고 강제 새로고침이 아니면 즉시 표시 (5분 이내)
-        if(!force && examGridCache && (Date.now()-examGridCache.ts < 5*60*1000)){
-            renderExamGrid(examGridCache.students, examGridCache.results);
-            const mins=Math.floor((Date.now()-examGridCache.ts)/60000);
+        const cached = loadExamCache();
+        if(!force && cached && (Date.now()-cached.ts < EXAM_CACHE_TTL)){
+            renderExamGrid(cached.students, cached.results);
+            const mins=Math.floor((Date.now()-cached.ts)/60000);
             info.textContent = info.textContent + '  ·  ' + (mins<1?'방금':mins+'분 전') + ' 기준 (새로고침하려면 다시 불러오기)';
             return;
         }
@@ -1720,6 +1761,15 @@
                 await Promise.all(workers);
             };
             (async()=>{
+                // ① 배치 조회 우선 — GAS가 시트를 1번만 읽어 훨씬 빠름
+                //    (GAS에 adminExamResultsAll 분기가 없으면 실패 → ② 기존 방식으로 자동 폴백)
+                const batch = await fetchExamBatch(names);
+                if(batch){
+                    names.forEach(n=>{ results[n] = batch[n] || []; });
+                    saveExamCache(students, results);
+                    renderExamGrid(students, results);
+                    return;
+                }
                 await runPool(names);
                 // 실패한 학생만 1회 자동 재시도 (느린 날 누락 방지)
                 const failed=names.filter(n=>results[n] && results[n].__error);
@@ -1729,7 +1779,7 @@
                     await runPool(failed);
                 }
                 // 끝까지 실패한 학생은 빈 기록으로 처리(행에 '조회 실패' 표시는 renderExamGrid에서)
-                examGridCache = { ts: Date.now(), students: students, results: results };
+                saveExamCache(students, results);
                 renderExamGrid(students, results);
             })();
         };
@@ -1775,9 +1825,43 @@
         });
         return out;
     }
+    // ── 클래스별 보기 탭 ──
+    let examCurClass = '';            // '' = 전체
+    let examLastData = null;          // {students, results} — 탭 전환 시 재조회 없이 다시 그림
+
+    function renderExamClassTabs(students){
+        const box = document.getElementById('exam-class-tabs');
+        if(!box) return;
+        // 명단 순서를 유지한 채 클래스 목록 추출
+        const classes = [];
+        students.forEach(s=>{
+            const k = String(s.klass||'').trim();
+            if(k && classes.indexOf(k) < 0) classes.push(k);
+        });
+        if(!classes.length){ box.innerHTML=''; return; }
+        const mk = (label, val)=>{
+            const on = (examCurClass === val);
+            return '<button onclick="setExamClass(' + JSON.stringify(val).replace(/"/g,'&quot;') + ')" '
+                + 'style="font-size:12px; font-weight:700; padding:6px 12px; border-radius:999px; border:none; cursor:pointer; '
+                + (on ? 'background:var(--wine); color:#fff;' : 'background:#f3eee5; color:var(--ink-soft);') + '">'
+                + label + '</button>';
+        };
+        box.innerHTML = mk('전체', '') + classes.map(c=> mk(c, c)).join('');
+    }
+
+    function setExamClass(k){
+        examCurClass = k;
+        if(examLastData) renderExamGrid(examLastData.students, examLastData.results);
+    }
+
     function renderExamGrid(students, results){
         const info=document.getElementById('exam-grid-info');
         const area=document.getElementById('exam-grid-area');
+        // 탭 전환용으로 원본 보관 (필터 전 전체 명단)
+        examLastData = { students: students, results: results };
+        renderExamClassTabs(students);
+        // 선택된 클래스만 표시
+        if(examCurClass) students = students.filter(s=> String(s.klass||'').trim() === examCurClass);
         // 명단 '순서 편집'과 같은 순서로 정렬 (한 곳에서 정한 순서가 그리드에도 반영)
         students = sortStudentsByRosterOrder(students);
         // 각 학생 미션: 오답노트 제외 + 날짜순 최신 8개
@@ -1800,7 +1884,7 @@
         const errList=Object.keys(errStudents);
         if(!maxCols && !errList.length){ info.textContent=''; area.innerHTML='<p style="color:var(--ink-soft); font-size:12.5px;">시험 기록이 있는 학생이 없습니다.</p>'; return; }
         if(!maxCols) maxCols=1;
-        info.textContent = students.length + '명 · 최근 ' + maxCols + '회 (O 한번에 합격 · O2 재시 합격 · X 불합격)'
+        info.textContent = students.length + '명' + (examCurClass ? ' · ' + examCurClass : '') + ' · 최근 ' + maxCols + '회 (O 한번에 합격 · O2 재시 합격 · X 불합격)'
             + (errList.length ? '  ·  ⚠ 조회 실패 ' + errList.length + '명(새로고침 권장)' : '');
         let h='<table class="examgrid"><thead><tr><th class="ename">학생</th>';
         for(let i=0;i<maxCols;i++) h += '<th class="egcol">'+(i+1)+'회전</th>';
