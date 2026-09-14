@@ -332,6 +332,16 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 .sheet-o .head{border-bottom-color:var(--steel2)}
 .sheet-o .head .t1{color:var(--steel2)}
 .sheet-o .step-h .n{background:var(--steel2)}
+table.sumch{margin-bottom:3mm}
+table.sumch th{font-size:10.5px}
+table.sumch td.eng{width:auto; font-size:12.4px}
+.sumarrow{text-align:center; font-size:15px; color:var(--wine); margin:1mm 0}
+.sumbox{border:1.5px solid var(--ink); background:#faf7f0; padding:8px 12px; margin-bottom:3mm;
+  font-family:'Noto Serif',serif; font-size:13.4px; line-height:1.85; text-align:justify}
+.sumbox u{text-decoration:none; border-bottom:1px solid var(--ink); padding:0 14px;
+  font-family:'Space Grotesk',sans-serif; font-size:11px; color:var(--wine)}
+.given{border:1.5px solid var(--ink); background:#fff; padding:8px 12px; margin-bottom:3mm;
+  font-family:'Noto Serif',serif; font-size:13.4px; line-height:1.8; text-align:justify}
 .para{display:flex; gap:8px; margin-bottom:2.4mm; break-inside:avoid}
 .para-tag{flex:0 0 26px; font-family:'Space Grotesk',sans-serif; font-weight:700;
   font-size:11px; color:var(--steel2); text-align:center; padding-top:6px}
@@ -465,7 +475,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260828t"></script>
+<script src="passages_final.js?v=20260905a"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -512,6 +522,15 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
   }
   function choices(p){
     if(p.vocab) return '';   // 어휘형: 선택지 = 지문 속 밑줄. 목록 중복 렌더 안 함
+    if(p.summary){           // 40번: (A) … (B) 쌍
+      return '<table class="sumch"><tr><th style="width:8%"></th><th>(A)</th><th>(B)</th></tr>'
+        + p.choices.map(function(c,i){
+            var ab = c.split('|');
+            return '<tr><td class="cn" style="text-align:center">'+cn(i+1)+'</td>'
+              + '<td class="eng">'+ab[0].trim()+'</td><td class="eng">'+(ab[1]||'').trim()+'</td></tr>';
+          }).join('')
+        + '</table>';
+    }
     return '<div class="choices">'+p.choices.map(function(c,i){
       return '<div><span class="cn">'+cn(i+1)+'</span>'+c+'</div>';
     }).join('')+'</div>';
@@ -551,6 +570,12 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
           }).join('')
       + '</table></div>';
     if(p.note) h += '<div class="note">'+p.note+'</div>';
+
+    /* 40번 요약문 박스 */
+    if(p.summary){
+      h += '<div class="sumarrow">↓</div>'
+        + '<div class="sumbox">'+p.summary+'</div>';
+    }
     h += choices(p);
 
     /* STEP 1 */
@@ -713,6 +738,56 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열</span></div></section>';
   }
 
+  /* ---------- 순서배열 (36·37형) ---------- */
+  function sheetSeq(p, lv){
+    var h = '<section class="sheet sheet-o">';
+    h += '<div class="head"><div><div class="t1">SEQUENCE · 순서 배열</div>'
+      + '<div class="t2">연결 근거로 잇는다</div></div>'
+      + '<div class="meta">'+esc(p.src)+' · 난이도 '+new Array((p.star||1)+1).join('★')
+      + '<br><span class="nm">이름 ____________</span></div></div>';
+
+    h += '<div class="qnum">'+p.qnum+'. '+esc(p.qtext)
+      + ' <span class="timer">'+(p.time||100)+'초</span></div>';
+
+    h += '<div class="given">'+p.given+'</div>';
+    p.paras.forEach(function(pa){
+      h += '<div class="para"><div class="para-tag">('+pa.tag+')</div>'
+        + '<div class="para-b">'+pa.text+'</div></div>';
+    });
+    if(p.note) h += '<div class="note">'+p.note+'</div>';
+
+    /* STEP 1 — 연결 근거 */
+    h += '<div class="step">'+stepH('STEP 1','연결 근거 찾기',
+          '<b>지시어</b>(this·these·such) · <b>관사</b>(a→the) · <b>접속부사</b>(Similarly·However)')
+      + '<table><tr><th style="width:12%">단락</th><th style="width:34%">첫머리 단서</th>'
+      + '<th>무엇을 받는가</th></tr>'
+      + p.paras.map(function(pa){
+          return '<tr><td style="text-align:center" class="cn">('+pa.tag+')</td>'
+            + '<td class="eng" style="width:auto"><b>'+esc(pa.cue)+'</b></td>'
+            + '<td class="filled" style="height:30px"><span class="fx">'+esc(pa.why)+'</span></td></tr>';
+        }).join('')
+      + '</table></div>';
+
+    /* STEP 2 — 순서 + 정답 */
+    h += '<div class="step">'+stepH('STEP 2','순서 세우기')
+      + '<div class="order-row">'
+      + '<span class="ob">주어진 글</span><span class="oa">→</span>'
+      + p.orderAns.map(function(t,i){
+          return '<span class="ob filled"><span class="fx">('+t+')</span></span>'
+            + (i<p.orderAns.length-1 ? '<span class="oa">→</span>' : '');
+        }).join('')
+      + '</div>'
+      + '<div class="fchk" style="margin-top:2mm">'
+      + '<span class="fl">정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'
+      + cn(p.ans)+'</span></span>'
+      + '<span class="fl">그렇게 본 근거</span>'+fill(esc(p.orderWhy))+'</div>'
+      + (p.teachNote ? '<div class="ans"><div class="ans-box">'+esc(p.teachNote)+'</div></div>' : '')
+      + '</div>';
+
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>순서 배열</span></div></section>';
+  }
+
   /* ---------- 속독지 — 3문항 한 장, 최소 구성 ---------- */
   function sheetFast(list, lv){
     var h = '<section class="sheet sheet-f">';
@@ -761,13 +836,12 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
   function yearOf(x){ var m = String(x).match(/(\d{4})/); return m ? m[1] : '기타'; }
   function qKey(p){                                        // 문항 묶음 키
     if(p.fast) return 'fast';
-    if(p.paras) return '43';
-    if(p.qlabel) return String(p.qnum);
+    if(p.paras && !p.given) return '43';                  // 43~45 장문 배열
     return String(p.qnum);
   }
   function qLabelOf(p){
     if(p.fast) return '18·19·20 속독';
-    if(p.paras) return '43–45 장문 배열';
+    if(p.paras && !p.given) return '43–45 장문 배열';
     if(p.qlabel) return p.qlabel + ' ' + p.qtype;
     return p.qnum + '번 ' + p.qtype;
   }
@@ -866,6 +940,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 
     var mode = selO.value;
     norm.forEach(function(p){
+      if(p.given){ html += sheetSeq(p, lv); return; }
       if(p.paras){ html += sheetOrder(p, lv); return; }
       if(mode !== 'b') html += sheetA1(p, lv) + sheetA2(p, lv);
       if(mode !== 'a') html += sheetB(p, lv);
@@ -873,7 +948,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 
     var pages = sel.reduce(function(a, p){
       if(p.fast) return a;
-      if(p.paras) return a + 2;
+      if(p.paras) return a + 1;
       var aPages = p._merge ? 1 : 2;
       return a + (mode === 'ab' ? aPages + 1 : (mode === 'a' ? aPages : 1));
     }, 0) + (fast.length ? Object.keys(byYear).length : 0);

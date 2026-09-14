@@ -2846,6 +2846,157 @@ window.PASSAGES = [
   teachNote: "44번이 깔끔하다 - (c)만 Cora, 나머지 넷은 Anna. <b>Anna really liked her</b>에서 her가 Anna 자신일 수 없음을 "
            + "짚으면 끝. 순서는 <b>the door swung open</b>(D 끝) → <b>Cora walked in</b>(B 처음)이 고리. "
            + "2023(Hailey)보다 쉬우므로 <u>43–45 입문용</u>으로 쓸 것."
+},
+
+/* ===== 2025수능 31 · 36 · 40 ===== */
+{
+  id: "s25_31_literature", src: "2025수능 31번", qnum: 31, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 2, time: 80,
+  note: "* sociosemantic: 사회의미론적인  ** transparent: 투명한",
+  sents: [
+    "Literature can be helpful in the language learning process because of the <u>__________</u> it fosters in readers.",
+    "Core language teaching materials must concentrate on how a language operates both as a rule-based system and as a sociosemantic system.",
+    "Very often, the process of learning is essentially analytic, piecemeal, and, at the level of the personality, fairly superficial.",
+    "Engaging imaginatively with literature enables learners to shift the focus of their attention beyond the more mechanical aspects of the foreign language system.",
+    "When a novel, play or short story is explored over a period of time, the result is that the reader begins to \u2018inhabit\u2019 the text.",
+    "He or she is drawn into the book.",
+    "Pinpointing what individual words or phrases may mean becomes less important than pursuing the development of the story.",
+    "The reader is eager to find out what happens as events unfold; he or she feels close to certain characters and shares their emotional responses.",
+    "The language becomes \u2018transparent\u2019 \u2014 the fiction draws the whole person into its own world."
+  ],
+  choices: ["linguistic insight","artistic imagination","literary sensibility",
+            "alternative perspective","personal involvement"],
+  ans: 5,
+  key: "<b class=w>Literature</b> + 언어 학습 - 문학이 언어 학습에 도움이 되는 이유",
+  attr: "<b class=w>because of the ____ it fosters in readers</b> (1) - 독자에게 <b>무언가를 길러주기</b> 때문",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Core language teaching materials must concentrate...", skip:false},
+    {n:3, head:"Very often, the process of learning is essentially analytic...", skip:false},
+    {n:4, head:"Engaging imaginatively with literature enables learners...", skip:false},
+    {n:5, head:"When a novel, play or short story is explored...", skip:false},
+    {n:6, head:"He or she is drawn into the book.", skip:false},
+    {n:7, head:"Pinpointing what individual words or phrases may mean...", skip:false},
+    {n:8, head:"The reader is eager to find out what happens...", skip:false},
+    {n:9, head:"The language becomes \u2018transparent\u2019...", skip:false}
+  ],
+  blankAt: 1,
+  trunk1: "일반 교재는 기계적·분석적", trunk2: "문학은 독자를 <b>안으로 끌어들인다</b>",
+  pivotAt: 4,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"문학은 독자에게 <b>무언가</b>를 길러주어 언어 학습에 도움이 된다 (빈칸)"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"핵심 교재는 언어의 규칙·사회의미 체계에 집중한다"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"그 학습은 분석적·단편적이고 인격 차원에서 피상적이다"},
+    {n:4, lb:"대조·반전", head:true, txt:"문학에 상상적으로 참여하면 기계적 측면 <b>너머로</b> 주의가 옮겨간다"},
+    {n:5, lb:"근거",     head:false, to:4, txt:"오래 읽으면 독자가 텍스트 <b>안에 거주</b>하기 시작한다"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"책 속으로 끌려 들어간다"},
+    {n:7, lb:"부연",     head:false, to:5, txt:"낱말 뜻을 짚는 것보다 이야기 전개가 더 중요해진다"},
+    {n:8, lb:"근거",     head:false, to:5, txt:"인물에게 가까움을 느끼고 감정 반응을 공유한다"},
+    {n:9, lb:"재진술",   head:true,  txt:"언어가 '투명'해지고 소설이 사람 전체를 자기 세계로 끌어들인다"}
+  ],
+  pivot: {sig:"Engaging imaginatively", at:4, from:"기계적·분석적 학습", to:"문학이 사람을 끌어들임"},
+  pivotSub: "신호어 없이 <b>소재 교체</b>로 전환한다(교재 → 문학). 2·3번은 <u>대비할 대상</u>을 깔아둔 것.",
+  gist: "문학은 독자를 이야기 속으로 끌어들여 개인적으로 몰입하게 하므로 언어 학습에 도움이 된다.",
+  wrong: {
+    "1": "언어학적 <b>통찰</b>이 아님 - 오히려 낱말 분석에서 멀어진다(⑦)",
+    "2": "예술적 <b>상상력</b>은 수단이지 문학이 길러주는 것이 아님",
+    "3": "문학적 <b>감수성</b>은 그럴듯하지만 글은 <u>독자가 끌려 들어감</u>을 말한다",
+    "4": "<b>다른 관점</b>을 준다는 말이 없음"
+  },
+  wrongNote: "③이 최대 함정. '문학'이라는 소재에 끌리면 literary sensibility로 간다. "
+           + "하지만 ⑤⑥⑧의 <b>inhabit · drawn into · feels close</b>가 가리키는 것은 <b>개인적 몰입</b>이다.",
+  teachNote: "<b>빈칸은 코어의 재진술</b>이라는 원칙이 잘 보이는 지문. 빈칸(①)과 결론(⑨)이 같은 말을 한다 - "
+           + "<u>draws the whole person into its own world</u> = personal involvement. "
+           + "빈칸 문항은 <b>빈칸 문장과 마지막 문장을 붙여 읽는 것</b>부터 훈련시킬 것."
+},
+
+{
+  id: "s25_36_reputation", src: "2025수능 36번", qnum: 36, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+  star: 2, time: 100,
+  note: "* ditch: 개천  ** irrigation: 물을 댐",
+  given: "The potential for market enforcement is greater when contracting parties have developed <b>reputational capital</b> that can be devalued when contracts are violated.",
+  paras: [
+    {tag:"A",
+     text:"<b>Similarly</b>, a landowner can undermaintain fences, ditches, and irrigation systems. Accurate assessments of farmer and landowner behavior will be made over time, and those farmers and landowners who attempt to gain at each other\u2019s expense will find that others may refuse to deal with them in the future.",
+     cue:"Similarly, a landowner can...",
+     why:"<b>Similarly</b> - 앞에 <u>농부가 어떻게 손해를 끼치는지</u>가 먼저 나와야 한다 → (B) 뒤"},
+    {tag:"B",
+     text:"<b>Over time</b> landowners indirectly monitor farmers by observing the reported output, the general quality of the soil, and any unusual or extreme behavior. Farmer and landowner reputations act as a bond. In any growing season a farmer can reduce effort, overuse soil, or underreport the crop.",
+     cue:"Over time landowners indirectly monitor farmers...",
+     why:"<b>reputations act as a bond</b>가 (C)의 평판 설명을 받는다. 끝에서 <u>농부의 손해 행위</u>를 언급 → (A)로"},
+    {tag:"C",
+     text:"Farmers and landowners develop <b>reputations</b> for honesty, fairness, producing high yields, and consistently demonstrating that they are good at what they do. In small, close-knit farming communities, reputations are well known.",
+     cue:"Farmers and landowners develop reputations...",
+     why:"주어진 글의 <b>reputational capital</b>을 <u>reputations</u>로 받아 푼다 → 맨 앞"}
+  ],
+  orderAns: ["C","B","A"],
+  ans: 5,
+  orderWhy: "주어진 글 reputational capital → (C) reputations 설명 → (B) 감시와 농부의 손해 행위 → (A) Similarly 지주도 마찬가지",
+  teachNote: "<b>순서 입문용 최적.</b> 어휘는 어렵지만 단서가 셋 다 뚜렷하다 - "
+           + "① 주어진 글의 <b>reputational capital</b> → (C)의 <b>reputations</b> (같은 말 받기) "
+           + "② (B) 끝 <b>a farmer can reduce effort</b> → (A) 첫머리 <b>Similarly, a landowner can</b> (병렬) "
+           + "<u>뜻을 몰라도 단서로 풀린다</u>는 경험을 여기서 시킬 것. 단어를 다 해석하려 들면 오히려 못 푼다."
+},
+
+{
+  id: "s25_40_synthetic", src: "2025수능 40번", qnum: 40, qtype: "요약",
+  qtext: "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+  star: 2, time: 80, note: "* synthetic: 합성의",
+  sents: [
+    "People often assume that synthetic food ingredients are more harmful than natural ones, but this is not always the case.",
+    "Typically, synthetic ingredients can be made in a precisely controlled fashion and have well-defined compositions and properties, allowing careful evaluation of their potential toxicity.",
+    "On the other hand, natural ingredients often vary appreciably in their composition and properties depending on their origin, the time of year they were harvested, the climate they experienced throughout their lifetime, the soil quality, and how they were isolated and stored.",
+    "These variations can make testing their safety extremely difficult \u2014 one is never sure about the potential toxicity of minor components that may vary from time to time.",
+    "In some cases, a natural food component has been consumed for hundreds or thousands of years without causing any obvious health problems and can, therefore, be assumed to be safe.",
+    "However, one must still be very careful."
+  ],
+  summary: "The <u>(A)</u> of the production process for synthetic food ingredients and the variability of natural food ingredients may <u>(B)</u> people\u2019s commonly held assumption that the natural ingredients are more secure.",
+  choices: [
+    "controllability | challenge",
+    "predictability | support",
+    "manageability | intensify",
+    "affordability | reverse",
+    "accessibility | question"
+  ],
+  ans: 1,
+  key: "<b class=w>synthetic</b> vs <b class=w>natural</b> food ingredients - 합성 첨가물과 천연 성분",
+  attr: "<b class=w>but this is not always the case</b> (1) - 천연이 더 안전하다는 통념이 <b>늘 맞지는 않다</b>",
+  dir: "통념",
+  skip: [
+    {n:2, head:"Typically, synthetic ingredients can be made in a precisely controlled fashion...", skip:false},
+    {n:3, head:"On the other hand, natural ingredients often vary appreciably...", skip:false},
+    {n:4, head:"These variations can make testing their safety extremely difficult...", skip:false},
+    {n:5, head:"In some cases, a natural food component has been consumed...", skip:false},
+    {n:6, head:"However, one must still be very careful.", skip:false}
+  ],
+  trunk1: "통념 - 합성이 천연보다 해롭다", trunk2: "그러나 합성은 통제 가능하고 천연은 들쭉날쭉하다",
+  pivotAt: 1,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"합성이 천연보다 해롭다는 통념이 있지만 <b>늘 그렇지는 않다</b>"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"합성은 <b>정밀하게 통제</b>되어 만들어지고 성분이 명확해 독성 평가가 쉽다"},
+    {n:3, lb:"근거",     head:false, to:1, txt:"반면 천연은 산지·수확 시기·기후·토질에 따라 <b>크게 달라진다</b>"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"그 편차 때문에 안전성 검사가 매우 어렵다"},
+    {n:5, lb:"주제도입", head:true,  txt:"(양보) 오래 먹어온 천연 성분은 안전하다고 볼 수도 있다"},
+    {n:6, lb:"재진술",   head:true,  txt:"그러나 여전히 조심해야 한다"}
+  ],
+  pivot: {sig:"but", at:1, from:"천연이 더 안전하다는 통념", to:"늘 그렇지는 않다"},
+  pivotSub: "전환이 <b>1번 문장 안</b>에 있다(but). 2·3번의 <b>On the other hand</b>는 합성 ↔ 천연을 견주는 대조이고, "
+          + "5·6번은 양보와 재확인.",
+  gist: "합성 첨가물은 통제 가능하고 천연 성분은 편차가 커서, 천연이 더 안전하다는 통념은 도전받는다.",
+  wrong: {
+    "2": "(A) 예측가능성은 되지만 (B) <b>support</b>가 정반대 - 통념을 뒷받침하지 않는다",
+    "3": "(B) intensify는 통념을 <b>강화</b>한다는 뜻 - 방향이 반대",
+    "4": "(A) 가격은 지문에 없음",
+    "5": "(A) 접근성은 지문에 없음"
+  },
+  wrongNote: "②가 최대 함정. (A) predictability는 그럴듯하지만 (B) support가 <b>1번의 but</b>과 어긋난다. "
+           + "<u>(B)부터 보면 ①과 ④만 남는다</u>.",
+  teachNote: "<b>득점 전략상 반드시 맞혀야 하는 문항</b>(40~45 전량 목표). 그런데 풀이는 의외로 쉽다 - "
+           + "(A)는 2번의 <b>precisely controlled</b>를 그대로 옮긴 말(controllability), "
+           + "(B)는 1번의 <b>but this is not always the case</b> = 통념에 <b>도전</b>한다(challenge). "
+           + "<u>요약문 빈칸은 본문 단어를 바꿔 쓴 것</u>이라는 원칙과, <b>(B)부터 방향으로 거르는</b> 순서를 가르칠 것."
 }
 
 ];
