@@ -228,6 +228,9 @@ table.csbar td.c0{font-family:'Space Grotesk',sans-serif; font-size:11.5px;
   color:var(--wine); font-weight:700}
 table.csbar td.c1{font-size:14px}
 table.csbar td.c2{position:relative}
+table.csbar td.c2 .gn{font-family:'Space Grotesk',sans-serif; font-size:11px;
+  color:var(--wine); font-weight:700}
+body.show-ans table.csbar td.c2 .gn{display:inline !important}
 table.csbar td.c3{font-family:'Noto Serif',serif; font-size:10.5px;
   font-style:italic; color:var(--wine); padding:0 3px; white-space:normal}
 body.show-ans table.csbar tr.ispv{background:#f6ece9}
@@ -462,7 +465,7 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260828r"></script>
+<script src="passages_final.js?v=20260828t"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -542,7 +545,8 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
             return '<tr class="csrow'+(nd.head?' isc':'')+(isPv?' ispv':'')+'">'
               + '<td class="c0">'+cn(nd.n)+'</td>'
               + '<td class="c1"><span class="fx">'+(nd.head?'●':'')+'</span></td>'
-              + '<td class="c2"><span class="fx gl"></span></td>'
+              + '<td class="c2"><span class="fx gl"></span>'
+                + (nd.head ? '' : '<span class="fx gn">'+cn(nd.to || 1)+'</span>')+'</td>'
               + '<td class="c3"><span class="fx">'+(isPv?esc(p.pivot.sig):'')+'</span></td></tr>';
           }).join('')
       + '</table></div>';

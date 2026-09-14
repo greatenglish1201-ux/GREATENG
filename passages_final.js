@@ -123,11 +123,11 @@ window.PASSAGES = [
   tree: [
     {n:1, lb:"주제도입",    head:true ,  txt:"속도 우선이 통하는 예외 상황이 있긴 하다 (양보)"},
     {n:2, lb:"대조·반전",  head:true ,  txt:"그 외 상황에선 그건 운전자식 착각이다 ← 글의 머리"},
-    {n:3, lb:"근거",        head:false, txt:"도로는 항상 있음 → 속도가 유일한 변수"},
-    {n:4, lb:"근거",        head:false, txt:"대중교통은 곧 와야 비로소 존재함"},
-    {n:5, lb:"예시",        head:false, txt:"차는 아무 때나 타고 속도를 누린다"},
-    {n:6, lb:"부연",        head:false, txt:"대중교통은 span + frequency가 필요"},
-    {n:7, lb:"근거",        head:false, txt:"그래서 빈도 없으면 기다림이 속도 이득을 상쇄"},
+    {n:3, lb:"근거", head:false, to:2, txt:"도로는 항상 있음 → 속도가 유일한 변수"},
+    {n:4, lb:"근거", head:false, to:2, txt:"대중교통은 곧 와야 비로소 존재함"},
+    {n:5, lb:"예시", head:false, to:3, txt:"차는 아무 때나 타고 속도를 누린다"},
+    {n:6, lb:"부연", head:false, to:4, txt:"대중교통은 span + frequency가 필요"},
+    {n:7, lb:"근거", head:false, to:6, txt:"그래서 빈도 없으면 기다림이 속도 이득을 상쇄"},
     {n:8, lb:"재진술",      head:true ,  txt:"속도는 빈도 없이는 무가치"}
   ],
 
@@ -206,11 +206,11 @@ window.PASSAGES = [
 
   tree: [
     {n:1, lb:"주제도입",    head:true ,  txt:"디지털 플랫폼이 일을 장소에서 떼어냈다 ← 밑줄 = 글의 머리"},
-    {n:2, lb:"부연",        head:false, txt:"일이 쪼개지고·상품화·표준화되며 장소와의 끈이 끊김 (원리)"},
-    {n:3, lb:"근거",       head:false, txt:"1990년대 아웃소싱과 견줌 — 규모·세분화가 다를 뿐 방향은 같음 (줄기 전환 아님)"},
-    {n:4, lb:"예시",        head:false, txt:"뉴욕 소기업이 오늘은 나이로비, 내일은 뉴델리 사람을 고용"},
-    {n:5, lb:"부연",        head:false, txt:"사무실·규제·세금 어느 것도 그 지역에 얽히지 않음"},
-    {n:6, lb:"부연",        head:false, txt:"이메일 몇 통·클릭 몇 번으로 생산망이 갈아탐"},
+    {n:2, lb:"부연", head:false, to:1, txt:"일이 쪼개지고·상품화·표준화되며 장소와의 끈이 끊김 (원리)"},
+    {n:3, lb:"근거", head:false, to:1, txt:"1990년대 아웃소싱과 견줌 — 규모·세분화가 다를 뿐 방향은 같음 (줄기 전환 아님)"},
+    {n:4, lb:"예시", head:false, to:1, txt:"뉴욕 소기업이 오늘은 나이로비, 내일은 뉴델리 사람을 고용"},
+    {n:5, lb:"부연", head:false, to:4, txt:"사무실·규제·세금 어느 것도 그 지역에 얽히지 않음"},
+    {n:6, lb:"부연", head:false, to:1, txt:"이메일 몇 통·클릭 몇 번으로 생산망이 갈아탐"},
     {n:7, lb:"재진술",      head:true ,  txt:"고용주가 그 지역에 아무 물리적 흔적도 남기지 않는다"}
   ],
 
@@ -301,15 +301,15 @@ window.PASSAGES = [
 
   tree: [
     {n:1, lb:"주제도입",    head:true , txt:"스포츠 생태계는 coopetition의 형태·정도에 따라 성립"},
-    {n:2, lb:"부연",        head:false, txt:"coopetition = 협력과 경쟁의 동시 추구"},
-    {n:3, lb:"부연",        head:false, txt:"자원 효율을 위해 협력하면서도 서로 경쟁하는 역동성"},
+    {n:2, lb:"부연", head:false, to:1, txt:"coopetition = 협력과 경쟁의 동시 추구"},
+    {n:3, lb:"부연", head:false, to:2, txt:"자원 효율을 위해 협력하면서도 서로 경쟁하는 역동성"},
     {n:4, lb:"주장",        head:true ,  txt:"이 관계는 제대로 관리되어야 한다 ← 주장 시작"},
-    {n:5, lb:"근거",        head:false, txt:"둘은 행동 방식이 달라 동시에 하기 어렵다"},
+    {n:5, lb:"근거", head:false, to:4, txt:"둘은 행동 방식이 달라 동시에 하기 어렵다"},
     {n:6, lb:"주장",        head:true ,  txt:"어느 쪽에 얼마나 힘을 줄지 세심한 균형이 필요"},
-    {n:7, lb:"근거",        head:false, txt:"현장에선 성과 때문에 경쟁 쪽으로 기울기 쉽다"},
-    {n:8, lb:"부연",        head:false, txt:"필요해서 정보는 공유하되 조심스럽게 한다"},
+    {n:7, lb:"근거", head:false, to:6, txt:"현장에선 성과 때문에 경쟁 쪽으로 기울기 쉽다"},
+    {n:8, lb:"부연", head:false, to:7, txt:"필요해서 정보는 공유하되 조심스럽게 한다"},
     {n:9, lb:"재진술",      head:true ,  txt:"둘을 동시에 추구할 계획을 미리 세워두는 편이 낫다"},
-    {n:10, lb:"근거",        head:false, txt:"그래야 한쪽을 희생시키지 않는다"}
+    {n:10, lb:"근거", head:false, to:9, txt:"그래야 한쪽을 희생시키지 않는다"}
   ],
 
   pivot: {sig:"should (조동사)", at:4, from:"개념 설명(무엇인가)", to:"주장(어떻게 해야 하는가)"},
@@ -383,9 +383,9 @@ window.PASSAGES = [
 
   tree: [
     {n:1, lb:"주제도입",    head:true ,  txt:"경제적 이익 때문에 정치권에 매력적이다 (양보 — 장점 먼저)"},
-    {n:2, lb:"부연",        head:false, txt:"관광객 증가와 소비가 유인이 되어 행사를 키우려 한다"},
+    {n:2, lb:"부연", head:false, to:1, txt:"관광객 증가와 소비가 유인이 되어 행사를 키우려 한다"},
     {n:3, lb:"대조·반전",  head:true ,  txt:"그러나 상업화는 획일화·본래 메시지 상실의 위험 ← 글의 머리"},
-    {n:4, lb:"부연",        head:false, txt:"독립 행사가 따로 생겨 관객이 더 쪼개질 수도"},
+    {n:4, lb:"부연", head:false, to:3, txt:"독립 행사가 따로 생겨 관객이 더 쪼개질 수도"},
     {n:5, lb:"주장",        head:true ,  txt:"기획자·이해관계자가 금전적 이익과 저울질해야 할 문제"},
     {n:6, lb:"주제도입",    head:true ,  txt:"(새 화제) 사회가 바뀌면 새 문화·새 culturtainment가 계속 나온다 — 앞의 위험 얘기와 별개"},
     {n:7, lb:"재진술",      head:true ,  txt:"건강한 성장 분야지만, 본질상 착취에 취약하다"}
@@ -463,11 +463,11 @@ window.PASSAGES = [
 
   tree: [
     {n:1, lb:"주제도입",  head:true,  txt:"상황윤리 = 맥락을 따져 윤리성을 판단하는 이론"},
-    {n:2, lb:"부연",      head:false, txt:"절대적 도덕 기준을 기꺼이 치워둔다"},
-    {n:3, lb:"부연",      head:false, txt:"보편 기준이 없으니 결과가 중요 → 목적이 수단을 정당화"},
-    {n:4, lb:"부연",      head:false, txt:"대조되는 두 현실로 설명해 보겠다 (예고)"},
-    {n:5, lb:"예시",      head:false, txt:"친구끼리 하는 픽업 게임 — 스스로 파울을 선언한다"},
-    {n:6, lb:"근거",      head:false, txt:"친구를 아끼고 계속 뛰고 싶어서 그렇게 행동"},
+    {n:2, lb:"부연", head:false, to:1, txt:"절대적 도덕 기준을 기꺼이 치워둔다"},
+    {n:3, lb:"부연", head:false, to:2, txt:"보편 기준이 없으니 결과가 중요 → 목적이 수단을 정당화"},
+    {n:4, lb:"부연", head:false, to:1, txt:"대조되는 두 현실로 설명해 보겠다 (예고)"},
+    {n:5, lb:"예시", head:false, to:4, txt:"친구끼리 하는 픽업 게임 — 스스로 파울을 선언한다"},
+    {n:6, lb:"근거", head:false, to:5, txt:"친구를 아끼고 계속 뛰고 싶어서 그렇게 행동"},
     {n:7, lb:"대조·반전", head:true,  txt:"심판 있는 공식 경기에서는 파울을 인정하지 않는다"},
     {n:8, lb:"재진술",    head:true,  txt:"결국 최대한 안 걸리고 넘어가려는 태도로 확장됨"}
   ],
@@ -659,12 +659,12 @@ window.PASSAGES = [
   tree: [
     {n:1, lb:"주제도입",   head:true,  txt:"의복사에는 명백한 문제 - 실물 의복의 증거가 끊긴다"},
     {n:2, lb:"주장",       head:true,  txt:"그래서 건축·회화 등 다른 분야가 자료를 대는 게 불가피했다"},
-    {n:3, lb:"부연",       head:false, txt:"남아 있는 의복사는 17세기부터. 시각적 주제다"},
-    {n:4, lb:"부연",       head:false, txt:"다만 다른 분야와 달리 의복은 고정이 아니라 유동적"},
-    {n:5, lb:"부연",       head:false, txt:"몸 위에서 움직이는 상태로 봐야 한다"},
-    {n:6, lb:"근거",       head:false, txt:"그래서 전시가 어렵고, 생기 없다는 말을 듣는다"},
+    {n:3, lb:"부연", head:false, to:2, txt:"남아 있는 의복사는 17세기부터. 시각적 주제다"},
+    {n:4, lb:"부연", head:false, to:2, txt:"다만 다른 분야와 달리 의복은 고정이 아니라 유동적"},
+    {n:5, lb:"부연", head:false, to:4, txt:"몸 위에서 움직이는 상태로 봐야 한다"},
+    {n:6, lb:"근거", head:false, to:5, txt:"그래서 전시가 어렵고, 생기 없다는 말을 듣는다"},
     {n:7, lb:"대조·반전",  head:true,  txt:"다행히 1660년 이후엔 움직임을 담은 그림·사진 자료가 많다"},
-    {n:8, lb:"부연",       head:false, txt:"그 예시들이 옷을 어떻게 입었는지 증거를 준다"},
+    {n:8, lb:"부연", head:false, to:7, txt:"그 예시들이 옷을 어떻게 입었는지 증거를 준다"},
     {n:9, lb:"재진술",     head:true,  txt:"예술 속 정보가 없었다면 역사 의복 전시는 어설픈 흉내가 됐을 것"}
   ],
 
@@ -2352,6 +2352,500 @@ window.PASSAGES = [
            + "(c)는 <u>her sister = 그녀의 언니</u>이므로 her는 Camila, (e)는 Hailey가 말을 거는 상대라 Camila. "
            + "정답은 (c)인데 <u>소유격이 가리키는 대상</u>과 <u>말을 듣는 대상</u>을 구별하는 훈련. "
            + "순서는 <b>선물이 뭐냐(A) → 추측(D) → 개봉(C) → 착용(B)</b>로 사물의 흐름을 따라간다."
+},
+
+/* ===== 2022수능 속독 ===== */
+{
+  id: "s22_18_lecture", src: "2022수능 18번", qnum: 18, qtype: "목적",
+  qtext: "다음 글의 목적으로 가장 적절한 것은?", star: 1, time: 40, fast: true,
+  sents: [
+    "Dear Ms. Green,",
+    "My name is Donna Williams, a science teacher at Rogan High School.",
+    "I am planning a special workshop for our science teachers.",
+    "We are interested in learning how to teach online science classes.",
+    "I have been impressed with your ideas about using internet platforms for science classes.",
+    "Since you are an expert in online education, I would like to ask you to deliver a special lecture at the workshop scheduled for next month.",
+    "I am sure the lecture will help our teachers manage successful online science classes, and I hope we can learn from your insights.",
+    "I am looking forward to hearing from you. Sincerely, Donna Williams"
+  ],
+  choices: ["과학 교육 정책 협의회 참여를 독려하려고","과학 교사 워크숍의 특강을 부탁하려고",
+            "과학 교사 채용 계획을 공지하려고","과학 교육 프로그램 개발을 요청하려고",
+            "과학 교육 워크숍 일정의 변경을 안내하려고"],
+  ans: 2,
+  key: "<b class=w>a special workshop</b> - 과학 교사 워크숍",
+  attr: "<b class=w>I would like to ask you to deliver a special lecture</b> (6) - 특강을 부탁한다",
+  dir: "긍정",
+  fastWhy: "6번 <b class=w>I would like to ask you to deliver a special lecture</b>. "
+         + "부탁문은 <b>I would like to ask you to</b> 같은 요청 표현에 목적이 있다. 앞은 자기소개와 배경.",
+  teachNote: "18번 4유형 완성 - 요청(2026)·취소공지(2025)·홍보(2024)·문의(2023)에 이어 <b>부탁</b>형. "
+           + "공통점은 <u>끝에서 두세 번째 문장의 동사</u>에 목적이 있다는 것."
+},
+{
+  id: "s22_19_evelyn", src: "2022수능 19번", qnum: 19, qtype: "심경",
+  qtext: "다음 글에 나타난 Evelyn의 심경 변화로 가장 적절한 것은?", star: 1, time: 45,
+  fast: true, fastMode: "mood",
+  sents: [
+    "It was Evelyn\u2019s first time to explore the Badlands of Alberta, famous across Canada for its numerous dinosaur fossils.",
+    "As a young amateur bone-hunter, she was overflowing with anticipation.",
+    "She had not travelled this far for the bones of common dinosaur species.",
+    "Her life-long dream to find rare fossils of dinosaurs was about to come true.",
+    "She began eagerly searching for them.",
+    "After many hours of wandering throughout the deserted lands, however, she was unsuccessful.",
+    "Now, the sun was beginning to set, and her goal was still far beyond her reach.",
+    "Looking at the slowly darkening ground before her, she sighed to herself, \u201cI can\u2019t believe I came all this way for nothing. What a waste of time!\u201d"
+  ],
+  choices: ["confused → scared","discouraged → confident","relaxed → annoyed",
+            "indifferent → depressed","hopeful → disappointed"],
+  ans: 5,
+  moodPivot: "<b class=w>however</b> (6)",
+  fastWhy: "앞 <b class=w>overflowing with anticipation · dream... about to come true · eagerly</b> (기대) → "
+         + "뒤 <b class=w>unsuccessful · sighed · What a waste of time</b> (실망). 전환은 6번 <b>however</b>.",
+  teachNote: "가장 전형적인 심경 전환 - <b>however</b> 하나로 갈린다. "
+           + "2023(남의 말)·2024(상황 변화)·2025·2026(신호어)과 함께 <u>전환 3방식</u> 정리의 마지막 조각."
+},
+{
+  id: "s22_20_socialmedia", src: "2022수능 20번", qnum: 20, qtype: "주장",
+  qtext: "다음 글에서 필자가 주장하는 바로 가장 적절한 것은?", star: 1, time: 50,
+  fast: true,
+  sents: [
+    "One of the most common mistakes made by organizations when they first consider experimenting with social media is that they focus too much on social media tools and platforms and not enough on their business objectives.",
+    "The reality of success in the social web for businesses is that creating a social media program begins not with insight into the latest social media tools and channels but with a thorough understanding of the organization\u2019s own goals and objectives.",
+    "A social media program is not merely the fulfillment of a vague need to manage a \u201cpresence\u201d on popular social networks because \u201ceveryone else is doing it.\u201d",
+    "\u201cBeing in social media\u201d serves no purpose in and of itself.",
+    "In order to serve any purpose at all, a social media presence must either solve a problem for the organization and its customers or result in an improvement of some sort (preferably a measurable one).",
+    "In all things, purpose drives success.",
+    "The world of social media is no different."
+  ],
+  choices: [
+    "기업 이미지에 부합하는 소셜 미디어를 직접 개발하여 운영해야 한다.",
+    "기업은 사회적 가치와 요구를 반영하여 사업 목표를 수립해야 한다.",
+    "기업은 소셜 미디어를 활용할 때 사업 목표를 토대로 해야 한다.",
+    "소셜 미디어로 제품을 홍보할 때는 구체적인 정보를 제공해야 한다.",
+    "소비자의 의견을 수렴하기 위해 소셜 미디어를 적극 활용해야 한다."
+  ],
+  ans: 3,
+  key: "<b class=w>social media</b> + <b class=w>business objectives</b> - 소셜 미디어와 사업 목표",
+  attr: "<b class=w>focus too much on... tools and platforms and not enough on their business objectives</b> (1)<br>- 도구에만 매달리고 사업 목표를 소홀히 한다 (흔한 <b>실수</b>)",
+  dir: "부정",
+  fastWhy: "1번 <b class=w>the most common mistakes</b>가 부정 방향. 2번 <b class=w>not with... but with a thorough understanding of the organization\u2019s own goals</b>가 대안. "
+         + "<b>not A but B</b>에서 B가 답이다.",
+  teachNote: "2023·2024-20번과 같은 <b>부정→대안</b>형. 다만 여기는 대안이 <b>not A but B</b> 한 문장 안에 들어 있다. "
+           + "<u>실수를 지적하면 그 반대가 주장</u>이라는 공식을 굳힐 것."
+},
+
+/* ===== 2022수능 ===== */
+{
+  id: "s22_21_commute", src: "2022수능 21번", qnum: 21, qtype: "함축",
+  qtext: "밑줄 친 <b>whether to make ready for the morning commute or not</b>이 다음 글에서 의미하는 바로 가장 적절한 것은? [3점]",
+  star: 3, time: 90,
+  note: "* lay: 전문가가 아닌  ** paralyze: 마비시키다  *** commute: 통근",
+  sents: [
+    "Scientists have no special purchase on moral or ethical decisions; a climate scientist is no more qualified to comment on health care reform than a physicist is to judge the causes of bee colony collapse.",
+    "The very features that create expertise in a specialized domain lead to ignorance in many others.",
+    "In some cases lay people \u2014 farmers, fishermen, patients, native peoples \u2014 may have relevant experiences that scientists can learn from.",
+    "Indeed, in recent years, scientists have begun to recognize this: the Arctic Climate Impact Assessment includes observations gathered from local native groups.",
+    "So our trust needs to be limited, and focused.",
+    "It needs to be very particular.",
+    "Blind trust will get us into at least as much trouble as no trust at all.",
+    "But without some degree of trust in our designated experts \u2014 the men and women who have devoted their lives to sorting out tough questions about the natural world we live in \u2014 we are paralyzed, in effect not knowing <u>whether to make ready for the morning commute or not</u>."
+  ],
+  choices: [
+    "questionable facts that have been popularized by non-experts",
+    "readily applicable information offered by specialized experts",
+    "common knowledge that hardly influences crucial decisions",
+    "practical information produced by both specialists and lay people",
+    "biased knowledge that is widespread in the local community"
+  ],
+  ans: 2,
+  key: "<b class=w>trust</b> in experts - 전문가에 대한 신뢰",
+  attr: "<b class=w>our trust needs to be limited, and focused</b> (5) - 신뢰는 제한적·집중적이어야 한다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"The very features that create expertise...", skip:false},
+    {n:3, head:"In some cases lay people \u2014 farmers, fishermen...", skip:false},
+    {n:4, head:"Indeed, in recent years... the <b>Arctic Climate Impact Assessment</b>", skip:true,
+     why:"<b>고유명사</b>(보고서 이름) - 앞말을 뒷받침하는 예시"},
+    {n:5, head:"So our trust needs to be limited, and focused.", skip:false},
+    {n:6, head:"It needs to be very particular.", skip:false},
+    {n:7, head:"Blind trust will get us into at least as much trouble...", skip:false},
+    {n:8, head:"But without some degree of trust in our designated experts...", skip:false}
+  ],
+  trunk1: "전문가도 자기 분야 밖에선 무지하다", trunk2: "그래도 최소한의 신뢰는 있어야 한다",
+  pivotAt: 8,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"과학자라고 도덕·윤리 판단에 특권이 있는 것은 아니다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"한 분야의 전문성이 다른 분야의 무지를 만든다"},
+    {n:3, lb:"근거",     head:false, to:1, txt:"비전문가가 과학자보다 나은 경험을 가질 때도 있다"},
+    {n:4, lb:"예시",     head:false, to:3, txt:"북극 기후 보고서가 원주민의 관찰을 포함한 사례"},
+    {n:5, lb:"주장",     head:true,  txt:"그러므로 신뢰는 <b>제한적이고 집중적</b>이어야 한다"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"아주 구체적이어야 한다"},
+    {n:7, lb:"근거",     head:false, to:5, txt:"맹목적 신뢰는 무신뢰만큼 문제를 일으킨다"},
+    {n:8, lb:"대조·반전", head:true, txt:"그러나 최소한의 신뢰마저 없으면 우리는 마비된다"}
+  ],
+  pivot: {sig:"But", at:8, from:"전문가를 맹신하지 말라", to:"그래도 최소한은 믿어야 한다"},
+  pivotSub: "<b>But</b>(8)이 마지막 문장에서야 나온다. 1~7번은 '맹신하지 말라'인데 <u>결론은 정반대 방향</u>이라 "
+          + "끝까지 읽지 않으면 답을 뒤집는다.",
+  implied: {
+    phrase: "whether to make ready for the morning commute or not",
+    restateAt: [8],
+    model: "전문가가 제공하는, <b>일상에서 바로 쓸 수 있는 정보</b>(일기예보 등) - 그것마저 못 믿으면 아침 출근 준비도 못 한다"
+  },
+  gist: "전문가를 맹신해서도 안 되지만 최소한의 신뢰가 없으면 일상적 판단조차 불가능하다.",
+  wrong: {
+    "1": "비전문가가 퍼뜨린 <b>의심스러운</b> 정보가 아님",
+    "3": "중요한 결정에 영향을 <b>못 주는</b> 상식이 아님 - 정반대",
+    "4": "전문가와 비전문가가 <b>함께</b> 만든 정보가 아님 - 8번은 전문가 신뢰만 말함",
+    "5": "지역사회의 <b>편향된</b> 지식이 아님"
+  },
+  wrongNote: "④가 함정. 3번에 lay people이 나와서 '둘 다'로 읽기 쉽지만, 밑줄이 있는 8번은 <b>designated experts</b>만 말한다.",
+  teachNote: "밑줄이 <b>마지막 문장</b>에 있고 그 문장이 글의 방향을 뒤집는다. "
+           + "<u>밑줄이 어느 줄기에 속하는지</u>를 먼저 잡아야 하는 전형 - 1~7번(맹신 경계)이 아니라 8번(최소 신뢰) 쪽이다. "
+           + "출근 준비라는 일상 비유가 '전문가 정보의 실용성'을 뜻한다는 것을 8번 안에서 찾게 할 것."
+},
+{
+  id: "s22_22_hazard", src: "2022수능 22번", qnum: 22, qtype: "요지",
+  qtext: "다음 글의 요지로 가장 적절한 것은?", star: 2, time: 60,
+  note: "* contaminate: 오염시키다  ** egregious: 매우 나쁜",
+  sents: [
+    "Environmental hazards include biological, physical, and chemical ones, along with the human behaviors that promote or allow exposure.",
+    "Some environmental contaminants are difficult to avoid (the breathing of polluted air, the drinking of chemically contaminated public drinking water, noise in open public spaces); in these circumstances, exposure is largely involuntary.",
+    "Reduction or elimination of these factors may require societal action, such as public awareness and public health measures.",
+    "In many countries, the fact that some environmental hazards are difficult to avoid at the individual level is felt to be more morally egregious than those hazards that can be avoided.",
+    "Having no choice but to drink water contaminated with very high levels of arsenic, or being forced to passively breathe in tobacco smoke in restaurants, outrages people more than the personal choice of whether an individual smokes tobacco.",
+    "These factors are important when one considers how change (risk reduction) happens."
+  ],
+  choices: [
+    "개인이 피하기 어려운 유해 환경 요인에 대해서는 사회적 대응이 필요하다.",
+    "환경오염으로 인한 피해자들에게 적절한 보상을 하는 것이 바람직하다.",
+    "다수의 건강을 해치는 행위에 대해 도덕적 비난 이상의 조치가 요구된다.",
+    "환경오염 문제를 해결하기 위해서는 사후 대응보다 예방이 중요하다.",
+    "대기오염 문제는 인접 국가들과의 긴밀한 협력을 통해 해결할 수 있다."
+  ],
+  ans: 1,
+  key: "<b class=w>Environmental hazards</b> - 환경 유해 요인",
+  attr: "<b class=w>difficult to avoid... exposure is largely involuntary</b> (2)<br>- 개인이 피하기 어렵고 노출이 비자발적이다",
+  dir: "부정",
+  skip: [
+    {n:2, head:"Some environmental contaminants are difficult to avoid...", skip:false},
+    {n:3, head:"Reduction or elimination of these factors may require societal action...", skip:false},
+    {n:4, head:"In many countries, the fact that some environmental hazards...", skip:false},
+    {n:5, head:"Having no choice but to drink water contaminated with... <b>arsenic</b>", skip:true,
+     why:"구체적 사례(비소 오염수·간접흡연) - 앞말을 보여주는 예시"},
+    {n:6, head:"These factors are important when one considers...", skip:false}
+  ],
+  trunk1: "피하기 어려운 환경 요인은 사회적 대응이 필요하다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"환경 유해 요인에는 생물·물리·화학적인 것과 인간 행동이 있다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"어떤 것은 피하기 어렵고 노출이 비자발적이다"},
+    {n:3, lb:"주장",     head:true,  txt:"이런 요인의 감축엔 <b>사회적 조치</b>가 필요하다"},
+    {n:4, lb:"근거",     head:false, to:3, txt:"피할 수 없는 위험이 피할 수 있는 것보다 더 부당하게 느껴진다"},
+    {n:5, lb:"예시",     head:false, to:4, txt:"비소 오염수, 식당 간접흡연이 개인의 흡연 선택보다 분노를 부른다"},
+    {n:6, lb:"재진술",   head:true,  txt:"이런 요소가 위험 감축이 어떻게 일어나는지 볼 때 중요하다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "전환 신호어가 없다. <b>피할 수 없음 → 사회적 대응</b>이라는 한 방향이 이어진다.",
+  gist: "개인이 피하기 어려운 환경 유해 요인에는 사회적 차원의 대응이 필요하다.",
+  wrong: {
+    "2": "피해 <b>보상</b>을 다루지 않음",
+    "3": "'도덕적 비난 이상의 조치'는 4번의 소재를 확대 해석한 것",
+    "4": "사후 대응 vs <b>예방</b>의 대비가 없음",
+    "5": "국가 간 협력 얘기가 없음"
+  },
+  wrongNote: "③이 함정. morally egregious가 나와서 '도덕적 비난'으로 끌리지만, 그건 <b>왜 사회적 대응이 필요한가</b>의 근거일 뿐이다.",
+  teachNote: "3번 <b>may require societal action</b>이 코어인데 조동사가 약해서 놓치기 쉽다. "
+           + "<u>should·must만 주장이 아니다</u> — may require, needs to도 주장 신호임을 짚을 것."
+},
+{
+  id: "s22_23_paradigm", src: "2022수능 23번", qnum: 23, qtype: "주제",
+  qtext: "다음 글의 주제로 가장 적절한 것은? [3점]", star: 3, time: 65,
+  sents: [
+    "Scientists <i>use</i> paradigms rather than believing them.",
+    "The use of a paradigm in research typically addresses related problems by employing shared concepts, symbolic expressions, experimental and mathematical tools and procedures, and even some of the same theoretical statements.",
+    "Scientists need only understand how to use these various elements in ways that others would accept.",
+    "These elements of shared practice thus need not presuppose any comparable unity in scientists\u2019 beliefs about what they are doing when they use them.",
+    "Indeed, one role of a paradigm is to enable scientists to work successfully without having to provide a detailed account of what they are doing or what they believe about it.",
+    "Thomas Kuhn noted that scientists \u201ccan agree in their identification of a paradigm without agreeing on, or even attempting to produce, a full interpretation or rationalization of it.\u201d",
+    "Lack of a standard interpretation or of an agreed reduction to rules will not prevent a paradigm from guiding research."
+  ],
+  choices: [
+    "difficulty in drawing novel theories from existing paradigms",
+    "significant influence of personal beliefs in scientific fields",
+    "key factors that promote the rise of innovative paradigms",
+    "roles of a paradigm in grouping like-minded researchers",
+    "functional aspects of a paradigm in scientific research"
+  ],
+  ans: 5,
+  key: "<b class=w>paradigms</b> - 과학자와 패러다임",
+  attr: "<b class=w>use paradigms rather than believing them</b> (1) - 믿는 게 아니라 <b>쓰는</b> 것이다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"The use of a paradigm in research typically addresses...", skip:false},
+    {n:3, head:"Scientists need only understand how to use these various elements...", skip:false},
+    {n:4, head:"These elements of shared practice thus need not presuppose...", skip:false},
+    {n:5, head:"Indeed, one role of a paradigm is to enable scientists...", skip:false},
+    {n:6, head:"<b>Thomas Kuhn</b> noted that scientists...", skip:true,
+     why:"<b>고유명사</b>(Thomas Kuhn) - 앞말을 뒷받침하는 인용"},
+    {n:7, head:"Lack of a standard interpretation... will not prevent...", skip:false}
+  ],
+  trunk1: "패러다임은 믿음이 아니라 도구다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"과학자는 패러다임을 믿는 게 아니라 <b>사용한다</b>"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"공유된 개념·기호·도구·절차를 써서 문제를 다룬다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"남들이 받아들일 방식으로 쓸 줄만 알면 된다"},
+    {n:4, lb:"주장",     head:true,  txt:"그러므로 신념의 일치를 전제하지 않아도 된다"},
+    {n:5, lb:"근거",     head:false, to:4, txt:"패러다임의 역할은 상세한 해명 없이도 일하게 해주는 것"},
+    {n:6, lb:"근거",     head:false, to:5, txt:"Kuhn - 해석에 합의하지 않아도 패러다임 식별에는 동의할 수 있다"},
+    {n:7, lb:"재진술",   head:true,  txt:"표준 해석이 없어도 패러다임은 연구를 이끈다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "1번의 <b>rather than</b>이 대조처럼 보이지만 <u>한 문장 안</u>에서 방향을 정하는 장치다. "
+          + "2025-24번(not A but B)과 같은 형태.",
+  gist: "패러다임은 신념의 대상이 아니라 연구를 가능하게 하는 실용적 도구다.",
+  wrong: {
+    "1": "새 이론을 끌어내는 <b>어려움</b>을 다루지 않음",
+    "2": "개인 <b>신념의 영향</b>이 아니라 신념이 <b>필요 없다</b>는 것 - 정반대",
+    "3": "혁신적 패러다임의 <b>등장 요인</b>이 아님",
+    "4": "같은 생각을 가진 연구자를 <b>묶는</b> 역할이 아님 - 4번이 정확히 반박"
+  },
+  wrongNote: "④가 함정. shared practice가 나와서 '묶는다'로 읽기 쉽지만, 4번은 <b>신념의 일치가 필요 없다</b>고 말한다.",
+  teachNote: "정답 ⑤의 <b>functional aspects</b>(기능적 측면)가 1번의 <b>use</b>를 그대로 옮긴 것. "
+           + "<u>주제문의 동사를 명사로 바꾼 것</u>이 정답인 전형 - use → functional."
+},
+{
+  id: "s22_24_repair", src: "2022수능 24번", qnum: 24, qtype: "제목",
+  qtext: "다음 글의 제목으로 가장 적절한 것은?", star: 2, time: 65,
+  sents: [
+    "Mending and restoring objects often require even more creativity than original production.",
+    "The preindustrial blacksmith made things to order for people in his immediate community; customizing the product, modifying or transforming it according to the user, was routine.",
+    "Customers would bring things back if something went wrong; repair was thus an extension of fabrication.",
+    "With industrialization and eventually with mass production, making things became the province of machine tenders with limited knowledge.",
+    "But repair continued to require a larger grasp of design and materials, an understanding of the whole and a comprehension of the designer\u2019s intentions.",
+    "\u201cManufacturers all work by machinery or by vast subdivision of labour and not, so to speak, by hand,\u201d an 1896 <i>Manual of Mending and Repairing</i> explained.",
+    "\u201cBut all repairing <i>must</i> be done by hand. We can make every detail of a watch or of a gun by machinery, but the machine cannot mend it when broken, much less a clock or a pistol!\u201d"
+  ],
+  choices: [
+    "Still Left to the Modern Blacksmith: The Art of Repair",
+    "A Historical Survey of How Repairing Skills Evolved",
+    "How to Be a Creative Repairperson: Tips and Ideas",
+    "A Process of Repair: Create, Modify, Transform!",
+    "Can Industrialization Mend Our Broken Past?"
+  ],
+  ans: 1,
+  key: "<b class=w>Mending and restoring</b> - 수리와 복원",
+  attr: "<b class=w>require even more creativity than original production</b> (1)<br>- 원래 만드는 것보다 더 창의적이다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"The preindustrial blacksmith made things to order...", skip:false},
+    {n:3, head:"Customers would bring things back if something went wrong...", skip:false},
+    {n:4, head:"With industrialization and eventually with mass production...", skip:false},
+    {n:5, head:"But repair continued to require a larger grasp of design...", skip:false},
+    {n:6, head:"...an <b>1896</b> <i>Manual of Mending and Repairing</i> explained.", skip:true,
+     why:"<b>연도·책 이름</b> - 앞말을 뒷받침하는 인용"},
+    {n:7, head:"\u201cBut all repairing must be done by hand...\u201d", skip:true,
+     why:"6번 인용의 <b>연장</b> - 인용이 끝나는 곳까지 함께 건너뛴다"}
+  ],
+  trunk1: "산업화 이전 - 수리는 제작의 연장이었다", trunk2: "산업화 이후에도 수리는 여전히 손과 이해를 요구한다",
+  pivotAt: 5,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"수리와 복원은 원래 만드는 것보다 더 창의적일 때가 많다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"산업화 이전 대장장이는 주문 제작하고 사용자에 맞춰 고쳤다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"문제가 생기면 되가져왔고 수리는 제작의 연장이었다"},
+    {n:4, lb:"대조·반전", head:true, txt:"산업화·대량생산으로 제작은 지식이 제한된 기계공의 영역이 됐다"},
+    {n:5, lb:"주장",     head:true,  txt:"그러나 <b>수리</b>는 여전히 설계·재료·의도에 대한 이해를 요구했다"},
+    {n:6, lb:"근거",     head:false, to:5, txt:"1896년 수리 편람 - 제조는 기계로 하지만"},
+    {n:7, lb:"근거",     head:false, to:6, txt:"수리는 반드시 손으로 해야 한다 - 기계는 고치지 못한다"}
+  ],
+  pivot: {sig:"But", at:5, from:"산업화로 제작이 기계화됐다", to:"그래도 수리는 손과 이해가 필요하다"},
+  pivotSub: "4번이 <b>변화</b>를 말하고 5번 <b>But</b>이 '그래도 수리는 다르다'로 되돌린다. "
+          + "4번을 결론으로 잡으면 정반대로 간다.",
+  gist: "산업화로 제작은 기계화됐지만 수리는 여전히 사람의 이해와 손을 요구하는 기술이다.",
+  wrong: {
+    "2": "수리 기술의 <b>역사적 변천</b>을 훑는 글이 아님 - 변하지 <b>않은</b> 것을 말한다",
+    "3": "수리공이 되는 <b>요령</b>을 알려주는 글이 아님",
+    "4": "수리의 <b>과정</b>을 설명하지 않음",
+    "5": "산업화가 과거를 고칠 수 있냐는 물음과 무관"
+  },
+  wrongNote: "②가 함정. 1896년 인용이 나와서 '역사적 고찰'로 읽히지만, 이 글은 <b>여전히 남아 있는 것</b>을 말한다. 정답 ①의 <b>Still Left</b>가 그것.",
+  teachNote: "제목의 <b>Still</b> 한 단어가 5번 <b>continued to require</b>를 옮긴 것. "
+           + "<u>제목의 부사 하나가 글의 방향을 담는다</u>는 것을 보여주기 좋은 지문."
+},
+{
+  id: "s22_30_organic", src: "2022수능 30번", qnum: 30, qtype: "어휘",
+  qtext: "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 <b>않은</b> 것은?",
+  star: 3, time: 80,
+  note: "* nitrogen fertilizer: 질소 비료  ** manure: 거름  *** legume: 콩과(科) 식물",
+  sents: [
+    "It has been suggested that \u201corganic\u201d methods, defined as those in which only natural products can be used as inputs, would be less damaging to the biosphere.",
+    "Large-scale adoption of \u201corganic\u201d farming methods, however, would <u class=\"n1\">reduce</u> yields and increase production costs for many major crops.",
+    "Inorganic nitrogen supplies are <u class=\"n2\">essential</u> for maintaining moderate to high levels of productivity for many of the non-leguminous crop species, because organic supplies of nitrogenous materials often are either limited or more expensive than inorganic nitrogen fertilizers.",
+    "In addition, there are <u class=\"n3\">benefits</u> to the extensive use of either manure or legumes as \u201cgreen manure\u201d crops.",
+    "In many cases, weed control can be very difficult or require much hand labor if chemicals cannot be used, and <u class=\"n4\">fewer</u> people are willing to do this work as societies become wealthier.",
+    "Some methods used in \u201corganic\u201d farming, however, such as the sensible use of crop rotations and specific combinations of cropping and livestock enterprises, can make important <u class=\"n5\">contributions</u> to the sustainability of rural ecosystems."
+  ],
+  choices: ["reduce","essential","benefits","fewer","contributions"],
+  ans: 3,
+  key: "<b class=w>\u201corganic\u201d methods</b> - 유기농법의 한계",
+  attr: "<b class=w>would reduce yields and increase production costs</b> (2)<br>- 수확은 줄고 비용은 는다 (유기농의 <b>문제</b>)",
+  dir: "부정",
+  skip: [
+    {n:2, head:"Large-scale adoption of \u201corganic\u201d farming methods, however...", skip:false},
+    {n:3, head:"Inorganic nitrogen supplies are essential...", skip:false},
+    {n:4, head:"In addition, there are benefits to the extensive use...", skip:false},
+    {n:5, head:"In many cases, weed control can be very difficult...", skip:false},
+    {n:6, head:"Some methods used in \u201corganic\u201d farming, however...", skip:false}
+  ],
+  trunk1: "유기농이 환경에 낫다는 통념", trunk2: "그러나 실제로는 여러 한계가 있다",
+  pivotAt: 2,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"유기농법이 생물권에 덜 해롭다는 주장이 있어 왔다 (통념)"},
+    {n:2, lb:"대조·반전", head:true, txt:"그러나 대규모 도입은 수확을 줄이고 비용을 올린다"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"무기 질소가 생산성 유지에 필수 - 유기 공급은 제한적·비싸다"},
+    {n:4, lb:"근거",     head:false, to:2, txt:"거름·녹비 작물을 대량으로 쓰는 데도 <b>한계</b>가 있다"},
+    {n:5, lb:"근거",     head:false, to:2, txt:"화학약품 없이는 잡초 관리가 어렵고 일할 사람도 준다"},
+    {n:6, lb:"대조·반전", head:true, txt:"다만 윤작 등 일부 유기농법은 지속가능성에 기여할 수 있다"}
+  ],
+  pivot: {sig:"however", at:2, from:"유기농이 환경에 낫다는 통념", to:"실제로는 수확·비용 문제가 있다"},
+  pivotSub: "<b>however</b>가 2번과 6번에 <u>두 번</u> 나온다. 2번은 통념을 뒤집고, 6번은 다시 한 발 물러선다(양보). "
+          + "같은 신호어라도 역할이 다르다.",
+  vocab: [
+    {n:1, word:"reduce",        ok:true, why:"대규모 유기농은 수확을 '줄인다' - 뒤의 increase costs와 짝"},
+    {n:2, word:"essential",     ok:true, why:"무기 질소가 생산성에 '필수' - 유기 공급의 한계를 보여줌"},
+    {n:3, word:"benefits",      ok:false, fix:"limits / constraints",
+     why:"<b>In addition</b>은 앞의 <b>단점을 하나 더</b> 얹는 신호. 거름·녹비를 대량으로 쓰는 데는 <b>한계</b>가 있다는 말이어야 한다"},
+    {n:4, word:"fewer",         ok:true, why:"사회가 부유해질수록 손일을 하려는 사람이 '줄어든다' - 또 다른 한계"},
+    {n:5, word:"contributions", ok:true, why:"6번 however 뒤 - 일부 방법은 지속가능성에 '기여'할 수 있다 (양보)"}
+  ],
+  gist: "유기농법은 환경에 낫다고 여겨지지만 수확·비용·노동에서 여러 한계가 있다.",
+  wrong: {},
+  wrongNote: "③만 방향이 반대. <b>In addition</b> 앞뒤가 모두 유기농의 <u>한계</u>인데 혼자 '이점'이라 어긋난다.",
+  teachNote: "<b>연결어가 방향을 결정하는</b> 유형. In addition은 <u>같은 방향으로 하나 더</u>라는 신호이므로 "
+           + "앞이 단점이면 뒤도 단점이어야 한다. 2023-30(The 비교급)·2024-30(부정어)과 함께 "
+           + "<b>구문·연결어로 푸는 30번 3종</b>으로 묶어 가르칠 것."
+},
+
+/* ===== 2022수능 장문 ===== */
+{
+  id: "s22_4142_classify",
+  src: "2022수능 41-42번", qnum: 41, qlabel: "41-42번", qtype: "장문",
+  qtext: "윗글의 제목으로 가장 적절한 것은?", star: 3, time: 180, note: "",
+  sents: [
+    "Classifying things together into groups is something we do all the time, and it isn\u2019t hard to see why.",
+    "Imagine trying to shop in a supermarket where the food was arranged in random order on the shelves: tomato soup next to the white bread in one aisle, chicken soup in the back next to the 60-watt light bulbs, one brand of cream cheese in front and another in aisle 8 near the cookies.",
+    "The task of finding what you want would be <u class=\"n1\">time-consuming</u> and extremely difficult, if not impossible.",
+    "In the case of a supermarket, someone had to <u class=\"n2\">design</u> the system of classification.",
+    "But there is also a ready-made system of classification embodied in our language.",
+    "The word \u201cdog,\u201d for example, groups together a certain class of animals and distinguishes them from other animals.",
+    "Such a grouping may seem too <u class=\"n3\">abstract</u> to be called a classification, but this is only because you have already mastered the word.",
+    "As a child learning to speak, you had to work hard to <u class=\"n4\">learn</u> the system of classification your parents were trying to teach you.",
+    "Before you got the hang of it, you probably made mistakes, like calling the cat a dog.",
+    "If you hadn\u2019t learned to speak, the whole world would seem like the <u class=\"n5\">unorganized</u> supermarket; you would be in the position of an infant, for whom every object is new and unfamiliar.",
+    "In learning the principles of classification, therefore, we\u2019ll be learning about the structure that lies at the core of our language."
+  ],
+  choices: [
+    "Similarities of Strategies in Sales and Language Learning",
+    "Classification: An Inherent Characteristic of Language",
+    "Exploring Linguistic Issues Through Categorization",
+    "Is a Ready-Made Classification System Truly Better?",
+    "Dilemmas of Using Classification in Language Education"
+  ],
+  ans: 2,
+  ans42: 3,
+  key: "<b class=w>Classifying things together into groups</b> - 분류",
+  attr: "<b class=w>something we do all the time, and it isn\u2019t hard to see why</b> (1)<br>- 늘 하는 일이고 이유도 분명하다",
+  dir: "긍정",
+  skip: [
+    {n:2,  head:"Imagine trying to shop in a supermarket... <b>60-watt</b> light bulbs", skip:true,
+     why:"<b>숫자·구체적 장면</b> - 분류가 없으면 어떤지 보여주는 예시"},
+    {n:3,  head:"The task of finding what you want would be time-consuming...", skip:false,
+     why:"예시의 연장이지만 <b>밑줄이 있어</b> 그 단어는 확인"},
+    {n:4,  head:"In the case of a supermarket, someone had to design...", skip:false},
+    {n:5,  head:"But there is also a ready-made system of classification...", skip:false},
+    {n:6,  head:"The word \u201cdog,\u201d <b>for example</b>, groups together...", skip:true,
+     why:"<b>for example</b> - 언어 속 분류의 예시"},
+    {n:7,  head:"Such a grouping may seem too abstract...", skip:false},
+    {n:8,  head:"As a child learning to speak, you had to work hard...", skip:false},
+    {n:9,  head:"Before you got the hang of it, you probably made mistakes...", skip:true,
+     why:"8번 예시의 <b>연장</b>(고양이를 개라 부름) - 함께 건너뛴다"},
+    {n:10, head:"If you hadn\u2019t learned to speak, the whole world would seem...", skip:false},
+    {n:11, head:"In learning the principles of classification, therefore...", skip:false}
+  ],
+  trunk1: "분류는 늘 하는 일 - 슈퍼마켓 비유", trunk2: "언어에도 이미 분류 체계가 들어 있다",
+  pivotAt: 5,
+  tree: [
+    {n:1,  lb:"주제도입", head:true,  txt:"우리는 늘 사물을 묶어 분류하고, 그 이유는 분명하다"},
+    {n:2,  lb:"예시",     head:false, to:1, txt:"물건이 뒤죽박죽인 슈퍼마켓을 상상해 보라"},
+    {n:3,  lb:"부연",     head:false, to:2, txt:"원하는 것 찾기가 몹시 어렵고 시간이 걸릴 것이다"},
+    {n:4,  lb:"부연",     head:false, to:2, txt:"슈퍼마켓의 분류 체계는 <b>누군가 설계한</b> 것이다"},
+    {n:5,  lb:"대조·반전", head:true, txt:"그러나 우리 <b>언어</b> 안에는 이미 만들어진 분류 체계가 있다"},
+    {n:6,  lb:"예시",     head:false, to:5, txt:"'개'라는 낱말이 어떤 동물 집합을 묶고 나머지와 구분한다"},
+    {n:7,  lb:"부연",     head:false, to:6, txt:"너무 당연해 보이지만 그건 이미 그 말을 익혔기 때문"},
+    {n:8,  lb:"근거",     head:false, to:7, txt:"아이 때는 부모가 가르치는 분류 체계를 애써 배워야 했다"},
+    {n:9,  lb:"예시",     head:false, to:8, txt:"익히기 전엔 고양이를 개라 부르는 실수를 했다"},
+    {n:10, lb:"근거",     head:false, to:5, txt:"말을 못 배웠다면 세상이 뒤죽박죽 슈퍼마켓 같았을 것"},
+    {n:11, lb:"재진술",   head:true,  txt:"그러므로 분류 원리를 배우는 것은 언어의 핵심 구조를 배우는 것"}
+  ],
+  pivot: {sig:"But", at:5, from:"슈퍼마켓 - 누군가 설계한 분류", to:"언어 - 이미 들어 있는 분류"},
+  pivotSub: "<b>But</b>(5)이 소재를 슈퍼마켓 → 언어로 옮긴다. 1~4번은 <u>비유</u>이고 5번부터가 본론.",
+  vocab: [
+    {n:1, word:"time-consuming", ok:true, why:"뒤죽박죽이면 찾는 데 '시간이 걸린다' - extremely difficult와 순행"},
+    {n:2, word:"design",         ok:true, why:"슈퍼마켓 분류는 '누군가 설계'한 것 - 5번의 ready-made와 대비"},
+    {n:3, word:"abstract",       ok:false, fix:"obvious / natural",
+     why:"'개'로 묶는 것이 너무 <b>당연해</b> 분류라 부르기 어색해 보인다는 뜻. '추상적'이면 오히려 분류처럼 보인다"},
+    {n:4, word:"learn",          ok:true, why:"아이 때 분류 체계를 애써 '배웠다'"},
+    {n:5, word:"unorganized",    ok:true, why:"말을 못 배웠다면 세상이 '정리 안 된' 슈퍼마켓 같았을 것 - 2번과 순행"}
+  ],
+  gist: "분류는 언어에 이미 내재된 특성이며, 분류를 배우는 것은 언어의 구조를 배우는 것이다.",
+  wrong: {
+    "1": "판매 전략과 언어 학습의 <b>유사성</b>이 아님 - 슈퍼마켓은 비유일 뿐",
+    "3": "범주화로 <b>언어학적 쟁점</b>을 탐구하는 글이 아님",
+    "4": "기성 체계가 <b>더 나은가</b>를 묻지 않음",
+    "5": "언어 교육에서의 <b>딜레마</b>가 없음"
+  },
+  wrongNote: "①이 함정. 슈퍼마켓이 길게 나와 그쪽으로 끌리지만 <b>비유</b>다. 5번 But 이후가 본론.",
+  teachNote: "42번 ③ abstract는 <b>but this is only because you have already mastered the word</b>가 근거. "
+           + "'이미 익혔기 때문에' 분류처럼 안 보인다면 그건 <u>너무 당연해서</u>다. "
+           + "41번은 <b>비유와 본론을 가르는</b> 훈련 - 1~4번(슈퍼마켓)을 제목으로 삼으면 ①로 간다."
+},
+
+{
+  id: "s22_4345_anna",
+  src: "2022수능 43-45번", qnum: 43, qlabel: "43-45번", qtype: "장문 배열",
+  star: 2, time: 150, note: "",
+  paras: [
+    {tag:"A",
+     text:"In the gym, members of the taekwondo club were busy practicing. Some were trying to kick as high as they could, and some were striking the sparring pad. Anna, the head of the club, was teaching the new members basic moves. Close by, her friend Jane was assisting Anna. Jane noticed that Anna was glancing at the entrance door of the gym. She seemed to be expecting someone. At last, when Anna took a break, Jane came over to <u class=\"n1\">(a) her</u> and asked, \u201cHey, are you waiting for Cora?\u201d",
+     gist:"체육관 - Jane이 Anna에게 Cora를 기다리냐고 물음",
+     cue:"주어진 글. <b>질문</b>이 다음을 부른다"},
+    {tag:"B",
+     text:"Cora walked in like a wounded soldier with bandages on her face and arms. Surprised, Anna and Jane simply looked at her with their eyes wide open. Cora explained, \u201cI\u2019m sorry I\u2019ve been absent. I got into a bicycle accident, and I was in the hospital for two days. Finally, the doctor gave me the okay to practice.\u201d Anna said excitedly, \u201cNo problem! We\u2019re thrilled to have you back!\u201d Then, Jane gave Anna an apologetic look, and <u class=\"n2\">(b) she</u> responded with a friendly pat on Jane\u2019s shoulder.",
+     gist:"Cora가 붕대를 감고 나타남 - 사고 설명, 화해",
+     cue:"결말. 문이 <b>열린 뒤</b>"},
+    {tag:"C",
+     text:"Anna answered the question by nodding uneasily. In fact, Jane knew what her friend was thinking. Cora was a new member, whom Anna had personally invited to join the club. Anna really liked <u class=\"n3\">(c) her</u>. Although her budget was tight, Anna bought Cora a taekwondo uniform. When she received it, Cora thanked her and promised, \u201cI\u2019ll come to practice and work hard every day.\u201d However, unexpectedly, she came to practice only once and then never showed up again.",
+     gist:"Anna가 끄덕임 - Cora를 초대하고 도복까지 사줬는데 안 나옴",
+     cue:"(A)의 <b>질문에 대한 답</b>으로 바로 이어짐"},
+    {tag:"D",
+     text:"Since Cora had missed several practices, Anna wondered what could have happened. Jane, on the other hand, was disappointed and said judgingly, \u201cStill waiting for her, huh? I can\u2019t believe <u class=\"n4\">(d) you</u> don\u2019t feel disappointed or angry. Why don\u2019t you forget about her?\u201d Anna replied, \u201cWell, I know most newcomers don\u2019t keep their commitment to the club, but I thought that Cora would be different. She said she would come every day and practice.\u201d Just as Jane was about to respond to <u class=\"n5\">(e) her</u>, the door swung open. There she was!",
+     gist:"Jane은 실망, Anna는 기다림 - 그때 문이 열림",
+     cue:"<b>the door swung open</b>이 (B)를 부른다"}
+  ],
+  orderAns: ["C","D","B"],
+  ans43: 3,
+  orderWhy: "(A) 기다리냐고 물음 → (C) 끄덕이며 사정 설명 → (D) 실망과 기다림, 문이 열림 → (B) Cora 등장. 시간 순서 그대로",
+  refs: [
+    {tag:"a", word:"her", who:"Anna",  why:"Jane이 다가간 상대 = Anna"},
+    {tag:"b", word:"she", who:"Anna",  why:"Jane의 어깨를 다독인 사람 = Anna"},
+    {tag:"c", word:"her", who:"Cora",  why:"Anna가 정말 좋아한 대상 = 새 회원 Cora"},
+    {tag:"d", word:"you", who:"Anna",  why:"Jane이 나무라듯 말하는 상대 = Anna"},
+    {tag:"e", word:"her", who:"Anna",  why:"Jane이 대꾸하려던 상대 = Anna"}
+  ],
+  refOdd: "Cora",
+  ans44: 3,
+  ans45: 2,
+  why45: "(B)에서 Anna와 Jane은 <b class=w>Surprised... looked at her with their eyes wide open</b> - <b>놀랐다</b>. '놀라지 않았다'는 반대",
+  teachNote: "44번이 깔끔하다 - (c)만 Cora, 나머지 넷은 Anna. <b>Anna really liked her</b>에서 her가 Anna 자신일 수 없음을 "
+           + "짚으면 끝. 순서는 <b>the door swung open</b>(D 끝) → <b>Cora walked in</b>(B 처음)이 고리. "
+           + "2023(Hailey)보다 쉬우므로 <u>43–45 입문용</u>으로 쓸 것."
 }
 
 ];
