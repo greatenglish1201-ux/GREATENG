@@ -2106,7 +2106,9 @@ ${ESC_}
                 let list=(stats.studentStats||[]).filter(s=>s.name!=='관리자');
                 if(clsFilter) list=list.filter(s=>(s.cls||'').trim()===clsFilter);
                 // GAS가 ranked(표본 충족)를 보내면 그 값으로, 없으면 100문항 기준으로 판정
-                const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.total)||0)>=100);
+                // GAS가 ranked(표본 충족)를 보내면 그 값으로,
+                // 없으면 uniq(서로 다른 문제 수) 100개 기준으로 판정(없으면 total로 대체)
+                const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.uniq!=null?s.uniq:s.total)||0)>=100);
                 let rankNo=0;
                 if(list.length===0) return <div style={{padding:'16px',fontSize:12,color:'#9a8570',textAlign:'center'}}>이 클래스에 응시 기록이 없습니다.</div>;
                 return list.map((s,i)=>{
@@ -2122,7 +2124,7 @@ ${ESC_}
                     <div style={{minWidth:0}}>
                       <span style={{fontSize:13,fontWeight:700,color:'#3a2a20'}}>{s.name}</span>
                       {s.cls&&!clsFilter&&<span style={{fontSize:10,color:'#7a6a55',marginLeft:5,background:'#f6efe0',borderRadius:5,padding:'1px 5px'}}>{s.cls}</span>}
-                      <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항</span>
+                      <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항{s.uniq!=null?` · 서로 다른 문제 ${s.uniq}개`:''}</span>
                       {!ranked&&<span style={{fontSize:10,color:'#b08968',marginLeft:6,background:'#fdf6e9',border:'1px solid #ead9bd',borderRadius:6,padding:'1px 6px',whiteSpace:'nowrap'}}>랭킹 진입까지 {need}문항</span>}
                     </div>
                   </div>
