@@ -2107,8 +2107,8 @@ ${ESC_}
                 if(clsFilter) list=list.filter(s=>(s.cls||'').trim()===clsFilter);
                 // GAS가 ranked(표본 충족)를 보내면 그 값으로, 없으면 100문항 기준으로 판정
                 // GAS가 ranked(표본 충족)를 보내면 그 값으로,
-                // 없으면 유효 지문 수 40개 기준으로 판정(구버전 GAS 호환)
-                const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.effPids!=null?s.effPids:(s.uniq!=null?s.uniq:s.total))||0)>=40);
+                // 없으면 유효 지문 수 20개 기준으로 판정(구버전 GAS 호환)
+                const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.effPids!=null?s.effPids:(s.uniq!=null?s.uniq:s.total))||0)>=20);
                 let rankNo=0;
                 if(list.length===0) return <div style={{padding:'16px',fontSize:12,color:'#9a8570',textAlign:'center'}}>이 클래스에 응시 기록이 없습니다.</div>;
                 return list.map((s,i)=>{
