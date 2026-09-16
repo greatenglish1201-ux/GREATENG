@@ -1250,7 +1250,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState('');
   // 학생 추가/편집 폼
-  const [form,setForm]=useState({name:'',password:'',expiry:'',startDate:'',statsFrom:'',cls:'',active:true});
+  const [form,setForm]=useState({name:'',password:'',expiry:'',startDate:'',statsFrom:'',cls:'',presetName:'',active:true});
   const [editName,setEditName]=useState(null);
   const [blindLowThreshold,setBlindLowThreshold]=useState(1); // 관리자: '적게 푼' 기준 (N회 이하)
   // 결과 필터
@@ -1417,7 +1417,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     // 로컬 저장
     const arr=getStudentsLocal();
     const idx=arr.findIndex(s=>s.name===form.name);
-    const obj={name:form.name,password:form.password,expiry:form.expiry||'',startDate:form.startDate||'',statsFrom:form.statsFrom||'',cls:form.cls||'',active:form.active!==false};
+    const obj={name:form.name,password:form.password,expiry:form.expiry||'',startDate:form.startDate||'',statsFrom:form.statsFrom||'',cls:form.cls||'',presetName:form.presetName||'',active:form.active!==false};
     if(idx>=0)arr[idx]=obj;else arr.push(obj);
     saveStudentsLocal(arr);
     // 서버 저장
@@ -1425,7 +1425,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       try{await api({action:'saveStudent',...form});}catch(e){}
     }
     setMsg('저장 완료!');
-    setForm({name:'',password:'',expiry:'',startDate:'',statsFrom:'',cls:'',active:true});
+    setForm({name:'',password:'',expiry:'',startDate:'',statsFrom:'',cls:'',presetName:'',active:true});
     setEditName(null);
     await loadStudents();
     setLoading(false);
@@ -1510,7 +1510,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     setLoading(false);
   };
 
-  const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',startDate:s.startDate||'',statsFrom:s.statsFrom||'',cls:s.cls||'',active:s.active});};
+  const startEdit=(s)=>{setEditName(s.name);setForm({name:s.name,password:s.password,expiry:s.expiry||'',startDate:s.startDate||'',statsFrom:s.statsFrom||'',cls:s.cls||'',presetName:s.presetName||'',active:s.active});};
 
   // ── 약점/커버리지 공통 계산 (화면 카드 = 인쇄 동일 보장) ──
   const computeWeakness=()=>{
@@ -1954,6 +1954,15 @@ ${ESC_}
                   title="학생 시트 G열(클래스). 학생관리·시험결과에서 클래스별로 볼 때 사용됩니다."
                   style={{padding:'9px 12px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none',width:110}}/>
               </div>
+              <div style={{display:'flex',flexDirection:'column',gap:2}}>
+                <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600,paddingLeft:2}}>시험범위</span>
+                <select value={form.presetName} onChange={e=>setForm({...form,presetName:e.target.value})}
+                  title="신뢰도(커버리지) 계산 기준. 이 학생이 대비하는 시험 범위를 고르세요."
+                  style={{padding:'9px 10px',borderRadius:9,border:'1px solid #e6dcc6',fontSize:13,outline:'none',background:'#fff',minWidth:140}}>
+                  <option value="">(미지정)</option>
+                  {(presets||[]).map(pr=><option key={pr.id} value={pr.name}>{pr.name}</option>)}
+                </select>
+              </div>
               <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:'#3a2a20',cursor:'pointer'}}>
                 <input type="checkbox" checked={form.active} onChange={e=>setForm({...form,active:e.target.checked})}/> 활성화
               </label>
@@ -1962,7 +1971,7 @@ ${ESC_}
               <button onClick={saveStudent} disabled={loading} style={{padding:'9px 20px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>
                 {loading?'저장 중...':'저장'}
               </button>
-              {editName&&<button onClick={()=>{setEditName(null);setForm({name:'',password:'',expiry:'',startDate:'',statsFrom:'',cls:'',active:true});}} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>취소</button>}
+              {editName&&<button onClick={()=>{setEditName(null);setForm({name:'',password:'',expiry:'',startDate:'',statsFrom:'',cls:'',presetName:'',active:true});}} style={{padding:'9px 16px',borderRadius:10,border:'1px solid #e6dcc6',background:'#fff',fontSize:13,cursor:'pointer',color:'#9a8570'}}>취소</button>}
             </div>
             {msg&&<p style={{fontSize:12,marginTop:8,color:msg.includes('완료')?'#16a34a':'#dc2626'}}>{msg}</p>}
           </div>
@@ -2085,7 +2094,7 @@ ${ESC_}
             {!selectedStudent&&(stats.studentStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <span>👥 학생별 정답률</span>
-                <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600}}>랭킹포인트 = 문항 수 보정 점수</span>
+                <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600}}>종합 = 정답률 50% + 성실도 50%</span>
               </div>
               {(()=>{
                 // 클래스 탭 (데이터에서 자동 생성)
@@ -2128,14 +2137,22 @@ ${ESC_}
                       {!ranked&&<span style={{fontSize:10,color:'#b08968',marginLeft:6,background:'#fdf6e9',border:'1px solid #ead9bd',borderRadius:6,padding:'1px 6px',whiteSpace:'nowrap'}}>랭킹 진입까지 {need}문항</span>}
                     </div>
                   </div>
-                  <div style={{display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
-                    <div style={{textAlign:'right'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
+                    <div style={{textAlign:'right',minWidth:42}}>
                       <div style={{fontSize:9.5,color:'#b8a988',lineHeight:1}}>정답률</div>
-                      <div style={{fontSize:13,fontWeight:700,color:rc(s.rate)}}>{s.rate}%</div>
+                      <div style={{fontSize:13,fontWeight:700,color:rc(s.accScore!=null?s.accScore:s.rate)}}>{s.accScore!=null?s.accScore:s.rate}</div>
                     </div>
-                    {hasAdj&&<div style={{textAlign:'right',background:'#FBF3DE',border:'1px solid #e6c97a',borderRadius:8,padding:'3px 9px'}}>
-                      <div style={{fontSize:9.5,color:'#9a7040',lineHeight:1}}>랭킹포인트</div>
-                      <div style={{fontSize:14,fontWeight:800,color:'#8a6010'}}>{s.adjRate}</div>
+                    {s.diliScore!=null&&<div style={{textAlign:'right',minWidth:42}}>
+                      <div style={{fontSize:9.5,color:'#b8a988',lineHeight:1}}>성실도</div>
+                      <div style={{fontSize:13,fontWeight:700,color:s.diliScore>=90?'#16a34a':s.diliScore>=60?'#f59e0b':'#dc2626'}}>{s.diliScore}</div>
+                    </div>}
+                    {s.confScore!=null&&<div style={{textAlign:'right',minWidth:42}} title={s.rangeName?`${s.rangeName} · 범위 ${s.rangeTotal}지문 중 ${s.rangeDone}개 학습`:''}>
+                      <div style={{fontSize:9.5,color:'#b8a988',lineHeight:1}}>신뢰도</div>
+                      <div style={{fontSize:13,fontWeight:700,color:s.confScore>=60?'#16a34a':s.confScore>=30?'#f59e0b':'#dc2626'}}>{s.confScore}</div>
+                    </div>}
+                    {hasAdj&&<div style={{textAlign:'right',background:'#FBF3DE',border:'1px solid #e6c97a',borderRadius:8,padding:'3px 9px',minWidth:46}}>
+                      <div style={{fontSize:9.5,color:'#9a7040',lineHeight:1}}>종합</div>
+                      <div style={{fontSize:15,fontWeight:800,color:'#8a6010'}}>{s.totalScore!=null?s.totalScore:s.adjRate}</div>
                     </div>}
                   </div>
                 </div>;
