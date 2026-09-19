@@ -1276,7 +1276,7 @@ async function saveMiddlePassages(){
     String(it.lesson||'').trim()===lesson);
   const target = `${school} ${grade} ${publisher}${author?'('+author+')':''} ${lesson}`;
   let msg = `다음 행에 저장합니다.\n\n▶ ${target}  ${exists?'(기존 행 덮어쓰기)':'(새 행 추가)'}\n\n`
-          + `본문 ${bodyText?bodyText.length+'자':'없음'} · 대화문 ${dialogText?dialogText.length+'자':'없음'} · 언어형식 ${grammarPoints?'있음':'없음'}`;
+          + `본문 ${bodyText?bodyText.length+'자':'없음'} · 대화문 ${dialogText?dialogText.length+'자':'없음'} · 문법포인트 ${grammarPoints?'있음':'없음'}`;
   if(mismatch) msg = `⚠ 제목칸은 "${mismatch}"인데 레슨 선택칸은 "${lesson}"입니다.\n다른 레슨 행을 덮어쓸 수 있습니다.\n\n` + msg;
   if(!confirm(msg)){ status.innerHTML='<span style="color:var(--ink4);">저장 취소</span>'; return; }
 
