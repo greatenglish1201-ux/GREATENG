@@ -1,0 +1,1206 @@
+{
+ "key": "이동고_1학년_2026_2학기_중간",
+ "meta": {
+  "school": "이동고",
+  "grade": "1학년",
+  "year": "2026",
+  "semester": "2학기",
+  "exam": "중간고사",
+  "subject": "공통영어",
+  "total": 26,
+  "total_score": 100,
+  "patterns": {
+   "빈칸추론": 4,
+   "어법": 2,
+   "요약문완성": 2,
+   "지칭추론": 2,
+   "문장삽입": 4,
+   "글의순서": 2,
+   "내용불일치": 1,
+   "제목": 2,
+   "흐름무관": 2,
+   "주제": 1,
+   "어휘": 3,
+   "요지": 1
+  },
+  "score_dist": {
+   "3.2": 5,
+   "3.6": 7,
+   "3.5": 4,
+   "4.9": 2,
+   "4.2": 1,
+   "5.2": 1,
+   "4.1": 1,
+   "5.0": 1,
+   "4.4": 1,
+   "4.0": 1,
+   "3.8": 1,
+   "4.3": 1
+  },
+  "answer_dist": {
+   "①": 5,
+   "②": 5,
+   "③": 5,
+   "④": 5,
+   "⑤": 6
+  },
+  "pattern_key": "이동고_1학년_2026_1학기_중간",
+  "build": "claude-authored",
+  "generated_at": "2026-09-19T11:30:19+09:00",
+  "range": "빠바 구문독해(NE능률) 30~37강 16지문 + 26년 고1 9월 모의고사 29~40번(7지문 사용)",
+  "summary": "1학기 중간 기출 번호별 유형·배점·발문 복제. 1~19 빠바, 20~26 9월 모의.",
+  "savedAt": "2026-09-19T11:30:19+09:00"
+ },
+ "questions": [
+  {
+   "type": "single",
+   "num": 1,
+   "qtype": "빈칸추론",
+   "score": 3.2,
+   "question": "글의 흐름으로 보아, 빈칸 (A), (B)에 들어갈 가장 적절한 것을 고르시오.\nEarlier this week, our students welcomed Dr. Turner, a local dentist from the Randolph Dental Clinic nearby. The goal of his visit was to improve the students' understanding of the importance of dental health. They were extremely interested and asked Dr. Turner a number of questions. ____(A)____ the question-and-answer session, the students participated in a role-playing activity. They took turns playing the role of a dentist, even putting on a mask and gloves. Having completed the experience, each student received a gift bag filled with useful items for keeping their teeth clean and healthy. ____(B)____ by the visiting dentist to practice proper dental care at home, they are all likely to take better care of their teeth than ever before.",
+   "choices": [
+    "① (A) During ··· (B) Prevented",
+    "② (A) Despite ··· (B) Encouraged",
+    "③ (A) Instead of ··· (B) Forced",
+    "④ (A) After ··· (B) Discouraged",
+    "⑤ (A) After ··· (B) Encouraged"
+   ],
+   "answer": "⑤",
+   "explanation": "정답 ⑤. (A) 질의응답 '후' 역할극(시간순) (B) 학생들이 의사에게 '격려받아' 치아를 더 잘 관리할 것 → Encouraged / 오답: ① (A)During 가능성 약함 + Prevented는 결과(더 잘 관리)와 모순; ② Despite: 질의응답과 역할극은 양보 관계 아님; ③ Instead of: 질의응답을 했음(본문 2문장); ④ (A)는 맞으나 Discouraged는 결과와 정반대  [출처: 빠바 구문독해 31강-2 (치과의사 방문)]",
+   "source": "빠바 구문독해 31강-2 (치과의사 방문)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_31_004",
+   "_mod": "단어 2곳 빈칸",
+   "_review": {
+    "summary": "치과의사 Turner 박사의 학교 방문: 질의응답 → 역할극 → 선물 → 가정 내 치아 관리 권장.",
+    "logic": "시간 순서(After)와 분사구문 의미상 주어(격려를 '받은' 학생들)",
+    "answer_basis": "(A) 질의응답 '후' 역할극(시간순) (B) 학생들이 의사에게 '격려받아' 치아를 더 잘 관리할 것 → Encouraged",
+    "distractors": {
+     "①": "(A)During 가능성 약함 + Prevented는 결과(더 잘 관리)와 모순",
+     "②": "Despite: 질의응답과 역할극은 양보 관계 아님",
+     "③": "Instead of: 질의응답을 했음(본문 2문장)",
+     "④": "(A)는 맞으나 Discouraged는 결과와 정반대"
+    },
+    "difficulty_intent": "교과서존 워밍업, 정답률 75% 목표. 기출 1번처럼 (A) 전치사(구)·(B) 문두 어구 조합",
+    "review_point": "(A) During도 문맥상 완전 불가는 아니므로 (B)로 확실히 소거되는지 확인"
+   }
+  },
+  {
+   "type": "single",
+   "num": 2,
+   "qtype": "어법",
+   "score": 3.2,
+   "question": "밑줄 친 ①~⑤ 중 어법상 틀린 것은?\nBeing alone makes us ① <u>more creative</u>. Many great artists and thinkers throughout history ② <u>have lived</u> by themselves. When we are alone, we have fewer distractions. This allows our thoughts ③ <u>run</u> free without interruption or judgment. Creative people have entire worlds inside their heads, and being alone gives them the opportunity to bring ideas from this inner world into the real world. Steve Wozniak, for example, invented the Apple computer ④ <u>sitting</u> alone at a desk. He says his creativity came from being introverted as a child. ⑤ <u>Had</u> it not been for his shyness, he might not have become a computer expert. However, this does not mean we should stop working together with others. Had it not been for Wozniak's collaboration with Steve Jobs, he could not have started his own business. Therefore, we should seek out solitude, but only when we need it.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "explanation": "정답 ③. ③ allow + O + to-v(5형식) → run은 to run이어야 함. 기출 11번(make O to lose) 5형식 목적격보어 포인트의 역방향 변형 / 오답: ① make O 형용사(비교급) OC 정상; ② throughout history → 현재완료 정상; ④ 동시동작 분사구문(능동) 정상; ⑤ If it had not been for → Had it not been for 도치 정상  [출처: 빠바 구문독해 37강-2 (고독과 창의성)]",
+   "source": "빠바 구문독해 37강-2 (고독과 창의성)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_37_008",
+   "_mod": "어법 오류 1곳: to run → run",
+   "_review": {
+    "summary": "혼자 있으면 방해가 적어 창의적 사고가 자유로워진다(워즈니악 사례). 단, 협업도 필요하므로 필요할 때만 고독을 찾아야 한다.",
+    "logic": "고독은 창의성을 키우지만 선택적으로 추구해야 한다",
+    "answer_basis": "③ allow + O + to-v(5형식) → run은 to run이어야 함. 기출 11번(make O to lose) 5형식 목적격보어 포인트의 역방향 변형",
+    "distractors": {
+     "①": "make O 형용사(비교급) OC 정상",
+     "②": "throughout history → 현재완료 정상",
+     "④": "동시동작 분사구문(능동) 정상",
+     "⑤": "If it had not been for → Had it not been for 도치 정상"
+    },
+    "difficulty_intent": "정답률 60%대. 사역동사(make/let) 원형과 allow(to-v) 혼동 유도",
+    "review_point": "⑤ 도치 구문을 오답으로 고르는 학생 다수 예상 — 해설에서 가정법 과거완료 도치 명시"
+   },
+   "group": "[2~3] 다음 글을 읽고 물음에 답하시오."
+  },
+  {
+   "type": "single",
+   "num": 3,
+   "qtype": "요약문완성",
+   "score": 3.6,
+   "question": "윗 글의 내용을 다음과 같이 요약할 때 빈칸 (A)와 (B)에 가장 적절한 것끼리 순서대로 짝지은 것은?\nBeing alone can ____(A)____ creativity by freeing our thoughts from distractions, but it should be sought ____(B)____, since working with others is also essential.",
+   "choices": [
+    "① limit — constantly",
+    "② foster — permanently",
+    "③ replace — occasionally",
+    "④ weaken — carefully",
+    "⑤ foster — selectively"
+   ],
+   "answer": "⑤",
+   "explanation": "정답 ⑤. (A) makes us more creative → foster (B) seek out solitude, but only when we need it → selectively / 오답: ① OPPOSITE(A); ② (A)정답+(B) permanently는 '필요할 때만'과 반대 — PARTIAL; ③ replace: 고독이 창의성을 대체X / occasionally는 그럴듯(BAIT); ④ OPPOSITE(A)  [출처: 빠바 구문독해 37강-2 (2번과 세트)]",
+   "source": "빠바 구문독해 37강-2 (2번과 세트)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_37_008",
+   "_mod": "지문 무변형(요약문 창작)",
+   "_review": {
+    "summary": "2번과 같음",
+    "logic": "고독=창의성 촉진, 단 필요할 때만",
+    "answer_basis": "(A) makes us more creative → foster (B) seek out solitude, but only when we need it → selectively",
+    "distractors": {
+     "①": "OPPOSITE(A)",
+     "②": "(A)정답+(B) permanently는 '필요할 때만'과 반대 — PARTIAL",
+     "③": "replace: 고독이 창의성을 대체X / occasionally는 그럴듯(BAIT)",
+     "④": "OPPOSITE(A)"
+    },
+    "difficulty_intent": "정답률 65%. 기출 3번처럼 대시(—) 형식, 정답은 본문 어휘 0개(foster/selectively) 재진술",
+    "review_point": "③ occasionally가 (B)만 보면 매력적 — (A) replace로 소거됨 확인"
+   }
+  },
+  {
+   "type": "single",
+   "num": 4,
+   "qtype": "지칭추론",
+   "score": 3.5,
+   "question": "밑줄 친 ①~⑤ 중 가리키는 대상이 나머지 넷과 다른 것은?\nFritz Pollard was an American football player and coach who broke many boundaries throughout ① <u>his</u> career. It started when ② <u>he</u> joined the Brown University football team in 1915. Being African American, Pollard wasn't accepted by his teammates at first. However, his skill and charisma changed ③ <u>their</u> minds, and Pollard led Brown to a record of eight wins and one loss the following year. In 1920, Pollard became the first African American quarterback in the pro football league and won the championship with ④ <u>his</u> team, the Akron Pros. The next year, ⑤ <u>he</u> became the first African American head coach in the National Football League, and he continued to coach and play until 1926. His playing days being behind him, Pollard then organized and began coaching the Chicago Black Hawks, an all-African American professional football team, in 1928. Pollard finally retired from football in 1937.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "explanation": "정답 ③. ③ their = his teammates(팀 동료들), 나머지 = Pollard  [출처: 빠바 구문독해 32강-1 (Fritz Pollard)]",
+   "source": "빠바 구문독해 32강-1 (Fritz Pollard)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_32_005",
+   "_mod": "지문 무변형(밑줄만)",
+   "_review": {
+    "summary": "흑인 최초 NFL 쿼터백·감독 Fritz Pollard의 경력. 처음엔 팀원에게 인정받지 못했으나 실력으로 극복.",
+    "logic": "인물 일대기",
+    "answer_basis": "③ their = his teammates(팀 동료들), 나머지 = Pollard",
+    "distractors": {},
+    "difficulty_intent": "교과서존, 정답률 80%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 5,
+   "qtype": "문장삽입",
+   "score": 3.5,
+   "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n[주어진 문장] This is because early humans needed to be able to recognize a dangerous predator, such as a tiger, from any angle.\n\nYoung children write with all their attention focused on each letter. ( ① ) Despite this, it's common for them to write some of the letters backwards. ( ② ) This is called \"mirror writing,\" and it may be caused by the way our brains store images, known as \"mirror generalization.\" ( ③ ) When we remember images, we focus on shape rather than orientation. ( ④ ) Therefore, whether we're looking at a tiger directly or from the side, we still immediately know it's a tiger. ( ⑤ ) It is believed that mirror generalization, combined with a child's weak understanding of right and left, is what causes the occasional backward letter.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "정답 ④. 주어진 문장 'This is because ~ tiger ~ from any angle'은 '방향보다 형태에 집중'의 이유이고, ④ 뒤 'Therefore ~ a tiger directly or from the side'가 tiger를 받음  [출처: 빠바 구문독해 33강-1 (거울 글씨)]",
+   "source": "빠바 구문독해 33강-1 (거울 글씨)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_33_007",
+   "_mod": "원문 5번째 문장 추출",
+   "_review": {
+    "summary": "아이들의 거울 글씨는 형태 중심으로 이미지를 저장하는 '거울 일반화' 때문. 초기 인류가 포식자를 어느 각도에서든 알아봐야 했던 데서 유래.",
+    "logic": "현상 → 원인(뇌의 이미지 저장 방식) → 진화적 이유",
+    "answer_basis": "주어진 문장 'This is because ~ tiger ~ from any angle'은 '방향보다 형태에 집중'의 이유이고, ④ 뒤 'Therefore ~ a tiger directly or from the side'가 tiger를 받음",
+    "distractors": {},
+    "difficulty_intent": "정답률 70%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 6,
+   "qtype": "글의순서",
+   "score": 3.2,
+   "question": "주어진 글 (A)에 이어질 내용을 순서에 맞게 배열한 것으로 가장 적절한 것은?\n(A) On the day of her big audition, Fiona waited outside the theater, looking at the closed doors. Terrible thoughts ran through (a) <u>her</u> head: \"Am I good enough? What if I forget my lines?\"\n\n(B) Walking in, Fiona relaxed a bit. \"It's now or never,\" (b) <u>she</u> whispered, trying to make herself feel brave. Standing on the stage and saying her lines, (c) <u>she</u> began to feel sure of herself again.\n\n(C) Not only did she recite every line perfectly, but she also delivered them with immense passion. Coming off the stage, (d) <u>she</u> couldn't help but smile. \"I did it. I really did it,\" she thought, surprised at how the audition had gone.\n\n(D) It felt like a million butterflies were fluttering around her stomach. Suddenly, the doors swung open, and (e) <u>someone</u> called her name.",
+   "choices": [
+    "① (B)-(C)-(D)",
+    "② (B)-(D)-(C)",
+    "③ (C)-(D)-(B)",
+    "④ (D)-(B)-(C)",
+    "⑤ (D)-(C)-(B)"
+   ],
+   "answer": "④",
+   "explanation": "정답 ④. (A) 문 앞 불안 → (D) 나비(긴장)·문 열리고 이름 호명 → (B) Walking in 들어가며 안도, 무대 → (C) 완벽한 낭독·무대에서 내려옴 / 오답: ① (B) Walking in은 이름 호명(D) 뒤; ② (B)가 (D)보다 앞설 수 없음; ③ (C) Coming off the stage는 마지막; ⑤ (C)가 (B) 앞 불가  [출처: 빠바 구문독해 30강-1 (Fiona의 오디션)]",
+   "source": "빠바 구문독해 30강-1 (Fiona의 오디션)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_30_001",
+   "_mod": "지문 무변형(4분할)",
+   "_review": {
+    "summary": "오디션 전 긴장한 Fiona가 무대에서 자신감을 되찾고 완벽하게 해낸 뒤 스스로 놀라며 기뻐함.",
+    "logic": "시간순 서사 + 심경 변화(불안→안도→자신감→기쁨)",
+    "answer_basis": "(A) 문 앞 불안 → (D) 나비(긴장)·문 열리고 이름 호명 → (B) Walking in 들어가며 안도, 무대 → (C) 완벽한 낭독·무대에서 내려옴",
+    "distractors": {
+     "①": "(B) Walking in은 이름 호명(D) 뒤",
+     "②": "(B)가 (D)보다 앞설 수 없음",
+     "③": "(C) Coming off the stage는 마지막",
+     "⑤": "(C)가 (B) 앞 불가"
+    },
+    "difficulty_intent": "정답률 80%. 기출 6번과 동일 선지 세트",
+    "review_point": "특이사항 없음"
+   },
+   "group": "[6~8] 다음 글을 읽고 물음에 답하시오."
+  },
+  {
+   "type": "single",
+   "num": 7,
+   "qtype": "지칭추론",
+   "score": 3.2,
+   "question": "밑줄 친 (a)~(e) 중에서 가리키는 대상이 나머지 넷과 다른 하나는?\n(6번 지문 참고)",
+   "choices": [
+    "① (a)",
+    "② (b)",
+    "③ (c)",
+    "④ (d)",
+    "⑤ (e)"
+   ],
+   "answer": "⑤",
+   "explanation": "정답 ⑤. (e) someone = Fiona의 이름을 부른 사람, 나머지 = Fiona  [출처: 빠바 구문독해 30강-1 (세트)]",
+   "source": "빠바 구문독해 30강-1 (세트)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_30_001",
+   "_mod": "-",
+   "_review": {
+    "summary": "6번과 같음",
+    "logic": "-",
+    "answer_basis": "(e) someone = Fiona의 이름을 부른 사람, 나머지 = Fiona",
+    "distractors": {},
+    "difficulty_intent": "정답률 85%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 8,
+   "qtype": "내용불일치",
+   "score": 3.2,
+   "question": "윗글에 관한 내용으로 적절하지 않은 것은?\n(6번 지문 참고)",
+   "choices": [
+    "① Fiona는 오디션 당일 극장 밖에서 닫힌 문을 바라보며 기다렸다.",
+    "② Fiona는 자신이 대사를 잊어버릴까 봐 걱정했다.",
+    "③ Fiona는 무대 위에서 대사를 말하며 다시 자신감을 느끼기 시작했다.",
+    "④ Fiona는 모든 대사를 정확히 말했을 뿐 아니라 열정적으로 전달했다.",
+    "⑤ Fiona는 오디션이 끝난 뒤 결과가 걱정되어 웃지 못했다."
+   ],
+   "answer": "⑤",
+   "explanation": "정답 ⑤. ⑤ 본문 'she couldn't help but smile'(웃지 않을 수 없었다) — 정반대 / 오답: ① s0 일치; ② What if I forget my lines? 일치; ③ s6 일치; ④ Not only ~ but also 도치문 일치  [출처: 빠바 구문독해 30강-1 (세트)]",
+   "source": "빠바 구문독해 30강-1 (세트)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_30_001",
+   "_mod": "-",
+   "_review": {
+    "summary": "6번과 같음",
+    "logic": "-",
+    "answer_basis": "⑤ 본문 'she couldn't help but smile'(웃지 않을 수 없었다) — 정반대",
+    "distractors": {
+     "①": "s0 일치",
+     "②": "What if I forget my lines? 일치",
+     "③": "s6 일치",
+     "④": "Not only ~ but also 도치문 일치"
+    },
+    "difficulty_intent": "정답률 80%. couldn't help but 구문 해석 확인",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 9,
+   "qtype": "제목",
+   "score": 3.5,
+   "question": "다음 글의 제목으로 가장 적절한 것은?\nDespite the popularity of e-books, most kids still prefer printed books. Unfortunately, making printed books means cutting down trees. But an Argentine children's book called My Father Was in the Jungle can actually be turned back into a tree. Made from acid-free paper and with non-toxic ink, the entire book is environment-friendly. Seeds are also sewn into the book's pages, so it can be transformed into a tree. Once they finish reading the book, children are encouraged to water its cover and put it in a sunny spot. Placing the book in the dirt when the seeds begin to sprout, children can nurture it like any other plant. Although this is just a one-time project, the publisher hopes it will make people aware of the resources needed to produce everyday items such as books.",
+   "choices": [
+    "① From Bookshelf to Garden: A Book You Can Plant",
+    "② Why Kids Still Prefer Printed Books to E-books",
+    "③ How E-books Help Save Trees Around the World",
+    "④ Acid-Free Paper: The Secret to Longer-Lasting Books",
+    "⑤ Teaching Children to Grow Their Own Vegetables"
+   ],
+   "answer": "①",
+   "explanation": "정답 ①. 정답은 본문 어휘(tree, seed) 없이 '책장→정원' 재진술 / 오답: ② BAIT — 첫 문장 도입부만; ③ OPPOSITE/왜곡 — e-book이 아니라 종이책 이야기; ④ PARTIAL — 재료 세부; ⑤ BAIT — 식물 키우기 소재만 차용  [출처: 빠바 구문독해 30강-2 (나무로 자라는 책)]",
+   "source": "빠바 구문독해 30강-2 (나무로 자라는 책)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_30_002",
+   "_mod": "지문 무변형",
+   "_review": {
+    "summary": "아르헨티나 동화책은 무독성 종이·잉크에 씨앗이 들어 있어 다 읽고 심으면 나무로 자란다. 책 제작에 드는 자원을 알리려는 취지.",
+    "logic": "친환경 '심을 수 있는 책' 소개",
+    "answer_basis": "정답은 본문 어휘(tree, seed) 없이 '책장→정원' 재진술",
+    "distractors": {
+     "②": "BAIT — 첫 문장 도입부만",
+     "③": "OPPOSITE/왜곡 — e-book이 아니라 종이책 이야기",
+     "④": "PARTIAL — 재료 세부",
+     "⑤": "BAIT — 식물 키우기 소재만 차용"
+    },
+    "difficulty_intent": "정답률 75%. 기출 9번(From A to B 구조) 스타일 차용",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 10,
+   "qtype": "문장삽입",
+   "score": 3.6,
+   "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n[주어진 문장] Better suited to deal with the local climate and soils, these trees will develop new roots more quickly.\n\nTree transplant shock is a condition that occurs when a tree undergoes stress or trauma after being moved to a new location. Symptoms of tree transplant shock include slower growth, which can potentially lead to death. ( ① ) Removed from its original location, a young tree can be expected to retain only about 15% of its root system. ( ② ) This reduces its ability to absorb water and nutrients from the soil. ( ③ ) There are, however, ways to deal with this, such as transplanting only trees that are native to the region. ( ④ ) Both before and after the transplant, be sure to provide the tree with plenty of water. ( ⑤ ) Once successfully transplanted, the tree will require regular watering until it has become firmly established in its new location.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "정답 ④. 주어진 문장의 these trees = 앞 문장 trees that are native to the region, 분사구문 'Better suited to the local climate'가 native와 연결  [출처: 빠바 구문독해 31강-1 (나무 이식 쇼크)]",
+   "source": "빠바 구문독해 31강-1 (나무 이식 쇼크)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_31_003",
+   "_mod": "원문 6번째 문장 추출",
+   "_review": {
+    "summary": "옮겨 심은 나무는 뿌리의 약 15%만 남아 성장 저하·고사 위험. 토종 나무를 옮겨 심고 물을 충분히 주면 대처 가능.",
+    "logic": "문제(이식 쇼크) → 원인 → 해결책",
+    "answer_basis": "주어진 문장의 these trees = 앞 문장 trees that are native to the region, 분사구문 'Better suited to the local climate'가 native와 연결",
+    "distractors": {},
+    "difficulty_intent": "정답률 65%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 11,
+   "qtype": "어법",
+   "score": 4.9,
+   "question": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?\nEveryone on Earth may soon lose one second of time. For the first time ever, scientists are considering ① <u>subtracting</u> a single second. This is called a \"negative leap second,\" and it may be necessary in 2029 because Earth is rotating slightly faster than before. Surprisingly, without global warming, this time change would likely ② <u>have been</u> necessary sooner. The reason Earth is spinning faster ③ <u>is</u> the unpredictable behavior of its hot liquid core. This behavior ④ <u>has been causing</u> an increase in speed for approximately 50 years, but the melting of polar ice has been counteracting this effect. Melting ice raises sea levels and shifts the planet's mass away from the poles and toward the equator. This slows the Earth's rotation in the same way that figure skaters spin more slowly when ⑤ <u>extended</u> their arms outward. Without the melting of polar ice, it is likely that we would need to lose a second in 2026 rather than 2029. \"We are headed toward a negative leap second,\" said one expert. \"It's a matter of when.\"",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "⑤",
+   "explanation": "정답 ⑤. ⑤ 접속사 뒤 분사구문: 스케이터가 팔을 '뻗는' 능동 + 목적어 their arms → extending / 오답: ① consider -ing 정상; ② without ~ 가정법 과거완료 would have p.p. 정상; ③ 주어 The reason(단수) — 삽입절 Earth is spinning faster에 속지 않게; ④ for approximately 50 years 계속 → 현재완료진행 정상  [출처: 빠바 구문독해 36강-1 (음의 윤초)]",
+   "source": "빠바 구문독해 36강-1 (음의 윤초)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_36_005",
+   "_mod": "어법 오류 1곳: extending → extended",
+   "_review": {
+    "summary": "지구 자전이 빨라져 2029년 '음의 윤초'가 필요할 수 있다. 극지방 빙하가 녹아 질량이 적도로 이동하며 자전을 늦춰 시점이 늦춰졌다.",
+    "logic": "현상(자전 가속) + 상쇄 요인(빙하 융해)",
+    "answer_basis": "⑤ 접속사 뒤 분사구문: 스케이터가 팔을 '뻗는' 능동 + 목적어 their arms → extending",
+    "distractors": {
+     "①": "consider -ing 정상",
+     "②": "without ~ 가정법 과거완료 would have p.p. 정상",
+     "③": "주어 The reason(단수) — 삽입절 Earth is spinning faster에 속지 않게",
+     "④": "for approximately 50 years 계속 → 현재완료진행 정상"
+    },
+    "difficulty_intent": "고배점(4.9) 정답률 45%. ③ 원거리 수일치를 매력 오답으로 배치",
+    "review_point": "③을 정답으로 고르는 학생 다수 예상 — 해설 필수"
+   }
+  },
+  {
+   "type": "single",
+   "num": 12,
+   "qtype": "빈칸추론",
+   "score": 3.6,
+   "question": "다음 빈칸에 들어갈 말로 가장 적절한 것은?\nPeople often omit the period at the end of sentences in single-sentence text messages, which has influenced the way we perceive periods. In an experiment, participants reading text messages found single sentences with a period less sincere than those without one. This could be due to something called \"situational code-switching,\" which simply means that we change how we talk depending on the social setting. For example, the language that students use in the classroom is different from the language they use on the playground. If they talked to their friends the same way they talked to their teachers, it would probably sound strange. Similarly, a person using periods in text messages can cause feelings of awkwardness, just like someone ____________.",
+   "choices": [
+    "① talking to a close friend as if addressing a teacher",
+    "② sending long messages without any punctuation",
+    "③ changing the topic in the middle of a conversation",
+    "④ speaking to teachers in a polite and respectful manner",
+    "⑤ replying to text messages too slowly to seem sincere"
+   ],
+   "answer": "①",
+   "explanation": "정답 ①. 원문 'using formal language in a casual setting'을 본문 교실/운동장 예시로 재진술(본문 어휘 최소화) / 오답: ② BAIT — period 생략 소재 반대로 차용; ③ 무근거; ④ OPPOSITE — 교사에게 공손한 건 '적절한' 코드; ⑤ BAIT — sincere 키워드  [출처: 빠바 구문독해 34강-1 (문자 메시지 마침표)]",
+   "source": "빠바 구문독해 34강-1 (문자 메시지 마침표)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_34_001",
+   "_mod": "마지막 문장 끝 구 빈칸",
+   "_review": {
+    "summary": "한 문장 문자에 마침표를 찍으면 덜 진실하게 느껴진다. 상황에 따라 말투를 바꾸는 '상황적 코드 전환' 때문 — 교실 말투를 운동장에서 쓰면 어색한 것과 같다.",
+    "logic": "문자 속 마침표 = 격식체 → 비격식 상황에서 어색",
+    "answer_basis": "원문 'using formal language in a casual setting'을 본문 교실/운동장 예시로 재진술(본문 어휘 최소화)",
+    "distractors": {
+     "②": "BAIT — period 생략 소재 반대로 차용",
+     "③": "무근거",
+     "④": "OPPOSITE — 교사에게 공손한 건 '적절한' 코드",
+     "⑤": "BAIT — sincere 키워드"
+    },
+    "difficulty_intent": "정답률 60%. 정답 재진술로 단어 찾기 차단",
+    "review_point": "④와 정답의 대비가 충분한지 확인"
+   }
+  },
+  {
+   "type": "single",
+   "num": 13,
+   "qtype": "흐름무관",
+   "score": 4.2,
+   "question": "다음 글에서 전체 흐름과 관계 없는 문장은?\nIn the 1800s, the people of Ireland used potatoes as their basic food source. Unfortunately, everyone was growing the same type of potato, which meant the crops all had the same genes. ① The farmers did not realize the danger in this. ② In the 1840s, a new potato disease struck. ③ Potatoes also contain plenty of vitamin C, which made them a valuable food during long, cold winters. ④ The genetically identical potatoes all lacked the ability to fight the disease, so they all rotted. ⑤ Because people were dependent mainly on potatoes for their food, Ireland suffered a famine in which one in eight people died during the following years. If people had grown many types of potatoes, they could have identified resistant ones and grown more of them, making the famine less serious. Despite knowing this, many countries today take the same risk with their crops.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "explanation": "정답 ③. ③ 감자의 영양가 — 주제어 potato는 있으나 '유전적 다양성 부족' 논점과 무관  [출처: 빠바 구문독해 34강-2 (아일랜드 감자 기근)]",
+   "source": "빠바 구문독해 34강-2 (아일랜드 감자 기근)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_34_002",
+   "_mod": "무관문장 1개 창작 삽입(③)",
+   "_review": {
+    "summary": "1800년대 아일랜드는 유전적으로 동일한 한 품종의 감자만 재배해 병이 돌자 전부 썩었고 대기근이 발생. 다양성 부족의 위험을 오늘날도 되풀이하고 있다.",
+    "logic": "단일 품종 재배(유전적 획일성)의 위험",
+    "answer_basis": "③ 감자의 영양가 — 주제어 potato는 있으나 '유전적 다양성 부족' 논점과 무관",
+    "distractors": {},
+    "difficulty_intent": "정답률 60%. 주제어 위장",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 14,
+   "qtype": "빈칸추론",
+   "score": 3.5,
+   "question": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.\nThe origins of flags probably began with warriors decorating their spears with colored ribbons as a way of ________ one army from another. This practice was adopted by early explorers, who started using flags to show who newly discovered lands belonged to. During the modern era, flags became a symbol of individual nations, and it has become accepted that every country must have its own flag. Most of these national flags are roughly the same size and shape. They commonly feature bold colors and simple patterns, as flags with intricate patterns would appear distorted when blowing in the wind.",
+   "choices": [
+    "① uniting",
+    "② distinguishing",
+    "③ recruiting",
+    "④ hiding",
+    "⑤ supplying"
+   ],
+   "answer": "②",
+   "explanation": "정답 ②. 이후 문장들(누구의 땅인지 표시, 국가별 고유 깃발)이 모두 '구별' 기능 / 오답: ① OPPOSITE — 하나로 묶기; ③ BAIT — 군대 연상; ④ OPPOSITE — 눈에 띄게 하는 것; ⑤ 무근거  [출처: 빠바 구문독해 36강-2 (깃발의 기원)]",
+   "source": "빠바 구문독해 36강-2 (깃발의 기원)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_36_006",
+   "_mod": "단어 1개 빈칸",
+   "_review": {
+    "summary": "깃발은 전사들이 창에 색 리본을 달아 아군을 구별하던 데서 시작 → 탐험가의 영토 표시 → 국가의 상징. 대부분 단순한 색·무늬.",
+    "logic": "깃발 = 구별·소속 표시 수단",
+    "answer_basis": "이후 문장들(누구의 땅인지 표시, 국가별 고유 깃발)이 모두 '구별' 기능",
+    "distractors": {
+     "①": "OPPOSITE — 하나로 묶기",
+     "③": "BAIT — 군대 연상",
+     "④": "OPPOSITE — 눈에 띄게 하는 것",
+     "⑤": "무근거"
+    },
+    "difficulty_intent": "정답률 75%. 기출 14번처럼 -ing 단어 5지",
+    "review_point": "특이사항 없음"
+   },
+   "group": "[14~15] 다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오."
+  },
+  {
+   "type": "single",
+   "num": 15,
+   "qtype": "빈칸추론",
+   "score": 5.2,
+   "question": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.\nAround 2.35 billion years ago, Earth's atmosphere underwent a significant transition. It went from being oxygen-free to possessing a small percentage of oxygen. This change was partly due to tiny organisms known as cyanobacteria. Cyanobacteria, which evolved approximately 2.7 billion years ago, took in water to obtain hydrogen. This allowed them to assimilate carbon from CO2 in the atmosphere. They then released oxygen as waste. But how could such tiny creatures have caused such a huge change in the planet? It is believed that the amount of oxygen cyanobacteria released slowly increased over hundreds of millions of years. Over this period, it accumulated in Earth's oceans, oxygenating the water. Eventually, the oceans' accumulated oxygen began to escape into the atmosphere. There, it reacted with methane, gradually displacing it. Had there been no cyanobacteria, ____________.",
+   "choices": [
+    "① Earth's atmosphere might have remained almost free of oxygen",
+    "② Earth's oceans would have contained far more methane",
+    "③ carbon dioxide would have disappeared from the atmosphere",
+    "④ other organisms would have released oxygen much faster",
+    "⑤ the planet's water would never have produced any hydrogen"
+   ],
+   "answer": "①",
+   "explanation": "정답 ①. 가정법 과거완료 도치(Had there been no) — 남세균이 없었다면 대기에 산소가 거의 없었을 것. 원문을 부정→긍정(free of)으로 재진술 / 오답: ② BAIT — methane은 대기 중 반응, 바다 아님; ③ BAIT — CO2 흡수는 세부, 과장; ④ 무근거; ⑤ OPPOSITE — 물에서 수소를 얻은 것은 남세균  [출처: 빠바 구문독해 37강-1 (남세균과 대기 산소)]",
+   "source": "빠바 구문독해 37강-1 (남세균과 대기 산소)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_37_007",
+   "_mod": "마지막 문장 주절 빈칸",
+   "_review": {
+    "summary": "약 23.5억 년 전 대기가 무산소→산소 포함으로 바뀐 데에는 남세균의 역할이 컸다. 남세균의 산소가 바다에 쌓였다가 대기로 빠져나가 메탄을 대체.",
+    "logic": "남세균 → 산소 축적 → 대기 변화",
+    "answer_basis": "가정법 과거완료 도치(Had there been no) — 남세균이 없었다면 대기에 산소가 거의 없었을 것. 원문을 부정→긍정(free of)으로 재진술",
+    "distractors": {
+     "②": "BAIT — methane은 대기 중 반응, 바다 아님",
+     "③": "BAIT — CO2 흡수는 세부, 과장",
+     "④": "무근거",
+     "⑤": "OPPOSITE — 물에서 수소를 얻은 것은 남세균"
+    },
+    "difficulty_intent": "고배점(5.2) 정답률 45%. 도치 가정법 해석 + 재진술 이중 장치",
+    "review_point": "② 'far more methane'도 논리적으로 부분 참일 수 있음(산소가 메탄을 대체) — 단, 본문은 '대기'에서의 반응이고 결론 문장 논점은 산소 → 복수정답 여부 확인 요망"
+   }
+  },
+  {
+   "type": "single",
+   "num": 16,
+   "qtype": "제목",
+   "score": 3.6,
+   "question": "다음 글의 제목으로 가장 적절한 것은?\nWith predators hiding around every corner, it's not easy for many animals to survive in the wild. That's why some have developed camouflage to trick their predators. The caterpillar of a moth called Hemeroplanes triptolemus, found in many areas of Africa and South America, is one example. It mimics a snake to scare away birds, which like to eat the caterpillars but are preyed upon by snakes. The snake caterpillar does this by inflating its front part to form a diamond-shaped head. When it does this, eye-shaped markings on its head get bigger, making the caterpillar look like a snake with large eyes. With the caterpillar's camouflage giving it a frightening appearance like that of a predator, the birds stay away. It can also move its body like a striking snake, even though it can't bite and isn't poisonous.",
+   "choices": [
+    "① Birds: The Most Dangerous Predators of Caterpillars",
+    "② Why Snakes Prefer to Hunt Caterpillars",
+    "③ How Moths Change Colors to Hide from Enemies",
+    "④ Poisonous Caterpillars of Africa and South America",
+    "⑤ A Harmless Caterpillar in a Snake's Disguise"
+   ],
+   "answer": "⑤",
+   "explanation": "정답 ⑤. 정답 'Harmless ~ Snake's Disguise' = 독 없는 애벌레의 뱀 위장 / 오답: ① BAIT — birds 키워드; ② 왜곡 — 뱀이 새를 잡음; ③ PARTIAL/왜곡 — 색 변화 아님, 형태 의태; ④ OPPOSITE — isn't poisonous  [출처: 빠바 구문독해 33강-2 (뱀 흉내 애벌레)]",
+   "source": "빠바 구문독해 33강-2 (뱀 흉내 애벌레)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_33_008",
+   "_mod": "지문 무변형",
+   "_review": {
+    "summary": "나방 애벌레 Hemeroplanes triptolemus는 머리를 부풀리고 눈 무늬를 키워 뱀처럼 보여 천적인 새를 쫓는다. 물지도 못하고 독도 없다.",
+    "logic": "포식자를 속이는 의태",
+    "answer_basis": "정답 'Harmless ~ Snake's Disguise' = 독 없는 애벌레의 뱀 위장",
+    "distractors": {
+     "①": "BAIT — birds 키워드",
+     "②": "왜곡 — 뱀이 새를 잡음",
+     "③": "PARTIAL/왜곡 — 색 변화 아님, 형태 의태",
+     "④": "OPPOSITE — isn't poisonous"
+    },
+    "difficulty_intent": "정답률 75%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 17,
+   "qtype": "주제",
+   "score": 4.9,
+   "question": "다음 글의 주제로 가장 적절한 것은?\nImagine that you ask a man for directions, and he gives you a rude response. You will probably assume that he has an unpleasant personality. In fact, though, he might have just received some terrible news that has seriously affected his mood. His response may have resulted from these circumstances, not from his true nature. It is quite common to blame someone's personality without considering situational factors that may have contributed to his or her actions. What is especially interesting is that, while we often do this to other people, we rarely do it to ourselves. When looking at our own actions, we always believe that we have good reasons for the things we do. However, we are quick to judge others negatively while ignoring possible contributing factors.",
+   "choices": [
+    "① a double standard in how we explain our own and others' behavior",
+    "② the importance of giving clear directions to strangers politely",
+    "③ how a piece of bad news can permanently change one's personality",
+    "④ why we tend to judge ourselves more harshly than we judge others",
+    "⑤ the way personality determines how people respond under stress"
+   ],
+   "answer": "①",
+   "explanation": "정답 ①. 정답은 본문 어휘(personality, situational) 0개로 '이중 잣대' 추상화 / 오답: ② BAIT — 길 묻기 예시 차용; ③ OVERGENERALIZATION — 기분(mood)에 일시 영향일 뿐; ④ OPPOSITE — 남을 더 가혹하게 판단; ⑤ OPPOSITE — 본문은 상황 요인 강조  [출처: 빠바 구문독해 32강-2 (타인 행동의 성격 탓)]",
+   "source": "빠바 구문독해 32강-2 (타인 행동의 성격 탓)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_32_006",
+   "_mod": "지문 무변형",
+   "_review": {
+    "summary": "남의 무례함은 성격 탓으로 돌리고 상황 요인은 무시하지만, 자신의 행동은 늘 이유가 있다고 믿는다.",
+    "logic": "타인=성격 귀인, 자신=상황 귀인(이중 잣대)",
+    "answer_basis": "정답은 본문 어휘(personality, situational) 0개로 '이중 잣대' 추상화",
+    "distractors": {
+     "②": "BAIT — 길 묻기 예시 차용",
+     "③": "OVERGENERALIZATION — 기분(mood)에 일시 영향일 뿐",
+     "④": "OPPOSITE — 남을 더 가혹하게 판단",
+     "⑤": "OPPOSITE — 본문은 상황 요인 강조"
+    },
+    "difficulty_intent": "고배점(4.9) 정답률 50%. ④ 방향 뒤집기 함정이 핵심 변별",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 18,
+   "qtype": "어휘",
+   "score": 3.6,
+   "question": "다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오.\nIn 1985, my husband and I moved to his hometown, located in China's Ordos Desert. When I first saw our new home, I ① <u>burst</u> into tears. There was ② <u>nothing</u> but sand for miles around. \"I wish I could see some plants,\" I thought. Then one day I saw a small tree growing beside a nearby well. I realized that if this tree could survive, others might be able to, too. I started to plant more trees. At first, many of them ended up ③ <u>protected</u> in sandstorms, but my husband and I eventually ④ <u>managed</u> to get most of the trees to survive. We have now planted more than 600,000 trees in the desert. We have turned one of the most ⑤ <u>desolate</u> places in China into something beautiful.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "explanation": "정답 ③. ③ 'At first ~ protected, but eventually managed to survive' — but 역접과 모순. 원문 buried  [출처: 빠바 구문독해 35강-1 (오르도스 사막 나무 심기)]",
+   "source": "빠바 구문독해 35강-1 (오르도스 사막 나무 심기)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_35_003",
+   "_mod": "어휘 1곳 반의어 교체: buried → protected",
+   "_review": {
+    "summary": "1985년 오르도스 사막으로 이주한 필자는 우물가 작은 나무를 보고 나무를 심기 시작, 모래폭풍에도 결국 60만 그루 이상을 심어 황무지를 바꿨다.",
+    "logic": "절망 → 희망 → 끈기 → 성취",
+    "answer_basis": "③ 'At first ~ protected, but eventually managed to survive' — but 역접과 모순. 원문 buried",
+    "distractors": {},
+    "difficulty_intent": "정답률 70%",
+    "review_point": "특이사항 없음"
+   },
+   "group": "[18~19] 다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오."
+  },
+  {
+   "type": "single",
+   "num": 19,
+   "qtype": "어휘",
+   "score": 4.1,
+   "question": "다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오.\nSocotra Island, a small island owned by Yemen and located in the Arabian Sea, looks as if it were part of another planet. In fact, it ① <u>separated</u> from the mainland of Africa six or seven million years ago, causing ② <u>unique</u> forms of life to develop on it. It is home to about 800 species of ③ <u>rare</u> plants and animals, many of which are found nowhere else on earth. Because the island experiences extreme heat and frequent droughts, many of its plants have evolved ④ <u>ordinary</u> appearances. One striking example is the dragon's blood tree. Its branches make it look like a giant umbrella. It gets its name from a thick, red substance that comes out when its bark is cut. When this happens, it appears as if the tree were ⑤ <u>bleeding</u>.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "정답 ④. ④ 뒤 'One striking example is the dragon's blood tree'와 모순 — 원문 unusual  [출처: 빠바 구문독해 35강-2 (소코트라 섬)]",
+   "source": "빠바 구문독해 35강-2 (소코트라 섬)",
+   "_src": "BOOK_26_NE능률_빠바 구문독해_35_004",
+   "_mod": "어휘 1곳 반의어 교체: unusual → ordinary",
+   "_review": {
+    "summary": "아프리카 대륙에서 분리된 소코트라 섬에는 고유종이 많고, 극한 환경 때문에 식물 모양이 독특하다(용혈수).",
+    "logic": "고립·극한 환경 → 독특한 생물",
+    "answer_basis": "④ 뒤 'One striking example is the dragon's blood tree'와 모순 — 원문 unusual",
+    "distractors": {},
+    "difficulty_intent": "정답률 60%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 20,
+   "qtype": "요지",
+   "score": 3.6,
+   "question": "다음 글의 요지로 가장 적절한 것은?\nOne of the most fascinating and empowering insights in Stoic philosophy is that our emotions are not random; they arise from our judgments. This may sound surprising, especially if you've ever felt overwhelmed by anger, fear, or sadness. But the Stoics taught that emotions aren't just automatic reactions. They're shaped by how we interpret events. Here's how it works: something happens, you interpret what it means, and that interpretation triggers an emotional response. If someone criticizes you, you may feel angry not due to the words themselves but because you perceive the comment as unfair or threatening. If you lose a job, you might feel devastated not simply because of the job loss but because you believe it defines your worth or future. Change the judgment, and you change the emotion. This doesn't mean suppressing how you feel; it means examining the story you tell yourself and choosing one that serves you better.",
+   "choices": [
+    "① 감정은 사건 자체보다 그 사건을 해석하는 판단에서 비롯되므로 판단을 점검해야 한다.",
+    "② 부정적인 감정은 겉으로 드러내기보다 억누르는 것이 바람직하다.",
+    "③ 타인의 비판은 그것이 공정한지 따져 본 뒤에 받아들여야 한다.",
+    "④ 실직과 같은 큰 사건은 개인의 자존감에 장기적인 영향을 준다.",
+    "⑤ 감정은 외부 자극에 대한 자동적 반응이므로 통제하기 어렵다."
+   ],
+   "answer": "①",
+   "explanation": "정답 ①. Change the judgment, and you change the emotion + examining the story / 오답: ② OPPOSITE — This doesn't mean suppressing; ③ BAIT — 비판 예시 차용; ④ BAIT — 실직 예시 차용; ⑤ OPPOSITE — emotions aren't just automatic reactions  [출처: 26년 고1 9월 모의고사 32번]",
+   "source": "26년 고1 9월 모의고사 32번",
+   "_src": "MOGO_26_G1_09_032",
+   "_mod": "지문 무변형",
+   "_review": {
+    "summary": "스토아 철학: 감정은 무작위가 아니라 판단(해석)에서 생긴다. 판단을 바꾸면 감정이 바뀐다. 억누르라는 게 아니라 스스로에게 하는 이야기를 점검하라는 것.",
+    "logic": "사건 → 해석 → 감정",
+    "answer_basis": "Change the judgment, and you change the emotion + examining the story",
+    "distractors": {
+     "②": "OPPOSITE — This doesn't mean suppressing",
+     "③": "BAIT — 비판 예시 차용",
+     "④": "BAIT — 실직 예시 차용",
+     "⑤": "OPPOSITE — emotions aren't just automatic reactions"
+    },
+    "difficulty_intent": "정답률 70%. 기출 20번과 동일 한글 요지 형식",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 21,
+   "qtype": "요약문완성",
+   "score": 5.0,
+   "question": "다음 글의 내용을 한 문장으로 요약하려 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?\nOur tastes are social. Even when you first drank milk, there was the milk, yes, but there was also the person behind the milk who will have presumably either made or messed up your relationship with food for the couple of decades after that. We learn to eat from our families and friends, at school and in work. A village develops a particular recipe for an apple pie ― one that nobody outside the village likes, but who cares? We want these things not just because of what they are, but who we are. Tastes spread like this, person to person, like viruses, almost irrespective of the qualities of the food involved. We observe other people in their food lives, often judgmentally. Nothing turns me off something quicker than the wrong people liking it, by which I mean people almost identical to me in every respect, in a way that doesn't flatter me. I avoided the viral chopped salad moment of 2024 by the skin of my teeth.\n\n⇩\nOur tastes in food are shaped less by the ____(A)____ of the food itself than by the ____(B)____ connections and identities surrounding it.",
+   "choices": [
+    "① (A) flavor ········· (B) natural",
+    "② (A) qualities ········· (B) social",
+    "③ (A) price ········· (B) commercial",
+    "④ (A) nutrition ········· (B) medical",
+    "⑤ (A) appearance ········· (B) seasonal"
+   ],
+   "answer": "②",
+   "explanation": "정답 ②. (A) irrespective of the qualities of the food (B) Our tastes are social / who we are / 오답: ① (A) flavor는 qualities의 일부라 그럴듯 — (B) natural로 소거; ③ BAIT — 무근거; ④ 무근거; ⑤ 무근거  [출처: 26년 고1 9월 모의고사 31번]",
+   "source": "26년 고1 9월 모의고사 31번",
+   "_src": "MOGO_26_G1_09_031",
+   "_mod": "지문 무변형(요약문 창작)",
+   "_review": {
+    "summary": "입맛은 사회적이다. 가족·친구·학교에서 먹는 법을 배우고, 입맛은 음식의 질과 거의 무관하게 사람에서 사람으로 바이러스처럼 퍼진다.",
+    "logic": "입맛 = 사회적 전파·정체성",
+    "answer_basis": "(A) irrespective of the qualities of the food (B) Our tastes are social / who we are",
+    "distractors": {
+     "①": "(A) flavor는 qualities의 일부라 그럴듯 — (B) natural로 소거",
+     "③": "BAIT — 무근거",
+     "④": "무근거",
+     "⑤": "무근거"
+    },
+    "difficulty_intent": "고배점(5.0) 정답률 55%. 기출 21번 형식(⇩ + ········· )",
+    "review_point": "① (A) flavor가 정답 쪽 의미와 겹침 — (B)만으로 단일 정답 되는지 확인(의도된 설계)"
+   }
+  },
+  {
+   "type": "single",
+   "num": 22,
+   "qtype": "어휘",
+   "score": 4.4,
+   "question": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?\nTo understand how breathing affects athletic performance, we first need to understand how the body makes energy from air and food. There are two options: with oxygen, a process known as aerobic respiration, and without it, which is called anaerobic respiration. Anaerobic energy is generated only with glucose (a simple sugar), and it's ① <u>quicker</u> and easier for our bodies to access. It's a kind of backup system and turbo boost when the body doesn't have enough oxygen. But anaerobic energy is ② <u>efficient</u> and can be toxic, creating too much lactic acid. The sickness, muscle weakness, and sweating you experience after you've pushed it too hard at the gym is the feeling of anaerobic overload. This process explains why the first few minutes of an intense workout are often so ③ <u>miserable</u>. Our lungs and respiratory system haven't caught up to supply the oxygen our bodies need, and so the body has to use anaerobic respiration. This also explains why, after we're warmed up, exercise feels ④ <u>easier</u>. The body has ⑤ <u>switched</u> from anaerobic to aerobic respiration.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "②",
+   "explanation": "정답 ②. ② But 역접 뒤 + 'can be toxic'과 병렬 → 부정적 속성이어야 함. 원문 inefficient  [출처: 26년 고1 9월 모의고사 29번]",
+   "source": "26년 고1 9월 모의고사 29번",
+   "_src": "MOGO_26_G1_09_029",
+   "_mod": "어휘 1곳 반의어 교체: inefficient → efficient",
+   "_review": {
+    "summary": "무산소 호흡은 빠르고 쉽게 쓸 수 있지만 비효율적이고 젖산을 과다 생성. 운동 초반이 힘든 건 무산소 호흡 때문이고, 몸이 풀리면 유산소로 전환되어 쉬워진다.",
+    "logic": "무산소(빠름·비효율) vs 유산소",
+    "answer_basis": "② But 역접 뒤 + 'can be toxic'과 병렬 → 부정적 속성이어야 함. 원문 inefficient",
+    "distractors": {},
+    "difficulty_intent": "정답률 55%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 23,
+   "qtype": "문장삽입",
+   "score": 4.0,
+   "question": "글의 흐름으로 보아, 주어진 문장이 들어갈 위치로 옳은 것은?\n[주어진 문장] This definition of art as copying reality has a problem, though.\n\nThe ancient Greeks felt that the visual artist's goal was to copy visual experience. ( ① ) This approach appears in the realism of ancient Greek sculpture and pottery. ( ② ) We must sadly note that, due to the action of time and weather, no paintings from ancient Greek artists exist today. ( ③ ) We can only surmise their quality based on tales such as that of Zeuxis and Parhassios, the obvious skill in ancient Greek sculpture, and in drawings that survive on ancient Greek pottery. ( ④ ) Jackson Pollock, a leader in the New York School of the 1950's, intentionally did not copy existing objects in his art. ( ⑤ ) While painting these works, Pollock and his fellow artists would consciously avoid making marks or passages that resembled recognizable objects. They succeeded at making artwork that did not copy anything, thus demonstrating that the ancient Greek view of art as mimesis ― simple copying ― does not sufficiently define art.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "④",
+   "explanation": "정답 ④. 주어진 문장(정의에 문제가 있다, though)은 그리스 설명이 끝나고 반례(Pollock)가 시작되는 ④  [출처: 26년 고1 9월 모의고사 33번]",
+   "source": "26년 고1 9월 모의고사 33번",
+   "_src": "MOGO_26_G1_09_033",
+   "_mod": "원문 5번째 문장 추출",
+   "_review": {
+    "summary": "고대 그리스인은 예술 = 시각 경험의 모방이라 보았으나, 폴록 등은 의도적으로 아무것도 모방하지 않는 작품을 만들어 이 정의의 한계를 보여 주었다.",
+    "logic": "전통적 정의 → 반례 → 정의 불충분",
+    "answer_basis": "주어진 문장(정의에 문제가 있다, though)은 그리스 설명이 끝나고 반례(Pollock)가 시작되는 ④",
+    "distractors": {},
+    "difficulty_intent": "정답률 55%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 24,
+   "qtype": "글의순서",
+   "score": 3.6,
+   "question": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?\nEven before telescopes existed, people looked out into space and tried to understand the universe. The Egyptians, Babylonians, Greeks, and Maya were among the first peoples to map the movements of the stars.\n\n(A) Using a telescope, the Italian scientist Galileo Galilei discovered the four largest moons of Jupiter and observed craters on Earth's Moon. He also confirmed that Copernicus' theory was correct. Over the centuries, scientific discoveries and information from telescopes advanced our knowledge of how the universe works.\n\n(B) In Europe, a 16th-century Polish mathematician named Nicolaus Copernicus put forth a revolutionary idea. Copernicus watched the stars and took measurements by eye. He concluded that the view of the universe accepted at the time ─ that the Sun traveled around Earth ─ was wrong, and that it was in fact Earth that traveled around the Sun. Despite widespread objections to his ideas, he published his theory in a book.\n\n(C) Later astronomers built on Copernicus' work. Technological improvements led to the development of the telescope in the early 17th century.",
+   "choices": [
+    "① (A)-(B)-(C)",
+    "② (B)-(A)-(C)",
+    "③ (B)-(C)-(A)",
+    "④ (C)-(A)-(B)",
+    "⑤ (C)-(B)-(A)"
+   ],
+   "answer": "③",
+   "explanation": "정답 ③. (B) a 16th-century mathematician Copernicus 도입 → (C) Later astronomers built on Copernicus' work + telescope → (A) Using a telescope, Galileo  [출처: 26년 고1 9월 모의고사 37번]",
+   "source": "26년 고1 9월 모의고사 37번",
+   "_src": "MOGO_26_G1_09_037",
+   "_mod": "지문 무변형(3분할)",
+   "_review": {
+    "summary": "망원경 이전에도 사람들은 별을 관측했다 → 코페르니쿠스의 지동설 → 후대 천문학자·망원경 발명 → 갈릴레이가 망원경으로 지동설 확인.",
+    "logic": "시간순 과학사",
+    "answer_basis": "(B) a 16th-century mathematician Copernicus 도입 → (C) Later astronomers built on Copernicus' work + telescope → (A) Using a telescope, Galileo",
+    "distractors": {},
+    "difficulty_intent": "정답률 70%",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 25,
+   "qtype": "문장삽입",
+   "score": 3.8,
+   "question": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?\n[주어진 문장] But the numerical values of the digits are irrelevant; what is important is that there are nine distinct symbols.\n\nThe central concerns of mathematics are not numbers, but patterns, structures, symmetries and connections. Take, for example, the Sudoku puzzles that appear daily in newspapers. ( ① ) The objective is to complete a 9 × 9 grid, starting from a few given numbers or clues, while ensuring that each row, each column and each 3 × 3 block contains all the digits from 1 to 9 once and only once. ( ② ) They could be nine letters or nine shapes. ( ③ ) It's the pattern that matters. ( ④ ) One Irish daily paper publishes these puzzles with the statement 'There's no maths involved, simply use reasoning and logic!' ( ⑤ ) It seems that even the idea that something might be spoiled by mathematics is enough to scare off potential solvers! Could you imagine the promotion of an exhibition in the National Gallery with the slogan 'No art involved, just painting and sculpture'? If you can do Sudoku, you can do maths!",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "②",
+   "explanation": "정답 ②. ② 뒤 'They could be nine letters or nine shapes'의 They = 주어진 문장의 nine distinct symbols  [출처: 26년 고1 9월 모의고사 36번]",
+   "source": "26년 고1 9월 모의고사 36번",
+   "_src": "MOGO_26_G1_09_036",
+   "_mod": "원문 4번째 문장 추출",
+   "_review": {
+    "summary": "수학의 핵심은 숫자가 아니라 패턴·구조. 스도쿠도 숫자 값은 무관하고 9개의 구별되는 기호면 된다. '수학 없음'이라 홍보하는 건 어불성설.",
+    "logic": "수학 = 패턴",
+    "answer_basis": "② 뒤 'They could be nine letters or nine shapes'의 They = 주어진 문장의 nine distinct symbols",
+    "distractors": {},
+    "difficulty_intent": "정답률 55%. 대명사 They 단서",
+    "review_point": "특이사항 없음"
+   }
+  },
+  {
+   "type": "single",
+   "num": 26,
+   "qtype": "흐름무관",
+   "score": 4.3,
+   "question": "다음 글의 밑줄 친 부분 중, 전체 흐름과 관계 없는 문장은?\nKeep your paragraphs short. Writing is visual ― it catches the eye before it has a chance to catch the brain. Short paragraphs put air around what you write and make it look inviting, whereas a long chunk of type can discourage a reader from even starting to read. ① <u>Newspaper paragraphs should be only two or three sentences long; newspaper type is set in a narrow width, and the inches quickly add up.</u> ② <u>Today, most newspapers earn more of their income from online advertising than from print sales.</u> ③ <u>You may think such frequent paragraphing will damage the development of your point.</u> ④ <u>Obviously The New Yorker is obsessed by this fear ― a reader can go for miles without relief.</u> ⑤ <u>Don't worry; the gains far outweigh the hazards.</u> But don't go too far. A succession of tiny paragraphs is as annoying as a paragraph that's too long. I'm thinking of all those tiny paragraphs ― verbless wonders ― written by modern journalists trying to make their articles quick 'n' easy. Actually they make the reader's job more difficult by chopping up a natural train of thought.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "②",
+   "explanation": "정답 ②. ② 신문 수익 구조 — 주제어 newspaper로 위장했으나 문단 길이 논점과 무관  [출처: 26년 고1 9월 모의고사 30번]",
+   "source": "26년 고1 9월 모의고사 30번",
+   "_src": "MOGO_26_G1_09_030",
+   "_mod": "무관문장 1개 창작 삽입(②)",
+   "_review": {
+    "summary": "문단은 짧게 써라 — 짧은 문단은 시각적으로 읽고 싶게 만든다. 다만 지나치게 잘게 쪼개면 오히려 읽기 어렵다.",
+    "logic": "적절히 짧은 문단 쓰기",
+    "answer_basis": "② 신문 수익 구조 — 주제어 newspaper로 위장했으나 문단 길이 논점과 무관",
+    "distractors": {},
+    "difficulty_intent": "고배점(4.3) 정답률 55%. 기출 26번처럼 밑줄 문장형",
+    "review_point": "원문 s5 'Obviously The New Yorker is obsessed by this fear'(모의고사 원문 표기) 그대로 둠"
+   }
+  }
+ ],
+ "analysisData": {
+  "key": "이동고_1학년_2026_1학기_중간",
+  "school": "이동고",
+  "grade": "1학년",
+  "year": "2026",
+  "semester": "1학기",
+  "exam": "중간고사",
+  "subject": "공통영어1",
+  "subject_code": "03",
+  "exam_date": "2026-04-24",
+  "total": 26,
+  "total_score": 100,
+  "patterns": {
+   "빈칸추론": 4,
+   "어법": 2,
+   "요약문완성": 2,
+   "지칭추론": 2,
+   "문장삽입": 4,
+   "글의순서": 2,
+   "내용불일치": 1,
+   "제목": 2,
+   "흐름무관": 2,
+   "주제": 1,
+   "어휘": 3,
+   "요지": 1
+  },
+  "score_dist": {
+   "3.2": 5,
+   "3.6": 7,
+   "3.5": 4,
+   "4.9": 2,
+   "4.2": 1,
+   "5.2": 1,
+   "4.1": 1,
+   "5.0": 1,
+   "4.4": 1,
+   "4.0": 1,
+   "3.8": 1,
+   "4.3": 1
+  },
+  "answer_dist": {
+   "①": 4,
+   "②": 5,
+   "③": 6,
+   "④": 6,
+   "⑤": 5
+  },
+  "passage_groups": {
+   "2~3": {
+    "type": "세트",
+    "title": "Dr. Hare 개·늑대"
+   },
+   "6~8": {
+    "type": "세트(장문 4분할)",
+    "title": "마오리 whakapapa"
+   }
+  },
+  "questions": [
+   {
+    "num": 1,
+    "qtype": "빈칸추론",
+    "stem": "글의 흐름으로 보아, 빈칸 (A), (B)에 들어갈 가장 적절한 것을 고르시오.",
+    "score": 3.2,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "⑤",
+    "zone": "교과서(추정)",
+    "topic": "침팬지 vs 보노보 협력 실험",
+    "original_q": "1. 글의 흐름으로 보아, 빈칸 (A), (B)에 들어갈 가장 적절한 것을 고르시오. [3.2점]\nWhen placed with partners that the chimpanzees knew, they were able to work together to get the food. However, when paired with new partners, the chimpanzees usually failed to get the food, and when they occasionally succeeded, they did not share the food with their partner. The bonobos, on the other hand, got along much better than the chimpanzees. They solved the problem ____(A)____ which individual they were paired with, and they were also more willing to share the food. This research shows that bonobos have a cooperative and friendly nature. Experts suggest that their nature has helped their species survive. ____(B)____ these characteristics, they could have faced extinction.\n① (A) before ··· (B) For\n② (A) prior to ··· (B) Despite\n③ (A) involving ··· (B) Because of\n④ (A) relating to ··· (B) Instead of\n⑤ (A) regardless of ··· (B) Without"
+   },
+   {
+    "num": 2,
+    "qtype": "어법",
+    "stem": "밑줄 친 ①~⑤ 중 어법상 틀린 것은?",
+    "score": 3.2,
+    "format": "5지선다_번호",
+    "pg": "2~3",
+    "answer": "①",
+    "zone": "교과서(추정)",
+    "topic": "Dr. Hare 개·늑대 제스처 실험",
+    "original_q": "2. 밑줄 친 ①~⑤ 중 어법상 틀린 것은? [3.2점]\nDr. Hare conducted an experiment to see how dogs would respond to human gestures ① <u>comparing</u> to wolves, who share the same common ancestor. He placed two cups on the ground with food ② <u>hidden</u> under only one of them. When he pointed to the cup with the food, the dogs found it easily. The wolves, however, struggled and chose cups at random, paying no attention to his gestures. Dr. Hare concluded ③ <u>that</u> the dogs' ability to read human gestures allowed them to perform better than the wolves. He explained that dogs, unlike wolves, have developed communicative skills with humans and a sense of friendliness. This explanation sounds reasonable according to several evolutionary biologists. They say that from the common ancestors of these two species, those ④ <u>that</u> acted friendly toward humans evolved into dogs, and those that didn't became wolves. Furthermore, Dr. Hare suggested that the friendly nature of dogs probably ⑤ <u>provided</u> them with a survival advantage that allowed their population to grow larger than that of wolves.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 3,
+    "qtype": "요약문완성",
+    "stem": "윗 글의 내용을 다음과 같이 요약할 때 빈칸 (A)와 (B)에 가장 적절한 것끼리 순서대로 짝지은 것은?",
+    "score": 3.6,
+    "format": "5지선다",
+    "pg": "2~3",
+    "answer": "④",
+    "zone": "교과서(추정)",
+    "topic": "Dr. Hare (2번과 세트)",
+    "original_q": "3. 윗 글의 내용을 다음과 같이 요약할 때 빈칸 (A)와 (B)에 가장 적절한 것끼리 순서대로 짝지은 것은? [3.6점]\nThrough a comparative experiment, Dr. Hare demonstrated that dogs have a unique evolutionary ability to ____(A)____ human gestures, which evolved from their friendly nature and granted them a significant ____(B)____ over wolves.\n① decode — challenge\n② ignore — disadvantage\n③ imitate — risk of survival\n④ interpret — survival benefit\n⑤ simplify — conflict between species"
+   },
+   {
+    "num": 4,
+    "qtype": "지칭추론",
+    "stem": "밑줄 친 ①~⑤ 중 가리키는 대상이 나머지 넷과 다른 것은?",
+    "score": 3.5,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "②",
+    "zone": "교과서(추정)",
+    "topic": "펭귄 Dindim과 de Souza",
+    "original_q": "4. 밑줄 친 ①~⑤ 중 가리키는 대상이 나머지 넷과 다른 것은? [3.5점]\nIn 2011, Joao Pereira de Souza, an old man living in an island village near Rio de Janeiro, Brazil, found a penguin struggling on the beach. The helpless, starving creature covered in oil was adopted by Mr. de Souza and named Dindim. Mr. de Souza nursed ① <u>him</u> back to health and released him, thinking ② <u>he</u> would never meet Dindim again. Amazingly, though, he returned! It is believed that ③ <u>he</u> traveled around 5,000 miles between Mr. de Souza's house and the coasts of Argentina and Chile. What is more, ④ <u>he</u> makes this journey every year. After spending about eight months with Mr. de Souza, he goes on his annual migration for ⑤ <u>his</u> breeding routine, only to return once again.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 5,
+    "qtype": "문장삽입",
+    "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+    "score": 3.5,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "③",
+    "zone": "교과서(추정)",
+    "topic": "문화 인식과 마오리 Ta moko",
+    "original_q": "5. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? [3.5점]\n[주어진 문장] However, for the Maori, Ta moko represents identity, family history, and social status.\n\nCultural awareness means understanding that people from different cultures have different traditions, beliefs, and ways of living. It also means recognizing that our culture is not the only correct one. ( ① ) For example, the Maori people of New Zealand practice Ta moko, a traditional form of tattooing on the face and body. ( ② ) To some Koreans, facial tattoos may seem unusual or even negative. ( ③ ) It is a sacred and meaningful tradition. ( ④ ) Cultural awareness is important because it helps us understand the cultural meaning behind such practices without judging them as \"right\" or \"wrong\". ( ⑤ ) It encourages respect and helps people from different cultures build better relationships.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 6,
+    "qtype": "글의순서",
+    "stem": "주어진 글 (A)에 이어질 내용을 순서에 맞게 배열한 것으로 가장 적절한 것은?",
+    "score": 3.2,
+    "format": "5지선다",
+    "pg": "6~8",
+    "answer": "②",
+    "zone": "교과서(추정)",
+    "topic": "마오리 whakapapa(족보) 이야기",
+    "original_q": "6. 주어진 글 (A)에 이어질 내용을 순서에 맞게 배열한 것으로 가장 적절한 것은? [3.2점]\n(A) For some time, (a) <u>my grandfather</u> had been busy writing down the village genealogy, known as the whakapapa. The whakapapa had been in his old house. But then came the night of the fire, which ran through the house and destroyed our past. In only one night, everything we knew was gone. Nani Tama, in despair, went to stay with his daughter, my Auntie Hiraina.\n\n(B) Trying to find a way out of the ashes of the past, Nani began to write the whakapapa again with his shaky hands. (b) <u>He</u> chanted the names of the ancestors, joining the past to the present once more. The village went quiet and listened to his chanting. (c) <u>His</u> voice traveled along the lines of our genealogy, searching back across the centuries. It took Nani Tama almost two years to gather most of the whakapapa, but there were still missing names he needed to fill in. Now, he wanted me to drive him to Murupara to finish his work.\n\n(C) Now that day seems like a dream to me. I remember the two old men sitting at the table and the soft sounds of the Maori words as they talked. All through the quiet afternoon and into the evening, they recalled missing names. I had a strange feeling that there were other people in the room. I felt as if people from the past were looking over the shoulders of the two old men to see if the work was correct.\n\n(D) When I arrived at Auntie's place, I was shocked to see how thin Nani Tama was. However, I could not help but carry him to the car, and we set off with Auntie. Just before noon, we arrived at a small town called Murupara. \"Where do we go now?\" I asked Nani. He did not reply, but (d) <u>he</u> was searching inside himself, staring at the small houses. Then, at a street corner, he told us to turn. After turning the corner, we saw an old man standing in front of a house. He welcomed Nani Tama with a gentle smile, but in (e) <u>his</u> eyes, I saw the message, \"We must hurry.\"\n① (B)-(C)-(D)\n② (B)-(D)-(C)\n③ (C)-(D)-(B)\n④ (D)-(B)-(C)\n⑤ (D)-(C)-(B)"
+   },
+   {
+    "num": 7,
+    "qtype": "지칭추론",
+    "stem": "밑줄 친 (a)~(e) 중에서 가리키는 대상이 나머지 넷과 다른 하나는?",
+    "score": 3.2,
+    "format": "5지선다",
+    "pg": "6~8",
+    "answer": "⑤",
+    "zone": "교과서(추정)",
+    "topic": "whakapapa (세트)",
+    "original_q": "7. 밑줄 친 (a)~(e) 중에서 가리키는 대상이 나머지 넷과 다른 하나는? [3.2점]\n\n① (a)\n② (b)\n③ (c)\n④ (d)\n⑤ (e)"
+   },
+   {
+    "num": 8,
+    "qtype": "내용불일치",
+    "stem": "윗글에 관한 내용으로 적절하지 않은 것은?",
+    "score": 3.2,
+    "format": "5지선다",
+    "pg": "6~8",
+    "answer": "⑤",
+    "zone": "교과서(추정)",
+    "topic": "whakapapa (세트)",
+    "original_q": "8. 윗글에 관한 내용으로 적절하지 않은 것은? [3.2점]\n\n① 할아버지의 옛날 집에 화재가 났었다.\n② 할아버지는 할아버지의 딸이자 나의 숙모의 집에서 머물게 되었다.\n③ 할아버지는 와카파파를 완성하기 위해 내가 무루파라에 데려다주기를 원했다.\n④ 무루파라에 도착하여 한 노인을 만났다.\n⑤ 두 노인이 이름들을 회상하는 동안 다른 사람들이 와서 작업이 정확한지 지켜보았다."
+   },
+   {
+    "num": 9,
+    "qtype": "제목",
+    "stem": "다음 글의 제목으로 가장 적절한 것은?",
+    "score": 3.5,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "④",
+    "zone": "부교재/외부(미확인)",
+    "topic": "CIA 고양이 스파이 실험",
+    "original_q": "9. 다음 글의 제목으로 가장 적절한 것은? [3.5점]\nClever and cute, cats are beloved by people around the world. That's why, in the 1960s, the CIA decided they would make perfect spies. It was believed that nobody would suspect a cat of working for the government. After choosing a female cat, doctors surgically placed a tiny transmitter in her chest, along with a microphone in her ear and an antenna running along her backbone. Performing the operation was not that hard. However, training the cat proved to be quite difficult because they are such stubborn animals. Finally, after five years of training, the CIA concluded their animal agent was ready. So, they sent her to record a conversation between two men from the Soviet Union. Sadly, the cat was hit by a passing taxi after taking only a few steps. As a result of this unsuccessful experiment, the idea of using cats was abandoned.\n① What Does the CIA Do?\n② The Bright Future of Animal Surgery\n③ Why Cats Are More Appealing Than Dogs\n④ From Beloved Pet to Failed Secret Agent\n⑤ Taxi: A Convenient Option in Busy Situations"
+   },
+   {
+    "num": 10,
+    "qtype": "문장삽입",
+    "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+    "score": 3.6,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "④",
+    "zone": "부교재/외부(미확인)",
+    "topic": "노르웨이 철기시대 무덤의 보드게임",
+    "original_q": "10. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? [3.6점]\n[주어진 문장] This is because board games were a symbol of social status and power in ancient civilizations.\n\nOne tradition found in many ancient cultures is burying the dead with things they might need in the afterlife, such as food, weapons, and clothing. ( ① ) Archaeologists in western Norway, however, have found an unexpected item in a grave that dates back to the Early Iron Age—a board game. ( ② ) The board itself was missing, but the archaeologists found dice and game pieces. ( ③ ) They believe that the board game was an indication that the dead person was wealthy. ( ④ ) Only someone who was educated and didn't need to work could spend time playing them. ( ⑤ ) The likely purpose of burying the board game was to provide the dead person with entertainment in the next world.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 11,
+    "qtype": "어법",
+    "stem": "다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+    "score": 4.9,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "④",
+    "zone": "부교재/외부(미확인)",
+    "topic": "시간 왜곡과 쇼핑몰 설계",
+    "original_q": "11. 다음 글의 밑줄 친 부분 중, 어법상 틀린 것은? [4.9점]\nTemporal distortion, also known as time distortion, is a change in ① <u>how</u> someone perceives time. A temporal distortion may be said to occur when you intend to spend only a short period—perhaps five minutes—on an activity such as reading or playing a video game, only to look up and ② <u>realize</u> that two hours have passed. In retail and digital design, it is common to create an environment that purposely makes it difficult ③ <u>to tell</u> how much time has passed. For instance, those who have visited large shopping malls may have noticed the absence of functioning clocks or accessible windows within interior store spaces. Having fewer items that remind customers of time makes them ④ <u>to lose</u> track of how long they have been in a given environment. In many cases, these environments are structured in such a way, thereby ⑤ <u>causing</u> customers to underestimate the duration of their stay. This phenomenon consequently promotes longer visits and greater consumption.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 12,
+    "qtype": "빈칸추론",
+    "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+    "score": 3.6,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "③",
+    "zone": "부교재/외부(미확인)",
+    "topic": "디지털 기술과 위대한 예술",
+    "original_q": "12. 다음 빈칸에 들어갈 말로 가장 적절한 것은? [3.6점]\nToday, with the advent of the internet and new technology for editing digital material, more people than ever before can produce artistic creations and share them with the world. Many critics, though, have expressed concern that this is causing us to lose our sense of what makes truly great art. Great art challenges our perceptions of the world and forever changes our thoughts and feelings. Artists ought to remember that new technologies are nothing more than tools that can be used in the creative process. In other words, the goal of the modern artist should not be simply to utilize technology for its own sake. Rather, it should be to ____________.\n① express their own individuality\n② make use of the latest technology\n③ create art that inspires new perspectives\n④ preserve the unique culture of their community\n⑤ replace the old-fashioned working processes with new ones"
+   },
+   {
+    "num": 13,
+    "qtype": "흐름무관",
+    "stem": "다음 글에서 전체 흐름과 관계 없는 문장은?",
+    "score": 4.2,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "②",
+    "zone": "부교재/외부(미확인)",
+    "topic": "Stowe와 Uncle Tom's Cabin",
+    "original_q": "13. 다음 글에서 전체 흐름과 관계 없는 문장은? [4.2점]\nHarriet Beecher Stowe wrote <i>Uncle Tom's Cabin</i> with the goal of helping Americans understand and feel the cruelty of slavery. As an abolitionist*, she believed that a dramatic and emotional story could effectively deliver a moral message. ① She created relatable characters and an engaging plot full of suspense, showing enslaved people as real human beings rather than as property. ② At that time, property laws were mainly designed to protect the economic rights of landowners. ③ In addition, through an emotional narrative style, Stowe appealed directly to readers' empathy and led them to question whether it was morally acceptable. ④ At the same time, she criticized laws like the Fugitive Slave Act and insisted that all Americans share responsibility for slavery. ⑤ Eventually, the novel helped raise public awareness and contributed to growing opposition to slavery in the United States.\n\n*abolitionist 노예제 폐지론자\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 14,
+    "qtype": "빈칸추론",
+    "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+    "score": 3.5,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "④",
+    "zone": "부교재/외부(미확인)",
+    "topic": "팀 내 갈등의 긍정적 가치",
+    "original_q": "14. 다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. [3.5점]\nIt is commonly believed that conflict within a team only has negative impacts. For this reason, when included in a team, you are often advised to avoid conflict at all costs. While this suggestion seems to make sense, it may not be helpful for your team's growth. ________ disagreements and differences, team members can generate more ideas and make better decisions. It's time to change your perspective on conflict. Instead of viewing conflict as harmful, you should recognize it as a potential opportunity which can lead to positive outcomes.\n① Denying\n② Refusing\n③ Repulsing\n④ Embracing\n⑤ Disregarding"
+   },
+   {
+    "num": 15,
+    "qtype": "빈칸추론",
+    "stem": "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+    "score": 5.2,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "④",
+    "zone": "부교재/외부(미확인)",
+    "topic": "윤일(Leap Day)의 필요성",
+    "original_q": "15. 다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. [5.2점]\nEvery four years, a twenty-ninth day is added to the month of February. This day, also known as Leap Day, was created to ensure that our calendar and our seasons stay in line with each other. While we think that a normal year consists of 365 days, it actually takes Earth about 365.2421 days to orbit the sun. Every four years, it is necessary to ____________. Without the addition of a leap day, winter would occur earlier in the calendar year, causing problems for agricultural schedules and potentially leading to crop failures. Additionally, many holidays and cultural celebrations are linked to specific seasons or dates. Without leap years to keep the calendar in check, these events would gradually drift away from their intended time of celebration.\n① observe the sun's orbit more accurately\n② change the sequence of the four seasons\n③ reduce the number of days in a leap year\n④ align the calendar year with the actual solar cycle\n⑤ prioritize agricultural schedules over the calendar"
+   },
+   {
+    "num": 16,
+    "qtype": "제목",
+    "stem": "다음 글의 제목으로 가장 적절한 것은?",
+    "score": 3.6,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "①",
+    "zone": "부교재/외부(미확인)",
+    "topic": "아이 놀이공간 간소화",
+    "original_q": "16. 다음 글의 제목으로 가장 적절한 것은? [3.6점]\nJust like how other rooms in your home can cause anxiety when filled with too much stuff, the same is true for kids. If the play space houses every single toy that has ever been purchased for them since birth, they may not be able to express their feelings, but they can feel overwhelmed* by so much stuff. This reminds us of how women look in their closets packed full of clothes and think, I have nothing to wear. Revision helps everyone see what they have and use what they own. When there's too much to see, too much to step over, and too much input, kids have a hard time making a choice. Streamlining** a play space is so important. You want your kids to feel inspired and imaginative in the room — not overcome with indecision.\n\n* overwhelmed: 압도된 ** streamline: 간소화하다\n① The Power of an Organized Play Space: Boosting Kids' Focus\n② Methods for Improving Children's Physical Activity Indoors\n③ Choosing the Right Toys for Every Developmental Stage\n④ The Psychological Link Between Clothing and Anxiety\n⑤ Why Kids Struggle to Express Their Feelings"
+   },
+   {
+    "num": 17,
+    "qtype": "주제",
+    "stem": "다음 글의 주제로 가장 적절한 것은?",
+    "score": 4.9,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "①",
+    "zone": "부교재/외부(미확인)",
+    "topic": "음압(negative pressure)의 양면성",
+    "original_q": "17. 다음 글의 주제로 가장 적절한 것은? [4.9점]\n\"Negative pressure\" refers to a situation in which the pressure of an enclosed area is lower than that of the surrounding area. If the barrier between these two areas breaks, any substances in the high-pressure area will immediately flow into the low-pressure area. For example, undersea pipes used to transport oil are in a state of negative pressure; therefore, any break in the pipeline will cause it to fill with ocean water. This is much better than the opposite scenario, in which oil would be released into the ocean. However, negative pressure is not always beneficial, such as in the case of pipes carrying drinking water to a city. If these municipal waterlines are damaged, they can potentially suck in contaminated groundwater, which would then enter the water supply. For this reason, a system of gauges and valves is used to adjust and control their pressure.\n① the dual role of negative pressure in pipeline systems\n② strategies for cleaning up contaminated groundwater\n③ the dominant role of high pressure in water supplies\n④ why high pressure is always safer than negative pressure\n⑤ methods of using gauges and valves to increase water flow"
+   },
+   {
+    "num": 18,
+    "qtype": "어휘",
+    "stem": "다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오.",
+    "score": 3.6,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "⑤",
+    "zone": "부교재/외부(미확인)",
+    "topic": "Rat Park 실험",
+    "original_q": "18. 다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오. [3.6점]\nThe \"Rat Park\" was an experiment conducted by a psychologist in the late 1970s. It was used to show that a social community can be ① <u>more</u> powerful than drugs. In the experiment, rats were given a choice between two bottles, one containing ② <u>plain</u> water and the other containing water with morphine added to it. The psychologist found that rats kept together drank much ③ <u>less</u> of the morphine water than rats kept alone. He concluded that addictive qualities aren't the only thing that promotes drug use. The social and environmental conditions of the individual also play an important role. This seems to apply to humans as well as rats. People who are lonely and isolated are more ④ <u>likely</u> to become addicted to drugs. But if these conditions are improved, their chances of breaking the addiction ⑤ <u>decrease</u>. This means that social recovery could someday become a treatment for drug addiction.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 19,
+    "qtype": "어휘",
+    "stem": "다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오.",
+    "score": 4.1,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "③",
+    "zone": "부교재/외부(미확인)",
+    "topic": "플라스틱 산업의 역사",
+    "original_q": "19. 다음 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 않은 것을 고르시오. [4.1점]\nWe first need to understand the short but hidden history behind the plastics industry and how it became deeply ① <u>rooted</u> in our daily lives. Before plastic, people lived more sustainably*, with far fewer waste problems than we face today. However, after the invention of plastic, its rapid adoption during World War II, and its ② <u>explosion</u> into consumer goods, plastic was everywhere. The growing industry came to symbolize the convenience and prosperity** of the American dream. This dream came with a ③ <u>reward</u>. Over time, people began to notice the environmental impact, and the early seeds of today's environmental movement were planted. However, the plastics industry was quick to ④ <u>counter</u> these concerns, launching campaigns that presented recycling as the ⑤ <u>answer</u> to all our problems. They pushed the idea that pollution was the fault of consumers, not the corporations flooding the market with plastic.\n\n* sustainably: 지속 가능하게 ** prosperity: 번영\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 20,
+    "qtype": "요지",
+    "stem": "다음 글의 요지로 가장 적절한 것은?",
+    "score": 3.6,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "②",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "Kuhn의 패러다임 전환",
+    "original_q": "20. 다음 글의 요지로 가장 적절한 것은? [3.6점]\nAs Kuhn proposed, our propositions about the world are embedded* within paradigms, roughly a network of interrelated commitments to a particular theory, a conception of a subject matter, and methodological practices. Thus, when scientists undertake research, they do so from within a specific paradigm. Even the most exacting measurements are only sensible from within that paradigm. For example, a look into a microscope** tells you nothing unless you are already informed about the nature of the instrument and what you are supposed to be looking at. Thus, what we call major progress in science is not a movement from a less to a more accurate paradigm. Rather, it is a horizontal shift from one 'way of seeing the world' to another. For Kuhn, 'the scientist with a new paradigm sees differently from the way he had seen before.'\n\n* embed: 깊이 박아 넣다 ** microscope: 현미경\n① 과학적 관찰시 실험도구의 정확한 이해가 중요하다.\n② 과학의 발전은 정확해지는 과정이 아니라 관점의 전환이다.\n③ 과학적 혁신은 패러다임에서 벗어나는 것으로부터 시작한다.\n④ 명제의 오류에도 불구하고 과학적 발견이 우연히 일어날 수 있다.\n⑤ 같은 대상을 실험하더라도 방법과 순서에 따라 결과는 달라질 수 있다."
+   },
+   {
+    "num": 21,
+    "qtype": "요약문완성",
+    "stem": "다음 글의 내용을 한 문장으로 요약하려 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+    "score": 5.0,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "①",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "내집단 과잉모방",
+    "original_q": "21. 다음 글의 내용을 한 문장으로 요약하려 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은? [5.0점]\nThe emphasis on learning from the ingroup takes little account of individuals. Amazingly, while we may dislike some of the people in our ingroup, we still copy them. Wilks, Kirby, and Nielsen studied copying behavior in the context of observing how to open a puzzle box. Ingroups and outgroups were distinguished in a minimal way, using simple color coding of wristbands. The children did not simply like all members of their ingroup; they disliked those who behaved in an antisocial fashion. Indeed, they liked these antisocial ingroup members less than the prosocial members of an outgroup. Still, their dislike did not affect their tendency to copy ingroup behavior more closely than outgroup behavior. This overimitation reveals that we are not copying in order to learn how to open a box most efficiently. We want to learn how to do it in the proper way—in other words, conforming to the rules and conventions of the ingroup. This will be appropriately demonstrated even by antisocial ingroup members.\n\n⇩\nPeople tend to copy ingroup members regardless of personal ____(A)____, indicating that imitation is motivated more by social ____(B)____ than by efficiency.\n① (A) preference ········· (B) conformity\n② (A) judgement ········· (B) advantages\n③ (A) behaviors ········· (B) injustice\n④ (A) biases ········· (B) conflict\n⑤ (A) liking ········· (B) responsibility"
+   },
+   {
+    "num": 22,
+    "qtype": "어휘",
+    "stem": "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+    "score": 4.4,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "⑤",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "역량의 착각과 가르치며 배우기",
+    "original_q": "22. 다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은? [4.4점]\nStudents often ① <u>assume</u> that familiarity equals true mastery, creating a dangerous \"illusion* of competence\" where recognizing information feels like genuine knowledge, but they struggle when asked to recall or apply it independently. This cognitive** bias, ② <u>reinforced</u> by passive*** study methods, leads learners to overestimate their understanding. Teaching materials (even informally or imaginatively) actively ③ <u>prevents</u> this illusion by requiring deep processing, active recall, structured organization, and revealing gaps in knowledge. It introduces ④ <u>effective</u> methods like teaching imaginary students, peer-teaching in study groups, employing the Feynman Technique, and writing explanations for others. Ultimately, adopting the teacher mindset transforms surface familiarity into real mastery, exposing and filling gaps in knowledge and ⑤ <u>hindering</u> solid, reliable understanding.\n\n* illusion: 착각 ** cognitive: 인지의 *** passive: 수동적인\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 23,
+    "qtype": "문장삽입",
+    "stem": "글의 흐름으로 보아, 주어진 문장이 들어갈 위치로 옳은 것은?",
+    "score": 4.0,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "③",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "less is more와 라디오→스마트폰",
+    "original_q": "23. 글의 흐름으로 보아, 주어진 문장이 들어갈 위치로 옳은 것은? [4.0점]\n[주어진 문장] For example, think about the heavy, massive radio receivers that existed back in the day.\n\nInitially the catchphrase \"less is more\" had a simple meaning. ( ① ) First mentioned in Robert Browning's poem \"Andrea del Sarto,\" it suggests that everything simple is better and more beautiful than the complex and tangled. ( ② ) Nowadays this phrase is heard often—maybe even too often. But it's important to recognize that the way of thinking that lies behind these words slowly extinguishes* certain habits from our daily life. ( ③ ) Over time, many of their buttons became viewed as \"extra\" and were removed, and with each reduction these devices eventually developed into the phones in our pockets. ( ④ ) The scale of the object became smaller, and the functions of the buttons got lost in the three dot menus and multilayered folders of our phones. ( ⑤ )\n\n* extinguish: 소멸시키다\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 24,
+    "qtype": "글의순서",
+    "stem": "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+    "score": 3.6,
+    "format": "5지선다",
+    "pg": null,
+    "answer": "②",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "겨울 온실 두 번의 방문",
+    "original_q": "24. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3.6점]\nMaking two visits to one of our cold greenhouses—one at dawn after a below-zero night, and the other a few hours later—provides a striking introduction to the winter harvest.\n\n(A) Yet a few hours later, after the sun has warmed the greenhouses above freezing, the second visit presents a miraculous contrast. Under the inner covers are closely spaced rows of vigorous, healthy leaves that stretch the length of the greenhouse.\n\n(B) During the dawn visit all the crops are frozen solid. Raising the inner covers, which is difficult because they too are frozen, reveals a sight of hard, frost-coated leaves bleak enough to convince anyone that this idea is foolish.\n\n(C) The leaf colors in different shades of greens, reds, maroons, and yellows stand bright against the dark soil. It looks like a never-ending spring.\n① (A)-(B)-(C)\n② (B)-(A)-(C)\n③ (B)-(C)-(A)\n④ (C)-(A)-(B)\n⑤ (C)-(B)-(A)"
+   },
+   {
+    "num": 25,
+    "qtype": "문장삽입",
+    "stem": "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+    "score": 3.8,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "③",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "수메르인의 '해방된 수'",
+    "original_q": "25. 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은? [3.8점]\n[주어진 문장] In other words, they would represent five fish with a numeral for the number five alongside a symbol for the fish.\n\nFrom around 3000 BC, the Sumerian officials would mark their lists of goods on clay tablets. ( ① ) If they wanted to record five fish, they would mark five pictures of a fish. ( ② ) Their first great intellectual leap came from separating the number from the object they were counting. ( ③ ) If they wanted to describe five of something else, they realized they could keep the same numeral and trade the object symbol for a cow, or a jar of oil, or whatever else they were interested in. ( ④ ) The Sumerians had developed the idea of an emancipated number, existing in its own right and independent of whatever it is being used to count. ( ⑤ ) It is easy to take the emancipated number for granted as it is so deeply set into modern thought, but to the earliest civilizations it was intellectually new and extremely powerful.\n①\n②\n③\n④\n⑤"
+   },
+   {
+    "num": 26,
+    "qtype": "흐름무관",
+    "stem": "다음 글의 밑줄 친 부분 중, 전체 흐름과 관계 없는 문장은?",
+    "score": 4.3,
+    "format": "5지선다_번호",
+    "pg": null,
+    "answer": "③",
+    "zone": "외부(모의고사급, 미확인)",
+    "topic": "긴급 본능과 테러 공포",
+    "original_q": "26. 다음 글의 밑줄 친 부분 중, 전체 흐름과 관계 없는 문장은? [4.3점]\nThe urgency instinct is what allows people to act quickly when faced with danger. It is particularly useful in emergency situations, where making quick decisions is essential. However, in non-emergency situations, it can cause people to panic and make poor decisions. ① <u>One example of the urgency instinct in mass media is the fear of terrorism.</u> ② <u>People in the Western world fear terrorism more than heart disease, despite the fact that heart disease represents a much greater threat.</u> ③ <u>Therefore, regular exercise and a balanced diet are highly recommended to reduce the risk of cardiovascular* problems.</u> ④ <u>The reason for this is the media's coverage of terrorist attacks, which greatly exaggerates the threat of terrorism.</u> ⑤ <u>The urgency instinct causes us to feel that immediate action is required to combat terrorism, even though there are many more significant threats.</u> This is why rational analysis is required. It allows us to counteract the urgency instinct and respond to risks accordingly.\n\n* cardiovascular: 심혈관의\n①\n②\n③\n④\n⑤"
+   }
+  ],
+  "summary": "26문항 100점. 1~8 교과서 추정(보노보·Dr.Hare·펭귄·Ta moko·whakapapa 세트), 9~19 짧은 부교재형, 20~26 모의고사급. 발문 세트형([2~3][6~8][14~15][18~19]).",
+  "savedAt": "2026-09-19T11:30:19+09:00"
+ }
+}
