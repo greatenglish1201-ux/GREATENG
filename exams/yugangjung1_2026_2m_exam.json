@@ -1,0 +1,526 @@
+{
+ "key": "유강중_1학년_2026_2학기_중간",
+ "meta": {
+  "school": "유강중",
+  "grade": "1학년",
+  "year": "2026",
+  "semester": "2학기",
+  "exam": "중간고사",
+  "subject": "영어",
+  "publisher": "천재(이상기)",
+  "scope": "Lesson 5 · Lesson 6",
+  "build": "claude-authored-v1",
+  "pattern_note": "유강중 기출 없음 — 공립중 표준형(객관식 22 + 서술형 4)으로 설계",
+  "total": 26,
+  "total_score": 100,
+  "objective": 22,
+  "written": 4,
+  "patterns": {
+   "어휘": 3,
+   "영영풀이": 1,
+   "어법": 7,
+   "대화": 4,
+   "실용문": 1,
+   "내용일치": 3,
+   "문장삽입": 1,
+   "지칭": 1,
+   "흐름무관": 1,
+   "서술형-영작": 2,
+   "서술형-어법": 1,
+   "서술형-어형": 1
+  },
+  "answer_dist": {
+   "①": 4,
+   "②": 4,
+   "③": 5,
+   "④": 5,
+   "⑤": 4
+  },
+  "print_title": "( 2 학기 ) 중간고사 — 예상문제",
+  "print_badge": "유강중 1학년 · 천재(이상기) L5·L6",
+  "print_footer": "대단한영어 GREATENG 예상문제 · ",
+  "review_notes": [
+   "① 창작 문항(1·2·3·4·5·9·14·15·20·22·23·24·25·26): 영어 자연스러움과 정답 유일성 — 기출이 없어 전부 창작임",
+   "② 교과서 대화·본문 변형(6·7·8·10~13·16~19·21): 바꾼 부분(빈칸·삽입 문장·무관 문장)만 원문과 대조",
+   "③ 배점: 객관식 22문항 76점(3점 12·4점 10) + 서술형 4문항 24점(6점×4) = 100점",
+   "④ 교차 힌트: 기준 (a) — 출제 문항끼리·지문→문항 모두 차단. 잔여(무해): #6·#7이 교과서 표현 be going to / Have a nice trip을 공유",
+   "⑤ ⚠ 유강중 기출 원본이 없어 문항 수·배점·서술형 비중은 공립중 표준형 가정 — 1학기 시험지를 구하면 그 틀로 재조정 필요"
+  ]
+ },
+ "questions": [
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 1,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 짝지어진 두 단어의 관계가 나머지와 다른 것은? [3점]",
+   "choices": [
+    "① huge : big",
+    "② peaceful : calm",
+    "③ famous : well-known",
+    "④ tasty : delicious",
+    "⑤ bright : dark"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "⑤만 반의 관계, 나머지는 유의 관계.  [출처: 천재(이상기) L5 본문·천재(이상기) L6 본문 어휘]",
+   "source": "천재(이상기) L5 본문·천재(이상기) L6 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 2,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 밑줄 친 단어의 쓰임이 알맞지 않은 것은? [3점]",
+   "choices": [
+    "① She <u>locked</u> the door before going out.",
+    "② The soup was too <u>salty</u>, so I added some water.",
+    "③ He <u>repaired</u> his old bike last weekend.",
+    "④ The museum is <u>closed</u> on Mondays, so we can visit it today.",
+    "⑤ I <u>forgot</u> my umbrella at home this morning."
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "문을 닫는(휴관) 날인데 방문할 수 있다고 해 모순.  [출처: 일반 어휘(지문 미등장 단어로 구성)]",
+   "source": "일반 어휘(지문 미등장 단어로 구성)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 3,
+   "qtype": "영영풀이",
+   "score": 4,
+   "question": "다음 중 빈칸에 들어갈 단어의 뜻풀이로 관련이 없는 것은? [4점] (단, 빈칸에 들어가는 순서는 상관없음.)\n· Don't forget your ________ when you travel abroad.\n· I bought a small ________ for my friend at the shop.\n· We made a ________ for our three-day trip.\n· The ________ showed us around the old town.\n· My ________ was too heavy to carry.",
+   "choices": [
+    "① a person or book that gives information to travelers",
+    "② a person who takes care of the paintings in a museum",
+    "③ a plan that shows the times of the things you will do",
+    "④ an official document that you need to enter another country",
+    "⑤ the bags that you take with you when you travel"
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "빈칸: passport·souvenir·schedule·guide·luggage. ②는 curator의 뜻으로 빈칸에 없음(souvenir는 풀이 없음).  [출처: 일반 어휘(여행 소재)]",
+   "source": "일반 어휘(여행 소재)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 4,
+   "qtype": "어법",
+   "score": 3,
+   "question": "다음 중 어법상 알맞은 것은? [3점]",
+   "choices": [
+    "① There is not any chairs in the room.",
+    "② Is there some apples on the table?",
+    "③ Are there a library near here?",
+    "④ Were there many students in the hall?",
+    "⑤ There isn't many cars on the street."
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "① are not ② Are there any ③ Is there ⑤ aren't. ④ 복수 주어 + Were there ~?  [출처: 천재(이상기) L5 문법포인트 There+be동사+주어]",
+   "source": "천재(이상기) L5 문법포인트 There+be동사+주어"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 5,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 밑줄 친 부분의 쓰임이 나머지와 다른 것은? [4점]",
+   "choices": [
+    "① My hobby is <u>collecting</u> stamps.",
+    "② Look at the <u>sleeping</u> cat on the sofa.",
+    "③ <u>Riding</u> a bike is good exercise.",
+    "④ She is good at <u>drawing</u> animals.",
+    "⑤ He finished <u>washing</u> the dishes."
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "② 명사를 수식하는 현재분사. 나머지는 동명사(보어·주어·전치사의 목적어·목적어).  [출처: 천재(이상기) L5 문법포인트 동명사와 현재분사]",
+   "source": "천재(이상기) L5 문법포인트 동명사와 현재분사"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 6,
+   "qtype": "대화",
+   "score": 3,
+   "question": "다음 대화의 빈칸에 들어갈 말로 가장 적절한 것은? [3점]\nB: Hi, Somi! Do you have any plans this holiday?\nG: I'm going to visit Busan.\nB: Great! What are you going to do there?\nG: ________________\nB: Wow! Have a nice trip!",
+   "choices": [
+    "① I'm going to swim at Haeundae Beach.",
+    "② I visited Busan last year.",
+    "③ I don't have any plans.",
+    "④ Sorry, I can't go there.",
+    "⑤ Yes, there is."
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "앞에서 부산에서 할 일을 물었으므로 그곳에서 할 활동이 와야 함.  [출처: 천재(이상기) L5 대화 대화 2]",
+   "source": "천재(이상기) L5 대화 대화 2"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 7,
+   "qtype": "대화",
+   "score": 3,
+   "question": "다음 대화의 내용과 일치하는 것은? [3점]\nAlex: Hi, Kate. What are you going to do this weekend?\nKate: I'm going to visit Jeju-do with my family.\nJunho: Oh, my grandparents live there. Jeju-do is so beautiful.\nKate: Really? This is my first trip to Jeju-do. I'm so excited.\nAlex: What are you going to do there?\nKate: I'm going to see dolphins. I'll also hike Hallasan.\nJunho: You should visit a horse park and ride a horse, too. It's really fun.\nKate: That's a good idea. I'll visit there, too.\nJunho: Jeju-do is an amazing place. Have a nice trip!",
+   "choices": [
+    "① Kate는 제주도에 여러 번 가 보았다.",
+    "② Junho의 조부모님은 제주도에 사신다.",
+    "③ Kate는 한라산에 가지 않을 것이다.",
+    "④ Alex는 승마 공원을 추천했다.",
+    "⑤ Kate는 돌고래를 보지 않을 것이다."
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "① 첫 여행 ③ hike Hallasan ④ 추천한 사람은 Junho ⑤ see dolphins.  [출처: 천재(이상기) L5 대화 Watch and Do]",
+   "source": "천재(이상기) L5 대화 Watch and Do"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 8,
+   "qtype": "실용문",
+   "score": 4,
+   "question": "다음 안내문을 통해 알 수 있는 것은? [4점]\n<Tongyeong Walking Tour>\n· When: Saturday, October 10, 10 a.m.\n· Where: Meet at Jungang Market\n· What: Walk along the seaside and visit Dongpirang\n· Cost: 5,000 won for students / 8,000 won for adults\n<Night Market Festival>\n· When: Every Friday in October, 6 p.m. - 10 p.m.\n· Where: Gangguan Square\n· Food: Chungmu gimbap, fried squid, and honey bread\n· Note: There is no parking lot. Please take a bus.",
+   "choices": [
+    "① The walking tour starts at Dongpirang.",
+    "② Students pay 8,000 won for the walking tour.",
+    "③ The night market opens every Saturday.",
+    "④ You can eat Chungmu gimbap at the night market.",
+    "⑤ You can park your car at Gangguan Square."
+   ],
+   "answer": "④",
+   "render": "notice",
+   "explanation": "① 모이는 곳은 중앙시장 ② 학생 5,000원 ③ 매주 금요일 ⑤ 주차장 없음.  [출처: L5 소재 기반 창작 안내문]",
+   "source": "L5 소재 기반 창작 안내문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 9,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 어법상 알맞은 것은? [4점]",
+   "choices": [
+    "① I want going to the museum.",
+    "② She enjoys to paint with bright colors.",
+    "③ They decided to visit the gallery.",
+    "④ He gave up to learn the guitar.",
+    "⑤ Do you mind to open the window?"
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "① to go ② painting ④ learning ⑤ opening. decide는 to부정사를 목적어로 취함.  [출처: 천재(이상기) L6 문법포인트 to부정사·동명사 목적어]",
+   "source": "천재(이상기) L6 문법포인트 to부정사·동명사 목적어"
+  },
+  {
+   "set_header": "[10-13] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 10,
+   "qtype": "내용일치",
+   "score": 3,
+   "question": "다음 중 윗글의 내용과 일치하지 않는 것은? [3점]\nAugust 16th\nI got up at six in the morning. It was the first day of my family trip to Tongyeong. I was ⓐ________!\n( ① ) We arrived at Jungang Market at 1 p.m. ( ② ) There we had Chungmu gimbap for lunch. There was only rice inside the roll! ( ③ ) Dad said, \"Try the roll with radish and squid. Long ago, fishermen had Chungmu gimbap out at sea.\" ( ④ ) It was a bit ⓑ________ but tasty. ( ⑤ )\nIn the afternoon, we went to Yi Sun-sin Park. There was a huge statue of Admiral Yi. I imagined the great battle right off the coast of Tongyeong. Then we enjoyed taking a walk along the coast. The sunset was beautiful. I closed my eyes. I could feel Admiral Yi's love for the country. Everything was really ⓒ________.\nAugust 17th\nEarly in the morning, we went to Dongpirang. There were many pretty paintings on the walls. It was the best place for taking pictures! Mom and I took hundreds of pictures. Finally, my dad said, \"Please stop! No more pictures!\"\n* 'Dong' means 'east,' and 'pirang' means 'cliff.'\nNext, we went to the Jeon Hyuck-lim Museum of Art. The painter's nickname is 'The Magician of Color.' He painted the sea of Tongyeong with various blue colors. I enjoyed his paintings very much.",
+   "choices": [
+    "① Chungmu gimbap has only rice inside the roll.",
+    "② Long ago, fishermen ate Chungmu gimbap out at sea.",
+    "③ The family saw a huge statue of Admiral Yi.",
+    "④ The writer took only a few pictures at Dongpirang.",
+    "⑤ The painter's nickname is 'The Magician of Color.'"
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "④ hundreds of pictures — 조금만 찍은 것이 아님.  [출처: 천재(이상기) L5 본문]",
+   "source": "천재(이상기) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 11,
+   "qtype": "어휘",
+   "score": 4,
+   "question": "윗글의 빈칸 ⓐ~ⓒ에 들어갈 말로 바르게 짝지어진 것은? [4점]",
+   "choices": [
+    "① excited - spicy - peaceful",
+    "② excited - sweet - noisy",
+    "③ bored - spicy - peaceful",
+    "④ bored - salty - peaceful",
+    "⑤ excited - spicy - boring"
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "여행 첫날의 설렘 / 무와 오징어를 곁들인 매콤함 / 해안 산책의 평화로움.  [출처: 천재(이상기) L5 본문]",
+   "source": "천재(이상기) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 12,
+   "qtype": "문장삽입",
+   "score": 3,
+   "question": "다음 중 글의 흐름상 아래 문장이 들어가기에 가장 적절한 곳은? [3점]\n[주어진 문장] Chungmu is Tongyeong's old name.",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "render": "sentence_box",
+   "explanation": "충무김밥이 처음 언급된 뒤에 이름의 유래를 덧붙이는 자리.  [출처: 천재(이상기) L5 본문]",
+   "source": "천재(이상기) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 13,
+   "qtype": "내용일치",
+   "score": 3,
+   "question": "다음 중 윗글을 읽고 알 수 없는 것은? [3점]",
+   "choices": [
+    "① 글쓴이가 중앙시장에 도착한 시각",
+    "② 충무김밥이라는 이름의 유래",
+    "③ 동피랑 벽화를 그린 사람",
+    "④ 전혁림 화가의 별명",
+    "⑤ 이순신 공원에서 본 것"
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "벽화를 그린 사람은 언급되지 않음.  [출처: 천재(이상기) L5 본문]",
+   "source": "천재(이상기) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 14,
+   "qtype": "어법",
+   "score": 3,
+   "question": "다음 중 어법상 알맞지 않은 것은? [3점]",
+   "choices": [
+    "① I think that this painting is beautiful.",
+    "② She believes that he will come back soon.",
+    "③ Do you know that the concert starts at seven?",
+    "④ I hope that you to have a nice trip.",
+    "⑤ The truth is that I can't swim well."
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "that절은 「that+주어+동사」의 완전한 절 → you will have.  [출처: 천재(이상기) L6 문법포인트 접속사 that]",
+   "source": "천재(이상기) L6 문법포인트 접속사 that"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 15,
+   "qtype": "어법",
+   "score": 3,
+   "question": "다음 빈칸에 들어갈 말이 바르게 짝지어진 것은? [3점]\n· I have a brother ________ a sister.\n· She was very tired, ________ she finished her homework.\n· Hurry up, ________ you will be late for school.\n· It rained a lot, ________ we stayed home all day.",
+   "choices": [
+    "① and - but - or - so",
+    "② and - so - but - or",
+    "③ but - and - so - or",
+    "④ and - or - but - so",
+    "⑤ or - but - and - so"
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "나열 and / 대조 but / 선택·경고 or / 결과 so.  [출처: 천재(이상기) L6 문법포인트 등위접속사]",
+   "source": "천재(이상기) L6 문법포인트 등위접속사"
+  },
+  {
+   "set_header": "[16-17] 다음 대화를 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 16,
+   "qtype": "대화",
+   "score": 3,
+   "question": "위 대화의 빈칸 ⓐ에 들어갈 말로 가장 적절한 것은? [3점]\nJunho: Look at this exhibition poster. ( ⓐ )\nMinji: I think it's beautiful.\nAlex: It's The Starry Night by Vincent van Gogh, right?\nJunho: Right. I like this painting. The colors of the night sky are amazing.\nAlex: I think so, too.\nJunho: Look! The van Gogh exhibition is going on at Mirae Museum. How about going there together?\nAlex: That's a great idea! I want to see van Gogh's paintings.\nMinji: We can also learn about his life and art in the exhibition.\nJunho: When can we go? It ends on October 1st.\nAlex: Let's go there this Saturday then.\nMinji: That sounds great.",
+   "choices": [
+    "① Let's go there this Saturday.",
+    "② I don't think so.",
+    "③ That sounds great.",
+    "④ Have a nice trip!",
+    "⑤ What do you think about this painting?"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "뒤에서 \"I think it's beautiful.\"로 의견을 말하므로 의견을 묻는 표현이 와야 함.  [출처: 천재(이상기) L6 대화 Watch and Do]",
+   "source": "천재(이상기) L6 대화 Watch and Do"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 17,
+   "qtype": "대화",
+   "score": 3,
+   "question": "위 대화의 내용과 일치하는 것은? [3점]",
+   "choices": [
+    "① 전시는 10월 1일에 시작한다.",
+    "② 세 사람은 토요일에 전시를 보러 가기로 했다.",
+    "③ Minji는 그 그림이 마음에 들지 않는다.",
+    "④ 전시는 학교에서 열리고 있다.",
+    "⑤ Alex는 고흐의 그림을 이미 본 적이 있다."
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "① 10월 1일에 끝남 ③ beautiful ④ Mirae Museum ⑤ 보고 싶다고 함.  [출처: 천재(이상기) L6 대화 Watch and Do]",
+   "source": "천재(이상기) L6 대화 Watch and Do"
+  },
+  {
+   "set_header": "[18-21] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 18,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "다음 중 윗글의 내용과 일치하는 것은? [4점]\nHello, everyone. My name is Amélie. Welcome to my husband's gallery. Look at me. ① <u>Do you think that I'm strange?</u> ② <u>My husband, Henri Matisse, colored my face in green.</u> ③ <u>My face isn't actually green.</u> ④ <u>He wanted to express his emotions with bright and wild colors.</u> ⑤ <u>Green is the most popular color for cars in Europe.</u> People didn't like this painting style at first. Some people thought that a beast painted me. So, he got the nickname Wild Beast. He kept his own style and finally became famous.\nHi, there. Can you find ⓐ <u>me</u> in the picture? Actually, ⓑ <u>I</u>'m an animal. Start from the green shape in the middle. Then trace the other shapes with your finger. ⓒ <u>They</u> look like a snail shell. Yes, ⓓ <u>I</u>'m a snail! Matisse created ⓔ <u>me</u> in a unique way. He painted paper and cut out shapes with scissors. Then he put the shapes together and made me. At the age of 70, Matisse got very sick. However, he never gave up art. He created a new art form. It's cut-outs. Do you want to find more artworks like me? Look around the gallery and explore Henri Matisse's world of art!",
+   "choices": [
+    "① Matisse painted his wife's face in green.",
+    "② Amélie's face was really green.",
+    "③ Matisse created the snail with paint only.",
+    "④ Matisse stopped making art at the age of 70.",
+    "⑤ The snail shapes start from a blue shape in the middle."
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "② 실제로 초록색은 아님 ③ 종이를 칠해 가위로 오려 붙임 ④ 포기하지 않음 ⑤ 가운데 초록색 도형.  [출처: 천재(이상기) L6 본문]",
+   "source": "천재(이상기) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 19,
+   "qtype": "지칭",
+   "score": 4,
+   "question": "윗글의 밑줄 친 ⓐ~ⓔ 중 가리키는 대상이 나머지와 다른 것은? [4점]",
+   "choices": [
+    "① ⓐ",
+    "② ⓑ",
+    "③ ⓒ",
+    "④ ⓓ",
+    "⑤ ⓔ"
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "ⓒ They = the other shapes. 나머지는 모두 달팽이(작품).  [출처: 천재(이상기) L6 본문]",
+   "source": "천재(이상기) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 20,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 어법상 옳은 문장은 모두 몇 개인가? [4점]\nⓐ There are a museum near my school.\nⓑ He avoided making the same mistake.\nⓒ The boy reading a book is my brother.\nⓓ I hope that she likes my gift.\nⓔ My dream is become a painter.",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "옳은 것 3개(ⓑⓒⓓ). ⓐ There is a museum ⓔ becoming[to be] a painter.  [출처: 천재(이상기) L5 문법포인트·천재(이상기) L6 문법포인트 종합]",
+   "source": "천재(이상기) L5 문법포인트·천재(이상기) L6 문법포인트 종합"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 21,
+   "qtype": "흐름무관",
+   "score": 4,
+   "question": "윗글의 ①~⑤ 중 전체 흐름과 가장 관련이 없는 것은? [4점]",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "유럽의 자동차 색 이야기는 그림·화풍과 무관(삽입 문장).  [출처: 천재(이상기) L6 본문]",
+   "source": "천재(이상기) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 22,
+   "qtype": "어법",
+   "score": 4,
+   "question": "다음 중 어법상 알맞지 않은 것은? [4점]",
+   "choices": [
+    "① He likes drawing cartoons.",
+    "② She started to learn Spanish.",
+    "③ They continued walking along the street.",
+    "④ I love to travel with my family.",
+    "⑤ We began to cleaning the classroom."
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "begin은 동명사·to부정사 모두 가능하지만 to cleaning은 불가 → to clean 또는 cleaning.  [출처: 천재(이상기) L5 문법포인트 동명사·to부정사 모두 목적어로 취하는 동사]",
+   "source": "천재(이상기) L5 문법포인트 동명사·to부정사 모두 목적어로 취하는 동사"
+  },
+  {
+   "set_header": "",
+   "type": "written",
+   "num": 23,
+   "qtype": "서술형-영작",
+   "score": 6,
+   "question": "다음 우리말과 같은 뜻이 되도록 <조건>에 맞게 영작하시오. [6점]\n우리말: 박물관에 많은 방문객들이 있었다.\n<조건> ① There로 시작할 것  ② 과거시제로 쓸 것  ③ many, visitors, at the museum을 사용할 것",
+   "choices": [],
+   "answer": "There were many visitors at the museum.",
+   "render": "written",
+   "answer_lines": 2,
+   "explanation": "어순 3점 + be동사 수일치·시제(were) 3점. was로 쓰면 3점 감점.  [출처: 천재(이상기) L5 문법포인트 There+be동사+주어]",
+   "source": "천재(이상기) L5 문법포인트 There+be동사+주어"
+  },
+  {
+   "set_header": "",
+   "type": "written",
+   "num": 24,
+   "qtype": "서술형-어법",
+   "score": 6,
+   "question": "다음 문장에서 어법상 틀린 부분 2군데를 찾아 바르게 고쳐 쓰시오. [6점]\nMy brother enjoys to play soccer, and he decided joining the school team.",
+   "choices": [],
+   "answer": "to play → playing / joining → to join",
+   "render": "written",
+   "answer_lines": 2,
+   "explanation": "각 3점. enjoy는 동명사, decide는 to부정사를 목적어로 취함.  [출처: 천재(이상기) L6 문법포인트 to부정사·동명사 목적어]",
+   "source": "천재(이상기) L6 문법포인트 to부정사·동명사 목적어"
+  },
+  {
+   "set_header": "",
+   "type": "written",
+   "num": 25,
+   "qtype": "서술형-영작",
+   "score": 6,
+   "question": "다음 대화의 빈칸에 들어갈 말을 <조건>에 맞게 쓰시오. [6점]\nA: This is one of Matisse's works.\nB: ________________________________\n<조건> ① 우리말 \"나는 그 색들이 독특하다고 생각해.\"의 뜻이 되게 쓸 것  ② 접속사 that을 반드시 쓸 것  ③ 6단어 이상으로 쓸 것",
+   "choices": [],
+   "answer": "I think that the colors are unique.",
+   "render": "written",
+   "answer_lines": 2,
+   "explanation": "that절 사용 3점 + 어순·어휘 3점. that을 생략하면 조건 ② 미충족.  [출처: 천재(이상기) L6 문법포인트 접속사 that]",
+   "source": "천재(이상기) L6 문법포인트 접속사 that"
+  },
+  {
+   "set_header": "",
+   "type": "written",
+   "num": 26,
+   "qtype": "서술형-어형",
+   "score": 6,
+   "question": "괄호 안의 단어를 어법에 맞게 바꿔 쓰시오. [6점]\n(1) Matisse never gave up (create) ________ new art.\n(2) She hopes (visit) ________ the gallery next week.\n(3) Look at the (smile) ________ girl in the picture.",
+   "choices": [],
+   "answer": "(1) creating (2) to visit (3) smiling",
+   "render": "written",
+   "answer_lines": 2,
+   "explanation": "각 2점. give up+동명사 / hope+to부정사 / 명사를 수식하는 현재분사.  [출처: 천재(이상기) L5 문법포인트·천재(이상기) L6 문법포인트 종합]",
+   "source": "천재(이상기) L5 문법포인트·천재(이상기) L6 문법포인트 종합"
+  }
+ ]
+}
