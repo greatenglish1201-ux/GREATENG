@@ -1,0 +1,570 @@
+{
+ "key": "이동중_3학년_2026_2학기_중간",
+ "meta": {
+  "school": "이동중",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "2학기",
+  "exam": "중간고사",
+  "subject": "영어",
+  "publisher": "능률(김성곤)",
+  "scope": "Lesson 5 · Lesson 6 (본문)",
+  "build": "claude-authored-v1",
+  "pattern_key": "이동중_3학년_2026_1학기_중간",
+  "pattern_note": "1학기 중간 기출 번호별 유형·배점 기준. 대화문 제외(원장 지시)로 대화 #6·7·단독 #12를 본문 세트에 흡수",
+  "total": 26,
+  "total_score": 100,
+  "objective": 26,
+  "written": 0,
+  "patterns": {
+   "어휘": 5,
+   "영작": 2,
+   "어법": 8,
+   "내용일치": 7,
+   "주제": 1,
+   "요약": 1,
+   "지칭": 1,
+   "함축": 1
+  },
+  "answer_dist": {
+   "①": 5,
+   "②": 6,
+   "③": 5,
+   "④": 5,
+   "⑤": 5
+  },
+  "print_title": "( 2 학기 ) 중간고사 — 예상문제",
+  "print_badge": "이동중 3학년 · 능률(김성곤) L5·L6",
+  "print_footer": "대단한영어 GREATENG 예상문제 · ",
+  "variant_table": [
+   [
+    "교과서 본문 원문 + 네모·밑줄 표시만",
+    "10~13 · 14~17 · 18~20 · 21~23 지문"
+   ],
+   [
+    "교과서 본문에 오류 삽입",
+    "24 (ⓐ go→going · ⓑ one→it · ⓒ that→who · ⓓ What→How, ⓔ do have는 원문)"
+   ],
+   [
+    "본문 이어 붙임",
+    "24~26 지문 = 본문1 + 본문4, 사이에 \"(After looking at the apps)\" 한 줄"
+   ],
+   [
+    "지문 원문 · 선지 창작",
+    "11 · 12 · 13 · 14 · 15 · 17 · 19 · 20 · 22 · 25 · 26"
+   ],
+   [
+    "지문 원문 · 선지 조합형",
+    "10 · 16 · 18 · 21 · 23 · 24"
+   ],
+   [
+    "전면 창작(교과서 밖 문장)",
+    "1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9"
+   ]
+  ],
+  "review_notes": [
+   "① 창작 문항(1~9·11·12의 선지·15·20·25): 영어 자연스러움과 정답 유일성 — 특히 #8 영작 쌍 8개, #9 설명 5개",
+   "② 교과서 본문 변형(10·13·14·16~19·21~24·26): 바꾼 부분(네모·밑줄·오류 삽입)만 원문과 대조. #24는 원문 go/one/that/What 네 곳을 틀리게 바꿈",
+   "③ 대화문 제외(원장 지시): 기출의 대화 #6·7(답할 수 없는 질문·내용 불일치)은 #17·#13으로, 단독 지문 #12(네모)는 #10으로 흡수",
+   "④ 교차 힌트 기준 (a): #5 (1)(4)·#7 (b)·#9 ⓒ·#14 정답·#17 두 선지·#20 정답·#22 정답을 누출 때문에 교체. 문법포인트 전용 배정 — 관계부사 #6, 의미상 주어 #9, 가주어 It #11, 분사구문 #8, the 비교급 형태 #7·의미 #25",
+   "⑤ 남은 지식 수준 겹침(정답 노출 아님): #1 ③ reliable은 21~23 지문 문맥으로도 판단 가능(교과서 어휘 문항의 성격), 18~20 지문의 the 비교급 원문은 #7 (e)에 이미 옳은 예문이 있어 추가 힌트 없음",
+   "⑥ 24~26 지문은 본문1과 본문4를 \"(After looking at the apps)\" 한 줄로 이음 — 가운데 앱 소개는 18~23에서 사용"
+  ]
+ },
+ "questions": [
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 1,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 단어의 영영 풀이로 적절하지 않은 것은? [3점]",
+   "choices": [
+    "① attract: to make people want to come to a place or do something",
+    "② contribute: to be one of the causes of something",
+    "③ reliable: not able to be trusted or depended on",
+    "④ additional: more than what was first mentioned; extra",
+    "⑤ regularly: at the same times each day, week, month, etc."
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "reliable = able to be trusted or depended on. ③은 반대로 풀이함.  [출처: 능률(김성곤) L5 본문·능률(김성곤) L6 본문 어휘]",
+   "source": "능률(김성곤) L5 본문·능률(김성곤) L6 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 2,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 중 단어의 관계가 서로 다른 것은? [3점]",
+   "choices": [
+    "① damage – harm",
+    "② prevent – stop",
+    "③ protect – defend",
+    "④ a variety of – various",
+    "⑤ positive – negative"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "⑤만 반의 관계, 나머지는 유의 관계.  [출처: 능률(김성곤) L5 본문·능률(김성곤) L6 본문 어휘]",
+   "source": "능률(김성곤) L5 본문·능률(김성곤) L6 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 3,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 <보기>의 (A)~(C)에 나타난 단어 사이의 관계와 같도록 할 때, (D)의 빈칸에 들어갈 가장 알맞은 단어는? [3점]\n< 보 기 >\n(A) increase – decrease   (B) strength – weakness\n(C) natural – artificial   (D) reusable – ________",
+   "choices": [
+    "① recyclable",
+    "② disposable",
+    "③ reusing",
+    "④ dispose",
+    "⑤ available"
+   ],
+   "answer": "②",
+   "render": "box",
+   "explanation": "(A)~(C)는 반의 관계 → reusable(재사용 가능한)의 반의어 disposable(일회용의).  [출처: 능률(김성곤) L5 본문·능률(김성곤) L6 본문 어휘]",
+   "source": "능률(김성곤) L5 본문·능률(김성곤) L6 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 4,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 <보기>의 내용이 가리키는 단어로 알맞은 것은? [3점]\n< 보 기 >\na piece of paper that shows that you have paid for something",
+   "choices": [
+    "① refund",
+    "② discount",
+    "③ allowance",
+    "④ receipt",
+    "⑤ fee"
+   ],
+   "answer": "④",
+   "render": "box",
+   "explanation": "receipt(영수증). 시험지 어느 지문에도 나오지 않는 단어로 설정.  [출처: L6 관련 어휘(교과서 어휘 목록)]",
+   "source": "L6 관련 어휘(교과서 어휘 목록)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 5,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "다음 <보기>의 빈칸에 들어갈 단어가 바르게 연결되지 않은 것은? [3점]\n< 보 기 >\n(1) Please ________ the eggs into two bowls: one for the whites and one for the yolks.\n(2) The trees in the park ________ shade on hot summer days.\n(3) This app is easy to use, so it is ________ for people of all ages.\n(4) Our class will ________ a clean-up event at the park next Saturday.\n(5) Let's ________ prices at a few stores before we buy the bike.",
+   "choices": [
+    "① combine",
+    "② provide",
+    "③ convenient",
+    "④ hold",
+    "⑤ compare"
+   ],
+   "answer": "①",
+   "render": "box",
+   "explanation": "(1)은 separate(분리하다). combine … into two bowls는 모순.  [출처: L5·L6 관련 어휘(일반 문장)]",
+   "source": "L5·L6 관련 어휘(일반 문장)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 6,
+   "qtype": "영작",
+   "score": 4,
+   "question": "다음 <보기>의 두 문장을 한 문장으로 바르게 연결한 것은? [4점]\n< 보 기 >\nI will never forget the day. / I moved to Pohang on the day.",
+   "choices": [
+    "① I will never forget the day which I moved to Pohang.",
+    "② I will never forget the day when I moved to Pohang on.",
+    "③ I will never forget the day on which I moved to Pohang.",
+    "④ I will never forget the day on when I moved to Pohang.",
+    "⑤ I will never forget the day where I moved to Pohang."
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "시간 선행사 the day + on which(= when). ① 전치사 누락 ② 전치사 중복 ④ 관계부사 앞 전치사 불가 ⑤ 장소 관계부사.  [출처: 능률(김성곤) L5 문법포인트 관계부사]",
+   "source": "능률(김성곤) L5 문법포인트 관계부사"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 7,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 중 어법상 바르지 않은 문장의 개수는? [5점]\n< 보 기 >\n(a) It was very nice of you to help the old man.\n(b) It is necessary of you to wear a helmet.\n(c) This is the place where my grandparents first met.\n(d) Tell me the way how you solved the puzzle.\n(e) The harder you practice, the better you will play.\n(f) More you read, the more you will learn.\n(g) Hearing the news, they started to cry.\n(h) Having no money, he couldn't buy the ticket.",
+   "choices": [
+    "① 0개",
+    "② 1개",
+    "③ 2개",
+    "④ 3개",
+    "⑤ 4개"
+   ],
+   "answer": "④",
+   "render": "box",
+   "explanation": "바르지 않은 것 3개: (b) for you (d) the way 또는 how 중 하나만 (f) The more you read.  [출처: 능률(김성곤) L5 문법포인트·능률(김성곤) L6 문법포인트(◈ Forms) 종합]",
+   "source": "능률(김성곤) L5 문법포인트·능률(김성곤) L6 문법포인트(◈ Forms) 종합"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 8,
+   "qtype": "영작",
+   "score": 5,
+   "question": "다음 <보기>의 문장 ⓐ~ⓗ 중, 어법 및 의미상 영작이 정확한 것의 개수는? [5점]\n< 보 기 >\nⓐ 음악을 들으면서, 그는 설거지를 했다. → Listening to music, he washed the dishes.\nⓑ 버스에서 내린 후, 나는 학교로 걸어갔다. → Getting on the bus, I walked to school.\nⓒ 피곤했기 때문에, 그녀는 일찍 잠자리에 들었다. → Being tired, she went to bed early.\nⓓ 무엇을 해야 할지 몰라서, 나는 선생님께 여쭤보았다. → Not knowing what to do, I asked my teacher.\nⓔ 창밖을 보다가, 그는 무지개를 발견했다. → Looked out the window, he found a rainbow.\nⓕ 영어로 쓰여 있어서, 그 책은 읽기 어려웠다. → Writing in English, the book was hard to read.\nⓖ 왼쪽으로 돌면, 너는 그 은행을 찾을 것이다. → Turn left, you will find the bank.\nⓗ 집에 혼자 있어서, 그 아이는 무서웠다. → Being home alone, the child felt scared.",
+   "choices": [
+    "① 2개",
+    "② 3개",
+    "③ 4개",
+    "④ 5개",
+    "⑤ 6개"
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "정확한 것 4개(ⓐⓒⓓⓗ). ⓑ 의미 오류(off) ⓔ Looking ⓕ Written ⓖ Turning 또는 Turn left, and.  [출처: 능률(김성곤) L6 문법포인트(◈ Forms) 분사구문]",
+   "source": "능률(김성곤) L6 문법포인트(◈ Forms) 분사구문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 9,
+   "qtype": "어법",
+   "score": 5,
+   "question": "다음 <보기>의 ⓐ~ⓔ에 대한 설명으로 바른 것은? [5점]\n< 보 기 >\nⓐ It is dangerous for children to swim in this river.\nⓑ It was kind of her to show me the way.\nⓒ It is easy for us to save energy.\nⓓ It was foolish of him to believe the rumor.\nⓔ It is difficult to learn a new language.",
+   "choices": [
+    "① ⓐ의 for children은 swim의 주체이며, of children으로 바꿔 쓸 수 있다.",
+    "② ⓑ에서 of를 쓴 것은 kind가 사람의 성격을 나타내는 형용사이기 때문이다.",
+    "③ ⓒ의 It은 '그것'이라고 해석하는 대명사이다.",
+    "④ ⓓ의 of him은 for him으로 바꿔 써도 의미가 같다.",
+    "⑤ ⓔ는 to부정사의 의미상 주어가 없으므로 어법상 틀린 문장이다."
+   ],
+   "answer": "②",
+   "render": "box",
+   "explanation": "① dangerous는 성격 형용사가 아니므로 for ③ 가주어(해석하지 않음) ④ foolish는 성격 형용사라 of만 가능 ⑤ 일반인이 주체이면 생략 가능.  [출처: 능률(김성곤) L5 문법포인트 to부정사의 의미상 주어]",
+   "source": "능률(김성곤) L5 문법포인트 to부정사의 의미상 주어"
+  },
+  {
+   "set_header": "[10-13] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 10,
+   "qtype": "어법",
+   "score": 4,
+   "question": "윗글의 (A)~(C)에 들어갈 말로 바르게 짝지어진 것은? [4점]\n<u>㉠ It is important for us to find ways to protect the environment.</u> Some people (A)[have / has] found creative ways to save the earth. One example is an underwater museum in Cancun, Mexico. Let's meet Dr. Rosa Allison, an art professor, and listen to her explanation about the special museum.\nCancun is a city where 4.8 million tourists travel every year. One of the most popular activities to do there (B)[is / are] looking at the area's beautiful sea life underwater. However, tourist activities are (C)[serious / seriously] damaging parts of the sea near Cancun.\nTo prevent this, artists did something interesting. They thought if they attracted tourists to a different part of the sea, the dying areas could have time to get better. They made an underwater museum away from the places where sea life was dying. It's about 14 meters below the surface and contains 500 statues.\nThe statues are made from <u>㉡ materials that support sea life</u>. They provide additional places for plants and animals to live on. Over time, many types of sea life will grow on the statues, which will make the artwork unique. The artists want people to see a variety of sea life on the statues. If people realize how rich sea life is, they will understand how important it is to save the sea.",
+   "choices": [
+    "① have - are - serious",
+    "② has - is - seriously",
+    "③ have - are - seriously",
+    "④ has - are - serious",
+    "⑤ have - is - seriously"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "(A) 복수 주어 Some people (B) 주어는 One(단수), of 이하는 수식어 (C) 현재분사 damaging을 꾸미는 부사.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 11,
+   "qtype": "어법",
+   "score": 4,
+   "question": "윗글의 밑줄 친 ㉠과 쓰임이 같은 It을 포함한 것은? [4점]",
+   "choices": [
+    "① It is getting dark outside.",
+    "② It was Mina who broke the window.",
+    "③ I lost my umbrella, but I found it later.",
+    "④ It is fun to ride a bike along the river.",
+    "⑤ She found it hard to answer the question."
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "㉠은 가주어. ① 비인칭 ② 강조구문 ③ 대명사 ⑤ 가목적어.  [출처: 능률(김성곤) L5 본문·능률(김성곤) L5 문법포인트]",
+   "source": "능률(김성곤) L5 본문·능률(김성곤) L5 문법포인트"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 12,
+   "qtype": "내용일치",
+   "score": 3,
+   "question": "윗글의 밑줄 친 ㉡에 해당하는 예시로 가장 적절한 것은? [3점]",
+   "choices": [
+    "① plastic that slowly breaks into small pieces in the water",
+    "② a special kind of cement that lets coral grow on it",
+    "③ metal paint that keeps sea plants from growing",
+    "④ glass that reflects strong sunlight into the water",
+    "⑤ wood that floats up to the surface"
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "해양 생물이 붙어 살 자리를 주는 재료. ①④ 바다를 해침 ③ 생물 성장을 막음 ⑤ 물 위로 떠올라 조각상 재료가 될 수 없음.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 13,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글의 내용과 일치하지 않는 것은? [4점]",
+   "choices": [
+    "① The underwater museum was built near the areas where sea life was dying.",
+    "② About 4.8 million tourists visit Cancun every year.",
+    "③ Many tourists in Cancun enjoy watching sea life underwater.",
+    "④ The museum is about 14 meters below the surface of the sea.",
+    "⑤ Sea life will grow on the statues and make them unique."
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "본문은 away from the places where sea life was dying.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "[14-17] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 14,
+   "qtype": "주제",
+   "score": 4,
+   "question": "윗글의 목적으로 가장 알맞은 것은? [4점]\nIn Singapore, people are using architecture to protect the environment on land. Let's hear what Rajesh Khan, an architect, says about eco-friendly buildings.\nSingapore is hot throughout the year. Most buildings need air conditioning, (A)[which / that] uses a lot of energy and contributes to climate change. (B)[That's why / That's because] architects in Singapore have begun to design eco-friendly buildings that use less air conditioning but are still cool inside. For example, many buildings in Singapore are designed to have an open structure. This structure makes it possible for outside air to move throughout a building. This natural air flow is how these buildings stay cool.\nIn addition to making open structures, architects add large gardens. This greenery provides shade and protects parts of the building (C)[from / of] direct sunlight, which keeps the building cooler.\nEco-friendly buildings like these not only help protect the environment, but also (D)[provide / provides] people with a good quality of life. Those are the goals of this new style of architecture. Hopefully, architects will keep coming up with new eco-friendly ideas.\nEvery field has different ways of protecting the environment. With more innovation, humans and nature will be able to live together in harmony far into the future.",
+   "choices": [
+    "① to explain why Singapore is hot throughout the year",
+    "② to introduce how architecture in Singapore helps protect the environment",
+    "③ to compare different kinds of air conditioners",
+    "④ to advertise new apartments with large gardens",
+    "⑤ to warn people about the dangers of climate change"
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "싱가포르 건축이 환경 보호에 기여하는 방식 소개. ① 도입 배경 ③ 비교 없음 ④ 광고 아님 ⑤ 원인 설명에 한 번 나올 뿐.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 15,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글에서 소개한 두 가지 건축 방식(open structure, large gardens)의 공통적인 목적으로 가장 적절한 것은? [4점]",
+   "choices": [
+    "① to make buildings look more beautiful from the outside",
+    "② to let more sunlight into the buildings",
+    "③ to keep buildings cool without using much air conditioning",
+    "④ to give people more space to grow vegetables",
+    "⑤ to make buildings stronger against strong winds"
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "open structure는 자연 통풍, gardens는 그늘·직사광선 차단 → 둘 다 에어컨을 덜 쓰고 시원하게. ②는 정원의 효과와 반대.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 16,
+   "qtype": "어법",
+   "score": 4,
+   "question": "윗글의 (A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은? [4점]",
+   "choices": [
+    "① which - That's why - from - provide",
+    "② that - That's why - from - provides",
+    "③ which - That's because - of - provide",
+    "④ that - That's because - from - provide",
+    "⑤ which - That's why - of - provides"
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "(A) 콤마 뒤 계속적 용법은 which (B) 앞 문장이 원인 → That's why (C) protect A from B (D) not only help ~ but also provide 병렬.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 17,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글을 읽고 답할 수 없는 질문은? [4점]",
+   "choices": [
+    "① Why do most buildings in Singapore need air conditioning?",
+    "② What does air conditioning contribute to?",
+    "③ What is Rajesh Khan's job?",
+    "④ What do architects add to buildings besides open structures?",
+    "⑤ How much energy do eco-friendly buildings in Singapore save each year?"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "절약량 수치는 없음. ① hot throughout the year ② climate change ③ an architect ④ large gardens.  [출처: 능률(김성곤) L5 본문]",
+   "source": "능률(김성곤) L5 본문"
+  },
+  {
+   "set_header": "[18-20] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 18,
+   "qtype": "어법",
+   "score": 4,
+   "question": "윗글의 (A)~(D)에 들어갈 표현이 순서대로 바르게 연결된 것은? [4점]\nBorrow from your neighbors!\nAsk Your Neighbors helps people easily find items (A)[that / what] they can borrow from others. First, users download the app and search for another user that has the item they need. Then they pick up the item and return it later.\n(Jasmine / December 12, 2019) I asked for a board game and got one in less than 30 minutes. I love saving money by borrowing things that I don't often need. Also, I think it's environmentally friendly. The fewer products we buy, the more resources we save.\n(Cassandra / March 7, 2020) (B)[Seeing / Seen] a lot of positive reviews, I decided to borrow a bike helmet. When I got it, however, it was broken. I was so upset!\n(Ask Your Neighbors / March 9, 2020) We're sorry that you had (C)[such / so] a negative experience. To fix this issue, we are asking lenders to update the pictures of their items regularly. This will let other users (D)[know / to know] the exact condition of the product.",
+   "choices": [
+    "① what - Seeing - so - know",
+    "② that - Seen - such - to know",
+    "③ what - Seen - such - know",
+    "④ that - Seeing - so - to know",
+    "⑤ that - Seeing - such - know"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "(A) 선행사 items → that (B) 능동 → Seeing (C) such + a + 형용사 + 명사 (D) let + 목적어 + 동사원형.  [출처: 능률(김성곤) L6 본문·능률(김성곤) L6 문법포인트(◈ Forms)]",
+   "source": "능률(김성곤) L6 본문·능률(김성곤) L6 문법포인트(◈ Forms)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 19,
+   "qtype": "내용일치",
+   "score": 3,
+   "question": "윗글에 등장하는 인물과 그 내용이 잘못 연결된 것은? [3점]",
+   "choices": [
+    "① Jasmine – 30분이 채 안 돼서 보드게임을 빌렸다.",
+    "② Jasmine – 자주 쓰지 않는 물건을 빌려 돈을 아끼는 것을 좋아한다.",
+    "③ Cassandra – 좋은 후기를 많이 보고 자전거 헬멧을 빌렸다.",
+    "④ Cassandra – 빌린 헬멧이 고장 나 있어서 새 헬멧으로 교환받았다.",
+    "⑤ Ask Your Neighbors – 빌려주는 사람들에게 물건 사진을 정기적으로 올려 달라고 요청하고 있다."
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "교환 언급 없음 — I was so upset!에서 끝남.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 20,
+   "qtype": "요약",
+   "score": 4,
+   "question": "윗글을 한 문장으로 요약할 때 가장 적절한 것은? [4점]",
+   "choices": [
+    "① The app makes sharing items easy and eco-friendly, although it still has some problems to fix.",
+    "② The app sells used items to neighbors at low prices, so users can save money.",
+    "③ Most users of the app are unhappy because the items they borrow are often broken.",
+    "④ Buying new products is better for the environment than borrowing them from others.",
+    "⑤ The app asks users to write positive reviews to get more lenders."
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "② 판매가 아니라 대여 ③ 불만은 Cassandra 한 명 ④ 본문과 반대 ⑤ 후기가 아니라 사진 업데이트 요청.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  },
+  {
+   "set_header": "[21-23] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 21,
+   "qtype": "지칭",
+   "score": 4,
+   "question": "윗글의 밑줄 친 ⓐ~ⓔ가 가리키는 것을 바르게 짝짓지 않은 것은? [4점]\nI can look after your pet!\nPet Sitter Finder is the perfect app for pet lovers and pet owners. ⓐ <u>It</u> helps pet owners (A) <u>find</u> reliable people to look after their pets. When a pet owner is looking for pet sitters, ⓑ <u>he or she</u> uploads a post. Pet sitters or dog walkers can then send messages to the owner. The owner checks ⓒ <u>their</u> reviews and chooses the best person.\n(George / November 12, 2019) I use this app (B) <u>whenever</u> I'm going out of town. I have some concerns about my personal information, though. (C) <u>What if</u> people use my phone number for other purposes?\n(Pet Sitter Finder / November 14, 2019) We're aware of ⓓ <u>this issue</u>. We're now developing a system (D) <u>that</u> allows users to communicate freely without showing ⓔ <u>their</u> personal information.\n(Samantha / February 22, 2020) Animals aren't allowed in my apartment, so I don't have any pets. However, by (E) <u>using</u> Pet Sitter Finder, I can experience the joy of walking a dog.",
+   "choices": [
+    "① ⓐ – Pet Sitter Finder",
+    "② ⓑ – a pet owner",
+    "③ ⓒ – pet owners",
+    "④ ⓓ – George's worry about his personal information",
+    "⑤ ⓔ – users"
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "ⓒ their = 메시지를 보낸 pet sitters or dog walkers.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 22,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글을 읽고 답할 수 없는 질문은? [4점]",
+   "choices": [
+    "① What does a pet owner do first when looking for a pet sitter?",
+    "② When will the new system for users be ready?",
+    "③ How does the owner choose the best person?",
+    "④ When does George use the app?",
+    "⑤ Why doesn't Samantha have any pets?"
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "개발 중이라고만 함. ① uploads a post ③ checks their reviews ④ whenever he's going out of town ⑤ 아파트에서 동물 금지.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 23,
+   "qtype": "어법",
+   "score": 4,
+   "question": "윗글의 밑줄 친 (A)~(E)에 대한 설명으로 바른 것은? [4점]",
+   "choices": [
+    "① (A)는 to find로 바꿔 쓸 수 있다.",
+    "② (B)는 '언제 ~하든지 간에'라는 양보의 의미로 쓰였다.",
+    "③ (C)는 '~하는 게 어때?'라는 제안의 뜻이다.",
+    "④ (D)는 관계부사이므로 where로 바꿔 쓸 수 있다.",
+    "⑤ (E)는 현재분사로, '사용하고 있는'으로 해석한다."
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "help + 목적어 + 동사원형/to부정사. ② '~할 때마다' ③ '~하면 어떡하지?'(걱정) ④ 주격 관계대명사(=which) ⑤ 전치사 by의 목적어인 동명사.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  },
+  {
+   "set_header": "[24-26] 다음 글을 읽고 물음에 답하시오.",
+   "type": "single",
+   "num": 24,
+   "qtype": "어법",
+   "score": 5,
+   "question": "윗글의 밑줄 친 ⓐ~ⓔ 중, 어법상 틀린 것의 개수는? [5점]\nSon: What should we do this weekend, Dad?\nDad: Why don't we ⓐ <u>going</u> camping?\nSon: But we don't have a tent. Should we buy ⓑ <u>it</u>? Also, who will take care of our dog?\nDad: Don't worry. I know some apps ⓒ <u>who</u> can help us.\n(After looking at the apps)\nSon: ⓓ <u>How</u> great apps! We can borrow a tent and find someone to take care of our dog.\nDad: That's right. These kinds of services are part of the \"sharing economy.\" People can share their items with others and provide services to them at a small fee or for free.\nSon: But these services ⓔ <u>do have</u> some weaknesses. Some people left negative reviews about the services.\nDad: Well, I think (A) <u>the more people use the services, the more they will improve</u>.",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "틀린 것 4개: ⓐ go ⓑ one(정해지지 않은 a tent) ⓒ that/which(선행사가 사물) ⓓ What. ⓔ 동사 강조 do는 옳음.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 25,
+   "qtype": "함축",
+   "score": 3,
+   "question": "윗글의 밑줄 친 문장 (A)가 의미하는 바로 가장 적절한 것은? [3점]",
+   "choices": [
+    "① People will improve their lives by using more services.",
+    "② People should use the services more often to save money.",
+    "③ The services will become more expensive when more people use them.",
+    "④ Only a few people should use the services until they improve.",
+    "⑤ As more people use the services, the services will get better."
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "they = the services. 「the 비교급 ~, the 비교급 ~」 = ~할수록 더 …하다. ①은 they를 people로 잘못 읽은 오답.  [출처: 능률(김성곤) L6 본문·능률(김성곤) L6 문법포인트(◈ Forms)]",
+   "source": "능률(김성곤) L6 본문·능률(김성곤) L6 문법포인트(◈ Forms)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 26,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "윗글의 내용과 일치하지 않는 것은? [4점]",
+   "choices": [
+    "① The dad suggests going camping this weekend.",
+    "② People can use sharing economy services only by paying a lot of money.",
+    "③ The family doesn't have a tent.",
+    "④ The son is worried about who will take care of their dog.",
+    "⑤ Some people wrote negative reviews about the services."
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "본문은 at a small fee or for free.  [출처: 능률(김성곤) L6 본문]",
+   "source": "능률(김성곤) L6 본문"
+  }
+ ]
+}

@@ -2997,6 +2997,392 @@ window.PASSAGES = [
            + "(A)는 2번의 <b>precisely controlled</b>를 그대로 옮긴 말(controllability), "
            + "(B)는 1번의 <b>but this is not always the case</b> = 통념에 <b>도전</b>한다(challenge). "
            + "<u>요약문 빈칸은 본문 단어를 바꿔 쓴 것</u>이라는 원칙과, <b>(B)부터 방향으로 거르는</b> 순서를 가르칠 것."
+},
+
+/* ===== 2026수능 31 · 36 · 40 ===== */
+{
+  id: "s26_31_grain", src: "2026수능 31번", qnum: 31, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 2, time: 80, note: "",
+  sents: [
+    "The early grain trade firms were active in both surplus-producing and food deficit regions, and these firms made it their business to know the state of supply and demand in both.",
+    "Because this information was the key to their <u>__________</u>, these firms worked in relative secrecy, frequently built on family ties, trust, and loyalty.",
+    "In addition, these firms were able to benefit from the rise of commodity exchanges and commodities futures markets that emerged in the mid-1800s.",
+    "Agricultural markets are naturally unstable, due to changes in harvest size that result from variable weather patterns and other factors.",
+    "Locking-in prices by buying and selling grain for future delivery helped these firms to minimize such risks.",
+    "It made sense for the grain trading companies to manage their risks within a single firm that was operating in more than one country, rather than operating as independent national companies trading with each other.",
+    "Their access to information in multiple markets enabled them to easily cover the risks associated with agricultural commodity trade."
+  ],
+  choices: ["profitability","unification","innovation","reputation","sustainability"],
+  ans: 1,
+  blankAt: 2,
+  key: "<b class=w>The early grain trade firms</b> - 초기 곡물 무역 회사",
+  attr: "<b class=w>made it their business to know the state of supply and demand</b> (1)<br>- 수급 정보를 아는 것이 이들의 사업이었다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Because this information was the key to their ____...", skip:false},
+    {n:3, head:"In addition, these firms were able to benefit... <b>mid-1800s</b>", skip:false,
+     why:"연도가 있지만 In addition으로 근거를 하나 더 얹는 자리"},
+    {n:4, head:"Agricultural markets are naturally unstable...", skip:false},
+    {n:5, head:"Locking-in prices by buying and selling grain...", skip:false},
+    {n:6, head:"It made sense for the grain trading companies...", skip:false},
+    {n:7, head:"Their access to information in multiple markets...", skip:false}
+  ],
+  trunk1: "정보가 곧 돈이었다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"초기 곡물 무역 회사는 양쪽 지역의 수급 정보를 아는 것을 사업으로 삼았다"},
+    {n:2, lb:"주장",     head:true,  txt:"그 정보가 <b>무언가</b>의 열쇠였기에 비밀리에, 혈연·신뢰로 운영했다 (빈칸)"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"게다가 1800년대 중반 상품거래소·선물시장의 부상에서 이익을 얻었다"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"농산물 시장은 날씨 등으로 수확량이 변해 본래 불안정하다"},
+    {n:5, lb:"근거",     head:false, to:3, txt:"선물 거래로 가격을 묶어 위험을 최소화했다"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"여러 나라에서 한 회사로 위험을 관리하는 것이 합리적이었다"},
+    {n:7, lb:"재진술",   head:true,  txt:"여러 시장의 정보 접근이 무역 위험을 쉽게 덮게 해주었다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "<b>In addition</b>(3)은 같은 방향으로 근거를 하나 더 얹는 신호. 전환이 아니다.",
+  gist: "초기 곡물 무역 회사에게 수급 정보는 곧 수익성의 열쇠였다.",
+  wrong: {
+    "2": "회사 <b>통합</b>이 아님 - 6번은 위험 관리 방식일 뿐",
+    "3": "<b>혁신</b>을 다루지 않음",
+    "4": "<b>평판</b>은 지문에 없음 - family ties·trust는 내부 운영 방식",
+    "5": "<b>지속가능성</b>이 아니라 이익"
+  },
+  wrongNote: "④가 함정. trust·loyalty가 나와 평판으로 끌리지만, 그건 <b>비밀을 지키는 방식</b>이지 정보가 지켜주는 대상이 아니다.",
+  teachNote: "<b>빈칸이 단어 하나</b>라 5개년 빈칸 중 가장 쉽다. 빈칸(②) 뒤의 ③④⑤⑥⑦이 전부 "
+           + "<u>위험 최소화 → 이익</u>을 말하므로 profitability가 잡힌다. "
+           + "빈칸 문항 입문용으로 쓸 것 - <b>빈칸 뒤를 읽으면 답이 나온다</b>는 경험을 먼저 줄 것."
+},
+
+{
+  id: "s26_36_clock", src: "2026수능 36번", qnum: 36, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+  star: 2, time: 100,
+  note: "* molecule: 분자  ** quartz: 석영(石英)",
+  given: "We usually think of a clock as a physical thing, like an alarm clock or a wristwatch. But a clock is really a <b>process</b> embodied in a machine, and the nature of that process is <b>repetitive</b>.",
+  paras: [
+    {tag:"A",
+     text:"<b>Indeed</b>, it is almost impossible to think of a clock that does not depend on a repetitive cycle of events. The only example that comes to mind readily is a candle marked in hours. But here <b>too</b> there is iteration \u2014 the repeated burning of molecules of wax \u2014 so this <b>too</b> is an iterative process, although at first masked.",
+     cue:"Indeed, it is almost impossible...",
+     why:"<b>Indeed</b>는 앞말을 <u>강조·확장</u>하는 신호. (C)의 예시들 뒤에서 '정말 예외가 없다'로 이어진다"},
+    {tag:"B",
+     text:"The use of radiocarbon dating is <b>another</b>, much longer scale clock that <b>also</b> appears to be like this. It seems to yield a smooth time scale but in fact does not: the decay of atoms of carbon-14 is repetitive, although on a large scale it gives the appearance of being continuous.",
+     cue:"The use of radiocarbon dating is another...",
+     why:"<b>another</b> · <b>also</b> - 앞에 <u>비슷한 사례가 이미 하나</u> 나와야 한다 → (A)의 양초 뒤"},
+    {tag:"C",
+     text:"A clock can be almost <b>any process</b> that repeats itself over and over again for an indefinite period. Water clocks drip at a steady pace; quartz crystals vibrate regularly.",
+     cue:"A clock can be almost any process...",
+     why:"주어진 글의 <b>process</b> · <b>repetitive</b>를 그대로 받아 푼다 → 맨 앞"}
+  ],
+  orderAns: ["C","A","B"],
+  ans: 4,
+  orderWhy: "주어진 글(시계=반복 과정) → (C) 물시계·석영 예시 → (A) Indeed, 양초도 사실은 반복 → (B) another, 방사성탄소도 마찬가지",
+  teachNote: "<b>연결어 세 개로만 푸는 지문.</b> 단어 난이도가 낮아 순서 입문에 최적 - "
+           + "① 주어진 글 <b>process·repetitive</b> → (C) <b>any process that repeats</b> (같은 말 받기) "
+           + "② (A) <b>Indeed</b> = 앞을 강조 · (A)의 <b>too</b>는 앞에 다른 예가 있었다는 뜻 "
+           + "③ (B) <b>another · also</b> = 앞에 사례가 최소 둘 → 맨 뒤 "
+           + "<u>another는 절대 첫 자리에 못 온다</u>를 여기서 각인시킬 것."
+},
+
+{
+  id: "s26_40_performing", src: "2026수능 40번", qnum: 40, qtype: "요약",
+  qtext: "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+  star: 2, time: 80, note: "",
+  sents: [
+    "In modern societies, the performing arts form a distinct category of public entertainment in opposition to the mass distribution through the media of expertly staged performances which have been recorded and edited.",
+    "By contrast, theater, ballet, circus, concert, rodeo, storytelling, etc., unfold their signs in real space and time, and engage audiences who respond cognitively and emotionally on the spot.",
+    "Performers and audiences are involved in shared enjoyment.",
+    "But sometimes frustration occurs within the boundaries of such ritualistic events.",
+    "In industrialized and computerized cultures, the performing arts become economically unstable because the institutions which sustain them increasingly depend on public and corporate funding.",
+    "However, they retain their power of fascination for large, if not massive audiences, who prize the experiential, risk-loaded and one-time event quality they afford.",
+    "In traditional and local cultures, performances still survive and provide their audiences with a unique fulfillment in smaller scale, economically sustainable institutional settings."
+  ],
+  summary: "In a situation of financial <u>(A)</u> due to reliance on external funding, the performing arts, which provide unique and live experiences, <u>(B)</u> audiences who value those qualities.",
+  choices: [
+    "uncertainty | lose",
+    "imbalance | split",
+    "challenges | secure",
+    "stability | reach",
+    "advantages | support"
+  ],
+  ans: 3,
+  key: "<b class=w>the performing arts</b> - 공연 예술의 현재",
+  attr: "<b class=w>unfold their signs in real space and time... respond on the spot</b> (2)<br>- 실시간·현장성이 본질",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"By contrast, theater, ballet, circus...", skip:false},
+    {n:3, head:"Performers and audiences are involved in shared enjoyment.", skip:false},
+    {n:4, head:"But sometimes frustration occurs...", skip:false},
+    {n:5, head:"In industrialized and computerized cultures...", skip:false},
+    {n:6, head:"However, they retain their power of fascination...", skip:false},
+    {n:7, head:"In traditional and local cultures, performances still survive...", skip:false}
+  ],
+  trunk1: "공연 예술은 경제적으로 불안정하다", trunk2: "그럼에도 관객을 붙든다",
+  pivotAt: 6,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"공연 예술은 녹화·편집된 대량 배포와 구별되는 범주다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"연극·발레·서커스는 실제 공간과 시간에서 펼쳐지고 현장에서 반응한다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"공연자와 관객이 즐거움을 함께 나눈다"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"다만 그 안에서 좌절이 생기기도 한다"},
+    {n:5, lb:"주장",     head:true,  txt:"산업화·전산화 문화에서 공연 예술은 <b>경제적으로 불안정</b>해진다"},
+    {n:6, lb:"대조·반전", head:true, txt:"그러나 체험적·일회적 성격을 소중히 여기는 관객을 여전히 붙든다"},
+    {n:7, lb:"재진술",   head:true,  txt:"전통·지역 문화에서도 작은 규모로 살아남아 고유한 충족을 준다"}
+  ],
+  pivot: {sig:"However", at:6, from:"경제적으로 불안정해진다", to:"그래도 관객을 붙든다"},
+  pivotSub: "5번이 문제(불안정), 6번 <b>However</b>가 반전(그래도 매력 유지). "
+          + "요약문의 (A)는 5번, (B)는 6번에서 온다 - <u>요약문 두 칸이 전환점 앞뒤에 하나씩</u> 걸린다.",
+  gist: "공연 예술은 재정적으로 어렵지만 현장성을 소중히 여기는 관객을 여전히 확보한다.",
+  wrong: {
+    "1": "(B) <b>lose</b>가 정반대 - 6번은 관객을 <b>붙든다</b>고 말한다",
+    "2": "(B) split(갈라진다)은 지문에 없음",
+    "4": "(A) <b>stability</b>가 정반대 - 5번은 unstable이라고 못 박는다",
+    "5": "(A) advantages가 정반대"
+  },
+  wrongNote: "(A)만 보면 ①③이 남고, (B)를 보면 ③만 남는다. <b>(A)는 5번, (B)는 6번</b>에 각각 대응한다.",
+  teachNote: "요약문 빈칸이 <b>전환점 앞뒤</b>에 하나씩 걸린 전형. 2025-40번(통념 반박형)과 구조가 달라 "
+           + "둘을 묶으면 요약 문항의 두 패턴이 완성된다. "
+           + "<u>(A)는 문제, (B)는 그럼에도</u>라는 틀을 먼저 잡고 선택지를 거르게 할 것."
+},
+
+/* ===== 2024수능 31 · 36 ===== */
+{
+  id: "s24_31_reading", src: "2024수능 31번", qnum: 31, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 2, time: 80, note: "* adjunct: 부속물",
+  sents: [
+    "Over the last decade the attention given to how children learn to read has foregrounded the nature of <i>textuality</i>, and of the different, interrelated ways in which readers of all ages make texts mean.",
+    "\u2018Reading\u2019 now applies to a greater number of representational forms than at any time in the past: pictures, maps, screens, design graphics and photographs are all regarded as text.",
+    "In addition to the innovations made possible in picture books by new printing processes, design features also predominate in other kinds, such as books of poetry and information texts.",
+    "Thus, reading becomes a more complicated kind of interpretation than it was when children\u2019s attention was focused on the printed text, with sketches or pictures as an adjunct.",
+    "Children now learn from a picture book that words and illustrations complement and enhance each other.",
+    "Reading is not simply <u>__________</u>.",
+    "Even in the easiest texts, what a sentence \u2018says\u2019 is often not what it means."
+  ],
+  choices: ["knowledge acquisition","word recognition","imaginative play",
+            "subjective interpretation","image mapping"],
+  ans: 2,
+  blankAt: 6,
+  key: "<b class=w>how children learn to read</b> - 읽기의 성격 변화",
+  attr: "<b class=w>the different, interrelated ways in which readers... make texts mean</b> (1)<br>- 읽기는 여러 방식으로 의미를 만드는 것",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"\u2018Reading\u2019 now applies to a greater number...", skip:false},
+    {n:3, head:"In addition to the innovations made possible...", skip:false},
+    {n:4, head:"Thus, reading becomes a more complicated kind...", skip:false},
+    {n:5, head:"Children now learn from a picture book...", skip:false},
+    {n:6, head:"Reading is not simply ____.", skip:false},
+    {n:7, head:"Even in the easiest texts, what a sentence \u2018says\u2019...", skip:false}
+  ],
+  trunk1: "읽기는 글자 읽기가 아니라 의미 만들기 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"읽기 연구가 텍스트성과 <b>의미를 만드는 여러 방식</b>을 부각시켰다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"그림·지도·화면·사진까지 모두 텍스트로 여긴다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"그림책뿐 아니라 시집·정보책에서도 디자인 요소가 두드러진다"},
+    {n:4, lb:"주장",     head:true,  txt:"그래서 읽기는 인쇄된 글자에만 집중하던 때보다 <b>더 복잡한 해석</b>이 됐다"},
+    {n:5, lb:"근거",     head:false, to:4, txt:"아이들은 낱말과 삽화가 서로를 보완·강화함을 배운다"},
+    {n:6, lb:"주장",     head:true,  txt:"읽기는 단순히 <b>무언가</b>가 아니다 (빈칸)"},
+    {n:7, lb:"재진술",   head:true,  txt:"가장 쉬운 글에서도 문장이 '말하는 것'과 '뜻하는 것'은 다르다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "<b>Thus</b>(4)는 인과 연결. 전환이 아니다.",
+  gist: "읽기는 낱말을 알아보는 것이 아니라 여러 요소로 의미를 만드는 복잡한 해석이다.",
+  wrong: {
+    "1": "<b>지식 습득</b>이 아니라는 말이 아님 - 초점이 다름",
+    "3": "상상 놀이와 대비하는 글이 아님",
+    "4": "<b>주관적 해석</b>은 오히려 글이 <u>긍정</u>하는 쪽 - not simply 뒤에 올 수 없다",
+    "5": "이미지 연결은 오히려 이 글이 <u>포함</u>시키는 것"
+  },
+  wrongNote: "④⑤가 함정. 빈칸이 <b>not simply</b> 뒤라 <u>글이 부정하는 것</u>이 들어가야 한다. "
+           + "④⑤는 글이 긍정하는 쪽이라 방향이 반대다.",
+  teachNote: "<b>not simply ____</b> 구문이 핵심. 빈칸에 <u>글이 부정하는 좁은 개념</u>이 들어간다. "
+           + "7번 <b>what a sentence says is not what it means</b>가 곧 '낱말 알아보기(word recognition)로는 부족하다'는 뜻. "
+           + "<u>부정 구문의 빈칸은 글의 방향과 반대</u>임을 각인시킬 것."
+},
+{
+  id: "s24_36_norms", src: "2024수능 36번", qnum: 36, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+  star: 2, time: 100,
+  note: "* reconcile: 화해시키다  ** antagonistic: 적대적인  *** exposition: 설명",
+  given: "Negotiation can be defined as an attempt to explore and reconcile <b>conflicting positions</b> in order to reach an acceptable outcome.",
+  paras: [
+    {tag:"A",
+     text:"Areas of difference can and do frequently remain, and will perhaps be the subject of future negotiations, or indeed remain irreconcilable. <b>In those instances</b> in which the parties have highly antagonistic or polarised relations, the process is likely to be dominated by the exposition, very often in public, of the areas of conflict.",
+     cue:"Areas of difference can and do frequently remain...",
+     why:"(C)의 <b>areas of common interest and conflict</b>를 받아 <u>차이가 남는 경우</u>로 이어진다 → (C) 뒤"},
+    {tag:"B",
+     text:"<b>In these and sometimes other forms</b> of negotiation, negotiation serves functions other than reconciling conflicting interests. These will include delay, publicity, diverting attention or seeking intelligence about the other party and its negotiating position.",
+     cue:"In these and sometimes other forms of negotiation...",
+     why:"<b>In these</b> - 앞에 <u>그런 경우들</u>이 이미 나와야 한다 → (A) 뒤. 맨 뒤"},
+    {tag:"C",
+     text:"Whatever the nature of the outcome, which may actually favour one party more than another, the purpose of negotiation is the identification of <b>areas of common interest and conflict</b>. In this sense, depending on the intentions of the parties, the areas of common interest may be clarified, refined and given negotiated form and substance.",
+     cue:"Whatever the nature of the outcome...",
+     why:"주어진 글의 <b>conflicting positions</b>를 받아 협상의 <u>목적</u>을 푼다 → 맨 앞"}
+  ],
+  orderAns: ["C","A","B"],
+  ans: 4,
+  orderWhy: "주어진 글(협상=상충 입장 조정) → (C) 협상의 목적은 공통·갈등 영역 식별 → (A) 그래도 차이가 남는 경우 → (B) In these, 그런 경우 협상은 다른 기능",
+  teachNote: "<b>지시어만으로 순서가 정해지는</b> 지문. (B)의 <b>In these</b>는 <u>앞에 복수의 사례</u>가 있어야 하므로 "
+           + "절대 첫 자리에 못 온다. (A)의 <b>In those instances</b>도 마찬가지 성격이지만 "
+           + "(C)의 <b>areas of common interest and conflict</b> → (A)의 <b>Areas of difference</b>가 더 직접적인 고리. "
+           + "2026-36번(another)과 묶어 <u>지시어는 뒤쪽</u> 원칙을 굳힐 것."
+},
+
+/* ===== 2023수능 31 · 36 ===== */
+{
+  id: "s23_31_sports", src: "2023수능 31번", qnum: 31, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 3, time: 85,
+  note: "* discharge: 이행하다  ** rumination: 생각  *** lucrative: 돈을 많이 버는",
+  sents: [
+    "There is something deeply paradoxical about the professional status of sports journalism, especially in the medium of print.",
+    "In discharging their usual responsibilities of description and commentary, reporters\u2019 accounts of sports events are eagerly consulted by sports fans, while in their broader journalistic role of covering sport in its many forms, sports journalists are among the most visible of all contemporary writers.",
+    "The ruminations of the elite class of \u2018celebrity\u2019 sports journalists are much sought after by the major newspapers, their lucrative contracts being the envy of colleagues in other \u2018disciplines\u2019 of journalism.",
+    "Yet sports journalists do not have a standing in their profession that corresponds to the size of their readerships or of their pay packets, with the old saying (now reaching the status of clich\u00e9) that sport is the \u2018toy department of the news media\u2019 still readily to hand as a dismissal of the worth of what sports journalists do.",
+    "This reluctance to take sports journalism seriously produces the paradoxical outcome that sports newspaper writers are much read but little <u>__________</u>."
+  ],
+  choices: ["paid","admired","censored","challenged","discussed"],
+  ans: 2,
+  blankAt: 5,
+  key: "<b class=w>sports journalism</b> - 스포츠 저널리즘의 역설",
+  attr: "<b class=w>something deeply paradoxical about the professional status</b> (1)<br>- 직업적 지위가 <b>역설적</b>이다",
+  dir: "통념",
+  skip: [
+    {n:2, head:"In discharging their usual responsibilities...", skip:false},
+    {n:3, head:"The ruminations of the elite class of \u2018celebrity\u2019...", skip:false},
+    {n:4, head:"Yet sports journalists do not have a standing...", skip:false},
+    {n:5, head:"This reluctance to take sports journalism seriously...", skip:false}
+  ],
+  trunk1: "많이 읽히고 잘 번다", trunk2: "그런데 직업적 인정은 못 받는다",
+  pivotAt: 4,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"스포츠 저널리즘의 직업적 지위에는 깊은 역설이 있다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"기사는 팬들이 열심히 찾아보고 기자들은 가장 눈에 띄는 필자들이다"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"유명 기자의 글은 대형 신문이 원하고 계약금도 부러움을 산다"},
+    {n:4, lb:"대조·반전", head:true, txt:"그런데 독자 수나 보수에 <b>걸맞은 위상</b>은 없다 - '뉴스의 장난감 부서'라는 말"},
+    {n:5, lb:"재진술",   head:true,  txt:"그래서 많이 읽히지만 거의 <b>무언가</b>되지 않는다는 역설 (빈칸)"}
+  ],
+  pivot: {sig:"Yet", at:4, from:"많이 읽히고 잘 번다", to:"직업적 인정은 못 받는다"},
+  pivotSub: "<b>Yet</b>(4)이 전환. 1번의 <b>paradoxical</b>이 이미 예고했다 - <u>역설이라는 말이 나오면 반드시 뒤집힌다</u>.",
+  gist: "스포츠 기자는 많이 읽히지만 직업적으로는 존경받지 못하는 역설에 놓여 있다.",
+  wrong: {
+    "1": "<b>보수</b>는 오히려 많다고 못 박음(③번 lucrative contracts) - 정반대",
+    "3": "<b>검열</b> 얘기가 없음",
+    "4": "<b>도전받는다</b>는 내용이 아님",
+    "5": "<b>논의된다</b>가 아니라 <u>존중받지 못한다</u>"
+  },
+  wrongNote: "①이 최대 함정. much read but little paid가 대구로 자연스러워 보이지만, "
+           + "③번의 <b>lucrative contracts</b>가 정면으로 반박한다. <u>지문이 부정한 것을 답으로 고르는</u> 전형.",
+  teachNote: "빈칸 앞 <b>much read but little ____</b>가 대구. 그래서 ①paid가 소리로는 맞아 보인다. "
+           + "하지만 <u>보수는 많다</u>고 이미 나왔으므로 남는 것은 <b>존경·위상</b>이다(4번 standing). "
+           + "<b>대구에 속지 말고 근거 문장을 찾아라</b>를 가르칠 것."
+},
+{
+  id: "s23_36_waterflea", src: "2023수능 36번", qnum: 36, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+  star: 2, time: 100,
+  note: "* spine: 가시 돌기  ** conducive: 도움되는",
+  given: "A fascinating species of water flea exhibits a kind of flexibility that evolutionary biologists call <b>adaptive plasticity</b>.",
+  paras: [
+    {tag:"A",
+     text:"<b>That\u2019s a clever trick</b>, because producing spines and a helmet is costly, in terms of energy, and conserving energy is essential for an organism\u2019s ability to survive and reproduce. The water flea only expends the energy needed to produce spines and a helmet when it needs to.",
+     cue:"That\u2019s a clever trick, because...",
+     why:"<b>That</b> - 앞에 <u>그 영리한 방법</u>이 무엇인지 먼저 나와야 한다 → (B) 뒤"},
+    {tag:"B",
+     text:"If the baby water flea is developing into an adult in water that includes the chemical signatures of creatures that prey on water fleas, it develops a helmet and spines to defend itself against predators. If the water around it doesn\u2019t include the chemical signatures of predators, the water flea doesn\u2019t develop these protective devices.",
+     cue:"If the baby water flea is developing...",
+     why:"주어진 글의 <b>adaptive plasticity</b>가 무엇인지 <u>구체적으로 설명</u> → 맨 앞",
+     },
+    {tag:"C",
+     text:"<b>So it may well be that this plasticity is an adaptation</b>: a trait that came to exist in a species because it contributed to reproductive fitness. There are many cases, across many species, of adaptive plasticity. Plasticity is conducive to fitness if there is sufficient variation in the environment.",
+     cue:"So it may well be that this plasticity...",
+     why:"<b>So</b> + <b>this plasticity</b> - 앞의 설명을 받아 <u>결론</u>을 낸다 → 맨 뒤"}
+  ],
+  orderAns: ["B","A","C"],
+  ans: 2,
+  orderWhy: "주어진 글(적응적 가소성) → (B) 포식자 신호가 있으면 투구·가시 생성 → (A) That's a clever trick, 에너지 절약 → (C) So, 그래서 적응이다",
+  teachNote: "<b>순서 입문 최적 후보.</b> 어휘가 쉽고 단서가 교과서적이다 - "
+           + "① (B)가 주어진 글의 개념을 <u>풀어서</u> 설명 (예시가 앞) "
+           + "② (A)의 <b>That</b>은 앞 내용을 통째로 받는 지시어 "
+           + "③ (C)의 <b>So</b>는 결론 신호 → 맨 뒤 "
+           + "<u>개념 → 예시 → 결론</u>이라는 가장 흔한 순서 구조를 보여주는 표본."
+},
+
+/* ===== 2022수능 31 · 36 ===== */
+{
+  id: "s22_31_humour", src: "2022수능 31번", qnum: 31, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 2, time: 80, note: "* cognitive: 인식의  ** leeway: 여지",
+  sents: [
+    "Humour involves not just practical disengagement but cognitive disengagement.",
+    "As long as something is funny, we are for the moment not concerned with whether it is real or fictional, true or false.",
+    "This is why we give considerable leeway to people telling funny stories.",
+    "If they are getting extra laughs by exaggerating the silliness of a situation or even by making up a few details, we are happy to grant them comic licence, a kind of poetic licence.",
+    "Indeed, someone listening to a funny story who tries to correct the teller \u2014 \u2018No, he didn\u2019t spill the spaghetti on the keyboard and the monitor, just on the keyboard\u2019 \u2014 will probably be told by the other listeners to stop interrupting.",
+    "The creator of humour is putting ideas into people\u2019s heads for the pleasure those ideas will bring, not to provide <u>__________</u> information."
+  ],
+  choices: ["accurate","detailed","useful","additional","alternative"],
+  ans: 1,
+  blankAt: 6,
+  key: "<b class=w>Humour</b> - 유머와 인식적 거리두기",
+  attr: "<b class=w>cognitive disengagement</b> (1) - 사실 여부에서 <b>손을 뗀다</b>",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"As long as something is funny, we are... not concerned...", skip:false},
+    {n:3, head:"This is why we give considerable leeway...", skip:false},
+    {n:4, head:"If they are getting extra laughs by exaggerating...", skip:false},
+    {n:5, head:"Indeed, someone listening to a funny story... <b>spaghetti</b>", skip:true,
+     why:"구체적 장면(스파게티 대사) - 앞말을 보여주는 예시"},
+    {n:6, head:"The creator of humour is putting ideas into people\u2019s heads...", skip:false}
+  ],
+  trunk1: "유머는 사실 여부를 따지지 않는다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"유머에는 실용적 거리두기뿐 아니라 <b>인식적 거리두기</b>가 있다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"웃긴 동안에는 그것이 사실인지 허구인지 신경 쓰지 않는다"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"그래서 웃긴 이야기를 하는 사람에게 상당한 여지를 준다"},
+    {n:4, lb:"근거",     head:false, to:3, txt:"과장하거나 세부를 지어내도 '희극적 허용'을 기꺼이 인정한다"},
+    {n:5, lb:"예시",     head:false, to:4, txt:"이야기를 바로잡으려는 사람은 오히려 끼어들지 말라는 말을 듣는다"},
+    {n:6, lb:"재진술",   head:true,  txt:"유머 창작자는 즐거움을 주려는 것이지 <b>무언가</b> 정보를 주려는 게 아니다 (빈칸)"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 6번까지 그대로 간다"},
+  pivotSub: "<b>Indeed</b>(5)는 앞말을 강조·확장하는 신호. 전환이 아니다.",
+  gist: "유머는 사실 여부를 따지지 않으므로, 정확한 정보 전달이 목적이 아니다.",
+  wrong: {
+    "2": "<b>상세한</b> 정보가 아님 - ④번은 세부를 지어내도 된다고 했지 상세함을 부정하지 않는다",
+    "3": "<b>유용한</b> 정보 여부는 다루지 않음",
+    "4": "<b>추가</b> 정보가 아님",
+    "5": "<b>대안적</b> 정보와 무관"
+  },
+  wrongNote: "②가 함정. '세부를 지어낸다'가 나와서 detailed로 끌리지만, 글이 부정하는 것은 <b>사실 여부</b>(real or fictional, true or false)다.",
+  teachNote: "빈칸이 <b>not to provide ____ information</b> - 부정 구문이라 <u>글이 부정하는 것</u>이 들어간다. "
+           + "2번 <b>whether it is real or fictional, true or false</b>가 그대로 <b>accurate</b>로 옮겨진다. "
+           + "2024-31번과 함께 <b>부정 구문 빈칸</b> 두 지문으로 묶어 가르칠 것."
+},
+{
+  id: "s22_36_greentax", src: "2022수능 36번", qnum: 36, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+  star: 2, time: 100, note: "",
+  given: "According to the market response model, it is <b>increasing prices</b> that drive providers to search for new sources, innovators to substitute, consumers to conserve, and alternatives to emerge.",
+  paras: [
+    {tag:"A",
+     text:"<b>Many examples of such \u201cgreen taxes\u201d exist.</b> Facing landfill costs, labor expenses, and related costs in the provision of garbage disposal, for example, some cities have required households to dispose of all waste in special trash bags, purchased by consumers themselves, and often costing a dollar or more each.",
+     cue:"Many examples of such \u201cgreen taxes\u201d exist.",
+     why:"<b>such green taxes</b> - 앞에 <u>세금을 매긴다</u>는 말이 먼저 나와야 한다 → (B) 뒤"},
+    {tag:"B",
+     text:"<b>Taxing</b> certain goods or services, and so increasing prices, should result in either decreased use of these resources or creative innovation of new sources or options. The money raised through the tax can be used directly by the government either to supply services or to search for alternatives.",
+     cue:"Taxing certain goods or services, and so increasing prices...",
+     why:"주어진 글의 <b>increasing prices</b>를 <u>세금</u>이라는 수단으로 구체화 → 맨 앞"},
+    {tag:"C",
+     text:"<b>The results</b> have been greatly increased recycling and more careful attention by consumers to packaging and waste. By internalizing the costs of trash to consumers, there has been an observed decrease in the flow of garbage from households.",
+     cue:"The results have been greatly increased recycling...",
+     why:"<b>The results</b> - 앞의 <u>쓰레기봉투 사례</u>가 있어야 그 결과를 말할 수 있다 → (A) 뒤. 맨 뒤"}
+  ],
+  orderAns: ["B","A","C"],
+  ans: 2,
+  orderWhy: "주어진 글(가격 상승이 변화를 이끈다) → (B) 세금으로 가격을 올린다 → (A) such green taxes의 사례(쓰레기봉투) → (C) The results, 그 결과",
+  teachNote: "<b>일반 → 사례 → 결과</b>라는 가장 흔한 3단 구조. 단서도 교과서적이다 - "
+           + "① (B)가 주어진 글의 increasing prices를 <u>Taxing</u>으로 받음 "
+           + "② (A)의 <b>such green taxes</b>는 앞에 taxes가 나와야 성립 "
+           + "③ (C)의 <b>The results</b>는 앞에 사례가 있어야 성립 "
+           + "<u>such·The results 같은 한정 표현은 앞을 가리킨다</u>를 각인시킬 것. 2023-36번과 같은 구조."
 }
 
 ];

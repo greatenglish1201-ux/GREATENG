@@ -475,7 +475,7 @@ table.sumch td.eng{width:auto; font-size:12.4px}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260905a"></script>
+<script src="passages_final.js?v=20260928c"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -846,6 +846,16 @@ table.sumch td.eng{width:auto; font-size:12.4px}
     return p.qnum + '번 ' + p.qtype;
   }
 
+  /* 자주 함께 뽑는 문항 묶음 */
+  var GROUPS = [
+    {id:'__g30__',   label:'★ 30번대 (31·36·40)',
+     has:function(p){ return [31,36,40].indexOf(p.qnum) >= 0 && !p.fast; }},
+    {id:'__gfront__',label:'★ 앞 문항 (21~24·30)',
+     has:function(p){ return [21,22,23,24,30].indexOf(p.qnum) >= 0 && !p.fast && !p.qlabel; }},
+    {id:'__glong__', label:'★ 장문 (41~45)',
+     has:function(p){ return !!p.qlabel || (p.paras && !p.given); }}
+  ];
+
   var selY = document.getElementById('selY');
   var selQ = document.getElementById('selQ');
   var cnt  = document.getElementById('cnt');
@@ -879,6 +889,11 @@ table.sumch td.eng{width:auto; font-size:12.4px}
     var pool = SORTED.filter(function(p){ return y === '__all__' || yearOf(p.src) === y; });
     selQ.innerHTML = '';
     opt(selQ, '__all__', '전체 문항');
+    // 묶음 프리셋
+    GROUPS.forEach(function(g){
+      var n = pool.filter(function(p){ return g.has(p); }).length;
+      if(n) opt(selQ, g.id, g.label + ' (' + n + ')');
+    });
     var seen = {}, keys = [];
     pool.forEach(function(p){
       var k = qKey(p);
@@ -898,9 +913,11 @@ table.sumch td.eng{width:auto; font-size:12.4px}
   /* 위 두 조건에 맞는 개별 지문 채우기 */
   function fillPs(){
     var y = selY.value, q = selQ.value;
+    var grp = GROUPS.filter(function(x){ return x.id === q; })[0];
     var pool = SORTED.filter(function(p){
-      return (y === '__all__' || yearOf(p.src) === y)
-          && (q === '__all__' || qKey(p) === q);
+      if(y !== '__all__' && yearOf(p.src) !== y) return false;
+      if(q === '__all__') return true;
+      return grp ? grp.has(p) : (qKey(p) === q);
     });
     selP.innerHTML = '';
     opt(selP, '__all__', '해당 전체 (' + pool.length + ')');
@@ -920,7 +937,11 @@ table.sumch td.eng{width:auto; font-size:12.4px}
     var y = selY.value, q = selQ.value, pick = selP.value;
     return SORTED.filter(function(p){
       if(y !== '__all__' && yearOf(p.src) !== y) return false;
-      if(q !== '__all__' && qKey(p) !== q) return false;
+      if(q !== '__all__'){
+        var g = GROUPS.filter(function(x){ return x.id === q; })[0];
+        if(g){ if(!g.has(p)) return false; }
+        else if(qKey(p) !== q) return false;
+      }
       if(pick === '__all__') return true;
       if(pick.indexOf('__fast__') === 0) return p.fast && srcShort(p.src) === pick.slice(8);
       return p.id === pick;
