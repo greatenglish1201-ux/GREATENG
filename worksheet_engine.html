@@ -336,18 +336,26 @@ table.sumch{margin-bottom:3mm}
 table.sumch th{font-size:10.5px}
 table.sumch td.eng{width:auto; font-size:12.4px}
 .sheet-ax .head{border-bottom-color:var(--steel2)}
+.sheet-ax{padding:10mm 12mm}
+.sheet-ax .head{margin-bottom:2.4mm}
+.sheet-ax .step-h{margin-bottom:2px}
+.sheet-ax .axt{padding:2px 8px}
+.sheet-ax .axg .axc{padding:3px 8px}
+.sheet-ax .axx{margin-bottom:2mm}
+.sheet-ax .foot{margin-top:2mm}
 .sheet-ax .head .t1{color:var(--steel2)}
-table.axsum{margin:0 0 3mm}
+table.axsum{margin:0 0 2.2mm}
 table.axsum th{width:17%; text-align:center; vertical-align:middle; font-size:10.8px}
-table.axsum td{font-size:11.6px; line-height:1.6; padding:4px 9px}
+table.axsum td{font-size:11.2px; line-height:1.5; padding:3px 8px}
 table.axsum td.axen{font-family:'Noto Serif',serif; font-style:italic; font-size:12px}
-table.axvoc{margin-bottom:3mm}
+table.axvoc{margin-bottom:2.2mm}
 table.axvoc th{text-align:center; font-size:11px}
-table.axvoc td{padding:3px 8px; vertical-align:middle}
-table.axvoc td.ve{font-family:'Noto Serif',serif; font-size:12.2px; font-weight:600; width:26%}
+table.axvoc td{padding:2px 7px; vertical-align:middle}
+table.axvoc td.ve{font-family:'Noto Serif',serif; font-size:11.8px; font-weight:600; width:26%}
 table.axvoc td.vk{font-size:11px; color:var(--ink); width:24%}
 table.axvoc tr td:nth-child(2){border-right:2px solid var(--ink)}
-.axother{border:1px solid var(--line); padding:4px 9px; font-size:10.8px; line-height:1.6; background:#fff}
+.axother{border:1px solid var(--line); padding:3px 8px; font-size:10.3px; line-height:1.45; background:#fff;
+  break-inside:avoid; page-break-inside:avoid}
 .axother > b{display:block; font-size:11px; color:var(--steel2); margin-bottom:1px}
 .axlegend{display:flex; gap:16px; font-size:10.5px; margin-bottom:2mm; align-items:center}
 mark.mL{background:#e8eef5; color:inherit; padding:0 1px; border-bottom:1.5px dashed #33516e}
@@ -357,7 +365,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
   border-bottom:1px solid var(--line); flex-wrap:wrap}
 .axside{font-size:11.5px; color:var(--wine)}
 .axnote{font-size:10.8px; color:var(--ink)}
-.axxt{padding:5px 10px; font-family:'Noto Serif',serif; font-size:12.6px; line-height:1.7; text-align:justify}
+.axxt{padding:4px 9px; font-family:'Noto Serif',serif; font-size:12.2px; line-height:1.58; text-align:justify}
 .axl1{margin-bottom:2px}
 .axno{font-family:'Space Grotesk',sans-serif; font-size:10.5px; color:var(--grey);
   font-weight:700; margin-right:3px}
@@ -524,7 +532,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260928h"></script>
+<script src="passages_final.js?v=20260928i"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -1200,7 +1208,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
     var LIMIT = 273 * 96 / 25.4;              // A4 인쇄영역 세로(px)
     root.querySelectorAll('.sheet').forEach(function(sh){
       sh.style.zoom = '';
-      if(sh.classList.contains('sheet-ax')) return;   // 예제·카드는 쪽을 넘겨 흐른다                     // 초기화 후 재측정
+                     // 초기화 후 재측정
       var inner = sh.scrollHeight
                 - parseFloat(getComputedStyle(sh).paddingTop)
                 - parseFloat(getComputedStyle(sh).paddingBottom);
@@ -1209,6 +1217,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
       var need = inner + pad;
       if(need > LIMIT){
         var floor = document.body.classList.contains('show-ans') ? 0.80 : 0.95;
+        if(sh.classList.contains('sheet-ax')) floor = 0.86;   // 배경지식 장: 한 장 유지가 우선
         var z = Math.min(1, (LIMIT - 4) / need);
         if(z < floor) z = floor;   // 학생용은 0.95까지만, 교사용은 0.80까지 허용
         sh.style.zoom = z.toFixed(3);
