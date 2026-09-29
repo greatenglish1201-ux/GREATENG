@@ -335,6 +335,55 @@ body.show-ans .cs .mk .fx{color:var(--wine); font-weight:700}
 table.sumch{margin-bottom:3mm}
 table.sumch th{font-size:10.5px}
 table.sumch td.eng{width:auto; font-size:12.4px}
+.sheet-ax .head{border-bottom-color:var(--steel2)}
+.sheet-ax .head .t1{color:var(--steel2)}
+table.axsum{margin:0 0 3mm}
+table.axsum th{width:17%; text-align:center; vertical-align:middle; font-size:10.8px}
+table.axsum td{font-size:11.6px; line-height:1.6; padding:4px 9px}
+table.axsum td.axen{font-family:'Noto Serif',serif; font-style:italic; font-size:12px}
+table.axvoc{margin-bottom:3mm}
+table.axvoc th{text-align:center; font-size:11px}
+table.axvoc td{padding:3px 8px; vertical-align:middle}
+table.axvoc td.ve{font-family:'Noto Serif',serif; font-size:12.2px; font-weight:600; width:26%}
+table.axvoc td.vk{font-size:11px; color:var(--ink); width:24%}
+table.axvoc tr td:nth-child(2){border-right:2px solid var(--ink)}
+.axother{border:1px solid var(--line); padding:4px 9px; font-size:10.8px; line-height:1.6; background:#fff}
+.axother > b{display:block; font-size:11px; color:var(--steel2); margin-bottom:1px}
+.axlegend{display:flex; gap:16px; font-size:10.5px; margin-bottom:2mm; align-items:center}
+mark.mL{background:#e8eef5; color:inherit; padding:0 1px; border-bottom:1.5px dashed #33516e}
+mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; border-bottom:1.5px solid var(--wine)}
+.axx{border:1px solid var(--ink); margin-bottom:2.6mm; break-inside:avoid; background:#fff}
+.axxh{display:flex; align-items:baseline; gap:8px; padding:3px 9px; background:#eef1f4;
+  border-bottom:1px solid var(--line); flex-wrap:wrap}
+.axside{font-size:11.5px; color:var(--wine)}
+.axnote{font-size:10.8px; color:var(--ink)}
+.axxt{padding:5px 10px; font-family:'Noto Serif',serif; font-size:12.6px; line-height:1.7; text-align:justify}
+.axl1{margin-bottom:2px}
+.axno{font-family:'Space Grotesk',sans-serif; font-size:10.5px; color:var(--grey);
+  font-weight:700; margin-right:3px}
+.axno.core{background:var(--ink); color:#fff; padding:0 3px; border-radius:2px;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact}
+@media print{
+  mark.mL, mark.mR{background:none !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  mark.mL{border-bottom:1.5px dashed #000}
+  mark.mR{border-bottom:1.5px solid #000}
+}
+.axb{border:1px solid var(--ink); margin-bottom:2.6mm; break-inside:avoid; background:#fff}
+.axh{display:flex; align-items:center; gap:8px; padding:4px 9px; background:#eef1f4;
+  border-bottom:1px solid var(--ink)}
+.axn{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11px;
+  background:var(--steel2); color:#fff; padding:1px 7px}
+.axl,.axr{font-weight:900; font-size:14px}
+.axv{color:var(--wine); font-weight:700}
+.axg{display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid var(--line)}
+.axc{padding:4px 9px}
+.axc:first-child{border-right:1px solid var(--line)}
+.axd{font-size:11.2px; font-weight:500}
+.axw{font-family:'Noto Serif',serif; font-style:italic; font-size:10.8px; color:var(--steel2); margin-top:1px}
+.axt{font-size:10.8px; padding:3px 9px; border-bottom:1px solid var(--line); color:var(--wine-soft)}
+.axe{padding:3px 9px; font-size:10.8px; line-height:1.55}
+.axs{display:inline-block; min-width:78px; font-family:'Space Grotesk',sans-serif;
+  font-size:10px; color:var(--grey)}
 .sumarrow{text-align:center; font-size:15px; color:var(--wine); margin:1mm 0}
 .sumbox{border:1.5px solid var(--ink); background:#faf7f0; padding:8px 12px; margin-bottom:3mm;
   font-family:'Noto Serif',serif; font-size:13.4px; line-height:1.85; text-align:justify}
@@ -475,7 +524,7 @@ table.sumch td.eng{width:auto; font-size:12.4px}
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20260928c"></script>
+<script src="passages_final.js?v=20260928h"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -581,7 +630,12 @@ table.sumch td.eng{width:auto; font-size:12.4px}
     /* STEP 1 */
     /* 건너뛰기·전환 해설만 (학생용에는 안 보임) */
     var nSkip = p.skip ? p.skip.filter(function(r){ return r.skip; }).length : 0;
-    h += '<div class="ans"><div class="ans-box" style="margin:0 0 3mm">'
+    var am = (window.AXIS_MAP||{})[p.id], ax = am && (window.AXES||[]).filter(function(a){return a.id===am.ax;})[0];
+    var axLine = ax ? '<div style="margin-bottom:3px"><span class="k">축</span><b>'+ax.L+' ↔ '+ax.R+'</b> · '
+        + (am.side==='L' ? ax.L+' 편' : am.side==='R' ? ax.R+' 편'
+          : ({both:'균형', shift:'변화', para:'역설'})[am.side])
+        + ' — '+am.note+'</div>' : '';
+    h += '<div class="ans"><div class="ans-box" style="margin:0 0 3mm">' + axLine
       + (nSkip ? p.skip.filter(function(r){return r.skip;}).map(function(r){
             return '<div><span class="k">'+cn(r.n)+' 건너뜀</span>'+esc(r.why)+'</div>'; }).join('')
               : '<div><span class="k">건너뛰기</span>표지가 없는 글 — 전 문장을 읽는다</div>')
@@ -738,6 +792,148 @@ table.sumch td.eng{width:auto; font-size:12.4px}
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>장문 배열</span></div></section>';
   }
 
+  /* ---------- 이항대립 개념 카드 ---------- */
+  function sheetAxes(){
+    var AX = window.AXES || [], MAP = window.AXIS_MAP || {};
+    var byId = {}; DATA.forEach(function(p){ byId[p.id] = p; });
+    var sideTxt = {L:'왼쪽 편', R:'오른쪽 편', both:'균형', shift:'왼→오 변화', para:'역설'};
+
+    function block(a, i){
+      var ex = Object.keys(MAP).filter(function(k){ return MAP[k].ax === a.id; })
+        .sort(function(x,y){ return String(byId[y].src).localeCompare(String(byId[x].src)); });
+      return '<div class="axb">'
+        + '<div class="axh"><span class="axn">'+(i+1)+'</span>'
+        + '<span class="axl">'+a.L+'</span><span class="axv">↔</span><span class="axr">'+a.R+'</span></div>'
+        + '<div class="axg"><div class="axc"><div class="axd">'+a.Ld+'</div>'
+        +   '<div class="axw">'+a.Lw+'</div></div>'
+        + '<div class="axc"><div class="axd">'+a.Rd+'</div>'
+        +   '<div class="axw">'+a.Rw+'</div></div></div>'
+        + '<div class="axt">'+a.tip+'</div>'
+        + '<div class="axe">'+ex.map(function(k){
+            var m = MAP[k], q = byId[k];
+            var side = m.side === 'L' ? a.L+' 편' : m.side === 'R' ? a.R+' 편' : sideTxt[m.side];
+            return '<div><span class="axs">'+String(q.src).replace('수능 ',' · ')+'</span>'
+              + '<b>'+side+'</b> — '+m.note+'</div>';
+          }).join('')+'</div></div>';
+    }
+
+    var half = Math.ceil(AX.length/2), h = '';
+    [AX.slice(0,half), AX.slice(half)].forEach(function(part, pg){
+      h += '<section class="sheet sheet-ax">'
+        + '<div class="head"><div><div class="t1">BACKGROUND · 이항대립</div>'
+        + '<div class="t2">수능이 반복해서 묻는 대립 축</div></div>'
+        + '<div class="meta">2022~2026 수능 기출 기준<br><span class="g">'+(pg+1)+' / 2</span></div></div>'
+        + (pg===0 ? '<div class="note-if" style="margin:0 0 3mm">빈칸·요약·제목은 <b>대립 축의 한쪽을 고르는 문제</b>다. '
+          + '축을 알면 선택지 다섯 개가 <b>이쪽 편 / 저쪽 편</b>으로 갈라지고, 오답 대부분이 <u>반대편 어휘</u>라는 것이 보인다.</div>' : '')
+        + part.map(function(a){ return block(a, AX.indexOf(a)); }).join('')
+        + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>이항대립 개념 카드</span></div>'
+        + '</section>';
+    });
+    return h;
+  }
+
+  /* ---------- 이항대립 예제 — 실제 지문의 코어 문장 ---------- */
+  function sheetAxEx(yearFilter){
+    var AX = window.AXES || [], MAP = window.AXIS_MAP || {};
+    var byId = {}; DATA.forEach(function(p){ byId[p.id] = p; });
+    function strip(t){ return String(t||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(); }
+    function html(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function firstSent(t){ var m = strip(t).match(/^.*?[.!?](\s|$)/); return m ? m[0].trim() : strip(t); }
+
+    /* 신호 어휘 표시 — 긴 표현부터, 겹침 방지용 자리표시자 사용 */
+    function mark(text, a){
+      var h = html(strip(text)), terms = [], slots = [];
+      [['L',a.Lw],['R',a.Rw]].forEach(function(pr){
+        pr[1].split('·').forEach(function(w){ w = w.trim(); if(w) terms.push({w:w, side:pr[0]}); });
+      });
+      terms.sort(function(x,y){ return y.w.length - x.w.length; });
+      terms.forEach(function(t){
+        var pat = t.w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/[\u2019']/g,"['\u2019]");
+        h = h.replace(new RegExp('\\b('+pat+')\\b','gi'), function(m0){
+          slots.push('<mark class="m'+t.side+'">'+m0+'</mark>');
+          return '\u0001'+(slots.length-1)+'\u0002';
+        });
+      });
+      return h.replace(/\u0001(\d+)\u0002/g, function(_,i){ return slots[+i]; });
+    }
+
+    function coreLines(p, a){
+      if(p.given){    /* 순서형: 주어진 글 + 정답 순서대로 단락 전문 */
+        var paras = {}; p.paras.forEach(function(x){ paras[x.tag] = x; });
+        return '<div class="axl1"><span class="axno core">주어진 글</span>'+mark(p.given, a)+'</div>'
+          + p.orderAns.map(function(t){
+              return '<div class="axl1"><span class="axno">('+t+')</span>'+mark(paras[t].text, a)+'</div>';
+            }).join('');
+      }
+      var heads = {}; p.tree.forEach(function(n){ if(n.head) heads[n.n] = 1; });
+      return '<div class="axl1">' + p.sents.map(function(t, k){
+          return '<span class="axno'+(heads[k+1]?' core':'')+'">'+cn(k+1)+'</span>'+mark(t, a);
+        }).join(' ') + '</div>';
+    }
+
+    var sideTxt = {both:'균형', shift:'변화', para:'역설'}, h = '', pages = 0;
+    var EXTRA = window.AXIS_EXTRA || {};
+    function sideOf(m, a){ return m.side === 'L' ? a.L+' 편' : m.side === 'R' ? a.R+' 편' : sideTxt[m.side]; }
+
+    AX.forEach(function(a, i){
+      var x = EXTRA[a.id]; if(!x || !byId[x.rep]) return;
+      var rep = byId[x.rep], rm = MAP[x.rep];
+      var others = Object.keys(MAP).filter(function(k){ return MAP[k].ax === a.id && k !== x.rep && byId[k]; })
+        .sort(function(p1,p2){ return String(byId[p2].src).localeCompare(String(byId[p1].src)); });
+      pages++;
+
+      h += '<section class="sheet sheet-ax">'
+        + '<div class="head"><div><div class="t1">BACKGROUND · 이항대립 '+(i+1)+' / '+AX.length+'</div>'
+        + '<div class="t2">'+a.L+' <span style="color:var(--wine)">↔</span> '+a.R+'</div></div>'
+        + '<div class="meta">대표 지문 · 맥락 필수 표현<br><span class="nm">이름 ____________</span></div></div>'
+
+        /* 개념 두 줄 */
+        + '<div class="axg" style="border:1px solid var(--ink); margin-bottom:2mm">'
+        + '<div class="axc"><div class="axl" style="font-size:13px">'+a.L+'</div><div class="axd">'+a.Ld+'</div></div>'
+        + '<div class="axc"><div class="axr" style="font-size:13px">'+a.R+'</div><div class="axd">'+a.Rd+'</div></div></div>'
+        + '<div class="axt" style="border:1px solid var(--line); margin-bottom:3mm">'+a.tip+'</div>'
+
+        /* 대표 지문 */
+        + '<div class="step-h"><span class="n">대표 지문</span><span class="ttl">'
+        + String(rep.src).replace('수능 ',' 수능 ')+' '+esc(rep.qtype)+'</span>'
+        + '<span class="hint"><b>'+sideOf(rm,a)+'</b> — '+rm.note+'</span></div>'
+        + '<div class="axlegend"><span><mark class="mL">점선</mark> '+a.L+' 쪽 신호어</span>'
+        + '<span><mark class="mR">굵게·실선</mark> '+a.R+' 쪽 신호어</span>'
+        + '<span><span class="axno core">①</span> 코어 문장</span></div>'
+        + '<div class="axx"><div class="axxt">'+coreLines(rep, a)+'</div></div>'
+
+        /* 주제 · 핵심 요약 */
+        + '<table class="axsum">'
+        + '<tr><th>주제</th><td><b>'+(x.topic||'')+'</b></td></tr>'
+        + '<tr><th>핵심 요약</th><td>'+(x.sum||'')+'</td></tr>'
+        + (x.en ? '<tr><th>'+(x.enl||'기출 정답')+'</th><td class="axen">'+x.en+'</td></tr>' : '')
+        + '</table>'
+
+        /* 맥락 필수 표현 */
+        + '<div class="step-h" style="margin-top:3mm"><span class="n">필수 표현</span>'
+        + '<span class="ttl">이 주제가 나오면 알아두면 유리한 말</span>'
+        + '<span class="hint">한쪽 편 단어가 보이면 <b>반대편 단어</b>를 떠올려라</span></div>'
+        + '<table class="axvoc"><tr><th colspan="2">'+a.L+' 쪽</th><th colspan="2">'+a.R+' 쪽</th></tr>'
+        + x.L.map(function(l, r){
+            var rr = x.R[r] || ['',''];
+            return '<tr><td class="ve">'+l[0]+'</td><td class="vk">'+l[1]+'</td>'
+              + '<td class="ve">'+rr[0]+'</td><td class="vk">'+rr[1]+'</td></tr>';
+          }).join('')
+        + '</table>'
+
+        /* 같은 축의 다른 기출 */
+        + (others.length ? '<div class="axother"><b>같은 축의 다른 기출</b>'
+            + others.map(function(k){
+                var m = MAP[k];
+                return '<div><span class="axs">'+String(byId[k].src).replace('수능 ',' · ')+'</span>'
+                  + '<b>'+sideOf(m,a)+'</b> — '+m.note+'</div>';
+              }).join('') + '</div>' : '')
+        + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>이항대립 배경지식</span></div>'
+        + '</section>';
+    });
+    return {html:h, pages:pages};
+  }
+
   /* ---------- 순서배열 (36·37형) ---------- */
   function sheetSeq(p, lv){
     var h = '<section class="sheet sheet-o">';
@@ -852,6 +1048,10 @@ table.sumch td.eng{width:auto; font-size:12.4px}
      has:function(p){ return [31,36,40].indexOf(p.qnum) >= 0 && !p.fast; }},
     {id:'__gfront__',label:'★ 앞 문항 (21~24·30)',
      has:function(p){ return [21,22,23,24,30].indexOf(p.qnum) >= 0 && !p.fast && !p.qlabel; }},
+    {id:'__gaxes__', label:'◆ 이항대립 개념 카드', axes:true, pages:'2장',
+     has:function(){ return false; }},
+    {id:'__gaxex__', label:'◆ 이항대립 대표 지문·필수 표현', axes:true, pages:'10장',
+     has:function(){ return false; }},
     {id:'__glong__', label:'★ 장문 (41~45)',
      has:function(p){ return !!p.qlabel || (p.paras && !p.given); }}
   ];
@@ -891,6 +1091,7 @@ table.sumch td.eng{width:auto; font-size:12.4px}
     opt(selQ, '__all__', '전체 문항');
     // 묶음 프리셋
     GROUPS.forEach(function(g){
+      if(g.axes){ opt(selQ, g.id, g.label + ' (' + g.pages + ')'); return; }
       var n = pool.filter(function(p){ return g.has(p); }).length;
       if(n) opt(selQ, g.id, g.label + ' (' + n + ')');
     });
@@ -951,6 +1152,19 @@ table.sumch td.eng{width:auto; font-size:12.4px}
   /* ---------- 렌더 ---------- */
   function render(){
     var lv = +selL.value, html = '';
+    if(selQ.value === '__gaxex__'){
+      var r = sheetAxEx(null);
+      root.innerHTML = r.html;
+      cnt.textContent = '이항대립 대표 지문·필수 표현 · ' + r.pages + '장';
+      fitSheets();
+      return;
+    }
+    if(selQ.value === '__gaxes__'){
+      root.innerHTML = sheetAxes();
+      cnt.textContent = '개념 카드 · 2장';
+      fitSheets();
+      return;
+    }
     var sel = currentList();
 
     var fast = sel.filter(function(p){ return p.fast; });
@@ -985,7 +1199,8 @@ table.sumch td.eng{width:auto; font-size:12.4px}
   function fitSheets(){
     var LIMIT = 273 * 96 / 25.4;              // A4 인쇄영역 세로(px)
     root.querySelectorAll('.sheet').forEach(function(sh){
-      sh.style.zoom = '';                     // 초기화 후 재측정
+      sh.style.zoom = '';
+      if(sh.classList.contains('sheet-ax')) return;   // 예제·카드는 쪽을 넘겨 흐른다                     // 초기화 후 재측정
       var inner = sh.scrollHeight
                 - parseFloat(getComputedStyle(sh).paddingTop)
                 - parseFloat(getComputedStyle(sh).paddingBottom);
