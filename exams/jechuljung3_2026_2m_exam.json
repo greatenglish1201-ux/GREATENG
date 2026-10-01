@@ -1,0 +1,573 @@
+{
+ "key": "제철중_3학년_2026_2학기_중간",
+ "meta": {
+  "school": "제철중",
+  "grade": "3학년",
+  "year": "2026",
+  "semester": "2학기",
+  "exam": "중간고사",
+  "subject": "영어",
+  "publisher": "비상(김진완)",
+  "scope": "Lesson 5 · Lesson 6",
+  "build": "claude-authored-v1",
+  "pattern_key": "제철중_중3_2026_1학기_중간고사",
+  "total": 26,
+  "total_score": 100,
+  "objective": 26,
+  "written": 0,
+  "patterns": {
+   "내용일치": 4,
+   "요지": 1,
+   "어법": 8,
+   "어휘": 7,
+   "영작": 1,
+   "빈칸추론": 1,
+   "주제": 1,
+   "대화": 3
+  },
+  "answer_dist": {
+   "①": 5,
+   "②": 5,
+   "③": 6,
+   "④": 5,
+   "⑤": 5
+  },
+  "print_title": "( 2 학기 ) 1 차 고사 — 예상문제",
+  "print_badge": "제철중 3학년 · 비상(김진완) L5·L6",
+  "print_footer": "대단한영어 GREATENG 예상문제 · ",
+  "variant_table": [
+   [
+    "교과서 본문 원문 + 밑줄·기호만",
+    "1~5 지문(ⓑ 1곳 제외) · 10~14 지문(빈칸·⑤ 제외)"
+   ],
+   [
+    "교과서 본문에 오류 삽입",
+    "4 (ⓑ worried→worrying) · 14 (⑤ how foolish he had been → had he been)"
+   ],
+   [
+    "교과서 본문 빈칸",
+    "10 (ⓐ But) · 11 (ⓑ with · ⓒ on · ⓓ in)"
+   ],
+   [
+    "교과서 대화 원문",
+    "23 (goldfish) · 25 (James) · 26 (Time Traveler's Wife, ③ 1곳 비틂)"
+   ],
+   [
+    "창작 대화",
+    "16~17 (Jun·Mina 수영팀)"
+   ],
+   [
+    "전면 창작(교과서 밖 문장)",
+    "5 · 6 · 7 · 8 · 9 · 15 · 18 · 19~22 · 24"
+   ],
+   [
+    "지문 원문 · 선지 창작",
+    "1 · 2 · 3 · 12 · 13"
+   ]
+  ],
+  "review_notes": [
+   "① 창작 문항(5~9·15·16·18~22·24): 영어 자연스러움과 정답 유일성 — 특히 개수형 #5(4개)·#9(3개)·#18(3개) 문장별 정오",
+   "② 교과서 변형 문항: #4 ⓑ worrying · #14 ⑤ 어순 · #26 ③만 원문과 다름. #10 지문 첫 단락의 \"rich man... .\" 말줄임표는 게이트 [4차] 규칙 때문에 대시(—)로 바꿈",
+   "③ 문법포인트 전용 배정: so that #5 · have + 목적어 + p.p. #7 · It ~ that #8 · 분사구문 #9 · 과거완료진행 #15 · 계속적 용법·명령문 and/or #18 / 창작 대화 #16은 네 포인트를 다른 소재로 종합",
+   "④ 교차 힌트 기준 (a)로 교체한 것: #2 ④ prove that→find out if · #7 ④ fix by an expert · #9 Not knowing형 오류 · #19 admit · #20 draw attention·명령문 or · #21 critically · #24 ⑤ · #26 Three Wishes 대화",
+   "⑤ 원장 판단 후 유지한 지식 수준 겹침: #4 ⓑ worrying(감정분사 판정) · #7과 10~14 지문 have p.p. 원문 3곳 · #8 우리말 해석 줄(기출엔 없음) · #9 (e)와 1~5 지문 published",
+   "⑥ #6 관용표현 출처 대화(L5 수수께끼·L6 Amy·L6 Sujin)는 #23~26에 쓰지 않음"
+  ]
+ },
+ "questions": [
+  {
+   "set_header": "※ 다음 글을 읽고 물음에 답하시오. (1~5)",
+   "type": "single",
+   "num": 1,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "글 [A],[B]를 읽고 답할 수 없는 질문은? [4점]\n[A] Every day we watch, hear, or read interesting news. However, have you ever seriously considered whether an article is really true? Everyone likes an interesting news story but what if it is completely made up? ⓐ <u>Fake news can be very harmful in that it can make people less informed or even misled.</u> Nevertheless, there have been various fake news reports throughout history. Why have some people written such false information? Let's look into some articles thinking about the hidden motives behind them.\n[B] AWFUL DISASTER — Last night, an angry group of rhinoceroses broke down the walls of the cage at the zoo and escaped. They also broke down the walls of the other wild animals' cages. These animals ran down the streets and injured hundreds of people. Twelve of the animals are still on the loose. Citizens should stay indoors until further notice. Not a single act or incident described above has taken place.\nAt that time, those who read the article carefully laughed out loud. ⓑ <u>Those who didn't read it to the end got really worrying.</u> ⓒ <u>Not knowing the news was false, many people panicked.</u> Some tried to escape the city while others went into the parks with guns to hunt the animals. So why did The Herald make up such news? Later, they confessed that they made it up (가) <u>so that</u> they could draw the readers' attention to the unsafe conditions at the zoo.\n[C] SLAV SHOOTS A FRIEND IN ARGUMENT — Mejk Swenekafew, a Slav worker at the Columbia Coal Mine, was shot and seriously wounded by John Pecitello near the mining camp Thursday evening. The two men had an argument during a meeting. The argument led to a fight, and Pecitello shot Swenekafew twice, in the chest and leg. He is now at the hospital in critical condition. Pecitello ran away after the shooting. The police are searching for him now and are warning citizens that he is extremely dangerous.\n[D] Is there anything strange about the article? Read the Slav's name backwards; it spells \"we-fake-news.\" Who wrote this and why? The Daily Telegram published this fake article so that they could prove if The Daily News, their competitor, was stealing their articles. ⓓ <u>The Daily News published the same article about \"Swenekafew\" the next day and thus got caught stealing.</u> The people at The Daily News had to admit their act and were harshly criticized by the public.\n[E] The two articles were special cases, but ⓔ <u>there are many \"fake\" news articles published every day.</u> As readers, we need to read critically and judge whether the news is real or fake.\n[How to spot fake news!] CONSIDER the Source: Is it from a reliable source? Can we trust the writer? / CHECK the Date: Is it a new or an old story? Is it related to current events? / READ BEYOND the Headlines: Does the headline match the content? / FIND Supporting Sources: Do other related stories provide similar content?",
+   "choices": [
+    "① Why can fake news be harmful?",
+    "② What did the rhinoceroses do in the fake article?",
+    "③ How did the people who read the article carefully react?",
+    "④ How many people were arrested for writing the fake article?",
+    "⑤ Why did The Herald make up the news?"
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "체포 언급 없음. ① less informed or misled ② broke down the walls and escaped ③ laughed out loud ⑤ zoo의 위험한 상태에 관심을 끌려고.  [출처: 비상(김진완) L5 본문]",
+   "source": "비상(김진완) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 2,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "글 [C],[D]의 내용과 일치하지 않는 것은? [4점]",
+   "choices": [
+    "① Swenekafew was a worker at a coal mine.",
+    "② Pecitello shot Swenekafew after they had an argument.",
+    "③ The Slav's name spells \"we-fake-news\" when it is read backwards.",
+    "④ The Daily Telegram wanted to find out if its competitor was stealing its articles.",
+    "⑤ The Daily Telegram was harshly criticized by the public for stealing articles."
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "비난받은 쪽은 The Daily News — 두 신문사를 뒤바꾼 미세변형.  [출처: 비상(김진완) L5 본문]",
+   "source": "비상(김진완) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 3,
+   "qtype": "요지",
+   "score": 4,
+   "question": "글 [E]를 읽고 다음 중 그 메시지와 가장 잘 맞는 문장을 고르시오. [4점]",
+   "choices": [
+    "① Don't believe everything you read.",
+    "② Bad news travels fast.",
+    "③ No news is good news.",
+    "④ The pen is mightier than the sword.",
+    "⑤ Seeing is believing."
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "비판적으로 읽고 진위를 판단하라는 메시지. ⑤는 반대 메시지.  [출처: 비상(김진완) L5 본문]",
+   "source": "비상(김진완) L5 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 4,
+   "qtype": "어법",
+   "score": 4,
+   "question": "밑줄 친 ⓐ~ⓔ 중 어법상 옳지 않은 부분을 포함한 것은? [4점]",
+   "choices": [
+    "① ⓐ",
+    "② ⓑ",
+    "③ ⓒ",
+    "④ ⓓ",
+    "⑤ ⓔ"
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "ⓑ 사람의 감정은 과거분사 worried. ⓒ 분사구문 부정 Not + -ing ✓ ⓔ 기사가 발행되는 것이라 과거분사 후치수식 published ✓.  [출처: 비상(김진완) L5 본문·비상(김진완) L5 문법포인트]",
+   "source": "비상(김진완) L5 본문·비상(김진완) L5 문법포인트"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 5,
+   "qtype": "어법",
+   "score": 5,
+   "question": "아래 빈칸 (A)~(G)에 (가)의 표현을 넣었을 때, 어법상 어색한 문장의 개수는? [5점]\n< 보 기 >\n(A) I'll leave early ________ I can get a good seat.\n(B) Speak clearly ________ everyone can understand you.\n(C) He was ________ tired he fell asleep on the bus.\n(D) She studied hard ________ pass the exam.\n(E) ________ it was raining, we stayed home.\n(F) She is ________ kind everyone likes her.\n(G) They whispered ________ nobody could hear them.",
+   "choices": [
+    "① 2개",
+    "② 3개",
+    "③ 4개",
+    "④ 5개",
+    "⑤ 6개"
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "어색한 것 4개: (C) so tired that (D) so that 뒤에는 절 → in order to pass (E) Because/As (F) so kind that. (A)(B)(G)는 목적의 so that ~ can/could.  [출처: 비상(김진완) L5 본문·비상(김진완) L5 문법포인트 so that]",
+   "source": "비상(김진완) L5 본문·비상(김진완) L5 문법포인트 so that"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 6,
+   "qtype": "어휘",
+   "score": 4,
+   "question": "밑줄 친 부분의 뜻풀이가 옳지 않은 것은? [4점]\nA: This riddle is really hard. You need to <u>think outside the box</u> to find the answer.\nB: Sorry, I can't make pancakes now. We <u>ran out of</u> milk this morning.\nC: The math test was not hard at all. It was <u>a piece of cake</u>.\nD: Take an umbrella with you. It's <u>supposed to</u> rain this afternoon.\nE: I'll be right back. Can you <u>keep an eye on</u> my bag for a minute?",
+   "choices": [
+    "① A: to think in a new and creative way",
+    "② B: to use all of something so that there is none left",
+    "③ C: something that is very difficult to do",
+    "④ D: to be expected to happen",
+    "⑤ E: to watch something carefully"
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "a piece of cake = 아주 쉬운 일(반대 풀이).  [출처: 비상(김진완) L5 대화·비상(김진완) L6 대화 관용표현]",
+   "source": "비상(김진완) L5 대화·비상(김진완) L6 대화 관용표현"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 7,
+   "qtype": "어법",
+   "score": 4,
+   "question": "어법상 어색한 것은? [4점]",
+   "choices": [
+    "① I had my hair cut yesterday.",
+    "② The teacher had us clean the classroom.",
+    "③ I had my bike stolen last night.",
+    "④ He had his watch repair at the shop.",
+    "⑤ She had her old photos printed at the store."
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "시계가 수리되는 것이므로 repaired. ② have + 사람 + 동사원형(능동) ③ 피해의 have + 목적어 + p.p.  [출처: 비상(김진완) L6 문법포인트 have + 목적어 + 과거분사]",
+   "source": "비상(김진완) L6 문법포인트 have + 목적어 + 과거분사"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 8,
+   "qtype": "영작",
+   "score": 4,
+   "question": "<보기>의 단어를 모두 사용하여 올바르게 영작했을 때, (ⓓ)에 들어갈 말로 가장 적절한 것은? [4점]\n(모든 단어는 한 번씩만 사용함, 중복 사용 불가)\n(어제 창문을 깬 것은 바로 내 남동생이었다.)\n< 보 기 >\nthe / was / broke / that / my / brother\n= It ( ⓐ )( ⓑ )( ⓒ )( ⓓ )( ⓔ )( ⓕ ) window yesterday.",
+   "choices": [
+    "① was",
+    "② my",
+    "③ that",
+    "④ broke",
+    "⑤ the"
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "It was my brother that broke the window yesterday. (ⓐ was ⓑ my ⓒ brother ⓓ that ⓔ broke ⓕ the)  [출처: 비상(김진완) L6 문법포인트 It ~ that 강조구문]",
+   "source": "비상(김진완) L6 문법포인트 It ~ that 강조구문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 9,
+   "qtype": "어법",
+   "score": 5,
+   "question": "어법상 어색한 문장의 개수는? [5점]\n< 보 기 >\n(a) Feeling hungry, I made some sandwiches.\n(b) Not having enough time, he took a taxi.\n(c) Seen from the sky, the island looks like a heart.\n(d) Arrived at the station, I called my mom.\n(e) Writing in easy English, the book is popular with kids.\n(f) The news made him to feel sad.\n(g) The movie made me excited.",
+   "choices": [
+    "① 2개",
+    "② 3개",
+    "③ 4개",
+    "④ 5개",
+    "⑤ 6개"
+   ],
+   "answer": "②",
+   "render": "box",
+   "explanation": "어색한 것 3개: (d) Arriving(능동) (e) Written(수동) (f) make + 목적어 + 동사원형 feel.  [출처: 비상(김진완) L5 문법포인트 분사구문·make의 쓰임]",
+   "source": "비상(김진완) L5 문법포인트 분사구문·make의 쓰임"
+  },
+  {
+   "set_header": "※ 다음 글을 읽고 물음에 답하시오. (10~14)",
+   "type": "single",
+   "num": 10,
+   "qtype": "빈칸추론",
+   "score": 3,
+   "question": "빈칸 ⓐ에 들어갈 말로 가장 알맞은 것은? [3점]\nA rich and wise father had two sons, Puru and Puneet. Before he passed away, he called his two sons to give them some last words of advice. \"Listen carefully, my dear sons. Live by these words throughout your life, and you will be happy,\" he said. \"Build a house in every city. Sleep comfortably. Enjoy your food. Lastly, spend money like a rich man —\" Before he could explain himself, he passed away.\nAfter his death, the two sons took their share of the father's wealth and settled in different cities. Five years passed. ① <u>Puru, who had been following his father's words carefully, had no money left.</u> ( ⓐ ) his brother was richer than ever. ② <u>Puru was puzzled about where he had gone wrong</u>, so he visited Puneet to find out.\nPuneet welcomed Puru ( ⓑ ) open arms. That night, when the brothers sat down to chat after dinner, Puru asked the question that had been ( ⓒ ) his mind for days.\n\"It was our father's advice that I followed, but I am not happy. I built a house in every city. But because I could not always stay there, ③ <u>I hired people and had the house looked after.</u> Father said we should sleep comfortably and enjoy our food, so I had my bed designed by experts and my meals prepared by a great chef. He told us to spend like a rich man, so ④ <u>I bought what I wanted without worrying about money.</u> But look at me now! I am empty-handed. Did you not follow our father's wisdom? Tell me, brother, how did you get so rich?\"\nPuneet smiled and said, \"My dear brother, I also followed our father's wisdom. But I understood it a bit differently. When he said 'build a house in every city,' I took it as having a place to stay all around the world. So I made friends in every city and I stayed at their houses when I visited those cities. Also, I slept comfortably each night because I would be tired after a hard day's work, and it did not matter if I was sleeping on a bed or on the hard floor. I ate only when I was hungry, so even a simple meal tasted great.\"\n\"Spend money like a rich man?\" continued Puneet. \"A rich man knows how to make money grow. So, I tried to spend money on something that would bring me back more money rather than on luxurious things. For me, it was this wisdom that our father tried to explain.\"\nNow ⑤ <u>Puru realized how foolish had he been.</u> With this wisdom ( ⓓ ) mind, Puru started a new life.",
+   "choices": [
+    "① For example",
+    "② So",
+    "③ Besides",
+    "④ But",
+    "⑤ In other words"
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "돈이 다 떨어진 Puru와 더 부유해진 형제의 대조 → But. However도 가능하나 선지에서 제외(복수정답 차단).  [출처: 비상(김진완) L6 본문]",
+   "source": "비상(김진완) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 11,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "빈칸 ⓑ, ⓒ, ⓓ에 들어갈 말을 옳게 짝지은 것은? [3점]",
+   "choices": [
+    "① with - on - in",
+    "② with - in - on",
+    "③ by - on - in",
+    "④ by - in - on",
+    "⑤ with - on - on"
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "with open arms(두 팔 벌려) / be on one's mind(마음에 걸리다) / with ~ in mind(~을 염두에 두고).  [출처: 비상(김진완) L6 본문]",
+   "source": "비상(김진완) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 12,
+   "qtype": "주제",
+   "score": 4,
+   "question": "글의 주제로 가장 알맞은 것은? [4점]",
+   "choices": [
+    "① how the same advice can be understood in different ways",
+    "② the importance of saving money for the future",
+    "③ why brothers should live in the same city",
+    "④ the best way to build houses in many cities",
+    "⑤ how to sleep comfortably after a hard day"
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "같은 유언을 형제가 다르게 해석해 결과가 달라짐.  [출처: 비상(김진완) L6 본문]",
+   "source": "비상(김진완) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 13,
+   "qtype": "내용일치",
+   "score": 4,
+   "question": "글의 내용과 일치하는 것은? [4점]",
+   "choices": [
+    "① The father explained the meaning of his advice before he died.",
+    "② Puru became richer than his brother after five years.",
+    "③ Puru paid people to take care of his houses.",
+    "④ Puneet slept on a comfortable bed designed by experts.",
+    "⑤ Puneet spent money mostly on luxurious things."
+   ],
+   "answer": "③",
+   "render": "",
+   "explanation": "① 설명하기 전에 죽음 ② 반대 ④ 전문가가 설계한 침대는 Puru ⑤ 사치품이 아니라 돈을 불려 줄 곳에 씀.  [출처: 비상(김진완) L6 본문]",
+   "source": "비상(김진완) L6 본문"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 14,
+   "qtype": "어법",
+   "score": 5,
+   "question": "밑줄 친 ①~⑤ 중 어법상 틀린 것은? [5점]",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "간접의문문은 의문사 + 주어 + 동사 → how foolish he had been. ① 계속적 용법·과거완료진행 ② 간접의문문 ③ have + 목적어 + p.p. ④ 관계대명사 what — 모두 옳음.  [출처: 비상(김진완) L6 본문·비상(김진완) L6 문법포인트]",
+   "source": "비상(김진완) L6 본문·비상(김진완) L6 문법포인트"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 15,
+   "qtype": "어법",
+   "score": 4,
+   "question": "어법상 올바른 것은? [4점]",
+   "choices": [
+    "① They had been knowing each other for years before they got married.",
+    "② He has been working there before he moved to Seoul.",
+    "③ I had been study English for two hours when you called.",
+    "④ We had been playing soccer since two hours when it started to rain.",
+    "⑤ She had been waiting for an hour when the bus finally came."
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "과거완료진행. ① 상태동사 know는 진행형 불가 ② 과거 기준 이전 → had been ③ studying ④ for two hours.  [출처: 비상(김진완) L6 문법포인트 과거완료진행(보조)]",
+   "source": "비상(김진완) L6 문법포인트 과거완료진행(보조)"
+  },
+  {
+   "set_header": "※ 글을 읽고 물음에 답하시오. (16~17)",
+   "type": "single",
+   "num": 16,
+   "qtype": "어법",
+   "score": 4,
+   "question": "①~⑤ 중 어법상 옳은 것은? [4점]\nJun: Mina, you look different. ① <u>You had your hair cutting short!</u>\nMina: Yes. I'm on the swimming team now. ② <u>It was at the pool that I met my new coach.</u>\nJun: Cool! Is the training hard?\nMina: Very hard. But ③ <u>practiced every day, I got much faster than before.</u>\nJun: Wow. What are you doing these days?\nMina: I swim every morning ④ <u>so that get stronger for the contest next month.</u>\nJun: Who gave you that idea?\nMina: ⑤ <u>It was my coach which told me to swim every morning.</u>\nJun: Great. I'll come and cheer for you at the contest!",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "②",
+   "render": "",
+   "explanation": "부사구 강조 It ~ that. ① cut ③ Practicing ④ so that I can get ⑤ 사람 강조 → who/that.  [출처: 비상(김진완) L5 문법포인트·비상(김진완) L6 문법포인트 종합(창작 대화)]",
+   "source": "비상(김진완) L5 문법포인트·비상(김진완) L6 문법포인트 종합(창작 대화)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 17,
+   "qtype": "내용일치",
+   "score": 3,
+   "question": "대화의 내용과 일치하지 않는 것은? [3점]",
+   "choices": [
+    "① Mina는 최근에 수영팀에 들어갔다.",
+    "② Mina는 연습을 많이 해서 전보다 빨라졌다.",
+    "③ Mina에게 매일 아침 수영하라고 한 사람은 코치이다.",
+    "④ 수영 대회는 다음 달에 열린다.",
+    "⑤ Mina는 매일 저녁에 수영을 한다."
+   ],
+   "answer": "⑤",
+   "render": "",
+   "explanation": "every morning.  [출처: 창작 대화]",
+   "source": "창작 대화"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 18,
+   "qtype": "어법",
+   "score": 5,
+   "question": "어법상 올바른 문장의 개수는? [5점]\n< 보 기 >\n(a) I have a friend, who lives in Canada.\n(b) This is my new bike, that my dad bought me.\n(c) Hurry up, or you will miss the bus.\n(d) Get up early, and you saw the sunrise.\n(e) He went to Busan, where he met his old friend.\n(f) She showed me the thing what she bought.",
+   "choices": [
+    "① 2개",
+    "② 3개",
+    "③ 4개",
+    "④ 5개",
+    "⑤ 6개"
+   ],
+   "answer": "②",
+   "render": "box",
+   "explanation": "올바른 것 3개 (a)(c)(e). (b) 계속적 용법에 that 불가 → which (d) 명령문, and + will see (f) 선행사 있으면 what 불가.  [출처: 비상(김진완) L6 문법포인트 관계사 계속적 용법·명령문 and/or·what(보조)]",
+   "source": "비상(김진완) L6 문법포인트 관계사 계속적 용법·명령문 and/or·what(보조)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 19,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "영영 풀이에 해당하는 단어는? [3점]\nto say that you did something wrong or illegal",
+   "choices": [
+    "① confess",
+    "② publish",
+    "③ escape",
+    "④ injure",
+    "⑤ settle"
+   ],
+   "answer": "①",
+   "render": "box",
+   "explanation": "confess(자백하다). 뜻이 같은 admit는 선지에서 제외.  [출처: 비상(김진완) L5 본문 어휘]",
+   "source": "비상(김진완) L5 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 20,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "빈칸에 들어갈 가장 적절한 단어는? [3점]\nMy brother __________ a cold after playing in the rain.\n(내 동생은 빗속에서 논 뒤 감기에 걸렸다.)",
+   "choices": [
+    "① made",
+    "② kept",
+    "③ broke",
+    "④ caught",
+    "⑤ gave"
+   ],
+   "answer": "④",
+   "render": "box",
+   "explanation": "catch a cold. get a cold도 성립해 get은 선지에서 제외.  [출처: 비상(김진완) L5 대화 연어]",
+   "source": "비상(김진완) L5 대화 연어"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 21,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "단어의 영영 풀이로 틀린 것은? [3점]",
+   "choices": [
+    "① nevertheless: because of that; as a result",
+    "② harmful: causing damage or injury",
+    "③ luxurious: very comfortable and expensive",
+    "④ competitor: a person or company that is trying to win against others",
+    "⑤ puzzled: confused because you cannot understand something"
+   ],
+   "answer": "①",
+   "render": "",
+   "explanation": "nevertheless = in spite of that(그럼에도 불구하고). 인과로 바꾼 오답.  [출처: 비상(김진완) L5 본문·비상(김진완) L6 본문 어휘]",
+   "source": "비상(김진완) L5 본문·비상(김진완) L6 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 22,
+   "qtype": "어휘",
+   "score": 3,
+   "question": "빈칸에 들어갈 가장 적절한 단어는? [3점]\nAfter winning the lottery, he lived in great __________ for the rest of his life.",
+   "choices": [
+    "① wisdom",
+    "② wealth",
+    "③ motive",
+    "④ incident",
+    "⑤ headline"
+   ],
+   "answer": "②",
+   "render": "box",
+   "explanation": "wealth(부). wisdom은 L6 핵심어라 끌리는 오답.  [출처: 비상(김진완) L6 본문 어휘]",
+   "source": "비상(김진완) L6 본문 어휘"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 23,
+   "qtype": "대화",
+   "score": 4,
+   "question": "빈칸에 들어갈 말로 가장 적절한 것은? [4점]\nW: There are so many pieces of information we call \"facts\" that are completely wrong.\nM: Why do you say so?\nW: I read a book, and there were a lot of examples of these \"facts\" that are wrong.\nM: Like what?\nW: Well, most people think goldfish are not smart. But, goldfish are actually smart.\nM: Really? __________\nW: They can recognize their owners.\nM: Oh, I didn't know that.",
+   "choices": [
+    "① Do you have a goldfish?",
+    "② Why don't you buy a goldfish?",
+    "③ Can you tell me more about that?",
+    "④ How long do goldfish live?",
+    "⑤ I don't think goldfish are smart."
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "뒤에서 금붕어가 똑똑하다는 근거를 들므로 더 자세히 말해 달라는 요청. ⑤는 Really?·이어지는 대답과 모순.  [출처: 비상(김진완) L5 대화 (goldfish)]",
+   "source": "비상(김진완) L5 대화 (goldfish)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 24,
+   "qtype": "대화",
+   "score": 4,
+   "question": "대화 중 어색한 것은? [4점]",
+   "choices": [
+    "① A: I think Clara got a new hobby. B: Why do you say so? A: She's always carrying a camera these days.",
+    "② A: I'm so worried about my speech tomorrow. B: Don't worry. You've practiced a lot.",
+    "③ A: What would you do if you had a million dollars? B: I would buy a big house for my family.",
+    "④ A: Why the long face? B: I'm so happy because I won the contest.",
+    "⑤ A: How about going to the museum this Saturday? B: Sounds great. What time shall we meet?"
+   ],
+   "answer": "④",
+   "render": "",
+   "explanation": "long face(시무룩한 얼굴)를 물었는데 기쁘다고 답해 어색.  [출처: 비상(김진완) L5 대화·비상(김진완) L6 대화 의사소통 표현]",
+   "source": "비상(김진완) L5 대화·비상(김진완) L6 대화 의사소통 표현"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 25,
+   "qtype": "어휘",
+   "score": 4,
+   "question": "대화의 밑줄 친 부분과 비슷한 의미의 표현은? [4점]\nW: James, why are you still up? It's 11 o'clock!\nM: I can't sleep because <u>I'm worried about</u> the Bookworm Competition tomorrow.\nW: You've read all of the books on the list. What do you have to worry about?\nM: Some of the writers' names are confusing, so I'm worried that I might not remember them.\nW: Don't worry about something that hasn't happened yet. You'll do fine.\nM: Thanks. I'll try not to worry so much.",
+   "choices": [
+    "① I'm excited about",
+    "② I'm proud of",
+    "③ I'm tired of",
+    "④ I'm sure of",
+    "⑤ I'm nervous about"
+   ],
+   "answer": "⑤",
+   "render": "box",
+   "explanation": "be worried about ≒ be nervous about(걱정하다·긴장하다).  [출처: 비상(김진완) L6 대화 (Bookworm Competition)]",
+   "source": "비상(김진완) L6 대화 (Bookworm Competition)"
+  },
+  {
+   "set_header": "",
+   "type": "single",
+   "num": 26,
+   "qtype": "대화",
+   "score": 3,
+   "question": "대화 흐름상 어색한 것은? [3점]\nW: What are you doing, Jinho?\nM: ① <u>I'm writing a review of the movie, The Time Traveler's Wife.</u>\nW: ② <u>I saw that movie, too.</u> ③ <u>It was the most boring movie I've ever seen.</u>\nM: I loved it, too. Emily, what would you do if you could time travel?\nW: ④ <u>I would travel to the 1940s and prevent World War II.</u> How about you?\nM: I would go to the Joseon Dynasty and meet King Sejong. ⑤ <u>I'm a big fan of him.</u>",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "③",
+   "render": "box",
+   "explanation": "뒤에서 M이 I loved it, too.라고 하므로 Emily도 그 영화를 좋아해야 함. 원문: It's one of my favorite romantic movies.  [출처: 비상(김진완) L6 대화 (Time Traveler's Wife)]",
+   "source": "비상(김진완) L6 대화 (Time Traveler's Wife)"
+  }
+ ]
+}
