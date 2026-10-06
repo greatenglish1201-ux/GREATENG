@@ -3383,6 +3383,65 @@ window.PASSAGES = [
            + "② (A)의 <b>such green taxes</b>는 앞에 taxes가 나와야 성립 "
            + "③ (C)의 <b>The results</b>는 앞에 사례가 있어야 성립 "
            + "<u>such·The results 같은 한정 표현은 앞을 가리킨다</u>를 각인시킬 것. 2023-36번과 같은 구조."
+},
+
+/* ===== 2022수능 40 ===== */
+{
+  id: "s22_40_explanation", src: "2022수능 40번", qnum: 40, qtype: "요약",
+  qtext: "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+  star: 3, time: 90, note: "* subsume: 포섭(포함)하다  ** empirical: 경험적인",
+  sents: [
+    "Philip Kitcher and Wesley Salmon have suggested that there are two possible alternatives among philosophical theories of explanation.",
+    "One is the view that scientific explanation consists in the unification of broad bodies of phenomena under a minimal number of generalizations.",
+    "According to this view, the (or perhaps, a) goal of science is to construct an economical framework of laws or generalizations that are capable of subsuming all observable phenomena.",
+    "Scientific explanations organize and systematize our knowledge of the empirical world; the more economical the systematization, the deeper our understanding of what is explained.",
+    "The other view is the causal/mechanical approach.",
+    "According to it, a scientific explanation of a phenomenon consists of uncovering the mechanisms that produced the phenomenon of interest.",
+    "This view sees the explanation of individual events as primary, with the explanation of generalizations flowing from them.",
+    "That is, the explanation of scientific generalizations comes from the causal mechanisms that produce the regularities."
+  ],
+  summary: "Scientific explanations can be made either by seeking the <u>(A)</u> number of principles covering all observations or by finding general <u>(B)</u> drawn from individual phenomena.",
+  choices: ["least | patterns","fixed | features","limited | functions","fixed | rules","least | assumptions"],
+  ans: 1,
+  key: "<b class=w>theories of explanation</b> - 과학적 설명에 대한 두 관점",
+  attr: "<b class=w>two possible alternatives</b> (1) - 두 가지 대안이 있다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"One is the view that scientific explanation consists in the unification...", skip:false},
+    {n:3, head:"According to this view, the goal of science is...", skip:false},
+    {n:4, head:"Scientific explanations organize and systematize...", skip:false},
+    {n:5, head:"The other view is the causal/mechanical approach.", skip:false},
+    {n:6, head:"According to it, a scientific explanation of a phenomenon...", skip:false},
+    {n:7, head:"This view sees the explanation of individual events as primary...", skip:false},
+    {n:8, head:"That is, the explanation of scientific generalizations comes from...", skip:false}
+  ],
+  trunk1: "관점 ① 통합 - 최소한의 일반 법칙으로 모든 현상을 포섭",
+  trunk2: "관점 ② 인과·기계 - 개별 사건의 메커니즘에서 규칙성이 나온다",
+  pivotAt: 5,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"과학적 설명 이론에는 두 가지 대안이 있다"},
+    {n:2, lb:"주장",     head:true,  txt:"하나는 <b>최소한의 일반화</b>로 넓은 현상을 통합하는 관점"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"모든 관찰 현상을 포섭하는 경제적인 법칙 틀을 세우는 것이 목표"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"체계화가 경제적일수록 이해가 깊어진다"},
+    {n:5, lb:"대조·반전", head:true, txt:"다른 하나는 <b>인과·기계적</b> 접근"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"현상을 만든 메커니즘을 밝혀내는 것이 설명"},
+    {n:7, lb:"부연",     head:false, to:6, txt:"<b>개별 사건</b>의 설명이 먼저이고 일반화는 거기서 흘러나온다"},
+    {n:8, lb:"부연",     head:false, to:7, txt:"즉 일반화의 설명은 규칙성을 낳는 인과 메커니즘에서 온다"}
+  ],
+  pivot: {sig:"The other view", at:5, from:"통합 관점(최소 법칙)", to:"인과·기계 관점(개별 사건)"},
+  pivotSub: "<b>One is ~ / The other ~</b> 병렬 구조. 필자가 한쪽 편을 들지 않고 <u>두 관점을 나란히</u> 소개한다 - 요약문도 <b>either A or B</b>.",
+  gist: "과학적 설명은 최소한의 원리로 모든 관찰을 포섭하거나, 개별 현상에서 일반적 패턴을 찾는 두 방식으로 이루어진다.",
+  wrong: {
+    "2": "(A) fixed — 원리의 수가 '고정'이 아니라 <b>최소</b>(minimal)",
+    "3": "(B) functions — 개별 현상에서 끌어내는 것은 기능이 아니라 <b>규칙성</b>(regularities)",
+    "4": "(A) fixed · (B) rules 둘 다 어긋남",
+    "5": "(B) assumptions — 가정이 아니라 관찰된 규칙성"
+  },
+  wrongNote: "(A)는 2번 <b>minimal number</b> → least, (B)는 8번 <b>regularities</b> → patterns. "
+           + "<u>요약문 빈칸은 본문 단어를 동의어로 바꾼 것</u>이라는 원칙이 그대로 적용된다.",
+  teachNote: "<b>두 관점 병렬형</b> 요약. 2025-40(통념 반박)·2026-40(전환점 앞뒤)과 다른 세 번째 패턴 - "
+           + "필자가 편을 들지 않으므로 요약문도 <b>either A or B</b>로 양쪽을 다 담는다. "
+           + "어휘가 추상적이라 3등급엔 [3점]급 부담 - <u>minimal → least, regularities → patterns</u> 대응만 잡게 할 것."
 }
 
 ];
@@ -3472,7 +3531,8 @@ window.AXIS_MAP = {
  s22_4142_classify:  {ax:"part", side:"L",     note:"분류(나누기)가 언어에 내재된 본질"},
  s26_21_sticky:      {ax:"fix",  side:"R",     note:"일이 장소에서 풀려났다"},
  s23_36_waterflea:   {ax:"fix",  side:"R",     note:"환경에 따라 형태를 바꾼다 - 적응적 가소성"},
- s26_4142_dress:     {ax:"fix",  side:"R",     note:"의복은 고정이 아니라 유동(fluid rather than static)"}
+ s26_4142_dress:     {ax:"fix",  side:"R",     note:"의복은 고정이 아니라 유동(fluid rather than static)"},
+ s22_40_explanation: {ax:"part", side:"both",  note:"최소 법칙으로 전체를 포섭 vs 개별 사건에서 규칙성"}
 };
 
 /* ============================================================
