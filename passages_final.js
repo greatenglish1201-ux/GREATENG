@@ -3442,6 +3442,115 @@ window.PASSAGES = [
   teachNote: "<b>두 관점 병렬형</b> 요약. 2025-40(통념 반박)·2026-40(전환점 앞뒤)과 다른 세 번째 패턴 - "
            + "필자가 편을 들지 않으므로 요약문도 <b>either A or B</b>로 양쪽을 다 담는다. "
            + "어휘가 추상적이라 3등급엔 [3점]급 부담 - <u>minimal → least, regularities → patterns</u> 대응만 잡게 할 것."
+},
+
+/* ===== 2023수능 40 ===== */
+{
+  id: "s23_40_craftsmanship", src: "2023수능 40번", qnum: 40, qtype: "요약",
+  qtext: "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+  star: 2, time: 80, note: "* swath: 구획",
+  sents: [
+    "\u201cCraftsmanship\u201d may suggest a way of life that declined with the arrival of industrial society \u2015 but this is misleading.",
+    "Craftsmanship names an enduring, basic human impulse, the desire to do a job well for its own sake.",
+    "Craftsmanship cuts a far wider swath than skilled manual labor; it serves the computer programmer, the doctor, and the artist; parenting improves when it is practiced as a skilled craft, as does citizenship.",
+    "In all these domains, craftsmanship focuses on objective standards, on the thing in itself.",
+    "Social and economic conditions, however, often stand in the way of the craftsman\u2019s discipline and commitment: schools may fail to provide the tools to do good work, and workplaces may not truly value the aspiration for quality.",
+    "And though craftsmanship can reward an individual with a sense of pride in work, this reward is not simple.",
+    "The craftsman often faces conflicting objective standards of excellence; the desire to do something well for its own sake can be weakened by competitive pressure, by frustration, or by obsession."
+  ],
+  summary: "Craftsmanship, a human desire that has <u>(A)</u> over time in diverse contexts, often encounters factors that <u>(B)</u> its full development.",
+  choices: ["persisted | limit","persisted | cultivate","evolved | accelerate","diminished | shape","diminished | restrict"],
+  ans: 1,
+  key: "<b class=w>Craftsmanship</b> - 장인 정신",
+  attr: "<b class=w>declined... but this is misleading</b> (1) - 쇠퇴했다는 생각은 <b>오해</b>다",
+  dir: "통념",
+  skip: [
+    {n:2, head:"Craftsmanship names an enduring, basic human impulse...", skip:false},
+    {n:3, head:"Craftsmanship cuts a far wider swath than skilled manual labor...", skip:false},
+    {n:4, head:"In all these domains, craftsmanship focuses on objective standards...", skip:false},
+    {n:5, head:"Social and economic conditions, however, often stand in the way...", skip:false},
+    {n:6, head:"And though craftsmanship can reward an individual...", skip:false},
+    {n:7, head:"The craftsman often faces conflicting objective standards...", skip:false}
+  ],
+  trunk1: "장인 정신은 사라지지 않고 지속되는 인간의 충동",
+  trunk2: "그러나 사회·경제 조건이 그 발전을 가로막는다",
+  pivotAt: 5,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"장인 정신이 산업사회와 함께 쇠퇴했다는 생각은 오해다 (통념 반박)"},
+    {n:2, lb:"주장",     head:true,  txt:"장인 정신은 일을 잘하려는 <b>지속적이고 기본적인</b> 인간 충동"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"손기술을 넘어 프로그래머·의사·예술가, 양육·시민 의식에까지 쓰인다"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"모든 분야에서 객관적 기준, 그 자체에 집중한다"},
+    {n:5, lb:"대조·반전", head:true, txt:"그러나 사회·경제 조건이 장인의 규율과 헌신을 <b>가로막는다</b>"},
+    {n:6, lb:"부연",     head:false, to:5, txt:"일에 대한 자부심이라는 보상도 단순하지 않다"},
+    {n:7, lb:"근거",     head:false, to:6, txt:"상충하는 기준, 경쟁 압박·좌절·집착이 그 욕구를 약화시킨다"}
+  ],
+  pivot: {sig:"however", at:5, from:"장인 정신은 지속되는 충동", to:"그러나 발전을 가로막는 요인들"},
+  pivotSub: "1번 안의 <b>but this is misleading</b>이 통념을 뒤집고, 5번 <b>however</b>가 두 번째 축을 연다. "
+          + "요약문 (A)는 1~4번, (B)는 5~7번에서 온다 - 2026-40과 같은 <u>전환점 앞뒤</u> 구조.",
+  gist: "장인 정신은 시대와 분야를 넘어 지속되어 온 욕구이지만, 사회·경제적 조건 등이 그 온전한 발전을 제약한다.",
+  wrong: {
+    "2": "(B) cultivate(기르다) - 5번 <b>stand in the way</b>와 정반대",
+    "3": "(A) evolved는 그럴듯하나 (B) accelerate가 반대",
+    "4": "(A) diminished - 1번이 바로 그 생각을 <b>오해</b>라고 함",
+    "5": "(A) diminished가 1번과 정반대 - (B) restrict는 맞지만 (A)에서 탈락"
+  },
+  wrongNote: "⑤가 함정. (B) restrict는 정답과 같은 방향이라 끌리지만 (A) <b>diminished</b>는 1번이 부정한 통념 그대로다. "
+           + "<u>(A)·(B) 둘 다 맞아야 정답</u> - 한쪽만 보고 고르지 말 것.",
+  teachNote: "<b>통념 반박 + 전환점</b>이 겹친 형. (A)는 2번 <b>enduring</b> → persisted, (B)는 5번 <b>stand in the way</b> → limit. "
+           + "<u>(A)부터 보면 diminished 둘이 바로 빠진다</u> - 1번 but this is misleading이 근거. 3등급에게 적당한 난이도."
+},
+
+/* ===== 2024수능 40 ===== */
+{
+  id: "s24_40_onesubject", src: "2024수능 40번", qnum: 40, qtype: "요약",
+  qtext: "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+  star: 2, time: 80, note: "* condense: 응축하다  ** cerebral: 대뇌의",
+  sents: [
+    "Even those with average talent can produce notable work in the various sciences, so long as they do not try to embrace all of them at once.",
+    "Instead, they should concentrate attention on one subject after another (that is, in different periods of time), although later work will weaken earlier attainments in the other spheres.",
+    "This amounts to saying that the brain adapts to universal science in <i>time</i> but not in <i>space</i>.",
+    "In fact, even those with great abilities proceed in this way.",
+    "Thus, when we are astonished by someone with publications in different scientific fields, realize that each topic was explored during a specific period of time.",
+    "Knowledge gained earlier certainly will not have disappeared from the mind of the author, but it will have become simplified by condensing into formulas or greatly abbreviated symbols.",
+    "Thus, sufficient space remains for the perception and learning of new images on the cerebral blackboard."
+  ],
+  summary: "Exploring one scientific subject after another <u>(A)</u> remarkable work across the sciences, as the previously gained knowledge is retained in simplified forms within the brain, which <u>(B)</u> room for new learning.",
+  choices: ["enables | leaves","challenges | spares","delays | creates","requires | removes","invites | diminishes"],
+  ans: 1,
+  key: "<b class=w>notable work in the various sciences</b> - 여러 과학 분야에서 뛰어난 업적",
+  attr: "<b class=w>so long as they do not try to embrace all of them at once</b> (1) - 한꺼번에 다 품으려 하지 않으면 가능하다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Instead, they should concentrate attention on one subject after another...", skip:false},
+    {n:3, head:"This amounts to saying that the brain adapts...", skip:false},
+    {n:4, head:"In fact, even those with great abilities proceed in this way.", skip:false},
+    {n:5, head:"Thus, when we are astonished by someone with publications...", skip:false},
+    {n:6, head:"Knowledge gained earlier certainly will not have disappeared...", skip:false},
+    {n:7, head:"Thus, sufficient space remains for the perception and learning...", skip:false}
+  ],
+  trunk1: "한 분야씩 차례로 파면 평범한 재능도 여러 분야에서 업적을 낸다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"평범한 재능도 한꺼번에 다 하려 하지 않으면 여러 과학에서 업적을 낸다"},
+    {n:2, lb:"주장",     head:true,  txt:"대신 <b>한 분야씩 차례로</b>(시기를 달리해) 집중해야 한다"},
+    {n:3, lb:"재진술",   head:true,  txt:"뇌는 보편 과학에 <b>공간이 아니라 시간</b> 속에서 적응한다"},
+    {n:4, lb:"근거",     head:false, to:3, txt:"뛰어난 사람들도 실제로 이렇게 한다"},
+    {n:5, lb:"부연",     head:false, to:4, txt:"여러 분야 논문을 낸 사람도 각 주제를 특정 시기에 탐구한 것"},
+    {n:6, lb:"근거",     head:false, to:3, txt:"앞서 얻은 지식은 사라지지 않고 공식·약호로 <b>단순화</b>된다"},
+    {n:7, lb:"재진술",   head:true,  txt:"그래서 새로운 학습을 위한 <b>충분한 공간</b>이 남는다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "<b>Instead</b>(2)는 1번의 'all at once'를 받아 대안을 내놓는 신호일 뿐, 줄기를 바꾸지 않는다.",
+  gist: "한 분야씩 차례로 탐구하면 이전 지식이 단순화되어 남고 새 학습의 여지가 생기므로 여러 과학에서 업적을 낼 수 있다.",
+  wrong: {
+    "2": "(A) challenges - 차례로 탐구하는 것이 업적을 <b>가로막는다</b>는 말이 아님",
+    "3": "(A) delays - 업적을 늦춘다는 말이 아님",
+    "4": "(B) removes - 7번은 공간이 <b>남는다</b>(remains)고 함 - 정반대",
+    "5": "(B) diminishes - 공간을 <b>줄인다</b>는 정반대"
+  },
+  wrongNote: "(B)부터 보면 빠르다. 7번 <b>sufficient space remains</b> → leaves room. removes·diminishes가 바로 빠진다.",
+  teachNote: "<b>가장 쉬운 요약형</b> - 첫 문장과 마지막 문장이 요약문 두 칸에 그대로 대응한다. "
+           + "(A)는 1번 <b>can produce</b> → enables, (B)는 7번 <b>space remains</b> → leaves. "
+           + "<u>요약 문항은 첫 문장과 끝 문장부터</u> 읽는 습관을 들이기에 좋은 입문 지문."
 }
 
 ];
@@ -3532,7 +3641,9 @@ window.AXIS_MAP = {
  s26_21_sticky:      {ax:"fix",  side:"R",     note:"일이 장소에서 풀려났다"},
  s23_36_waterflea:   {ax:"fix",  side:"R",     note:"환경에 따라 형태를 바꾼다 - 적응적 가소성"},
  s26_4142_dress:     {ax:"fix",  side:"R",     note:"의복은 고정이 아니라 유동(fluid rather than static)"},
- s22_40_explanation: {ax:"part", side:"both",  note:"최소 법칙으로 전체를 포섭 vs 개별 사건에서 규칙성"}
+ s22_40_explanation: {ax:"part", side:"both",  note:"최소 법칙으로 전체를 포섭 vs 개별 사건에서 규칙성"},
+ s23_40_craftsmanship:{ax:"cont", side:"R",     note:"산업사회와 함께 사라졌다는 통념과 달리 지속되는 인간 충동"},
+ s24_40_onesubject:  {ax:"part", side:"L",     note:"한꺼번에 다 품지 말고 한 분야씩 나눠 차례로"}
 };
 
 /* ============================================================
