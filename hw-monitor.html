@@ -447,6 +447,9 @@ function toggleHubMenu(){
     // 다시 렌더 (재호출 없이 캐시로 필터)
     if(overviewCache){ renderToday(overviewCache); renderRates(overviewCache); }
     if(allGridNames.length) renderGrid(allGridNames);
+    // [추가] 면제 패널이 열려 있으면 학생 목록(일괄 옵션 라벨 포함)도 클래스 기준으로 갱신
+    const ep = document.getElementById('exempt-panel');
+    if(ep && ep.style.display !== 'none') fillExemptStudents();
   }
 
   // 클래스 필터 통과 여부
@@ -1095,8 +1098,14 @@ function toggleHubMenu(){
     const cur = sel.value;
     const names = (allGridNames||[]).filter(inClass);
     sel.innerHTML = '<option value="">학생 선택</option>';
+    // [추가] 일괄 지정: 현재 클래스 필터 기준 (전체 선택 시 전체 학생)
+    if(names.length){
+      const allLabel = '★ ' + (curClass ? (curClass + ' 전체') : '전체 학생') + ' (' + names.length + '명)';
+      sel.add(new Option(allLabel, '__ALL__'));
+    }
     names.forEach(n=> sel.add(new Option(n, n)));
     if(cur) sel.value = cur;
+    if(sel.value !== cur) sel.value = '';
   }
   function onExemptCellToggle(){
     exemptCellMode = document.getElementById('exempt-cell-toggle').checked;
@@ -1111,7 +1120,39 @@ function toggleHubMenu(){
     if(!name){ msg.style.color='#c0392b'; msg.textContent='학생을 선택하세요.'; return; }
     if(!start){ msg.style.color='#c0392b'; msg.textContent='시작일을 입력하세요.'; return; }
     if(end < start){ msg.style.color='#c0392b'; msg.textContent='종료일이 시작일보다 빠릅니다.'; return; }
+    if(name === '__ALL__'){
+      const names = (allGridNames||[]).filter(inClass);
+      if(!names.length){ msg.style.color='#c0392b'; msg.textContent='대상 학생이 없습니다.'; return; }
+      const who = curClass ? (curClass + ' ' + names.length + '명') : ('전체 학생 ' + names.length + '명');
+      const range = (start===end) ? start : (start + ' ~ ' + end);
+      if(!confirm(who + '을 ' + range + ' ' + (mode==='add'?'면제':'해제') + '합니다. 진행할까요?')) return;
+      await sendExemptBulk(names, start, end, mode, msg);
+      return;
+    }
     await sendExempt(name, start, end, mode, msg);
+  }
+  // [추가] 일괄 면제/해제 — GAS type=setExemptBulk (이름은 줄바꿈으로 구분)
+  async function sendExemptBulk(names, start, end, mode, msgEl){
+    const msg = msgEl || document.getElementById('exempt-msg');
+    if(msg){ msg.style.color='#234e84'; msg.textContent = names.length + '명 ' + (mode==='add'?'면제':'해제') + ' 처리 중...'; }
+    const pw = (typeof AUTH_PW !== 'undefined' && AUTH_PW) ? AUTH_PW : 'vlfl2125';
+    const params = 'type=setExemptBulk&pw=' + encodeURIComponent(pw)
+      + '&names=' + encodeURIComponent(names.join('\n'))
+      + '&start=' + encodeURIComponent(start)
+      + '&end=' + encodeURIComponent(end)
+      + '&mode=' + encodeURIComponent(mode);
+    const r = await jsonp(params);
+    if(!r || !r.ok){
+      if(msg){ msg.style.color='#c0392b'; msg.textContent = '실패: ' + ((r&&r.msg)||'응답 없음'); }
+      return;
+    }
+    if(msg){
+      msg.style.color='#1f7a3f';
+      msg.textContent = names.length + '명 · ' + (mode==='add' ? ('면제 '+(r.added||0)+'칸 적용') : ('해제 '+(r.removed||0)+'칸 적용'))
+        + (r.warn ? (' · '+r.warn) : '');
+    }
+    await loadAll();
+    if(document.getElementById('exempt-panel').style.display !== 'none') fillExemptStudents();
   }
   // 공통 전송 함수 (칸토글·범위 모두 사용)
   async function sendExempt(name, start, end, mode, msgEl){
