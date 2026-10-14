@@ -1257,6 +1257,16 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   const [selectedStudent,setSelectedStudent]=useState(''); // '' = 전체
   const [clsFilter,setClsFilter]=useState('');             // '' = 전체 클래스 (시험결과 랭킹용)
   const [stuClsFilter,setStuClsFilter]=useState('');       // '' = 전체 클래스 (학생관리용)
+  // 시험결과 탭: 퇴원생(비활성·만료) 드롭다운 표시 여부 — 기본 숨김
+  const [showInactiveStu,setShowInactiveStu]=useState(false);
+  // 재원생 판정: GAS _activeNameMap_()과 같은 기준 (활성화 FALSE/비활성 제외, 만료일 경과 제외)
+  const isActiveStudent=(s)=>{
+    if(!s)return false;
+    const a=String(s.active).trim();
+    if(s.active===false||a==='FALSE'||a==='false'||a==='비활성')return false;
+    if(s.expiry){const d=new Date(s.expiry);if(!isNaN(d)&&d<new Date())return false;}
+    return true;
+  };
   const [stats,setStats]=useState(null);
   const [statsLoading,setStatsLoading]=useState(false);
   // ★ 시험결과 인쇄 — 섹션 선택 모달. null | {scope:'student'|'all', opts:{...}}
@@ -2023,8 +2033,21 @@ ${ESC_}
             <select value={selectedStudent} onChange={e=>{setSelectedStudent(e.target.value);loadStats(e.target.value);}}
               style={{flex:1,padding:'9px 12px',borderRadius:10,border:'1px solid #e6dcc6',fontSize:13,outline:'none',color:'#3a2a20',background:'#fff'}}>
               <option value=''>전체 학생</option>
-              {students.map((s,i)=><option key={i} value={s.name}>{s.name}</option>)}
+              {students.filter(isActiveStudent).map((s,i)=><option key={'a'+i} value={s.name}>{s.name}</option>)}
+              {(()=>{
+                // 퇴원생: '퇴원생 보기' 체크 시, 또는 현재 선택된 학생이 퇴원생일 때만 표시
+                const inactive=students.filter(s=>!isActiveStudent(s)&&(showInactiveStu||s.name===selectedStudent));
+                if(!inactive.length)return null;
+                return <optgroup label="퇴원생 (집계 제외)">
+                  {inactive.map((s,i)=><option key={'x'+i} value={s.name}>{s.name}</option>)}
+                </optgroup>;
+              })()}
             </select>
+            <label title="비활성·만료 학생도 드롭다운에 표시 (개인 기록 열람용)"
+              style={{display:'flex',alignItems:'center',gap:4,fontSize:11.5,color:'#9a8570',whiteSpace:'nowrap',cursor:'pointer'}}>
+              <input type="checkbox" checked={showInactiveStu} onChange={e=>setShowInactiveStu(e.target.checked)} style={{accentColor:'#7a1020'}}/>
+              퇴원생 보기
+            </label>
             <button onClick={()=>loadStats(selectedStudent)} style={{padding:'9px 16px',borderRadius:10,border:'none',background:'linear-gradient(90deg,#7a1020,#C9A84C)',color:'#fff',fontWeight:600,fontSize:13,cursor:'pointer'}}>조회</button>
             <button onClick={()=>setReportModal(selectedStudent
               ?{scope:'student',opts:{weakPid:true,weakType:true,blind:true,weak:true,type:true,book:true,sess:true}}
