@@ -533,7 +533,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20261015b"></script>
+<script src="passages_final.js?v=20261015c"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -733,6 +733,54 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
         + '<div class="tip">'+esc(p.teachNote)+'</div></div></div>' : '');
 
     return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>실전 전이지 B</span></div></section>';
+  }
+
+  /* ---------- 재풀이 B — 35번 무관 문장 ---------- */
+  function strip_b(t){ return String(t||'').replace(/<\/?b[^>]*>/g,''); }
+  function sheetIrrB(p, lv){
+    var h = '<section class="sheet sheet-b" data-id="'+p.id+'-b">';
+    h += head(p, 3, 3, '');
+    h += '<div class="qnum" style="display:flex;align-items:center;gap:10px">'
+      + '<span>'+p.qnum+'. '+p.qtext+'</span>'
+      + '<span class="timer">목표 '+(p.time||70)+'초</span></div>';
+    h += '<div class="exam-wrap"><div class="exam-col"><p>'+strip_b(p.intro)+' '
+      + p.items.map(function(it){ return cn(it.n)+' '+it.text; }).join(' ')+'</p>'
+      + (p.note ? '<p style="text-align:right;text-indent:0;font-size:11px;margin-bottom:2px">'+p.note+'</p>' : '')
+      + '</div></div>';
+    h += '<div class="step">'+stepH('확인','표 없이 다시','주제를 먼저 잡고 하나씩 대본다')
+      + '<div class="fchk"><span class="fl">주제 한 줄</span>'+fill(esc(p.topic))+'</div>'
+      + '<div class="fchk" style="margin-top:1.5mm"><span class="fl">정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'+cn(p.ans)+'</span></span>'
+      + '<span class="fl">왜 벗어났나</span>'+fill(esc((p.items.filter(function(i){return !i.ok;})[0]||{}).why||''))+'</div>'
+      + '<div class="fchk" style="margin-top:1.5mm"><span class="fl">A지 때와 답이 달랐다면 이유</span>'+fill('')+'</div></div>';
+    h += (p.trap ? '<div class="ans"><div class="ans-box"><span class="k">함정</span>'+p.trap+'</div></div>' : '');
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>재풀이 B</span></div></section>';
+  }
+
+  /* ---------- 재풀이 B — 36·37번 순서 ---------- */
+  function sheetSeqB(p, lv){
+    var OPT = ['(A) － (C) － (B)','(B) － (A) － (C)','(B) － (C) － (A)','(C) － (A) － (B)','(C) － (B) － (A)'];
+    var h = '<section class="sheet sheet-b" data-id="'+p.id+'-b">';
+    h += head(p, 3, 3, '');
+    h += '<div class="qnum" style="display:flex;align-items:center;gap:10px">'
+      + '<span>'+p.qnum+'. '+esc(p.qtext)+'</span>'
+      + '<span class="timer">목표 '+(p.time||100)+'초</span></div>';
+    h += '<div class="exam-wrap"><div class="exam-col">'
+      + '<div style="border:1px solid var(--ink); padding:6px 10px; margin-bottom:8px">'+strip_b(p.given)+'</div>'
+      + p.paras.map(function(pa){
+          return '<p style="text-indent:0; padding-left:2.2em; text-indent:-2.2em">('+pa.tag+') '+strip_b(pa.text)+'</p>';
+        }).join('')
+      + (p.note ? '<p style="text-align:right;text-indent:0;font-size:11px;margin-bottom:2px">'+p.note+'</p>' : '')
+      + '<div class="ch">'+OPT.map(function(o,i){ return cn(i+1)+' '+o; }).join('&emsp;&ensp;')+'</div>'
+      + '</div></div>';
+    h += '<div class="step">'+stepH('확인','표 없이 다시','첫머리 단서만 보고 잇는다')
+      + '<div class="fchk"><span class="fl">맨 앞 단락과 그 이유</span>'
+      + fill(esc('('+p.orderAns[0]+') '+((p.paras.filter(function(x){return x.tag===p.orderAns[0];})[0]||{}).cue||'')))+'</div>'
+      + '<div class="fchk" style="margin-top:1.5mm"><span class="fl">정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'+cn(p.ans)+'</span></span>'
+      + '<span class="fl">A지 때와 답이 달랐다면 이유</span>'+fill('')+'</div></div>';
+    h += (p.orderWhy ? '<div class="ans"><div class="ans-box"><span class="k">순서</span>'+esc(p.orderWhy)+'</div></div>' : '');
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>재풀이 B</span></div></section>';
   }
 
   /* ---------- 장문 순서배열 (43~45형) ---------- */
@@ -1231,8 +1279,16 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
     var mode = selO.value;
     norm.forEach(function(p){
-      if(p.irr){ html += sheetIrr(p, lv); return; }
-      if(p.given){ html += sheetSeq(p, lv); return; }
+      if(p.irr){
+        if(mode !== 'b') html += sheetIrr(p, lv);
+        if(mode !== 'a') html += sheetIrrB(p, lv);
+        return;
+      }
+      if(p.given){
+        if(mode !== 'b') html += sheetSeq(p, lv);
+        if(mode !== 'a') html += sheetSeqB(p, lv);
+        return;
+      }
       if(p.paras){ html += sheetOrder(p, lv); return; }
       if(mode !== 'b') html += sheetA1(p, lv) + sheetA2(p, lv);
       if(mode !== 'a') html += sheetB(p, lv);
@@ -1240,7 +1296,8 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
     var pages = sel.reduce(function(a, p){
       if(p.fast) return a;
-      if(p.paras || p.irr) return a + 1;
+      if(p.irr || p.given) return a + (mode === 'ab' ? 2 : 1);
+      if(p.paras) return a + 1;
       var aPages = p._merge ? 1 : 2;
       return a + (mode === 'ab' ? aPages + 1 : (mode === 'a' ? aPages : 1));
     }, 0) + (fast.length ? Object.keys(byYear).length : 0);
