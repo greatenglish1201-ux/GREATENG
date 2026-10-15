@@ -3551,6 +3551,442 @@ window.PASSAGES = [
   teachNote: "<b>가장 쉬운 요약형</b> - 첫 문장과 마지막 문장이 요약문 두 칸에 그대로 대응한다. "
            + "(A)는 1번 <b>can produce</b> → enables, (B)는 7번 <b>space remains</b> → leaves. "
            + "<u>요약 문항은 첫 문장과 끝 문장부터</u> 읽는 습관을 들이기에 좋은 입문 지문."
+},
+
+/* ===== 32번 빈칸 (2022~2026) ===== */
+{
+  id: "s26_32_style", src: "2026수능 32번", qnum: 32, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. [3점]",
+  star: 3, time: 90, note: "",
+  sents: [
+    "The basic guidelines for good style are not mysterious; in fact, you use them every day in conversation.",
+    "In conversation and in writing, we all rely heavily on cooperation to make sense of exchanges, and a polished practical style makes cooperation easier.",
+    "Writers develop such a style by acknowledging that readers expect the same things that listeners expect in conversation: clarity, relevance, and proportion.",
+    "If you listen to someone who is not clear, who cannot stay on the topic, or who offers too much or too little information, you will quickly lose interest in the conversation.",
+    "Writers, too, need to be clear, stay on the topic, and give information appropriately.",
+    "In fact, this attention to audience and appropriateness may be even more important in writing than in conversation because writing does not permit the nonverbal communication and immediate feedback that are part of conversation.",
+    "As writers, we have to <u>__________</u>; in effect, we have to imagine both halves of a virtual conversation."
+  ],
+  choices: ["recognize the limitations of writing and conversation","envision the reader’s preference for stylistic writing",
+            "picture the reader’s desire for more knowledge","develop collaborative writing with readers",
+            "anticipate the absent reader’s response"],
+  ans: 5, blankAt: 7,
+  key: "<b class=w>good style</b> - 글쓰기와 대화의 공통 원칙",
+  attr: "<b class=w>you use them every day in conversation</b> (1) - 대화에서 이미 쓰는 원칙이다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"In conversation and in writing, we all rely heavily on cooperation...", skip:false},
+    {n:3, head:"Writers develop such a style by acknowledging...", skip:false},
+    {n:4, head:"If you listen to someone who is not clear...", skip:false},
+    {n:5, head:"Writers, too, need to be clear...", skip:false},
+    {n:6, head:"In fact, this attention to audience and appropriateness...", skip:false},
+    {n:7, head:"As writers, we have to ____...", skip:false}
+  ],
+  trunk1: "글쓰기도 대화처럼 상대를 의식해야 한다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"좋은 문체의 원칙은 신비롭지 않다 - 매일 대화에서 쓴다"},
+    {n:2, lb:"근거",     head:false, to:1, txt:"대화와 글 모두 협력에 기대고, 세련된 문체가 협력을 쉽게 한다"},
+    {n:3, lb:"주장",     head:true,  txt:"독자는 청자와 같은 것(명료성·관련성·적절한 분량)을 기대한다"},
+    {n:4, lb:"예시",     head:false, to:3, txt:"불명확하고 주제를 벗어나는 사람의 말엔 금방 흥미를 잃는다"},
+    {n:5, lb:"부연",     head:false, to:3, txt:"글쓴이도 명확하고, 주제를 지키고, 정보를 적절히 줘야 한다"},
+    {n:6, lb:"주장",     head:true,  txt:"글은 <b>즉각적인 반응이 없으므로</b> 청중 의식이 더 중요하다"},
+    {n:7, lb:"재진술",   head:true,  txt:"그래서 글쓴이는 <b>무언가</b>해야 한다 - 가상 대화의 양쪽을 다 상상한다 (빈칸)"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "빈칸 바로 뒤 <b>in effect</b>(= 즉) 뒤가 빈칸의 <u>풀어 쓴 말</u>이다 - imagine both halves of a virtual conversation.",
+  gist: "글은 즉각적 피드백이 없으므로, 글쓴이는 그 자리에 없는 독자의 반응을 미리 헤아려야 한다.",
+  wrong: {
+    "1": "글과 대화의 <b>한계</b>를 인식하는 게 아니라 독자 반응을 헤아리는 것",
+    "2": "독자가 <b>문체적인 글</b>을 선호한다는 말이 없음",
+    "3": "독자가 <b>더 많은 지식</b>을 원한다는 말이 없음 - 오히려 too much information도 문제",
+    "4": "독자와 <b>함께 쓰는</b> 것이 아님 - 독자는 그 자리에 없다"
+  },
+  wrongNote: "④가 함정. cooperation·conversation이 반복돼 '협업'으로 끌리지만, 6번은 독자가 <b>없다</b>(no immediate feedback)고 말한다.",
+  teachNote: "<b>빈칸 + in effect</b> 구조 - 빈칸 뒤가 빈칸을 다시 말해 준다. imagine both halves of a virtual conversation = "
+           + "독자 몫까지 상상한다 = <u>anticipate the absent reader’s response</u>. 6번의 no immediate feedback이 absent의 근거."
+},
+{
+  id: "s25_32_critical", src: "2025수능 32번", qnum: 32, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 3, time: 85, note: "* succumb: 굴복하다  ** arterial: 동맥의",
+  sents: [
+    "Education, at its best, teaches more than just knowledge.",
+    "It teaches critical thinking: the ability to stop and think before acting, to avoid succumbing to emotional pressures.",
+    "This is not thought control.",
+    "It is the very reverse: mental liberation.",
+    "Even the most advanced intellectual will be imperfect at this skill.",
+    "But even imperfect possession of it <u>__________</u> of being ‘stimulus-driven’, constantly reacting to the immediate environment, the brightest colours or loudest sounds.",
+    "Being driven by heuristic responses, living by instinct and emotion all the time, is a very easy way to live, in many ways: thought is effortful, especially for the inexperienced.",
+    "But emotions are also exhausting, and short-term reactions may not, in the long term, be the most beneficial for health and survival.",
+    "Just as we reach for burgers for the sake of convenience, storing up the arterial fat which may one day kill us, so our reliance on feelings can do us great harm."
+  ],
+  choices: ["intensifies people’s danger","enhances our understanding","frees a person from the burden",
+            "allows us to accept the inevitability","requires one to have the experience"],
+  ans: 3, blankAt: 6,
+  key: "<b class=w>critical thinking</b> - 교육이 가르치는 비판적 사고",
+  attr: "<b class=w>It is the very reverse: mental liberation</b> (4) - 사고 통제가 아니라 <b>정신의 해방</b>",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"It teaches critical thinking...", skip:false},
+    {n:3, head:"This is not thought control.", skip:false},
+    {n:4, head:"It is the very reverse: mental liberation.", skip:false},
+    {n:5, head:"Even the most advanced intellectual will be imperfect...", skip:false},
+    {n:6, head:"But even imperfect possession of it ____...", skip:false},
+    {n:7, head:"Being driven by heuristic responses...", skip:false},
+    {n:8, head:"But emotions are also exhausting...", skip:false},
+    {n:9, head:"Just as we reach for burgers for the sake of convenience...", skip:false}
+  ],
+  trunk1: "비판적 사고는 정신의 해방", trunk2: "불완전해도 자극에 끌려다니는 짐을 덜어준다",
+  pivotAt: 6,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"좋은 교육은 지식 이상을 가르친다"},
+    {n:2, lb:"주장",     head:true,  txt:"행동 전에 멈춰 생각하는 <b>비판적 사고</b>를 가르친다"},
+    {n:3, lb:"부연",     head:false, to:2, txt:"이것은 사고 통제가 아니다"},
+    {n:4, lb:"재진술",   head:true,  txt:"정반대로 <b>정신의 해방</b>이다"},
+    {n:5, lb:"부연",     head:false, to:4, txt:"가장 뛰어난 지식인도 이 능력은 불완전하다"},
+    {n:6, lb:"대조·반전", head:true, txt:"그러나 불완전하게라도 가지면 자극에 끌려다니는 상태에서 <b>무언가</b>한다 (빈칸)"},
+    {n:7, lb:"근거",     head:false, to:6, txt:"본능·감정대로 사는 건 여러모로 쉽다 - 생각은 힘이 든다"},
+    {n:8, lb:"근거",     head:false, to:6, txt:"그러나 감정도 지치게 하고 단기 반응은 장기적으로 해롭다"},
+    {n:9, lb:"비유",     head:false, to:8, txt:"편해서 버거를 먹다 동맥 지방이 쌓이듯, 감정 의존은 큰 해가 된다"}
+  ],
+  pivot: {sig:"But", at:6, from:"누구도 완벽하지 않다", to:"불완전해도 효과가 있다"},
+  pivotSub: "4번 <b>mental liberation</b>이 빈칸의 열쇠 - 해방 = <u>짐(burden)에서 벗어나게 함</u>. 8번 exhausting이 burden의 근거.",
+  gist: "비판적 사고는 불완전하게라도 갖추면 자극에 끌려다니는 삶의 부담에서 사람을 벗어나게 한다.",
+  wrong: {
+    "1": "위험을 <b>키운다</b> - 정반대",
+    "2": "이해를 높인다는 말은 그럴듯하나 글은 <b>벗어남·해방</b>을 말한다",
+    "4": "불가피함을 <b>받아들인다</b>가 아니라 벗어난다",
+    "5": "경험을 <b>요구</b>한다는 말이 없음"
+  },
+  wrongNote: "②가 함정. '교육'·'비판적 사고'에 끌리면 understanding으로 간다. 하지만 빈칸 뒤 <b>of being stimulus-driven</b>과 짝이 되는 건 '~에서 벗어나게 하다'뿐이다.",
+  teachNote: "<b>빈칸 뒤 전치사 of가 단서.</b> frees A from the burden <u>of</u> ~ 구조가 그대로 이어진다. "
+           + "4번 liberation(해방) → frees(풀어주다) <b>동의어 바꿔 쓰기</b>도 함께 확인시킬 것."
+},
+{
+  id: "s24_32_score", src: "2024수능 32번", qnum: 32, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 2, time: 80, note: "* score: 악보  ** cadence: (율동적인) 박자",
+  sents: [
+    "A musical score within any film can add an additional layer to the film text, which goes beyond simply imitating the action viewed.",
+    "In films that tell of futuristic worlds, composers, much like sound designers, have added freedom to create a world that is unknown and new to the viewer.",
+    "However, unlike sound designers, composers often shy away from creating unique pieces that reflect these new worlds and often present musical scores that possess familiar structures and cadences.",
+    "While it is possible that this may interfere with creativity and a sense of space and time, it in fact <u>__________</u>.",
+    "Through recognizable scores, visions of the future or a galaxy far, far away can be placed within a recognizable context.",
+    "Such familiarity allows the viewer to be placed in a comfortable space so that the film may then lead the viewer to what is an unfamiliar, but acceptable vision of a world different from their own."
+  ],
+  choices: ["frees the plot of its familiarity","aids in viewer access to the film","adds to an exotic musical experience",
+            "orients audiences to the film’s theme","inspires viewers to think more deeply"],
+  ans: 2, blankAt: 4,
+  key: "<b class=w>A musical score</b> - 영화 음악",
+  attr: "<b class=w>can add an additional layer to the film text</b> (1) - 영화에 한 겹을 더한다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"In films that tell of futuristic worlds...", skip:false},
+    {n:3, head:"However, unlike sound designers, composers often shy away...", skip:false},
+    {n:4, head:"While it is possible that this may interfere... it in fact ____.", skip:false},
+    {n:5, head:"Through recognizable scores, visions of the future...", skip:false},
+    {n:6, head:"Such familiarity allows the viewer to be placed in a comfortable space...", skip:false}
+  ],
+  trunk1: "미래 영화 작곡가도 익숙한 음악을 쓴다", trunk2: "그 익숙함이 관객을 영화로 이끈다",
+  pivotAt: 3,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"영화 음악은 영화에 한 겹을 더한다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"미래 영화에서 작곡가는 낯선 세계를 만들 자유가 있다"},
+    {n:3, lb:"대조·반전", head:true, txt:"그러나 작곡가들은 독창적 음악 대신 <b>익숙한</b> 구조의 음악을 쓴다"},
+    {n:4, lb:"주장",     head:true,  txt:"창의성을 해칠 것 같지만 실제로는 <b>무언가</b>한다 (빈칸)"},
+    {n:5, lb:"근거",     head:false, to:4, txt:"익숙한 음악 덕에 먼 미래도 알아볼 수 있는 맥락에 놓인다"},
+    {n:6, lb:"재진술",   head:true,  txt:"익숙함이 관객을 편안하게 해 낯선 세계로 <b>이끈다</b>"}
+  ],
+  pivot: {sig:"However", at:3, from:"낯선 세계를 만들 자유", to:"그래도 익숙한 음악을 쓴다"},
+  pivotSub: "4번 <b>While ~ , it in fact ____</b> - 양보 뒤 <u>in fact</u>가 진짜 주장. 빈칸은 While절(창의성 방해)과 반대 방향의 <b>긍정</b>이어야 한다.",
+  gist: "익숙한 영화 음악은 창의성을 해치는 듯하지만 실제로는 관객이 낯선 영화 세계에 쉽게 다가가도록 돕는다.",
+  wrong: {
+    "1": "익숙함을 <b>없앤다</b> - 정반대(익숙함이 핵심)",
+    "3": "<b>이국적</b> 음악 경험이 아니라 익숙한 음악",
+    "4": "영화의 <b>주제</b>로 이끄는 게 아니라 영화 세계에 들어가게 함",
+    "5": "더 깊이 <b>생각하게</b> 한다는 말이 없음"
+  },
+  wrongNote: "④가 함정. orients(방향을 잡아준다)가 그럴듯하지만 5·6번은 주제가 아니라 <b>낯선 세계로의 진입</b>을 말한다.",
+  teachNote: "<b>While(양보) ~ in fact(주장)</b> 구조. 빈칸은 양보절의 반대 방향. "
+           + "6번 lead the viewer to ~ acceptable vision = <u>aids in viewer access</u>. 3등급에 적당한 빈칸."
+},
+{
+  id: "s23_32_cities", src: "2023수능 32번", qnum: 32, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 2, time: 80, note: "* foundry: 주물 공장  ** lexical: 어휘의",
+  sents: [
+    "People have always wanted to be around other people and to learn from them.",
+    "Cities have long been dynamos of social possibility, foundries of art, music, and fashion.",
+    "Slang, or, if you prefer, “lexical innovation,” has always started in cities ― an outgrowth of all those different people so frequently exposed to one another.",
+    "It spreads outward, in a manner not unlike transmissible disease, which itself typically “takes off” in cities.",
+    "If, as the noted linguist Leonard Bloomfield argued, the way a person talks is a “composite result of what he has heard before,” then language innovation would happen where the most people heard and talked to the most other people.",
+    "Cities drive taste change because they <u>__________</u>, who not surprisingly are often the creative people cities seem to attract.",
+    "Media, ever more global, ever more far-reaching, spread language faster to more people."
+  ],
+  choices: ["provide rich source materials for artists","offer the greatest exposure to other people",
+            "cause cultural conflicts among users of slang","present ideal research environments to linguists",
+            "reduce the social mobility of ambitious outsiders"],
+  ans: 2, blankAt: 6,
+  key: "<b class=w>Cities</b> + <b class=w>lexical innovation</b> - 도시와 언어 혁신",
+  attr: "<b class=w>an outgrowth of all those different people so frequently exposed to one another</b> (3) - 서로 자주 <b>노출</b>된 결과",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Cities have long been dynamos of social possibility...", skip:false},
+    {n:3, head:"Slang, or, if you prefer, “lexical innovation,”...", skip:false},
+    {n:4, head:"It spreads outward, in a manner not unlike transmissible disease...", skip:false},
+    {n:5, head:"If, as the noted linguist Leonard Bloomfield argued...", skip:false},
+    {n:6, head:"Cities drive taste change because they ____...", skip:false},
+    {n:7, head:"Media, ever more global...", skip:false}
+  ],
+  trunk1: "사람이 많이 모여 서로 듣고 말하는 곳에서 언어 혁신이 일어난다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"사람은 늘 다른 사람 곁에서 배우고 싶어 했다"},
+    {n:2, lb:"부연",     head:false, to:1, txt:"도시는 사회적 가능성의 발전기, 예술·음악·패션의 산실이다"},
+    {n:3, lb:"주장",     head:true,  txt:"속어(어휘 혁신)는 늘 도시에서 시작됐다 - 서로 자주 <b>노출</b>된 결과"},
+    {n:4, lb:"부연",     head:false, to:3, txt:"전염병처럼 바깥으로 퍼진다"},
+    {n:5, lb:"근거",     head:false, to:3, txt:"말은 들은 것의 합성물이므로 가장 많이 듣고 말하는 곳에서 혁신이 일어난다"},
+    {n:6, lb:"재진술",   head:true,  txt:"도시는 <b>무언가</b>하기 때문에 취향 변화를 이끈다 (빈칸)"},
+    {n:7, lb:"부연",     head:false, to:6, txt:"미디어는 언어를 더 빨리, 더 많은 사람에게 퍼뜨린다"}
+  ],
+  pivot: {sig:"없음", at:0, from:"이 글에는 흐름 전환이 없다", to:"1번의 방향이 7번까지 그대로 간다"},
+  pivotSub: "3번 <b>exposed to one another</b>와 5번 <b>the most people heard and talked to the most other people</b>이 빈칸을 두 번 예고한다.",
+  gist: "도시는 사람들이 서로에게 가장 많이 노출되는 곳이라 언어와 취향의 변화를 이끈다.",
+  wrong: {
+    "1": "예술가에게 <b>재료</b>를 준다는 말이 아님 - 2번 foundries of art에 끌린 오답",
+    "3": "속어 사용자 간 <b>문화 갈등</b>은 지문에 없음",
+    "4": "언어학자의 <b>연구 환경</b>이 아님 - Bloomfield는 근거 인용일 뿐",
+    "5": "사회 이동성을 <b>낮춘다</b> - 무관"
+  },
+  wrongNote: "④가 함정. 5번에 linguist가 나와 끌리지만 그건 <b>인용 출처</b>다. 인용 내용(들은 것의 합성)이 핵심.",
+  teachNote: "<b>빈칸 앞에서 두 번 예고되는</b> 전형. 3번 exposed to one another → 5번 heard and talked to the most other people → "
+           + "빈칸 <u>offer the greatest exposure to other people</u>. 3등급 빈칸 입문에 적합."
+},
+{
+  id: "s22_32_news", src: "2022수능 32번", qnum: 32, qtype: "빈칸",
+  qtext: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.",
+  star: 3, time: 90, note: "",
+  sents: [
+    "News, especially in its televised form, is constituted not only by its choice of topics and stories but by its <u>__________</u>.",
+    "Presentational styles have been subject to a tension between an informational-educational purpose and the need to engage us entertainingly.",
+    "While current affairs programmes are often ‘serious’ in tone sticking to the ‘rules’ of balance, more popular programmes adopt a friendly, lighter, idiom in which we are invited to consider the impact of particular news items from the perspective of the ‘average person in the street’.",
+    "Indeed, contemporary news construction has come to rely on an increased use of faster editing tempos and ‘flashier’ presentational styles including the use of logos, sound-bites, rapid visual cuts and the ‘star quality’ of news readers.",
+    "Popular formats can be said to enhance understanding by engaging an audience unwilling to endure the longer verbal orientation of older news formats.",
+    "However, they arguably work to reduce understanding by failing to provide the structural contexts for news events."
+  ],
+  choices: ["coordination with traditional display techniques","prompt and full coverage of the latest issues",
+            "educational media contents favoured by producers","commitment to long-lasting news standards",
+            "verbal and visual idioms or modes of address"],
+  ans: 5, blankAt: 1,
+  key: "<b class=w>News</b> - 뉴스를 구성하는 것",
+  attr: "<b class=w>not only by its choice of topics... but by its ____</b> (1) - 주제 선택<b>만이 아니라</b> 무언가로도 구성된다",
+  dir: "긍정",
+  skip: [
+    {n:2, head:"Presentational styles have been subject to a tension...", skip:false},
+    {n:3, head:"While current affairs programmes are often ‘serious’...", skip:false},
+    {n:4, head:"Indeed, contemporary news construction has come to rely on...", skip:false},
+    {n:5, head:"Popular formats can be said to enhance understanding...", skip:false},
+    {n:6, head:"However, they arguably work to reduce understanding...", skip:false}
+  ],
+  trunk1: "뉴스는 내용뿐 아니라 전달 방식으로 만들어진다 - 한 방향", trunk2: "", pivotAt: 0,
+  tree: [
+    {n:1, lb:"주제도입", head:true,  txt:"뉴스는 주제 선택뿐 아니라 <b>무언가</b>로도 구성된다 (빈칸)"},
+    {n:2, lb:"주장",     head:true,  txt:"<b>전달 방식</b>은 정보 전달과 재미 사이에서 긴장 관계에 있다"},
+    {n:3, lb:"근거",     head:false, to:2, txt:"시사 프로는 진지한 어조, 대중 프로는 친근하고 가벼운 말투"},
+    {n:4, lb:"부연",     head:false, to:2, txt:"빠른 편집, 로고·짧은 발언·화면 전환 같은 화려한 전달 방식"},
+    {n:5, lb:"부연",     head:false, to:4, txt:"대중적 형식은 청중을 끌어들여 이해를 높인다고 할 수 있다"},
+    {n:6, lb:"대조·반전", head:true, txt:"그러나 구조적 맥락을 주지 못해 이해를 떨어뜨리기도 한다"}
+  ],
+  pivot: {sig:"However", at:6, from:"대중적 형식이 이해를 높인다", to:"이해를 떨어뜨리기도 한다"},
+  pivotSub: "빈칸은 <b>1번(맨 앞)</b>에 있다. 바로 다음 2번 <b>Presentational styles</b>가 빈칸을 다시 말한다 - 맨 앞 빈칸은 <u>뒤 문장의 주어</u>를 보라.",
+  gist: "뉴스는 무엇을 다루는지뿐 아니라 언어적·시각적으로 어떻게 전달하는지에 의해서도 만들어진다.",
+  wrong: {
+    "1": "<b>전통적</b> 전시 기법과의 조화 - 오히려 새롭고 화려한 방식",
+    "2": "최신 이슈의 <b>신속·충분한 보도</b>는 내용(topics) 쪽",
+    "3": "제작자가 선호하는 <b>교육적 콘텐츠</b> - 내용 쪽",
+    "4": "<b>오래된 뉴스 기준</b>에 대한 헌신 - 무관"
+  },
+  wrongNote: "②③이 함정. 빈칸은 <b>not only 내용(topics) but 형식</b> 구조라, 내용에 해당하는 선택지는 전부 빠진다.",
+  teachNote: "<b>not only A but B</b>에서 B가 빈칸 - A(주제 선택)와 <u>다른 범주</u>여야 한다. "
+           + "2번 Presentational styles · 3번 idiom · 4번 presentational styles가 다 <b>idioms or modes of address</b>로 모인다. [3점]급."
+},
+
+/* ===== 35번 무관한 문장 (2022~2026) ===== */
+{
+  id: "s26_35_selfcare", src: "2026수능 35번", qnum: 35, qtype: "무관", irr: true,
+  qtext: "다음 글에서 전체 흐름과 관계 없는 문장은?", star: 2, time: 70, note: "",
+  intro: "There are few of us who don’t at least want to make time for self-care activities such as exercise, hobbies, or relaxation. We start each day with the best of intentions but then get stuck by the flood of email messages or pulled into an unexpected meeting.",
+  items: [
+    {n:1, ok:true,  key:"마감에 쫓겨 자기 돌봄이 가장 먼저 밀려난다", text:"As we struggle to reprioritize so we can get everything done before our deadlines, often our self-care activities are the first thing to be given up."},
+    {n:2, ok:true,  key:"아무리 계획해도 그런 날은 있다", text:"No matter how much we plan, we all occasionally have days when that happens."},
+    {n:3, ok:true,  key:"단기적으로는 마감을 놓치는 영향이 더 클 수 있다", text:"In the short term, the impact of missing that grant deadline may be greater than the impact of missing a woodworking class."},
+    {n:4, ok:false, key:"목공 수업을 디자인 수업보다 먼저 등록해야 한다", text:"Needless to say, we should try to enroll in the woodworking class before the design class because it is more competitive to get into and more beneficial to us.",
+     why:"woodworking class라는 <b>낱말만 이어받고</b> '어떤 수업을 먼저 신청하나'로 화제가 바뀜"},
+    {n:5, ok:true,  key:"그러나 자기 돌봄을 미루는 누적 영향을 알아야 한다", text:"But it’s important to recognize the cumulative impact of not prioritizing self-care and to make sure that in the long term, this is the exception rather than the norm."}
+  ],
+  topic: "바쁜 일상에서 자기 돌봄이 밀려나지만, 그것이 습관이 되지 않게 해야 한다",
+  ans: 4,
+  trap: "④는 ③의 <b>woodworking class</b>를 그대로 받아 이어지는 것처럼 보인다. 같은 낱말이 있어도 <u>말하는 방향</u>이 다르면 무관한 문장.",
+  teachNote: "35번 기본형 — <b>앞 문장의 낱말을 미끼로 쓰는</b> 오답 문장. ④를 빼고 ③→⑤를 이어 읽으면 '단기엔 마감이 중요 → But 장기 누적 영향'으로 매끄럽다. <u>빼고 읽어 보기</u>가 최종 확인법."
+},
+{
+  id: "s25_35_car", src: "2025수능 35번", qnum: 35, qtype: "무관", irr: true,
+  qtext: "다음 글에서 전체 흐름과 관계 없는 문장은?", star: 2, time: 70, note: "",
+  intro: "The expansion of sports tourism in the twentieth century has been influenced by further developments in transportation. Just as the railways revolutionized travel in the nineteenth century, so the automobile produced even more dramatic changes in the twentieth.",
+  items: [
+    {n:1, ok:true,  key:"자동차가 스포츠 관광에 준 영향은 크다", text:"The significance of the car in the development of sport and tourism generally has attracted considerable coverage and it has had no less an impact on sports tourism specifically."},
+    {n:2, ok:true,  key:"자동차는 1920년대 미국에서 대중 교통수단이 됐다", text:"Although originally invented towards the end of the nineteenth century, it started to become a mass form of transport in the 1920s in the USA and rather later in Britain."},
+    {n:3, ok:true,  key:"자동차는 외진 곳 접근·짐 운반에 유리하다", text:"Apart from its convenience and flexibility, the car has the additional advantages of affording access to many areas not served by public transport, as well as allowing the easy transport of luggage and equipment."},
+    {n:4, ok:false, key:"숙박 시설 확대가 지역 식당 성장을 도왔다", text:"The expansion of reasonably priced, good quality accommodation associated with tourism growth has also facilitated the growth of locally based restaurants.",
+     why:"주제는 <b>자동차(교통)</b>인데 숙박·식당으로 소재가 바뀜. also가 있어 이어지는 척한다"},
+    {n:5, ok:true,  key:"그래서 자동차는 장비를 옮기는 스포츠 관광에 매우 중요했다", text:"As a result, it was invaluable for the development of many forms of sports tourism but especially those which require the transportation of people and equipment to relatively remote locations."}
+  ],
+  topic: "20세기 스포츠 관광의 확대에 자동차가 큰 역할을 했다",
+  ans: 4,
+  trap: "④의 <b>also</b>와 tourism growth가 '관광'으로 이어지는 듯 보이게 한다. 그러나 ⑤의 <b>it</b>(= the car)은 ③에 바로 붙는다.",
+  teachNote: "<b>대명사로 확인하는</b> 유형. ⑤ As a result, <b>it</b> was invaluable — it이 가리키는 것은 자동차. ④가 끼면 it이 accommodation처럼 읽혀 어색해진다. <u>④ 다음 문장의 대명사</u>를 꼭 확인시킬 것."
+},
+{
+  id: "s24_35_speaking", src: "2024수능 35번", qnum: 35, qtype: "무관", irr: true,
+  qtext: "다음 글에서 전체 흐름과 관계 없는 문장은?", star: 2, time: 70, note: "",
+  intro: "Speaking fast is a high-risk proposition. It’s nearly impossible to maintain the ideal conditions to be persuasive, well-spoken, and effective when the mouth is traveling well over the speed limit.",
+  items: [
+    {n:1, ok:true,  key:"우리 생각만큼 머리가 늘 빠르게 좋은 판단을 하진 않는다", text:"Although we’d like to think that our minds are sharp enough to always make good decisions with the greatest efficiency, they just aren’t."},
+    {n:2, ok:true,  key:"뇌는 할 말을 고르느라 잠시 멈춰 있다", text:"In reality, the brain arrives at an intersection of four or five possible things to say and sits idling for a couple of seconds, considering the options."},
+    {n:3, ok:false, key:"좋은 결정이 말을 더 빠르게 해준다", text:"Making a good decision helps you speak faster because it provides you with more time to come up with your responses.",
+     why:"글은 빨리 말하는 것의 <b>위험</b>을 말하는데, ③은 빨리 말하는 것을 <b>돕는 법</b>으로 방향이 반대"},
+    {n:4, ok:true,  key:"뇌가 지시를 멈췄는데 입이 너무 빠르면 군말이 나온다", text:"When the brain stops sending navigational instructions back to the mouth and the mouth is moving too fast to pause, that’s when you get a verbal fender bender, otherwise known as filler."},
+    {n:5, ok:true,  key:"음, 아 같은 군말은 입이 갈 데가 없을 때 나온다", text:"Um, ah, you know, and like are what your mouth does when it has nowhere to go."}
+  ],
+  topic: "빨리 말하면 뇌가 따라가지 못해 군말(filler)이 생긴다",
+  ans: 3,
+  trap: "③은 decision·speak 같은 <b>같은 소재 낱말</b>을 쓴다. 소재는 같은데 <u>방향(위험 vs 요령)</u>이 다르다.",
+  teachNote: "<b>소재는 같고 방향이 다른</b> 무관 문장의 표본. 첫 문장 high-risk가 방향을 정한다. ③을 빼면 ②(뇌가 멈춤) → ④(그때 입이 빠르면 군말)로 바로 이어진다."
+},
+{
+  id: "s23_35_voice", src: "2023수능 35번", qnum: 35, qtype: "무관", irr: true,
+  qtext: "다음 글에서 전체 흐름과 관계 없는 문장은?", star: 2, time: 70, note: "",
+  intro: "Actors, singers, politicians and countless others recognise the power of the human voice as a means of communication beyond the simple decoding of the words that are used. Learning to control your voice and use it for different purposes is, therefore, one of the most important skills to develop as an early career teacher.",
+  items: [
+    {n:1, ok:true,  key:"자신 있게 지시할수록 학급 반응이 좋다", text:"The more confidently you give instructions, the higher the chance of a positive class response."},
+    {n:2, ok:true,  key:"목소리를 크게 낼 수 있으면 시끄러운 곳에서 유용하다", text:"There are times when being able to project your voice loudly will be very useful when working in school, and knowing that you can cut through a noisy classroom, dinner hall or playground is a great skill to have."},
+    {n:3, ok:false, key:"학교 소음 문제를 학생·학부모·교사가 함께 해결해야 한다", text:"In order to address serious noise issues in school, students, parents and teachers should search for a solution together.",
+     why:"주제는 <b>교사의 목소리 조절</b>인데 '학교 소음 문제 해결'로 화제가 바뀜"},
+    {n:4, ok:true,  key:"그래도 큰 목소리는 아껴 쓰고 고함은 피하라", text:"However, I would always advise that you use your loudest voice incredibly sparingly and avoid shouting as much as possible."},
+    {n:5, ok:true,  key:"조용하고 권위 있는 어조가 더 효과적이다", text:"A quiet, authoritative and measured tone has so much more impact than slightly panicked shouting."}
+  ],
+  topic: "초임 교사에게 목소리를 조절해 쓰는 능력이 중요하다",
+  ans: 3,
+  trap: "③은 ②의 <b>noisy classroom</b>을 이어받는다. 앞 문장 낱말을 미끼로 쓰는 전형.",
+  teachNote: "2026-35와 같은 <b>낱말 미끼형</b>. ③을 빼면 ②(크게 낼 수 있으면 좋다) → ④(However 그래도 아껴 써라)로 대조가 바로 이어진다. <u>However의 앞 짝</u>이 ②라는 것을 짚어줄 것."
+},
+{
+  id: "s22_35_platform", src: "2022수능 35번", qnum: 35, qtype: "무관", irr: true,
+  qtext: "다음 글에서 전체 흐름과 관계 없는 문장은?", star: 2, time: 70, note: "",
+  intro: "Since their introduction, information systems have substantially changed the way business is conducted.",
+  items: [
+    {n:1, ok:true,  key:"특히 기업 간 협력, 여러 단위의 가치사슬 통합에서 그렇다", text:"This is particularly true for business in the shape and form of cooperation between firms that involves an integration of value chains across multiple units."},
+    {n:2, ok:true,  key:"그 네트워크는 여러 기업의 단위를 포함한다", text:"The resulting networks do not only cover the business units of a single firm but typically also include multiple units from different firms."},
+    {n:3, ok:true,  key:"기업은 주변 단위 전체의 생태계를 고려해야 한다", text:"As a consequence, firms do not only need to consider their internal organization in order to ensure sustainable business performance; they also need to take into account the entire ecosystem of units surrounding them."},
+    {n:4, ok:false, key:"주요 기업들이 수익 단위만 남기고 나머지를 잘라낸다", text:"Many major companies are fundamentally changing their business models by focusing on profitable units and cutting off less profitable ones.",
+     why:"글은 여러 단위의 <b>협력·통합</b>을 말하는데 ④는 단위를 <b>잘라내는</b> 이야기 - 방향이 반대"},
+    {n:5, ok:true,  key:"서로 다른 단위가 협력하려면 공통 플랫폼이 중요하다", text:"In order to allow these different units to cooperate successfully, the existence of a common platform is crucial."}
+  ],
+  topic: "정보 시스템으로 기업 간 협력이 넓어져 공통 플랫폼이 중요해졌다",
+  ans: 4,
+  trap: "④는 units·business 같은 소재 낱말을 공유한다. 그러나 <u>협력(cooperate)</u>과 <u>잘라냄(cutting off)</u>은 정반대 방향.",
+  teachNote: "<b>지시어로 확인</b> — ⑤의 <b>these different units</b>는 ③의 ecosystem of units를 가리킨다. ④가 끼면 these가 profitable units로 읽혀 어긋난다. 2025-35(it)와 함께 '다음 문장의 지시어 확인'으로 묶을 것."
+},
+
+/* ===== 37번 순서 (2022~2026) ===== */
+{
+  id: "s26_37_philosophy", src: "2026수능 37번", qnum: 37, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3점]",
+  star: 3, time: 110, note: "* empirical: 경험의",
+  given: "Philosophy allows us to <b>ask much broader questions</b> than many other scientific disciplines. It is capable of looking at the bigger picture and providing important insights into the relationships between different areas of knowledge.",
+  paras: [
+    {tag:"A", text:"<b>This means that</b> while philosophy can provide valuable insights into theoretical concepts and broader ethical questions, it needs to be supplemented by <b>empirical findings</b> and experiments to reach a more comprehensive understanding.",
+     cue:"This means that ...", why:"<b>This</b>가 (C) 끝의 <u>non-empirical approach</u>를 받아 '그러니 경험적 연구로 보완해야'로 결론 → 맨 뒤"},
+    {tag:"B", text:"<b>Philosophers tend to ask questions</b> rather than provide definitive answers, and their contributions often consist of challenging established assumptions and proposing new research approaches. However, for a more comprehensive understanding of the nature of consciousness, close collaboration between philosophy and <b>neuroscience</b> is required.",
+     cue:"Philosophers tend to ask questions ...", why:"주어진 글의 <b>ask much broader questions</b>를 그대로 받음 → 맨 앞. 끝의 <u>철학+신경과학 협력</u>이 (C)로"},
+    {tag:"C", text:"Philosophy is particularly important for the <b>interdisciplinary efforts</b> of cognitive science, where it helps to bridge gaps between different disciplines and pioneer new ways for research. Unlike scientific methods, philosophizing is a <b>non-empirical approach</b> that attempts to validate concepts through logical thinking and argumentation.",
+     cue:"Philosophy is particularly important for the interdisciplinary ...", why:"(B)의 협력을 <b>interdisciplinary</b>로 받음. 끝의 <u>non-empirical</u>이 (A)를 부른다"}
+  ],
+  orderAns: ["B","C","A"], ans: 3,
+  orderWhy: "주어진 글(철학은 넓은 질문) → (B) 철학자는 질문한다, 신경과학과 협력 필요 → (C) 학제 간 연구에서 중요, 비경험적 → (A) This means, 경험적 보완 필요",
+  teachNote: "<b>끝말잇기형.</b> 각 단락의 <u>끝 개념</u>이 다음 단락 <u>첫 개념</u>이 된다 — questions → collaboration·neuroscience → interdisciplinary … non-empirical → This means … empirical. "
+           + "(A)의 This means는 결론 신호라 맨 앞에 못 온다. ⚠️ 정답은 지문 논리로 도출 — 평가원 정답표 대조 권장."
+},
+{
+  id: "s25_37_grosbeak", src: "2025수능 37번", qnum: 37, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3점]",
+  star: 3, time: 110, note: "* grosbeak: 콩새류(類)  ** array: 정렬",
+  given: "Watch the birds in your backyard. If one bird startles and flies off, others will follow, not waiting around to assess whether the threat is real. They have been infected by <b>emotional contagion</b>.",
+  paras: [
+    {tag:"A", text:"<b>Marc wondered</b> whether the birds in line were <b>more fearful</b> because they didn’t know what their flockmates were doing. Emotional contagion would have been impossible for individual grosbeaks in the linear array except with their nearest neighbors.",
+     cue:"Marc wondered whether the birds in line were more fearful ...", why:"<b>Marc</b>가 이름만 나옴 → 앞에서 이미 소개됨. <u>more fearful</u>은 (C)의 more nervous를 받는 해석 → 맨 뒤"},
+    {tag:"B", text:"In a long-term research project that <b>Marc did with some of his students</b> on patterns of antipredatory scanning by western evening grosbeaks, they found that birds in a circle showed more coordination in scanning than did <b>birds who were feeding in a line</b>.",
+     cue:"In a long-term research project that Marc did ...", why:"<b>Marc를 처음 소개</b>하는 단락 → 맨 앞"},
+    {tag:"C", text:"<b>The birds in a line</b>, who could only see their nearest neighbor, not only were less coordinated when scanning, but also were <b>more nervous</b>, changing their body and head positions significantly more than grosbeaks in a circle, where it was possible for each grosbeak to see every other grosbeak.",
+     cue:"The birds in a line ...", why:"<b>The</b> birds in a line - (B)의 birds feeding in a line을 정관사로 받음 → (B) 뒤"}
+  ],
+  orderAns: ["B","C","A"], ans: 3,
+  orderWhy: "주어진 글(감정 전염) → (B) Marc의 연구 소개, 원형 vs 일렬 → (C) The birds in a line, 더 불안 → (A) Marc wondered, 감정 전염이 불가능했기 때문",
+  teachNote: "<b>인물 첫 등장 규칙</b> — 사람 이름은 풀 소개(Marc did with some of his students)가 먼저, 이름만 쓰는 단락이 뒤. "
+           + "(C)의 <b>The</b> birds in a line은 (B)의 a line을 받는 정관사. 어휘(antipredatory scanning)가 어려워도 <u>Marc·The 두 단서</u>로 풀린다."
+},
+{
+  id: "s24_37_norms", src: "2024수능 37번", qnum: 37, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3점]",
+  star: 3, time: 110, note: "* sanction: 제재를 가하다",
+  given: "Norms emerge in groups as a result of people conforming to the behavior of others. Thus, the start of a norm occurs when <b>one person</b> acts in a particular manner in a particular situation because she thinks she ought to.",
+  paras: [
+    {tag:"A", text:"<b>Thus, she</b> may prescribe the behavior to them by uttering the norm statement in a prescriptive manner. Alternately, she may communicate that conformity is desired in other ways, such as by gesturing. In addition, she may threaten to sanction them for not behaving as she wishes. This will cause <b>some</b> to conform to her wishes and act as she acts.",
+     cue:"Thus, she may prescribe the behavior to them ...", why:"<b>Thus</b> = (C) 끝의 '남들도 그래야 한다고 생각한다'의 결과 → (C) 뒤. 끝의 <u>some</u>이 (B)의 some others를 부른다"},
+    {tag:"B", text:"<b>But some others</b> will not need to have the behavior prescribed to them. They will observe the regularity of behavior and decide on their own that they ought to conform. They may do so for either rational or moral reasons.",
+     cue:"But some others will not need ...", why:"<b>some others</b> - (A)의 <u>some</u>(시켜서 따르는 사람들)과 짝 → 맨 뒤"},
+    {tag:"C", text:"<b>Others</b> may then conform to this behavior for a number of reasons. <b>The person who performed the initial action</b> may think that others ought to behave as she behaves in situations of this sort.",
+     cue:"Others may then conform to this behavior ...", why:"주어진 글의 <b>one person</b>을 받아 '그러면 다른 사람들이' → 맨 앞"}
+  ],
+  orderAns: ["C","A","B"], ans: 4,
+  orderWhy: "주어진 글(한 사람이 행동) → (C) 다른 이들이 따를 수 있다, 처음 행동한 사람은 남도 그래야 한다고 생각 → (A) Thus 그녀가 지시·제재, some이 따름 → (B) But some others는 스스로 따른다",
+  teachNote: "<b>some ~ / some others ~ 짝.</b> (A) 끝의 some과 (B) 첫머리의 some others가 한 쌍이라 A→B 고정. "
+           + "(A)의 <b>Thus, she</b>는 she가 누구인지 앞에서 나와야 성립 → (C)의 the person who performed the initial action 뒤."
+},
+{
+  id: "s23_37_contingency", src: "2023수능 37번", qnum: 37, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3점]",
+  star: 3, time: 110, note: "* intimidate: 위협하다",
+  given: "The most commonly known form of results-based pricing is a practice called <b>contingency pricing</b>, used by lawyers.",
+  paras: [
+    {tag:"A", text:"<b>Therefore</b>, only an outcome in the client’s favor is compensated. From the client’s point of view, the pricing makes sense in part because most clients in these cases are unfamiliar with and possibly intimidated by law firms. Their biggest fears are <b>high fees</b> for a case that may take years to settle.",
+     cue:"Therefore, only an outcome in the client’s favor ...", why:"<b>Therefore</b> = (C)의 '이겨야 돈을 받는다'의 결과 → (C) 뒤. 끝의 <u>high fees</u> 걱정이 (B)를 부른다"},
+    {tag:"B", text:"<b>By using contingency pricing</b>, clients are ensured that they <b>pay no fees</b> until they receive a settlement. In these and other instances of contingency pricing, the economic value of the service is hard to determine before the service, and providers develop a price that allows them to share the risks and rewards of delivering value to the buyer.",
+     cue:"By using contingency pricing, clients are ensured ...", why:"(A)의 <b>high fees</b> 걱정에 대한 답 - pay no fees until settlement → 맨 뒤"},
+    {tag:"C", text:"<b>Contingency pricing is the major way</b> that personal injury and certain consumer cases are billed. In this approach, lawyers do not receive fees or payment until the case is settled, when they are paid a percentage of the money that the client receives.",
+     cue:"Contingency pricing is the major way ...", why:"주어진 글의 <b>contingency pricing</b>을 정의·설명 → 맨 앞"}
+  ],
+  orderAns: ["C","A","B"], ans: 4,
+  orderWhy: "주어진 글(성공 보수제) → (C) 정의: 해결돼야 보수 → (A) Therefore 의뢰인에게 유리, 높은 수임료가 걱정 → (B) 그래서 해결 전엔 수임료 없음",
+  teachNote: "<b>개념 → 결과 → 의미</b> 3단. (C)가 개념을 처음 설명(is the major way), (A)의 <b>Therefore</b>는 앞에 원인이 있어야 하므로 첫 자리 불가. "
+           + "(A) 끝 '걱정' → (B) '안심'의 <u>문제-해결 짝</u>도 확인시킬 것."
+},
+{
+  id: "s22_37_fiction", src: "2022수능 37번", qnum: 37, qtype: "순서",
+  qtext: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은? [3점]",
+  star: 3, time: 110, note: "* deviate: 벗어나다  ** endow: 부여하다  *** heritage: 유산",
+  given: "In spite of the likeness between the fictional and real world, the fictional world <b>deviates from the real one</b> in one important respect.",
+  paras: [
+    {tag:"A", text:"<b>The author</b> has selected the content according to his own worldview and his own conception of relevance, in an attempt to be neutral and objective or convey a subjective view on the world. Whatever the motives, the author’s subjective conception of the world stands between the reader and the original, untouched world on which the story is based.",
+     cue:"The author has selected the content ...", why:"(B) 끝의 <b>another consciousness</b>가 누구인지 밝힘 = the author → 맨 뒤"},
+    {tag:"B", text:"Because of the inner qualities with which the individual is endowed through heritage and environment, <b>the mind functions as a filter</b>; every outside impression that passes through it is filtered and interpreted. <b>However</b>, the world the reader encounters in literature is <b>already processed and filtered by another consciousness</b>.",
+     cue:"Because of the inner qualities ... the mind functions as a filter", why:"(C)의 <b>human mind</b>를 받아 '마음은 필터' → (C) 뒤. However로 문학 세계로 전환"},
+    {tag:"C", text:"<b>The existing world</b> faced by the individual is in principle an infinite chaos of events and details before it is organized by a human mind. This chaos only gets processed and modified when perceived by <b>a human mind</b>.",
+     cue:"The existing world faced by the individual ...", why:"주어진 글의 <b>real world</b>를 받아 '실제 세계는 혼돈' → 맨 앞"}
+  ],
+  orderAns: ["C","B","A"], ans: 5,
+  orderWhy: "주어진 글(허구 세계는 한 가지에서 다르다) → (C) 실제 세계는 혼돈, 마음이 처리 → (B) 마음은 필터, However 문학은 이미 다른 의식이 걸렀다 → (A) 그 의식 = 작가",
+  teachNote: "<b>추상 → 구체</b> 순서. (B) 끝 another consciousness(누군가의 의식)를 (A)가 <u>the author</u>로 구체화. "
+           + "(C)의 a human mind → (B)의 the mind도 관사 단서(a → the). 2025-37(Marc 첫 등장)과 함께 <b>처음 소개 → 다시 언급</b> 원칙으로 묶을 것."
 }
 
 ];

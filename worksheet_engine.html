@@ -392,6 +392,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 .axe{padding:3px 9px; font-size:10.8px; line-height:1.55}
 .axs{display:inline-block; min-width:78px; font-family:'Space Grotesk',sans-serif;
   font-size:10px; color:var(--grey)}
+.irn{font-family:'Space Grotesk',sans-serif; color:var(--wine); margin:0 1px}
 .sumarrow{text-align:center; font-size:15px; color:var(--wine); margin:1mm 0}
 .sumbox{border:1.5px solid var(--ink); background:#faf7f0; padding:8px 12px; margin-bottom:3mm;
   font-family:'Noto Serif',serif; font-size:13.4px; line-height:1.85; text-align:justify}
@@ -532,7 +533,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
 <div id="root"></div>
 
-<script src="passages_final.js?v=20261006c"></script>
+<script src="passages_final.js?v=20261015a"></script>
 <script>
 (function(){
   var CN = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮";
@@ -942,6 +943,49 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
     return {html:h, pages:pages};
   }
 
+  /* ---------- 무관한 문장 (35형) ---------- */
+  function sheetIrr(p, lv){
+    var h = '<section class="sheet sheet-o">';
+    h += '<div class="head"><div><div class="t1">IRRELEVANT · 무관한 문장</div>'
+      + '<div class="t2">주제에서 벗어난 한 문장을 찾는다</div></div>'
+      + '<div class="meta">'+esc(p.src)+' · 난이도 '+new Array((p.star||1)+1).join('★')
+      + '<br><span class="nm">이름 ____________</span></div></div>';
+
+    h += '<div class="qnum">'+p.qnum+'. '+esc(p.qtext)
+      + ' <span class="timer">'+(p.time||70)+'초</span></div>';
+
+    h += '<div class="passage">'+p.intro+' '
+      + p.items.map(function(it){ return '<b class="irn">'+cn(it.n)+'</b> '+it.text; }).join(' ')
+      + '</div>';
+    if(p.note) h += '<div class="note">'+p.note+'</div>';
+
+    /* STEP 1 — 주제 */
+    h += '<div class="step">'+stepH('STEP 1','주제 한 줄','①보다 <b>앞 문장</b>에서 소재와 방향을 잡는다')
+      + '<div class="fchk"><span class="fl">주제</span>'+fill(esc(p.topic))+'</div></div>';
+
+    /* STEP 2 — 문장별 판정 */
+    h += '<div class="step">'+stepH('STEP 2','문장별 판정','소재가 같아도 <b>방향</b>이 다르면 무관한 문장')
+      + '<table><tr><th style="width:9%">문장</th><th style="width:44%">무엇을 말하나 (핵심어)</th>'
+      + '<th style="width:17%">주제와 이어지나</th><th>안 이어지면 왜</th></tr>'
+      + p.items.map(function(it){
+          return '<tr><td style="text-align:center" class="cn">'+cn(it.n)+'</td>'
+            + '<td class="filled" style="height:28px"><span class="fx">'+esc(it.key)+'</span></td>'
+            + '<td style="text-align:center;font-size:11.5px">O <i class="chk"></i>&nbsp; X <i class="chk"></i>'
+            + '<span class="fx" style="font-weight:700">'+(it.ok?'O':'X')+'</span></td>'
+            + '<td class="filled"><span class="fx">'+(it.ok?'':esc(it.why))+'</span></td></tr>';
+        }).join('')
+      + '</table>'
+      + '<div class="fchk" style="margin-top:2mm"><span class="fl">정답</span>'
+      + '<span class="circle filled"><span class="fx" style="font-size:12px;font-weight:700">'+cn(p.ans)+'</span></span>'
+      + '<span class="fl">다시 확인 — 빼고 읽어도 흐름이 이어지나</span>'+fill('')+'</div>'
+      + (p.teachNote ? '<div class="ans"><div class="ans-box">'
+          + (p.trap ? '<div><span class="k">함정</span>'+p.trap+'</div>' : '')
+          + '<div class="tip">'+p.teachNote+'</div></div></div>' : '')
+      + '</div>';
+
+    return h + '<div class="foot"><span>대단한영어 GREATENG · 수능 파이널 흐름 독해</span><span>무관한 문장</span></div></section>';
+  }
+
   /* ---------- 순서배열 (36·37형) ---------- */
   function sheetSeq(p, lv){
     var h = '<section class="sheet sheet-o">';
@@ -1052,7 +1096,9 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
   /* 자주 함께 뽑는 문항 묶음 */
   var GROUPS = [
-    {id:'__g30__',   label:'★ 30번대 (31·36·40)',
+    {id:'__g30__',   label:'★ 30번대 (31·32·35·36·37·40)',
+     has:function(p){ return [31,32,35,36,37,40].indexOf(p.qnum) >= 0 && !p.fast; }},
+    {id:'__g30a__',  label:'★ 30번대 입문 (31·36·40)',
      has:function(p){ return [31,36,40].indexOf(p.qnum) >= 0 && !p.fast; }},
     {id:'__gfront__',label:'★ 앞 문항 (21~24·30)',
      has:function(p){ return [21,22,23,24,30].indexOf(p.qnum) >= 0 && !p.fast && !p.qlabel; }},
@@ -1183,6 +1229,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
     var mode = selO.value;
     norm.forEach(function(p){
+      if(p.irr){ html += sheetIrr(p, lv); return; }
       if(p.given){ html += sheetSeq(p, lv); return; }
       if(p.paras){ html += sheetOrder(p, lv); return; }
       if(mode !== 'b') html += sheetA1(p, lv) + sheetA2(p, lv);
@@ -1191,7 +1238,7 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
 
     var pages = sel.reduce(function(a, p){
       if(p.fast) return a;
-      if(p.paras) return a + 1;
+      if(p.paras || p.irr) return a + 1;
       var aPages = p._merge ? 1 : 2;
       return a + (mode === 'ab' ? aPages + 1 : (mode === 'a' ? aPages : 1));
     }, 0) + (fast.length ? Object.keys(byYear).length : 0);
