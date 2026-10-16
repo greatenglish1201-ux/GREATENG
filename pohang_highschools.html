@@ -314,7 +314,9 @@ body{font-size:15px}
       <!-- [특강 슬롯] 방학 특강 시즌에만 노출. 겨울방학 때 아래 주석을 풀고 파일명·라벨만 교체할 것 (예: winter.html / 겨울특강)
       <a href="https://greatenglish1201-ux.github.io/GREATENG/summer.html">여름특강</a>
       -->
-      <a href="https://greatenglish1201-ux.github.io/GREATENG/suneung_2026.html">수능대비반</a>
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/newclass.html">기말대비</a>
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/yebigo.html">예비고반</a>
+      <a href="https://greatenglish1201-ux.github.io/GREATENG/yebijung.html">예비중반</a>
       <a class="active" href="https://greatenglish1201-ux.github.io/GREATENG/pohang_highschools.html">학교정보</a>
     </div>
   </div>
@@ -328,8 +330,11 @@ body{font-size:15px}
   .gnav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
   .gnav-links a.active{color:#0d1b2a;background:linear-gradient(135deg,#fbbf24,#f59e0b);font-weight:700}
   @media(max-width:430px){
+    .gnav-inner{flex-wrap:wrap}
     .gnav-brand{font-size:14px}
     .gnav-links a{font-size:12px;padding:6px 9px}
+    .gnav-links{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:2px;scrollbar-width:none}
+    .gnav-links::-webkit-scrollbar{display:none}
     .gnav-inner{padding:10px 14px}
   }
 </style>
