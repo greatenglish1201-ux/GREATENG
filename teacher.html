@@ -2805,7 +2805,7 @@ function App(){
     const targets=withText.filter(s=>s.status==='saved');
     const unsaved=withText.length-targets.length;
     if(!targets.length){alert('일괄 주제 판별 대상이 없습니다.\n(시트에 저장된 슬롯만 대상입니다'+(unsaved?` · 미저장 ${unsaved}개`:'')+')');return;}
-    if(!confirm(`⚖ ${targets.length}개 슬롯에 주제 판별 8문장을 만들어 출제DB에 바로 저장할까요?\n- 이미 판별 세트가 저장된 지문은 건너뜁니다.\n- 기출 방식 기법 + 문장별 어휘 뜻·예문 포함\n- 8문장 전체를 다시 판정해 다르면 그 문장만 1회 재생성\n- API 지문당 2회 + 다시 만든 문장마다 2회`+(unsaved?`\n- 시트 미저장 슬롯 ${unsaved}개는 제외`:'')))return;
+    if(!confirm(`⚖ ${targets.length}개 슬롯에 주제 판별 8문장을 만들어 출제DB에 바로 저장할까요?\n- 이미 판별 세트가 저장된 지문은 건너뜁니다.\n- 기출 방식 기법 + 문장별 어휘 뜻·예문 포함\n- 8문장 전체를 다시 판정해 다르면 그 문장만 1회 재생성\n- 배분이 일치3·반대3·무관2가 아니면 넘치는 문장을 모자란 판정으로 다시 생성\n- API 지문당 2회 + 다시 만든 문장마다 2회`+(unsaved?`\n- 시트 미저장 슬롯 ${unsaved}개는 제외`:'')))return;
     running.current=true;
     setJudgeAll({run:true,done:0,total:targets.length});
     const report=[];let made=0,skipped=0,failed=0;
@@ -2843,10 +2843,16 @@ function App(){
             }catch(e){ext++;}
           }
         }catch(e){ext=-1;}
+        // 26차: 배분이 일치3·반대3·무관2가 아니면 넘치는 문장을 모자란 판정으로 지정해 다시 생성
+        let rb=0,rbBad=0;
+        for(const p of judgeRebalancePlan(items,null)){
+          try{const g=await judgeGenOneAs(apiKey,sentences,topic,p.to,p.tech,items.filter((_,j)=>j!==p.i));
+            if(g){items[p.i]=g.item;rb++;if(g.v&&!g.v.same)rbBad++;}}catch(e){}
+        }
         const data={topic,pool:items};
         const sr=await formPostFetch(appsUrl,{action:'saveQuestions',pid,questions_json:JSON.stringify([{type:'judge',data_json:JSON.stringify(data),answer:judgeAnswerSummary(items)}])});
         if(!sr.ok&&!sr.warning)throw new Error(sr.error||'저장 실패');
-        made++;report.push(`${label}: ✓ ${judgeAnswerSummary(items)}`+(warns.length?` · ⚠ 확인 ${warns.length}건`:'')+(ext>0?` · ⚠ 판정 확인 ${ext}건`:ext<0?' · ⚠ 재판정 실패':''));
+        made++;report.push(`${label}: ✓ ${judgeAnswerSummary(items)}`+(warns.length?` · ⚠ 확인 ${warns.length}건`:'')+(ext>0?` · ⚠ 판정 확인 ${ext}건`:ext<0?' · ⚠ 재판정 실패':'')+(rb?` · 배분 맞춤 ${rb}문장`+(rbBad?` (⚠ 재판정 다름 ${rbBad})`:''):''));
       }catch(e){failed++;report.push(`${label}: ✗ ${e.message}`);}
       setJudgeAll(st=>({...st,done:st.done+1}));
     }
@@ -4509,6 +4515,51 @@ async function judgeGenerate(apiKey,sentences,topic){
   const parsed=parseJSON(d.content[0].text);
   return (parsed.items||[]).slice(0,8).map(judgeCleanItem);
 }
+// 배분 맞추기 (26차) — 일치3·반대3·무관2가 아니면 넘치는 판정의 문장을 모자란 판정으로 지정해 다시 생성
+// 넘치는 문장 고르는 순서: 재판정이 다르게 나온 문장 → 기출 필수 기법이 아닌 문장 → 뒤쪽 문장. 빈 행은 먼저 채움.
+function judgeRebalancePlan(pool,vres){
+  const has=it=>it&&String(it.text||'').trim()&&JUDGE_LABELS.includes(it.label);
+  const cnt={};JUDGE_LABELS.forEach(l=>cnt[l]=pool.filter(it=>has(it)&&it.label===l).length);
+  const need=[];JUDGE_LABELS.forEach(l=>{for(let k=cnt[l];k<JUDGE_TARGET[l];k++)need.push(l);});
+  if(!need.length)return [];
+  const empties=pool.map((it,i)=>i).filter(i=>!has(pool[i]));
+  const techCount=(l,t)=>pool.filter(it=>has(it)&&it.label===l&&it.tech===t).length;
+  const surplus=[];
+  JUDGE_LABELS.forEach(l=>{
+    const over=cnt[l]-JUDGE_TARGET[l];if(over<=0)return;
+    const rows=pool.map((it,i)=>i).filter(i=>has(pool[i])&&pool[i].label===l);
+    const score=i=>{const v=vres&&vres[i];const it=pool[i];
+      return (v&&!v.same?0:10)+(JUDGE_REQUIRED.includes(it.tech)&&techCount(l,it.tech)===1?5:0)-i/100;};
+    rows.sort((a,b)=>score(a)-score(b)).slice(0,over).forEach(i=>surplus.push(i));
+  });
+  const slots=[...empties,...surplus];
+  const plan=[];const used=pool.filter(has).map(it=>it.label+'|'+it.tech);
+  need.forEach((l,k)=>{if(k>=slots.length)return;const i=slots[k];
+    const techs=JUDGE_TECHS[l]||[];
+    const t=techs.find(x=>JUDGE_REQUIRED.includes(x.k)&&!used.includes(l+'|'+x.k))||techs.find(x=>!used.includes(l+'|'+x.k))||techs[0];
+    used.push(l+'|'+t.k);
+    plan.push({i,from:has(pool[i])?pool[i].label:'',to:l,tech:t.k});});
+  return plan;
+}
+function judgeRebalanceText(pool,plan){
+  const has=it=>it&&String(it.text||'').trim()&&JUDGE_LABELS.includes(it.label);
+  const now=JUDGE_LABELS.map(l=>l+' '+pool.filter(it=>has(it)&&it.label===l).length).join(' · ');
+  return now+' → '+plan.map(p=>`${p.i+1}번 ${p.from||'빈칸'}→${p.to}`).join(', ');
+}
+// 판정을 지정해 한 문장 생성 → 재판정 → 다르면 1회 더 생성. {item, v:재판정결과|null}
+async function judgeGenOneAs(apiKey,sentences,topic,label,tech,others){
+  let last=null;
+  for(let attempt=0;attempt<2;attempt++){
+    const d=await callClaude(apiKey,JUDGE_SYS,buildJudgeOnePrompt(sentences,topic,label,tech,others),1500);
+    const it=judgeCleanItem(parseJSON(d.content[0].text));
+    if(!it.text)continue;
+    const item={...it,label,tech:(JUDGE_TECHS[label]||[]).some(t=>t.k===it.tech)?it.tech:tech};
+    let v=null;try{const r=await judgeVerifyExtreme(apiKey,sentences,topic,[item]);v=r[0]||null;}catch(e){}
+    last={item,v};
+    if(!v||v.same)break;
+  }
+  return last;
+}
 
 function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
   const sentences=React.useMemo(()=>judgeSentences(slot),[slot]);
@@ -4558,6 +4609,42 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
     }catch(e){alert('재생성 실패: '+e.message);}
     setBusy('');
   };
+  // 26차: 판정을 지정해 다시 생성 (행별) · 배분 맞춰 다시 생성 (일괄)
+  const genAs=async(i,label)=>{
+    if(!apiKey){alert('설정에서 Claude API Key를 먼저 입력해주세요.');return;}
+    const used=pool.filter((it,k)=>k!==i&&it.label===label).map(it=>it.tech);
+    const techs=JUDGE_TECHS[label];
+    const tech=(techs.find(t=>JUDGE_REQUIRED.includes(t.k)&&!used.includes(t.k))||techs.find(t=>!used.includes(t.k))||techs[0]).k;
+    setBusy('row'+i);
+    try{
+      const r=await judgeGenOneAs(apiKey,sentences,topic,label,tech,pool.filter((it,k)=>k!==i&&it.text.trim()));
+      if(!r)throw new Error('빈 응답');
+      setRow(i,r.item);
+      if(r.v)setVres(v=>({...v,[i]:r.v}));
+    }catch(e){alert('재생성 실패: '+e.message);}
+    setBusy('');
+  };
+  const rbPlan=judgeRebalancePlan(pool,vres);
+  const rebalance=async()=>{
+    if(!apiKey){alert('설정에서 Claude API Key를 먼저 입력해주세요.');return;}
+    if(!topic.trim()){alert('판단 기준이 되는 주제를 먼저 입력해주세요.');return;}
+    const plan=judgeRebalancePlan(pool,vres);if(!plan.length)return;
+    if(!confirm('배분을 일치3·반대3·무관2로 맞춥니다.\n\n'+judgeRebalanceText(pool,plan)+'\n\n이 문장들을 지정한 판정으로 새로 만들고 재판정합니다. 계속할까요?'))return;
+    setBusy('rebalance');
+    let cur=pool.map(x=>({...x}));const nv={};const fail=[];
+    for(const p of plan){
+      try{
+        const r=await judgeGenOneAs(apiKey,sentences,topic,p.to,p.tech,cur.filter((it,k)=>k!==p.i&&it.text.trim()));
+        if(!r){fail.push(p.i+1);continue;}
+        cur[p.i]=r.item;if(r.v)nv[p.i]=r.v;
+      }catch(e){fail.push(p.i+1);}
+    }
+    setPool(cur);setDirty(true);
+    setVres(v=>{const n={...v};plan.forEach(p=>{delete n[p.i];if(nv[p.i])n[p.i]=nv[p.i];});return n;});
+    setBusy('');
+    const bad=plan.filter(p=>nv[p.i]&&!nv[p.i].same).map(p=>p.i+1);
+    if(fail.length||bad.length)alert((fail.length?'생성 실패: '+fail.join(', ')+'번\n':'')+(bad.length?'재판정이 다르게 나옴: '+bad.join(', ')+'번 — 확인하세요.':''));
+  };
   const doSave=()=>{
     const items=pool.filter(it=>it.text.trim());
     if(items.some(it=>!JUDGE_LABELS.includes(it.label))){alert('판정이 비어 있는 문장이 있습니다.');return;}
@@ -4594,6 +4681,10 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
                 <span style={{fontSize:11,color:'#86868b'}}>일치 3 · 반대 3 · 무관 2 · 기법은 제철고 기출 방식 · 문장마다 어려운 어휘 뜻·예문 · 학생은 3개 무작위</span>
               </div>
             </div>
+            {rbPlan.length>0&&<div style={{background:'#fff7ec',border:'1px solid #f3d6b0',borderRadius:10,padding:'8px 10px',marginBottom:8,display:'flex',gap:8,alignItems:'center',flexWrap:'wrap'}}>
+              <span style={{fontSize:12,color:'#b25b00'}}>⚠ 배분이 일치3·반대3·무관2가 아닙니다: {judgeRebalanceText(pool,rbPlan)}</span>
+              <button onClick={rebalance} disabled={!!busy} style={{background:'#b25b00',color:'#fff',border:'none',borderRadius:8,padding:'5px 12px',fontWeight:700,fontSize:12,cursor:busy?'default':'pointer',opacity:busy?.6:1}}>{busy==='rebalance'?'다시 생성 중…':'배분 맞춰 다시 생성'}</button>
+            </div>}
             {pool.map((it,i)=><div key={i} style={{background:'#fff',border:'0.5px solid #D2D2D7',borderRadius:10,padding:8,marginBottom:6}}>
               <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5,flexWrap:'wrap'}}>
                 <b style={{fontSize:12,width:18}}>{i+1}</b>
@@ -4606,6 +4697,7 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
                 <span style={{fontSize:10.5,color:judgeWordCount(it.text)&&(judgeWordCount(it.text)<22||judgeWordCount(it.text)>40)?'#b25b00':'#86868b'}}>{judgeWordCount(it.text)}단어</span>
                 <div style={{flex:1}}/>
                 <button onClick={()=>genOne(i)} disabled={!!busy} style={mini}>{busy==='row'+i?'생성 중…':'이 문장 다시 생성'}</button>
+                {JUDGE_LABELS.filter(l=>l!==it.label).map(l=><button key={l} onClick={()=>genAs(i,l)} disabled={!!busy} title={`'${l}' 문장으로 새로 생성`} style={{...mini,color:JUDGE_COLOR[l].tx}}>{l}{l==='무관'?'으로':'로'} 생성</button>)}
                 <button onClick={()=>setRow(i,emptyItem())} style={{...mini,color:'#c0392b'}}>비우기</button>
               </div>
               {vres[i]&&(vres[i].same
