@@ -30,7 +30,10 @@ const TYPES = [
   { id:'grammar', name:'어법', icon:'✏️' },
   { id:'vocab', name:'어휘', icon:'📖' },
   { id:'irrelevant', name:'무관한 문장', icon:'🚫' },
+  { id:'judge', name:'주제 판별', icon:'⚖️' },
 ];
+// 주제 판별(judge)은 학생이 직접 켤 때만 출제 — 기본 선택·'전체' 버튼은 기존 9유형 그대로
+const BASE_TYPE_IDS=TYPES.filter(t=>t.id!=='judge').map(t=>t.id);
 
 // 기본 교재 정의
 const BOOK_DEFS = [
@@ -247,6 +250,7 @@ function applyGasQuestions(passage, questions){
       else if(q.type==='irrelevant'){p.irrel_sel=d.sel||0;p.irrel_candidates=d.candidates||[];p.irrel_insert_pos=d.insert_pos||0;p.irrel_confirmed=d.confirmed||false;p.irrelevant_sentence_index=d.sentence_index;}
       else if(q.type==='grammar'){p.grammar_sets=d.sets||[];p.grammar_sel=d.sel||0;p.grammar_items=d.items||[];p.grammar_answer=Number(q.answer)||1;}
       else if(q.type==='vocab'){p.vocab_sets=d.sets||[];p.vocab_sel=d.sel||0;p.vocab_items=d.items||[];p.vocab_answer=Number(q.answer)||1;}
+      else if(q.type==='judge'){p.judge_pool=Array.isArray(d.pool)?d.pool:[];p.judge_topic=d.topic||'';}
     }catch(e){}
   });
   return p;
@@ -292,7 +296,7 @@ function gen(passage, type, allP){
   const s = passage.sentences;
   if(!s || s.length === 0) return null;
   // 미출제 유형 건너뜀
-  const TYPE_KEYS={topic:'topic',order:'order',blank:'blank',summary:'summary',implication:'implication',irrelevant:'irrelevant',insert:'insert',grammar:'grammar',vocab:'vocab'};
+  const TYPE_KEYS={topic:'topic',order:'order',blank:'blank',summary:'summary',implication:'implication',irrelevant:'irrelevant',insert:'insert',grammar:'grammar',vocab:'vocab',judge:'judge'};
   if((passage.disabled_types||[]).includes(TYPE_KEYS[type])) return null;
   // 시트(GAS) 지문: 출제DB에 실제 저장된 유형만 출제 (passages.js 지문은 기존 방식 유지)
   if(passage.__gasOnly && !(passage.__authored && passage.__authored.has(TYPE_KEYS[type]))) return null;
@@ -558,6 +562,14 @@ function gen(passage, type, allP){
     return {type,passage,explanation:__expl,options:opts,answer,instruction:'다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 않은 것은?'};
   }
 
+  /* ⑩ 주제 판별 — 8개 중 3개 무작위 */
+  case 'judge':{
+    const jp=(passage.judge_pool||[]).filter(it=>it&&String(it.text||'').trim()&&['일치','반대','무관'].includes(it.label));
+    if(jp.length<3) return null;
+    const items=shuffle(jp).slice(0,3).map(it=>({text:String(it.text).trim(),label:it.label,tech:it.tech||'',why:it.why||'',vocab:Array.isArray(it.vocab)?it.vocab:[]}));
+    return {type,passage,explanation:__expl,items,topic:passage.judge_topic||'',instruction:'다음 글의 요지에 비추어, 각 문장이 요지와 일치하는지·반대인지·관계없는지 고르시오.'};
+  }
+
   default: return null;
   }
 }
@@ -637,7 +649,7 @@ function App(){
     try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')?.name||'';}catch(e){return '';}
   });
   const [scriptUrl,setScriptUrl]=useState(()=>localStorage.getItem(SCRIPT_URL_KEY)||HARDCODED_URL);
-  const [selectedTypes,setSelectedTypes]=useState(new Set(TYPES.map(t=>t.id)));
+  const [selectedTypes,setSelectedTypes]=useState(new Set(BASE_TYPE_IDS));
   const [activeBook,setActiveBook]=useState('');
   const [selPassages,setSelPassages]=useState(new Set());
   const [qCount,setQCount]=useState(10);
@@ -761,7 +773,7 @@ function App(){
   },[diffFilter,searchText,activeBook,allPassages,books]);
 
   const toggleType=id=>{setSelectedTypes(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});};
-  const toggleAll=()=>{selectedTypes.size===TYPES.length?setSelectedTypes(new Set()):setSelectedTypes(new Set(TYPES.map(t=>t.id)));};
+  const toggleAll=()=>{BASE_TYPE_IDS.every(id=>selectedTypes.has(id))?setSelectedTypes(new Set()):setSelectedTypes(new Set([...BASE_TYPE_IDS,...(selectedTypes.has('judge')?['judge']:[])]));};
   const toggleP=id=>{setSelPassages(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});};
   const selectAllInBook=(bookId)=>{
     const book=books.find(b=>b.id===bookId);if(!book)return;
@@ -3292,6 +3304,7 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
     if(q.type==='summary'){c=q.aOpts[sA]?.correct&&q.bOpts[sB]?.correct;onSubmit({correct:c,selectedA:sA,selectedB:sB});}
     else if(q.type==='insert'){c=insertSel===q.correctPos;onSubmit({correct:c,selected:insertSel});}
     else if(q.type==='irrelevant'){c=irrelSel===q.correctNum;onSubmit({correct:c,selected:irrelSel});}
+    else if(q.type==='judge'){const sl=Array.isArray(selected)?selected:[];c=q.items.every((it,i)=>sl[i]===it.label);onSubmit({correct:c,selected:sl});}
     else{c=q.options?.[selected]?.correct||false;onSubmit({correct:c,selected});}
   };
 
@@ -3299,6 +3312,7 @@ function Quiz({q,idx,total,userAnswer,showAnswer,onSubmit,onNext,score,ansMode,g
     if(q.type==='summary')return sA!==null&&sB!==null;
     if(q.type==='insert')return insertSel!==null;
     if(q.type==='irrelevant')return irrelSel!==null;
+    if(q.type==='judge')return Array.isArray(selected)&&q.items.every((_,i)=>!!selected[i]);
     return selected!==null;
   };
 
@@ -3610,8 +3624,70 @@ function PassageView({q,insertSel,setInsertSel,irrelSel,setIrrelSel,showAnswer})
 }
 
 /* ── 선택지 ── */
+/* ── 주제 판별 (judge) — 2026-10 추가 ──
+   출제DB type:'judge' = {topic, pool:[{text,label:'일치'|'반대'|'무관',tech,why,vocab:[{w,m,ex,exKo}]}×8]}
+   풀 때마다 pool에서 3개 무작위. 3개 모두 맞혀야 정답. 채점 후 해설·어휘(뜻·예문) 표시. */
+const JUDGE_LBL=['일치','반대','무관'];
+const JUDGE_CLR={'일치':{bg:'#e6eefa',bd:'#1f5fa8'},'반대':{bg:'#fbe9e7',bd:'#b3261e'},'무관':{bg:'#efebec',bd:'#6b5f63'}};
+function JudgeVocab({vocab}){
+  const v=(vocab||[]).filter(x=>x&&x.w);
+  if(!v.length)return null;
+  return <div style={{marginTop:8,padding:'8px 10px',background:'#fffaf0',border:'1px solid #f0e2bf',borderRadius:9}}>
+    <div style={{fontSize:11,fontWeight:800,color:'#9a7040',marginBottom:4}}>📘 어휘</div>
+    {v.map((x,k)=><div key={k} style={{fontSize:'clamp(12px,1.9vw,13px)',lineHeight:1.6,marginBottom:k<v.length-1?6:0}}>
+      <b style={{color:'#7a1020'}}>{x.w}</b> <span style={{color:'#3a2a20'}}>{x.m}</span>
+      {x.ex&&<div style={{color:'#555',fontStyle:'italic'}}>{x.ex}</div>}
+      {x.exKo&&<div style={{color:'#888',fontSize:'clamp(11px,1.8vw,12px)'}}>{x.exKo}</div>}
+    </div>)}
+  </div>;
+}
+function JudgeOpts({q,selected,setSelected,showAnswer}){
+  const sel=Array.isArray(selected)?selected:[];
+  const pick=(i,l)=>{if(!setSelected)return;const n=q.items.map((_,k)=>sel[k]||null);n[i]=l;setSelected(n);};
+  return <div style={{display:'flex',flexDirection:'column',gap:10}}>
+    {q.items.map((it,i)=>{
+      const mine=sel[i];const ok=showAnswer&&mine===it.label;
+      return <div key={i} style={{border:`1.5px solid ${showAnswer?(ok?'#9ED3AC':'#E9B4AE'):S.c.line}`,borderRadius:12,padding:'clamp(11px,2.4vw,14px)',background:showAnswer?(ok?S.c.okBg:S.c.ngBg):S.c.creamCard}}>
+        <div style={{fontSize:'clamp(14px,2.2vw,15.5px)',lineHeight:1.6,color:S.c.ink,marginBottom:9}}><b style={{color:S.c.wine,marginRight:6}}>{['①','②','③'][i]}</b>{it.text}</div>
+        <div style={{display:'flex',gap:6}}>
+          {JUDGE_LBL.map(l=>{
+            const isMine=mine===l,isAns=showAnswer&&it.label===l;
+            let bg='#fff',bd=`1.5px solid ${S.c.line}`,cl=S.c.sub;
+            if(isAns){bg='#4FA968';bd='1.5px solid #4FA968';cl='#fff';}
+            else if(showAnswer&&isMine){bg='#D77068';bd='1.5px solid #D77068';cl='#fff';}
+            else if(isMine){bg=JUDGE_CLR[l].bg;bd=`2px solid ${JUDGE_CLR[l].bd}`;cl=JUDGE_CLR[l].bd;}
+            return <button key={l} onClick={()=>pick(i,l)} style={{flex:1,padding:'clamp(8px,1.8vw,10px) 4px',borderRadius:10,border:bd,background:bg,color:cl,fontWeight:800,fontSize:'clamp(13px,2vw,14px)',cursor:setSelected?'pointer':'default'}}>{l}</button>;
+          })}
+        </div>
+        {showAnswer&&<div style={{marginTop:9,fontSize:'clamp(12px,1.9vw,13px)',lineHeight:1.65,color:S.c.ink}}>
+          <b style={{color:ok?S.c.ok:S.c.ng}}>{ok?'✓':'✕'} 정답: {it.label}</b>{it.tech&&<span style={{color:S.c.sub,fontSize:11.5}}> · {it.tech}</span>}
+          {it.why&&<div style={{marginTop:3}}>{it.why}</div>}
+          <JudgeVocab vocab={it.vocab}/>
+        </div>}
+      </div>;
+    })}
+    {!showAnswer&&<p style={{fontSize:'clamp(11.5px,1.9vw,12.5px)',color:S.c.goldDk,fontWeight:600,margin:'2px 0 0',lineHeight:1.6}}>세 문장 모두 골라야 제출할 수 있어요. 세 개를 모두 맞혀야 정답입니다.</p>}
+  </div>;
+}
+function JudgeResultPanel({q,ans}){
+  const [open,setOpen]=useState(false);
+  const sel=Array.isArray(ans&&ans.selected)?ans.selected:[];
+  return <div style={{margin:'-4px 0 10px'}}>
+    <button onClick={()=>setOpen(o=>!o)} style={{fontSize:11.5,fontWeight:700,padding:'6px 12px',borderRadius:8,cursor:'pointer',border:'1px solid #C9A84C',background:open?'#FBF3DE':'#fff',color:'#8a6010'}}>{open?'접기':'📘 주제 판별 해설·어휘 보기'}</button>
+    {open&&<div style={{...S.card,padding:'12px 14px',marginTop:6}}>
+      {q.items.map((it,i)=>{const ok=sel[i]===it.label;return <div key={i} style={{padding:'8px 0',borderBottom:i<q.items.length-1?`1px solid ${S.c.track}`:'none'}}>
+        <div style={{fontSize:13,lineHeight:1.6,color:S.c.ink}}><b style={{color:S.c.wine,marginRight:5}}>{['①','②','③'][i]}</b>{it.text}</div>
+        <div style={{fontSize:12.5,marginTop:4}}><b style={{color:ok?S.c.ok:S.c.ng}}>{ok?'✓':'✕'} 정답 {it.label}</b><span style={{color:S.c.sub}}> · 내 선택 {sel[i]||'—'}</span></div>
+        {it.why&&<div style={{fontSize:12.5,color:S.c.ink,marginTop:2,lineHeight:1.6}}>{it.why}</div>}
+        <JudgeVocab vocab={it.vocab}/>
+      </div>;})}
+    </div>}
+  </div>;
+}
+
 function OptsView({q,selected,setSelected,sA,setSA,sB,setSB,showAnswer}){
   const L=['①','②','③','④','⑤'];
+  if(q.type==='judge')return <JudgeOpts q={q} selected={selected} setSelected={setSelected} showAnswer={showAnswer}/>;
 
   if(q.type==='insert')return <p style={{fontSize:'clamp(12px,2vw,13px)',color:S.c.goldDk,fontWeight:600,lineHeight:1.6}}>위 지문에서 ①~⑤ 중 주어진 문장이 들어갈 위치를 클릭하세요.</p>;
   if(q.type==='irrelevant')return <p style={{fontSize:'clamp(12px,2vw,13px)',color:S.c.goldDk,fontWeight:600,lineHeight:1.6}}>위 지문에서 전체 흐름과 관계 없는 문장의 번호를 클릭하세요.</p>;
@@ -3659,7 +3735,7 @@ function OptsView({q,selected,setSelected,sA,setSA,sB,setSB,showAnswer}){
 
 /* ── 인쇄 화면 ── */
 function PrintView({questions,mode,goBack}){
-  const TN={topic:'주제 찾기',order:'순서 배열',blank:'빈칸 추론',insert:'문장 삽입',summary:'요약문',implication:'함축적 의미',irrelevant:'무관한 문장'};
+  const TN={topic:'주제 찾기',order:'순서 배열',blank:'빈칸 추론',insert:'문장 삽입',summary:'요약문',implication:'함축적 의미',irrelevant:'무관한 문장',judge:'주제 판별'};
   const M=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫'];
 
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -3691,6 +3767,9 @@ function PrintView({questions,mode,goBack}){
           h+=`<div class="gv"><b>요약문:</b> ${sumDisp}</div>`;
           h+='<table><tr><th></th><th>(A)</th><th>(B)</th></tr>';
           q.aOpts.forEach((a,j)=>{const b=q.bOpts[j];if(b)h+=`<tr><td style="text-align:center">${M[j]}</td><td>${esc(a.text)}</td><td>${esc(b.text)}</td></tr>`;});h+='</table>';
+        }else if(q.type==='judge'){
+          h+='<div class="p">';q.passage.sentences.forEach(s=>h+=esc(s)+' ');h+='</div><div class="op">';
+          (q.items||[]).forEach((it,j)=>h+=`<div>${M[j]} ${esc(it.text)} <b>( 일치 · 반대 · 무관 )</b></div>`);h+='</div>';
         }else if(q.type==='implication'){
           h+='<div class="p">';q.passage.sentences.forEach((s,j)=>{h+=(j===q.targetIdx?`<u>${esc(s)}</u>`:esc(s))+' ';});
           h+='</div><div class="op">';q.options.forEach((o,j)=>h+=`<div>${M[j]} ${esc(o.text)}</div>`);h+='</div>';
@@ -3708,6 +3787,7 @@ function PrintView({questions,mode,goBack}){
         if(q.type==='insert'){const mIdxsA=q.markerIdxs||[];const mNumA=mIdxsA.indexOf(q.correctPos);ans=mNumA>=0?M[mNumA]:M[q.correctPos];}
         else if(q.type==='irrelevant')ans=M[q.correctNum-1];
         else if(q.type==='summary'){const ai=q.aOpts.findIndex(o=>o.correct);ans=M[ai];}
+        else if(q.type==='judge')ans=(q.items||[]).map((it,j)=>M[j]+it.label).join(' ');
         else if(q.options)ans=M[q.options.findIndex(o=>o.correct)];
         h+=`<tr><td style="text-align:center">${i+1}</td><td>${TN[q.type]}</td><td style="font-size:7.5pt">${q.passage.id}</td><td style="font-weight:bold;text-align:center">${ans}</td><td style="font-size:8pt">${esc(q.passage.title)}</td></tr>`;
       });
@@ -5221,6 +5301,10 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
       } else if(q.type==='irrelevant'){
         corr=(q.correctNum!=null)?String(q.correctNum):'';
         chosen=(ans && ans.selected!=null)?String(ans.selected):'';
+      } else if(q.type==='judge'){
+        // 판정 첫 글자: 일·반·무 (예: '일반무')
+        corr=(q.items||[]).map(it=>String(it.label||'-')[0]).join('');
+        chosen=(ans && Array.isArray(ans.selected))?(q.items||[]).map((_,k)=>ans.selected[k]?String(ans.selected[k])[0]:'-').join(''):'';
       } else {
         const ci=(q.options||[]).findIndex(o=>o&&o.correct);
         corr=(ci>=0)?String(ci):'';
@@ -5325,7 +5409,7 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
           const ans=userAns[i];
           const tI=TYPES.find(t=>t.id===q.type);
           const sheetP=(gasPassages||[]).find(g=>g.id===q.passage.id);
-          return <div key={i} style={{...S.card,display:'flex',alignItems:'center',gap:9,padding:'12px 16px'}}>
+          return <React.Fragment key={i}><div style={{...S.card,display:'flex',alignItems:'center',gap:9,padding:'12px 16px'}}>
             <span style={{fontSize:17}}>{ans?.correct?'✅':'❌'}</span>
             <div style={{flex:1}}>
               <span style={{fontSize:10.5,color:S.c.wineSoft,fontWeight:700}}>{tI?.name}</span>
@@ -5336,7 +5420,7 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
               style={{fontSize:11,fontWeight:700,padding:'5px 10px',borderRadius:8,cursor:'pointer',flexShrink:0,
                 border:ans?.correct?'1px solid #e6dcc6':'1px solid #C9A84C',
                 background:ans?.correct?'#fff':'#FBF3DE',color:ans?.correct?'#9a8570':'#8a6010'}}>📖 분석</button>}
-          </div>;
+          </div>{q.type==='judge'&&q.items&&<JudgeResultPanel q={q} ans={ans}/>}</React.Fragment>;
         })}
 
         <button onClick={goHome} style={{width:'100%',padding:13,borderRadius:14,border:'none',background:S.c.wine,color:'#fff',fontSize:14.5,fontWeight:700,cursor:'pointer',marginTop:14}}>새로운 세션 시작</button>
