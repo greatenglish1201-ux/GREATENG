@@ -2805,7 +2805,7 @@ function App(){
     const targets=withText.filter(s=>s.status==='saved');
     const unsaved=withText.length-targets.length;
     if(!targets.length){alert('일괄 주제 판별 대상이 없습니다.\n(시트에 저장된 슬롯만 대상입니다'+(unsaved?` · 미저장 ${unsaved}개`:'')+')');return;}
-    if(!confirm(`⚖ ${targets.length}개 슬롯에 주제 판별 8문장을 만들어 출제DB에 바로 저장할까요?\n- 이미 판별 세트가 저장된 지문은 건너뜁니다.\n- 기출 방식 기법 + 문장별 어휘 뜻·예문 포함\n- API 최대 ${targets.length*2}회 호출`+(unsaved?`\n- 시트 미저장 슬롯 ${unsaved}개는 제외`:'')))return;
+    if(!confirm(`⚖ ${targets.length}개 슬롯에 주제 판별 8문장을 만들어 출제DB에 바로 저장할까요?\n- 이미 판별 세트가 저장된 지문은 건너뜁니다.\n- 기출 방식 기법 + 문장별 어휘 뜻·예문 포함\n- 8문장 전체를 다시 판정해 다르면 그 문장만 1회 재생성\n- API 지문당 2회 + 다시 만든 문장마다 2회`+(unsaved?`\n- 시트 미저장 슬롯 ${unsaved}개는 제외`:'')))return;
     running.current=true;
     setJudgeAll({run:true,done:0,total:targets.length});
     const report=[];let made=0,skipped=0,failed=0;
@@ -2826,10 +2826,27 @@ function App(){
           if(!fatal)break;
         }
         if(!items||items.length<3||JUDGE_LABELS.some(l=>!items.some(it=>it.label===l)))throw new Error('생성 결과 부족');
+        // 판정 재확인(8문장 전체): 다르면 같은 판정·기법으로 1회 다시 생성 후 재확인, 그래도 다르면 ⚠로 보고
+        let ext=0;
+        try{
+          const vr=await judgeVerifyExtreme(apiKey,sentences,topic,items);
+          for(const [k,v] of Object.entries(vr)){
+            if(v.same)continue;const i=Number(k);
+            try{
+              const others=items.filter((_,j)=>j!==i);
+              const d=await callClaude(apiKey,JUDGE_SYS,buildJudgeOnePrompt(sentences,topic,items[i].label,items[i].tech||JUDGE_TECHS[items[i].label][0].k,others),1500);
+              const it=judgeCleanItem(parseJSON(d.content[0].text));
+              if(!it.text){ext++;continue;}
+              items[i]={...it,label:items[i].label,tech:it.tech||items[i].tech};
+              const v2=await judgeVerifyExtreme(apiKey,sentences,topic,[items[i]]);
+              if(v2[0]&&!v2[0].same)ext++;
+            }catch(e){ext++;}
+          }
+        }catch(e){ext=-1;}
         const data={topic,pool:items};
         const sr=await formPostFetch(appsUrl,{action:'saveQuestions',pid,questions_json:JSON.stringify([{type:'judge',data_json:JSON.stringify(data),answer:judgeAnswerSummary(items)}])});
         if(!sr.ok&&!sr.warning)throw new Error(sr.error||'저장 실패');
-        made++;report.push(`${label}: ✓ ${judgeAnswerSummary(items)}`+(warns.length?` · ⚠ 확인 ${warns.length}건`:''));
+        made++;report.push(`${label}: ✓ ${judgeAnswerSummary(items)}`+(warns.length?` · ⚠ 확인 ${warns.length}건`:'')+(ext>0?` · ⚠ 판정 확인 ${ext}건`:ext<0?' · ⚠ 재판정 실패':''));
       }catch(e){failed++;report.push(`${label}: ✗ ${e.message}`);}
       setJudgeAll(st=>({...st,done:st.done+1}));
     }
@@ -4365,7 +4382,7 @@ const JUDGE_TECHS={
     {k:'비유',src:'23번·3번',en:'restates the main point through a metaphor (e.g. "places were homebodies")'}],
   '반대':[
     {k:'반의어 치환',src:'9번·28번',en:'reuses an original sentence almost word for word but flips ONE key word into its opposite (e.g. blur→sharpen, efficient→wasteful)'},
-    {k:'극단어',src:'3·11·15번 오답',en:'overstates or reverses the claim with an extreme word (always / never / completely / only / entirely)'},
+    {k:'극단어',src:'3·11·15번 오답',en:'a claim the passage CONTRADICTS because of an extreme word (e.g. the passage says "a large part / often / partly" and the statement says "all / always / only"), or that pushes the claim beyond what the passage allows. A strong statement that the passage actually supports is NOT 반대'},
     {k:'방향 뒤집기',src:'12번 오답',en:'keeps the key concepts but reverses the direction of the relation (e.g. incorporate → separate / distinguish)'}],
   '무관':[
     {k:'같은 소재 다른 화제',src:'17번·18번',en:'uses the same subject matter and words but talks about a side issue the passage neither states nor denies (e.g. sleep and screens; railways in the same era)'},
@@ -4407,7 +4424,8 @@ Required technique plan:
 - 무관 ×2: one "같은 소재 다른 화제", one "원문 단어 미끼".
 Style rules:
 - Every statement 22-40 words; keep average length similar across labels so length gives no clue.
-- Put an extreme word into one 일치 statement too, so extreme words alone are not a clue.
+- Put an extreme word into one 일치 statement too, so extreme words alone are not a clue; that 일치 statement must still be fully supported by the passage.
+- Decide every label by MEANING against the passage, never by wording: an extreme word makes a statement 반대 ONLY when the passage contradicts it.
 - Mix the order (do not group by label).
 - "why": one Korean sentence for students explaining the judgement (mention which part of the passage it matches or contradicts).
 - ${JUDGE_VOCAB_RULE}
@@ -4458,6 +4476,34 @@ function validateJudge(pool,sentences){
   return warn;
 }
 function judgeAnswerSummary(pool){return JUDGE_LABELS.map(l=>l+(pool||[]).filter(it=>it.label===l&&String(it.text||'').trim()).length).join('/');}
+// 판정 재확인 — 8문장 전체를 저장 판정을 알려 주지 않고 다시 판정해 비교 (극단어 기준 포함)
+const JUDGE_EXTREME=/\b(always|never|completely|entirely|totally|wholly|solely|only|exclusively|absolutely|absolute|permanently|immediately|invariably|whatever|none|nothing|no one|every)\b/i;
+function judgeHasExtreme(t){return JUDGE_EXTREME.test(String(t||''));}
+function buildJudgeVerifyPrompt(sentences,topic,stmts){
+  const passage=sentences.map(s=>`[${s.num}] ${s.text}`).join('\n');
+  return `Passage:
+${passage}
+
+Main point: ${topic}
+
+For each statement below, decide by MEANING ONLY whether it agrees with the passage's main point ("일치"), contradicts the passage ("반대"), or is neither stated nor denied by the passage ("무관").
+Rules:
+- Extreme words (always, never, only, completely, entirely, all ...) do NOT by themselves make a statement "반대". If the passage supports the strong claim, it is "일치".
+- It is "반대" only when the passage contradicts it (e.g. the passage says "often / a large part" but the statement says "always / all", or the claim is reversed).
+- Judge against the passage, not against outside knowledge.
+Statements:
+${stmts.map((t,i)=>(i+1)+'. '+t).join('\n')}
+Return JSON only: {"results":[{"n":1,"label":"일치|반대|무관","reason":"한국어 한 줄 근거"}]}`;
+}
+async function judgeVerifyExtreme(apiKey,sentences,topic,pool){
+  const idx=(pool||[]).map((_,i)=>i).filter(i=>pool[i]&&String(pool[i].text||'').trim());
+  if(!idx.length)return {};
+  const d=await callClaude(apiKey,JUDGE_SYS,buildJudgeVerifyPrompt(sentences,topic,idx.map(i=>pool[i].text)),1500);
+  const res=(parseJSON(d.content[0].text).results)||[];
+  const out={};
+  idx.forEach((i,k)=>{const r=res.find(x=>Number(x.n)===k+1)||res[k]||{};const lb=JUDGE_LABELS.includes(r.label)?r.label:'';out[i]={label:lb,reason:String(r.reason||''),same:lb===pool[i].label};});
+  return out;
+}
 async function judgeGenerate(apiKey,sentences,topic){
   const d=await callClaude(apiKey,JUDGE_SYS,buildJudgePrompt(sentences,topic),6000);
   const parsed=parseJSON(d.content[0].text);
@@ -4471,7 +4517,19 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
   const [pool,setPool]=useState(()=>{const p=(saved&&Array.isArray(saved.pool))?saved.pool.map(judgeCleanItem):[];while(p.length<8)p.push(emptyItem());return p;});
   const [busy,setBusy]=useState('');
   const [dirty,setDirty]=useState(false);
-  const setRow=(i,patch)=>{setPool(p=>p.map((x,k)=>k===i?{...x,...patch}:x));setDirty(true);};
+  const [vres,setVres]=useState({}); // 재판정 결과 {행번호:{label,reason,same}}
+  const setRow=(i,patch)=>{setPool(p=>p.map((x,k)=>k===i?{...x,...patch}:x));setDirty(true);
+    if(patch.text!==undefined)setVres(v=>{const n={...v};delete n[i];return n;});
+    else if(patch.label!==undefined)setVres(v=>v[i]?{...v,[i]:{...v[i],same:v[i].label===patch.label}}:v);};
+  const runVerify=async(pl)=>{
+    if(!apiKey)return;
+    setBusy('verify');
+    try{const r=await judgeVerifyExtreme(apiKey,sentences,topic,pl);setVres(r);
+      if(!Object.keys(r).length)alert('재판정할 문장이 없습니다.');}
+    catch(e){alert('재판정 실패: '+e.message);}
+    setBusy('');
+  };
+  const vMismatch=Object.entries(vres).filter(([i,v])=>!v.same&&pool[i]&&pool[i].text.trim());
   const setVocab=(i,j,patch)=>setRow(i,{vocab:pool[i].vocab.map((v,k)=>k===j?{...v,...patch}:v)});
   const warns=validateJudge(pool,sentences);
   const counts=JUDGE_LABELS.map(l=>({l,c:pool.filter(it=>it.label===l&&String(it.text).trim()).length}));
@@ -4480,9 +4538,11 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
     if(!topic.trim()){alert('판단 기준이 되는 주제를 먼저 입력해주세요.');return;}
     if(pool.some(it=>it.text.trim())&&!confirm('지금 있는 문장 8개를 모두 새로 만듭니다. 계속할까요?'))return;
     setBusy('all');
-    try{const items=await judgeGenerate(apiKey,sentences,topic);while(items.length<8)items.push(emptyItem());setPool(items);setDirty(true);}
+    let items=null;
+    try{items=await judgeGenerate(apiKey,sentences,topic);while(items.length<8)items.push(emptyItem());setPool(items);setDirty(true);setVres({});}
     catch(e){alert('생성 실패: '+e.message);}
     setBusy('');
+    if(items){try{setBusy('verify');setVres(await judgeVerifyExtreme(apiKey,sentences,topic,items));}catch(e){}setBusy('');}
   };
   const genOne=async(i)=>{
     if(!apiKey){alert('설정에서 Claude API Key를 먼저 입력해주세요.');return;}
@@ -4494,13 +4554,15 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
       const d=await callClaude(apiKey,JUDGE_SYS,buildJudgeOnePrompt(sentences,topic,label,tech,others),1500);
       const it=judgeCleanItem(parseJSON(d.content[0].text));
       setRow(i,{...it,label,tech:it.tech||tech});
+      if(it.text){const np=pool.map((x,k)=>k===i?{...it,label}:x);const r=await judgeVerifyExtreme(apiKey,sentences,topic,np);if(r[i])setVres(v=>({...v,[i]:r[i]}));}
     }catch(e){alert('재생성 실패: '+e.message);}
     setBusy('');
   };
   const doSave=()=>{
     const items=pool.filter(it=>it.text.trim());
     if(items.some(it=>!JUDGE_LABELS.includes(it.label))){alert('판정이 비어 있는 문장이 있습니다.');return;}
-    if(warns.length&&!confirm('확인할 점이 있습니다:\n\n- '+warns.join('\n- ')+'\n\n그래도 저장할까요?'))return;
+    const allW=[...warns,...vMismatch.map(([i,v])=>`${Number(i)+1}번 재판정: '${v.label||'판정 불가'}' (저장 판정 '${pool[i].label}')`)];
+    if(allW.length&&!confirm('확인할 점이 있습니다:\n\n- '+allW.join('\n- ')+'\n\n그래도 저장할까요?'))return;
     onSave({topic:topic.trim(),pool:items.map(judgeCleanItem)});
   };
   const close=()=>{if(!dirty||confirm('저장하지 않고 닫을까요?'))onClose();};
@@ -4528,6 +4590,7 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
               <input value={topic} onChange={e=>{setTopic(e.target.value);setDirty(true);}} style={inp}/>
               <div style={{display:'flex',gap:8,alignItems:'center',marginTop:8,flexWrap:'wrap'}}>
                 <button onClick={genAll} disabled={!!busy} style={{background:'#1d1d1f',color:'#fff',border:'none',borderRadius:8,padding:'7px 14px',fontWeight:700,fontSize:12.5,cursor:busy?'default':'pointer',opacity:busy?.6:1}}>{busy==='all'?'생성 중…':'AI로 8개 생성'}</button>
+                <button onClick={()=>runVerify(pool)} disabled={!!busy} title="8문장 전체를 저장된 판정을 숨기고 다시 판정해 비교" style={{background:'#fff',color:'#8e1530',border:'1px solid #e8c4cc',borderRadius:8,padding:'6px 12px',fontWeight:700,fontSize:12,cursor:busy?'default':'pointer',opacity:busy?.6:1}}>{busy==='verify'?'재판정 중…':'판정 재확인'}</button>
                 <span style={{fontSize:11,color:'#86868b'}}>일치 3 · 반대 3 · 무관 2 · 기법은 제철고 기출 방식 · 문장마다 어려운 어휘 뜻·예문 · 학생은 3개 무작위</span>
               </div>
             </div>
@@ -4545,6 +4608,13 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
                 <button onClick={()=>genOne(i)} disabled={!!busy} style={mini}>{busy==='row'+i?'생성 중…':'이 문장 다시 생성'}</button>
                 <button onClick={()=>setRow(i,emptyItem())} style={{...mini,color:'#c0392b'}}>비우기</button>
               </div>
+              {vres[i]&&(vres[i].same
+                ?<div style={{fontSize:11,color:'#2f7d3b',marginBottom:4}}>✓ 재판정도 '{vres[i].label}'</div>
+                :<div style={{fontSize:11.5,color:'#b25b00',background:'#fff7ec',border:'1px solid #f3d6b0',borderRadius:7,padding:'5px 8px',marginBottom:4,display:'flex',gap:6,alignItems:'center',flexWrap:'wrap'}}>
+                  <span>⚠ 재판정: <b>{vres[i].label||'판정 불가'}</b>{vres[i].reason?' — '+vres[i].reason:''}</span>
+                  {vres[i].label&&<button onClick={()=>setRow(i,{label:vres[i].label,tech:(JUDGE_TECHS[vres[i].label]||[]).some(t=>t.k===it.tech)?it.tech:''})} style={{...mini,fontSize:10.5,padding:'1px 7px'}}>재판정대로 '{vres[i].label}'(으)로 바꾸기</button>}
+                  <span style={{color:'#86868b'}}>또는 문장을 다시 생성</span>
+                </div>)}
               <textarea value={it.text} onChange={e=>setRow(i,{text:e.target.value})} rows={3} placeholder="판별 문장 (영어)" style={{...inp,resize:'vertical',marginBottom:4}}/>
               <input value={it.why} onChange={e=>setRow(i,{why:e.target.value})} placeholder="학생용 한 줄 해설" style={{...inp,fontSize:12,marginBottom:4}}/>
               <div style={{fontSize:11,color:'#86868b',margin:'2px 0'}}>어휘 (채점 후 학생에게 표시)</div>
