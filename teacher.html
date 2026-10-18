@@ -2577,6 +2577,72 @@ function App(){
     return()=>{if(saveTimer.current)clearTimeout(saveTimer.current);};
   },[slots]);
   const flash=(m,t=3000)=>{setMsg(m);setTimeout(()=>setMsg(''),t);};
+  // ── 3줄 노트 (notes.json) — 2026-10 추가 ──
+  const [noteModal,setNoteModal]=useState(null); // {slot}
+  const [notesMap,setNotesMap]=useState(null);    // null=미로드, {}=로드됨
+  const [noteSaving,setNoteSaving]=useState(false);
+  const NOTES_PATH='notes.json';
+  const ghNotesApi=()=>'https://api.github.com/repos/'+ghRepo+'/contents/'+NOTES_PATH;
+  const decodeGh=(b64)=>new TextDecoder('utf-8').decode(Uint8Array.from(atob(String(b64||'').replace(/\n/g,'')),c=>c.charCodeAt(0)));
+  const encodeGh=(str)=>btoa(unescape(encodeURIComponent(str)));
+  // notes.json 읽기: 토큰 있으면 API(최신·sha), 없으면 사이트 파일. 파일이 없으면 빈 객체.
+  const fetchNotes=async()=>{
+    if(ghToken&&ghRepo){
+      const r=await fetch(ghNotesApi()+'?t='+Date.now(),{headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json'}});
+      if(r.status===404)return {map:{},sha:null};
+      if(!r.ok)throw new Error('notes.json 읽기 실패: '+r.status);
+      const j=await r.json();
+      const txt=decodeGh(j.content).replace(/^﻿/,'').trim();
+      return {map:txt?JSON.parse(txt):{},sha:j.sha};
+    }
+    const r=await fetch(NOTES_PATH+'?t='+Date.now());
+    if(r.status===404)return {map:{},sha:null};
+    if(!r.ok)throw new Error('notes.json 읽기 실패: '+r.status);
+    return {map:await r.json(),sha:null};
+  };
+  const ensureNotes=async()=>{
+    if(notesMap)return notesMap;
+    try{const {map}=await fetchNotes();setNotesMap(map);return map;}
+    catch(e){alert(e.message);return null;}
+  };
+  const openNote=async(slot)=>{
+    const pid=notePid(slot);
+    if(!pid||!slot.meta.source){alert('교재·강·번호가 없는 슬롯입니다. 슬롯 상단에서 확인해주세요.');return;}
+    const map=await ensureNotes();if(!map)return;
+    setNoteModal({slot});
+  };
+  // 저장: 최신 notes.json을 다시 읽고 이 지문 키만 교체해 커밋 (다른 지문 노트 보존). sha 충돌 시 1회 재시도.
+  const saveNote=async(slot,note)=>{
+    if(!ghToken||!ghRepo){alert('설정에서 GitHub Token과 저장소를 먼저 입력해주세요.');return;}
+    const pid=notePid(slot);
+    setNoteSaving(true);
+    try{
+      let ok=false,lastErr='';
+      for(let attempt=0;attempt<2&&!ok;attempt++){
+        const {map,sha}=await fetchNotes();
+        const next={...map,[pid]:note};
+        const body={message:'note: '+pid,content:encodeGh(JSON.stringify(next,null,1)+'\n')};
+        if(sha)body.sha=sha;
+        const r=await fetch(ghNotesApi(),{method:'PUT',headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+        if(r.ok){ok=true;setNotesMap(next);}
+        else{lastErr=r.status+' '+(await r.text()).slice(0,200);if(r.status!==409&&r.status!==422)break;}
+      }
+      if(!ok)throw new Error(lastErr);
+      flash('✓ 노트 저장 완료 ('+pid+')');
+      setNoteModal(null);
+    }catch(e){alert('노트 저장 실패 — 편집 내용은 창에 그대로 있습니다.\n'+e.message);}
+    setNoteSaving(false);
+  };
+  // 노트 출력: 현재 슬롯 순서대로, '검토 완료' 노트만
+  const printNotes=async()=>{
+    let map=notesMap;
+    try{const f=await fetchNotes();map=f.map;setNotesMap(map);}catch(e){if(!map){alert(e.message);return;}}
+    const items=slots.filter(s=>s.meta&&s.meta.source).map(s=>({slot:s,note:map[notePid(s)]})).filter(x=>x.note);
+    const done=items.filter(x=>x.note.status==='done');
+    if(!done.length){alert(items.length?`슬롯의 노트 ${items.length}개가 모두 '초안'입니다.\n노트를 열어 '검토 완료'로 저장한 뒤 출력하세요.`:'현재 슬롯에 저장된 노트가 없습니다.');return;}
+    if(done.length<items.length&&!confirm(`검토 완료 ${done.length}개만 출력합니다 (초안 ${items.length-done.length}개 제외). 계속할까요?`))return;
+    openPrintWindow(buildNotesPrintHTML(done.map(x=>({title:outputTitle(x.slot.meta),note:x.note}))));
+  };
   const upSlot=useCallback((id,patch)=>setSlots(p=>p.map(s=>s.id===id?{...s,...patch}:s)),[]);
 
   // ── 교재목록 시트 동기화 ──────────────────────────────
@@ -3396,6 +3462,8 @@ function App(){
             title="저장된 슬롯 모두 비공개"
             style={{background:'#f0f0f2',color:'#515154',border:'none',
               borderRadius:980,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>전체비공개</button>}
+          {viewMode!=='authoring'&&<button onClick={printNotes} title="검토 완료된 3줄 노트를 슬롯 순서대로 인쇄"
+            style={{background:'#f6e9ec',color:'#8e1530',border:'none',borderRadius:980,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>노트 출력</button>}
           {viewMode!=='authoring'&&<div style={{position:'relative',display:'inline-flex',alignItems:'center'}}>
             <button onClick={()=>setGhDd(p=>!p)}
               style={{background:'#f0f0f2',color:'#1D1D1F',border:'none',borderRadius:980,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',display:'inline-flex',alignItems:'center',gap:4,lineHeight:'1.4',whiteSpace:'nowrap'}}>
@@ -3661,6 +3729,8 @@ function App(){
         </div>);
       })()}
 
+      {noteModal&&<NoteEditor key={notePid(noteModal.slot)} slot={noteModal.slot} saved={(notesMap||{})[notePid(noteModal.slot)]||null} saving={noteSaving}
+        onClose={()=>setNoteModal(null)} onSave={(n)=>saveNote(noteModal.slot,n)}/>}
       {stuModal&&(()=>{
         const O=stuModal.opts;
         const setO=(patch)=>setStuModal({...stuModal,opts:{...O,...patch}});
@@ -4253,6 +4323,7 @@ function App(){
               }catch(e){flash('공개 설정 오류: '+e.message);}
             }}
             onStuOutput={(kind)=>setStuModal({kind,slot,opts:{...stuOpts}})}
+            onNote={()=>openNote(slot)}
             sheetSaving={!!slotSheetSaving[slot.id]}
             onReanalyze={()=>reanalyze(slot)}
             onAnalysis={upAnalysis}
@@ -4269,13 +4340,207 @@ function App(){
   );
 }
 
+// ========== 3줄 노트 (뼈대 · 주제 · 뒤집기) — 2026-10 추가 ==========
+// 저장: 레포 루트 notes.json (지문 id 키). GAS·지문DB·출제DB·passages.js는 건드리지 않음.
+const NOTE_CIRC='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳';
+const noteC=n=>NOTE_CIRC[n-1]||('('+n+')');
+const noteUnc=ch=>NOTE_CIRC.indexOf(ch)+1;
+const NOTE_NEG=/\b(not just|not only|not|no|never|nor|neither|hardly|scarcely|rarely|seldom|without|rather than|instead of|fail(?:s|ed)? to|unless|immune to|far from|nothing|none|lack(?:s|ing)?|nonetheless)\b/gi;
+function noteSource(slot){
+  const pd=slot.passageData||{};
+  const raw=(slot.analysis&&slot.analysis.sentences&&slot.analysis.sentences.length)?slot.analysis.sentences:(pd.sentences||[]);
+  const sentences=raw.map((s,i)=>typeof s==='string'?{num:i+1,text:s,symbol:'',chunks:[]}:{...s,num:s.num||i+1,chunks:(s.chunks||[]).map(c=>typeof c==='string'?c:(c.en||''))});
+  const flow=(slot.analysis&&slot.analysis.flow&&Object.keys(slot.analysis.flow).length)?slot.analysis.flow:(pd.flow||{});
+  return {pd,sentences,flow};
+}
+function notePid(slot){return (slot.passageData&&slot.passageData.id)||makePassageId(slot.meta.source,slot.meta.chapter,slot.meta.number);}
+function noteBlockStarts(flow){return (flow.blocks||[]).slice(1).map(b=>Math.min(...(b.sentenceNums||[]))).filter(n=>isFinite(n));}
+function buildNoteDraft(slot){
+  const {sentences,flow}=noteSource(slot);
+  const starts=noteBlockStarts(flow);let seenG=false;const toks=[];
+  sentences.forEach(s=>{
+    const sym=String(s.symbol||'');let pre='',suf='';
+    if(starts.includes(s.num))pre+='|';
+    if(sym.startsWith('G')){suf=seenG?'=':'★';seenG=true;}
+    else if(sym.includes('='))suf='=';
+    if(sym.includes('↔'))pre+='↔';
+    const plain=!pre&&!suf,last=toks[toks.length-1];
+    if(plain&&last&&last.plain)last.t+=noteC(s.num);else toks.push({t:pre+noteC(s.num)+suf,plain});
+  });
+  return {skeleton:toks.map(t=>t.t).join(' '),topic:flow.topicSummary||flow.keyword||'',words:[],twist:{n:'',easy:''}};
+}
+function parseSkeleton(str){
+  const m={};const re=/([|↔]*)([①-⑳]+)([★=]*)/g;let x;
+  while((x=re.exec(str||''))){const nums=[...x[2]].map(noteUnc);nums.forEach(n=>{m[n]=m[n]||{};});
+    const f=m[nums[0]],l=m[nums[nums.length-1]];
+    if(x[1].includes('|'))f.turn=true;if(x[1].includes('↔'))f.rev=true;
+    if(x[3].includes('★'))l.star=true;if(x[3].includes('='))l.eq=true;}
+  return m;
+}
+function noteBlank(slot){
+  const pd=slot.passageData||{};
+  const bc=(pd.blank_candidates||[])[pd.blank_sel||0]||{};
+  const idx=pd.blank_sentence_index??bc.sentence_index;
+  if(idx===undefined||idx===null||idx==='')return null;
+  return {sent:Number(idx)+1,target:pd.blank_target||bc.keyword||''};
+}
+function noteVocabItems(slot){const pd=slot.passageData||{};const vs=(pd.vocab_sets||[])[pd.vocab_sel||0];return (vs&&vs.items)||[];}
+function noteVocabWords(slot){return noteVocabItems(slot).flatMap(v=>{
+  const orig=v.original||v.word;
+  if(v.correct===false&&v.word&&v.word!==orig)return[{orig,para:v.alt&&v.alt!==orig?v.alt:'',anti:v.word}];
+  if(v.alt&&v.alt!==orig)return[{orig,para:v.alt,anti:''}];
+  return[];});}
+function noteVocabIssues(slot){return noteVocabItems(slot).flatMap(v=>{const o=[];const orig=v.original||v.word;const n=noteC(Number(v.sent)+1);
+  if(v.alt&&v.alt===orig)o.push(`${n} ${orig}: 대체어가 원문과 같음 (${v.alt})`);
+  if(v.correct===false&&/^un/.test(v.word||'')&&v.word.slice(2)===orig)o.push(`${n} 오답 단어 ${v.word}: 흔히 쓰지 않는 형태 — 반대말 확인 필요`);
+  return o;});}
+function noteNegSents(slot){return noteSource(slot).sentences.filter(s=>(s.text||'').match(NOTE_NEG)).map(s=>s.num);}
+function noteChunkLine(slot){const {sentences}=noteSource(slot);const g=sentences.find(s=>String(s.symbol||'').startsWith('G'))||sentences[0];if(!g)return '';return noteC(g.num)+' '+((g.chunks&&g.chunks.length)?g.chunks.join(' / '):g.text);}
+function noteChecks(slot,skeleton){
+  const sk=parseSkeleton(skeleton),out=[];const {sentences,flow}=noteSource(slot);
+  const bl=noteBlank(slot);
+  if(bl){const s=sk[bl.sent]||{};out.push({ok:!!(s.star||s.eq),text:`출제DB 빈칸 문장 ${noteC(bl.sent)} (${bl.target})`,hint:s.star||s.eq?`뼈대에 ${s.star?'★':'='} 표시됨`:'뼈대에 ★/= 없음 — ★의 재진술이면 = 추가, 아니면 그대로'});}
+  noteBlockStarts(flow).forEach(n=>{const s=sk[n]||{};const b=(flow.blocks||[]).find(x=>Math.min(...(x.sentenceNums||[]))===n)||{};
+    out.push({ok:!!s.turn,text:`지문DB 블록 경계 ${noteC(n)} (${b.name||''})`,hint:s.turn?'| 표시됨':'| 없음 — 전환 문장이면 | 추가, 아니면 그대로'});});
+  const nums=Object.keys(sk).map(Number);const miss=sentences.map(s=>s.num).filter(n=>!nums.includes(n));
+  if(miss.length)out.push({ok:false,text:'뼈대에 빠진 문장 '+miss.map(noteC).join(''),hint:''});
+  if(!Object.values(sk).some(x=>x.star))out.push({ok:false,text:'뼈대에 ★이 없음',hint:''});
+  return out;
+}
+function noteEdited(note,draft){return ['skeleton','topic','words','twist'].filter(k=>JSON.stringify(note[k])!==JSON.stringify(draft[k]));}
+
+function NoteEditor({slot,saved,onClose,onSave,saving}){
+  const draft=React.useMemo(()=>buildNoteDraft(slot),[slot]);
+  const {sentences,flow}=noteSource(slot);
+  const [note,setNote]=useState(()=>saved?JSON.parse(JSON.stringify(saved)):{status:'draft',...JSON.parse(JSON.stringify(draft))});
+  const [chunkOn,setChunkOn]=useState(()=>!!(saved&&saved.chunk));
+  const [chunk,setChunk]=useState(()=>(saved&&saved.chunk)||noteChunkLine(slot));
+  const skRef=useRef(null);
+  const up=(patch)=>setNote(n=>({...n,...patch}));
+  const same=(k)=>JSON.stringify(note[k])===JSON.stringify(draft[k]);
+  const isEmpty=(k)=>k==='words'?!(note.words||[]).length:(k==='twist'?!(note.twist&&(note.twist.n||note.twist.easy)):!String(note[k]||'').trim());
+  const tag=(k)=>isEmpty(k)?<span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:20,background:'#f0f0f2',color:'#6c6c70'}}>비어 있음</span>
+    :same(k)?<span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:20,background:'#e7f0fa',color:'#185fa5'}}>자동</span>
+    :<span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:20,background:'#fff1e0',color:'#b25b00'}}>수정됨</span>;
+  const reset=(k)=>up({[k]:JSON.parse(JSON.stringify(draft[k]))});
+  const ins=(t)=>{const el=skRef.current;const v=note.skeleton||'';let p=el?el.selectionStart:v.length,e=el?el.selectionEnd:v.length;let nv,np;
+    if(t==='⌫'){nv=v.slice(0,Math.max(0,p-1))+v.slice(e);np=Math.max(0,p-1);}
+    else if(t==='( )'){nv=v.slice(0,p)+' ()'+v.slice(e);np=p+2;}
+    else{nv=v.slice(0,p)+t+v.slice(e);np=p+t.length;}
+    up({skeleton:nv});setTimeout(()=>{if(el){el.focus();el.setSelectionRange(np,np);}},0);};
+  const neg=noteNegSents(slot);
+  const checks=noteChecks(slot,note.skeleton);
+  const issues=noteVocabIssues(slot);
+  const blank=noteBlank(slot);
+  const blockOf=n=>{const b=(flow.blocks||[]).find(x=>(x.sentenceNums||[]).includes(n));return b&&BCF[b.color]?BCF[b.color]:BCF.gray;};
+  const topicLen=[...(note.topic||'')].length;
+  const box={border:'0.5px solid #D2D2D7',borderRadius:10,padding:10,marginBottom:8,background:'#fff'};
+  const inp={width:'100%',border:'0.5px solid #D2D2D7',borderRadius:7,padding:'6px 8px',fontSize:13,background:'#fff',color:'#1d1d1f'};
+  const mini={fontSize:11,border:'0.5px solid #D2D2D7',background:'#fff',borderRadius:6,padding:'2px 8px',cursor:'pointer',color:'#6c6c70'};
+  const padBtn={minWidth:28,height:26,border:'0.5px solid #D2D2D7',background:'#fafafa',borderRadius:6,cursor:'pointer',fontSize:13,padding:'0 5px'};
+  const head=(lb,k,src,extra)=><div style={{display:'flex',alignItems:'center',gap:6,marginBottom:6,flexWrap:'wrap'}}>
+    <b style={{fontSize:13}}>{lb}</b>{tag(k)}{src&&<span style={{fontSize:10.5,color:'#86868b'}}>자동: {src}</span>}<div style={{flex:1}}/>{extra}
+    {draft[k]!==undefined&&<button onClick={()=>reset(k)} title="이 줄만 지문DB 초안으로" style={mini}>↺</button>}</div>;
+  const doSave=()=>{const out={...note,updated_at:new Date().toISOString(),edited:noteEdited(note,draft)};if(chunkOn&&chunk.trim())out.chunk=chunk;else delete out.chunk;onSave(out);};
+  return(
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.45)',zIndex:100000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'3vh 2vw',overflowY:'auto'}} onClick={e=>{if(e.target===e.currentTarget&&confirm('저장하지 않고 닫을까요?'))onClose();}}>
+      <div style={{background:'#f5f5f7',borderRadius:14,width:'min(1100px,96vw)',padding:14,boxShadow:'0 10px 40px rgba(0,0,0,.3)'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,flexWrap:'wrap'}}>
+          <b style={{fontSize:15}}>3줄 노트 · {outputTitle(slot.meta)}</b>
+          <span style={{fontSize:11,color:'#86868b'}}>{notePid(slot)}</span>
+          <div style={{flex:1}}/>
+          <div style={{display:'inline-flex',background:'#e8e8ed',borderRadius:8,padding:3}}>
+            {[['draft','초안'],['done','검토 완료']].map(([v,lb])=><button key={v} onClick={()=>up({status:v})}
+              style={{border:'none',padding:'5px 12px',borderRadius:6,fontSize:12,fontWeight:600,cursor:'pointer',background:note.status===v?'#fff':'transparent',color:note.status===v?(v==='done'?'#2f7d3b':'#1d1d1f'):'#6c6c70'}}>{lb}</button>)}
+          </div>
+          <button onClick={()=>{if(confirm('저장하지 않고 닫을까요?'))onClose();}} style={{...mini,fontSize:13,padding:'4px 10px'}}>닫기</button>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'minmax(0,5fr) minmax(0,7fr)',gap:12}}>
+          <div style={{...box,marginBottom:0,maxHeight:'78vh',overflowY:'auto'}}>
+            <div style={{fontSize:11,color:'#86868b',marginBottom:6}}>지문DB symbol · 블록 색 · 출제DB 빈칸 문장</div>
+            {sentences.map(s=>{const bc=blockOf(s.num);return<div key={s.num} style={{padding:'5px 8px',borderLeft:`3px solid ${bc.bd}`,borderRadius:6,marginBottom:4,fontSize:13,lineHeight:1.5}}>
+              <b style={{marginRight:4}}>{noteC(s.num)}</b>
+              {s.symbol&&<span style={{fontSize:10.5,fontWeight:700,padding:'1px 6px',borderRadius:20,background:'#eef2f8',color:'#185fa5',marginRight:4}}>{s.symbol}</span>}
+              {blank&&blank.sent===s.num&&<span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:20,background:'#fff1e0',color:'#b25b00',marginRight:4}}>출제DB 빈칸</span>}
+              {s.text}{s.role&&<span style={{display:'block',color:'#86868b',fontSize:11}}>{s.role}</span>}</div>;})}
+            <div style={{fontSize:11,color:'#86868b',marginTop:6}}>블록: {(flow.blocks||[]).map(b=>'['+(b.sentenceNums||[]).map(noteC).join('')+'] '+(b.name||'')).join(' · ')||'없음'}</div>
+          </div>
+          <div>
+            <div style={box}>
+              {head('① 뼈대','skeleton','symbol + 블록 경계')}
+              <div style={{display:'flex',gap:4,flexWrap:'wrap',marginBottom:6}}>
+                {['★','=','↔','|'].map(x=><button key={x} onClick={()=>ins(x)} style={{...padBtn,color:'#8e1530',fontWeight:700}}>{x}</button>)}
+                <button onClick={()=>ins(' ')} style={padBtn}>␣</button>
+                {sentences.map(s=><button key={s.num} onClick={()=>ins(noteC(s.num))} style={padBtn}>{noteC(s.num)}</button>)}
+                <button onClick={()=>ins('( )')} style={padBtn}>( )</button><button onClick={()=>ins('⌫')} style={padBtn}>⌫</button>
+              </div>
+              <input ref={skRef} value={note.skeleton||''} onChange={e=>up({skeleton:e.target.value})} style={inp}/>
+              <div style={{fontSize:10.5,color:'#86868b',marginTop:4}}>★ 핵심 · = ★ 재진술 · ↔ 반대·양보 · | 전환 · 근거·예시는 번호만 · | 문장 지시어는 ( )로</div>
+            </div>
+            <div style={box}>
+              {head('② 주제','topic','topicSummary',<span style={{fontSize:11,color:topicLen>25?'#b25b00':'#86868b'}}>{topicLen}자{topicLen>25?' · 줄이기':''}</span>)}
+              <input value={note.topic||''} onChange={e=>up({topic:e.target.value})} style={inp}/>
+            </div>
+            <div style={box}>
+              {head('③ 뒤집기','words',null,<button onClick={()=>{const add=noteVocabWords(slot).filter(w=>!(note.words||[]).some(x=>x.orig===w.orig));up({words:[...(note.words||[]),...add]});}} style={mini}>어휘 문항에서 가져오기</button>)}
+              {(note.words||[]).map((w,i)=><div key={i} style={{display:'grid',gridTemplateColumns:'3fr 4fr 3fr 24px',gap:4,marginBottom:4}}>
+                {['orig','para','anti'].map((f,j)=><input key={f} value={w[f]||''} placeholder={['원문어','= 바꿀 말','↔ 반대말'][j]}
+                  onChange={e=>up({words:note.words.map((x,k)=>k===i?{...x,[f]:e.target.value}:x)})} style={{...inp,fontSize:12.5}}/>)}
+                <button onClick={()=>up({words:note.words.filter((_,k)=>k!==i)})} style={{border:'none',background:'none',color:'#c0392b',cursor:'pointer'}}>✕</button></div>)}
+              <button onClick={()=>up({words:[...(note.words||[]),{orig:'',para:'',anti:''}]})} style={mini}>+ 단어</button>
+              <div style={{display:'flex',gap:4,alignItems:'center',flexWrap:'wrap',margin:'10px 0 6px'}}>
+                <span style={{fontSize:11,color:'#86868b'}}>꼬인 문장 1개 · 부정 표현 든 문장:</span>
+                {neg.map(n=><button key={n} onClick={()=>up({twist:{...(note.twist||{}),n}})} style={{...mini,...(Number(note.twist&&note.twist.n)===n?{borderColor:'#8e1530',color:'#8e1530',fontWeight:700}:{})}}>{noteC(n)}</button>)}
+                {!neg.length&&<span style={{fontSize:11,color:'#86868b'}}>없음</span>}
+              </div>
+              <input value={(note.twist&&note.twist.easy)||''} placeholder="쉬운 말 (예: 같음X, 상호작용O)" onChange={e=>up({twist:{...(note.twist||{}),easy:e.target.value}})} style={inp}/>
+            </div>
+            <label style={{display:'flex',gap:6,alignItems:'center',fontSize:12.5,margin:'2px 0 6px'}}><input type="checkbox" checked={chunkOn} onChange={e=>setChunkOn(e.target.checked)}/> + 보완 줄: ★ 문장 끊어읽기 (지문 미숙형 학생용)</label>
+            {chunkOn&&<textarea value={chunk} onChange={e=>setChunk(e.target.value)} rows={2} style={{...inp,marginBottom:8,resize:'vertical'}}/>}
+            <div style={box}>
+              <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}><b style={{fontSize:13}}>교차 확인</b><span style={{fontSize:10.5,color:'#86868b'}}>규칙으로만 비교 · 노트는 자동으로 바뀌지 않음</span></div>
+              {checks.map((c,i)=><div key={i} style={{fontSize:12,padding:'3px 0',borderBottom:'0.5px dotted #e5e5ea'}}>
+                <b style={{color:c.ok?'#2f7d3b':'#b25b00',marginRight:4}}>{c.ok?'✓':'⚠'}</b>{c.text}{c.hint&&<span style={{color:'#86868b'}}> — {c.hint}</span>}</div>)}
+              {!checks.length&&<div style={{fontSize:12,color:'#86868b'}}>비교할 기존 데이터 없음</div>}
+              {issues.length>0&&<div style={{fontSize:11.5,color:'#6c6c70',marginTop:6}}><b>기존 출제DB 어휘 데이터 확인 필요</b>{issues.map((t,i)=><div key={i}>{t}</div>)}</div>}
+            </div>
+            <div style={{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap'}}>
+              <button onClick={doSave} disabled={saving} style={{background:'#8e1530',color:'#fff',border:'none',borderRadius:8,padding:'8px 18px',fontWeight:700,fontSize:13,cursor:saving?'default':'pointer',opacity:saving?.6:1}}>{saving?'저장 중…':'notes.json에 저장'}</button>
+              <button onClick={()=>{if(confirm('3줄 전체를 지문DB 초안으로 되돌릴까요?')){setNote(n=>({...n,...JSON.parse(JSON.stringify(draft))}));}}} style={{...mini,fontSize:12,padding:'6px 12px'}}>전체 다시 불러오기</button>
+              <span style={{fontSize:11,color:'#86868b'}}>{saved&&saved.updated_at?'마지막 저장 '+new Date(saved.updated_at).toLocaleString('ko-KR'):'저장된 노트 없음 — 지문DB 초안'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function buildNotesPrintHTML(items){
+  const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const row=(k,v)=>`<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  const cards=items.map(({title,note})=>{
+    const words=(note.words||[]).filter(w=>w.orig).map(w=>esc(w.orig)+(w.para?' = '+esc(w.para):'')+(w.anti?' ↔ '+esc(w.anti):'')).join('<br>');
+    const tw=note.twist&&note.twist.n?noteC(Number(note.twist.n))+' '+esc(note.twist.easy||''):'';
+    return `<div class="card"><div class="hd"><span>${esc(title)}</span><span class="sub">대단한영어 · 노트 정답</span></div>
+${row('뼈대',esc(note.skeleton))}${row('주제',esc(note.topic))}${row('뒤집기',[words,tw].filter(Boolean).join('<br>')||'—')}${note.chunk?row('끊어읽기',esc(note.chunk)):''}</div>`;}).join('');
+  return `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>3줄 노트 정답</title><style>
+@page{size:A4;margin:12mm}body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:#111;margin:0}
+.card{border:1px solid #bbb;border-radius:4px;padding:10px 14px;margin-bottom:10px;page-break-inside:avoid}
+.hd{display:flex;justify-content:space-between;border-bottom:2px solid #1f3864;padding-bottom:3px;margin-bottom:6px;color:#1f3864;font-weight:700;font-size:14px}
+.sub{font-weight:400;font-size:11px}.r{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:3px 0;font-size:13px;border-bottom:1px dotted #ddd}
+.k{font-weight:700;color:#1f3864}@media print{.no-print{display:none}}
+</style></head><body>${cards}
+<div class="no-print" style="position:fixed;bottom:20px;right:20px;"><button onclick="window.print()" style="padding:12px 28px;font-size:14px;font-weight:600;background:#0071E3;color:#fff;border:none;border-radius:8px;cursor:pointer">인쇄</button></div></body></html>`;
+}
+
 function SlotOutputMenu({slot,onStuOutput}){
   return<button onClick={()=>onStuOutput&&onStuOutput('single')}
     style={{padding:'3px 8px',fontSize:11,background:'#f0f0f2',color:'#515154',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2',display:'inline-flex',alignItems:'center'}}>
     출력</button>;
 }
 
-const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic,onToggleHot}){
+const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,onMeta,onToggle,onConfirm,onSave,onSheetSave,sheetSaving,onStuOutput,onReanalyze,onAnalysis,onAuthor,onGenSum,onTogglePublic,onToggleHot,onNote}){
   const IS=viewMode==='student';
   const st=STATUS[slot.status]||STATUS.idle;
   const {sentences=[],flow={},grammar={}}=slot.analysis||{};
@@ -4362,6 +4627,7 @@ const SlotCard=React.memo(function SlotCard({slot,viewMode,iB,sB,onText,onClear,
           </select>
           {slot.analysis&&<SlotOutputMenu slot={slot} onStuOutput={onStuOutput}/>}
           {slot.analysis&&<button onClick={onAuthor} style={{padding:'3px 8px',fontSize:11,background:'#e8eef6',color:'#2b5b8a',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2',display:'inline-flex',alignItems:'center'}}>출제</button>}
+          {slot.analysis&&onNote&&<button onClick={onNote} title="3줄 노트 (뼈대·주제·뒤집기)" style={{padding:'3px 8px',fontSize:11,background:'#f6e9ec',color:'#8e1530',border:'none',borderRadius:5,cursor:'pointer',fontWeight:600,whiteSpace:'nowrap',lineHeight:'1.2',display:'inline-flex',alignItems:'center'}}>노트</button>}
           <div style={{flex:1}}/>
           {slot.error&&<span style={{fontSize:11,color:'#c0392b',maxWidth:160,overflow:'hidden',
             textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={slot.error}>{slot.error}</span>}
