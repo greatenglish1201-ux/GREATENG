@@ -1,0 +1,146 @@
+<title>수능 다의어 파이널</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* 레이아웃: A4 낱장 시트를 화면에 그대로 쌓고, 인쇄 시 한 장씩 끊는다 */
+:root{
+  --desk:#e9ecf0; --paper:#ffffff; --ink:#1c2230; --muted:#5d6676; --line:#cfd5de;
+  --accent:#24557f; --accent-soft:#e7eef6; --ans:#b0332b; --hl:#fff1b8;
+  --f-title:"Noto Serif KR","Nanum Myeongjo",serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-en:"Source Serif 4","Times New Roman",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --desk:#14181f; --paper:#1d222b; --ink:#e4e8ef; --muted:#9aa3b2; --line:#39414e;
+  --accent:#8db6dc; --accent-soft:#25303d; --ans:#ff8a7e; --hl:#4a4320; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --desk:#14181f; --paper:#1d222b; --ink:#e4e8ef; --muted:#9aa3b2; --line:#39414e;
+  --accent:#8db6dc; --accent-soft:#25303d; --ans:#ff8a7e; --hl:#4a4320; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size:14px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 40px}
+.bar{max-width:210mm;margin:0 auto 14px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.bar h1{font-family:var(--f-title);font-size:20px;margin:0 auto 0 0;text-wrap:balance}
+.grp{display:flex;gap:4px;flex-wrap:wrap}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{max-width:210mm;margin:0 auto 14px;color:var(--muted);font-size:12.5px;line-height:1.6}
+.sheet{background:var(--paper);max-width:210mm;margin:0 auto 18px;padding:12mm 12mm 10mm;
+  box-shadow:0 1px 3px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:9px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);padding-bottom:6px}
+.head .ttl{font-family:var(--f-title);font-size:18px;font-weight:700}
+.head .ttl small{font-family:var(--f-body);font-size:12px;font-weight:500;color:var(--accent);
+  letter-spacing:.06em;display:block;margin-bottom:2px}
+.head .meta{font-size:11.5px;color:var(--muted);text-align:right;line-height:1.55}
+.name{display:inline-block;min-width:34mm;border-bottom:1px solid var(--ink)}
+.part{font-size:13px;font-weight:700;color:var(--accent);display:flex;gap:8px;align-items:baseline}
+.part span{font-weight:400;color:var(--muted);font-size:11.5px}
+.box{border:1px solid var(--accent);background:var(--accent-soft);padding:6px 10px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px 12px;font-size:12px}
+.box div{min-width:0}
+.cards{display:flex;flex-direction:column}
+.card{display:grid;grid-template-columns:20px 92px minmax(0,1fr) 30mm;gap:8px;align-items:start;
+  padding:5px 0;border-top:1px solid var(--line)}
+.card:last-child{border-bottom:1px solid var(--line)}
+.no{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;padding-top:2px}
+.w{font-family:var(--f-en);font-weight:700;font-size:15px;line-height:1.2}
+.w i{display:block;font-family:var(--f-body);font-style:normal;font-weight:400;font-size:11px;color:var(--muted);margin-top:2px}
+.s{font-family:var(--f-en);font-size:13px;line-height:1.45;min-width:0}
+.s b{background:var(--hl);padding:0 2px;font-weight:700}
+.src{font-family:var(--f-body);font-size:10.5px;color:var(--muted);white-space:nowrap}
+.blank{border:1px solid var(--line);min-height:28px;padding:3px 6px;font-size:12px;line-height:1.35;color:var(--ans);font-weight:500}
+.blank .k{font-weight:700;margin-right:3px}
+.pairs{display:flex;flex-direction:column;gap:12px}
+.pair{border-top:1px solid var(--line);padding-top:6px;display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px}
+.pair .w{font-size:14.5px;margin-bottom:3px}
+.ln{display:grid;grid-template-columns:18px minmax(0,1fr) 44mm;gap:6px;align-items:start;margin-top:5px}
+.ln .blank{min-height:34px}
+.ln .ab{font-size:12px;color:var(--muted);padding-top:1px}
+.foot{margin-top:auto;font-size:10.5px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:4px}
+.student .blank{color:transparent}
+.student .blank *{visibility:hidden}
+@media (max-width:640px){
+  .sheet{padding:16px 14px}
+  .box{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card{grid-template-columns:20px minmax(0,1fr)}
+  .card .s,.card .blank{grid-column:2}
+  .ln{grid-template-columns:18px minmax(0,1fr)}
+  .ln .blank{grid-column:2}
+}
+@media print{
+  @page{size:A4;margin:0}
+  :root{--desk:#fff;--paper:#fff;--ink:#000;--muted:#444;--line:#999;--accent:#1d4a72;--accent-soft:#eef3f8;--ans:#b0332b;--hl:#fff1b8;color-scheme:light}
+  body{padding:0;background:#fff}
+  .bar,.hint{display:none}
+  .sheet{box-shadow:none;margin:0;max-width:none;width:210mm;height:297mm;break-after:page;overflow:hidden}
+  .card,.pair{break-inside:avoid}
+}
+</style>
+
+<div class="bar">
+  <h1>수능 다의어 파이널</h1>
+  <div class="grp" id="rounds" role="group" aria-label="회차"></div>
+  <div class="grp" role="group" aria-label="보기 방식">
+    <button class="chip" id="v-st" type="button">학생용</button>
+    <button class="chip" id="v-te" type="button">교사용</button>
+  </div>
+</div>
+<p class="hint">회차마다 앞면(문맥 뜻 고르기)과 뒷면(같은 단어 두 뜻 구별) 2장입니다. 인쇄는 브라우저 인쇄(Ctrl/⌘+P)로 하시면 한 장씩 A4로 끊깁니다. 예문은 모두 2022~2026학년도 수능 영어 지문에서 그대로 가져왔고, 긴 문장은 …으로 줄였습니다.</p>
+<div id="out"></div>
+
+<script>
+const R = [{"t": "1회 · 동사 ①", "box": ["(결과를) 내놓다, 산출하다", "(규칙을) 지키다, 준수하다", "(기능·역할을) 하다", "(마음을) 사로잡다", "(문제를) 다루다", "(문제를) 일으키다, 제기하다", "(사건이) 해결되다, 합의되다", "(업무를) 수행하다", "(위험에) 대비하다, 감당하다", "개최하다, 열다", "끌어들이다", "허락하다, 인정해 주다"], "A": [{"w": "address", "src": "2023수능 35번", "s": "In order to <b>address</b> serious noise issues in school, students, parents and teachers should search for a solution together.", "known": "주소", "ans": "(문제를) 다루다", "key": "ⓔ"}, {"w": "observe", "src": "2026수능 21번", "s": "No offices or factories need to be built, no local regulations are <b>observed</b>, and ― in most cases ― no local taxes are paid.", "known": "관찰하다", "ans": "(규칙을) 지키다, 준수하다", "key": "ⓑ"}, {"w": "grant", "src": "2022수능 31번", "s": "If they are getting extra laughs by exaggerating the silliness of a situation or even by making up a few details, we are happy to <b>grant</b> them comic licence, a kind of poetic licence.", "known": "주다", "ans": "허락하다, 인정해 주다", "key": "ⓛ"}, {"w": "yield", "src": "2026수능 36번", "s": "It seems to <b>yield</b> a smooth time scale but in fact does not: …", "known": "양보하다", "ans": "(결과를) 내놓다, 산출하다", "key": "ⓐ"}, {"w": "present", "src": "2025수능 30번", "s": "For example, competition <b>presents</b> an inevitable conflict between the motivation to achieve one’s personal goal and the desire to maintain good relationships with others.", "known": "선물; 현재의", "ans": "(문제를) 일으키다, 제기하다", "key": "ⓕ"}, {"w": "cover", "src": "2026수능 31번", "s": "Their access to information in multiple markets enabled them to easily <b>cover</b> the risks associated with agricultural commodity trade.", "known": "덮다", "ans": "(위험에) 대비하다, 감당하다", "key": "ⓘ"}, {"w": "conduct", "src": "2022수능 35번", "s": "Since their introduction, information systems have substantially changed the way business is <b>conducted</b>.", "known": "지휘하다", "ans": "(업무를) 수행하다", "key": "ⓗ"}, {"w": "engage", "src": "2022수능 32번", "s": "Popular formats can be said to enhance understanding by <b>engaging</b> an audience unwilling to endure the longer verbal orientation of older news formats.", "known": "약혼하다", "ans": "(마음을) 사로잡다", "key": "ⓓ"}, {"w": "hold", "src": "2025수능 18번", "s": "We hope you understand and we promise to <b>hold</b> another race in the near future.", "known": "잡다", "ans": "개최하다, 열다", "key": "ⓙ"}, {"w": "draw", "src": "2025수능 31번", "s": "The language becomes ‘transparent’ — the fiction <b>draws</b> the whole person into its own world.", "known": "그리다", "ans": "끌어들이다", "key": "ⓚ"}, {"w": "serve", "src": "2024수능 36번", "s": "In these and sometimes other forms of negotiation, negotiation <b>serves</b> functions other than reconciling conflicting interests.", "known": "(음식을) 내다", "ans": "(기능·역할을) 하다", "key": "ⓒ"}, {"w": "settle", "src": "2023수능 37번", "s": "In this approach, lawyers do not receive fees or payment until the case is <b>settled</b>, when they are paid a percentage of the money that the client receives.", "known": "정착하다", "ans": "(사건이) 해결되다, 합의되다", "key": "ⓖ"}], "B": [{"w": "grant", "p": [{"src": "2022수능 31번", "s": "… we are happy to <b>grant</b> them comic licence, a kind of poetic licence.", "ans": "v. 허락하다, 인정해 주다"}, {"src": "2026수능 35번", "s": "In the short term, the impact of missing that <b>grant</b> deadline may be greater than the impact of missing a woodworking class.", "ans": "n. 보조금, 지원금"}]}, {"w": "yield", "p": [{"src": "2026수능 36번", "s": "It seems to <b>yield</b> a smooth time scale but in fact does not: …", "ans": "v. 내놓다, 산출하다"}, {"src": "2022수능 30번", "s": "Large-scale adoption of “organic” farming methods, however, would reduce <b>yields</b> and increase production costs for many major crops.", "ans": "n. 수확량"}]}, {"w": "cover", "p": [{"src": "2026수능 31번", "s": "Their access to information in multiple markets enabled them to easily <b>cover</b> the risks associated with agricultural commodity trade.", "ans": "(위험에) 대비하다"}, {"src": "2023수능 31번", "s": "… in their broader journalistic role of <b>covering</b> sport in its many forms, sports journalists are among the most visible of all contemporary writers.", "ans": "취재하다, 보도하다"}]}, {"w": "observe", "p": [{"src": "2026수능 21번", "s": "No offices or factories need to be built, no local regulations are <b>observed</b>, and ― in most cases ― no local taxes are paid.", "ans": "준수하다"}, {"src": "2024수능 37번", "s": "They will <b>observe</b> the regularity of behavior and decide on their own that they ought to conform.", "ans": "관찰하다, 알아차리다"}]}, {"w": "hold", "p": [{"src": "2025수능 18번", "s": "We hope you understand and we promise to <b>hold</b> another race in the near future.", "ans": "개최하다"}, {"src": "2023수능 20번", "s": "The strategy is to analyze all the possible scenarios that the future <b>holds</b> and then to see what proportion of them lead to success or failure.", "ans": "(앞으로) 품고 있다, 가져오다"}]}, {"w": "serve", "p": [{"src": "2024수능 36번", "s": "In these and sometimes other forms of negotiation, negotiation <b>serves</b> functions other than reconciling conflicting interests.", "ans": "(기능을) 하다"}, {"src": "2026수능 24번", "s": "This could also lead to smaller non-commercial independent events being set up that would only <b>serve</b> to divide audiences further.", "ans": "serve to do: (결국) ~하는 결과가 되다"}]}]}, {"t": "2회 · 동사 ②", "box": ["(강연을) 하다", "(돈을) 모으다, 거두다", "(범죄를) 저지르다", "(주의를) 끌다", "(책임을) 이행하다", "a. 예비의", "v. 이루다, 형성하다", "v. 중요하다", "v. 특징으로 하다, 갖추다", "~로 여기다, 취급하다", "운영하다", "직면하다, 맞닥뜨리다"], "A": [{"w": "raise", "src": "2022수능 36번", "s": "The money <b>raised</b> through the tax can be used directly by the government either to supply services or to search for alternatives.", "known": "올리다", "ans": "(돈을) 모으다, 거두다", "key": "ⓑ"}, {"w": "run", "src": "2026수능 43~45번", "s": "Duvall nearly invented a drug for eternal life, yet disappeared one day and ended up <b>running</b> Café Paris.", "known": "달리다", "ans": "운영하다", "key": "ⓚ"}, {"w": "feature", "src": "2024수능 30번", "s": "Bazaar economies <b>feature</b> an apparently flexible price-setting mechanism that sits atop more enduring ties of shared culture.", "known": "n. 특징", "ans": "v. 특징으로 하다, 갖추다", "key": "ⓘ"}, {"w": "face", "src": "2024수능 23번", "s": "Managers of natural resources typically <b>face</b> market incentives that provide financial rewards for exploitation.", "known": "얼굴", "ans": "직면하다, 맞닥뜨리다", "key": "ⓛ"}, {"w": "matter", "src": "2026수능 30번", "s": "In the absence of a universal standard or law, what <b>matters</b> is the outcome or consequences; so, the end justifies the means.", "known": "문제; 물질", "ans": "v. 중요하다", "key": "ⓗ"}, {"w": "discharge", "src": "2023수능 31번", "s": "In <b>discharging</b> their usual responsibilities of description and commentary, reporters’ accounts of sports events are eagerly consulted by sports fans, …", "known": "방출하다; 퇴원시키다", "ans": "(책임을) 이행하다", "key": "ⓔ"}, {"w": "deliver", "src": "2022수능 18번", "s": "Since you are an expert in online education, I would like to ask you to <b>deliver</b> a special lecture at the workshop scheduled for next month.", "known": "배달하다", "ans": "(강연을) 하다", "key": "ⓐ"}, {"w": "treat", "src": "2024수능 24번", "s": "Places, in a similar way, are <b>treated</b> as stable containers with clear boundaries.", "known": "대접하다", "ans": "~로 여기다, 취급하다", "key": "ⓙ"}, {"w": "form", "src": "2026수능 40번", "s": "In modern societies, the performing arts <b>form</b> a distinct category of public entertainment …", "known": "n. 형태; 서식", "ans": "v. 이루다, 형성하다", "key": "ⓖ"}, {"w": "command", "src": "2025수능 20번", "s": "This will enable educators to take advantage of games’ attention <b>commanding</b> capacities and allow our students to enjoy their games while learning.", "known": "명령하다", "ans": "(주의를) 끌다", "key": "ⓓ"}, {"w": "reserve", "src": "2026수능 21번", "s": "While the business process of outsourcing that emerged in the 1990s allowed large companies to take advantage of a ‘global <b>reserve</b> army’ by moving their call centres to cheap and distant labour markets, …", "known": "예약하다", "ans": "a. 예비의", "key": "ⓕ"}, {"w": "commit", "src": "2023수능 41~42번", "s": "… algorithms have proved more accurate than humans in predicting whether a prisoner released on parole will go on to <b>commit</b> another crime, …", "known": "전념하다", "ans": "(범죄를) 저지르다", "key": "ⓒ"}], "B": [{"w": "run", "p": [{"src": "2026수능 43~45번", "s": "Duvall nearly invented a drug for eternal life, yet disappeared one day and ended up <b>running</b> Café Paris.", "ans": "운영하다"}, {"src": "2024수능 41~42번", "s": "Speaking with members of the media has advantages in getting a message out …, but it <b>runs</b> the risk of misinterpretations, …", "ans": "run the risk of: ~의 위험을 무릅쓰다"}]}, {"w": "face", "p": [{"src": "2024수능 23번", "s": "Managers of natural resources typically <b>face</b> market incentives that provide financial rewards for exploitation.", "ans": "v. 직면하다"}, {"src": "2026수능 24번", "s": "Overall this is a healthy growth sector of the entertainment industry, but one that by its very nature is delicate in the <b>face</b> of exploitation.", "ans": "in the face of: ~앞에서, ~에 직면하여"}]}, {"w": "commit", "p": [{"src": "2023수능 41~42번", "s": "… predicting whether a prisoner released on parole will go on to <b>commit</b> another crime, …", "ans": "(범죄를) 저지르다"}, {"src": "2022수능 43~45번", "s": "Anna replied, “Well, I know most newcomers don’t keep their <b>commitment</b> to the club, …", "ans": "n. (하겠다는) 약속, 전념"}]}, {"w": "treat", "p": [{"src": "2024수능 24번", "s": "Places, in a similar way, are <b>treated</b> as stable containers with clear boundaries.", "ans": "~로 여기다"}, {"src": "2023수능 41~42번", "s": "For example, <b>treating</b> patients in intensive care can require hundreds of small actions per day, and one small error could cost a life.", "ans": "치료하다"}]}, {"w": "matter", "p": [{"src": "2026수능 30번", "s": "In the absence of a universal standard or law, what <b>matters</b> is the outcome or consequences; …", "ans": "v. 중요하다"}, {"src": "2026수능 35번", "s": "No <b>matter</b> how much we plan, we all occasionally have days when that happens.", "ans": "no matter how: 아무리 ~해도"}]}, {"w": "form", "p": [{"src": "2026수능 40번", "s": "In modern societies, the performing arts <b>form</b> a distinct category of public entertainment …", "ans": "v. 이루다"}, {"src": "2023수능 37번", "s": "The most commonly known <b>form</b> of results-based pricing is a practice called contingency pricing, used by lawyers.", "ans": "n. 형태, 방식"}]}]}, {"t": "3회 · 명사", "box": ["(사람) 모형, 마네킹", "(협상·계약의) 당사자, 상대측", "in terms of: ~의 면에서", "대상, 주제", "분야", "사실, 실상", "상태", "설명", "이해관계", "자본", "정도", "지위, 평판"], "A": [{"w": "account", "src": "2022수능 23번", "s": "Indeed, one role of a paradigm is to enable scientists to work successfully without having to provide a detailed <b>account</b> of what they are doing or what they believe about it.", "known": "계좌", "ans": "설명", "key": "ⓗ"}, {"w": "subject", "src": "2024수능 36번", "s": "Areas of difference can and do frequently remain, and will perhaps be the <b>subject</b> of future negotiations, or indeed remain irreconcilable.", "known": "과목", "ans": "대상, 주제", "key": "ⓓ"}, {"w": "interest", "src": "2024수능 36번", "s": "Whatever the nature of the outcome, which may actually favour one party more than another, the purpose of negotiation is the identification of areas of common <b>interest</b> and conflict.", "known": "관심", "ans": "이해관계", "key": "ⓘ"}, {"w": "term", "src": "2023수능 36번", "s": "That’s a clever trick, because producing spines and a helmet is costly, in <b>terms</b> of energy, and conserving energy is essential for an organism’s ability to survive and reproduce.", "known": "학기; 용어", "ans": "in terms of: ~의 면에서", "key": "ⓒ"}, {"w": "state", "src": "2025수능 30번", "s": "Consequences of this emotional <b>state</b> include lower task motivation in a competition and preferences for more cooperative and altruistic outcomes, …", "known": "주(州); 국가", "ans": "상태", "key": "ⓖ"}, {"w": "capital", "src": "2025수능 23번", "s": "The arrival of the Industrial Age changed the relationship among time, labor, and <b>capital</b>.", "known": "수도; 대문자", "ans": "자본", "key": "ⓙ"}, {"w": "party", "src": "2024수능 36번", "s": "These will include delay, publicity, diverting attention or seeking intelligence about the other <b>party</b> and its negotiating position.", "known": "파티", "ans": "(협상·계약의) 당사자, 상대측", "key": "ⓑ"}, {"w": "standing", "src": "2023수능 31번", "s": "Yet sports journalists do not have a <b>standing</b> in their profession that corresponds to the size of their readerships or of their pay packets, …", "known": "서 있는", "ans": "지위, 평판", "key": "ⓛ"}, {"w": "degree", "src": "2022수능 21번", "s": "But without some <b>degree</b> of trust in our designated experts … we are paralyzed, …", "known": "학위; (온도의) 도", "ans": "정도", "key": "ⓚ"}, {"w": "figure", "src": "2026수능 41~42번", "s": "Garments should be seen in movement on a human body, not frozen on a display <b>figure</b>.", "known": "숫자; 인물", "ans": "(사람) 모형, 마네킹", "key": "ⓐ"}, {"w": "case", "src": "2025수능 40번", "s": "People often assume that synthetic food ingredients are more harmful than natural ones, but this is not always the <b>case</b>.", "known": "상자; 경우", "ans": "사실, 실상", "key": "ⓕ"}, {"w": "field", "src": "2026수능 20번", "s": "Their remarkable works, including influences on modern language development, must be recognized in the <b>field</b> of modern literature.", "known": "들판", "ans": "분야", "key": "ⓔ"}], "B": [{"w": "account", "p": [{"src": "2022수능 23번", "s": "… without having to provide a detailed <b>account</b> of what they are doing or what they believe about it.", "ans": "n. 설명"}, {"src": "2026수능 30번", "s": "Situational ethics is an ethical theory that takes into <b>account</b> the context of a situation or an act when judging whether it is ethical.", "ans": "take into account: 고려하다"}]}, {"w": "subject", "p": [{"src": "2024수능 36번", "s": "Areas of difference … will perhaps be the <b>subject</b> of future negotiations, or indeed remain irreconcilable.", "ans": "n. 대상, 주제"}, {"src": "2022수능 32번", "s": "Presentational styles have been <b>subject</b> to a tension between an informational-educational purpose and the need to engage us entertainingly.", "ans": "be subject to: ~을 받다, ~에 놓이다"}]}, {"w": "interest", "p": [{"src": "2024수능 36번", "s": "… the purpose of negotiation is the identification of areas of common <b>interest</b> and conflict.", "ans": "이해관계"}, {"src": "2024수능 41~42번", "s": "Decades ago, it was unusual for Earth scientists to have results that were of <b>interest</b> to the media, …", "ans": "of interest: 관심을 끄는"}]}, {"w": "term", "p": [{"src": "2023수능 36번", "s": "… producing spines and a helmet is costly, in <b>terms</b> of energy, …", "ans": "in terms of: ~의 면에서"}, {"src": "2026수능 35번", "s": "In the short <b>term</b>, the impact of missing that grant deadline may be greater than the impact of missing a woodworking class.", "ans": "n. 기간 (in the short term: 단기적으로)"}]}, {"w": "case", "p": [{"src": "2025수능 40번", "s": "People often assume that synthetic food ingredients are more harmful than natural ones, but this is not always the <b>case</b>.", "ans": "사실, 실상"}, {"src": "2023수능 37번", "s": "Their biggest fears are high fees for a <b>case</b> that may take years to settle.", "ans": "소송 사건"}]}, {"w": "field", "p": [{"src": "2026수능 20번", "s": "Their remarkable works … must be recognized in the <b>field</b> of modern literature.", "ans": "분야"}, {"src": "2026수능 30번", "s": "Situational ethics has been extended by many athletes and coaches to mean trying to get away with as many actions on the <b>field</b> or court as possible …", "ans": "경기장"}]}]}, {"t": "4회 · 명사·형용사", "box": ["(가치의) 인정, 이해", "a. 상대적인", "make sense: 이치에 맞다", "n. 수단", "n. 조치, 대책", "n. 회사", "관행, 실천 방식", "대상", "매우 중요한, 결정적인", "상당한", "순수한 (fine art: 순수 미술)", "우려, 걱정거리"], "A": [{"w": "firm", "src": "2026수능 31번", "s": "The early grain trade <b>firms</b> were active in both surplus-producing and food deficit regions, …", "known": "a. 단단한", "ans": "n. 회사", "key": "ⓕ"}, {"w": "means", "src": "2023수능 35번", "s": "Actors, singers, politicians and countless others recognise the power of the human voice as a <b>means</b> of communication beyond the simple decoding of the words that are used.", "known": "v. 의미하다 (mean)", "ans": "n. 수단", "key": "ⓓ"}, {"w": "measure", "src": "2022수능 22번", "s": "Reduction or elimination of these factors may require societal action, such as public awareness and public health <b>measures</b>.", "known": "측정하다", "ans": "n. 조치, 대책", "key": "ⓔ"}, {"w": "object", "src": "2023수능 21번", "s": "By making the self public in a private sphere, the self also became an <b>object</b> for self-inspection and self-critique.", "known": "물체", "ans": "대상", "key": "ⓗ"}, {"w": "practice", "src": "2022수능 23번", "s": "These elements of shared <b>practice</b> thus need not presuppose any comparable unity in scientists’ beliefs about what they are doing when they use them.", "known": "연습", "ans": "관행, 실천 방식", "key": "ⓖ"}, {"w": "concern", "src": "2023수능 23번", "s": "If automobile manufacturers are required to measure and publicize the safety characteristics of cars, potential car purchasers can trade safety <b>concerns</b> against other attributes, such as price and styling.", "known": "관심", "ans": "우려, 걱정거리", "key": "ⓛ"}, {"w": "appreciation", "src": "2025수능 22번", "s": "<b>Appreciation</b> of differences creates an arena for open communication and promotes constructive conflict resolution and improved group functioning.", "known": "감사", "ans": "(가치의) 인정, 이해", "key": "ⓐ"}, {"w": "fine", "src": "2026수능 41~42번", "s": "The history of surviving dress really only starts in the 17th century, and like all artefacts described as <b>fine</b> or decorative art, is a highly visual subject.", "known": "좋은; 벌금", "ans": "순수한 (fine art: 순수 미술)", "key": "ⓚ"}, {"w": "critical", "src": "2024수능 21번", "s": "How you focus your attention plays a <b>critical</b> role in how you deal with stress.", "known": "비판적인", "ans": "매우 중요한, 결정적인", "key": "ⓘ"}, {"w": "fair", "src": "2025수능 41~42번", "s": "And even with a <b>fair</b> amount of know-how, it can be a bloody business.", "known": "공정한", "ans": "상당한", "key": "ⓙ"}, {"w": "relative", "src": "2024수능 24번", "s": "What is excessive or out of proportion is highly <b>relative</b> and might be more related to other aspects than physical capacity, …", "known": "n. 친척", "ans": "a. 상대적인", "key": "ⓑ"}, {"w": "sense", "src": "2026수능 31번", "s": "It made <b>sense</b> for the grain trading companies to manage their risks within a single firm that was operating in more than one country, …", "known": "감각", "ans": "make sense: 이치에 맞다", "key": "ⓒ"}], "B": [{"w": "critical", "p": [{"src": "2024수능 21번", "s": "How you focus your attention plays a <b>critical</b> role in how you deal with stress.", "ans": "매우 중요한"}, {"src": "2025수능 32번", "s": "It teaches <b>critical</b> thinking: the ability to stop and think before acting, to avoid succumbing to emotional pressures.", "ans": "비판적인"}]}, {"w": "concern", "p": [{"src": "2023수능 23번", "s": "… potential car purchasers can trade safety <b>concerns</b> against other attributes, such as price and styling.", "ans": "n. 우려, 걱정거리"}, {"src": "2022수능 31번", "s": "As long as something is funny, we are for the moment not <b>concerned</b> with whether it is real or fictional, true or false.", "ans": "be concerned with: ~에 신경 쓰다"}]}, {"w": "fair", "p": [{"src": "2025수능 41~42번", "s": "And even with a <b>fair</b> amount of know-how, it can be a bloody business.", "ans": "상당한"}, {"src": "2025수능 36번", "s": "Farmers and landowners develop reputations for honesty, <b>fairness</b>, producing high yields, …", "ans": "n. 공정함"}]}, {"w": "practice", "p": [{"src": "2022수능 23번", "s": "These elements of shared <b>practice</b> thus need not presuppose any comparable unity in scientists’ beliefs …", "ans": "n. 관행"}, {"src": "2022수능 43~45번", "s": "Finally, the doctor gave me the okay to <b>practice</b>.”", "ans": "v. 연습하다"}]}, {"w": "means", "p": [{"src": "2023수능 35번", "s": "… recognise the power of the human voice as a <b>means</b> of communication …", "ans": "n. 수단"}, {"src": "2024수능 31번", "s": "Even in the easiest texts, what a sentence ‘says’ is often not what it <b>means</b>.", "ans": "v. 의미하다"}]}, {"w": "object", "p": [{"src": "2023수능 21번", "s": "By making the self public in a private sphere, the self also became an <b>object</b> for self-inspection and self-critique.", "ans": "대상"}, {"src": "2025수능 41~42번", "s": "Other primates exhibit some kinds of precision grips in the handling and use of <b>objects</b>, …", "ans": "물체"}]}]}];
+let cur = 0, mode = 'st';
+try{ const v=localStorage.getItem('poly-r'); if(v!==null) cur=+v; const m=localStorage.getItem('poly-m'); if(m) mode=m; }catch(e){}
+const esc = s => s;
+function headHTML(r, i, side){
+  return `<div class="head"><div class="ttl"><small>수능 다의어 파이널 · ${side}</small>${r.t}</div>
+  <div class="meta">이름 <span class="name"></span><br>20분 · 앞면 8분 + 뒷면 8분 + 채점 4분</div></div>`;
+}
+function front(r,i){
+  const box = r.box.map((m,k)=>`<div><b>${'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛ'[k]}</b> ${m}</div>`).join('');
+  const cards = r.A.map((a,k)=>`<div class="card"><div class="no">${k+1}</div>
+    <div class="w">${a.w}<i>아는 뜻: ${a.known}</i></div>
+    <div class="s">${a.s} <span class="src">(${a.src})</span></div>
+    <div class="blank"><span class="k">${a.key}</span>${a.ans}</div></div>`).join('');
+  return `<section class="sheet">${headHTML(r,i,'앞면')}
+    <div class="part">A. 이 문장에서의 뜻 고르기 <span>굵은 단어가 이 문장에서 쓰인 뜻을 보기에서 골라 기호를 쓰세요.</span></div>
+    <div class="box">${box}</div>
+    <div class="cards">${cards}</div>
+    <div class="foot"><span>대단한영어 GREATENG</span><span>${r.t} · 1/2</span></div></section>`;
+}
+function back(r,i){
+  const pairs = r.B.map((b,k)=>`<div class="pair"><div class="no">${k+1}</div><div>
+    <div class="w">${b.w}</div>
+    ${b.p.map((x,j)=>`<div class="ln"><span class="ab">(${'ab'[j]})</span>
+      <div class="s">${x.s} <span class="src">(${x.src})</span></div>
+      <div class="blank">${x.ans}</div></div>`).join('')}
+  </div></div>`).join('');
+  return `<section class="sheet">${headHTML(r,i,'뒷면')}
+    <div class="part">B. 같은 단어, 다른 뜻 <span>(a)(b) 두 문장에서 굵은 단어의 뜻을 각각 우리말로 쓰세요.</span></div>
+    <div class="pairs">${pairs}</div>
+    <div class="foot"><span>대단한영어 GREATENG</span><span>${r.t} · 2/2</span></div></section>`;
+}
+function render(){
+  const list = cur===4 ? R.map((r,i)=>[r,i]) : [[R[cur],cur]];
+  const out = document.getElementById('out');
+  out.className = mode==='st' ? 'student' : 'teacher';
+  out.innerHTML = list.map(([r,i])=>front(r,i)+back(r,i)).join('');
+  document.querySelectorAll('#rounds .chip').forEach((b,k)=>b.setAttribute('aria-pressed', k===cur));
+  document.getElementById('v-st').setAttribute('aria-pressed', mode==='st');
+  document.getElementById('v-te').setAttribute('aria-pressed', mode==='te');
+  try{ localStorage.setItem('poly-r',cur); localStorage.setItem('poly-m',mode); }catch(e){}
+}
+const rb = document.getElementById('rounds');
+['1회','2회','3회','4회','전체'].forEach((t,k)=>{
+  const b=document.createElement('button'); b.className='chip'; b.type='button'; b.id='r'+k; b.textContent=t;
+  b.onclick=()=>{cur=k;render();}; rb.appendChild(b);
+});
+document.getElementById('v-st').onclick=()=>{mode='st';render();};
+document.getElementById('v-te').onclick=()=>{mode='te';render();};
+render();
+</script>
