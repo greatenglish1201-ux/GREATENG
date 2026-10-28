@@ -2836,8 +2836,10 @@ function App(){
         if(!items||items.length<3||JUDGE_LABELS.some(l=>!items.some(it=>it.label===l)))throw new Error('생성 결과 부족');
         // 판정 재확인(8문장 전체): 다르면 같은 판정·기법으로 1회 다시 생성 후 재확인, 그래도 다르면 ⚠로 보고
         let ext=0;
+        const vmap={}; // 29차: 문장별 최종 재판정 결과 → data_json.verify로 저장(편집 창에서 다시 판정하지 않고 바로 표시)
         try{
           const vr=await judgeVerifyExtreme(apiKey,sentences,topic,items);
+          Object.assign(vmap,vr);
           for(const [k,v] of Object.entries(vr)){
             if(v.same)continue;const i=Number(k);
             try{
@@ -2847,6 +2849,7 @@ function App(){
               if(!it.text){ext++;continue;}
               items[i]={...it,label:items[i].label,tech:it.tech||items[i].tech};
               const v2=await judgeVerifyExtreme(apiKey,sentences,topic,[items[i]]);
+              if(v2[0])vmap[i]=v2[0];else delete vmap[i];
               if(v2[0]&&!v2[0].same)ext++;
             }catch(e){ext++;}
           }
@@ -2855,9 +2858,9 @@ function App(){
         let rb=0,rbBad=0;
         for(const p of judgeRebalancePlan(items,null)){
           try{const g=await judgeGenOneAs(apiKey,sentences,topic,p.to,p.tech,items.filter((_,j)=>j!==p.i));
-            if(g){items[p.i]=g.item;rb++;if(g.v&&!g.v.same)rbBad++;}}catch(e){}
+            if(g){items[p.i]=g.item;rb++;if(g.v)vmap[p.i]=g.v;else delete vmap[p.i];if(g.v&&!g.v.same)rbBad++;}}catch(e){}
         }
-        const data={topic,pool:items};
+        const data={topic,pool:items,verify:judgeVerifyPack(items,vmap)};
         const sr=await formPostFetch(appsUrl,{action:'saveQuestions',pid,questions_json:JSON.stringify([{type:'judge',data_json:JSON.stringify(data),answer:judgeAnswerSummary(items)}])});
         if(!sr.ok&&!sr.warning)throw new Error(sr.error||'저장 실패');
         made++;
@@ -4528,6 +4531,19 @@ async function judgeGenerate(apiKey,sentences,topic){
   const parsed=parseJSON(d.content[0].text);
   return (parsed.items||[]).slice(0,8).map(judgeCleanItem);
 }
+// 29차: 재판정 결과 저장/복원 — data_json.verify = {행번호:{label,reason,t:문장 앞 60자}}. 문장이 바뀐 행은 복원 안 함.
+// (index.html은 data_json의 topic·pool만 읽으므로 학생 화면에는 영향 없음)
+function judgeVerifyPack(pool,vres){
+  const out={};Object.entries(vres||{}).forEach(([i,v])=>{const it=pool[i];if(!v||!it||!String(it.text||'').trim())return;
+    out[i]={label:v.label||'',reason:String(v.reason||''),t:String(it.text).trim().slice(0,60)};});
+  return out;
+}
+function judgeVerifyUnpack(pool,verify){
+  const out={};Object.entries(verify||{}).forEach(([i,v])=>{const it=pool[i];
+    if(!v||!it||String(it.text||'').trim().slice(0,60)!==v.t)return;
+    out[i]={label:v.label||'',reason:v.reason||'',same:(v.label||'')===it.label};});
+  return out;
+}
 // 배분 맞추기 (26차) — 일치3·반대3·무관2가 아니면 넘치는 판정의 문장을 모자란 판정으로 지정해 다시 생성
 // 넘치는 문장 고르는 순서: 재판정이 다르게 나온 문장 → 기출 필수 기법이 아닌 문장 → 뒤쪽 문장. 빈 행은 먼저 채움.
 function judgeRebalancePlan(pool,vres){
@@ -4581,7 +4597,7 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
   const [pool,setPool]=useState(()=>{const p=(saved&&Array.isArray(saved.pool))?saved.pool.map(judgeCleanItem):[];while(p.length<8)p.push(emptyItem());return p;});
   const [busy,setBusy]=useState('');
   const [dirty,setDirty]=useState(false);
-  const [vres,setVres]=useState({}); // 재판정 결과 {행번호:{label,reason,same}}
+  const [vres,setVres]=useState(()=>saved&&saved.verify?judgeVerifyUnpack(pool,saved.verify):{}); // 재판정 결과 {행번호:{label,reason,same}} — 29차: 저장된 결과 복원
   const setRow=(i,patch)=>{setPool(p=>p.map((x,k)=>k===i?{...x,...patch}:x));setDirty(true);
     if(patch.text!==undefined)setVres(v=>{const n={...v};delete n[i];return n;});
     else if(patch.label!==undefined)setVres(v=>v[i]?{...v,[i]:{...v[i],same:v[i].label===patch.label}}:v);};
@@ -4663,7 +4679,11 @@ function JudgeEditor({slot,saved,apiKey,onClose,onSave,saving}){
     if(items.some(it=>!JUDGE_LABELS.includes(it.label))){alert('판정이 비어 있는 문장이 있습니다.');return;}
     const allW=[...warns,...vMismatch.map(([i,v])=>`${Number(i)+1}번 재판정: '${v.label||'판정 불가'}' (저장 판정 '${pool[i].label}')`)];
     if(allW.length&&!confirm('확인할 점이 있습니다:\n\n- '+allW.join('\n- ')+'\n\n그래도 저장할까요?'))return;
-    onSave({topic:topic.trim(),pool:items.map(judgeCleanItem)});
+    // 29차: 빈 행을 빼면 행번호가 바뀌므로 문장 기준으로 다시 맞춰 재판정 결과 함께 저장
+    const kept=pool.map((it,i)=>({it,i})).filter(x=>x.it.text.trim());
+    const vNew={};kept.forEach((x,k)=>{if(vres[x.i])vNew[k]=vres[x.i];});
+    const clean=items.map(judgeCleanItem);
+    onSave({topic:topic.trim(),pool:clean,verify:judgeVerifyPack(clean,vNew)});
   };
   const close=()=>{if(!dirty||confirm('저장하지 않고 닫을까요?'))onClose();};
   const inp={width:'100%',border:'0.5px solid #D2D2D7',borderRadius:7,padding:'6px 8px',fontSize:13,background:'#fff',color:'#1d1d1f'};
