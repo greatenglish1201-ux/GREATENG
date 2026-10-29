@@ -808,6 +808,13 @@ function App(){
   //  - short: 현 시점 부족분
   //  - recommend: 오늘 권장(정확값) = 30 + 올림(부족분/남은일수), 상한 없음
   //  - recommendCapped: 1회 출제용 = min(recommend, 50)
+  // 학습량 계산 기준일 = 학습 시작일과 통계 기준일 중 더 늦은 날짜 (통계 기준일 이전 기록은 집계 제외이므로 목표일수도 맞춤)
+  const studyBaseDate=(startDate,statsFrom)=>{
+    const a=startDate?new Date(startDate):null, b=statsFrom?new Date(statsFrom):null;
+    const va=a&&!isNaN(a), vb=b&&!isNaN(b);
+    if(va&&vb) return a>=b?startDate:statsFrom;
+    return va?startDate:(vb?statsFrom:'');
+  };
   const computeStudyPlan=(startDate,doneCount,expiry)=>{
     if(!startDate) return null;
     const sd=new Date(startDate);
@@ -947,7 +954,7 @@ function App(){
     jsonpFetch(scriptUrl,{action:'getStats',student:studentName})
       .then(d=>{
         const sess=(d&&d.sessionStats)||[];
-        const sd=session?.startDate?new Date(session.startDate):null; if(sd)sd.setHours(0,0,0,0);
+        const _base=studyBaseDate(session?.startDate,session?.statsFrom); const sd=_base?new Date(_base):null; if(sd)sd.setHours(0,0,0,0);
         const per={}; let since=0;
         sess.forEach(s=>{
           const sdate=new Date(String(s.date||'').replace(' ','T'));
@@ -976,14 +983,15 @@ function App(){
   // 메인(setup) 첫 진입 시 1회: 학습량 점검 팝업. 한 번 본 뒤에는 로그아웃 전까지 다시 안 뜸.
   useEffect(()=>{
     if(screen!=='setup') return;
-    if(session?.role!=='student'||!session?.startDate||!scriptUrl||!studentName) return;
+    const baseDate=studyBaseDate(session?.startDate,session?.statsFrom);
+    if(session?.role!=='student'||!baseDate||!scriptUrl||!studentName) return;
     const seenKey='greateng_intro_seen_'+studentName;
     try{ if(sessionStorage.getItem(seenKey)==='1') return; }catch(e){}
     try{ sessionStorage.setItem(seenKey,'1'); }catch(e){}
     jsonpFetch(scriptUrl,{action:'getStats',student:studentName})
       .then(d=>{
         const sess=(d&&d.sessionStats)||[];
-        const sd=new Date(session.startDate); sd.setHours(0,0,0,0);
+        const sd=new Date(baseDate); sd.setHours(0,0,0,0);
         let done=0;
         sess.forEach(s=>{
           const sdate=new Date(String(s.date||'').replace(' ','T'));
@@ -992,7 +1000,7 @@ function App(){
             if(line.split('|').length>=3) done++;
           });
         });
-        const plan=computeStudyPlan(session.startDate,done,session.expiry);
+        const plan=computeStudyPlan(baseDate,done,session.expiry);
         if(!plan) return;
         const isShort=done<plan.target*0.9;
         setShortfallWarn({...plan, mode:isShort?'short':'praise', msg:isShort?pickMotivation():pickPraise()});
@@ -1174,7 +1182,7 @@ function LoginScreen({scriptUrl,setScriptUrl,onLogin}){
     try{
       const result=await jsonpFetch(scriptUrl,{action:'login',name:name.trim(),password:pw});
       if(result.ok){
-        onLogin({name:result.name||name.trim(),role:result.role||'student',startDate:result.startDate||'',expiry:result.expiry||'',adminPw:result.role==='admin'?pw:undefined});
+        onLogin({name:result.name||name.trim(),role:result.role||'student',startDate:result.startDate||'',statsFrom:result.statsFrom||result.stats_from||'',expiry:result.expiry||'',adminPw:result.role==='admin'?pw:undefined});
       } else {
         setError(result.error||result.message||'로그인 실패');
       }
@@ -1624,7 +1632,10 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     // ── 누적 학습량 & 목표 대비 부족 (학습 시작일 기준, 하루 30문항) ──
     const sessCount=sessions.length;
     const stuRec=(students||[]).find(s=>s.name===selectedStudent);
-    const stuStart=stuRec&&stuRec.startDate?stuRec.startDate:'';
+    // 기준일 = 학습 시작일과 통계 기준일 중 더 늦은 날짜
+    const stuStart=(()=>{const x=stuRec&&stuRec.startDate||'',y=stuRec&&stuRec.statsFrom||'';
+      const dx=x?new Date(x):null,dy=y?new Date(y):null,vx=dx&&!isNaN(dx),vy=dy&&!isNaN(dy);
+      if(vx&&vy)return dx>=dy?x:y; return vx?x:(vy?y:'');})();
     let goalInfo=null; // {days,target,short,doneSince}
     let doneSinceStart=null; // 시작일 이후 누적 문항 (시작일 없으면 null)
     if(stuStart){
@@ -1808,7 +1819,7 @@ ${ESC_}
   ${goalInfo?`<div style="margin-bottom:16px;padding:12px 14px;border-radius:10px;background:#fef2f2;border:1.5px solid #fca5a5;display:flex;align-items:flex-start;gap:9px">
     <span style="font-size:17px;line-height:1.2">⚠️</span>
     <div style="font-size:12.5px;color:#7f1d1d;line-height:1.6"><b style="color:#b91c1c;font-size:13px">학습량 부족 안내</b><br/>
-    학습 시작일(${stuStart}) 이후 <b>${goalInfo.days}일</b> 기준 목표 <b>${goalInfo.target}문항</b>(하루 30문항) 대비 시작일 이후 <b>${goalInfo.doneSince}문항</b>을 풀어, <b style="color:#b91c1c">약 ${goalInfo.short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.</div>
+    기준일(${stuStart}) 이후 <b>${goalInfo.days}일</b> 기준 목표 <b>${goalInfo.target}문항</b>(하루 30문항) 대비 시작일 이후 <b>${goalInfo.doneSince}문항</b>을 풀어, <b style="color:#b91c1c">약 ${goalInfo.short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.</div>
   </div>`:''}
   ${SO.weak&&weakHtml?`<div style="margin-bottom:18px">${weakHtml}</div>`:''}
   ${SO.weakPid?sec('🎯 진짜 약점 — 지문 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakPidHtml):''}
