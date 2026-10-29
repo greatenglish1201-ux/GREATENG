@@ -826,6 +826,8 @@ function App(){
     const target=days*DAILY_GOAL;
     const short=Math.max(0,target-doneCount); // 현 시점 부족분
 
+    // 어제까지 밀린 양 (오늘치 30은 recommend에서 따로 더하므로 여기서 제외 → 이중 계산 방지)
+    const backlog=Math.max(0,(days-1)*DAILY_GOAL-doneCount);
     let recommend, remainDays=null, usingDeadline=false;
     if(expiry){
       const ed=new Date(expiry);
@@ -833,17 +835,19 @@ function App(){
         ed.setHours(0,0,0,0);
         // 시험 직전 5일은 다른 과목 대비 기간 → 목표 마감을 만료일 5일 전으로 당김
         const goalEnd=new Date(ed.getTime()-5*86400000);
-        const remain=Math.floor((goalEnd-today)/86400000)+1; // 오늘 포함 남은 일수
+        let remain=Math.floor((goalEnd-today)/86400000)+1; // 오늘 포함 남은 일수
+        // 마감(만료 5일 전)이 지났으면 만료일까지 남은 일수로 분배
+        if(remain<1) remain=Math.floor((ed-today)/86400000)+1;
         if(remain>=1){
           remainDays=remain;
-          // 오늘 권장 = 오늘치 30 + (밀린 부족분 × 1.5)를 남은 기간에 분배
-          recommend=DAILY_GOAL+Math.ceil(short*1.5/remain);
+          // 오늘 권장 = 오늘치 30 + (어제까지 밀린 양 × 1.5)를 남은 기간에 분배
+          recommend=DAILY_GOAL+Math.ceil(backlog*1.5/remain);
           usingDeadline=true;
         }
       }
     }
-    // 만료일 없음/지남 → 하루 30 고정 (나눌 기준 없음)
-    if(recommend===undefined) recommend=DAILY_GOAL;
+    // 만료일 없음/지남 → 나눌 기간이 없으므로 밀린 양을 오늘 최대한 (1회 50 상한은 아래에서 적용)
+    if(recommend===undefined) recommend=DAILY_GOAL+backlog;
 
     const recommendCapped=Math.min(MAX_DAILY,recommend);
     const overCap=recommend>MAX_DAILY; // 권장이 1회 상한을 넘는지
