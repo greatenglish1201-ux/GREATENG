@@ -1575,18 +1575,20 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       return Math.max(0,((phat+z2/(2*n))-WZ*Math.sqrt((phat*(1-phat)+z2/(4*n))/n))/(1+z2/n)); };
     const DECAY=0.6;
     const TAU=3; // 간격 신뢰도 기준(일). 직전 시도와의 간격이 길수록 정답을 신뢰.
+    const CORRECT_CAP=0.3; // 정답 1회가 오답으로 계산될 수 있는 최대치
     // 각 시도의 '유효 오답값' 계산:
     //  - 오답 → 1 (확실한 약점 신호)
-    //  - 정답 → exp(-gap/τ): 직전 시도와 간격이 짧으면 1에 가깝(안 굳음=약점 유지), 길면 0에 가깝(진짜 극복)
-    //  - 첫 시도 정답은 직전이 없으므로 중립값 0.5 적용(벼락치기인지 알 수 없음)
+    //  - 정답 → CORRECT_CAP×exp(-gap/τ): 간격이 짧으면 최대 0.3(안 굳음 신호), 길면 0에 가깝(진짜 극복)
+    //    (2026-10-30: 정답이 오답과 같은 1.0으로 계산돼 고정답률 지문이 약점 1위로 뜨던 문제 → 정답 상한 0.3)
+    //  - 첫 시도 정답은 직전이 없으므로 상한값 0.3 적용(벼락치기인지 알 수 없음)
     const effWrongList=(hist)=>{
       const sorted=[...hist].sort((a,b)=>a.s-b.s);
       let prevD=null;
       return sorted.map(h=>{
         let ew;
         if(!h.ok){ ew=1; }
-        else if(h.d==null||prevD==null){ ew=0.5; } // 날짜 모르거나 첫 시도 정답
-        else { const gap=Math.max(0,h.d-prevD); ew=Math.exp(-gap/TAU); }
+        else if(h.d==null||prevD==null){ ew=CORRECT_CAP; } // 날짜 모르거나 첫 시도 정답
+        else { const gap=Math.max(0,h.d-prevD); ew=CORRECT_CAP*Math.exp(-gap/TAU); }
         prevD=h.d!=null?h.d:prevD;
         return {s:h.s, ew};
       });
