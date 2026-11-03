@@ -246,11 +246,11 @@ function toggleHubMenu(){
           <span id="exempt-msg" style="font-size:12.5px; color:#234e84;"></span>
         </div>
         <div id="exempt-toggle-hint" style="display:none; margin-top:9px; font-size:12.5px; color:#234e84; background:#dfeefb; padding:7px 10px; border-radius:8px;">
-          📌 <b>칸 토글 모드 켜짐</b> — 그리드에서 칸을 누르면 그 날짜가 <b>면제↔해제</b>로 바뀝니다. (사진 보기는 잠시 꺼집니다)
+          📌 <b>칸 토글 모드 켜짐</b> — 그리드에서 칸을 누르면 그 날짜가 <b>면제↔해제</b>로 바뀝니다. <b>Shift</b>를 누른 채 같은 학생의 다른 날짜 칸을 누르면 앞서 누른 칸부터 그 칸까지 <b>여러 날을 한꺼번에</b> 같은 방식으로 처리합니다. (사진 보기는 잠시 꺼집니다)
         </div>
         <label style="display:inline-flex; align-items:center; gap:6px; margin-top:9px; font-size:12.5px; color:#234e84; cursor:pointer; user-select:none;">
           <input type="checkbox" id="exempt-cell-toggle" onchange="onExemptCellToggle()" style="width:16px; height:16px; accent-color:#234e84;">
-          그리드 칸 클릭으로 하루씩 면제/해제
+          그리드 칸 클릭으로 면제/해제 (Shift+클릭으로 여러 날)
         </label>
       </div>
 
@@ -1012,6 +1012,7 @@ function toggleHubMenu(){
 
   let allGridNames = [];
   let exemptCellMode = false;    // 면제 칸 토글 모드 (renderGrid보다 먼저 선언 필요)
+  let exemptAnchor = null;       // [추가] Shift 범위 면제용 기준 칸 {name, date, mode}
   let holidayHeaderMode = false; // 공휴일 헤더 토글 모드 (renderGrid보다 먼저 선언 필요)
 
   // 격자: adminGrid 한 번 호출로 전체 받기 (로딩 최적화)
@@ -1058,7 +1059,7 @@ function toggleHubMenu(){
         const click = st ? ' clickable' : '';
         const mark = st==='제출'?'O':st==='미제출'?'X':st==='지연제출'?'△':st==='선제출'?'◎':st==='시험'?'시':st==='휴일'?'-':'';
         const lateSup = lateN>0 ? '<span style="font-size:13px; font-weight:900; margin-left:2px; vertical-align:baseline;">+'+lateN+'</span>' : '';
-        h += '<td class="'+cls+click+'" onclick="openDay(\''+nm+'\',\''+dt+'\')">'+mark+lateSup+'</td>';
+        h += '<td class="'+cls+click+'" onclick="openDay(\''+nm+'\',\''+dt+'\',event)">'+mark+lateSup+'</td>';
       });
       h += '</tr>';
     });
@@ -1069,11 +1070,22 @@ function toggleHubMenu(){
     if(scroller){ requestAnimationFrame(()=>{ scroller.scrollLeft = scroller.scrollWidth; }); }
   }
   // 격자 칸 클릭 → 그 학생/날짜 사진 (단, 면제 칸토글 모드면 면제/해제)
-  async function openDay(name, date){
+  async function openDay(name, date, ev){
     if(exemptCellMode){
+      // [추가] Shift+클릭: 같은 학생 행에서 직전에 누른 칸 ~ 이번 칸까지 한꺼번에 (직전과 같은 면제/해제 방향)
+      if(ev && ev.shiftKey && exemptAnchor && exemptAnchor.name === name && exemptAnchor.date !== date){
+        try{ window.getSelection().removeAllRanges(); }catch(e){}
+        const s = exemptAnchor.date < date ? exemptAnchor.date : date;
+        const e = exemptAnchor.date < date ? date : exemptAnchor.date;
+        const m = exemptAnchor.mode;
+        exemptAnchor = {name:name, date:date, mode:m};
+        await sendExempt(name, s, e, m);
+        return;
+      }
       const cur = statusByStudent[name] && statusByStudent[name][date];
       const st = (cur && typeof cur === 'object') ? (cur.s||'') : (cur||'');
       const mode = (st === '시험') ? 'remove' : 'add';   // 이미 시험(면제)이면 해제, 아니면 면제
+      exemptAnchor = {name:name, date:date, mode:mode};
       await sendExempt(name, date, date, mode);
       return;
     }
@@ -1109,6 +1121,7 @@ function toggleHubMenu(){
   }
   function onExemptCellToggle(){
     exemptCellMode = document.getElementById('exempt-cell-toggle').checked;
+    exemptAnchor = null;
     document.getElementById('exempt-toggle-hint').style.display = exemptCellMode ? 'block' : 'none';
   }
   // 날짜 범위 면제/해제 (패널 버튼)
