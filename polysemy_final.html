@@ -27,6 +27,7 @@ body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size
   padding:6px 12px;border-radius:999px;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chip.prt{border-color:var(--accent);color:var(--accent);font-weight:700}
 .hint{max-width:210mm;margin:0 auto 14px;color:var(--muted);font-size:12.5px;line-height:1.6}
 .sheet{background:var(--paper);max-width:210mm;margin:0 auto 18px;padding:12mm 12mm 10mm;
   box-shadow:0 1px 3px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:9px}
@@ -88,8 +89,9 @@ body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size
     <button class="chip" id="v-st" type="button">학생용</button>
     <button class="chip" id="v-te" type="button">교사용</button>
   </div>
+  <button class="chip prt" id="btnPrint" type="button" hidden>인쇄</button>
 </div>
-<p class="hint">회차마다 앞면(문맥 뜻 고르기)과 뒷면(같은 단어 두 뜻 구별) 2장입니다. 인쇄는 브라우저 인쇄(Ctrl/⌘+P)로 하시면 한 장씩 A4로 끊깁니다. 예문은 모두 2022~2026학년도 수능 영어 지문에서 그대로 가져왔고, 긴 문장은 …으로 줄였습니다.</p>
+<p class="hint">회차마다 앞면(문맥 뜻 고르기)과 뒷면(같은 단어 두 뜻 구별) 2장입니다. 인쇄 버튼(또는 Ctrl/⌘+P)을 누르면 한 장씩 A4로 끊깁니다. 예문은 모두 2022~2026학년도 수능 영어 지문에서 그대로 가져왔고, 긴 문장은 …으로 줄였습니다.</p>
 <div id="out"></div>
 
 <script>
@@ -142,5 +144,8 @@ const rb = document.getElementById('rounds');
 });
 document.getElementById('v-st').onclick=()=>{mode='st';render();};
 document.getElementById('v-te').onclick=()=>{mode='te';render();};
+/* 인쇄 버튼: GitHub Pages처럼 직접 연 페이지에서만 보임(미리보기 창 안에서는 인쇄가 막혀 숨김) */
+(function(){ let framed=true; try{ framed = window.self !== window.top; }catch(e){}
+  const pb=document.getElementById('btnPrint'); if(!framed){ pb.hidden=false; pb.onclick=()=>window.print(); } })();
 render();
 </script>
