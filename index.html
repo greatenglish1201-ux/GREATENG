@@ -1862,12 +1862,12 @@ ${ESC_}
     <div style="font-size:12.5px;color:#7f1d1d;line-height:1.6"><b style="color:#b91c1c;font-size:13px">학습량 부족 안내</b><br/>
     기준일(${stuStart}) 이후 <b>${goalInfo.days}일</b> 기준 목표 <b>${goalInfo.target}문항</b>(하루 30문항) 대비 시작일 이후 <b>${goalInfo.doneSince}문항</b>을 풀어, <b style="color:#b91c1c">약 ${goalInfo.short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.</div>
   </div>`:''}
+  <div class="cmp sec1">${SO.blind?sec('📍 사각지대 — 안 본 지문',blindHtml):''}</div>
   <div class="cols cmp">
     <div>${SO.weakPid?sec('🎯 진짜 약점 — 지문 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakPidHtml):''}</div>
     <div>${showTypeDiag?sec('🎯 유형별 진단 <span style="font-size:11px;color:#999;font-weight:400">(약점 점수 높은 순)</span>',typeDiagHtml):''}
     ${SO.book?sec('📚 교재별 정답률',bookHtml):''}</div>
   </div>
-  <div class="cmp sec1">${SO.blind?sec('📍 사각지대 — 안 본 지문',blindHtml):''}</div>
   ${SO.sess&&sessHtml?sec('📅 회차별 기록 <span style="font-size:11px;color:#999;font-weight:400">(최근 순)</span>',`<div class="sess cmp">${sessions.map(x=>`<table style="border-collapse:collapse"><tr><td style="padding:3px 6px;border-bottom:1px solid #eee;color:#555">${esc(String(x.date).slice(5,10))}${String(x.date).length>10?` <span style="color:#aaa">${esc(String(x.date).slice(11,16))}</span>`:''}</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:right;color:#222">${esc(x.score)}</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(x.rate)}">${esc(x.rate)}%</td></tr></table>`).join('')}</div>`):''}
   <div style="margin-top:12px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
 </body></html>`;
