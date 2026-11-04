@@ -2195,7 +2195,7 @@ ${ESC_}
                       <span style={{fontSize:13,fontWeight:700,color:'#3a2a20'}}>{s.name}</span>
                       {s.cls&&!clsFilter&&<span style={{fontSize:10,color:'#7a6a55',marginLeft:5,background:'#f6efe0',borderRadius:5,padding:'1px 5px'}}>{s.cls}</span>}
                       <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항{s.uniq!=null?` · 지문 ${s.uniq}개`:''}{s.effPids!=null&&s.uniq!=null&&s.effPids<s.uniq*0.8?` (유효 ${s.effPids})`:''}</span>
-                      {s.diliActive!=null&&s.diliDays!=null&&<span style={{fontSize:11,color:'#9a8570',marginLeft:6}} title="성실도 = 분량 50% + 꾸준함 50% · 분량 = 푼 문항 ÷ (경과 일수×30) · 꾸준함 = 30문항 이상 푼 날 ÷ 경과 일수">· 30문항↑ <b style={{color:'#7a1020'}}>{s.diliActive}/{s.diliDays}일</b>{s.diliVol!=null&&s.diliReg!=null?` (분량 ${s.diliVol} · 꾸준함 ${s.diliReg})`:''}</span>}
+                      {s.diliActive!=null&&s.diliDays!=null&&<span style={{fontSize:11,color:'#9a8570',marginLeft:6}} title="성실도 = 분량 50% + 꾸준함 50% · 분량 = 푼 문항 ÷ (경과 일수×30) · 꾸준함 = 30문항 이상 푼 날 ÷ 경과 일수">· 30문항 이상 푼 날 <b style={{color:'#7a1020'}}>{s.diliActive}일</b>({s.diliDays}일 중){s.diliVol!=null&&s.diliReg!=null?` (분량 ${s.diliVol} · 꾸준함 ${s.diliReg})`:''}</span>}
                       {!ranked&&<span style={{fontSize:10,color:'#b08968',marginLeft:6,background:'#fdf6e9',border:'1px solid #ead9bd',borderRadius:6,padding:'1px 6px',whiteSpace:'nowrap'}}>랭킹 진입까지 {need}문항</span>}
                     </div>
                   </div>
