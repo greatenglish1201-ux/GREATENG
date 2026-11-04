@@ -1837,7 +1837,18 @@ ${ESC_}
 
 
     const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(dispName)} 약점 분석 리포트</title>
-<style>@media print{@page{margin:14mm}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}${promo?'body{max-width:600px;margin:0 auto;background:#fff}':''}</style></head>
+<style>@media print{@page{size:A4;margin:10mm} body{padding:0!important}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}${promo?'body{max-width:600px;margin:0 auto;background:#fff}':''}
+/* 2단 압축 레이아웃: 최대 2페이지 */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}
+.cols>div>div,.sec1>div{break-inside:avoid;page-break-inside:avoid}
+.cmp td{padding:3px 6px!important;font-size:11px!important;line-height:1.35}
+.cmp td b{font-size:11.5px!important}
+.cmp td span{font-size:10px!important}
+.cmp div[style*="font-size:11.5px"]{font-size:10.5px!important;line-height:1.45!important}
+.sess table{width:100%}
+.sess{display:grid;grid-template-columns:repeat(3,1fr);column-gap:14px}
+.sess table{break-inside:avoid}
+</style></head>
 <body>
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px solid #7a1020;padding-bottom:10px;margin-bottom:18px">
     <div><div style="font-size:20px;font-weight:800;color:#7a1020">${esc(dispName)} <span style="font-size:14px;color:#9a8570;font-weight:600">약점 분석 리포트</span></div>
@@ -1851,12 +1862,14 @@ ${ESC_}
     <div style="font-size:12.5px;color:#7f1d1d;line-height:1.6"><b style="color:#b91c1c;font-size:13px">학습량 부족 안내</b><br/>
     기준일(${stuStart}) 이후 <b>${goalInfo.days}일</b> 기준 목표 <b>${goalInfo.target}문항</b>(하루 30문항) 대비 시작일 이후 <b>${goalInfo.doneSince}문항</b>을 풀어, <b style="color:#b91c1c">약 ${goalInfo.short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.</div>
   </div>`:''}
-  ${SO.weakPid?sec('🎯 진짜 약점 — 지문 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakPidHtml):''}
-  ${showTypeDiag?sec('🎯 유형별 진단 <span style="font-size:11px;color:#999;font-weight:400">(약점 점수 높은 순)</span>',typeDiagHtml):''}
-  ${SO.blind?sec('📍 사각지대 — 안 본 지문',blindHtml):''}
-  ${SO.book?sec('📚 교재별 정답률',bookHtml):''}
-  ${SO.sess?sec('📅 회차별 기록',sessHtml):''}
-  <div style="margin-top:24px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
+  <div class="cols cmp">
+    <div>${SO.weakPid?sec('🎯 진짜 약점 — 지문 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakPidHtml):''}</div>
+    <div>${showTypeDiag?sec('🎯 유형별 진단 <span style="font-size:11px;color:#999;font-weight:400">(약점 점수 높은 순)</span>',typeDiagHtml):''}
+    ${SO.book?sec('📚 교재별 정답률',bookHtml):''}</div>
+  </div>
+  <div class="cmp sec1">${SO.blind?sec('📍 사각지대 — 안 본 지문',blindHtml):''}</div>
+  ${SO.sess&&sessHtml?sec('📅 회차별 기록 <span style="font-size:11px;color:#999;font-weight:400">(최근 순)</span>',`<div class="sess cmp">${sessions.map(x=>`<table style="border-collapse:collapse"><tr><td style="padding:3px 6px;border-bottom:1px solid #eee;color:#555">${esc(String(x.date).slice(5,10))}${String(x.date).length>10?` <span style="color:#aaa">${esc(String(x.date).slice(11,16))}</span>`:''}</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:right;color:#222">${esc(x.score)}</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(x.rate)}">${esc(x.rate)}%</td></tr></table>`).join('')}</div>`):''}
+  <div style="margin-top:12px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
 </body></html>`;
 
     const w=window.open('','_blank');
