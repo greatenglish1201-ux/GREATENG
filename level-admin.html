@@ -41,66 +41,87 @@
   .pill.req{background:#fff2cc;color:#7a5600}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
   .toolbar .sp{flex:1}
-  /* ===== 결과지 (인쇄 대상) ===== */
-  #report{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 28px;max-width:794px;margin:0 auto 16px}
-  .r-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--ink);padding-bottom:8px}
-  .r-brand{font-size:22px;font-weight:800;color:var(--wine);letter-spacing:-.02em}
-  .r-brand small{font-size:11px;color:#999;font-weight:500;margin-left:6px;letter-spacing:.08em}
-  .r-title{font-size:16px;font-weight:700}
-  .r-info{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:13.5px;margin:10px 0 16px;color:#555}
-  .r-info b{color:var(--ink);font-weight:700}
-  .r-consult{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #ddd;border-radius:10px;margin:-6px 0 16px;overflow:hidden}
-  .r-consult div{padding:7px 10px;border-right:1px solid #eee;font-size:12.5px;min-width:0}
+  /* ===== 결과지 (인쇄 대상) — main.html 톤: 네이비 + 골드 ===== */
+  #report{--nv:#0e1626;--nv2:#16223a;--nv3:#1f2f4d;--gd:#C9A84C;--gds:#e3cd8a;--gdd:#9a7f33;--ik:#1c2433;--mt:#5c6678;--ln:#dde2ec;--pp:#f7f8fa;
+    background:#fff;border:1px solid var(--line);border-radius:16px;max-width:794px;margin:0 auto 16px;overflow:hidden;color:var(--ik);
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:-0.014em;box-shadow:0 14px 40px rgba(14,22,38,.08)}
+  .r-band{position:relative;background:linear-gradient(165deg,var(--nv),var(--nv2) 60%,var(--nv3));color:#fff;padding:20px 28px 18px}
+  .r-band::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--gd),transparent)}
+  .r-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+  .r-brand{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.1;
+    background:linear-gradient(92deg,#b8943f 0%,#e7cd86 24%,#fff4d6 40%,#e7cd86 54%,#c2a259 72%,#f0dca0 88%,#d9bd72 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .r-brand small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.22em;margin-top:4px;-webkit-text-fill-color:rgba(255,255,255,.5)}
+  .r-title{text-align:right;font-size:17px;font-weight:700;letter-spacing:-.02em}
+  .r-title small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.2em;color:var(--gds);margin-bottom:3px}
+  .r-info{display:grid;grid-template-columns:repeat(6,auto);justify-content:space-between;gap:4px 14px;font-size:12px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(201,168,76,.25);color:rgba(255,255,255,.55)}
+  .r-info span{display:flex;flex-direction:column;gap:2px}
+  .r-info b{color:#fff;font-weight:700;font-size:14px}
+  .r-body{padding:18px 28px 16px}
+  .r-consult{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--ln);border-radius:12px;margin:0 0 16px;overflow:hidden;background:var(--pp)}
+  .r-consult div{padding:8px 11px;border-right:1px solid var(--ln);font-size:12.5px;min-width:0}
   .r-consult div:last-child{border-right:none}
-  .r-consult span{display:block;color:#888;font-size:11px;margin-bottom:2px}
-  .r-consult b{font-weight:700;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
-  @media (max-width:640px){.r-consult{grid-template-columns:1fr 1fr}.r-consult div{border-bottom:1px solid #eee}}
+  .r-consult span{display:block;color:var(--mt);font-size:10.5px;font-weight:600;letter-spacing:.02em;margin-bottom:2px}
+  .r-consult b{font-weight:700;color:var(--ik);word-break:keep-all;overflow-wrap:anywhere}
+  @media (max-width:640px){.r-consult{grid-template-columns:1fr 1fr}.r-consult div{border-bottom:1px solid var(--ln)}.r-info{grid-template-columns:repeat(3,auto)}}
   .r-top{display:grid;grid-template-columns:190px 1fr;gap:18px;align-items:stretch;margin-bottom:16px}
-  .r-score{border:1.5px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px}
-  .r-score .s{font-size:46px;font-weight:800;color:var(--wine);line-height:1}
-  .r-score .s small{font-size:17px;color:var(--muted);font-weight:600}
-  .r-score .l{font-size:12.5px;color:var(--muted);margin-top:6px}
-  .r-sub{font-size:13px;font-weight:700;margin:0 0 8px;color:var(--ink)}
+  .r-score{position:relative;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;
+    background:linear-gradient(165deg,var(--nv),var(--nv3));color:#fff;box-shadow:inset 0 0 0 1px rgba(201,168,76,.35)}
+  .r-score .k{font-size:10.5px;font-weight:600;letter-spacing:.22em;color:var(--gds);margin-bottom:8px}
+  .r-score .s{font-size:50px;font-weight:800;line-height:1;letter-spacing:-.04em;
+    background:linear-gradient(92deg,#b8943f 0%,#e7cd86 24%,#fff4d6 40%,#e7cd86 54%,#c2a259 72%,#f0dca0 88%,#d9bd72 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .r-score .s small{font-size:17px;font-weight:600;-webkit-text-fill-color:rgba(255,255,255,.55)}
+  .r-score .l{font-size:12px;color:rgba(255,255,255,.6);margin-top:8px}
+  .r-sub{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:0 0 9px;color:var(--ik);letter-spacing:-.01em}
+  .r-sub::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--gd)}
   .bars .b{display:grid;grid-template-columns:118px 1fr 52px;gap:8px;align-items:center;font-size:13px;margin-bottom:7px}
-  .bars .b .tr{height:12px;background:#f1ece8;border-radius:6px;overflow:hidden}
-  .bars .b .tr i{display:block;height:100%;background:var(--wine);border-radius:6px}
+  .bars .b .tr{height:10px;background:#eef1f6;border-radius:6px;overflow:hidden}
+  .bars .b .tr i{display:block;height:100%;background:linear-gradient(90deg,var(--nv3),var(--nv));border-radius:6px}
   .bars .b .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
-  table.grid{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:16px}
-  table.grid th,table.grid td{border:1px solid #ddd;padding:7px 6px;text-align:center}
-  table.grid th{background:#f6f2ef;font-weight:700;font-size:12.5px}
+  table.grid{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;margin-bottom:16px;border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+  table.grid th,table.grid td{border-right:1px solid var(--ln);border-bottom:1px solid var(--ln);padding:7px 6px;text-align:center}
+  table.grid tr>*:last-child{border-right:none}
+  table.grid tbody tr:last-child>*{border-bottom:none}
+  table.grid thead th{background:var(--nv2);color:#fff;font-weight:600;font-size:12px;letter-spacing:-.01em}
+  table.grid tbody th{background:var(--pp);font-weight:700;font-size:12.5px}
   table.grid td.g{background:var(--g-bg);color:var(--g);font-weight:700}
   table.grid td.y{background:var(--y-bg);color:var(--y);font-weight:700}
   table.grid td.r{background:var(--r-bg);color:var(--r);font-weight:700}
   table.grid td.na{color:#bbb}
-  .legend{font-size:11.5px;color:var(--muted);margin:-10px 0 14px}
+  .legend{font-size:11.5px;color:var(--mt);margin:-10px 0 14px}
   .legend span{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
-  .diag{border-left:4px solid var(--gold);background:#fcfaf5;padding:10px 14px;border-radius:0 10px 10px 0;font-size:13.5px;line-height:1.7;margin-bottom:14px}
-  .diag b{color:var(--wine)}
+  .diag{border:1px solid rgba(201,168,76,.45);border-left:4px solid var(--gd);background:#fbf8ee;padding:11px 15px;border-radius:0 12px 12px 0;font-size:13.5px;line-height:1.7;margin-bottom:14px}
+  .diag b{color:var(--nv2)}
   .diag .dl{display:grid;grid-template-columns:84px 1fr;gap:8px}
   table.wrong{width:100%;border-collapse:collapse;font-size:12.5px}
-  table.wrong th,table.wrong td{border-bottom:1px solid #e6e0db;padding:5px 6px;text-align:left;vertical-align:top}
-  table.wrong th{color:var(--muted);font-weight:600;font-size:11.5px}
+  table.wrong th,table.wrong td{border-bottom:1px solid var(--ln);padding:5px 6px;text-align:left;vertical-align:top}
+  table.wrong thead th{color:var(--mt);font-weight:600;font-size:11.5px;border-bottom:1.5px solid var(--nv2)}
   .wrong2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   .wrong2 table.wrong{font-size:11.5px}
   table.wrong td:nth-child(-n+3),table.wrong th{white-space:nowrap}
-  .r-foot{margin-top:14px;padding-top:8px;border-top:1px solid #ddd;font-size:11.5px;color:#888;display:flex;justify-content:space-between}
+  .r-foot{margin-top:14px;padding:10px 28px;background:var(--pp);border-top:1px solid var(--ln);font-size:11.5px;color:var(--mt);display:flex;justify-content:space-between;gap:10px}
+  .r-foot b{color:var(--gdd);font-weight:700}
+  #report.cap .r-brand,#report.cap .r-score .s{background:none;-webkit-text-fill-color:#e3cd8a;color:#e3cd8a}
+  #report.cap .r-score{box-shadow:none;border:1px solid rgba(201,168,76,.45)}
   .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 auto 16px;max-width:794px}
   .teacher{max-width:794px;margin:0 auto}
   table.detail{width:100%;border-collapse:collapse;font-size:13px}
   table.detail td,table.detail th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
   .ok{color:var(--g);font-weight:700} .no{color:var(--r);font-weight:700}
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;z-index:99}
-  @media (max-width:640px){.r-top{grid-template-columns:1fr}#report{padding:18px 14px}.bars .b{grid-template-columns:96px 1fr 46px}}
+  @media (max-width:640px){.r-top{grid-template-columns:1fr}.r-band,.r-body{padding-left:16px;padding-right:16px}.bars .b{grid-template-columns:96px 1fr 46px}}
   @media print{
     @page{size:A4;margin:11mm}
     body{background:#fff}
     .top,#vLogin,#vList,#vStats,#vSet,#vResult>.actions,#vResult>.teacher,.toast{display:none!important}
     .wrap{padding:0;max-width:none}
-    #report{width:100%;max-width:none;border:none;border-radius:0;padding:0;margin:0;font-size:12.5px}
+    #report{width:100%;max-width:none;border:none;border-radius:0;padding:0;margin:0;font-size:12.5px;box-shadow:none}
+    .r-band{border-radius:10px 10px 0 0}
     .r-top{grid-template-columns:170px 1fr}
     table.wrong th,table.wrong td{padding:3px 5px}
     #report.dense{zoom:.84}
-    .r-score,.diag,table.grid td,.bars .b .tr i{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #report,#report *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
 </style>
 </head>
@@ -318,18 +339,18 @@ function topicStr(t) { return t.length > 8 ? t.slice(0, 8).join(', ') + ' 외 ' 
 function cellCls(c, n) { return !n ? 'na' : c === n ? 'g' : c === 0 ? 'r' : 'y'; }
 function renderReport(A) {
   var t = A.test, rec = A.rec, LV = ['Ⅰ', 'Ⅱ', 'Ⅲ'];
-  var h = '<div class="r-head"><div class="r-brand">대단한영어<small>GREATENG</small></div><div class="r-title">레벨테스트 결과</div></div>';
+  var h = '<div class="r-band"><div class="r-head"><div class="r-brand">대단한영어<small>GREATENG</small></div><div class="r-title"><small>LEVEL TEST REPORT</small>레벨테스트 결과</div></div>';
   h += '<div class="r-info"><span>이름 <b>' + esc(rec.name) + '</b></span><span>학교 <b>' + esc(rec.school || '-') + '</b></span><span>학년 <b>' + esc(rec.grade || '-') +
-    '</b></span><span>시험지 <b>' + esc(t.label) + '</b></span><span>응시일 <b>' + fmtDay(rec.started) + '</b></span><span>소요 시간 <b>' + fmtSec(rec.elapsed) + '</b> / ' + t.minutes + '분</span></div>';
+    '</b></span><span>시험지 <b>' + esc(t.label) + '</b></span><span>응시일 <b>' + fmtDay(rec.started) + '</b></span><span>소요 시간 <b>' + fmtSec(rec.elapsed) + ' / ' + t.minutes + '분</b></span></div></div><div class="r-body">';
   // 상담 카드: 결과지를 보고 연락하므로 인쇄 결과지에 표시 (카카오톡·문자로 보내는 이미지에서는 빠짐 — reportPng 참고)
   var cd = rec.card || {}, cv = function (v) { return esc(v || '-'); };
   h += '<div class="r-consult"><div><span>학부모 연락처</span><b>' + cv(cd.parentPhone) + '</b></div><div><span>학생 연락처</span><b>' + cv(cd.studentPhone) +
     '</b></div><div><span>사는 곳</span><b>' + cv(cd.addr) + '</b></div><div><span>최근 내신 영어</span><b>' + cv(cd.naesin) + '</b></div><div><span>최근 모의고사 영어</span><b>' + cv(cd.mock) + '</b></div></div>';
-  h += '<div class="r-top"><div class="r-score"><div class="s">' + A.g.score + '<small> / 100</small></div><div class="l">총점</div></div><div>';
+  h += '<div class="r-top"><div class="r-score"><div class="k">TOTAL SCORE</div><div class="s">' + A.g.score + '<small> / 100</small></div><div class="l">총점</div></div><div>';
   h += '<p class="r-sub">단계별 정답</p><div class="bars">' + A.tierStat.map(function (x) {
     return '<div class="b"><span>' + x.lv + ' ' + esc(x.label) + '</span><span class="tr"><i style="width:' + (x.n ? x.c / x.n * 100 : 0) + '%"></i></span><span class="v">' + x.c + '/' + x.n + '</span></div>'; }).join('') + '</div>';
   h += '<p class="r-sub" style="margin-top:10px">영역별 정답</p><div class="bars">' + A.secStat.map(function (s) {
-    return '<div class="b"><span>' + esc(s.name) + '</span><span class="tr"><i style="width:' + (s.c / s.n * 100) + '%;background:var(--gold)"></i></span><span class="v">' + s.c + '/' + s.n + '</span></div>'; }).join('') + '</div>';
+    return '<div class="b"><span>' + esc(s.name) + '</span><span class="tr"><i style="width:' + (s.c / s.n * 100) + '%;background:linear-gradient(90deg,#c2a259,#e7cd86)"></i></span><span class="v">' + s.c + '/' + s.n + '</span></div>'; }).join('') + '</div>';
   h += '</div></div>';
   h += '<table class="grid"><thead><tr><th>영역 \\ 단계</th>' + A.tierStat.map(function (x) { return '<th>' + x.lv + ' (' + esc(x.label) + ')</th>'; }).join('') + '<th>합계</th></tr></thead><tbody>' +
     A.secStat.map(function (s) {
@@ -352,7 +373,7 @@ function renderReport(A) {
       ? '<div class="wrong2">' + wt(A.wrong.slice(0, half)) + wt(A.wrong.slice(half)) + '</div>' : wt(A.wrong));
     if (many) h += '<p class="muted" style="font-size:11px;margin:4px 0 0">문항별 자세한 내용은 상담 때 설명드립니다.</p>';
   }
-  h += '<div class="r-foot"><span>대단한영어 레벨테스트 · ' + esc(t.label) + '</span><span>결과에 대한 자세한 설명은 상담 때 드립니다</span></div>';
+  h += '</div><div class="r-foot"><span><b>대단한영어</b> 레벨테스트 · ' + esc(t.label) + '</span><span>결과에 대한 자세한 설명은 상담 때 드립니다</span></div>';
   $('report').innerHTML = h;
   $('report').classList.toggle('dense', A.wrong.length > 8);   // 오답이 많으면 인쇄 때 조금 축소해 한 장에 맞춤
 }
@@ -463,7 +484,9 @@ function copyText(s) {
 function reportPng() {
   if (!window.html2canvas) return Promise.reject(new Error('이미지 도구를 불러오지 못했습니다.'));
   // 보내는 이미지에는 연락처·주소가 담긴 상담 카드 줄을 넣지 않음
-  return html2canvas($('report'), { scale: 2, backgroundColor: '#ffffff', ignoreElements: function (el) { return el.classList && el.classList.contains('r-consult'); } }).then(function (cv) {
+  return html2canvas($('report'), { scale: 2, backgroundColor: '#ffffff', ignoreElements: function (el) { return el.classList && el.classList.contains('r-consult'); },
+    onclone: function (d) { d.getElementById('report').classList.add('cap'); }   // 이미지에서는 금속 질감 글자를 단색 금색으로
+  }).then(function (cv) {
     return new Promise(function (res) { cv.toBlob(function (b) { res(b); }, 'image/png'); });
   });
 }
