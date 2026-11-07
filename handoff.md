@@ -199,9 +199,17 @@
 - 검증: mock GAS + Playwright(e2e_apply.py) — 빈칸·주소·동의 오류, 저장·메일 본문, 스팸 칸 미저장, 불러오기(번호 없음/코드 없음/코드 틀림/성공), 응시 후 같은 카드에 기록 연결, 관리 화면 표시 확인. 기존 e2e_card.py 통과.
 - 그대로 둔 것: 다른 페이지(newclass·parent_guide·summer·suneung_2026·yebigo·yebijung·pohang_highschools 1448행)의 톡톡 링크, 레벨테스트 start/submit/채점, 응시기록 시트 구조.
 
+### 2026-11-07 (23차) — 레벨테스트를 메인에서 빼고 관리자 허브로 (main.html·hub.html·level.html)
+- 지시(필립): 레벨테스트는 외부에 노출하지 말고 관리자 허브에만.
+- main.html: 15차 nav `레벨테스트` 링크(314행), 15차 허브 카드(`hcard` level.html, 510~515행), 20차 푸터 `.foot-links`(542행)와 CSS 3줄(276~278행) 삭제. main.html에 level 링크 0개 확인.
+- hub.html `PAGES`(298~299행, '학생 관리' 그룹): `레벨테스트 응시`(level.html, ✏️) · `레벨테스트 관리`(level-admin.html, 🗂️) 추가. 기존 카드 형식 그대로라 '카드 편집' 자동 저장과 호환.
+- level.html 6행 `<meta name="robots" content="noindex, nofollow">` 추가(검색 노출 방지). level-admin.html은 원래 noindex.
+- 그대로 둔 것: level.html 자체 동작(시작 코드 필요), apply.html(22차 상담 신청서, 메인 버튼 연결 유지 — 안내 문구에 '레벨테스트' 단어는 남아 있음), 20차 이전 메인 구성.
+
 ## 진행 중
 - **⚠ 레벨테스트 GAS 교체 필요(22차)**: LevelTest_Code.gs 통째로 교체 → 새 버전 배포 → 시트 메뉴 '상담 신청 알림 이메일 설정'에 네이버 메일 입력 → '알림 메일 시험 발송'(이때 메일 권한 승인). 교체 전에는 apply.html 제출이 '알 수 없는 요청'으로 실패함.
 - **다른 페이지 톡톡 상담 버튼(22차)**: newclass 304·533, parent_guide 533·883, summer 230·336, suneung_2026 749, yebigo 199·340, yebijung 222·372, pohang_highschools 1448행 — apply.html로 바꿀지 필립 확인 필요.
+- **level.html 접근**: 주소를 아는 사람은 열 수 있음(검색 노출만 막음). 시험지는 시작 코드 없이는 안 열림. 허브처럼 auth.js 로그인까지 걸지는 필립 결정 필요(걸면 학원 기기에서 선생님 로그인 후 응시).
 - ~~레벨테스트 배포 (15차)~~ → 19차에서 URL 반영·main 병합 완료. **남은 것: 실제 시범 응시로 응시·결과·상담카드 시트 기록 확인.**
 - **개인정보 보관 기간**: level.html `CONFIG.RETENTION`('1년') 확정 필요. 응시기록 시트에서 기간 지난 행 삭제는 아직 수동.
 - **hub.html 연결 미정**: level-admin.html로 가는 링크를 관리자 허브에 넣을지, 상담 카드(18차, `상담카드` 시트)를 hub.html 신규 등록 폼(구상 중)에서 불러와 등록 정보로 쓸지 결정 필요.
