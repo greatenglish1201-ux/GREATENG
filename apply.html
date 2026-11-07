@@ -198,7 +198,6 @@
     </div>
     <button class="btn primary" id="btnSend">상담 신청하기</button>
     <div class="err" id="sendErr"></div>
-    <p class="note">간단한 문의는 <a href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡</a>으로도 받습니다.</p>
   </div>
 </div>
 
@@ -266,7 +265,7 @@ $('btnSend').onclick = function () {
       if (!r.ok) throw new Error(r.error || '신청하지 못했습니다.');
       $('vForm').classList.add('hidden'); $('vDone').classList.remove('hidden'); window.scrollTo(0, 0);
     }).catch(function (e) {
-      $('sendErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도하시거나 네이버 톡톡으로 문의해 주세요.';
+      $('sendErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
       $('btnSend').disabled = false; $('btnSend').textContent = '상담 신청하기';
     });
 };
