@@ -39,6 +39,9 @@
   .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:20px;background:#f1ece8}
   .pill.ing{background:var(--y-bg);color:var(--y)} .pill.late{background:var(--r-bg);color:var(--r)} .pill.enr{background:var(--g-bg);color:var(--g)}
   .pill.req{background:#fff2cc;color:#7a5600}
+  select.stSel{padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:#f3f1ef;font-size:12.5px;font-weight:600;cursor:pointer;max-width:110px}
+  select.stSel.enr{background:var(--g-bg);color:var(--g);border-color:transparent}
+  select.stSel.req{background:#fff2cc;color:#7a5600;border-color:transparent}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
   .toolbar .sp{flex:1}
   /* ===== 결과지 (인쇄 대상) — main.html 톤: 네이비 + 골드 ===== */
@@ -413,10 +416,23 @@ function renderCards() {
     var last = c.tests.length ? testInfo(c.tests[c.tests.length - 1]) : '';
     return '<tr class="click" data-id="' + esc(c.cardId) + '"><td>' + fmtDate(c.updated) + '</td><td><b>' + esc(c.name) + '</b></td><td>' + esc(c.school) + '</td><td>' + esc(c.grade) +
       '</td><td>' + esc(c.parentPhone) + '</td><td>' + esc(c.addr) + '</td><td>' + esc(c.naesin) + '</td><td>' + esc(c.mock) + '</td><td>' + (c.tests.length ? c.tests.length + '회' + (last ? ' · ' + esc(last) : '') : '-') +
-      '</td><td><span class="pill' + (c.status === '등록' ? ' enr' : c.status === '상담 신청' ? ' req' : '') + '">' + esc(c.status) + '</span></td></tr>'; }).join('')
+      '</td><td><select class="stSel' + (c.status === '등록' ? ' enr' : c.status === '상담 신청' ? ' req' : '') + '" data-id="' + esc(c.cardId) + '" title="상태 바로 바꾸기">' +
+        CARD_STATUS.map(function (s) { return '<option' + (s === c.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td></tr>'; }).join('')
     : '<tr><td colspan="10" class="muted">저장된 상담 카드가 없습니다.</td></tr>';
   Array.prototype.forEach.call(document.querySelectorAll('#cardBody tr.click'), function (tr) {
     tr.onclick = function () { editCard(CARDS.filter(function (c) { return c.cardId === tr.getAttribute('data-id'); })[0]); }; });
+  // 목록에서 상태 바로 바꾸기 (행 클릭으로 편집 창이 열리지 않게 막음)
+  Array.prototype.forEach.call(document.querySelectorAll('#cardBody select.stSel'), function (sel) {
+    sel.onclick = function (e) { e.stopPropagation(); };
+    sel.onchange = function () {
+      var c = CARDS.filter(function (x) { return x.cardId === sel.getAttribute('data-id'); })[0], prev = c.status, next = sel.value;
+      sel.disabled = true;
+      api({ action: 'adminCardStatus', cardId: c.cardId, status: next }).then(function (r) {
+        if (!r.ok) throw new Error(r.error);
+        c.status = next; c.updated = r.updated || Date.now(); toast(c.name + ' · ' + next); renderCards();
+      }).catch(function (e) { sel.value = prev; sel.disabled = false; toast('바꾸지 못했습니다: ' + (e.message || e)); });
+    };
+  });
 }
 $('btnNewCard').onclick = function () { editCard({ cardId: '', name: '', school: '', grade: '', parentPhone: '', studentPhone: '', addr: '', naesin: '', mock: '', status: '상담 전', tests: [], memo: '' }); };
 function editCard(c) {
@@ -432,10 +448,26 @@ function editCard(c) {
     '<label style="display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px">메모</label><textarea id="ceMemo" rows="3" style="width:100%">' + esc(c.memo) + '</textarea>' +
     (c.tests.length ? '<p style="font-size:13.5px;margin:10px 0 0">레벨테스트: ' + c.tests.map(function (id) {
       return '<a href="#" data-test="' + esc(id) + '" style="color:var(--wine);font-weight:700;margin-right:10px">' + esc(testInfo(id) || '결과 보기') + '</a>'; }).join('') + '</p>' : '') +
-    '<div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary" id="ceSave">저장</button><button class="btn ghost" id="ceClose">닫기</button></div><div class="err" id="ceErr"></div>';
+    '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn primary" id="ceSave">저장</button><button class="btn ghost" id="ceClose">닫기</button>' +
+    (c.cardId ? '<span style="flex:1"></span><button class="btn ghost" id="ceDel" style="color:#b3261e;border-color:#e3a59f">카드 삭제</button>' : '') + '</div>' +
+    '<div id="ceDelAsk" style="display:none;margin-top:10px;padding:12px 14px;border-radius:10px;background:#fdecea;border:1px solid #e3a59f;font-size:13.5px;line-height:1.6">' +
+      '<b>' + esc(c.name) + '</b> 학생의 상담 카드를 삭제할까요? 되돌릴 수 없습니다.' + (c.tests.length ? '<br>레벨테스트 기록(응시 기록 탭)은 지워지지 않습니다.' : '') +
+      '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn primary" id="ceDelYes" style="background:#b3261e;border-color:#b3261e">삭제</button><button class="btn ghost" id="ceDelNo">취소</button></div></div>' +
+    '<div class="err" id="ceErr"></div>';
   $('cardEdit').style.display = '';
   Array.prototype.forEach.call(document.querySelectorAll('#cardEdit a[data-test]'), function (a) { a.onclick = function (e) { e.preventDefault(); tab('list'); openResult(a.getAttribute('data-test')); }; });
   $('ceClose').onclick = function () { $('cardEdit').style.display = 'none'; };
+  if (c.cardId) {
+    $('ceDel').onclick = function () { $('ceDelAsk').style.display = ''; };
+    $('ceDelNo').onclick = function () { $('ceDelAsk').style.display = 'none'; };
+    $('ceDelYes').onclick = function () {
+      $('ceDelYes').disabled = true;
+      api({ action: 'adminCardDelete', cardId: c.cardId }).then(function (r) {
+        if (!r.ok) { $('ceErr').textContent = r.error; $('ceDelYes').disabled = false; return; }
+        $('cardEdit').style.display = 'none'; toast('상담 카드를 삭제했습니다'); loadCards();
+      }).catch(function (e) { $('ceErr').textContent = '삭제하지 못했습니다: ' + (e.message || e); $('ceDelYes').disabled = false; });
+    };
+  }
   $('ceSave').onclick = function () {
     var card = { cardId: c.cardId, name: $('ceName').value.trim(), school: $('ceSchool').value.trim(), grade: $('ceGrade').value.trim(), parentPhone: $('ceP').value.trim(),
       studentPhone: $('ceS').value.trim(), addr: $('ceAddr').value.trim(), naesin: $('ceN').value.trim(), mock: $('ceM').value.trim(), status: $('ceSt').value, memo: $('ceMemo').value };
