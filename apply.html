@@ -2,40 +2,165 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>상담 신청 · 대단한영어</title>
-<meta http-equiv="refresh" content="3;url=https://talk.naver.com/profile/wccog3/form/1">
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<meta name="description" content="대단한영어 상담 신청서 — 남겨 주시면 원장이 직접 연락드립니다.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-  :root{--wine:#7A1020;--gold:#C9A84C;--ink:#3A2A20;}
+  :root{--wine:#7a1020;--gold:#C9A84C;--ink:#3a2a20;--muted:#7a6e66;--line:#e8e1dc;--bg:#faf8f6;--card:#fff;--warn:#b3261e}
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-    font-family:Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;
-    background:#FAF8F5;color:var(--ink);padding:24px;text-align:center}
-  .box{max-width:460px}
-  .brand{font-size:13px;letter-spacing:.14em;color:var(--gold);font-weight:700;margin-bottom:18px}
-  h1{font-size:24px;line-height:1.45;margin:0 0 14px;color:var(--wine)}
-  p{font-size:15px;line-height:1.7;color:#5A4A40;margin:0 0 26px}
-  a.go{display:inline-block;background:var(--wine);color:#fff;text-decoration:none;
-    padding:15px 30px;border-radius:12px;font-weight:700;font-size:16px}
-  a.go:hover{filter:brightness(1.1)}
-  .sub{margin-top:20px;font-size:13px;color:#8A7A70}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-text-size-adjust:100%}
+  button,input,select,textarea{font-family:inherit}
+  .hidden{display:none!important}
+  .top{background:var(--wine);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{font-weight:800;font-size:18px;letter-spacing:-.02em}
+  .brand small{font-weight:500;color:var(--gold);font-size:12px;margin-left:6px;letter-spacing:.08em}
+  .top a{color:#fff;opacity:.8;font-size:13px;text-decoration:none}
+  .wrap{max-width:760px;margin:0 auto;padding:22px 16px 40px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:16px}
+  h1{font-size:24px;margin:0 0 8px;letter-spacing:-.03em}
+  h2{font-size:17px;margin:0 0 12px}
+  .lead{color:var(--muted);font-size:14.5px;line-height:1.65;margin:0;word-break:keep-all}
+  .lead b{color:var(--ink)}
+  label.f{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+  label.f .opt{font-weight:400;color:var(--muted)}
+  label.f .req{color:var(--wine)}
+  input[type=text],input[type=tel],select,textarea{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;background:#fff;color:var(--ink)}
+  textarea{resize:vertical;line-height:1.55}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--wine)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .privacy{margin-top:22px;border:2px solid var(--wine);border-radius:14px;background:#fbf3f2;padding:16px 16px 14px;word-break:keep-all}
+  .privacy-h{font-size:16px;font-weight:800;color:var(--wine);margin-bottom:10px}
+  .privacy-h span{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;color:#fff;background:var(--wine);border-radius:999px;padding:2px 9px;vertical-align:2px}
+  .privacy dl{display:grid;grid-template-columns:76px 1fr;gap:7px 10px;margin:0;font-size:14px;line-height:1.55}
+  .privacy dt{font-weight:700}
+  .privacy dd{margin:0}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding-top:12px;border-top:1px solid #e9d3d0;font-size:14.5px;line-height:1.55}
+  .consent input{width:20px;height:20px;margin-top:2px;accent-color:var(--wine);flex:none}
+  .btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:12px;padding:15px 20px;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none}
+  .btn.primary{background:var(--wine);color:#fff;width:100%;margin-top:18px}
+  .btn.primary:disabled{opacity:.5;cursor:default}
+  .btn.line{background:#fff;color:var(--wine);border:1.5px solid var(--wine)}
+  .err{color:var(--warn);font-size:13.5px;margin-top:10px;min-height:1em}
+  .note{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.6}
+  .note a{color:var(--wine)}
+  .done-ico{width:64px;height:64px;border-radius:50%;background:var(--wine);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;margin:6px auto 14px}
+  .center{text-align:center}
+  @media (max-width:420px){.row2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-  <div class="box">
-    <div class="brand">GREATENG · 대단한영어</div>
-    <h1>상담 신청이<br>네이버 톡톡으로 통합되었습니다</h1>
-    <p>더 빠르고 확실한 답변을 위해 네이버 톡톡에서 상담을 받고 있습니다.<br>잠시 후 자동으로 이동합니다.</p>
-    <a class="go" href="https://talk.naver.com/profile/wccog3/form/1">네이버 톡톡으로 상담 신청하기</a>
-    <div class="sub">이동되지 않으면 위 버튼을 눌러주세요.</div>
+<div class="top"><div class="brand">대단한영어<small>CONSULTING</small></div><a href="main.html">홈으로</a></div>
+
+<!-- ① 신청서 -->
+<div class="wrap" id="vForm">
+  <div class="card">
+    <h1>상담 신청</h1>
+    <p class="lead">남겨 주신 연락처로 <b>원장이 직접 연락</b>드립니다. 수업 중에는 전화를 받기 어려워 <b>연락 가능한 시간</b>에 맞춰 드립니다.<br>
+      상담 때 <b>레벨테스트</b>(학원에서 응시)로 현재 실력을 확인하고 반을 안내해 드립니다.</p>
   </div>
+  <div class="card">
+    <h2>학생 정보</h2>
+    <div class="row2">
+      <div><label class="f" for="inName">학생 이름 <span class="req">*</span></label><input type="text" id="inName" maxlength="20" autocomplete="off"></div>
+      <div><label class="f" for="inGrade">학년 <span class="req">*</span></label>
+        <select id="inGrade"><option value="">선택</option><option>초5</option><option>초6</option><option>중1</option><option>중2</option><option>중3</option><option>고1</option><option>고2</option><option>고3</option></select></div>
+    </div>
+    <label class="f" for="inSchool">학교 <span class="opt">(선택)</span></label>
+    <input type="text" id="inSchool" maxlength="30" placeholder="예: 이동중학교" autocomplete="off">
+    <div class="row2">
+      <div><label class="f" for="inNaesin">최근 내신 영어 <span class="opt">(선택)</span></label><input type="text" id="inNaesin" maxlength="40" placeholder="예: 2학기 중간 58점" autocomplete="off"></div>
+      <div><label class="f" for="inMock">최근 모의고사 영어 <span class="opt">(선택)</span></label><input type="text" id="inMock" maxlength="40" placeholder="예: 고1 9월 2등급" autocomplete="off"></div>
+    </div>
+
+    <h2 style="margin:24px 0 0">연락처</h2>
+    <div class="row2">
+      <div><label class="f" for="inPPhone">학부모 전화번호 <span class="req">*</span></label><input type="tel" id="inPPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+      <div><label class="f" for="inSPhone">학생 전화번호 <span class="opt">(선택)</span></label><input type="tel" id="inSPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+    </div>
+    <label class="f" for="inWhen">연락 가능한 시간 <span class="req">*</span></label>
+    <input type="text" id="inWhen" maxlength="60" placeholder="예: 평일 오후 1~4시 / 주말 오전" autocomplete="off">
+    <label class="f" for="inAddr">사는 곳 <span class="opt">(선택 · 아파트 이름 또는 동까지만)</span></label>
+    <input type="text" id="inAddr" maxlength="30" placeholder="예: 이동 ○○아파트 / 대이동" autocomplete="off">
+    <label class="f" for="inMsg">궁금한 점 <span class="opt">(선택)</span></label>
+    <textarea id="inMsg" rows="4" maxlength="500" placeholder="예: 학교 내신 대비 수업이 궁금합니다. 현재 다른 학원에 다니고 있습니다."></textarea>
+    <div class="hp" aria-hidden="true"><label>website<input type="text" id="inWebsite" tabindex="-1" autocomplete="off"></label></div>
+
+    <div class="privacy">
+      <div class="privacy-h">개인정보 수집·이용 안내 <span>학부모님께서 꼭 읽어 주세요</span></div>
+      <dl>
+        <dt>수집 항목</dt><dd>학생 이름·학교·학년, 학부모·학생 전화번호, 연락 가능한 시간, 사는 곳(아파트 이름 또는 동까지), 최근 내신·모의고사 영어 성적, 궁금한 점</dd>
+        <dt>이용 목적</dt><dd>상담 신청 접수와 연락, 레벨테스트·반 배치 상담</dd>
+        <dt>보관 기간</dt><dd><b><span id="retention"></span> 보관 후 파기</b></dd>
+        <dt>동의 거부</dt><dd>동의하지 않으실 수 있으며, 이 경우 신청서를 접수할 수 없습니다. 전화나 네이버 톡톡으로 문의해 주세요.</dd>
+      </dl>
+      <label class="consent"><input type="checkbox" id="inConsent">
+        <span><b>위 내용을 읽었으며, 개인정보 수집·이용에 동의합니다.</b> (필수)</span></label>
+    </div>
+    <button class="btn primary" id="btnSend">상담 신청하기</button>
+    <div class="err" id="sendErr"></div>
+    <p class="note">간단한 문의는 <a href="https://talk.naver.com/profile/wccog3/form/1" target="_blank" rel="noopener">네이버 톡톡</a>으로도 받습니다.</p>
+  </div>
+</div>
+
+<!-- ② 완료 -->
+<div class="wrap hidden" id="vDone">
+  <div class="card center">
+    <div class="done-ico">✓</div>
+    <h1>신청했습니다</h1>
+    <p class="lead">적어 주신 <b>연락 가능한 시간</b>에 원장이 직접 연락드리겠습니다.<br>감사합니다.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap">
+      <a class="btn line" href="main.html">홈으로</a>
+      <a class="btn line" href="parent_guide.html">수업 안내 보기</a>
+    </div>
+  </div>
+</div>
+
 <script>
-  setTimeout(function(){
-    location.replace('https://talk.naver.com/profile/wccog3/form/1');
-  }, 2500);
+/* ============================================================
+ *  상담 신청서 (apply.html)
+ *  - 레벨테스트 GAS(apply 요청)로 보내 '상담카드' 시트에 '상담 신청' 상태로 저장
+ *  - GAS에 알림 이메일이 설정돼 있으면 원장에게 메일 발송
+ *  - 학생이 레벨테스트를 볼 때 학부모 번호로 이 카드를 불러와 이어서 씀
+ * ============================================================ */
+var CONFIG = {
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbwebAfNsoQcpNdCqxfGGF1YA6rj3-EhnswC-QT1TgCYFSoPP0U5e7AWhNrnl_IKM6aBUQ/exec',   // ← level.html과 같은 레벨테스트 GAS
+  RETENTION: '1년'                            // 개인정보 보관 기간 (level.html과 같게)
+};
+function $(id) { return document.getElementById(id); }
+function fmtPhone(v) { var d = String(v || '').replace(/\D/g, ''); return d.length === 11 ? d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7) : d.length === 10 ? d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6) : d; }
+function isPhone(v) { return /^01[016789]-\d{3,4}-\d{4}$/.test(v); }
+function tooDetailed(a) { return /\d+\s*호|\d+\s*동\s*\d+|\d+\s*번지|\d+-\d+|(로|길)\s*\d+/.test(a || ''); }
+$('retention').textContent = CONFIG.RETENTION;
+['inPPhone', 'inSPhone'].forEach(function (id) { $(id).addEventListener('blur', function () { this.value = fmtPhone(this.value); }); });
+
+$('btnSend').onclick = function () {
+  var b = { action: 'apply', name: $('inName').value.trim(), grade: $('inGrade').value, school: $('inSchool').value.trim(),
+    naesin: $('inNaesin').value.trim(), mock: $('inMock').value.trim(),
+    parentPhone: fmtPhone($('inPPhone').value), studentPhone: fmtPhone($('inSPhone').value),
+    when: $('inWhen').value.trim(), addr: $('inAddr').value.trim(), message: $('inMsg').value.trim(),
+    website: $('inWebsite').value, consent: $('inConsent').checked };
+  var err = !b.name ? '학생 이름을 입력해 주세요.' : !b.grade ? '학년을 선택해 주세요.' :
+    !b.parentPhone ? '학부모 전화번호를 입력해 주세요.' : !isPhone(b.parentPhone) ? '학부모 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
+    b.studentPhone && !isPhone(b.studentPhone) ? '학생 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
+    !b.when ? '연락 가능한 시간을 적어 주세요.' :
+    tooDetailed(b.addr) ? '사는 곳은 아파트 이름이나 동까지만 적어 주세요. (동·호수, 번지는 빼 주세요)' :
+    !b.consent ? '개인정보 수집·이용 안내를 읽고 동의해 주세요.' : '';
+  $('sendErr').textContent = err;
+  if (err) return;
+  $('btnSend').disabled = true; $('btnSend').textContent = '보내는 중…';
+  fetch(CONFIG.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) })
+    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      if (!r.ok) throw new Error(r.error || '신청하지 못했습니다.');
+      $('vForm').classList.add('hidden'); $('vDone').classList.remove('hidden'); window.scrollTo(0, 0);
+    }).catch(function (e) {
+      $('sendErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도하시거나 네이버 톡톡으로 문의해 주세요.';
+      $('btnSend').disabled = false; $('btnSend').textContent = '상담 신청하기';
+    });
+};
 </script>
 </body>
 </html>

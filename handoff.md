@@ -183,7 +183,25 @@
 - CSS 33~39행 `.privacy*` 7줄 추가(와인색 테두리·연분홍 배경, keep-all). 기존 `.consent details` CSS는 남겨 둠(사용처 없음, 무해).
 - 그대로 둔 것: 체크박스 id `inConsent`, `#retention`(225행 근처 `CONFIG.RETENTION` 주입), 시작 버튼 검증 문구('개인정보 수집·이용에 동의해 주세요.'), GAS 쪽 consent 검사. 안내 문구 내용(항목·목적·보관)도 기존과 동일, '동의 거부' 문장만 표현 정리.
 
+### 2026-11-07 (22차) — 자체 상담 신청서(apply.html) + 레벨테스트 상담카드 연동 + 이메일 알림
+- 지시(필립): 톡톡 상담서 대신 레벨테스트와 동기화되는 신청서로. 알림은 이메일(네이버 메일).
+- **apply.html 전면 교체**: 기존 '톡톡으로 통합' 자동 이동 페이지 → 상담 신청서. 항목: 학생 이름*·학년*(초5~고3)·학교·최근 내신·모의, 학부모 전화*·학생 전화·연락 가능한 시간*·사는 곳(동까지)·궁금한 점(500자). 숨은 칸 `inWebsite`(스팸 방지). 개인정보 안내 박스(21차와 같은 디자인, 목적='상담 신청 접수와 연락, 레벨테스트·반 배치 상담'). `CONFIG.GAS_URL`=레벨테스트 GAS, `CONFIG.RETENTION`='1년'. 완료 화면 `#vDone`. 톡톡은 하단 '간단한 문의' 링크로 남김. pohang_highschools.html 1447행의 apply.html 버튼은 그대로 새 신청서로 연결됨.
+- **LevelTest_Code.gs (GAS, 478행)**:
+  - `CARD_HEADERS` 15열 '상담 신청 내용' 추가(23~24행). `CARD_STATUS` 맨 앞에 '상담 신청'(26행). 기존 시트는 `cardSheet_()`(288행)가 15열 머리글을 자동 추가.
+  - 메뉴: '상담 신청 알림 이메일 설정'(`menuSetNotifyEmail` 81행, Script Property `NOTIFY_EMAIL`), '알림 메일 시험 발송'(`menuTestNotify` 93행). 메일 주소는 코드에 없음.
+  - `doPost` 115~116행: `apply`, `cardLookup` 추가.
+  - `cardUpsert_(f, testId, opts)` 309행: opts {status, request} 선택 인자. start_는 opts 없이 호출 → 기존 동작 동일.
+  - `apply_` 342행: 검증(이름·학년·학부모 번호·연락 시간·주소 상세 금지·동의) → CacheService로 같은 이름+번호 60초 중복 차단 → '상담 신청' 상태 카드 저장(같은 이름+번호 카드 있으면 갱신, 상태 유지) → `notifyApply_`(364행) MailApp 발송(실패해도 저장은 유지).
+  - `cardLookup_` 382행: 시작 코드 일치할 때만 학부모 번호로 카드(이름·학교·학년·학생 번호·주소·성적) 반환. 코드 없이 개인정보 조회 불가.
+- **level.html**: 130~131행 '상담 신청서 불러오기' 버튼(`#btnLookup`)+안내(`#lookupMsg`). 281~305행 `lookupMsg`·`fillFromCard`(빈칸만 채움)·`btnLookup` 핸들러(형제 여럿이면 confirmBox로 선택). CSS `.lookup` 33~36행. 154행 하단 링크 톡톡 → apply.html.
+- **level-admin.html**: 371행 CARD_STATUS에 '상담 신청', 41행 `.pill.req`(노란 배지), 405행 카드 편집에 신청서 내용 박스, 425~427행 CSV 마지막 열 '상담 신청 내용'.
+- **main.html**: 337행 히어로 '상담 신청하기' → apply.html, 529행 안내 문구(신청서 + 톡톡 문의 링크), 531행 '상담 신청서 작성' → apply.html.
+- 검증: mock GAS + Playwright(e2e_apply.py) — 빈칸·주소·동의 오류, 저장·메일 본문, 스팸 칸 미저장, 불러오기(번호 없음/코드 없음/코드 틀림/성공), 응시 후 같은 카드에 기록 연결, 관리 화면 표시 확인. 기존 e2e_card.py 통과.
+- 그대로 둔 것: 다른 페이지(newclass·parent_guide·summer·suneung_2026·yebigo·yebijung·pohang_highschools 1448행)의 톡톡 링크, 레벨테스트 start/submit/채점, 응시기록 시트 구조.
+
 ## 진행 중
+- **⚠ 레벨테스트 GAS 교체 필요(22차)**: LevelTest_Code.gs 통째로 교체 → 새 버전 배포 → 시트 메뉴 '상담 신청 알림 이메일 설정'에 네이버 메일 입력 → '알림 메일 시험 발송'(이때 메일 권한 승인). 교체 전에는 apply.html 제출이 '알 수 없는 요청'으로 실패함.
+- **다른 페이지 톡톡 상담 버튼(22차)**: newclass 304·533, parent_guide 533·883, summer 230·336, suneung_2026 749, yebigo 199·340, yebijung 222·372, pohang_highschools 1448행 — apply.html로 바꿀지 필립 확인 필요.
 - ~~레벨테스트 배포 (15차)~~ → 19차에서 URL 반영·main 병합 완료. **남은 것: 실제 시범 응시로 응시·결과·상담카드 시트 기록 확인.**
 - **개인정보 보관 기간**: level.html `CONFIG.RETENTION`('1년') 확정 필요. 응시기록 시트에서 기간 지난 행 삭제는 아직 수동.
 - **hub.html 연결 미정**: level-admin.html로 가는 링크를 관리자 허브에 넣을지, 상담 카드(18차, `상담카드` 시트)를 hub.html 신규 등록 폼(구상 중)에서 불러와 등록 정보로 쓸지 결정 필요.
