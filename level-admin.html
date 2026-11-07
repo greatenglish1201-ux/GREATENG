@@ -126,8 +126,8 @@
       <button class="btn ghost" id="btnReload">새로고침</button>
     </div>
     <div class="card" style="padding:6px 10px;overflow-x:auto">
-      <table class="list"><thead><tr><th>응시일</th><th>이름</th><th>학교</th><th>학년</th><th>시험지</th><th>점수</th><th>상태</th><th>등록</th></tr></thead>
-        <tbody id="listBody"><tr><td colspan="8" class="muted">불러오는 중…</td></tr></tbody></table>
+      <table class="list"><thead><tr><th>응시일</th><th>이름</th><th>학교</th><th>학년</th><th>학부모 연락처</th><th>시험지</th><th>점수</th><th>상태</th><th>등록</th></tr></thead>
+        <tbody id="listBody"><tr><td colspan="9" class="muted">불러오는 중…</td></tr></tbody></table>
     </div>
   </div>
 
@@ -141,10 +141,11 @@
       <button class="btn primary big" id="btnPrint">🖨 인쇄</button>
       <button class="btn line" id="btnCopy">텍스트 복사</button>
       <button class="btn line" id="btnShare">카카오톡·문자로 보내기</button>
-      <button class="btn line" id="btnSms">문자 앱 열기</button>
+      <button class="btn line" id="btnSms">학부모에게 문자</button>
       <button class="btn ghost" id="btnImg">이미지 저장</button>
     </div>
     <div class="teacher">
+      <div class="card" id="consultCard"></div>
       <div class="card">
         <h2>관리</h2>
         <label style="display:flex;gap:8px;align-items:center;font-size:14.5px"><input type="checkbox" id="chkEnr" style="width:18px;height:18px;accent-color:var(--wine)"> 등록함</label>
@@ -243,9 +244,9 @@ function renderList() {
   var rows = ALL.filter(function (r) { return (!ft || r.testId === ft) && (!fn || String(r.name).indexOf(fn) >= 0); });
   $('listBody').innerHTML = rows.length ? rows.map(function (r) {
     var st = r.status === '응시중' ? '<span class="pill ing">응시중</span>' : r.status === '시간초과' ? '<span class="pill late">시간초과</span>' : '<span class="pill">' + esc(r.status) + '</span>';
-    return '<tr class="' + (r.status === '응시중' ? '' : 'click') + '" data-id="' + esc(r.id) + '"><td>' + fmtDate(r.started) + '</td><td><b>' + esc(r.name) + '</b></td><td>' + esc(r.school) + '</td><td>' + esc(r.grade) +
+    return '<tr class="' + (r.status === '응시중' ? '' : 'click') + '" data-id="' + esc(r.id) + '"><td>' + fmtDate(r.started) + '</td><td><b>' + esc(r.name) + '</b></td><td>' + esc(r.school) + '</td><td>' + esc(r.grade) + '</td><td>' + esc(r.parentPhone || '') +
       '</td><td>' + esc(r.testLabel) + '</td><td><b>' + (r.score == null ? '-' : r.score) + '</b></td><td>' + st + '</td><td>' + (r.enrolled ? '<span class="pill enr">등록</span>' : '') + '</td></tr>';
-  }).join('') : '<tr><td colspan="8" class="muted">응시 기록이 없습니다.</td></tr>';
+  }).join('') : '<tr><td colspan="9" class="muted">응시 기록이 없습니다.</td></tr>';
   Array.prototype.forEach.call(document.querySelectorAll('#listBody tr.click'), function (tr) { tr.onclick = function () { openResult(tr.getAttribute('data-id')); }; });
 }
 
@@ -256,7 +257,7 @@ function openResult(id) {
   $('report').innerHTML = '<p class="muted">불러오는 중…</p>'; $('detail').innerHTML = '';
   api({ action: 'adminGet', id: id }).then(function (r) {
     if (!r.ok) throw new Error(r.error);
-    CUR = analyze(r); renderReport(CUR); renderDetail(CUR);
+    CUR = analyze(r); renderReport(CUR); renderDetail(CUR); renderConsult(r.record);
     $('chkEnr').checked = !!r.record.enrolled; $('memo').value = r.record.memo || '';
     window.scrollTo(0, 0);
   }).catch(function (e) { $('report').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
@@ -326,6 +327,14 @@ function renderReport(A) {
   $('report').classList.toggle('dense', A.wrong.length > 8);   // 오답이 많으면 인쇄 때 조금 축소해 한 장에 맞춤
 }
 
+// 상담 카드 (선생님용 · 인쇄되지 않음)
+function renderConsult(rec) {
+  var c = rec.card || {}, tel = function (v) { return v ? '<a href="tel:' + esc(v.replace(/-/g, '')) + '" style="color:var(--wine);font-weight:700">' + esc(v) + '</a>' : '<span class="muted">-</span>'; };
+  var row = function (k, v) { return '<tr><th style="width:150px;color:var(--muted);font-weight:600">' + k + '</th><td>' + v + '</td></tr>'; };
+  $('consultCard').innerHTML = '<h2>상담 카드 <span class="muted" style="font-size:13px;font-weight:500">(선생님용 · 인쇄되지 않음)</span></h2><table class="detail">' +
+    row('학생', esc(rec.name) + ' · ' + esc(rec.school || '-') + ' · ' + esc(rec.grade || '-')) + row('학부모 전화', tel(c.parentPhone)) + row('학생 전화', tel(c.studentPhone)) +
+    row('사는 곳', esc(c.addr || '-')) + row('최근 내신 영어', esc(c.naesin || '-')) + row('최근 모의고사 영어', esc(c.mock || '-')) + '</table>';
+}
 function renderDetail(A) {
   var t = A.test, rec = A.rec;
   $('detail').innerHTML = '<thead><tr><th>번호</th><th>단계</th><th>배점</th><th>유형·내용</th><th>답</th><th>정답</th><th>시간</th><th>해설</th></tr></thead><tbody>' +
@@ -373,7 +382,7 @@ $('btnShare').onclick = function () {
     return navigator.share({ text: text, title: '레벨테스트 결과' }).catch(function () {});
   });
 };
-$('btnSms').onclick = function () { location.href = 'sms:?&body=' + encodeURIComponent(resultText(CUR)); };
+$('btnSms').onclick = function () { var to = ((CUR.rec.card || {}).parentPhone || '').replace(/-/g, ''); location.href = 'sms:' + to + '?&body=' + encodeURIComponent(resultText(CUR)); };   // 학부모 번호로 문자 작성
 $('btnImg').onclick = function () {
   reportPng().then(function (blob) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName(); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000); })
     .catch(function (e) { toast(e.message); });

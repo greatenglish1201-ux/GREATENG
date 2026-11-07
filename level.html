@@ -24,7 +24,7 @@
   .lead{color:var(--muted);font-size:14.5px;line-height:1.65;margin:0}
   .lead b{color:var(--ink)}
   label.f{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
-  input[type=text],input[type=password],select{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;background:#fff;color:var(--ink)}
+  input[type=text],input[type=password],input[type=tel],select{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;background:#fff;color:var(--ink)}
   input:focus,select:focus{outline:none;border-color:var(--wine)}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .consent{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13.5px;line-height:1.55}
@@ -110,12 +110,24 @@
       </div>
       <label class="f" for="inSchool">학교</label>
       <input type="text" id="inSchool" maxlength="30" placeholder="예: 이동중학교" autocomplete="off">
+      <h2 style="margin:24px 0 2px">상담 카드</h2>
+      <p class="note" style="margin-top:0">상담과 결과 안내에 사용합니다. 학부모 연락처는 필수입니다.</p>
+      <div class="row2">
+        <div><label class="f" for="inPPhone">학부모 전화번호</label><input type="tel" id="inPPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+        <div><label class="f" for="inSPhone">학생 전화번호 <span style="font-weight:400;color:var(--muted)">(선택)</span></label><input type="tel" id="inSPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+      </div>
+      <label class="f" for="inAddr">사는 곳 <span style="font-weight:400;color:var(--muted)">(아파트 이름 또는 동까지만)</span></label>
+      <input type="text" id="inAddr" maxlength="30" placeholder="예: 이동 ○○아파트 / 대이동" autocomplete="off">
+      <div class="row2">
+        <div><label class="f" for="inNaesin">최근 내신 영어 <span style="font-weight:400;color:var(--muted)">(선택)</span></label><input type="text" id="inNaesin" maxlength="40" placeholder="예: 2학기 중간 58점" autocomplete="off"></div>
+        <div><label class="f" for="inMock">최근 모의고사 영어 <span style="font-weight:400;color:var(--muted)">(선택)</span></label><input type="text" id="inMock" maxlength="40" placeholder="예: 고1 9월 2등급" autocomplete="off"></div>
+      </div>
       <label class="f" for="inCode">시작 코드 <span style="font-weight:400;color:var(--muted)">(선생님이 입력)</span></label>
       <input type="password" id="inCode" maxlength="10" autocomplete="off" inputmode="text">
       <label class="consent"><input type="checkbox" id="inConsent">
         <span>개인정보 수집·이용에 동의합니다. (필수)
           <details><summary>자세히 보기</summary>
-            수집 항목: 이름, 학교, 학년, 시험 응답 · 목적: 레벨 확인과 반 배치 상담 · 보관: <span id="retention"></span> 후 파기 · 동의하지 않으면 응시할 수 없습니다.
+            수집 항목: 학생 이름·학교·학년, 학부모·학생 전화번호, 사는 곳(아파트 이름 또는 동까지), 최근 내신·모의고사 영어 성적, 시험 응답 · 목적: 레벨 확인, 반 배치 상담, 결과 안내 연락 · 보관: <span id="retention"></span> 후 파기 · 동의하지 않으면 응시할 수 없습니다.
           </details></span></label>
       <button class="btn primary" id="btnStart">시험 시작</button>
       <div class="err" id="startErr"></div>
@@ -193,6 +205,11 @@ function withUl(t, w) { t = String(t); if (!w || t.lastIndexOf(w) < 0) return es
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) {} }
 function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { return null; } }
 function clearSave() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} }
+// 전화번호: 숫자만 남겨 010-1234-5678 형태로
+function fmtPhone(v) { var d = String(v || '').replace(/\D/g, ''); return d.length === 11 ? d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7) : d.length === 10 ? d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6) : d; }
+function isPhone(v) { return /^01[016789]-\d{3,4}-\d{4}$/.test(v); }
+// 사는 곳: 아파트 동·호수, 번지까지 적으면 다시 입력하게 함
+function tooDetailed(a) { return /\d+\s*호|\d+\s*동\s*\d+|\d+\s*번지|\d+-\d+|(로|길)\s*\d+/.test(a || ''); }
 
 function api(body) {
   return fetch(CONFIG.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
@@ -221,8 +238,13 @@ $('btnDiscard').onclick = function () {
 };
 $('btnStart').onclick = function () {
   var body = { action: 'start', testId: $('testSel').value, name: $('inName').value.trim(), school: $('inSchool').value.trim(),
-    grade: $('inGrade').value, code: $('inCode').value.trim(), consent: $('inConsent').checked };
+    grade: $('inGrade').value, code: $('inCode').value.trim(), consent: $('inConsent').checked,
+    parentPhone: fmtPhone($('inPPhone').value), studentPhone: fmtPhone($('inSPhone').value), addr: $('inAddr').value.trim(),
+    naesin: $('inNaesin').value.trim(), mock: $('inMock').value.trim() };
   var err = !body.testId ? '시험지를 선택해 주세요.' : !body.name ? '이름을 입력해 주세요.' : !body.grade ? '학년을 선택해 주세요.' :
+    !body.parentPhone ? '학부모 전화번호를 입력해 주세요.' : !isPhone(body.parentPhone) ? '학부모 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
+    body.studentPhone && !isPhone(body.studentPhone) ? '학생 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
+    tooDetailed(body.addr) ? '사는 곳은 아파트 이름이나 동까지만 적어 주세요. (동·호수, 번지는 빼 주세요)' :
     !body.code ? '시작 코드를 입력해 주세요.' : !body.consent ? '개인정보 수집·이용에 동의해 주세요.' : '';
   $('startErr').textContent = err;
   if (err) return;
@@ -340,7 +362,7 @@ function confirmBox(html, btns) {
 }
 function closeAll() { $('modal').classList.add('hidden'); $('gridSheet').classList.add('hidden'); }
 $('btnHome').onclick = function () {
-  ['inName', 'inSchool', 'inCode'].forEach(function (x) { $(x).value = ''; });
+  ['inName', 'inSchool', 'inCode', 'inPPhone', 'inSPhone', 'inAddr', 'inNaesin', 'inMock'].forEach(function (x) { $(x).value = ''; });
   $('inGrade').value = ''; $('testSel').value = ''; $('inConsent').checked = false; $('resumeCard').style.display = 'none';
   show('vStart');
 };
