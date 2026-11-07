@@ -48,6 +48,12 @@
   .r-title{font-size:16px;font-weight:700}
   .r-info{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:13.5px;margin:10px 0 16px;color:#555}
   .r-info b{color:var(--ink);font-weight:700}
+  .r-consult{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #ddd;border-radius:10px;margin:-6px 0 16px;overflow:hidden}
+  .r-consult div{padding:7px 10px;border-right:1px solid #eee;font-size:12.5px;min-width:0}
+  .r-consult div:last-child{border-right:none}
+  .r-consult span{display:block;color:#888;font-size:11px;margin-bottom:2px}
+  .r-consult b{font-weight:700;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
+  @media (max-width:640px){.r-consult{grid-template-columns:1fr 1fr}.r-consult div{border-bottom:1px solid #eee}}
   .r-top{display:grid;grid-template-columns:190px 1fr;gap:18px;align-items:stretch;margin-bottom:16px}
   .r-score{border:1.5px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px}
   .r-score .s{font-size:46px;font-weight:800;color:var(--wine);line-height:1}
@@ -295,6 +301,10 @@ function renderReport(A) {
   var h = '<div class="r-head"><div class="r-brand">대단한영어<small>GREATENG</small></div><div class="r-title">레벨테스트 결과</div></div>';
   h += '<div class="r-info"><span>이름 <b>' + esc(rec.name) + '</b></span><span>학교 <b>' + esc(rec.school || '-') + '</b></span><span>학년 <b>' + esc(rec.grade || '-') +
     '</b></span><span>시험지 <b>' + esc(t.label) + '</b></span><span>응시일 <b>' + fmtDay(rec.started) + '</b></span><span>소요 시간 <b>' + fmtSec(rec.elapsed) + '</b> / ' + t.minutes + '분</span></div>';
+  // 상담 카드: 결과지를 보고 연락하므로 인쇄 결과지에 표시 (카카오톡·문자로 보내는 이미지에서는 빠짐 — reportPng 참고)
+  var cd = rec.card || {}, cv = function (v) { return esc(v || '-'); };
+  h += '<div class="r-consult"><div><span>학부모 연락처</span><b>' + cv(cd.parentPhone) + '</b></div><div><span>학생 연락처</span><b>' + cv(cd.studentPhone) +
+    '</b></div><div><span>사는 곳</span><b>' + cv(cd.addr) + '</b></div><div><span>최근 내신 영어</span><b>' + cv(cd.naesin) + '</b></div><div><span>최근 모의고사 영어</span><b>' + cv(cd.mock) + '</b></div></div>';
   h += '<div class="r-top"><div class="r-score"><div class="s">' + A.g.score + '<small> / 100</small></div><div class="l">총점</div></div><div>';
   h += '<p class="r-sub">단계별 정답</p><div class="bars">' + A.tierStat.map(function (x) {
     return '<div class="b"><span>' + x.lv + ' ' + esc(x.label) + '</span><span class="tr"><i style="width:' + (x.n ? x.c / x.n * 100 : 0) + '%"></i></span><span class="v">' + x.c + '/' + x.n + '</span></div>'; }).join('') + '</div>';
@@ -331,7 +341,7 @@ function renderReport(A) {
 function renderConsult(rec) {
   var c = rec.card || {}, tel = function (v) { return v ? '<a href="tel:' + esc(v.replace(/-/g, '')) + '" style="color:var(--wine);font-weight:700">' + esc(v) + '</a>' : '<span class="muted">-</span>'; };
   var row = function (k, v) { return '<tr><th style="width:150px;color:var(--muted);font-weight:600">' + k + '</th><td>' + v + '</td></tr>'; };
-  $('consultCard').innerHTML = '<h2>상담 카드 <span class="muted" style="font-size:13px;font-weight:500">(선생님용 · 인쇄되지 않음)</span></h2><table class="detail">' +
+  $('consultCard').innerHTML = '<h2>상담 카드 <span class="muted" style="font-size:13px;font-weight:500">(전화번호를 누르면 바로 연결)</span></h2><table class="detail">' +
     row('학생', esc(rec.name) + ' · ' + esc(rec.school || '-') + ' · ' + esc(rec.grade || '-')) + row('학부모 전화', tel(c.parentPhone)) + row('학생 전화', tel(c.studentPhone)) +
     row('사는 곳', esc(c.addr || '-')) + row('최근 내신 영어', esc(c.naesin || '-')) + row('최근 모의고사 영어', esc(c.mock || '-')) + '</table>';
 }
@@ -363,7 +373,8 @@ function copyText(s) {
 }
 function reportPng() {
   if (!window.html2canvas) return Promise.reject(new Error('이미지 도구를 불러오지 못했습니다.'));
-  return html2canvas($('report'), { scale: 2, backgroundColor: '#ffffff' }).then(function (cv) {
+  // 보내는 이미지에는 연락처·주소가 담긴 상담 카드 줄을 넣지 않음
+  return html2canvas($('report'), { scale: 2, backgroundColor: '#ffffff', ignoreElements: function (el) { return el.classList && el.classList.contains('r-consult'); } }).then(function (cv) {
     return new Promise(function (res) { cv.toBlob(function (b) { res(b); }, 'image/png'); });
   });
 }
