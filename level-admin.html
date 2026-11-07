@@ -169,6 +169,7 @@
 
   <!-- 상담 카드 (학생별로 저장 · 나중에 다시 찾아 쓰기) -->
   <div id="vCards" class="hidden">
+    <div id="mailWarn" style="display:none;margin-bottom:12px;padding:12px 14px;border-radius:12px;background:#fdecea;border:1.5px solid #e3a59f;color:#8a1c12;font-size:14px;line-height:1.55"></div>
     <div class="toolbar">
       <input type="text" id="cQ" placeholder="이름·학교·전화번호·사는 곳 검색">
       <select id="cSt"><option value="">전체 상태</option></select>
@@ -374,6 +375,10 @@ $('cQ').oninput = renderCards; $('cSt').onchange = renderCards;
 function loadCards() {
   $('cardBody').innerHTML = '<tr><td colspan="10" class="muted">불러오는 중…</td></tr>';
   api({ action: 'adminCards' }).then(function (r) {
+    var mw = r.mail || {};   // 최근 7일 상담 신청 알림 메일 실패·미발송
+    $('mailWarn').style.display = mw.bad ? '' : 'none';
+    if (mw.bad) $('mailWarn').innerHTML = '<b>⚠ 최근 7일 상담 신청 알림 메일 ' + mw.bad + '건이 가지 않았습니다.</b> 아래 \'상담 신청\' 카드를 직접 확인해 주세요.<br>' +
+      '마지막 사유: ' + esc(mw.last || '') + ' — 시트의 \'알림기록\' 탭, 메뉴 [알림 메일 시험 발송]으로 점검';
     CARDS = (r.cards || []).sort(function (x, y) { return (y.updated || 0) - (x.updated || 0); }); renderCards();   // 최근 수정 순
     if (OPEN_CARD_FOR_TEST) { var c = CARDS.filter(function (x) { return x.tests.indexOf(OPEN_CARD_FOR_TEST) >= 0; })[0]; OPEN_CARD_FOR_TEST = null; if (c) editCard(c); }
   });
