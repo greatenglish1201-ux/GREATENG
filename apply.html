@@ -30,6 +30,14 @@
   textarea{resize:vertical;line-height:1.55}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--wine)}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opts{display:grid;gap:8px}
+  .opts.row{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+  .choice{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:15px;line-height:1.45;cursor:pointer}
+  .choice input{width:18px;height:18px;margin-top:1px;accent-color:var(--wine);flex:none}
+  .choice:has(input:checked){border-color:var(--wine);background:#fbf1f2}
+  .agree{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14px;line-height:1.55;word-break:keep-all}
+  .agree input{width:20px;height:20px;margin-top:1px;accent-color:var(--wine);flex:none}
+  .agree a{color:var(--wine)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .privacy{margin-top:22px;border:2px solid var(--wine);border-radius:14px;background:#fbf3f2;padding:16px 16px 14px;word-break:keep-all}
   .privacy-h{font-size:16px;font-weight:800;color:var(--wine);margin-bottom:10px}
@@ -59,7 +67,8 @@
   <div class="card">
     <h1>상담 신청</h1>
     <p class="lead">남겨 주신 연락처로 <b>원장이 직접 연락</b>드립니다. 수업 중에는 전화를 받기 어려워 <b>연락 가능한 시간</b>에 맞춰 드립니다.<br>
-      상담 때 <b>레벨테스트</b>(학원에서 응시)로 현재 실력을 확인하고 반을 안내해 드립니다.</p>
+      상담 때 <b>레벨테스트</b>(학원에서 응시)로 현재 실력을 확인하고 반을 안내해 드립니다. 신청서를 내시면 레벨테스트 때 <b>학부모 번호만으로 바로 응시</b>할 수 있습니다.</p>
+    <p class="lead" style="margin-top:10px">신청 전에 <a href="parent_guide.html#guide" target="_blank" rel="noopener" style="color:var(--wine);font-weight:700">상담 가이드</a>를 꼭 읽어 주세요.</p>
   </div>
   <div class="card">
     <h2>학생 정보</h2>
@@ -68,8 +77,22 @@
       <div><label class="f" for="inGrade">학년 <span class="req">*</span></label>
         <select id="inGrade"><option value="">선택</option><option>초5</option><option>초6</option><option>중1</option><option>중2</option><option>중3</option><option>고1</option><option>고2</option><option>고3</option></select></div>
     </div>
-    <label class="f" for="inSchool">학교 <span class="opt">(선택)</span></label>
+    <label class="f" for="inSchool">학교 <span class="req">*</span></label>
     <input type="text" id="inSchool" maxlength="30" placeholder="예: 이동중학교" autocomplete="off">
+    <label class="f">성별 <span class="opt">(선택)</span></label>
+    <div class="opts row">
+      <label class="choice"><input type="radio" name="gender" value="남">남학생</label>
+      <label class="choice"><input type="radio" name="gender" value="여">여학생</label>
+    </div>
+    <label class="f">학생의 현재 영어 실력 <span class="opt">(선택 · 가장 가까운 것)</span></label>
+    <div class="opts" id="levelOpts">
+      <label class="choice"><input type="radio" name="level" value="기본개념이 잡혀 있고 고난도 문형 정복이 필요한 단계">기본개념이 잡혀 있고 고난도 문형 정복이 필요한 단계</label>
+      <label class="choice"><input type="radio" name="level" value="기본개념은 알고 있으나 연습이 필요한 단계">기본개념은 알고 있으나 연습이 필요한 단계</label>
+      <label class="choice"><input type="radio" name="level" value="기본개념이 부족하나 연습은 많이 한 단계">기본개념이 부족하나 연습은 많이 한 단계</label>
+      <label class="choice"><input type="radio" name="level" value="노력은 하나 공부 방법을 모르는 단계">노력은 하나 공부 방법을 모르는 단계</label>
+      <label class="choice"><input type="radio" name="level" value="처음부터 다시 배워야 할 단계">처음부터 다시 배워야 할 단계</label>
+      <label class="choice"><input type="radio" name="level" value="공부 습관 자체가 안 잡혀 있는 단계">공부 습관 자체가 안 잡혀 있는 단계</label>
+    </div>
     <div class="row2">
       <div><label class="f" for="inNaesin">최근 내신 영어 <span class="opt">(선택)</span></label><input type="text" id="inNaesin" maxlength="40" placeholder="예: 2학기 중간 58점" autocomplete="off"></div>
       <div><label class="f" for="inMock">최근 모의고사 영어 <span class="opt">(선택)</span></label><input type="text" id="inMock" maxlength="40" placeholder="예: 고1 9월 2등급" autocomplete="off"></div>
@@ -82,16 +105,25 @@
     </div>
     <label class="f" for="inWhen">연락 가능한 시간 <span class="req">*</span></label>
     <input type="text" id="inWhen" maxlength="60" placeholder="예: 평일 오후 1~4시 / 주말 오전" autocomplete="off">
-    <label class="f" for="inAddr">사는 곳 <span class="opt">(선택 · 아파트 이름 또는 동까지만)</span></label>
+    <label class="f" for="inAddr">사는 곳 <span class="req">*</span> <span class="opt">(아파트 이름 또는 동까지만)</span></label>
     <input type="text" id="inAddr" maxlength="30" placeholder="예: 이동 ○○아파트 / 대이동" autocomplete="off">
-    <label class="f" for="inMsg">궁금한 점 <span class="opt">(선택)</span></label>
-    <textarea id="inMsg" rows="4" maxlength="500" placeholder="예: 학교 내신 대비 수업이 궁금합니다. 현재 다른 학원에 다니고 있습니다."></textarea>
+    <label class="f" for="inRoute">대단한영어를 알게 된 경로 <span class="opt">(선택)</span></label>
+    <div class="row2">
+      <select id="inRoute"><option value="">선택</option><option>네이버 블로그</option><option>네이버 검색·플레이스</option><option>홈페이지</option><option>지인 소개</option><option>재원생·형제</option><option>기타</option></select>
+      <input type="text" id="inRef" maxlength="20" placeholder="추천인 (있으면)" autocomplete="off">
+    </div>
+    <label class="f" for="inMsg">상담받고 싶은 내용 <span class="req">*</span> <span class="opt">(20자 이상)</span></label>
+    <textarea id="inMsg" rows="4" maxlength="500" placeholder="예: 중2 2학기 기말 대비가 필요합니다. 문법이 약하고, 지금은 다른 학원에 다니고 있습니다."></textarea>
+    <div class="agree-wrap">
+      <label class="agree"><input type="checkbox" id="inGuide"><span><a href="parent_guide.html#guide" target="_blank" rel="noopener">상담 가이드</a>를 읽었고, 학원의 수업 방식을 확인했습니다. (필수)</span></label>
+      <label class="agree"><input type="checkbox" id="inContact"><span>적어 주신 시간에 원장이 연락드리면 받아 주시고, 일정이 바뀌면 미리 알려 주세요. (필수)</span></label>
+    </div>
     <div class="hp" aria-hidden="true"><label>website<input type="text" id="inWebsite" tabindex="-1" autocomplete="off"></label></div>
 
     <div class="privacy">
       <div class="privacy-h">개인정보 수집·이용 안내 <span>학부모님께서 꼭 읽어 주세요</span></div>
       <dl>
-        <dt>수집 항목</dt><dd>학생 이름·학교·학년, 학부모·학생 전화번호, 연락 가능한 시간, 사는 곳(아파트 이름 또는 동까지), 최근 내신·모의고사 영어 성적, 궁금한 점</dd>
+        <dt>수집 항목</dt><dd>학생 이름·학교·학년·성별, 학부모·학생 전화번호, 연락 가능한 시간, 사는 곳(아파트 이름 또는 동까지), 최근 내신·모의고사 영어 성적, 영어 실력 단계, 알게 된 경로·추천인, 상담 내용, 레벨테스트 응답</dd>
         <dt>이용 목적</dt><dd>상담 신청 접수와 연락, 레벨테스트·반 배치 상담</dd>
         <dt>보관 기간</dt><dd><b><span id="retention"></span> 보관 후 파기</b></dd>
         <dt>동의 거부</dt><dd>동의하지 않으실 수 있으며, 이 경우 신청서를 접수할 수 없습니다. 전화나 네이버 톡톡으로 문의해 주세요.</dd>
@@ -110,7 +142,7 @@
   <div class="card center">
     <div class="done-ico">✓</div>
     <h1>신청했습니다</h1>
-    <p class="lead">적어 주신 <b>연락 가능한 시간</b>에 원장이 직접 연락드리겠습니다.<br>감사합니다.</p>
+    <p class="lead">적어 주신 <b>연락 가능한 시간</b>에 원장이 직접 연락드리겠습니다.<br>레벨테스트 때는 <b>학부모 전화번호</b>만 알려 주시면 바로 응시할 수 있습니다.</p>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap">
       <a class="btn line" href="main.html">홈으로</a>
       <a class="btn line" href="parent_guide.html">수업 안내 보기</a>
@@ -132,6 +164,7 @@ var CONFIG = {
 function $(id) { return document.getElementById(id); }
 function fmtPhone(v) { var d = String(v || '').replace(/\D/g, ''); return d.length === 11 ? d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7) : d.length === 10 ? d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6) : d; }
 function isPhone(v) { return /^01[016789]-\d{3,4}-\d{4}$/.test(v); }
+function radio(n) { var el = document.querySelector('input[name="' + n + '"]:checked'); return el ? el.value : ''; }
 function tooDetailed(a) { return /\d+\s*호|\d+\s*동\s*\d+|\d+\s*번지|\d+-\d+|(로|길)\s*\d+/.test(a || ''); }
 $('retention').textContent = CONFIG.RETENTION;
 ['inPPhone', 'inSPhone'].forEach(function (id) { $(id).addEventListener('blur', function () { this.value = fmtPhone(this.value); }); });
@@ -141,12 +174,17 @@ $('btnSend').onclick = function () {
     naesin: $('inNaesin').value.trim(), mock: $('inMock').value.trim(),
     parentPhone: fmtPhone($('inPPhone').value), studentPhone: fmtPhone($('inSPhone').value),
     when: $('inWhen').value.trim(), addr: $('inAddr').value.trim(), message: $('inMsg').value.trim(),
+    gender: radio('gender'), level: radio('level'), route: $('inRoute').value, referrer: $('inRef').value.trim(),
+    agreeGuide: $('inGuide').checked, agreeContact: $('inContact').checked,
     website: $('inWebsite').value, consent: $('inConsent').checked };
-  var err = !b.name ? '학생 이름을 입력해 주세요.' : !b.grade ? '학년을 선택해 주세요.' :
+  var err = !b.name ? '학생 이름을 입력해 주세요.' : !b.grade ? '학년을 선택해 주세요.' : !b.school ? '학교를 입력해 주세요.' :
     !b.parentPhone ? '학부모 전화번호를 입력해 주세요.' : !isPhone(b.parentPhone) ? '학부모 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
     b.studentPhone && !isPhone(b.studentPhone) ? '학생 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
     !b.when ? '연락 가능한 시간을 적어 주세요.' :
+    !b.addr ? '사는 곳(아파트 이름이나 동)을 적어 주세요.' :
     tooDetailed(b.addr) ? '사는 곳은 아파트 이름이나 동까지만 적어 주세요. (동·호수, 번지는 빼 주세요)' :
+    b.message.length < 20 ? '상담받고 싶은 내용을 20자 이상 적어 주세요. (지금 ' + b.message.length + '자)' :
+    !b.agreeGuide ? '상담 가이드를 읽고 체크해 주세요.' : !b.agreeContact ? '연락 안내에 체크해 주세요.' :
     !b.consent ? '개인정보 수집·이용 안내를 읽고 동의해 주세요.' : '';
   $('sendErr').textContent = err;
   if (err) return;
