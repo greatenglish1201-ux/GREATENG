@@ -31,10 +31,15 @@
   .consent{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13.5px;line-height:1.55}
   .consent input{width:20px;height:20px;margin-top:2px;accent-color:var(--wine);flex:none}
   .consent details{color:var(--muted);font-size:12.5px;margin-top:4px}
-  .lookup{display:flex;gap:10px;align-items:center;margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.5;word-break:keep-all}
-  .lookup .btn{flex:none;padding:9px 14px;font-size:14px}
-  .lookup.ok span{color:var(--ok);font-weight:600}
-  .lookup.bad span{color:var(--warn)}
+  .quick{border:2px solid var(--gold)}
+  .qitem{border:1.5px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+  .qitem .qname{font-size:16px;font-weight:800}
+  .qitem .qmeta{font-size:13px;color:var(--muted);margin:3px 0 10px;line-height:1.5;word-break:keep-all}
+  .qitem .qrow{display:flex;gap:8px;align-items:center}
+  .qitem .qrow select{flex:1;padding:11px 12px}
+  .qitem .qrow .btn{flex:none;width:auto;padding:12px 16px;margin:0}
+  .qitem .qrow select{min-width:0}
+  .qitem .qedit{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--muted);background:none;border:none;padding:0;text-decoration:underline;cursor:pointer}
   .privacy{margin-top:20px;border:2px solid var(--wine);border-radius:14px;background:#fbf3f2;padding:16px 16px 14px;word-break:keep-all}
   .privacy-h{font-size:16px;font-weight:800;color:var(--wine);margin-bottom:10px}
   .privacy-h span{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;color:#fff;background:var(--wine);border-radius:999px;padding:2px 9px;vertical-align:2px}
@@ -111,8 +116,19 @@
       <p class="lead" id="resumeInfo"></p>
       <div class="nav"><button class="btn line" id="btnDiscard">새로 시작</button><button class="btn primary" style="margin-top:0" id="btnResume">이어서 풀기</button></div>
     </div>
+    <div class="card quick">
+      <h2>상담 신청서를 낸 학생</h2>
+      <p class="note" style="margin-top:0">학부모 전화번호와 시작 코드만 넣으면 <b>다시 입력하지 않고 바로 시작</b>합니다.</p>
+      <div class="row2">
+        <div><label class="f" for="qPhone">학부모 전화번호</label><input type="tel" id="qPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+        <div><label class="f" for="qCode">시작 코드 <span style="font-weight:400;color:var(--muted)">(선생님)</span></label><input type="password" id="qCode" maxlength="10" autocomplete="off"></div>
+      </div>
+      <button class="btn line" style="width:100%;margin-top:12px" id="btnFind">신청서 찾기</button>
+      <div id="qList"></div>
+      <div class="err" id="qErr"></div>
+    </div>
     <div class="card">
-      <h2>응시 정보</h2>
+      <h2>응시 정보 <span style="font-size:13px;font-weight:500;color:var(--muted)">· 신청서 없이 처음 오는 학생</span></h2>
       <label class="f" for="testSel">시험지</label>
       <select id="testSel"></select>
       <div class="row2">
@@ -128,8 +144,6 @@
         <div><label class="f" for="inPPhone">학부모 전화번호</label><input type="tel" id="inPPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
         <div><label class="f" for="inSPhone">학생 전화번호 <span style="font-weight:400;color:var(--muted)">(선택)</span></label><input type="tel" id="inSPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
       </div>
-      <div class="lookup"><button type="button" class="btn line" id="btnLookup">상담 신청서 불러오기</button>
-        <span id="lookupMsg">상담 신청서를 미리 내셨다면 학부모 번호와 시작 코드를 넣고 누르세요.</span></div>
       <label class="f" for="inAddr">사는 곳 <span style="font-weight:400;color:var(--muted)">(아파트 이름 또는 동까지만)</span></label>
       <input type="text" id="inAddr" maxlength="30" placeholder="예: 이동 ○○아파트 / 대이동" autocomplete="off">
       <div class="row2">
@@ -278,29 +292,56 @@ $('btnStart').onclick = function () {
   }).then(function () { $('btnStart').disabled = false; $('btnStart').textContent = '시험 시작'; });
 };
 
-/* ---------- 상담 신청서 불러오기 (apply.html에서 낸 카드를 학부모 번호로 찾아 빈칸 채우기) ---------- */
-function lookupMsg(t, cls) { var b = document.querySelector('.lookup'); b.className = 'lookup' + (cls ? ' ' + cls : ''); $('lookupMsg').textContent = t; }
-function fillFromCard(c) {
-  var set = function (id, v) { if (v && !$(id).value.trim()) $(id).value = v; };
-  set('inName', c.name); set('inSchool', c.school); set('inSPhone', c.studentPhone); set('inAddr', c.addr); set('inNaesin', c.naesin); set('inMock', c.mock);
-  if (c.grade && !$('inGrade').value && [].some.call($('inGrade').options, function (o) { return o.value === c.grade; })) $('inGrade').value = c.grade;
-  lookupMsg(c.name + ' 학생의 신청서를 불러왔습니다. 내용을 확인해 주세요.', 'ok');
+/* ---------- 상담 신청서를 낸 학생: 학부모 번호 + 시작 코드로 찾아 바로 시작 ---------- */
+var GRADE_TEST = { '초5': 'm1', '초6': 'm1', '중1': 'm1', '중2': 'm2', '중3': 'm3', '고1': 'h1', '고2': 'h2', '고3': 'h3' };
+function qOpts(grade) {
+  var def = GRADE_TEST[grade] || '';
+  return $('testSel').innerHTML.replace(' selected', '').replace('value="' + def + '"', 'value="' + def + '" selected');
 }
-$('btnLookup').onclick = function () {
-  var p = fmtPhone($('inPPhone').value), code = $('inCode').value.trim();
-  if (!isPhone(p)) { lookupMsg('학부모 전화번호를 먼저 입력해 주세요.', 'bad'); return; }
-  if (!code) { lookupMsg('시작 코드를 먼저 입력해 주세요. (선생님)', 'bad'); $('inCode').focus(); return; }
-  $('inPPhone').value = p; $('btnLookup').disabled = true; lookupMsg('찾는 중…');
+// '정보 고치기': 아래 입력란에 채워 넣고 그쪽에서 확인·수정 후 시작
+function fillFromCard(c, phone, code) {
+  var set = function (id, v) { if (v) $(id).value = v; };
+  set('inName', c.name); set('inSchool', c.school); set('inSPhone', c.studentPhone); set('inAddr', c.addr); set('inNaesin', c.naesin); set('inMock', c.mock);
+  $('inPPhone').value = phone; $('inCode').value = code;
+  if (c.grade && [].some.call($('inGrade').options, function (o) { return o.value === c.grade; })) $('inGrade').value = c.grade;
+  if (GRADE_TEST[c.grade] && !$('testSel').value) $('testSel').value = GRADE_TEST[c.grade];
+  $('inName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+$('btnFind').onclick = function () {
+  var p = fmtPhone($('qPhone').value), code = $('qCode').value.trim();
+  $('qList').innerHTML = '';
+  if (!isPhone(p)) { $('qErr').textContent = '학부모 전화번호를 확인해 주세요. (예: 010-1234-5678)'; return; }
+  if (!code) { $('qErr').textContent = '시작 코드를 입력해 주세요. (선생님)'; $('qCode').focus(); return; }
+  $('qPhone').value = p; $('qErr').textContent = ''; $('btnFind').disabled = true; $('btnFind').textContent = '찾는 중…';
   api({ action: 'cardLookup', parentPhone: p, code: code }).then(function (r) {
     if (!r.ok) throw new Error(r.error);
-    if (!r.cards.length) return lookupMsg('이 번호로 낸 신청서가 없습니다. 직접 입력해 주세요.', 'bad');
-    if (r.cards.length === 1) return fillFromCard(r.cards[0]);
-    confirmBox('<p><b>어느 학생인가요?</b></p><p style="color:var(--muted);font-size:14px">같은 학부모 번호로 여러 학생이 있습니다.</p>',
-      r.cards.slice(0, 3).map(function (c) { return [c.name + (c.grade ? ' (' + c.grade + ')' : ''), 'line', function () { fillFromCard(c); }]; }));
-    lookupMsg('학생을 골라 주세요.');
+    var list = r.cards.filter(function (c) { return c.applied; });
+    if (!list.length) throw new Error('이 번호로 낸 상담 신청서가 없습니다. 아래 \'응시 정보\'에 직접 입력해 주세요.');
+    $('qList').innerHTML = list.map(function (c, i) {
+      return '<div class="qitem"><div class="qname">' + esc(c.name) + '</div><div class="qmeta">' + esc([c.grade, c.school, c.addr].filter(Boolean).join(' · ')) +
+        (c.naesin || c.mock ? '<br>' + esc([c.naesin && '내신 ' + c.naesin, c.mock && '모의 ' + c.mock].filter(Boolean).join(' · ')) : '') + '</div>' +
+        '<div class="qrow"><select data-i="' + i + '">' + qOpts(c.grade) + '</select><button class="btn primary" data-go="' + i + '">바로 시작</button></div>' +
+        '<button class="qedit" data-edit="' + i + '">정보가 바뀌었나요? 고쳐서 시작하기</button></div>'; }).join('');
+    [].forEach.call($('qList').querySelectorAll('[data-go]'), function (b) {
+      b.onclick = function () {
+        var i = +b.getAttribute('data-go'), c = list[i], testId = $('qList').querySelector('select[data-i="' + i + '"]').value;
+        if (!testId) { $('qErr').textContent = '시험지를 선택해 주세요.'; return; }
+        $('qErr').textContent = ''; b.disabled = true; b.textContent = '불러오는 중…';
+        api({ action: 'startByCard', parentPhone: p, code: code, name: c.name, testId: testId }).then(function (r) {
+          if (!r.ok) throw new Error(r.error || '시작하지 못했습니다.');
+          S = { token: r.token, test: r.test, name: c.name, answers: {}, times: {}, startedAt: Date.now(), cur: 0 };
+          save(); startExam();
+        }).catch(function (e) {
+          $('qErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.';
+        }).then(function () { b.disabled = false; b.textContent = '바로 시작'; });
+      };
+    });
+    [].forEach.call($('qList').querySelectorAll('[data-edit]'), function (b) {
+      b.onclick = function () { fillFromCard(list[+b.getAttribute('data-edit')], p, code); };
+    });
   }).catch(function (e) {
-    lookupMsg(e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다.', 'bad');
-  }).then(function () { $('btnLookup').disabled = false; });
+    $('qErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다.';
+  }).then(function () { $('btnFind').disabled = false; $('btnFind').textContent = '신청서 찾기'; });
 };
 
 /* ---------- 시험 ---------- */
