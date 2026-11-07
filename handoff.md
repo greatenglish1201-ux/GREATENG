@@ -169,7 +169,7 @@
 
 ### 2026-11-07 (19차) — 레벨테스트 GAS 배포 URL 반영, main 병합
 - 필립이 새 GAS(레벨테스트 전용 스프레드시트) 설치·배포 완료 → 웹 앱 URL `…/AKfycbwebAfNsoQcpNdCqxfGGF1YA6rj3-EhnswC-QT1TgCYFSoPP0U5e7AWhNrnl_IKM6aBUQ/exec`.
-- level.html 177행·level-admin.html `CONFIG.GAS_URL`에 위 URL 입력. `leveltest-online` 브랜치를 main에 병합해 홈페이지에 반영(메인 nav·허브 카드의 레벨테스트 링크 포함).
+- level.html 189행·level-admin.html 214행 `CONFIG.GAS_URL`에 위 URL 입력. `leveltest-online` 브랜치를 main에 병합해 홈페이지에 반영(메인 nav·허브 카드의 레벨테스트 링크 포함).
 - 이 세션 환경에서는 script.google.com 접속이 막혀 응답을 직접 확인하지 못함 → 필립이 브라우저로 URL·시범 응시 확인 필요.
 - ⚠️ 이후 GAS 수정 시: 전체 백업 → 파일 통째로 교체 → 배포 관리 > 연필 > 새 버전(새 배포를 만들면 URL이 바뀌어 두 페이지를 다시 고쳐야 함).
 
