@@ -355,7 +355,7 @@
     <p class="field-label">등록할 곳</p>
     <div class="reg-targets">
       <label class="reg-tg"><input type="checkbox" id="regTgVoca" checked>
-        <span class="tg-name">단어시험<span class="tg-sub">「학생명단」 — 단어출제 명단</span></span>
+        <span class="tg-name">단어시험<span class="tg-sub">「학생명단」 — 이름·반(내신시험 클래스와 같은 값)</span></span>
         <span class="tg-st" id="regStVoca"></span></label>
       <label class="reg-tg"><input type="checkbox" id="regTgHw" checked>
         <span class="tg-name">숙제점검<span class="tg-sub">「전체 명단」 — 이름·학년·등록일·과정·클래스·학교</span></span>
@@ -939,7 +939,7 @@
 <script>
 /* ============================================================
    [추가 2026-11-04] 신규생 통합 등록
-   - 단어시험 GAS  : type=registerStudent   → 「학생명단」 A열
+   - 단어시험 GAS  : type=registerStudent   → 「학생명단」 A열 이름 + 반 열(cls)
    - 숙제점검 GAS  : type=registerStudent   → 「전체 명단」 + 제출현황 동기화(runAll)
    - index 로그인 GAS(v12): action=registerStudent → 통합분석어시스트 「학생」
    - 모두 JSONP(GET). 이미 있는 이름은 각 GAS가 건너뜀(action:'exists') → 재시도해도 중복 없음
@@ -1068,7 +1068,7 @@
       }).catch(function(e){ setSt(key,'err','❌ ' + e.message); return 'err'; }));
     };
     ['voca','hw','login'].forEach(function(k){ if(!tg[k]) setSt(k,'','건너뜀'); });
-    if(tg.voca)  run('voca',  REG_URL.voca,  { type:'registerStudent', name:f.name });
+    if(tg.voca)  run('voca',  REG_URL.voca,  { type:'registerStudent', name:f.name, cls:f.cls });
     if(tg.hw)    run('hw',    REG_URL.hw,    { type:'registerStudent', name:f.name, grade:f.grade, regDate:f.date, course:f.course, klass:f.klass, school:f.school });
     if(tg.login) run('login', REG_URL.login, { action:'registerStudent', name:f.name, password:f.pw, startDate:f.date, cls:f.cls });
 
