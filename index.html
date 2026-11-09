@@ -2288,6 +2288,32 @@ ${ESC_}
                 </div>
               </div>;
             })()}
+            {/* 학생 선택 시: 학습량 부족 안내 (인쇄 리포트와 같은 계산 — 기준일 이후 일수×30 대비 푼 문항) */}
+            {selectedStudent&&(()=>{
+              const stuRec=(students||[]).find(s=>s.name===selectedStudent);
+              const x=stuRec&&stuRec.startDate||'',y=stuRec&&stuRec.statsFrom||'';
+              const dx=x?new Date(x):null,dy=y?new Date(y):null,vx=dx&&!isNaN(dx),vy=dy&&!isNaN(dy);
+              const base=(vx&&vy)?(dx>=dy?x:y):(vx?x:(vy?y:''));
+              if(!base)return null;
+              const sd0=new Date(base); if(isNaN(sd0))return null; sd0.setHours(0,0,0,0);
+              const t0=new Date(); t0.setHours(0,0,0,0);
+              const days=Math.floor((t0-sd0)/86400000)+1; if(days<1)return null;
+              let done=0;
+              (stats.sessionStats||[]).forEach(s=>{
+                const sdate=new Date(String(s.date||'').replace(' ','T'));
+                if(isNaN(sdate)||sdate<sd0)return;
+                String(s.detail||'').split('||').filter(Boolean).forEach(line=>{ if(line.split('|').length>=3)done++; });
+              });
+              const target=days*30, short=target-done;
+              if(!(done<target*0.9))return null; // 인쇄 리포트와 같은 기준: 목표의 90% 미만일 때만 표시
+              return <div style={{background:'#fef2f2',border:'1.5px solid #fca5a5',borderRadius:14,marginBottom:12,padding:'12px 16px',display:'flex',alignItems:'flex-start',gap:9}}>
+                <span style={{fontSize:17,lineHeight:1.2}}>⚠️</span>
+                <div style={{fontSize:12.5,color:'#7f1d1d',lineHeight:1.6}}>
+                  <b style={{color:'#b91c1c',fontSize:13}}>학습량 부족 안내</b><br/>
+                  기준일({base}) 이후 <b>{days}일</b> 기준 목표 <b>{target}문항</b>(하루 30문항) 대비 시작일 이후 <b>{done}문항</b>을 풀어, <b style={{color:'#b91c1c'}}>약 {short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.
+                </div>
+              </div>;
+            })()}
             {/* 학생 선택 시: 시험범위 커버리지 + 진짜 약점 */}
             {selectedStudent&&(stats.sessionStats||[]).length>0&&(()=>{
               // 약점/커버리지는 공통 헬퍼로 계산 (인쇄와 동일 결과 보장)
@@ -2521,8 +2547,9 @@ ${ESC_}
                         })}
                       {weak.length>0&&<div style={{marginTop:10,padding:'10px 12px',borderRadius:10,background:'#fcf8f0',border:'1px solid #efe6d4',fontSize:11.5,color:'#7a6a55',lineHeight:1.75}}>
                         <div style={{fontWeight:800,color:'#7a1020',marginBottom:4}}>📘 약점 점수 계산 방법 <span style={{fontWeight:400,color:'#9a8570'}}>(우측 숫자, 높을수록 약점)</span></div>
-                        <div><b style={{color:'#3a2a20'}}>① 풀이 1회의 오답값</b>: 오답 = 1, 정답 = 0~0.3</div>
-                        <div style={{paddingLeft:12}}>· 정답은 직전 풀이와 간격이 짧을수록 0.3(같은 날 다시 맞힘 = 아직 덜 굳음), 3일·7일 뒤 맞히면 0.11·0.03으로 거의 0(진짜 극복).</div>
+                        <div><b style={{color:'#3a2a20'}}>① 풀이마다 ‘틀림 점수’(0~1)를 매겨 평균</b>: 틀리면 1, 맞히면 0~0.3 (마이너스 없음)</div>
+                        <div style={{paddingLeft:12}}>· 같은 날 다시 맞히면 0.3(아직 덜 굳음), 3일 뒤 맞히면 0.11, 7일 뒤 맞히면 0.03(거의 익힘)</div>
+                        <div style={{paddingLeft:12}}>· 예) 틀림 → 같은 날 맞힘 → 3일 뒤 맞힘 → 7일 뒤 맞힘 = (1+0.3+0.11+0.03)÷4 ≈ 36점 (②·③ 적용 전 기본값)</div>
                         <div><b style={{color:'#3a2a20'}}>② 표본 보정</b> (Wilson 95% 하한): 푼 횟수가 적으면 우연일 수 있어 점수를 자동으로 낮춥니다.</div>
                         <div style={{paddingLeft:12}}>· 예) 1번 풀어 1번 틀린 지문보다 5번 풀어 4번 틀린 지문이 더 확실한 약점으로 올라옵니다.</div>
                         <div><b style={{color:'#3a2a20'}}>③ 최근성</b>: <b>지문 5회·유형 3회 이상</b> 푼 항목은 최근 풀이에 더 큰 비중을 둡니다.</div>
