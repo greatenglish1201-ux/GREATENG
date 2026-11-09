@@ -212,6 +212,19 @@
   .tg-st.wait{ color:var(--ink-3); } .tg-st.ok{ color:#2f7d4f; } .tg-st.exist{ color:#9a7a2c; } .tg-st.err{ color:#a83232; }
   .reg-msg{ font-size:13px; font-weight:600; margin:0 0 14px; line-height:1.5; white-space:pre-line; }
   .reg-msg.err{ color:#a83232; } .reg-msg.ok{ color:#2f7d4f; }
+  /* ===== [추가 2026-11-09] 퇴원 처리 ===== */
+  .wd-list{ max-height:230px; overflow-y:auto; border:1px solid var(--line); border-radius:12px; margin-bottom:14px; }
+  .wd-item{ display:flex; align-items:center; gap:8px; padding:9px 12px; font-size:13px; font-weight:600; color:var(--ink-2); cursor:pointer; border-bottom:1px solid var(--line); }
+  .wd-item:last-child{ border-bottom:none; }
+  .wd-item:hover{ background:var(--fill); }
+  .wd-item.sel{ background:#f6e9eb; color:var(--wine); }
+  .wd-item .wd-k{ font-size:11px; color:var(--ink-3); font-weight:500; }
+  .wd-item .wd-tags{ margin-left:auto; display:flex; gap:4px; }
+  .wd-tag{ font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px; background:var(--fill); color:var(--ink-3); }
+  .wd-tag.off{ text-decoration:line-through; opacity:.6; }
+  .wd-empty{ padding:14px; font-size:13px; color:var(--ink-3); text-align:center; }
+  .wd-confirm{ background:#fbeaea; border:1px solid #e3b4b4; border-radius:12px; padding:12px 14px; font-size:13px; line-height:1.6; color:#7a1f1f; margin-bottom:14px; white-space:pre-line; }
+  .btn-danger{ background:#a83232 !important; border-color:#a83232 !important; color:#fff !important; }
 </style>
 </head>
 <body>
@@ -224,6 +237,7 @@
   <div class="sort-ctrl">
     <div style="display:flex; gap:8px;">
       <button id="regOpen" class="sort-btn reg-open-btn">＋ 신규생 등록</button>
+      <button id="wdOpen" class="sort-btn">퇴원 처리</button>
       <button id="editToggle" class="sort-btn">카드 편집</button>
       <button id="groupToggle" class="sort-btn">그룹 관리</button>
     </div>
@@ -370,6 +384,40 @@
     <div class="modal-actions">
       <button class="btn-cancel" id="regClose">닫기</button>
       <button class="btn-apply" id="regSubmit">등록</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== [추가 2026-11-09] 퇴원 처리 모달 — 숙제점검·단어시험 명단 삭제, 내신시험 활성화 해제 ===== -->
+<div class="modal-back" id="wdModal">
+  <div class="modal reg-modal">
+    <h3>퇴원 처리</h3>
+    <p class="sub">숙제점검·단어시험은 명단에서 삭제하고, 내신시험은 '활성화'만 해제합니다. 시험·숙제 기록은 남습니다.</p>
+
+    <p class="field-label">학생 선택</p>
+    <input class="text-input" id="wdSearch" placeholder="이름·클래스로 찾기" autocomplete="off">
+    <div class="wd-list" id="wdList"><div class="wd-empty">명단 불러오는 중…</div></div>
+
+    <p class="field-label">처리할 곳</p>
+    <div class="reg-targets">
+      <label class="reg-tg"><input type="checkbox" id="wdTgVoca">
+        <span class="tg-name">단어시험<span class="tg-sub">「학생명단」에서 행 삭제 — 시험기록·오답노트 보존</span></span>
+        <span class="tg-st" id="wdStVoca"></span></label>
+      <label class="reg-tg"><input type="checkbox" id="wdTgHw">
+        <span class="tg-name">숙제점검<span class="tg-sub">「전체 명단」에서 행 삭제 + 학생 동기화 — 제출 기록 보존</span></span>
+        <span class="tg-st" id="wdStHw"></span></label>
+      <label class="reg-tg"><input type="checkbox" id="wdTgLogin">
+        <span class="tg-name">내신시험 (통합분석어시스트)<span class="tg-sub">「학생」 활성화 해제 — 행·결과 보존, 다시 체크하면 복귀</span></span>
+        <span class="tg-st" id="wdStLogin"></span></label>
+    </div>
+
+    <div class="wd-confirm" id="wdConfirm" style="display:none"></div>
+    <p class="reg-msg" id="wdMsg"></p>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="wdClose">닫기</button>
+      <button class="btn-apply" id="wdSubmit" disabled>퇴원 처리</button>
     </div>
   </div>
 </div>
@@ -1058,7 +1106,11 @@
     const run = function(key, url, params){
       setSt(key, 'wait', '⏳ 처리 중');
       jobs.push(jsonp(url, params, 45000).then(function(r){
-        if(r && r.ok && r.action === 'exists'){ setSt(key,'exist','☑ 이미 있음'); return 'exist'; }
+        if(r && r.ok && r.action === 'exists'){
+          // 내신시험에 퇴원(비활성) 상태로 남아 있는 학생 → 재등록 시 활성화는 직접 (index 관리자 학생 관리)
+          if(key === 'login' && (r.active === 'FALSE' || r.active === '비활성')){ setSt(key,'exist','☑ 이미 있음 · 비활성 — index 관리자 학생 관리에서 활성화 체크'); return 'exist'; }
+          setSt(key,'exist','☑ 이미 있음'); return 'exist';
+        }
         if(r && r.ok){
           if(key === 'hw' && r.synced === false){ setSt(key,'ok','✅ 등록됨 (현황 갱신은 시트에서 확인)'); }
           else setSt(key,'ok','✅ 등록됨');
@@ -1107,6 +1159,182 @@
     }
   });
   modal.addEventListener('click', function(e){ if(e.target === modal) closeReg(); });
+})();
+</script>
+
+<script>
+/* ============================================================
+   [추가 2026-11-09] 퇴원 처리
+   - 명단 = 숙제점검 roster ∪ 단어시험 getList ∪ 내신시험 getStudents (어느 한 곳에만 있어도 선택 가능)
+   - 단어시험 GAS  : type=withdrawStudent   → 「학생명단」 행 삭제
+   - 숙제점검 GAS  : type=withdrawStudent   → 「전체 명단」 행 삭제 + runAll
+   - index 로그인 GAS(v13): action=withdrawStudent → 「학생」 활성화 FALSE
+   - 확인 단계 1번 거친 뒤 실행. 기존 카드/그룹·신규생 등록 스크립트와 변수 공유 없음
+   ============================================================ */
+(function(){
+  const URL = {
+    voca:  'https://script.google.com/macros/s/AKfycbwGq_DTjgzjJbacIodVE859aa_Ke4LxL28-sIbv-nRkecAaJefL179BKN4Jgr2F9xXKRw/exec',
+    hw:    'https://script.google.com/macros/s/AKfycbwu_6vMigAhIXq8o-4mda7Gyd1dfiC5nSsT0Ei9Ckwlwuc_OGMAEb9FybGB6lOJcsbL/exec',
+    login: 'https://script.google.com/macros/s/AKfycbyzDwEtCDj2wS_bPeujjVY52pvrmAMG7KtcupXDD05lb8EXfanJCsfYB44iKsCuOGVV/exec'
+  };
+  const $ = (id)=> document.getElementById(id);
+  const modal = $('wdModal');
+  const TG = { voca:'wdTgVoca', hw:'wdTgHw', login:'wdTgLogin' };
+  const ST = { voca:'wdStVoca', hw:'wdStHw', login:'wdStLogin' };
+  const LABEL = { voca:'단어시험', hw:'숙제점검', login:'내신시험' };
+  let people = [];      // [{name, klass, voca, hw, login, loginActive}]
+  let selected = null;
+  let confirming = false;
+  let busy = false;
+
+  function esc(v){ return String(v==null?'':v).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+  function norm(v){ return String(v || '').normalize('NFKC').replace(/[​-‍﻿ ]/g,' ').replace(/\s+/g,' ').trim(); }
+  function jsonp(url, params, timeoutMs){
+    return new Promise(function(resolve, reject){
+      const cb = '__wd_cb_' + Date.now() + '_' + Math.floor(Math.random()*1e6);
+      const qs = Object.keys(params).map(function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); }).join('&');
+      const s = document.createElement('script');
+      let done = false;
+      const timer = setTimeout(function(){ finish(); reject(new Error('응답 시간 초과')); }, timeoutMs || 45000);
+      function finish(){ done = true; clearTimeout(timer); try{ delete window[cb]; }catch(e){ window[cb] = undefined; } if(s.parentNode) s.parentNode.removeChild(s); }
+      window[cb] = function(data){ if(done) return; finish(); resolve(data); };
+      s.onerror = function(){ if(done) return; finish(); reject(new Error('연결 실패')); };
+      s.src = url + '?' + qs + '&callback=' + cb + '&t=' + Date.now();
+      document.body.appendChild(s);
+    });
+  }
+  function setSt(k, cls, t){ const el=$(ST[k]); el.className='tg-st '+(cls||''); el.textContent=t||''; }
+  function setMsg(cls, t){ const m=$('wdMsg'); m.className='reg-msg '+(cls||''); m.textContent=t||''; }
+  /* 곳별로 처리(또는 이미 없음)되면 화면 명단에 즉시 반영 — 재시도 때도 누적 */
+  function markDone(name, k){
+    people.forEach(function(p){ if(p.name===name){ if(k==='voca') p.voca=false; if(k==='hw') p.hw=false; if(k==='login') p.loginActive=false; } });
+  }
+  function hideConfirm(){ confirming=false; $('wdConfirm').style.display='none'; $('wdSubmit').textContent='퇴원 처리'; $('wdSubmit').classList.remove('btn-danger'); }
+
+  function loadPeople(){
+    selected = null; people = []; updateTargets();
+    $('wdList').innerHTML = '<div class="wd-empty">명단 불러오는 중…</div>';
+    const map = {};
+    const get = function(n){ const k=norm(n); if(!k) return null; return map[k] || (map[k]={ name:k, klass:'', voca:false, hw:false, login:false, loginActive:false }); };
+    const fails = [];
+    const jobs = [
+      jsonp(URL.hw, { type:'roster' }, 30000).then(function(d){
+        ((d && d.students) || []).forEach(function(x){ const p=get(x.name); if(p){ p.hw=true; if(x.klass) p.klass=String(x.klass); } });
+      }).catch(function(){ fails.push('숙제점검'); }),
+      jsonp(URL.voca, { type:'getList' }, 30000).then(function(d){
+        (Array.isArray(d) ? d : []).forEach(function(n){ const p=get(n); if(p) p.voca=true; });
+      }).catch(function(){ fails.push('단어시험'); }),
+      jsonp(URL.login, { action:'getStudents' }, 30000).then(function(d){
+        ((d && d.students) || []).forEach(function(x){ const p=get(x.name); if(p){ p.login=true; const a=String(x.active||'').trim(); p.loginActive = !(a==='FALSE'||a==='비활성'||a==='false'); if(!p.klass && x.cls) p.klass=String(x.cls); } });
+      }).catch(function(){ fails.push('내신시험'); })
+    ];
+    Promise.all(jobs).then(function(){
+      people = Object.keys(map).map(function(k){ return map[k]; })
+        .filter(function(p){ return p.voca || p.hw || (p.login && p.loginActive); })   // 이미 모두 퇴원된 학생은 제외
+        .sort(function(a,b){ return (a.klass||'힣').localeCompare(b.klass||'힣','ko') || a.name.localeCompare(b.name,'ko'); });
+      renderList();
+      if(fails.length) setMsg('err', fails.join('·') + ' 명단을 불러오지 못했습니다. 그곳 상태는 확인되지 않으니 체크 상태를 확인하세요.');
+    });
+  }
+  function renderList(){
+    const q = norm($('wdSearch').value);
+    const list = people.filter(function(p){ return !q || p.name.indexOf(q) >= 0 || (p.klass||'').indexOf(q) >= 0; });
+    if(!list.length){ $('wdList').innerHTML = '<div class="wd-empty">' + (people.length ? '검색 결과 없음' : '재원생 명단이 비어 있습니다') + '</div>'; return; }
+    $('wdList').innerHTML = list.map(function(p){
+      const tags = [p.voca?'<span class="wd-tag">단어</span>':'', p.hw?'<span class="wd-tag">숙제</span>':'',
+                    p.login?('<span class="wd-tag'+(p.loginActive?'':' off')+'">내신</span>'):''].join('');
+      return '<div class="wd-item' + (selected && selected.name===p.name ? ' sel' : '') + '" data-n="' + esc(p.name) + '">' +
+             esc(p.name) + (p.klass ? ' <span class="wd-k">' + esc(p.klass) + '</span>' : '') + '<span class="wd-tags">' + tags + '</span></div>';
+    }).join('');
+  }
+  function updateTargets(){
+    const p = selected;
+    $(TG.voca).checked  = !!(p && p.voca);
+    $(TG.hw).checked    = !!(p && p.hw);
+    $(TG.login).checked = !!(p && p.login && p.loginActive);
+    Object.keys(ST).forEach(function(k){ setSt(k, '', p ? ( k==='login' ? (!p.login ? '명단에 없음' : (p.loginActive ? '' : '이미 비활성')) : (p[k] ? '' : '명단에 없음') ) : ''); });
+    $('wdSubmit').disabled = !p;
+    hideConfirm();
+  }
+
+  function submit(){
+    if(busy || !selected) return;
+    const tg = { voca:$(TG.voca).checked, hw:$(TG.hw).checked, login:$(TG.login).checked };
+    const keys = Object.keys(tg).filter(function(k){ return tg[k]; });
+    if(!keys.length){ setMsg('err','처리할 곳을 하나 이상 선택하세요.'); return; }
+    if(!confirming){
+      confirming = true;
+      const lines = [];
+      if(tg.hw)    lines.push('· 숙제점검 「전체 명단」에서 삭제');
+      if(tg.voca)  lines.push('· 단어시험 「학생명단」에서 삭제');
+      if(tg.login) lines.push('· 내신시험 활성화 해제');
+      $('wdConfirm').textContent = selected.name + ' 학생을 퇴원 처리합니다.\n' + lines.join('\n') +
+        ((tg.hw||tg.voca) ? '\n명단에서 삭제한 곳은 되돌리려면 신규생 등록으로 다시 넣어야 합니다(기록은 남아 있습니다).' : '');
+      $('wdConfirm').style.display = 'block';
+      try{ $('wdConfirm').scrollIntoView({ block:'center', behavior:'smooth' }); }catch(e){}   // 휴대폰에서 확인 문구가 화면 밖에 뜨지 않도록
+      $('wdSubmit').textContent = '확인 — 퇴원 처리 진행';
+      $('wdSubmit').classList.add('btn-danger');
+      setMsg('','');
+      return;
+    }
+    busy = true;
+    const name = selected.name;
+    const btn = $('wdSubmit'); btn.disabled = true; btn.textContent = '처리 중…';
+    $('wdConfirm').style.display = 'none';
+    const params = {
+      voca:  { type:'withdrawStudent', name:name },
+      hw:    { type:'withdrawStudent', name:name },
+      login: { action:'withdrawStudent', name:name }
+    };
+    Object.keys(tg).forEach(function(k){ if(!tg[k]) setSt(k,'','건너뜀'); });
+    Promise.all(keys.map(function(k){
+      setSt(k,'wait','⏳ 처리 중');
+      return jsonp(URL[k], params[k], 45000).then(function(r){
+        if(r && r.ok){
+          markDone(name, k);
+          if(r.action === 'notfound'){ setSt(k,'exist','☑ 명단에 없음'); return 'skip'; }
+          if(r.action === 'already'){ setSt(k,'exist','☑ 이미 비활성'); return 'skip'; }
+          if(k==='hw' && r.synced === false) setSt(k,'ok','✅ 삭제됨 (현황 갱신은 시트에서 확인)');
+          else setSt(k,'ok', k==='login' ? '✅ 활성화 해제됨' : '✅ 삭제됨');
+          return 'ok';
+        }
+        setSt(k,'err','❌ ' + ((r && (r.error||r.msg)) || '실패')); return 'err';
+      }).catch(function(e){ setSt(k,'err','❌ ' + e.message); return 'err'; });
+    })).then(function(res){
+      busy = false; confirming = false;
+      btn.classList.remove('btn-danger'); btn.textContent = '퇴원 처리';
+      const nErr = res.filter(function(x){ return x==='err'; }).length;
+      if(nErr){
+        // 실패한 곳만 체크 남김 → 같은 학생으로 다시 누르면 그곳만 재시도
+        keys.forEach(function(k,i){ $(TG[k]).checked = (res[i]==='err'); });
+        btn.disabled = false;
+        setMsg('err', '실패한 곳이 ' + nErr + '곳 있습니다. 실패한 곳만 체크된 상태로 다시 "퇴원 처리"를 누르세요.\n(이미 처리된 곳은 다시 보내도 문제없습니다)');
+      } else {
+        setMsg('ok', name + ' 퇴원 처리 완료.\n단어출제·숙제 화면이 열려 있으면 새로고침해야 반영됩니다.');
+        // 처리된 학생 표시 갱신 (서버 재조회 없이, markDone 으로 이미 반영됨)
+        people = people.filter(function(p){ return p.voca || p.hw || (p.login && p.loginActive); });
+        selected = null; $('wdSubmit').disabled = true;
+        renderList();
+        Object.keys(TG).forEach(function(k){ $(TG[k]).checked = false; });
+      }
+    });
+  }
+
+  $('wdOpen').addEventListener('click', function(){
+    $('wdSearch').value=''; setMsg('',''); modal.classList.add('active'); loadPeople();
+  });
+  $('wdClose').addEventListener('click', function(){ if(!busy) modal.classList.remove('active'); });
+  modal.addEventListener('click', function(e){ if(e.target===modal && !busy) modal.classList.remove('active'); });
+  $('wdSearch').addEventListener('input', renderList);
+  $('wdList').addEventListener('click', function(e){
+    if(busy) return;
+    const it = e.target.closest('.wd-item'); if(!it) return;
+    const n = it.getAttribute('data-n');
+    selected = people.find(function(p){ return p.name===n; }) || null;
+    setMsg('',''); updateTargets(); renderList();
+  });
+  Object.keys(TG).forEach(function(k){ $(TG[k]).addEventListener('change', hideConfirm); });
+  $('wdSubmit').addEventListener('click', submit);
 })();
 </script>
 </body>
