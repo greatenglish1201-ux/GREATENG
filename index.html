@@ -1914,7 +1914,14 @@ ${ESC_}
     const weakPidSec=SO.weakPid&&weakPidExHtml?psec(nx(),'진짜 약점 — 지문',`상위 ${Math.min(EX_PID_MAX,(Wk&&Wk.weakPid.length)||0)}개 · 왜 약점인지`,weakPidExHtml):'';
     const typeDiagSec=showTypeDiag&&typeDiagExHtml?psec(nx(),'유형별 진단',`약점 상위 ${EX_TYPE_MAX}개 · 원인`,typeDiagExHtml):'';
     const bookSec=SO.book&&bookHtml?psec(nx(),'교재별 정답률','',bookHtml):'';
-    const sessSec=SO.sess&&sessHtml?psec(nx(),'회차별 기록','최근 순 · 날짜 시각 | 점수 | 정답률',`<div class="sess">${sessions.map(x=>`<div class="se"><span class="se-d">${esc(String(x.date).slice(5,10))}${String(x.date).length>10?`<i>${esc(String(x.date).slice(11,16))}</i>`:''}</span><span class="se-s">${esc(x.score)}</span><b style="color:${rateColor(x.rate)}">${esc(x.rate)}%</b></div>`).join('')}</div>`):'';
+    // 회차별 기록: 최근 7일만 기본 표시(세로 정렬 다단), 이전 기록은 '더 보기'로 펼침 — 접힌 상태로 인쇄하면 이전 기록은 인쇄되지 않음
+    const _sessCell=x=>`<div class="se"><span class="se-d">${esc(String(x.date).slice(5,10))}${String(x.date).length>10?`<i>${esc(String(x.date).slice(11,16))}</i>`:''}</span><span class="se-s">${esc(x.score)}</span><b style="color:${rateColor(x.rate)}">${esc(x.rate)}%</b></div>`;
+    const _t0=new Date(); _t0.setHours(0,0,0,0); const _cut=new Date(_t0.getTime()-6*86400000);
+    const _isRecent=x=>{const d=new Date(String(x.date||'').replace(' ','T')); return !isNaN(d)&&d>=_cut;};
+    const _sRecent=sessions.filter(_isRecent), _sOld=sessions.filter(x=>!_isRecent(x));
+    const sessSec=SO.sess&&sessHtml?psec(nx(),'회차별 기록',`최근 7일 ${_sRecent.length}회 · 전체 ${sessions.length}회 · 날짜 시각 | 점수 | 정답률`,
+      (_sRecent.length?`<div class="sess">${_sRecent.map(_sessCell).join('')}</div>`:`<div style="font-size:10.5px;color:#888;padding:2px 0">최근 7일 동안 응시 기록이 없습니다.</div>`)
+      +(_sOld.length?`<details class="sold"><summary>이전 기록 ${_sOld.length}회 더 보기</summary><div class="sess">${_sOld.map(_sessCell).join('')}</div></details>`:'')):'';
     const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(dispName)} 약점 분석 리포트</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -1974,9 +1981,13 @@ ${ESC_}
 .blindc .ps>div:last-child>div:first-child{columns:1}
 .blindc .ps>div:last-child>div>div{break-inside:avoid}
 /* 회차별 기록: 좁은 항목 5열 + 열 사이 세로선 */
-.sess{display:grid;grid-template-columns:repeat(5,1fr);column-gap:0}
+.sess{columns:5;column-gap:0;column-rule:1px solid #e3e3e6}
 .se{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:3px 8px;font-size:10.5px;border-left:1px solid #e3e3e6;border-bottom:1px solid #f1f1f3;break-inside:avoid}
-.se:nth-child(5n+1){border-left:none;padding-left:2px}
+.se{border-left:none!important}
+.sold summary{cursor:pointer;font-size:10.5px;font-weight:700;color:var(--ac);padding:5px 0 3px;list-style:none}
+.sold summary::-webkit-details-marker{display:none}
+.sold summary::before{content:'▾ '}.sold[open] summary::before{content:'▴ '}
+@media print{.sold:not([open]){display:none}}
 .se-d{color:#555;white-space:nowrap}.se-d i{font-style:normal;color:#aaa;margin-left:3px;font-size:9.5px}
 .se-s{color:#222;margin-left:auto}
 .se b{min-width:30px;text-align:right}
