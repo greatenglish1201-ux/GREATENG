@@ -336,7 +336,14 @@ function analyze(r) {
       String(it.cover || it.type).split(/\s+·\s+/).forEach(function (k) { if (k && k !== s.name && topics.indexOf(k) < 0) topics.push(k); }); });
     return { text: s.name + ' ' + lvs.join('·') + '단계', topics: topics };
   });
-  return { rec: rec, test: t, g: g, secStat: secStat, tierStat: tierStat, wrong: wrong, okMap: okMap, good: good, weak: weak };
+  // 고등: 같은 시험 안의 내신형·수능형 문항을 따로 집계 (문항 데이터의 kind, 두 종류가 다 있을 때만)
+  var kindStat = ['내신', '수능'].map(function (k) {
+    var its = t.items.filter(function (it) { return it.kind === k; });
+    return { name: k + '형', n: its.length, c: its.filter(function (it) { return okMap[it.n].ok; }).length,
+      pt: its.filter(function (it) { return okMap[it.n].ok; }).reduce(function (a, it) { return a + it.pt; }, 0), max: its.reduce(function (a, it) { return a + it.pt; }, 0) };
+  }).filter(function (k) { return k.n; });
+  if (kindStat.length < 2) kindStat = [];
+  return { rec: rec, test: t, g: g, secStat: secStat, tierStat: tierStat, kindStat: kindStat, wrong: wrong, okMap: okMap, good: good, weak: weak };
 }
 
 function topicStr(t) { return t.length > 8 ? t.slice(0, 8).join(', ') + ' 외 ' + (t.length - 8) + '가지' : t.join(', '); }
@@ -355,6 +362,8 @@ function renderReport(A) {
     return '<div class="b"><span>' + x.lv + ' ' + esc(x.label) + '</span><span class="tr"><i style="width:' + (x.n ? x.c / x.n * 100 : 0) + '%"></i></span><span class="v">' + x.c + '/' + x.n + '</span></div>'; }).join('') + '</div>';
   h += '<p class="r-sub" style="margin-top:10px">영역별 정답</p><div class="bars">' + A.secStat.map(function (s) {
     return '<div class="b"><span>' + esc(s.name) + '</span><span class="tr"><i style="width:' + (s.c / s.n * 100) + '%;background:linear-gradient(90deg,#c2a259,#e7cd86)"></i></span><span class="v">' + s.c + '/' + s.n + '</span></div>'; }).join('') + '</div>';
+  if (A.kindStat.length) h += '<p class="r-sub" style="margin-top:10px">내신형 · 수능형 정답</p><div class="bars">' + A.kindStat.map(function (k) {
+    return '<div class="b"><span>' + esc(k.name) + ' (' + k.pt + '/' + k.max + '점)</span><span class="tr"><i style="width:' + (k.c / k.n * 100) + '%;background:linear-gradient(90deg,#7a1020,#a8344a)"></i></span><span class="v">' + k.c + '/' + k.n + '</span></div>'; }).join('') + '</div>';
   h += '</div></div>';
   h += '<table class="grid"><thead><tr><th>영역 \\ 단계</th>' + A.tierStat.map(function (x) { return '<th>' + x.lv + ' (' + esc(x.label) + ')</th>'; }).join('') + '<th>합계</th></tr></thead><tbody>' +
     A.secStat.map(function (s) {
@@ -505,7 +514,8 @@ function resultText(A) {
     '시험지: ' + t.label + ' · 응시일 ' + fmtDay(rec.started),
     '총점: ' + A.g.score + ' / 100',
     '영역별: ' + A.secStat.map(function (s) { return s.name + ' ' + s.c + '/' + s.n; }).join(' · '),
-    '단계별: ' + A.tierStat.map(function (x) { return x.lv + '(' + x.label + ') ' + x.c + '/' + x.n; }).join(' · ')];
+    A.kindStat.length ? '내신형·수능형: ' + A.kindStat.map(function (k) { return k.name + ' ' + k.c + '/' + k.n + ' (' + k.pt + '/' + k.max + '점)'; }).join(' · ') : '',
+    '단계별: ' + A.tierStat.map(function (x) { return x.lv + '(' + x.label + ') ' + x.c + '/' + x.n; }).join(' · ')].filter(function (x) { return x !== ''; });
   if (A.good.length) L.push('잘한 부분: ' + A.good.join(', '));
   A.weak.forEach(function (w, i) { L.push((i ? '　　　　　  ' : '보완할 부분: ') + w.text + (w.topics.length ? ' (틀린 문항에서 다룬 내용: ' + topicStr(w.topics) + ')' : '')); });
   L.push('', '자세한 내용은 상담 때 설명드리겠습니다. — 대단한영어');
