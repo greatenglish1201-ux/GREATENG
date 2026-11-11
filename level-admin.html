@@ -124,6 +124,7 @@
     .r-top{grid-template-columns:170px 1fr}
     table.wrong th,table.wrong td{padding:3px 5px}
     #report.dense{zoom:.84}
+    #report.dense2{zoom:.76}
     #report,#report *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
 </style>
@@ -379,6 +380,7 @@ function renderReport(A) {
   h += '</div><div class="r-foot"><span><b>대단한영어</b> 레벨테스트 · ' + esc(t.label) + '</span><span>결과에 대한 자세한 설명은 상담 때 드립니다</span></div>';
   $('report').innerHTML = h;
   $('report').classList.toggle('dense', A.wrong.length > 8);   // 오답이 많으면 인쇄 때 조금 축소해 한 장에 맞춤
+  $('report').classList.toggle('dense2', A.wrong.length > 16);   // 중등 4영역(해석 추가) + 오답이 아주 많을 때 한 단계 더 축소
 }
 
 // 상담 카드 (선생님용 · 인쇄되지 않음)
