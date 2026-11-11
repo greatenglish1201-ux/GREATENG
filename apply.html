@@ -2,40 +2,273 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>상담 신청 · 대단한영어</title>
-<meta http-equiv="refresh" content="3;url=https://talk.naver.com/profile/wccog3/form/1">
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<meta name="description" content="대단한영어 상담 신청서 — 남겨 주시면 원장이 직접 연락드립니다.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="icon" type="image/svg+xml" href="/GREATENG/image/favicon.svg">
 <style>
-  :root{--wine:#7A1020;--gold:#C9A84C;--ink:#3A2A20;}
+  /* main.html과 같은 색·글꼴 (네이비 + 골드 + 와인) */
+  :root{--navy:#0e1626;--navy-2:#16223a;--navy-3:#1f2f4d;--wine:#7a1020;--wine-deep:#5a0b18;
+    --gold:#C9A84C;--gold-soft:#e3cd8a;--gold-deep:#9a7f33;--ink:#1c2433;--paper:#f7f8fa;--paper-2:#eef1f6;
+    --line:#dde2ec;--muted:#5c6678;--warn:#b3261e}
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-    font-family:Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;
-    background:#FAF8F5;color:var(--ink);padding:24px;text-align:center}
-  .box{max-width:460px}
-  .brand{font-size:13px;letter-spacing:.14em;color:var(--gold);font-weight:700;margin-bottom:18px}
-  h1{font-size:24px;line-height:1.45;margin:0 0 14px;color:var(--wine)}
-  p{font-size:15px;line-height:1.7;color:#5A4A40;margin:0 0 26px}
-  a.go{display:inline-block;background:var(--wine);color:#fff;text-decoration:none;
-    padding:15px 30px;border-radius:12px;font-weight:700;font-size:16px}
-  a.go:hover{filter:brightness(1.1)}
-  .sub{margin-top:20px;font-size:13px;color:#8A7A70}
+  html,body{margin:0;background:var(--paper);color:var(--ink);-webkit-text-size-adjust:100%;
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    letter-spacing:-0.014em;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font-family:inherit;letter-spacing:inherit}
+  .hidden{display:none!important}
+  .goldtext{background:linear-gradient(92deg,#b8943f 0%,#e7cd86 24%,#fff4d6 40%,#e7cd86 54%,#c2a259 72%,#f0dca0 88%,#d9bd72 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+  /* 상단 바 */
+  .gnav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;
+    background:rgba(14,22,38,.94);backdrop-filter:saturate(150%) blur(12px);border-bottom:1px solid rgba(201,168,76,.18)}
+  .gnav-brand{font-size:16px;font-weight:800;text-decoration:none;color:#fff}
+  .gnav-brand span{font-weight:600;color:rgba(255,255,255,.55);margin-left:6px;font-size:13.5px}
+  .gnav a.home{font-size:13px;font-weight:600;color:rgba(255,255,255,.88);text-decoration:none;border:1px solid rgba(255,255,255,.28);padding:6px 14px;border-radius:980px}
+
+  /* 히어로 */
+  .hero{position:relative;background:linear-gradient(165deg,var(--navy),var(--navy-2) 60%,var(--navy-3));color:#fff;padding:52px 22px 96px;overflow:hidden}
+  .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  .hero-in{max-width:760px;margin:0 auto}
+  .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.14em;color:var(--gold-soft);margin-bottom:14px}
+  .hero h1{font-size:clamp(30px,6vw,42px);font-weight:800;letter-spacing:-0.035em;line-height:1.18;margin:0 0 14px}
+  .hero p{font-size:16px;color:rgba(255,255,255,.8);line-height:1.65;margin:0;max-width:600px;word-break:keep-all}
+  .hero p b{color:#fff}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+  .step{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:14px 14px 13px}
+  .step i{display:block;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--gold-soft);margin-bottom:5px}
+  .step b{display:block;font-size:14.5px;font-weight:700;letter-spacing:-0.02em;line-height:1.4;word-break:keep-all}
+  @media(max-width:560px){.hero{padding:40px 18px 88px}.steps{grid-template-columns:1fr}.step{display:flex;gap:10px;align-items:baseline;padding:11px 14px}.step i{margin:0}}
+
+  /* 본문 */
+  .wrap{max-width:760px;margin:-64px auto 0;padding:0 16px 48px;position:relative}
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 28px;margin-bottom:16px;box-shadow:0 14px 40px rgba(14,22,38,.08)}
+  @media(max-width:560px){.card{padding:24px 18px}}
+  .intro-note{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--muted);line-height:1.6;word-break:keep-all}
+  .intro-note::before{content:"";flex:none;width:4px;align-self:stretch;border-radius:4px;background:var(--gold)}
+  .intro-note a{color:var(--wine);font-weight:700}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin:34px 0 4px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .sec-h:first-of-type{margin-top:26px}
+  .sec-h i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-deep)}
+  .sec-h h2{font-size:19px;font-weight:700;letter-spacing:-0.025em;margin:0}
+  label.f{display:block;font-size:13.5px;font-weight:600;margin:18px 0 7px;color:var(--ink)}
+  label.f .opt{font-weight:400;color:var(--muted)}
+  label.f .req{color:var(--wine)}
+  input[type=text],input[type=tel],select,textarea{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:12px;font-size:16px;background:var(--paper);color:var(--ink);transition:border-color .15s,box-shadow .15s,background .15s}
+  textarea{resize:vertical;line-height:1.6}
+  input:focus,select:focus,textarea:focus{outline:none;background:#fff;border-color:var(--navy-3);box-shadow:0 0 0 3px rgba(201,168,76,.28)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .opts{display:grid;gap:8px}
+  .opts.row{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+  .choice{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font-size:15px;line-height:1.45;cursor:pointer;word-break:keep-all;transition:border-color .15s,background .15s}
+  .choice input{width:18px;height:18px;margin-top:1px;accent-color:var(--navy);flex:none}
+  .choice:hover{border-color:#c6cddb}
+  .choice:has(input:checked){border-color:var(--navy);background:#fff;box-shadow:inset 3px 0 0 var(--gold);font-weight:600}
+  .agree-wrap{margin-top:18px;padding:4px 16px 14px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
+  .agree{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14px;line-height:1.55;word-break:keep-all}
+  .agree input{width:20px;height:20px;margin-top:1px;accent-color:var(--navy);flex:none}
+  .agree a{color:var(--wine);font-weight:700}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+  /* 개인정보 안내 — 학부모가 꼭 읽도록 강조 (21차 지시) */
+  .privacy{margin-top:26px;border:1.5px solid var(--wine);border-radius:16px;background:#fff;overflow:hidden;word-break:keep-all}
+  .privacy-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:linear-gradient(165deg,var(--wine),var(--wine-deep));color:#fff;font-size:16px;font-weight:800;padding:13px 18px}
+  .privacy-h span{font-size:12px;font-weight:700;color:var(--wine);background:var(--gold-soft);border-radius:980px;padding:3px 10px}
+  .privacy dl{display:grid;grid-template-columns:78px 1fr;gap:9px 12px;margin:0;padding:16px 18px 4px;font-size:14px;line-height:1.6}
+  .privacy dt{font-weight:700;color:var(--wine)}
+  .privacy dd{margin:0}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin:12px 18px 16px;padding-top:14px;border-top:1px solid #ecd9dc;font-size:15px;line-height:1.55}
+  .consent input{width:21px;height:21px;margin-top:1px;accent-color:var(--wine);flex:none}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:980px;padding:16px 28px;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;letter-spacing:-0.01em;transition:transform .15s,opacity .15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.primary{width:100%;margin-top:22px;background:linear-gradient(165deg,var(--navy),var(--navy-3));color:var(--gold-soft);box-shadow:0 8px 22px rgba(14,22,38,.22);font-size:17px}
+  .btn.primary:disabled{opacity:.5;cursor:default;transform:none}
+  .btn.line{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:var(--gold);color:var(--ink)}
+  .err{color:var(--warn);font-size:14px;font-weight:600;margin-top:12px;min-height:1em;text-align:center}
+  .note{font-size:13px;color:var(--muted);margin:14px 0 0;line-height:1.6;text-align:center}
+  .note a{color:var(--wine);font-weight:600}
+
+  /* 완료 */
+  .done{text-align:center;padding:40px 24px}
+  .done-ico{width:72px;height:72px;border-radius:50%;background:linear-gradient(165deg,var(--navy),var(--navy-3));color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px;box-shadow:0 0 0 6px rgba(201,168,76,.18)}
+  .done h1{font-size:26px;font-weight:800;letter-spacing:-0.03em;margin:0 0 10px}
+  .done .lead{font-size:15.5px;color:var(--muted);line-height:1.7;margin:0;word-break:keep-all}
+  .done .lead b{color:var(--ink)}
+  .done-btns{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+
+  .foot{background:var(--navy);color:#fff;text-align:center;padding:34px 22px}
+  .foot-name{font-size:14.5px;margin-bottom:8px}
+  .foot-name b{color:var(--gold-soft)}
+  .foot-addr{font-size:13px;color:rgba(255,255,255,.68);line-height:1.6;margin-bottom:8px}
+  .foot-info{font-size:11.5px;color:rgba(255,255,255,.45)}
+  @media (max-width:440px){.row2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-  <div class="box">
-    <div class="brand">GREATENG · 대단한영어</div>
-    <h1>상담 신청이<br>네이버 톡톡으로 통합되었습니다</h1>
-    <p>더 빠르고 확실한 답변을 위해 네이버 톡톡에서 상담을 받고 있습니다.<br>잠시 후 자동으로 이동합니다.</p>
-    <a class="go" href="https://talk.naver.com/profile/wccog3/form/1">네이버 톡톡으로 상담 신청하기</a>
-    <div class="sub">이동되지 않으면 위 버튼을 눌러주세요.</div>
+<nav class="gnav"><a class="gnav-brand" href="main.html"><b class="goldtext">대단한영어</b><span>상담 신청</span></a><a class="home" href="main.html">홈으로</a></nav>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="eyebrow">CONSULTATION</div>
+    <h1>상담 신청서</h1>
+    <p>남겨 주신 연락처로 <b>원장이 직접 연락</b>드립니다. 수업 중에는 전화를 받기 어려워 <b>연락 가능한 시간</b>에 맞춰 드립니다.</p>
+    <div class="steps">
+      <div class="step"><i>STEP 1</i><b>신청서 작성</b></div>
+      <div class="step"><i>STEP 2</i><b>원장 직접 연락</b></div>
+      <div class="step"><i>STEP 3</i><b>방문 상담 · 레벨테스트</b></div>
+    </div>
   </div>
+</header>
+
+<!-- ① 신청서 -->
+<div class="wrap" id="vForm">
+  <div class="card">
+    <div class="intro-note"><div>상담 때 <b>레벨테스트</b>(학원에서 응시)로 현재 실력을 확인하고 반을 안내해 드립니다. 신청서를 내시면 레벨테스트 때 <b>학부모 번호만으로 바로 응시</b>할 수 있습니다.<br>
+      신청 전에 <a href="parent_guide.html#guide" target="_blank" rel="noopener">상담 가이드</a>를 꼭 읽어 주세요.</div></div>
+
+    <div class="sec-h"><i>01</i><h2>학생 정보</h2></div>
+    <div class="row2">
+      <div><label class="f" for="inName">학생 이름 <span class="req">*</span></label><input type="text" id="inName" maxlength="20" autocomplete="off"></div>
+      <div><label class="f" for="inGrade">학년 <span class="req">*</span></label>
+        <select id="inGrade"><option value="">선택</option><option>초5</option><option>초6</option><option>중1</option><option>중2</option><option>중3</option><option>고1</option><option>고2</option><option>고3</option></select></div>
+    </div>
+    <label class="f" for="inSchool">학교 <span class="req">*</span></label>
+    <input type="text" id="inSchool" maxlength="30" placeholder="예: 이동중학교" autocomplete="off">
+    <label class="f">성별 <span class="opt">(선택)</span></label>
+    <div class="opts row">
+      <label class="choice"><input type="radio" name="gender" value="남">남학생</label>
+      <label class="choice"><input type="radio" name="gender" value="여">여학생</label>
+    </div>
+    <div class="row2">
+      <div><label class="f" for="inNaesin">최근 내신 영어 <span class="opt">(선택)</span></label><input type="text" id="inNaesin" maxlength="40" placeholder="예: 2학기 중간 58점" autocomplete="off"></div>
+      <div><label class="f" for="inMock">최근 모의고사 영어 <span class="opt">(선택)</span></label><input type="text" id="inMock" maxlength="40" placeholder="예: 고1 9월 2등급" autocomplete="off"></div>
+    </div>
+    <label class="f">학생의 현재 영어 실력 <span class="opt">(선택 · 가장 가까운 것)</span></label>
+    <div class="opts" id="levelOpts">
+      <label class="choice"><input type="radio" name="level" value="기본개념이 잡혀 있고 고난도 문형 정복이 필요한 단계">기본개념이 잡혀 있고 고난도 문형 정복이 필요한 단계</label>
+      <label class="choice"><input type="radio" name="level" value="기본개념은 알고 있으나 연습이 필요한 단계">기본개념은 알고 있으나 연습이 필요한 단계</label>
+      <label class="choice"><input type="radio" name="level" value="기본개념이 부족하나 연습은 많이 한 단계">기본개념이 부족하나 연습은 많이 한 단계</label>
+      <label class="choice"><input type="radio" name="level" value="노력은 하나 공부 방법을 모르는 단계">노력은 하나 공부 방법을 모르는 단계</label>
+      <label class="choice"><input type="radio" name="level" value="처음부터 다시 배워야 할 단계">처음부터 다시 배워야 할 단계</label>
+      <label class="choice"><input type="radio" name="level" value="공부 습관 자체가 안 잡혀 있는 단계">공부 습관 자체가 안 잡혀 있는 단계</label>
+    </div>
+
+    <div class="sec-h"><i>02</i><h2>연락처</h2></div>
+    <div class="row2">
+      <div><label class="f" for="inPPhone">학부모 전화번호 <span class="req">*</span></label><input type="tel" id="inPPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+      <div><label class="f" for="inSPhone">학생 전화번호 <span class="opt">(선택)</span></label><input type="tel" id="inSPhone" maxlength="13" placeholder="010-0000-0000" inputmode="tel" autocomplete="off"></div>
+    </div>
+    <label class="f" for="inWhen">연락 가능한 시간 <span class="req">*</span></label>
+    <input type="text" id="inWhen" maxlength="60" placeholder="예: 평일 오후 1~4시 / 주말 오전" autocomplete="off">
+    <label class="f" for="inAddr">사는 곳 <span class="req">*</span> <span class="opt">(아파트 이름 또는 동까지만)</span></label>
+    <input type="text" id="inAddr" maxlength="30" placeholder="예: 이동 ○○아파트 / 대이동" autocomplete="off">
+
+    <div class="sec-h"><i>03</i><h2>상담 내용</h2></div>
+    <label class="f" for="inMsg">상담받고 싶은 내용 <span class="req">*</span> <span class="opt">(20자 이상)</span></label>
+    <textarea id="inMsg" rows="5" maxlength="500" placeholder="예: 중2 2학기 기말 대비가 필요합니다. 문법이 약하고, 지금은 다른 학원에 다니고 있습니다."></textarea>
+    <label class="f" for="inRoute">대단한영어를 알게 된 경로 <span class="opt">(선택)</span></label>
+    <div class="row2">
+      <select id="inRoute"><option value="">선택</option><option>네이버 블로그</option><option>네이버 검색·플레이스</option><option>홈페이지</option><option>지인 소개</option><option>재원생·형제</option><option>기타</option></select>
+      <input type="text" id="inRef" maxlength="20" placeholder="추천인 (있으면)" autocomplete="off">
+    </div>
+
+    <div class="sec-h"><i>04</i><h2>확인 및 동의</h2></div>
+    <div class="agree-wrap">
+      <label class="agree"><input type="checkbox" id="inGuide"><span><a href="parent_guide.html#guide" target="_blank" rel="noopener">상담 가이드</a>를 읽었고, 학원의 수업 방식을 확인했습니다. (필수)</span></label>
+      <label class="agree"><input type="checkbox" id="inContact"><span>적어 주신 시간에 원장이 연락드리면 받아 주시고, 일정이 바뀌면 미리 알려 주세요. (필수)</span></label>
+    </div>
+    <div class="hp" aria-hidden="true"><label>website<input type="text" id="inWebsite" tabindex="-1" autocomplete="off"></label></div>
+
+    <div class="privacy">
+      <div class="privacy-h">개인정보 수집·이용 안내 <span>학부모님께서 꼭 읽어 주세요</span></div>
+      <dl>
+        <dt>수집 항목</dt><dd>학생 이름·학교·학년·성별, 학부모·학생 전화번호, 연락 가능한 시간, 사는 곳(아파트 이름 또는 동까지), 최근 내신·모의고사 영어 성적, 영어 실력 단계, 알게 된 경로·추천인, 상담 내용, 레벨테스트 응답</dd>
+        <dt>이용 목적</dt><dd>상담 신청 접수와 연락, 레벨테스트·반 배치 상담</dd>
+        <dt>보관 기간</dt><dd><b><span id="retention"></span> 보관 후 파기</b></dd>
+        <dt>동의 거부</dt><dd>동의하지 않으실 수 있으며, 이 경우 <b>상담이 불가합니다.</b></dd>
+      </dl>
+      <label class="consent"><input type="checkbox" id="inConsent">
+        <span><b>위 내용을 읽었으며, 개인정보 수집·이용에 동의합니다.</b> (필수)</span></label>
+    </div>
+    <button class="btn primary" id="btnSend">상담 신청하기</button>
+    <div class="err" id="sendErr"></div>
+  </div>
+</div>
+
+<!-- ② 완료 -->
+<div class="wrap hidden" id="vDone">
+  <div class="card done">
+    <div class="done-ico">✓</div>
+    <h1>신청했습니다</h1>
+    <p class="lead">적어 주신 <b>연락 가능한 시간</b>에 원장이 직접 연락드리겠습니다.<br>레벨테스트 때는 <b>학부모 전화번호</b>만 알려 주시면 바로 응시할 수 있습니다.</p>
+    <div class="done-btns">
+      <a class="btn line" href="main.html">홈으로</a>
+      <a class="btn gold" href="parent_guide.html">수업 안내 보기</a>
+    </div>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="foot-name"><b>대단한영어</b> · 포항 남구 영어 전문 학원</div>
+  <div class="foot-addr">포항시 남구 대이로 105, 아이코아빌딩 5층 501호 · 대표전화 054-272-7870</div>
+  <div class="foot-info">학원설립·운영 등록 제2016-54호</div>
+</footer>
+
 <script>
-  setTimeout(function(){
-    location.replace('https://talk.naver.com/profile/wccog3/form/1');
-  }, 2500);
+/* ============================================================
+ *  상담 신청서 (apply.html)
+ *  - 레벨테스트 GAS(apply 요청)로 보내 '상담카드' 시트에 '상담 신청' 상태로 저장
+ *  - GAS에 알림 이메일이 설정돼 있으면 원장에게 메일 발송
+ *  - 학생이 레벨테스트를 볼 때 학부모 번호로 이 카드를 불러와 이어서 씀
+ * ============================================================ */
+var CONFIG = {
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbwebAfNsoQcpNdCqxfGGF1YA6rj3-EhnswC-QT1TgCYFSoPP0U5e7AWhNrnl_IKM6aBUQ/exec',   // ← level.html과 같은 레벨테스트 GAS
+  RETENTION: '1년'                            // 개인정보 보관 기간 (level.html과 같게)
+};
+function $(id) { return document.getElementById(id); }
+function fmtPhone(v) { var d = String(v || '').replace(/\D/g, ''); return d.length === 11 ? d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7) : d.length === 10 ? d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6) : d; }
+function isPhone(v) { return /^01[016789]-\d{3,4}-\d{4}$/.test(v); }
+function radio(n) { var el = document.querySelector('input[name="' + n + '"]:checked'); return el ? el.value : ''; }
+function tooDetailed(a) { return /\d+\s*호|\d+\s*동\s*\d+|\d+\s*번지|\d+-\d+|(로|길)\s*\d+/.test(a || ''); }
+$('retention').textContent = CONFIG.RETENTION;
+['inPPhone', 'inSPhone'].forEach(function (id) { $(id).addEventListener('blur', function () { this.value = fmtPhone(this.value); }); });
+
+$('btnSend').onclick = function () {
+  var b = { action: 'apply', name: $('inName').value.trim(), grade: $('inGrade').value, school: $('inSchool').value.trim(),
+    naesin: $('inNaesin').value.trim(), mock: $('inMock').value.trim(),
+    parentPhone: fmtPhone($('inPPhone').value), studentPhone: fmtPhone($('inSPhone').value),
+    when: $('inWhen').value.trim(), addr: $('inAddr').value.trim(), message: $('inMsg').value.trim(),
+    gender: radio('gender'), level: radio('level'), route: $('inRoute').value, referrer: $('inRef').value.trim(),
+    agreeGuide: $('inGuide').checked, agreeContact: $('inContact').checked,
+    website: $('inWebsite').value, consent: $('inConsent').checked };
+  var err = !b.name ? '학생 이름을 입력해 주세요.' : !b.grade ? '학년을 선택해 주세요.' : !b.school ? '학교를 입력해 주세요.' :
+    !b.parentPhone ? '학부모 전화번호를 입력해 주세요.' : !isPhone(b.parentPhone) ? '학부모 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
+    b.studentPhone && !isPhone(b.studentPhone) ? '학생 전화번호를 확인해 주세요. (예: 010-1234-5678)' :
+    !b.when ? '연락 가능한 시간을 적어 주세요.' :
+    !b.addr ? '사는 곳(아파트 이름이나 동)을 적어 주세요.' :
+    tooDetailed(b.addr) ? '사는 곳은 아파트 이름이나 동까지만 적어 주세요. (동·호수, 번지는 빼 주세요)' :
+    b.message.length < 20 ? '상담받고 싶은 내용을 20자 이상 적어 주세요. (지금 ' + b.message.length + '자)' :
+    !b.agreeGuide ? '상담 가이드를 읽고 체크해 주세요.' : !b.agreeContact ? '연락 안내에 체크해 주세요.' :
+    !b.consent ? '개인정보 수집·이용 안내를 읽고 동의해 주세요.' : '';
+  $('sendErr').textContent = err;
+  if (err) return;
+  $('btnSend').disabled = true; $('btnSend').textContent = '보내는 중…';
+  fetch(CONFIG.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) })
+    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      if (!r.ok) throw new Error(r.error || '신청하지 못했습니다.');
+      $('vForm').classList.add('hidden'); $('vDone').classList.remove('hidden'); window.scrollTo(0, 0);
+    }).catch(function (e) {
+      $('sendErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      $('btnSend').disabled = false; $('btnSend').textContent = '상담 신청하기';
+    });
+};
 </script>
 </body>
 </html>

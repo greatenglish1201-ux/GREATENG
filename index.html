@@ -1334,6 +1334,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
   };
 
   const [expandedSession,setExpandedSession]=useState(null);
+  const [showOldSess,setShowOldSess]=useState(false); // 회차별 기록: 7일 이전 기록 펼침
   // ── 시험 범위(커버리지 분석용) ── 교재/강 id 집합. localStorage에 저장
   const RANGE_KEY='greateng_exam_range';
   const [examRange,setExamRange]=useState(()=>{
@@ -1619,6 +1620,52 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
     return {perPid,perType,rangeAll,weakPid,weakType,zero,once,covered,covPct};
   };
 
+  // ── 약점 '왜' 설명 공통 헬퍼 (관리자 화면·인쇄 리포트 공용) ──
+  //   풀이 기록(sessionStats, 시간순)에서 센 사실만 서술. 반환은 이스케이프된 HTML 문자열 배열(<b>만 사용).
+  const buildWeakExplainers=(sessionStats,shortLabel)=>{
+    const escH=v=>String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const pidH={}, typeH={};
+    (sessionStats||[]).forEach((ss,si)=>{
+      const dk=String(ss.date||'').slice(0,10);
+      String(ss.detail||'').split('||').filter(Boolean).forEach(line=>{
+        const q=line.split('|'); if(q.length<3||!q[0])return;
+        const rec={si,dk,pid:q[0],type:q[1]||'',ok:q[2]==='O'};
+        (pidH[rec.pid]=pidH[rec.pid]||[]).push(rec);
+        if(rec.type)(typeH[rec.type]=typeH[rec.type]||[]).push(rec);
+      });
+    });
+    const md=dk=>dk?dk.slice(5).replace('-','/'):'';
+    const rate=(c,n)=>n?Math.round(c/n*100):0;
+    const explainPid=(pid)=>{
+      const h=pidH[pid]||[]; if(!h.length)return [];
+      const out=[];
+      const byT={}; h.forEach(r=>{const k=r.type||'기타'; (byT[k]=byT[k]||{n:0,w:0}); byT[k].n++; if(!r.ok)byT[k].w++;});
+      const tw=Object.entries(byT).filter(([,v])=>v.w>0).sort((a,b)=>b[1].w-a[1].w||(b[1].w/b[1].n)-(a[1].w/a[1].n));
+      if(tw.length){ const [k,v]=tw[0]; out.push(`<b>${escH(k)}</b> 유형에서 ${v.n}번 중 ${v.w}번 오답${tw.length>1?` (그 외 ${tw.slice(1,3).map(([k2,v2])=>`${escH(k2)} ${v2.w}회`).join(', ')})`:''}`); }
+      const last=h.slice(-3), lw=last.filter(r=>!r.ok).length, ew=h.slice(0,-3).filter(r=>!r.ok).length;
+      if(h.length>=4&&lw>=2) out.push(`최근 3번 중 ${lw}번 틀림 — 최근 들어 더 흔들리는 중`);
+      else if(h.length>=4&&lw===0&&ew>0) out.push(`최근 3번 연속 정답 — 회복 중, 며칠 뒤 한 번 더 확인 필요`);
+      let massed=0,corr=0; h.forEach((r,i)=>{ if(r.ok){corr++; if(i>0&&h[i-1].dk===r.dk)massed++;} });
+      if(corr>=3&&massed>=Math.ceil(corr/2)) out.push(`맞힌 ${corr}번 중 ${massed}번이 같은 날 반복 풀이 — 아직 완전히 익지 않음`);
+      const lastW=[...h].reverse().find(r=>!r.ok); if(lastW&&out.length<3) out.push(`마지막 오답 ${md(lastW.dk)}`);
+      return out.slice(0,3);
+    };
+    const explainType=(type)=>{
+      const h=typeH[type]||[]; if(!h.length)return [];
+      const out=[]; const n=h.length, c=h.filter(r=>r.ok).length, R=rate(c,n);
+      const byP={}; h.forEach(r=>{ if(!r.ok)byP[r.pid]=(byP[r.pid]||0)+1; });
+      const tp=Object.entries(byP).sort((a,b)=>b[1]-a[1]).slice(0,3);
+      if(tp.length) out.push(`오답이 몰린 지문: ${tp.map(([p,w])=>`<b>${escH(shortLabel(p))}</b>(${w}회)`).join(' · ')}`);
+      if(n>=8){ const l5=h.slice(-5), r5=rate(l5.filter(r=>r.ok).length,l5.length);
+        if(r5<=R-15) out.push(`최근 5문항 정답률 ${r5}% — 전체 ${R}%보다 낮아짐(최근 하락)`);
+        else if(r5>=R+15) out.push(`최근 5문항 정답률 ${r5}% — 전체 ${R}%보다 올라감(상승 중)`);
+        else out.push(`최근 5문항 정답률 ${r5}% — 전체 ${R}%와 비슷(정체)`); }
+      return out.slice(0,2);
+    };
+    return {explainPid,explainType};
+  };
+  const WEAK_EX_PID_MAX=8, WEAK_EX_TYPE_MAX=6; // 설명형 약점 목록 개수(화면·인쇄 공통)
+
   // ── 개별 학생 약점 분석 리포트 인쇄 ──
   const printReport=(promo,secOpts)=>{
     if(!selectedStudent){setMsg('인쇄할 학생을 먼저 선택하세요.');return;}
@@ -1836,47 +1883,157 @@ ${ESC_}
     }
 
 
+    // 일반 리포트 섹션 틀: 번호 + 제목 + 보조설명, 테두리로 구획 (이모지 없음)
+    const psec=(no,title,sub,inner)=>inner?`<section class="ps"><div class="ps-h"><span class="ps-no">${no}</span><span class="ps-t">${title}</span>${sub?`<span class="ps-s">${sub}</span>`:''}</div>${inner}</section>`:'';
+    let _secNo=0; const nx=()=>String(++_secNo).padStart(2,'0');
+    // 인쇄 색상: 기본 흑백, 인쇄 영역 선택 창에서 '컬러로 인쇄'를 켜면 화면과 같은 컬러로 인쇄
+    const PM=SO.color?'not all':'print';  // 흑백 덮어쓰기 적용 매체
+    const SM=SO.color?'all':'screen';     // 컬러 전용 규칙 적용 매체
+    const blindSec=SO.blind&&blindHtml?psec(nx(),'사각지대','안 본 지문 · 적게 푼 지문',blindHtml):'';
+    // ── 왜 약점인지 설명 (공통 헬퍼 buildWeakExplainers 사용 — 관리자 화면과 같은 문구) ──
+    const EX_PID_MAX=WEAK_EX_PID_MAX, EX_TYPE_MAX=WEAK_EX_TYPE_MAX;
+    const _short=pid=>{const L=pidLabelFor(pid); const m=String(L).match(/(\S+강\s*\S+번?)$/); return m?m[1]:L;};
+    const {explainPid,explainType}=buildWeakExplainers(stats.sessionStats,_short);
+    const _exLine=(arr)=>arr.length?`<div class="ex">${arr.map(x=>`<div>· ${x}</div>`).join('')}</div>`:'';
+    const _scChip=(sc)=>`<b class="${sc>=50?'sc sc-h':sc>=30?'sc sc-m':'sc sc-l'}">${sc}</b>`;
+    const weakPidExHtml=(Wk&&Wk.weakPid.length)?Wk.weakPid.slice(0,EX_PID_MAX).map((w,i)=>{
+      const sc=Math.round(w.score*100);
+      return `<div class="wi"><div class="wi-h"><span class="wi-r">${i+1}</span><b class="wi-t">${esc(pidLabelFor(w.key))}</b>${w.recencyApplied?'<span class="tg">최근성</span>':''}<span class="wi-m">${esc(w.c)}/${esc(w.t)} 정답 (${w.rate}%)</span>${_scChip(sc)}</div>${_exLine(explainPid(w.key))}</div>`;
+    }).join('')+(Wk.weakPid.length>EX_PID_MAX?`<div class="more">그 외 약점 지문 ${Wk.weakPid.length-EX_PID_MAX}개: ${Wk.weakPid.slice(EX_PID_MAX).map(w=>esc(_short(w.key))).join(', ')}</div>`:''):'';
+    const typeDiagExHtml=(()=>{
+      if(!types.length)return '';
+      const scMap={}; (Wk&&Wk.weakType||[]).forEach(w=>{scMap[w.key]=w;});
+      const withSc=types.filter(t=>scMap[t.type]).sort((a,b)=>scMap[b.type].score-scMap[a.type].score);
+      const shown=withSc.slice(0,EX_TYPE_MAX), shownSet=new Set(shown.map(t=>t.type));
+      const rest=types.filter(t=>!shownSet.has(t.type));
+      const rows=shown.map((t,i)=>{ const w=scMap[t.type], sc=Math.round(w.score*100);
+        return `<div class="wi"><div class="wi-h"><span class="wi-r">${i+1}</span><b class="wi-t">${esc(t.type)}</b>${i<3?'<span class="tg tg-k">집중 보완</span>':''}${w.recencyApplied?'<span class="tg">최근성</span>':''}<span class="wi-m">${esc(t.correct)}/${esc(t.total)} 정답 (${esc(t.rate)}%)</span>${_scChip(sc)}</div>${_exLine(explainType(t.type))}</div>`; }).join('');
+      const restH=rest.length?`<div class="more">그 외 유형 정답률: ${rest.map(t=>`${esc(t.type)} ${esc(t.rate)}%`).join(' · ')}</div>`:'';
+      return rows+restH;
+    })();
+    const weakPidSec=SO.weakPid&&weakPidExHtml?psec(nx(),'진짜 약점 — 지문',`상위 ${Math.min(EX_PID_MAX,(Wk&&Wk.weakPid.length)||0)}개 · 왜 약점인지`,weakPidExHtml):'';
+    const typeDiagSec=showTypeDiag&&typeDiagExHtml?psec(nx(),'유형별 진단',`약점 상위 ${EX_TYPE_MAX}개 · 원인`,typeDiagExHtml):'';
+    const bookSec=SO.book&&bookHtml?psec(nx(),'교재별 정답률','',bookHtml):'';
+    // 회차별 기록: 최근 7일만 기본 표시(세로 정렬 다단), 이전 기록은 '더 보기'로 펼침 — 접힌 상태로 인쇄하면 이전 기록은 인쇄되지 않음
+    const _sessCell=x=>`<div class="se"><span class="se-d">${esc(String(x.date).slice(5,10))}${String(x.date).length>10?`<i>${esc(String(x.date).slice(11,16))}</i>`:''}</span><span class="se-s">${esc(x.score)}</span><b style="color:${rateColor(x.rate)}">${esc(x.rate)}%</b></div>`;
+    const _t0=new Date(); _t0.setHours(0,0,0,0); const _cut=new Date(_t0.getTime()-6*86400000);
+    const _isRecent=x=>{const d=new Date(String(x.date||'').replace(' ','T')); return !isNaN(d)&&d>=_cut;};
+    const _sRecent=sessions.filter(_isRecent), _sOld=sessions.filter(x=>!_isRecent(x));
+    const sessSec=SO.sess&&sessHtml?psec(nx(),'회차별 기록',`최근 7일 ${_sRecent.length}회 · 전체 ${sessions.length}회 · 날짜 시각 | 점수 | 정답률`,
+      (_sRecent.length?`<div class="sess">${_sRecent.map(_sessCell).join('')}</div>`:`<div style="font-size:10.5px;color:#888;padding:2px 0">최근 7일 동안 응시 기록이 없습니다.</div>`)
+      +(_sOld.length?`<details class="sold"><summary>이전 기록 ${_sOld.length}회 더 보기</summary><div class="sess">${_sOld.map(_sessCell).join('')}</div></details>`:'')):'';
     const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${esc(dispName)} 약점 분석 리포트</title>
-<style>@media print{@page{size:A4;margin:10mm} body{padding:0!important}} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:24px;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}${promo?'body{max-width:600px;margin:0 auto;background:#fff}':''}
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>@media print{@page{size:A4;margin:10mm} body{padding:0!important}} body{font-family:'Pretendard Variable','Pretendard','Noto Sans KR','Noto Sans CJK KR','Malgun Gothic',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.15px;margin:0;padding:24px;color:#1d1d1f;-webkit-print-color-adjust:exact;print-color-adjust:exact}${promo?'body{max-width:600px;margin:0 auto;background:#fff}':''}
+/* ── 흑백 인쇄 최적화(인쇄할 때만): 색 대신 굵기·검정 칩·명암으로 구분. 화면에서는 원래 컬러 ── */
+@media ${PM}{
+.cmp td{border-bottom-color:#e8e8e8!important}
+.cmp span[style*="background:#f6e3e6"]{background:transparent!important;border:1px solid #9a9a9a!important;color:#444!important;border-radius:3px!important}
+.cmp span[style*="background:#7a1020"]{background:#111!important;color:#fff!important;border-radius:3px!important}
+/* 약점 점수: 50↑ 검정 칩, 30↑ 굵은 테두리, 그 외 회색 */
+.cmp b[style*="font-size:13px"]{display:inline-block;min-width:24px;text-align:center;border-radius:3px;padding:0 3px;color:#777!important}
+.cmp b[style*="color:#B3261E"][style*="font-size:13px"]{background:#111;color:#fff!important}
+.cmp b[style*="color:#B7791F"][style*="font-size:13px"]{border:1.5px solid #111;color:#111!important}
+/* 정답률 숫자·막대: 검정 계열 */
+.cmp b[style*="font-size:12.5px"],.sess b{color:#111!important}
+.cmp td div[style*="height:7px"]{background:#e4e4e4!important}
+.cmp td div[style*="height:7px"]>div{background:#2b2b2b!important}
+/* 순위 #1~3 강조 */
+.cmp b[style*="color:#C9A84C"]{color:#000!important}
+.cmp b[style*="color:#999"]{color:#999!important}
+/* 사각지대 제목색 → 흑백 */
+.blindc [style*="color:#B3261E"],.blindc [style*="color:#7a1020"]{color:#000!important}
+.blindc [style*="color:#92670a"]{color:#555!important}
+}
+/* 약점 설명형 목록 */
+.wi{padding:5px 0 5px;border-bottom:1px solid #e6e6e6;break-inside:avoid}
+.wi-h{display:flex;align-items:center;gap:6px;font-size:11.5px}
+.wi-r{flex-shrink:0;width:16px;height:16px;border-radius:50%;background:var(--ac);color:#fff;font-size:9.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.wi-t{color:#111;font-weight:700}
+.wi-m{margin-left:auto;color:#888;font-size:10px;white-space:nowrap}
+.tg{font-size:9px;border:1px solid #9a9a9a;color:#444;border-radius:3px;padding:0 4px;white-space:nowrap}
+.tg-k{background:var(--ac);color:#fff;border-color:var(--ac)}
+.sc{display:inline-block;min-width:24px;text-align:center;border-radius:3px;padding:0 3px;font-size:12px}
+.sc-h{background:#B3261E;color:#fff}.sc-m{border:1.5px solid #B7791F;color:#B7791F}.sc-l{color:#9a7040}
+@media ${PM}{.sc-h{background:#111;color:#fff}.sc-m{border-color:#111;color:#111}.sc-l{color:#777}}
+@media ${SM}{.tg:not(.tg-k){border-color:#e3cfd2;color:#8a2a38}}
+.ex{margin:3px 0 0 22px;font-size:10.3px;color:#333;line-height:1.5}
+.ex b{color:#000}
+.more{font-size:10px;color:#777;padding-top:5px;line-height:1.5}
 /* 2단 압축 레이아웃: 최대 2페이지 */
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}
-.cols>div>div,.sec1>div{break-inside:avoid;page-break-inside:avoid}
-.cmp td{padding:3px 6px!important;font-size:11px!important;line-height:1.35}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;align-items:start}
+.ps{border:1px solid #9e9e9e;border-radius:6px;padding:0 10px 5px;margin-bottom:9px;break-inside:avoid;page-break-inside:avoid;overflow:hidden}
+.ps-h{display:flex;align-items:center;gap:8px;margin:0 -10px 6px;padding:5px 10px;background:#f1f1f1;border-bottom:1px solid #9e9e9e}
+:root{--ac:#7a1020}
+@media ${SM}{.gbox{border-left-color:#b91c1c!important;background:#fef6f6!important}.gchip{background:#b91c1c!important}}
+@media ${PM}{:root{--ac:#111}}
+.ps-no{font-size:10px;font-weight:800;color:#fff;background:var(--ac);border-radius:4px;padding:2px 6px;letter-spacing:.3px}
+.ps-t{font-size:13.5px;font-weight:700;color:#1d1d1f;letter-spacing:-.3px}
+.ps-s{font-size:9.5px;color:#9a9aa0;margin-left:auto}
+.cmp td{padding:2.5px 6px!important;font-size:11px!important;line-height:1.3}
 .cmp td b{font-size:11.5px!important}
 .cmp td span{font-size:10px!important}
 .cmp div[style*="font-size:11.5px"]{font-size:10.5px!important;line-height:1.45!important}
-.sess table{width:100%}
-.sess{display:grid;grid-template-columns:repeat(3,1fr);column-gap:14px}
-.sess table{break-inside:avoid}
+/* 사각지대: 목록을 2단으로 흘려 높이 절반 */
+.blindc .ps>div:last-child>div{columns:2;column-gap:18px;column-rule:1px solid #ececee}
+.blindc .ps>div:last-child>div:first-child{columns:1}
+.blindc .ps>div:last-child>div>div{break-inside:avoid}
+/* 회차별 기록: 좁은 항목 5열 + 열 사이 세로선 */
+.sess{columns:5;column-gap:0;column-rule:1px solid #e3e3e6}
+.se{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:3px 8px;font-size:10.5px;border-left:1px solid #e3e3e6;border-bottom:1px solid #f1f1f3;break-inside:avoid}
+.se{border-left:none!important}
+.sold summary{cursor:pointer;font-size:10.5px;font-weight:700;color:var(--ac);padding:5px 0 3px;list-style:none}
+.sold summary::-webkit-details-marker{display:none}
+.sold summary::before{content:'▾ '}.sold[open] summary::before{content:'▴ '}
+@media print{.sold:not([open]){display:none}}
+.se-d{color:#555;white-space:nowrap}.se-d i{font-style:normal;color:#aaa;margin-left:3px;font-size:9.5px}
+.se-s{color:#222;margin-left:auto}
+.se b{min-width:30px;text-align:right}
 </style></head>
 <body>
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px solid #7a1020;padding-bottom:10px;margin-bottom:18px">
-    <div><div style="font-size:20px;font-weight:800;color:#7a1020">${esc(dispName)} <span style="font-size:14px;color:#9a8570;font-weight:600">약점 분석 리포트</span></div>
-    <div style="font-size:12px;color:#9a8570;margin-top:3px">대단한영어 · 시험 전 보완용</div></div>
-    <div style="text-align:right"><div style="font-size:12px;color:#999">${dateStr}</div>
-    <div style="font-size:13px;margin-top:4px">종합 정답률 <b style="font-size:18px;color:${rateColor(overall)}">${overall}%</b></div>
-    <div style="font-size:11.5px;color:#9a8570;margin-top:3px">누적 <b style="color:#3a2a20">${totAll}문항</b> · ${sessCount}회 응시${doneSinceStart!=null?` <span style="color:#bbb">·</span> 시작일 이후 <b style="color:#3a2a20">${doneSinceStart}문항</b>`:''}</div></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 5px;margin-bottom:8px;border-bottom:1px solid #bbb">
+    <span style="font-size:13px;font-weight:800;color:#111;letter-spacing:-.3px">대단한영어 <span style="font-weight:500;color:#888;font-size:9.5px;letter-spacing:1.5px;margin-left:6px">DATA-DRIVEN ENGLISH</span></span>
+    <span style="font-size:9.5px;letter-spacing:1.8px;color:#666;font-weight:600">WEAKNESS REPORT · ${dateStr}</span>
   </div>
-  ${goalInfo?`<div style="margin-bottom:16px;padding:12px 14px;border-radius:10px;background:#fef2f2;border:1.5px solid #fca5a5;display:flex;align-items:flex-start;gap:9px">
-    <span style="font-size:17px;line-height:1.2">⚠️</span>
-    <div style="font-size:12.5px;color:#7f1d1d;line-height:1.6"><b style="color:#b91c1c;font-size:13px">학습량 부족 안내</b><br/>
-    기준일(${stuStart}) 이후 <b>${goalInfo.days}일</b> 기준 목표 <b>${goalInfo.target}문항</b>(하루 30문항) 대비 시작일 이후 <b>${goalInfo.doneSince}문항</b>을 풀어, <b style="color:#b91c1c">약 ${goalInfo.short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:8px;margin-bottom:10px;border-bottom:1.5px solid #111">
+    <div><div style="font-size:26px;font-weight:800;color:#111;letter-spacing:-.8px;line-height:1.1">${esc(dispName)}<span style="font-size:14px;color:#555;font-weight:500;letter-spacing:-.3px;margin-left:8px">약점 분석 리포트</span></div>
+    <div style="font-size:10.5px;color:#777;margin-top:5px">풀이 기록 전체를 분석해, 시험 전에 꼭 잡아야 할 지문과 유형만 골라냈습니다.</div></div>
+    <div style="display:flex;gap:5px">
+      <div style="border:2px solid #111;border-radius:6px;padding:4.5px 11px;min-width:70px"><div style="font-size:9px;color:#555">종합 정답률</div><div style="font-size:19px;font-weight:800;color:#111;line-height:1.2;letter-spacing:-.5px">${overall}<span style="font-size:11px;font-weight:600">%</span></div></div>
+      <div style="border:1px solid #bbb;border-radius:6px;padding:5px 11px;min-width:62px"><div style="font-size:9px;color:#777">누적 문항</div><div style="font-size:19px;font-weight:800;color:#111;line-height:1.2;letter-spacing:-.5px">${totAll}</div></div>
+      <div style="border:1px solid #bbb;border-radius:6px;padding:5px 11px;min-width:62px"><div style="font-size:9px;color:#777">응시 회차</div><div style="font-size:19px;font-weight:800;color:#111;line-height:1.2;letter-spacing:-.5px">${sessCount}<span style="font-size:11px;font-weight:600">회</span></div></div>
+      ${doneSinceStart!=null?`<div style="border:1px solid #bbb;border-radius:6px;padding:5px 11px;min-width:62px"><div style="font-size:9px;color:#777">시작일 이후</div><div style="font-size:19px;font-weight:800;color:#111;line-height:1.2;letter-spacing:-.5px">${doneSinceStart}<span style="font-size:11px;font-weight:600">문항</span></div></div>`:''}
+    </div>
+  </div>
+  ${goalInfo?`<div class="gbox" style="margin-bottom:10px;padding:7px 12px;border-radius:6px;background:#fff;border:1px solid #9e9e9e;border-left:4px solid #111;display:flex;gap:10px;align-items:flex-start">
+    <span class="gchip" style="flex-shrink:0;font-size:10px;font-weight:800;color:#fff;background:#111;border-radius:4px;padding:2px 7px;margin-top:2px">학습량 부족</span>
+    <div style="font-size:11.5px;color:#222;line-height:1.65">
+    기준일(${stuStart}) 이후 <b>${goalInfo.days}일</b> 기준 목표 <b>${goalInfo.target}문항</b>(하루 30문항) 대비 시작일 이후 <b>${goalInfo.doneSince}문항</b>을 풀어, <b style="text-decoration:underline">약 ${goalInfo.short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.</div>
   </div>`:''}
-  <div class="cmp sec1">${SO.blind?sec('📍 사각지대 — 안 본 지문',blindHtml):''}</div>
+  <div class="cmp blindc">${blindSec}</div>
   <div class="cols cmp">
-    <div>${SO.weakPid?sec('🎯 진짜 약점 — 지문 <span style="font-size:11px;color:#999;font-weight:400">(표본보정·최근성)</span>',weakPidHtml):''}</div>
-    <div>${showTypeDiag?sec('🎯 유형별 진단 <span style="font-size:11px;color:#999;font-weight:400">(약점 점수 높은 순)</span>',typeDiagHtml):''}
-    ${SO.book?sec('📚 교재별 정답률',bookHtml):''}</div>
+    <div>${weakPidSec}</div>
+    <div>${typeDiagSec}${bookSec}</div>
   </div>
-  ${SO.sess&&sessHtml?sec('📅 회차별 기록 <span style="font-size:11px;color:#999;font-weight:400">(최근 순)</span>',`<div class="sess cmp">${sessions.map(x=>`<table style="border-collapse:collapse"><tr><td style="padding:3px 6px;border-bottom:1px solid #eee;color:#555">${esc(String(x.date).slice(5,10))}${String(x.date).length>10?` <span style="color:#aaa">${esc(String(x.date).slice(11,16))}</span>`:''}</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:right;color:#222">${esc(x.score)}</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${rateColor(x.rate)}">${esc(x.rate)}%</td></tr></table>`).join('')}</div>`):''}
-  <div style="margin-top:12px;text-align:center;font-size:11px;color:#bbb">탁월함이 습관이 되도록 · 대단한영어</div>
+  ${sessSec}
+  <div style="margin-top:4px;padding:7px 2px 0;border-top:1.5px solid #111;break-inside:avoid;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:10.5px;color:#444">감이 아니라 <b style="color:#111">데이터</b>로 약점을 찾고, 시험 전 그 부분만 집중 보완합니다.</span>
+    <span style="font-size:12.5px;font-weight:800;color:#111;letter-spacing:-.3px">대단한영어 <span style="font-size:9.5px;font-weight:400;color:#777;margin-left:4px">탁월함이 습관이 되도록</span></span>
+  </div>
 </body></html>`;
 
     const w=window.open('','_blank');
     if(!w){setMsg('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');return;}
     w.document.write(html);
     w.document.close();
-    setTimeout(()=>{try{w.focus();w.print();}catch(e){}},400);
+    // 웹폰트 로딩 후 인쇄 (최대 2.5초 대기, 실패 시 기존처럼 바로 인쇄)
+    const _go=()=>{try{w.focus();w.print();}catch(e){}};
+    try{
+      const _fr=(w.document.fonts&&w.document.fonts.ready)?w.document.fonts.ready:Promise.resolve();
+      Promise.race([_fr,new Promise(r=>setTimeout(r,2500))]).then(()=>setTimeout(_go,150));
+    }catch(e){ setTimeout(_go,400); }
   };
 
   const btn=(active,label,onClick)=>
@@ -2163,6 +2320,12 @@ ${ESC_}
                       </label>
                     ))}
                   </div>
+                  {scope==='student'&&<label style={{display:'flex',alignItems:'center',gap:9,padding:'8px 12px',marginTop:-6,marginBottom:14,
+                      border:'1px dashed '+(O.color?'#7a1020':'#d8ccb4'),borderRadius:8,cursor:'pointer',fontSize:12.5,background:O.color?'#FBF3DE':'#fafaf7'}}>
+                    <input type="checkbox" checked={!!O.color} onChange={e=>setO({color:e.target.checked})}
+                      style={{width:15,height:15,accentColor:'#7a1020',cursor:'pointer'}}/>
+                    <span style={{color:O.color?'#3a2a20':'#8a7a60',fontWeight:O.color?700:400}}>컬러로 인쇄 <span style={{fontWeight:400,color:'#a89878'}}>(기본: 흑백 — 토너 절약)</span></span>
+                  </label>}
                   {!any&&<div style={{fontSize:12,color:'#c0392b',marginBottom:12,textAlign:'center'}}>1개 이상 선택하세요.</div>}
                   <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}>
                     <button onClick={()=>setReportModal(null)}
@@ -2223,6 +2386,10 @@ ${ESC_}
                       {s.cls&&!clsFilter&&<span style={{fontSize:10,color:'#7a6a55',marginLeft:5,background:'#f6efe0',borderRadius:5,padding:'1px 5px'}}>{s.cls}</span>}
                       <span style={{fontSize:11,color:'#9a8570',marginLeft:8}}>응시 {s.count}회 · {s.correct}/{s.total}문항{s.uniq!=null?` · 지문 ${s.uniq}개`:''}{s.effPids!=null&&s.uniq!=null&&s.effPids<s.uniq*0.8?` (유효 ${s.effPids})`:''}</span>
                       {s.diliActive!=null&&s.diliDays!=null&&<span style={{fontSize:11,color:'#9a8570',marginLeft:6}} title={s.diliVol!=null&&s.diliReg!=null?`분량 ${s.diliVol} · 꾸준함 ${s.diliReg} (하단 설명 참고)`:''}>· 매일 30문항 <b style={{color:'#7a1020'}}>{s.diliActive}일</b> / {s.diliDays}일</span>}
+                      {s.diliDays!=null&&s.total!=null&&(()=>{const _short=Math.max(0,s.diliDays*30-Number(s.total||0));
+                        return _short>0
+                          ?<span style={{fontSize:11,marginLeft:6,color:'#b91c1c',fontWeight:700}} title={`목표 ${s.diliDays*30}문항(${s.diliDays}일×30) − 푼 문항 ${s.total}`}>· 부족 {_short}문항</span>
+                          :<span style={{fontSize:11,marginLeft:6,color:'#15803d',fontWeight:700}}>· 목표 달성</span>;})()}
                       {!ranked&&<span style={{fontSize:10,color:'#b08968',marginLeft:6,background:'#fdf6e9',border:'1px solid #ead9bd',borderRadius:6,padding:'1px 6px',whiteSpace:'nowrap'}}>랭킹 진입까지 {need}문항</span>}
                     </div>
                   </div>
@@ -2255,6 +2422,7 @@ ${ESC_}
                 <div style={{paddingLeft:12}}>· <b>분량</b>: 푼 문항 ÷ (지난 날수 × 30문항) × 100 — 100점이 상한입니다.</div>
                 <div style={{paddingLeft:12}}>· <b>꾸준함</b>: 지난 날 중 <b>30문항 이상 푼 날</b>의 비율 × 100 — 하루에 많이 풀어도 1일, 30문항 미만인 날은 0일로 셉니다.</div>
                 <div style={{paddingLeft:12}}>· <b>지난 날수</b>: 학습 시작일과 통계 기준일 중 늦은 날부터 오늘까지(오늘 포함).</div>
+                <div><b style={{color:'#3a2a20'}}>부족 문항</b> = 지난 날수 × 30문항 − 푼 문항 (0 이하이면 ‘목표 달성’)</div>
                 <div style={{marginTop:4,color:'#9a8570'}}>예) 22일 중 30문항 이상 푼 날 8일 → 꾸준함 8÷22 = 36점. 같은 문항 수라도 매일 나눠 푼 학생이 몰아서 푼 학생보다 성실도가 높습니다.</div>
                 <div style={{color:'#9a8570'}}>목록의 ‘매일 30문항 8일 / 22일’ = 지난 22일 중 30문항 이상 푼 날이 8일이라는 뜻입니다.</div>
               </div>}
@@ -2276,6 +2444,32 @@ ${ESC_}
                     <div style={{width:ov+'%',height:'100%',background:col,borderRadius:4}}/>
                   </div>
                   <span style={{fontSize:16,fontWeight:800,color:col}}>{ov}%</span>
+                </div>
+              </div>;
+            })()}
+            {/* 학생 선택 시: 학습량 부족 안내 (인쇄 리포트와 같은 계산 — 기준일 이후 일수×30 대비 푼 문항) */}
+            {selectedStudent&&(()=>{
+              const stuRec=(students||[]).find(s=>s.name===selectedStudent);
+              const x=stuRec&&stuRec.startDate||'',y=stuRec&&stuRec.statsFrom||'';
+              const dx=x?new Date(x):null,dy=y?new Date(y):null,vx=dx&&!isNaN(dx),vy=dy&&!isNaN(dy);
+              const base=(vx&&vy)?(dx>=dy?x:y):(vx?x:(vy?y:''));
+              if(!base)return null;
+              const sd0=new Date(base); if(isNaN(sd0))return null; sd0.setHours(0,0,0,0);
+              const t0=new Date(); t0.setHours(0,0,0,0);
+              const days=Math.floor((t0-sd0)/86400000)+1; if(days<1)return null;
+              let done=0;
+              (stats.sessionStats||[]).forEach(s=>{
+                const sdate=new Date(String(s.date||'').replace(' ','T'));
+                if(isNaN(sdate)||sdate<sd0)return;
+                String(s.detail||'').split('||').filter(Boolean).forEach(line=>{ if(line.split('|').length>=3)done++; });
+              });
+              const target=days*30, short=target-done;
+              if(!(done<target*0.9))return null; // 인쇄 리포트와 같은 기준: 목표의 90% 미만일 때만 표시
+              return <div style={{background:'#fef2f2',border:'1.5px solid #fca5a5',borderRadius:14,marginBottom:12,padding:'12px 16px',display:'flex',alignItems:'flex-start',gap:9}}>
+                <span style={{fontSize:17,lineHeight:1.2}}>⚠️</span>
+                <div style={{fontSize:12.5,color:'#7f1d1d',lineHeight:1.6}}>
+                  <b style={{color:'#b91c1c',fontSize:13}}>학습량 부족 안내</b><br/>
+                  기준일({base}) 이후 <b>{days}일</b> 기준 목표 <b>{target}문항</b>(하루 30문항) 대비 시작일 이후 <b>{done}문항</b>을 풀어, <b style={{color:'#b91c1c'}}>약 {short}문항</b>이 부족합니다. 꾸준한 학습량 확보가 필요합니다.
                 </div>
               </div>;
             })()}
@@ -2494,49 +2688,73 @@ ${ESC_}
                     const weak=weakTab==='type'?weakType:weakPid;
                     const labelOf=(k)=>weakTab==='type'?k:lbl(k);
                     const emptyMsg=weakTab==='type'?'두드러진 약점 유형이 없습니다. (오답이 쌓이면 표시됩니다)':'두드러진 약점 지문이 없습니다. (오답이 쌓이면 표시됩니다)';
+                    // 인쇄 리포트와 같은 '왜 약점인지' 설명 — 지문 상위 8개 / 유형 상위 6개
+                    const shortL=(pid)=>{const m=String(lbl(pid)).match(/(\S+강\s*\S+번?)$/); return m?m[1]:lbl(pid);};
+                    const EX=buildWeakExplainers(stats.sessionStats,shortL);
+                    const MAX=weakTab==='type'?WEAK_EX_TYPE_MAX:WEAK_EX_PID_MAX;
+                    const shown=weak.slice(0,MAX), rest=weak.slice(MAX);
                     return <div style={{padding:'8px 16px 12px'}}>
                       {weak.length===0
                         ?<div style={{fontSize:12,color:'#9a8570'}}>{emptyMsg}</div>
-                        :weak.map((w,i)=>{
+                        :shown.map((w,i)=>{
                           const sc=Math.round(w.score*100);
                           const col=sc>=50?'#dc2626':sc>=30?'#f59e0b':'#b8860b';
-                          return <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 0',borderBottom:i<weak.length-1?'1px solid #f6efe0':'none'}}>
-                            <span style={{fontSize:12,color:'#3a2a20'}}>{labelOf(w.key)}
-                              {w.recencyApplied&&<span style={{fontSize:9,color:'#7a1020',background:'#f6e3e6',borderRadius:4,padding:'1px 5px',marginLeft:6}}>최근성</span>}
-                            </span>
-                            <span style={{display:'flex',gap:10,alignItems:'center'}}>
-                              <span style={{fontSize:11,color:'#9a8570'}}>{w.c}/{w.t} 정답 ({w.rate}%)</span>
-                              <span style={{fontSize:13,fontWeight:800,color:col,minWidth:42,textAlign:'right'}} title="약점 점수(표본보정 오답률, 높을수록 약점)">{sc}</span>
-                            </span>
+                          const lines=weakTab==='type'?EX.explainType(w.key):EX.explainPid(w.key);
+                          return <div key={i} style={{padding:'8px 0',borderBottom:i<shown.length-1?'1px solid #f6efe0':'none'}}>
+                            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
+                              <span style={{fontSize:12.5,color:'#3a2a20',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+                                <span style={{width:18,height:18,borderRadius:'50%',background:'#7a1020',color:'#fff',fontSize:10,fontWeight:700,display:'inline-flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>{i+1}</span>
+                                <b>{labelOf(w.key)}</b>
+                                {weakTab==='type'&&i<3&&<span style={{fontSize:9,color:'#fff',background:'#7a1020',borderRadius:4,padding:'1px 5px'}}>집중 보완</span>}
+                                {w.recencyApplied&&<span style={{fontSize:9,color:'#7a1020',background:'#f6e3e6',borderRadius:4,padding:'1px 5px'}}>최근성</span>}
+                              </span>
+                              <span style={{display:'flex',gap:10,alignItems:'center',flexShrink:0}}>
+                                <span style={{fontSize:11,color:'#9a8570'}}>{w.c}/{w.t} 정답 ({w.rate}%)</span>
+                                <span style={{fontSize:13,fontWeight:800,color:col,minWidth:42,textAlign:'right'}} title="약점 점수(표본보정 오답률, 높을수록 약점)">{sc}</span>
+                              </span>
+                            </div>
+                            {lines.length>0&&<div style={{margin:'4px 0 0 24px',fontSize:11.5,color:'#5a4a40',lineHeight:1.6}}>
+                              {lines.map((h,j)=><div key={j} dangerouslySetInnerHTML={{__html:'· '+h}}/>)}
+                            </div>}
                           </div>;
                         })}
-                      {weak.length>0&&<div style={{fontSize:10,color:'#c4b89e',marginTop:8}}>우측 숫자=약점 점수(표본 적으면 자동 하향, 5회 이상은 최근 추세 반영)</div>}
+                      {rest.length>0&&<div style={{fontSize:11,color:'#9a8570',paddingTop:8,lineHeight:1.6}}>
+                        그 외 {weakTab==='type'?'약점 유형':'약점 지문'} {rest.length}개: {rest.map(w=>weakTab==='type'?`${w.key} ${w.rate}%`:shortL(w.key)).join(', ')}
+                      </div>}
+                      {weak.length>0&&<div style={{marginTop:10,padding:'10px 12px',borderRadius:10,background:'#fcf8f0',border:'1px solid #efe6d4',fontSize:11.5,color:'#7a6a55',lineHeight:1.75}}>
+                        <div style={{fontWeight:800,color:'#7a1020',marginBottom:4}}>📘 약점 점수 계산 방법 <span style={{fontWeight:400,color:'#9a8570'}}>(우측 숫자, 높을수록 약점)</span></div>
+                        <div><b style={{color:'#3a2a20'}}>① 풀이마다 ‘틀림 점수’(0~1)를 매겨 평균</b>: 틀리면 1, 맞히면 0~0.3 (마이너스 없음)</div>
+                        <div style={{paddingLeft:12}}>· 같은 날 다시 맞히면 0.3(아직 덜 굳음), 3일 뒤 맞히면 0.11, 7일 뒤 맞히면 0.03(거의 익힘)</div>
+                        <div style={{paddingLeft:12}}>· 예) 틀림 → 같은 날 맞힘 → 3일 뒤 맞힘 → 7일 뒤 맞힘 = (1+0.3+0.11+0.03)÷4 ≈ 36점 (②·③ 적용 전 기본값)</div>
+                        <div><b style={{color:'#3a2a20'}}>② 표본 보정</b> (Wilson 95% 하한): 푼 횟수가 적으면 우연일 수 있어 점수를 자동으로 낮춥니다.</div>
+                        <div style={{paddingLeft:12}}>· 예) 1번 풀어 1번 틀린 지문보다 5번 풀어 4번 틀린 지문이 더 확실한 약점으로 올라옵니다.</div>
+                        <div><b style={{color:'#3a2a20'}}>③ 최근성</b>: <b>지문 5회·유형 3회 이상</b> 푼 항목은 최근 풀이에 더 큰 비중을 둡니다.</div>
+                        <div style={{paddingLeft:12}}>· 가장 최근 회차 1 → 그 전 0.6 → 0.36 → … 순으로 가중. 최종 점수 = 표본 보정 40% + 최근성 60%. <span style={{color:'#7a1020',background:'#f6e3e6',borderRadius:4,padding:'0 4px'}}>최근성</span> 표시가 붙은 항목입니다.</div>
+                        <div><b style={{color:'#3a2a20'}}>④ 표시 기준</b>: 시험범위 지문만 · 점수 5 이상 · 상위 15개 · <span style={{color:'#dc2626',fontWeight:700}}>50↑</span> 뚜렷한 약점, <span style={{color:'#f59e0b',fontWeight:700}}>30↑</span> 주의</div>
+                        <div style={{marginTop:4,color:'#9a8570'}}>정답률이 같아도 최근에 틀렸거나, 같은 날 몰아서 맞힌 항목은 점수가 더 높게 나옵니다.</div>
+                      </div>}
                     </div>;
                   })()}
                 </div>
               </div>;
             })()}
-            {/* 학생 선택 시: 회차별 기록 */}
-            {selectedStudent&&(stats.sessionStats||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20'}}>📅 회차별 기록</div>
-              {(stats.sessionStats||[]).slice().reverse().map((s,i)=>{
-                const open=expandedSession===i;
+            {/* 학생 선택 시: 회차별 기록 — 최근 7일만 칸(그리드)으로 압축 표시, 이전 기록은 펼쳐 보기. 칸을 누르면 아래에 상세 */}
+            {selectedStudent&&(stats.sessionStats||[]).length>0&&(()=>{
+              const all=(stats.sessionStats||[]).slice().reverse().map((s,i)=>({s,i})); // i = 기존 expandedSession 인덱스(최근 순)
+              const t0=new Date(); t0.setHours(0,0,0,0); const cut=new Date(t0.getTime()-6*86400000); // 오늘 포함 7일
+              const isRecent=s=>{const d=new Date(String(s.date||'').replace(' ','T')); return !isNaN(d)&&d>=cut;};
+              const recent=all.filter(x=>isRecent(x.s)), older=all.filter(x=>!isRecent(x.s));
+              const list=showOldSess?all:recent;
+              const sel=expandedSession!=null?list.find(x=>x.i===expandedSession):null;
+              const rcol=r=>Number(r)>=80?'#16a34a':Number(r)>=60?'#f59e0b':'#dc2626';
+              const renderDetail=(s)=>{
                 const items=(s.detail||'').split('||').filter(Boolean).map(line=>{
                   const parts=line.split('|');
                   return {pid:parts[0]||'',tname:parts[1]||'',ok:parts[2]==='O'};
                 });
                 const byType={};
                 items.forEach(it=>{if(!byType[it.tname])byType[it.tname]={c:0,t:0};byType[it.tname].t++;if(it.ok)byType[it.tname].c++;});
-                return <div key={i} style={{borderBottom:'1px solid #f6efe0'}}>
-                  <div onClick={()=>setExpandedSession(open?null:i)}
-                    style={{padding:'10px 16px',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',background:open?'#fdfaf2':'#fff'}}>
-                    <span style={{fontSize:12,color:'#9a8570'}}><span style={{display:'inline-block',width:14,color:'#C9A84C'}}>{open?'▾':'▸'}</span>{String(s.date).slice(0,10)}{String(s.date).length>10?<span style={{fontSize:10.5,color:'#c4b89e',marginLeft:6}}>{String(s.date).slice(11,16)}</span>:''}</span>
-                    <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                      <span style={{fontSize:13,fontWeight:600,color:'#3a2a20'}}>{s.score}문항</span>
-                      <span style={{fontSize:13,fontWeight:800,color:Number(s.rate)>=80?'#16a34a':Number(s.rate)>=60?'#f59e0b':'#dc2626'}}>{s.rate}%</span>
-                    </div>
-                  </div>
-                  {open&&<div style={{padding:'6px 16px 12px',background:'#fdfaf2'}}>
+                return <div style={{padding:'6px 16px 12px',background:'#fdfaf2'}}>
                     {items.length===0
                       ?<div style={{fontSize:11.5,color:'#9a8570',padding:'6px 0'}}>이 회차의 문항별 상세 데이터가 없습니다.</div>
                       :(()=>{
@@ -2596,10 +2814,41 @@ ${ESC_}
                             </div>}
                         </>;
                       })()}
+                  </div>;
+              };
+              return <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+                <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',fontWeight:700,fontSize:13,color:'#3a2a20',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span>📅 회차별 기록</span>
+                  <span style={{fontSize:10.5,color:'#9a8570',fontWeight:600}}>{showOldSess?`전체 ${all.length}회`:`최근 7일 ${recent.length}회 · 전체 ${all.length}회`}</span>
+                </div>
+                {list.length===0
+                  ?<div style={{padding:'12px 16px',fontSize:12,color:'#9a8570'}}>최근 7일 동안 응시 기록이 없습니다.</div>
+                  :<div style={{columnWidth:150,columnGap:0,columnRule:'1px solid #efe6d4',borderBottom:'1px solid #efe6d4'}}>{/* 세로 정렬: 왼쪽 단 위→아래, 다음 단 */}
+                    {list.map(({s,i})=>{
+                      const on=expandedSession===i;
+                      return <div key={i} onClick={()=>setExpandedSession(on?null:i)} title="눌러서 문항별 상세 보기"
+                        style={{background:on?'#FBF3DE':'#fff',padding:'7px 10px',cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center',gap:6,borderBottom:'1px solid #f3ecdd',breakInside:'avoid',boxShadow:on?'inset 0 0 0 1.5px #C9A84C':'none'}}>
+                        <span style={{fontSize:11.5,color:'#7a6a55',whiteSpace:'nowrap'}}>{String(s.date).slice(5,10)}{String(s.date).length>10?<span style={{fontSize:10,color:'#c4b89e',marginLeft:4}}>{String(s.date).slice(11,16)}</span>:null}</span>
+                        <span style={{display:'flex',gap:7,alignItems:'baseline',whiteSpace:'nowrap'}}>
+                          <span style={{fontSize:11.5,color:'#3a2a20'}}>{s.score}</span>
+                          <span style={{fontSize:12,fontWeight:800,color:rcol(s.rate)}}>{s.rate}%</span>
+                        </span>
+                      </div>;
+                    })}
                   </div>}
-                </div>;
-              })}
-            </div>}
+                {sel&&<div style={{borderBottom:'1px solid #efe6d4'}}>
+                  <div style={{padding:'8px 16px 0',background:'#fdfaf2',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <span style={{fontSize:12,fontWeight:700,color:'#3a2a20'}}>{String(sel.s.date).slice(0,16)} 회차 · {sel.s.score}문항 · <span style={{color:rcol(sel.s.rate)}}>{sel.s.rate}%</span></span>
+                    <span onClick={()=>setExpandedSession(null)} style={{fontSize:11,color:'#9a8570',cursor:'pointer'}}>닫기 ✕</span>
+                  </div>
+                  {renderDetail(sel.s)}
+                </div>}
+                {older.length>0&&<div onClick={()=>setShowOldSess(v=>!v)}
+                  style={{padding:'9px 16px',textAlign:'center',fontSize:12,fontWeight:700,color:'#7a1020',cursor:'pointer',background:'#fcf8f0'}}>
+                  {showOldSess?'▴ 최근 7일만 보기':`▾ 이전 기록 ${older.length}회 더 보기`}
+                </div>}
+              </div>;
+            })()}
             {/* 많이 틀린 지문 랭킹 */}
             {(stats.wrongRanking||[]).length>0&&<div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
               <div style={{padding:'12px 16px',borderBottom:'1px solid #efe6d4',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
