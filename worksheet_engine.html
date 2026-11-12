@@ -36,6 +36,17 @@ i.it{font-style:italic}
   border:1px solid var(--gold); color:var(--gold); text-decoration:none; white-space:nowrap}
 .toolbar a.lnk:hover{background:rgba(255,255,255,.14)}
 .toolbar a.lnk:focus-visible{outline:2px solid var(--gold-soft); outline-offset:2px}
+.toolbar details.menu{position:relative}
+.toolbar details.menu summary{list-style:none; font-family:'Noto Sans KR',sans-serif; font-size:12.5px; padding:5px 10px;
+  border-radius:2px; border:1px solid var(--gold); color:var(--gold); cursor:pointer; white-space:nowrap}
+.toolbar details.menu summary::-webkit-details-marker{display:none}
+.toolbar details.menu summary:hover,.toolbar details.menu[open] summary{background:rgba(255,255,255,.14)}
+.toolbar details.menu summary:focus-visible{outline:2px solid var(--gold-soft); outline-offset:2px}
+.toolbar details.menu .mlist{position:absolute; right:0; top:calc(100% + 4px); min-width:190px; background:#fff;
+  border:1px solid var(--line); box-shadow:0 4px 14px rgba(0,0,0,.18); padding:4px 0; z-index:60}
+.toolbar details.menu .mlist a{display:block; padding:7px 14px; font-family:'Noto Sans KR',sans-serif; font-size:12.5px;
+  color:#222; text-decoration:none; white-space:nowrap}
+.toolbar details.menu .mlist a:hover,.toolbar details.menu .mlist a:focus-visible{background:#f2ece0; outline:none}
 
 .empty{max-width:640px; margin:60px auto; background:#fff; border:1px solid var(--line);
   padding:26px 30px; line-height:1.9}
@@ -528,9 +539,15 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
   </select>
 
   <span class="sp"></span>
-  <a class="lnk" href="polysemy_final.html">다의어 파이널 →</a>
-  <a class="lnk" href="final_tips.html" target="_blank" rel="noopener">수능 영어 최종 정리 ↗</a>
-  <a class="lnk" href="warmup_mock.html" target="_blank" rel="noopener">워밍업 모의고사 ↗</a>
+  <details class="menu" id="menuLinks">
+    <summary>파이널 자료 ▾</summary>
+    <div class="mlist">
+      <a href="polysemy_final.html">다의어 파이널 →</a>
+      <a href="final_tips.html" target="_blank" rel="noopener">수능 영어 최종 정리 ↗</a>
+      <a href="warmup_mock.html" target="_blank" rel="noopener">워밍업 모의고사 1회 ↗</a>
+      <a href="warmup_mock2.html" target="_blank" rel="noopener">워밍업 모의고사 2회 ↗</a>
+    </div>
+  </details>
   <span id="warnAns" style="display:none; font-size:11px; color:#ffe08a">
     해설 ON — 인쇄하면 장수가 늘어납니다
   </span>
@@ -1363,6 +1380,13 @@ mark.mR{background:#f7e8e6; color:inherit; padding:0 1px; font-weight:700; borde
   });
 
   render();
+})();
+</script>
+<script>
+(function(){ const m=document.getElementById('menuLinks'); if(!m) return;
+  document.addEventListener('click',e=>{ if(m.open && !m.contains(e.target)) m.open=false; });
+  m.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ m.open=false; }));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && m.open){ m.open=false; m.querySelector('summary').focus(); } });
 })();
 </script>
 </body>
