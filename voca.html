@@ -911,6 +911,56 @@
     /* ============================================================
        공통 DB 로딩 (1회만 fetch → 학생/관리자 공유)
        ============================================================ */
+    /* [2026-11-12 추가] 출제 오류 보정 도우미 — 기존 함수·출제 구성은 그대로, 아래 두 경우에만 쓰임
+       1) 오답 보기에서 '정답과 같은 뜻/같은 단어'를 빼서 정답이 둘 나오는 것 방지
+       2) 예문·영영풀이 빈칸을 기존 규칙으로 하나도 못 만들었을 때만 보조로 가림 */
+    function vq_normKor(k){ return (k || "").replace(/\s+/g, ""); }
+    function vq_okWrongKor(w){   // 뜻 고르기: 같은 영단어의 다른 뜻은 오답 보기에서 제외
+        const e = (w.eng || "").trim().toLowerCase();
+        const bad = new Set(db.filter(x =>(x.eng || "").trim().toLowerCase() === e).map(x =>vq_normKor(x.kor)));
+        return k =>!bad.has(vq_normKor(k));
+    }
+    function vq_okWrongEng(w){   // 단어 고르기: 뜻이 똑같은 다른 영단어는 오답 보기에서 제외
+        const nk = vq_normKor(w.kor);
+        const bad = new Set(db.filter(x =>vq_normKor(x.kor) === nk).map(x =>(x.eng || "").trim().toLowerCase()));
+        return e =>!bad.has((e || "").trim().toLowerCase());
+    }
+    function vq_fallbackBlank(txt, eng, irr){
+        try {
+            const nouns = {foot:'feet',tooth:'teeth',child:'children',man:'men',woman:'women',mouse:'mice',goose:'geese',person:'people',leaf:'leaves',life:'lives',knife:'knives',wife:'wives',half:'halves',wolf:'wolves',shelf:'shelves',thief:'thieves',loaf:'loaves'};
+            const esc = s =>s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const ap = s =>s.replace(/'/g, "['’]");
+            const toks = (eng || "").replace(/[’‘]/g, "'").replace(/\+\s*(to)?\s*[가-힣]+/g, m =>/to/.test(m) ? ' to ' : ' ').replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').replace(/[가-힣]+/g, ' ').split(/\s+/).filter(Boolean);
+            const PH = /^(?:[A-D]|~|…+|\.{2,}|-ing|ing|-v|someone|somebody|something|sth|sb|one's|oneself|someone's)$/;
+            const words = [];
+            toks.forEach(tok =>{
+                let t = tok.replace(/^[~…]+|[?!.,~…]+$/g, '');
+                if (/^to-v$/i.test(t)) t = 'to';
+                if (!t || PH.test(t)) return;
+                words.push(t.toLowerCase());
+            });
+            if (!words.length) return txt;
+            const wm = t =>{
+                if (t === 'not') return "(?:\\bnot\\b|\\b[a-z]+n['’]t\\b)";
+                let core;
+                if (irr[t]) core = '(?:' + irr[t] + ')';
+                else if (nouns[t]) core = '(?:' + t + '|' + nouns[t] + ')';
+                else if (/[^aeiou]y$/.test(t) && t.length >2 && t.indexOf('-')< 0) core = esc(t.slice(0, -1)) + '(?:y|ies|ied|ier|iest|ying)';
+                else if (t.length<= 2) core = ap(esc(t));
+                else core = ap(esc(t)) + "(?:s|es|d|ed|ing|[a-z](?:ed|ing))?";
+                return '\\b' + core + '\\b';
+            };
+            const gap = "(\\s+(?:\\S+\\s+){0,6}?)";
+            const pattern = wm(words[0]) + words.slice(1).map(w =>gap + wm(w)).join('');
+            return txt.replace(new RegExp(pattern, 'gi'), function(){
+                const gaps = Array.prototype.slice.call(arguments, 1, words.length);
+                let out = '_______';
+                gaps.forEach(g =>{ if (/\S/.test(g)) out += g + '_______'; });
+                return out;
+            });
+        } catch(e) { return txt; }
+    }
+
     let db = [];          // 학생 화면용 (기존 전역 유지)
     let dbReady = false;
 
@@ -2269,11 +2319,11 @@
 
         filtered.forEach(w =>{
             if (doEK) {
-                let wrongKor = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                let wrongKor = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== "").filter(vq_okWrongKor(w)))].sort(()=>Math.random()-0.5).slice(0, 4);
                 questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrongKor].sort(()=>Math.random()-0.5) });
             }
             if (doKE) {
-                let wrongEng = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(()=>Math.random()-0.5).slice(0, 4);
+                let wrongEng = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== "").filter(vq_okWrongEng(w)))].sort(()=>Math.random()-0.5).slice(0, 4);
                 questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrongEng].sort(()=>Math.random()-0.5) });
             }
             if (doSUBJ) {
@@ -3077,11 +3127,11 @@
         questionList = [];
 
         ekWords.forEach(w =>{
-            let wrong = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+            let wrong = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== "").filter(vq_okWrongKor(w)))].sort(() =>Math.random() - 0.5).slice(0, 6);
             questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() =>Math.random() - 0.5) });
         });
         keObjWords.forEach(w =>{
-            let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+            let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== "").filter(vq_okWrongEng(w)))].sort(() =>Math.random() - 0.5).slice(0, 6);
             questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
         });
         keSubjWords.forEach(w =>{ questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor }); });
@@ -3180,12 +3230,12 @@
                 let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
                 questionList.push({ type: 'EE-OBJ', q: w.ee, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
             } else if (typeToMake === "KE-OBJ") {
-                let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+                let wrong = [...new Set(db.map(x =>x.eng).filter(e =>e !== w.eng && e.trim() !== "").filter(vq_okWrongEng(w)))].sort(() =>Math.random() - 0.5).slice(0, 6);
                 questionList.push({ type: 'KE-OBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor, choices: [w.eng, ...wrong].sort(() =>Math.random() - 0.5) });
             } else if (typeToMake === "SUBJ") {
                 questionList.push({ type: 'KE-SUBJ', q: w.kor, a: w.eng, eng: w.eng, kor: w.kor });
             } else {
-                let wrong = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== ""))].sort(() =>Math.random() - 0.5).slice(0, 6);
+                let wrong = [...new Set(db.map(x =>x.kor).filter(k =>k !== w.kor && k.trim() !== "").filter(vq_okWrongKor(w)))].sort(() =>Math.random() - 0.5).slice(0, 6);
                 questionList.push({ type: 'EK-OBJ', q: w.eng, a: w.kor, eng: w.eng, kor: w.kor, choices: [w.kor, ...wrong].sort(() =>Math.random() - 0.5) });
             }
         });
@@ -3277,9 +3327,9 @@
                 txt = txt.replace(/[가-힣]+/g, '');
             } catch(e) {}
 
-            if (q.type === 'EX-OBJ') {
+            if (q.type === 'EX-OBJ' || q.type === 'EE-OBJ') {  // [2026-11-12] 영영풀이에도 정답 단어 가림
                 try {
-                    if (/_+|\.{3,}|\[\s*\]/.test(txt)) {
+                    if (q.type === 'EX-OBJ' && /_+|\.{3,}|\[\s*\]/.test(txt)) {
                         txt = txt.replace(/_+|\.{3,}|\[\s*\]/g, "_______");
                     } else {
                         let cleanEng = q.eng.replace(/[~A-Za-z가-힣]+(에게|을|를|에|와|과|의)/g, '').replace(/^(to|be|a|an|the)\s+/gi, '').replace(/\([^)]+\)/g, '').replace(/[~.\-]/g, ' ').replace(/\.\.\./g, '').trim();
@@ -3290,6 +3340,10 @@
                         let fwLower = firstWord.toLowerCase();
 
                         const irregulars = { 'stress':'stress|stresses|stressed|stressing', 'work':'work|works|worked|working', 'move':'move|moves|moved|moving', 'turn':'turn|turns|turned|turning', 'look':'look|looks|looked|looking', 'take':'take|takes|took|taking|taken', 'keep':'keep|keeps|kept|keeping', 'catch':'catch|catches|caught|catching', 'bring':'bring|brings|brought|bringing', 'buy':'buy|buys|bought|buying', 'think':'think|thinks|thought|thinking', 'seek':'seek|seeks|sought|seeking', 'make':'make|makes|made|making', 'find':'find|finds|found|finding', 'lead':'lead|leads|led|leading', 'leave':'leave|leaves|left|leaving', 'feel':'feel|feels|felt|feeling', 'hold':'hold|holds|held|holding', 'stand':'stand|stands|stood|standing', 'understand':'understand|understands|understood|understanding', 'write':'write|writes|wrote|written|writing', 'speak':'speak|speaks|spoke|spoken|speaking', 'choose':'choose|chooses|chose|chosen|choosing', 'drive':'drive|drives|drove|driven|driving', 'know':'know|knows|knew|known|knowing', 'throw':'throw|throws|threw|thrown|throwing', 'draw':'draw|draws|drew|drawn|drawing', 'fly':'fly|flies|flew|flown|flying', 'grow':'grow|grows|grew|grown|growing', 'see':'see|sees|saw|seen|seeing', 'go':'go|goes|went|gone|going', 'do':'do|does|did|done|doing', 'have':'have|has|had|having', 'be':'am|is|are|was|were|been|being', 'come':'come|comes|came|coming', 'become':'become|becomes|became|becoming', 'run':'run|runs|ran|running', 'begin':'begin|begins|began|begun|beginning', 'drink':'drink|drinks|drank|drunk|drinking', 'sing':'sing|sings|sang|sung|singing', 'give':'give|gives|gave|given|giving', 'forgive':'forgive|forgives|forgave|forgiven|forgiving', 'get':'get|gets|got|gotten|getting', 'forget':'forget|forgets|forgot|forgotten|forgetting', 'fall':'fall|falls|fell|fallen|falling', 'eat':'eat|eats|ate|eaten|eating', 'break':'break|breaks|broke|broken|breaking', 'hide':'hide|hides|hid|hidden|hiding', 'ride':'ride|rides|rode|ridden|riding', 'strike':'strike|strikes|struck|striking', 'build':'build|builds|built|building', 'spend':'spend|spends|spent|spending', 'send':'send|sends|sent|sending', 'lend':'lend|lends|lent|lending', 'lose':'lose|loses|lost|losing', 'sell':'sell|sells|sold|selling', 'tell':'tell|tells|told|telling', 'pay':'pay|pays|paid|paying', 'say':'say|says|said|saying', 'lie':'lie|lies|lay|lain|lying', 'lay':'lay|lays|laid|laying', 'bear':'bear|bears|bore|born|borne|bearing', 'wear':'wear|wears|wore|worn|wearing', 'tear':'tear|tears|tore|torn|tearing', 'set':'set|sets|setting', 'put':'put|puts|putting', 'cut':'cut|cuts|cutting', 'hit':'hit|hits|hitting', 'let':'let|lets|letting', 'read':'read|reads|reading', 'cost':'cost|costs|costing', 'mean':'mean|means|meant|meaning', 'meet':'meet|meets|met|meeting', 'win':'win|wins|won|winning', 'teach':'teach|teaches|taught|teaching', 'fight':'fight|fights|fought|fighting', 'shoot':'shoot|shoots|shot|shooting', 'sleep':'sleep|sleeps|slept|sleeping', 'wake':'wake|wakes|woke|woken|waking', 'steal':'steal|steals|stole|stolen|stealing', 'sweep':'sweep|sweeps|swept|sweeping', 'bind':'bind|binds|bound|binding', 'grind':'grind|grinds|ground|grinding', 'wind':'wind|winds|wound|winding', 'ring':'ring|rings|rang|rung|ringing', 'shrink':'shrink|shrinks|shrank|shrunk|shrinking', 'sink':'sink|sinks|sank|sunk|sinking', 'stink':'stink|stinks|stank|stunk|stinking', 'spring':'spring|springs|sprang|sprung|springing', 'swear':'swear|swears|swore|sworn|swearing', 'swing':'swing|swings|swung|swinging'};
+
+                        // [2026-11-12 추가] 누락 불규칙동사 보강 — 기존 항목은 덮어쓰지 않고 없는 키만 추가 (예: shake→shook 빈칸 처리)
+                        const irregularsExtra = {'shake':'shake|shakes|shook|shaken|shaking','swim':'swim|swims|swam|swum|swimming','bite':'bite|bites|bit|bitten|biting','blow':'blow|blows|blew|blown|blowing','freeze':'freeze|freezes|froze|frozen|freezing','hang':'hang|hangs|hung|hanged|hanging','dig':'dig|digs|dug|digging','feed':'feed|feeds|fed|feeding','flee':'flee|flees|fled|fleeing','forbid':'forbid|forbids|forbade|forbidden|forbidding','hurt':'hurt|hurts|hurting','shut':'shut|shuts|shutting','spread':'spread|spreads|spreading','quit':'quit|quits|quitting','split':'split|splits|splitting','burst':'burst|bursts|bursting','bend':'bend|bends|bent|bending','deal':'deal|deals|dealt|dealing','dream':'dream|dreams|dreamt|dreamed|dreaming','light':'light|lights|lit|lighted|lighting','slide':'slide|slides|slid|sliding','stick':'stick|sticks|stuck|sticking','sting':'sting|stings|stung|stinging','weep':'weep|weeps|wept|weeping','arise':'arise|arises|arose|arisen|arising','rise':'rise|rises|rose|risen|rising','awake':'awake|awakes|awoke|awoken|awaking','beat':'beat|beats|beaten|beating','bet':'bet|bets|betting','bleed':'bleed|bleeds|bled|bleeding','breed':'breed|breeds|bred|breeding','cast':'cast|casts|casting','cling':'cling|clings|clung|clinging','creep':'creep|creeps|crept|creeping','kneel':'kneel|kneels|knelt|kneeled|kneeling','leap':'leap|leaps|leapt|leaped|leaping','shine':'shine|shines|shone|shined|shining','show':'show|shows|showed|shown|showing','sew':'sew|sews|sewed|sewn|sewing','sow':'sow|sows|sowed|sown|sowing','spin':'spin|spins|spun|spinning','spit':'spit|spits|spat|spitting','spill':'spill|spills|spilt|spilled|spilling','speed':'speed|speeds|sped|speeded|speeding','string':'string|strings|strung|stringing','hear':'hear|hears|heard|hearing','shed':'shed|sheds|shedding','tread':'tread|treads|trod|trodden|treading','weave':'weave|weaves|wove|woven|weaving','withdraw':'withdraw|withdraws|withdrew|withdrawn|withdrawing','undergo':'undergo|undergoes|underwent|undergone|undergoing','undertake':'undertake|undertakes|undertook|undertaken|undertaking','overcome':'overcome|overcomes|overcame|overcoming','mistake':'mistake|mistakes|mistook|mistaken|mistaking','mislead':'mislead|misleads|misled|misleading','overhear':'overhear|overhears|overheard|overhearing','misunderstand':'misunderstand|misunderstands|misunderstood|misunderstanding','withstand':'withstand|withstands|withstood|withstanding','upset':'upset|upsets|upsetting','forecast':'forecast|forecasts|forecasted|forecasting','broadcast':'broadcast|broadcasts|broadcasted|broadcasting','overtake':'overtake|overtakes|overtook|overtaken|overtaking','foresee':'foresee|foresees|foresaw|foreseen|foreseeing','swell':'swell|swells|swelled|swollen|swelling','strive':'strive|strives|strove|striven|striving','fling':'fling|flings|flung|flinging','slay':'slay|slays|slew|slain|slaying','stride':'stride|strides|strode|stridden|striding','thrust':'thrust|thrusts|thrusting','bid':'bid|bids|bidding','seek':'seek|seeks|sought|seeking','sit':'sit|sits|sat|sitting','win':'win|wins|won|winning','shoot':'shoot|shoots|shot|shooting','prove':'prove|proves|proved|proven|proving','spoil':'spoil|spoils|spoilt|spoiled|spoiling','smell':'smell|smells|smelt|smelled|smelling','spell':'spell|spells|spelt|spelled|spelling','burn':'burn|burns|burnt|burned|burning','learn':'learn|learns|learnt|learned|learning','dwell':'dwell|dwells|dwelt|dwelled|dwelling','lean':'lean|leans|leant|leaned|leaning','outgrow':'outgrow|outgrows|outgrew|outgrown|outgrowing','overthrow':'overthrow|overthrows|overthrew|overthrown|overthrowing','uphold':'uphold|upholds|upheld|upholding','behold':'behold|beholds|beheld|beholding','withhold':'withhold|withholds|withheld|withholding','oversee':'oversee|oversees|oversaw|overseen|overseeing','override':'override|overrides|overrode|overridden|overriding','rewrite':'rewrite|rewrites|rewrote|rewritten|rewriting','rebuild':'rebuild|rebuilds|rebuilt|rebuilding','retell':'retell|retells|retold|retelling','sink':'sink|sinks|sank|sunk|sinking','stink':'stink|stinks|stank|stunk|stinking','hide':'hide|hides|hid|hidden|hiding'};
+                        Object.keys(irregularsExtra).forEach(k =>{ if (!irregulars[k]) irregulars[k] = irregularsExtra[k]; });
 
                         const escapeRegExp = (string) =>string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -3322,9 +3376,13 @@
                         if (replacedTxt === txt) {
                             let exactRegex = new RegExp("\\b" + escapeRegExp(cleanEng) + "\\b", "gi");
                             txt = txt.replace(exactRegex, "_______");
+                            // [2026-11-12] 영영풀이 전용: 숙어 전체를 못 찾으면 첫 단어(변화형 포함)만이라도 가림 (예: warm up → warmer)
+                            if (q.type === 'EE-OBJ' && restOfPhrase.length >0 && !txt.includes("_______")) { txt = txt.replace(new RegExp("\\b" + firstWordRegexStr + "\\b", "gi"), "_______"); }
                         } else {
                             txt = replacedTxt;
                         }
+                        // [2026-11-12] 보조 빈칸: 위 규칙으로 하나도 못 가렸을 때만 (하이픈 단어, A·B·~ 자리 숙어, one’s, 불규칙 복수·-y 변화, 중간에 끼어든 말)
+                        if (!txt.includes("_______")) { txt = vq_fallbackBlank(txt, q.eng, irregulars); }
                     }
                 } catch(e) { console.error(e); }
             }
