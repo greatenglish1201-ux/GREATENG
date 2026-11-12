@@ -27,6 +27,10 @@ body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--f-my);pa
 .sheetwrap{width:max-content;margin:0 auto}
 .a4box{width:210mm;height:297mm;overflow:hidden;margin:0 auto 16px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .a4box .page{transform:scale(.70707);transform-origin:0 0;margin:0;box-shadow:none}
+/* A4: 여백을 줄인 가상 쪽(256×362mm)에 배치한 뒤 0.82배로 축소 → 글씨가 A3 축소본보다 약 16% 큼 */
+.page.v4{width:256mm;height:362.2mm;padding:7mm 7mm 4mm}
+.page.v4 .cols{column-gap:10mm}
+.a4box .page.v4{transform:scale(.8203)}
 
 /* 쪽(A3) */
 .page{width:297mm;height:420mm;margin:0 auto 16px;background:var(--paper);box-shadow:0 1px 4px rgba(0,0,0,.2);
@@ -111,12 +115,12 @@ ol.ch.sum .hd{font-family:var(--f-en)}
   <h1>대단한영어 수능 직전 워밍업 모의고사 문제지</h1>
   <div role="group" aria-label="용지" style="display:flex;gap:4px">
     <button class="chip" id="pA3" type="button">A3 (실제 크기)</button>
-    <button class="chip" id="pA4" type="button">A4 (축소)</button>
+    <button class="chip" id="pA4" type="button">A4 (여백 축소)</button>
   </div>
   <a class="chip" href="warmup_answers.html" target="_blank" rel="noopener">정답·해설지 ↗</a>
   <button class="chip prt" id="btnPrint" type="button" hidden>인쇄</button>
 </div>
-<p class="hint">실제 수능 영어 문제지처럼 A3 한 쪽에 2단, 단마다 위·아래로 문항을 배치했습니다. A4로 뽑을 때는 'A4 (축소)'를 고르면 같은 배치가 A4에 맞게 줄어듭니다. 각 문항 끝에 원래 출제 연도와 번호를 적었습니다.</p>
+<p class="hint">실제 수능 영어 문제지처럼 A3 한 쪽에 2단, 단마다 위·아래로 문항을 배치했습니다. A4로 뽑을 때는 'A4 (여백 축소)'를 고르면 여백을 줄이고 글씨를 키워 A4에 맞게 다시 배치합니다. 각 문항 끝에 원래 출제 연도와 번호를 적었습니다.</p>
 <div class="scroller"><div class="sheetwrap" id="out"></div></div>
 
 <script>
@@ -199,7 +203,7 @@ function footSVG(n){
 }
 function newPage(out){
   pageNo++;
-  const pg=document.createElement('section'); pg.className='page';
+  const pg=document.createElement('section'); pg.className='page'+(paper==='A4'?' v4':'');
   if(pageNo===1){
     pg.innerHTML=`<div class="cover"><div class="t1"><span></span><span class="ttl"><b class="brand">대단한영어</b> 2027학년도 수능 대비 워밍업 모의고사 문제지</span><span class="pn">1</span></div>
       <div class="t2"><span class="gyo">제 3 교시</span><span class="area">영어 영역</span><span class="hol">홀수형</span></div>
@@ -266,7 +270,7 @@ function render(){
   cols[ci].insertAdjacentHTML('beforeend',end);
   if(!fits(cols[ci])){ cols[ci].lastElementChild.remove(); nextCol(); cols[ci].insertAdjacentHTML('beforeend',end); }
   total=pageNo; out.querySelectorAll('.pf .tot').forEach(t=>t.textContent=total);
-  if(paper==='A4'){ // 배치는 A3 그대로 두고 그림만 축소(줄바꿈이 바뀌지 않게)
+  if(paper==='A4'){ // 여백 줄인 가상 쪽(.v4)에 배치한 뒤 A4 크기로 축소
     out.querySelectorAll('.page').forEach(pg=>{ const box=document.createElement('div'); box.className='a4box'; pg.replaceWith(box); box.appendChild(pg); });
   }
   document.getElementById('pA3').setAttribute('aria-pressed', paper==='A3');
