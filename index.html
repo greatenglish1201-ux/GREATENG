@@ -1810,61 +1810,182 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
 
     // ── 홍보(promo) 전용: 글씨 키우고 핵심만, A4 PDF 한 장 ──
     if(promo){
-      const bigBar=(r)=>`<div style="display:inline-block;width:130px;height:11px;border-radius:6px;background:#eee;overflow:hidden;vertical-align:middle;margin-right:9px"><div style="width:${Number(r)}%;height:100%;background:${rateColor(r)}"></div></div>`;
-      const typeRows=types.map(t=>`<tr>
-        <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#222">${esc(t.type)} <span style="color:#aaa;font-size:13px;font-weight:400">${t.correct}/${t.total}</span></td>
-        <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${bigBar(t.rate)}<b style="color:${rateColor(t.rate)};font-size:17px">${esc(t.rate)}%</b></td></tr>`).join('');
-      // 홍보용: 약점점수 기반 큰 글씨 (지문 약점 Top6 + 유형 약점)
-      const scColP=sc=>sc>=50?'#B3261E':sc>=30?'#B7791F':'#9a7040';
-      const weakPidBig=(Wk&&Wk.weakPid.length)?Wk.weakPid.slice(0,6).map((w,i)=>{
-        const sc=Math.round(w.score*100);
-        return `<tr>
-          <td style="padding:9px 10px;border-bottom:1px solid #eee;font-size:15px;color:#222"><b style="color:${i<3?'#C9A84C':'#bbb'};font-size:16px">#${i+1}</b> <b>${esc(pidLabelFor(w.key))}</b></td>
-          <td style="padding:9px 10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap"><span style="color:#999;font-size:13px">${esc(w.c)}/${esc(w.t)} (${w.rate}%)</span> <b style="color:${scColP(sc)};font-size:18px">${sc}</b></td></tr>`;
-      }).join(''):'';
-      const weakTypeBig=(Wk&&Wk.weakType.length)?Wk.weakType.slice(0,8).map(w=>{
-        const sc=Math.round(w.score*100);
-        return `<span style="display:inline-block;background:#fff;border:2px solid ${scColP(sc)};border-radius:24px;padding:7px 16px;margin:4px;font-size:16px;font-weight:800;color:#5a3a10">${esc(w.key)} <span style="color:${scColP(sc)}">${sc}</span></span>`;
-      }).join(''):'';
-      const weakBig=weakTypes.length?weakTypes.map(t=>`<span style="display:inline-block;background:#fff;border:2px solid ${rateColor(t.rate)};border-radius:24px;padding:7px 16px;margin:4px;font-size:16px;font-weight:800;color:#5a3a10">${esc(t.type)} <span style="color:${rateColor(t.rate)}">${esc(t.rate)}%</span></span>`).join(''):'';
+      // 홍보용(main.html 톤: 네이비·와인·골드, Pretendard) — 약점 '왜' 설명 포함, 이모지 없음
+      const scColP=sc=>sc>=50?'#B3261E':sc>=30?'#B7791F':'#8a8f9c';
+      const shortP=pid=>{const L=pidLabelFor(pid); const m=String(L).match(/(\S+강\s*\S+번?)$/); return m?m[1]:L;};
+      const EXP=buildWeakExplainers(stats.sessionStats,shortP);
+      const exP=arr=>arr.length?`<div class="ex">${arr.map(x=>`<div>${x}</div>`).join('')}</div>`:'';
+      const promoTypes=(Wk&&Wk.weakType||[]).slice(0,3);
+      const promoPids=(Wk&&Wk.weakPid||[]).slice(0,3);
+      const ROMAN=['I','II','III'];
+      const firstLine=arr=>arr&&arr.length?arr[0]:'';
+      // 짧은 표현: 근거 문장에서 핵심만 (괄호 부연·접두어 제거)
+      const trendTag=ex=>{const l=ex.find(x=>x.indexOf('최근 5문항')===0)||''; return l.includes('하락')?'최근 하락':l.includes('상승')?'최근 상승':l.includes('비슷')?'정체':'';};
+      const hotPids=ex=>{const l=ex.find(x=>x.indexOf('오답이 몰린 지문')===0)||''; return l.replace(/^오답이 몰린 지문:\s*/,'').split(' · ').slice(0,2).map(x=>`<span style="white-space:nowrap">${x.replace(/\(\d+회\)/,'')}</span>`).join(' · ');};
+      const miss10=r=>Math.round((100-Number(r||0))/10);
+      const donut=(r)=>{const R=34,C=2*Math.PI*R,v=Math.max(0,Math.min(100,Number(r)||0));
+        return `<svg width="80" height="80" viewBox="0 0 92 92"><circle cx="46" cy="46" r="${R}" fill="none" stroke="#e5e7eb" stroke-width="10"/><circle cx="46" cy="46" r="${R}" fill="none" stroke="#7a1020" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(C*v/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 46 46)"/><text x="46" y="52" text-anchor="middle" font-size="21" font-weight="700" fill="#111827" font-family="'Pretendard Variable',Pretendard,sans-serif" letter-spacing="-1">${v}%</text></svg>`;};
+      const findCards=promoTypes.map((w,i)=>{const tg=trendTag(EXP.explainType(w.key));
+        return `<div class="row"><span class="rk">${i+1}</span><b class="nm">${esc(w.key)}</b><span class="pbar"><i style="width:${Number(w.rate)||0}%"></i></span><b class="pc">${w.rate}%</b><span class="tgw">${tg==='최근 하락'?'<span class="tg dn">최근 하락</span>':tg==='최근 상승'?'<span class="tg up">최근 상승</span>':''}</span></div>`;}).join('');
+      const pidLines=promoPids.map((w,i)=>{const tot=Number(w.t)||0, wr=tot-(Number(w.c)||0);
+        const L=pidLabelFor(w.key), m=String(L).match(/(\S+강\s*\S+번?)$/), nm=m?m[1]:L;
+        return `<div class="row"><span class="rk">${i+1}</span><b class="nm">${esc(nm)}</b><span class="pbar w"><i style="width:${tot?Math.round(wr/tot*100):0}%"></i></span><span class="cnt">${tot}번 중 <b>${wr}번</b> 틀림</span></div>`;}).join('');
+      const weakCnt=(Wk&&Wk.weakPid||[]).length;
 
       const LT='<', SC=LT+'script', ESC_='</'+'script>'; // 백틱/부모 script 충돌 회피
       const phtml=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>약점 분석 리포트 · 대단한영어</title>
-<style>@media print{@page{size:A4;margin:12mm} .noprint{display:none!important}} *{box-sizing:border-box} body{font-family:'Pretendard','Malgun Gothic',sans-serif;margin:0;padding:0;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#eee}
-#cap{max-width:740px;margin:0 auto;padding:30px;background:#fff}
-.bar{max-width:740px;margin:10px auto;display:flex;gap:8px;justify-content:center}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>@media print{@page{size:A4;margin:0} .noprint{display:none!important} body{background:#fff!important} #cap{margin:0 auto!important;padding:4mm!important;zoom:.66} .fr,.sec,.fc,.steps,.cta,.brand{break-inside:avoid}} *{box-sizing:border-box}
+body{font-family:'Pretendard Variable',Pretendard,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;margin:0;padding:0;color:#111827;letter-spacing:-.3px;font-variant-numeric:tabular-nums;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#e5e7eb}
+.sf{font-family:inherit}
+#cap{max-width:760px;margin:0 auto;padding:0;background:#fff}
+.bar{max-width:760px;margin:10px auto;display:flex;gap:8px;justify-content:center}
 .bar button{font-family:inherit;font-size:14px;font-weight:700;padding:10px 20px;border-radius:10px;border:none;cursor:pointer}
+.bar .sw{display:flex;align-items:center;gap:8px;margin-right:10px}
+.bar .sw button{width:30px;height:30px;padding:0;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #c9c2b4}
+.bar .sw button.on{box-shadow:0 0 0 3px #b8934a}
+.fr,.fr-in{border:none;padding:0;background:transparent}
+.fr-in{padding:48px 48px 36px}
+.kk{font-size:12px;letter-spacing:.5px;color:#7a1020;font-weight:700}
+.orn{display:none}
+.h1{font-size:38px;font-weight:800;line-height:1.28;color:#111827;letter-spacing:-1.5px;margin-top:12px}
+.h1 em{font-style:normal;color:#7a1020}
+.h2{font-size:15px;color:#6b7280;margin-top:12px}.h2 b{color:#111827}
+.stats{display:flex;gap:10px;margin:30px 0 0}
+.stats div{flex:1;background:#f5f6f8;border-radius:14px;padding:18px 18px 16px}
+.stats b{display:block;font-size:40px;font-weight:800;color:#111827;line-height:1;letter-spacing:-1.5px}
+.stats b small{font-size:16px;color:#9ca3af;margin-left:3px;font-weight:700;letter-spacing:0}
+.stats div.w b{color:#7a1020}
+.stats span{display:block;margin-top:8px;font-size:13px;color:#6b7280;font-weight:600}
+.sec{margin-top:40px}
+.sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+.sec-h .no{font-size:13px;color:#7a1020;font-weight:800}
+.sec-h .tt{font-size:22px;font-weight:800;color:#111827;letter-spacing:-.8px}
+.sec-h .ln{display:none}
+.sec.nv .sec-h .no{color:#7a1020}.sec.nv .sec-h .tt{color:#111827}
+.fcs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fc{background:#f5f6f8;border-radius:14px;padding:18px 18px 16px}
+.fc-n{display:none}
+.fc-t{font-size:20px;font-weight:800;color:#111827;letter-spacing:-.6px}
+.fc-g{display:flex;align-items:center;gap:12px;margin-top:12px}
+.fc-m{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.fc-big{font-size:12.5px;color:#6b7280;line-height:1.35}.fc-big b{font-size:24px;font-weight:800;color:#7a1020;letter-spacing:-.8px}
+.tg{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;background:#e5e7eb;color:#374151;white-space:nowrap}
+.tg.dn{background:#fde8ea;color:#7a1020}.tg.up{background:#e3f4ea;color:#166534}
+.fc-x{font-size:12.5px;color:#6b7280;line-height:1.5;margin-top:12px;padding-top:0;border-top:none}
+.fc-x b{color:#111827}
+.pl{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #eef0f3}.pl:last-child{border-bottom:none}
+.pl-n{flex-shrink:0;width:28px;height:28px;background:#111827;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:800}
+.pl-m{flex:1;min-width:0}
+.pl-t b{font-size:20px;font-weight:800;color:#111827;letter-spacing:-.6px}.pl-t span{font-size:12px;color:#9ca3af;margin-left:8px}
+.pl-x{font-size:13.5px;color:#6b7280;margin-top:3px}.pl-x em{font-style:normal;font-weight:700;color:#7a1020}
+.pl-c{flex-shrink:0;text-align:right;font-size:12.5px;color:#6b7280;width:160px}
+.pl-c b{font-size:18px;font-weight:800;color:#111827}.pl-c b.w{color:#7a1020}
+.pl-bar{height:6px;border-radius:3px;background:#eef0f3;margin-top:7px;overflow:hidden}.pl-bar i{display:block;height:100%;background:#7a1020;border-radius:3px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:none}
+.steps:after{display:none}
+.stp{background:#f5f6f8;border-radius:14px;padding:18px}.stp+.stp{border-left:none}
+.ic{width:40px;height:40px;border-radius:12px;border:none;background:#111827;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stp small{font-size:11px;letter-spacing:.5px;color:#7a1020;font-weight:800}
+.stp b{display:block;font-size:18px;font-weight:800;color:#111827;margin:4px 0 4px;letter-spacing:-.5px}
+.stp p{margin:0;font-size:13px;color:#6b7280;line-height:1.5}
+.cta{margin-top:40px;background:#7a1020;border-radius:18px;padding:28px 30px;text-align:left}
+.cta .q{font-size:26px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.35}
+.cta .q em{font-style:normal;color:#f5d98a}
+.brand{margin-top:22px;padding-top:0;border-top:none;display:flex;justify-content:space-between;align-items:center}
+.brand .bn{font-size:20px;font-weight:900;color:#111827;letter-spacing:-.6px}
+.brand .bt{font-size:12px;color:#9ca3af;margin-top:2px}
+.brand .bc{text-align:right;font-size:12px;color:#9ca3af;line-height:1.5}
+.brand .bc b{font-size:13px;color:#374151;font-weight:700}
+.note{font-size:10.5px;color:#b0b5bd;margin-top:16px;line-height:1.5;text-align:left}
+.sec-h .sub{margin-left:auto;font-size:12px;color:#9ca3af;font-weight:600}
+.row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #f0f1f3}.row:last-child{border-bottom:none}
+.rk{width:20px;font-size:14px;font-weight:800;color:#c4c8cf}
+.nm{width:150px;font-size:19px;font-weight:800;color:#111827;letter-spacing:-.6px;white-space:nowrap}
+.pbar{flex:1;height:10px;border-radius:5px;background:#eef0f3;overflow:hidden}.pbar i{display:block;height:100%;border-radius:5px;background:#111827}
+.pbar.w i{background:#7a1020}
+.pc{width:58px;text-align:right;font-size:22px;font-weight:800;color:#111827;letter-spacing:-.8px}
+.tgw{width:72px;text-align:right}
+.cnt{width:130px;text-align:right;font-size:14px;color:#6b7280}.cnt b{font-size:18px;color:#7a1020}
+.flow{margin-top:36px;display:flex;align-items:center;justify-content:center;gap:12px}
+.flow span{background:#f5f6f8;border-radius:999px;padding:10px 18px;font-size:15px;font-weight:800;color:#111827}
+.flow i{font-style:normal;color:#c4c8cf;font-weight:800}
+.cta{margin-top:18px}
+/* 프리미엄 색감: 아이보리 + 와인 + 샴페인 골드 */
+body{background:#e9e4da}
+#cap{background:#fbf8f3}
+.fr-in{border-top:6px solid;border-image:linear-gradient(90deg,#4a0f1f,#b8934a) 1}
+.kk{color:#9a7a38;letter-spacing:2.5px}
+.h1{color:#1f1a16}.h1 em{color:#5b1526}
+.h2{color:#7b7468}.h2 b{color:#1f1a16}
+.stats div{background:#f3ede2;border:1px solid #e2d5b8}
+.stats b{font-family:Georgia,'Times New Roman',serif;font-weight:700;color:#1f1a16}
+.stats b small{color:#a89c82}
+.stats div.w b{color:#5b1526}
+.stats span{color:#7b7468}
+.sec-h{border-bottom:1px solid #d9c79c;padding-bottom:10px;margin-bottom:6px}
+.sec-h .no{color:#b8934a;font-family:Georgia,serif;letter-spacing:1px}
+.sec-h .tt{color:#1f1a16}.sec-h .sub{color:#a89c82}
+.row{border-bottom:1px solid #eadfc8}
+.rk{color:#b8934a;font-family:Georgia,serif}
+.nm{color:#1f1a16}
+.pbar{background:#eadfc8}.pbar i{background:#3a2f28}
+.pbar.w i{background:linear-gradient(90deg,#5b1526,#8c2b40)}
+.pc{font-family:Georgia,'Times New Roman',serif;color:#1f1a16}
+.cnt{color:#7b7468}.cnt b{color:#5b1526}
+.tg{background:#ece4d2;color:#4a4036}.tg.dn{background:#f3dfe2;color:#5b1526}.tg.up{background:#e1efe5;color:#1f5c37}
+.flow span{background:#f3ede2;border:1px solid #e2d5b8;color:#3a2f28}
+.flow i{color:#b8934a}
+.cta{background:linear-gradient(135deg,#43101d,#6a1b2d);box-shadow:inset 0 0 0 5px #43101d,inset 0 0 0 6px rgba(201,168,76,.75)}
+.cta .q{color:#fbf8f3}.cta .q em{color:#e8cf8e}
+.brand .bn{color:#5b1526}.brand .bt,.brand .bc{color:#a0957f}.brand .bc b{color:#3a2f28}
+.note{color:#b9b0a0}
 </style>
 ${SC} src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">${ESC_}</head>
 <body>
   <div class="bar noprint">
+    <span class="sw"><button type="button" class="on" onclick="setPal(0)" title="와인" style="background:#5b1526"></button><button type="button" onclick="setPal(1)" title="네이비" style="background:#14284b"></button><button type="button" onclick="setPal(2)" title="그린" style="background:#1e4a3c"></button><button type="button" onclick="setPal(3)" title="차콜·구리" style="background:linear-gradient(135deg,#25221f 50%,#b0693f 50%)"></button></span>
     <button onclick="saveImg()" style="background:linear-gradient(135deg,#7a1020,#C9A84C);color:#fff">🖼 이미지로 저장 (PNG)</button>
     <button onclick="window.print()" style="background:#fff;color:#7a1020;border:1px solid #7a1020">🖨 인쇄 / PDF</button>
   </div>
-  <div id="cap">
-  <div style="text-align:center;border-bottom:3px solid #7a1020;padding-bottom:16px;margin-bottom:22px">
-    <div style="font-size:15px;color:#C9A84C;font-weight:800;letter-spacing:2px">대단한영어 · 데이터 기반 약점 진단</div>
-    <div style="font-size:30px;font-weight:800;color:#7a1020;margin-top:6px">${esc(dispName)} 약점 분석 리포트</div>
-    <div style="font-size:17px;margin-top:10px;color:#555">종합 정답률 <b style="font-size:26px;color:${rateColor(overall)}">${overall}%</b> <span style="font-size:14px;color:#aaa">· ${dateStr}</span></div>
-  </div>
+  <div id="cap"><div class="fr"><div class="fr-in">
+    <div class="kk">GREATENG · PRIVATE DIAGNOSIS REPORT</div>
+    <div class="h1 sf">${esc(dispName)}은<br/><em>어디서</em> 점수를 잃고 있을까요?</div>
+    <div class="h2"><b>${totAll}문항</b>의 풀이 기록이 알려 준 답</div>
+    <div class="orn"><i></i><b></b><i></i></div>
+    <div class="stats">
+      <div><b class="sf">${overall}<small>%</small></b><span>종합 정답률</span></div>
+      <div class="w"><b class="sf">${weakCnt}<small>곳</small></b><span>데이터로 찾아낸 약점 지문</span></div>
+    </div>
 
-  ${weakTypeBig?`<div style="background:#FBF3DE;border:2px solid #e6c97a;border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
-    <div style="font-size:18px;font-weight:800;color:#7a1020;margin-bottom:4px">🎯 진짜 약점 유형 <span style="font-size:13px;color:#9a8570;font-weight:600">(표본 보정·최근 추세 반영)</span></div>
-    <div style="font-size:12.5px;color:#9a8570;margin-bottom:10px">단순 오답 수가 아니라, 통계적으로 검증된 약점만 골라냅니다</div>
-    <div>${weakTypeBig}</div></div>`:(weakBig?`<div style="background:#FBF3DE;border:2px solid #e6c97a;border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
-    <div style="font-size:18px;font-weight:800;color:#7a1020;margin-bottom:10px">⚠ 시험 전 집중 보완 추천 유형</div>
-    <div>${weakBig}</div></div>`:'')}
+    ${findCards?`<div class="sec s1"><div class="sec-h"><span class="no">01</span><span class="tt sf">먼저 잡아야 할 유형</span><span class="sub">정답률</span><span class="ln"></span></div>
+    <div>${findCards}</div></div>`:''}
 
-  <div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:10px">📝 유형별 정답률</div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${typeRows}</table>
+    ${pidLines?`<div class="sec s2"><div class="sec-h"><span class="no">${findCards?'02':'01'}</span><span class="tt sf">다시 봐야 할 지문</span><span class="sub">틀린 비율</span><span class="ln"></span></div>
+    <div>${pidLines}</div></div>`:''}
 
-  ${weakPidBig?`<div style="font-size:19px;font-weight:800;color:#7a1020;border-left:5px solid #C9A84C;padding-left:11px;margin-bottom:4px">🎯 진짜 약점 — 지문 <span style="font-size:13px;color:#aaa;font-weight:400">(우측 숫자=약점 점수)</span></div>
-  <div style="font-size:12.5px;color:#9a8570;margin-bottom:10px">표본이 적은 우연 오답은 자동으로 제외하고, 정말 막히는 지문만 짚어줍니다</div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:26px">${weakPidBig}</table>`:''}
+    <div class="flow"><span>정확한 진단</span><i>→</i><span>맞춤 처방</span><i>→</i><span>빠짐없는 확인</span></div>
 
-  ${promoFooter}
+    <div class="cta"><div class="q sf">우리 아이의 약점도<br/><em>이렇게 정밀하게</em> 분석해 드립니다</div></div>
+
+    <div class="brand">
+      <div><div class="bn sf">대단한영어</div><div class="bt">포항 입시영어의 기준 · 탁월함이 습관이 되도록</div></div>
+      <div class="bc">포항 남구<br/><b>중·고등 입시영어 전문 학원</b></div>
+    </div>
+    <div class="note">실제 학생의 풀이 기록으로 만든 리포트입니다 · 학생 이름은 가렸습니다 · ${dateStr}</div>
+  </div></div></div>
   </div>
 ${SC}>
+var PALS=[];/*PALJSON*/
+function setPal(i){
+  var st=document.getElementsByTagName('style')[0];
+  if(!window._css0)window._css0=st.textContent;
+  var t=window._css0,m=PALS[i];
+  if(m){for(var k in m){t=t.split(k).join(m[k]);}}
+  st.textContent=t;
+  var bs=document.querySelectorAll('.sw button');
+  for(var j=0;j<bs.length;j++){bs[j].className=(j===i)?'on':'';}
+}
 function saveImg(){
   var el=document.getElementById('cap');
   html2canvas(el,{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(function(canvas){
@@ -1878,7 +1999,15 @@ ${ESC_}
 </body></html>`;
       const pw=window.open('','_blank');
       if(!pw){setMsg('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');return;}
-      pw.document.write(phtml);pw.document.close();
+      // 홍보용 색감: 창 상단 색 버튼으로 선택 (와인·네이비·그린·차콜+구리)
+      const PROMO_PALETTES=[
+        null,
+        {'#5b1526':'#14284b','#43101d':'#0e1d38','#4a0f1f':'#0e1d38','#6a1b2d':'#1c3563','#8c2b40':'#2f5592','#f3dfe2':'#dfe6f2','#7a1020':'#14284b','#fbf8f3':'#fbfaf6','#f3ede2':'#f1eee6'},
+        {'#5b1526':'#1e4a3c','#43101d':'#12342a','#4a0f1f':'#12342a','#6a1b2d':'#25594a','#8c2b40':'#3d7a66','#f3dfe2':'#dcebe4','#7a1020':'#1e4a3c','#fbf8f3':'#fafaf5','#f3ede2':'#eef0e6'},
+        {'#5b1526':'#8a4b2d','#43101d':'#25221f','#4a0f1f':'#25221f','#6a1b2d':'#3a3530','#8c2b40':'#b0693f','#f3dfe2':'#f1e0d4','#7a1020':'#8a4b2d','#b8934a':'#b0693f','#9a7a38':'#9a5a35','#e8cf8e':'#e8b98f','#fbf8f3':'#faf8f5'}
+      ];
+      const phtmlOut=phtml.replace('/*PALJSON*/','PALS='+JSON.stringify(PROMO_PALETTES)+';');
+      pw.document.write(phtmlOut);pw.document.close();
       return;
     }
 
