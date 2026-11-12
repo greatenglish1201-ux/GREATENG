@@ -26,7 +26,8 @@ h2{font-size:12pt;font-weight:900;margin:5mm 0 2mm;border-left:4px solid var(--i
 .list td.l{text-align:left}
 .score{font-size:9.5pt;color:var(--muted);margin:1.5mm 0 0;line-height:1.6}
 .exs{column-count:2;column-gap:7mm;column-rule:1px solid var(--line)}
-.ex{break-inside:avoid;margin:0 0 3.2mm;font-size:9.4pt;line-height:1.6}
+.ex{margin:0 0 2.4mm;font-size:9.4pt;line-height:1.5;orphans:2;widows:2}
+.ex .eh{break-after:avoid}
 .ex .eh{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 1.6mm;border-bottom:1px solid var(--line);padding-bottom:.6mm;margin-bottom:1mm}
 .ex .n{font-family:var(--f-en);font-size:12pt}
 .ex .a{color:var(--ans);font-size:11pt}
@@ -35,7 +36,7 @@ h2{font-size:12pt;font-weight:900;margin:5mm 0 2mm;border-left:4px solid var(--i
 .ex p{margin:0;text-align:justify}
 .foot{margin-top:5mm;border-top:1px solid var(--line);padding-top:2mm;font-size:8.4pt;color:var(--muted);text-align:center;line-height:1.6}
 @media (max-width:640px){.exs{column-count:1} .doc{padding:16px}}
-@media print{@page{size:A4;margin:12mm} body{background:#fff;padding:0} .bar{display:none} .doc{box-shadow:none;padding:0;max-width:none} h2.ex-h{break-before:page}}
+@media print{@page{size:A4;margin:10mm 11mm} h2{break-after:avoid} body{background:#fff;padding:0} .bar{display:none} .doc{box-shadow:none;padding:0;max-width:none}}
 </style></head><body>
 <div class="bar"><h1>대단한영어 워밍업 모의고사 2회 정답·해설</h1><a class="chip" href="warmup_mock2.html" target="_blank" rel="noopener">문제지 ↗</a><button class="chip" id="btnPrint" type="button" hidden>인쇄</button></div>
 <div class="doc">
