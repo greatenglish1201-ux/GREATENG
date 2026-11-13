@@ -2498,13 +2498,13 @@ ${ESC_}
                 // GAS가 ranked(표본 충족)를 보내면 그 값으로,
                 // 없으면 유효 지문 수 20개 기준으로 판정(구버전 GAS 호환)
                 const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.effPids!=null?s.effPids:(s.uniq!=null?s.uniq:s.total))||0)>=20);
-                // 종합 동점이면 성실도 높은 순으로 정렬(메달 규칙과 동일) — 동점이 아닌 학생의 순서는 그대로
-                { const _sc=s=>Number(s.totalScore!=null?s.totalScore:s.adjRate)||0, _di=s=>Number(s.diliScore)||0;
+                // 종합(소수 둘째 자리, GAS v13 totalScore2) 높은 순 → 그래도 같으면 성실도 높은 순(메달 규칙과 동일) — 동점이 아닌 학생의 순서는 그대로
+                { const _sc=s=>Number(s.totalScore2!=null?s.totalScore2:(s.totalScore!=null?s.totalScore:s.adjRate))||0, _di=s=>Number(s.diliScore2!=null?s.diliScore2:s.diliScore)||0;
                   list=list.map((s,i)=>({s,i})).sort((a,b)=>(isRanked(a.s)!==isRanked(b.s))?(isRanked(a.s)?-1:1):(_sc(b.s)-_sc(a.s))||(_di(b.s)-_di(a.s))||(a.i-b.i)).map(x=>x.s); }
                 let rankNo=0;
                 // 메달(학생 화면 탑3와 같은 규칙): 표본 충족 + 100문항 이상, 종합 점수 순, 동점이면 성실도 높은 쪽 우세, 그래도 같으면 공동
                 const _mPool=(stats.studentStats||[]).filter(s=>s.name!=='관리자'&&isRanked(s)&&Number(s.total)>=100);
-                const _mSc=s=>Number(s.totalScore!=null?s.totalScore:s.adjRate)||0, _mDi=s=>Number(s.diliScore)||0;
+                const _mSc=s=>Number(s.totalScore2!=null?s.totalScore2:(s.totalScore!=null?s.totalScore:s.adjRate))||0, _mDi=s=>Number(s.diliScore2!=null?s.diliScore2:s.diliScore)||0;
                 const medalOf=s=>{ if(!_mPool.includes(s))return 0;
                   const r=1+_mPool.filter(o=>_mSc(o)>_mSc(s)||(_mSc(o)===_mSc(s)&&_mDi(o)>_mDi(s))).length; return r<=3?r:0; };
                 if(list.length===0) return <div style={{padding:'16px',fontSize:12,color:'#9a8570',textAlign:'center'}}>이 클래스에 응시 기록이 없습니다.</div>;
@@ -2546,6 +2546,7 @@ ${ESC_}
                     {hasAdj&&<div style={{textAlign:'right',background:'#FBF3DE',border:'1px solid #e6c97a',borderRadius:8,padding:'3px 9px',minWidth:46}}>
                       <div style={{fontSize:9.5,color:'#9a7040',lineHeight:1}}>종합</div>
                       <div style={{fontSize:15,fontWeight:800,color:'#8a6010'}}>{s.totalScore!=null?s.totalScore:s.adjRate}</div>
+                      {s.totalScore2!=null&&<div title="순위 판정용 종합 점수(소수 둘째 자리)" style={{fontSize:9.5,color:'#b08968',lineHeight:1.1,marginTop:1}}>{Number(s.totalScore2).toFixed(2)}</div>}
                     </div>}
                   </div>
                 </div>;
