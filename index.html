@@ -2498,6 +2498,9 @@ ${ESC_}
                 // GAS가 ranked(표본 충족)를 보내면 그 값으로,
                 // 없으면 유효 지문 수 20개 기준으로 판정(구버전 GAS 호환)
                 const isRanked=s=>(s.ranked!==undefined?s.ranked:(Number(s.effPids!=null?s.effPids:(s.uniq!=null?s.uniq:s.total))||0)>=20);
+                // 종합 동점이면 성실도 높은 순으로 정렬(메달 규칙과 동일) — 동점이 아닌 학생의 순서는 그대로
+                { const _sc=s=>Number(s.totalScore!=null?s.totalScore:s.adjRate)||0, _di=s=>Number(s.diliScore)||0;
+                  list=list.map((s,i)=>({s,i})).sort((a,b)=>(isRanked(a.s)!==isRanked(b.s))?(isRanked(a.s)?-1:1):(_sc(b.s)-_sc(a.s))||(_di(b.s)-_di(a.s))||(a.i-b.i)).map(x=>x.s); }
                 let rankNo=0;
                 // 메달(학생 화면 탑3와 같은 규칙): 표본 충족 + 100문항 이상, 종합 점수 순, 동점이면 성실도 높은 쪽 우세, 그래도 같으면 공동
                 const _mPool=(stats.studentStats||[]).filter(s=>s.name!=='관리자'&&isRanked(s)&&Number(s.total)>=100);
@@ -2514,7 +2517,7 @@ ${ESC_}
                 return <div key={i} style={{padding:'10px 16px',borderBottom:'1px solid #f6efe0',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',gap:10,background:ranked?'transparent':'#fcfaf5'}}
                   onClick={()=>{setSelectedStudent(s.name);loadStats(s.name);}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,minWidth:0}}>
-                    <span style={{fontSize:13,fontWeight:800,color:ranked?(rankNo<=3?'#C9A84C':'#c9bda5'):'#d8cdb8',minWidth:18,textAlign:'center',position:'relative',display:'inline-block'}}>{medalOf(s)>0&&<span aria-hidden="true" title={`학생 화면 메달: ${medalOf(s)}등`} style={{position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-50%)',fontSize:26,lineHeight:1,opacity:0.28,pointerEvents:'none'}}>{['','🥇','🥈','🥉'][medalOf(s)]}</span>}<span style={{position:'relative'}}>{ranked?rankNo:'—'}</span></span>
+                    <span style={{fontSize:13,fontWeight:800,color:ranked?(rankNo<=3?'#C9A84C':'#c9bda5'):'#d8cdb8',minWidth:18,textAlign:'center',position:'relative',display:'inline-block'}}>{medalOf(s)>0&&<svg aria-hidden="true" width="30" height="34" viewBox="0 0 30 34" style={{position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-56%)',opacity:0.5,pointerEvents:'none'}}><title>{`학생 화면 메달: ${medalOf(s)}등`}</title><path d="M8 0h5l3 9h-5z" fill="#7a1020"/><path d="M22 0h-5l-3 9h5z" fill="#a8323f"/><circle cx="15" cy="21" r="11.5" fill={['','#E8B923','#B8BEC8','#C77B3A'][medalOf(s)]} stroke={['','#B8860B','#8A919C','#8F5220'][medalOf(s)]} strokeWidth="1.5"/></svg>}<span style={{position:'relative',color:medalOf(s)>0?'#3a2a20':undefined}}>{ranked?rankNo:'—'}</span></span>
                     <div style={{minWidth:0}}>
                       <span style={{fontSize:13,fontWeight:700,color:'#3a2a20'}}>{s.name}</span>
                       {s.cls&&!clsFilter&&<span style={{fontSize:10,color:'#7a6a55',marginLeft:5,background:'#f6efe0',borderRadius:5,padding:'1px 5px'}}>{s.cls}</span>}
