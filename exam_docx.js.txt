@@ -1,0 +1,274 @@
+#!/usr/bin/env node
+/*
+ * 예상문제 JSON → Word 3종 (시험지 2단 · 해설지 검수용 · 해설지 학생용) — 2026-11-15 (37차)
+ *
+ * 왜: 지금까지 세션마다 Word 시험지·해설지를 처음부터 다시 짰다(가장 오래 걸리는 수작업).
+ *     형식은 2026 2학기 중간 예상문제(제철중1 시험지·검수용 해설지, 이동중1 학생용 해설지)를 그대로 따른다.
+ *
+ * 사용:
+ *   node exam_docx.js <exam.json> [출력폴더]
+ *   → 출력폴더/{접두어}_예상문제.docx, _해설지(검수용).docx, _해설지(학생용).docx
+ *   접두어: meta.file_prefix, 없으면 "{학교}{학년숫자}_{학기}{시험}" (예: 제철중2_2학기기말)
+ *
+ * 입력 JSON (exams 폴더 표준 스키마 + 선택 필드):
+ *   meta: school, grade, year, semester, exam, publisher, scope, total, total_score
+ *         print_title?  (기본 "( 2 학기 ) 기말고사 — 예상문제")
+ *         review_priority? : ["① ...", "② ..."]   검수용 첫 쪽 '검수 우선순위'
+ *         gate? : "exam_gate_middle.py PASS"        검수용 부제에 표시
+ *   questions[]: num, qtype, score, question("발문\n본문"), choices[], answer, explanation, source
+ *         set_header?  묶음 안내("※ 다음 글을 읽고 물음에 답하시오. (8~9)")
+ *         box?         주어진 문장·요약문 등 따로 상자에 넣을 글
+ *         subtype?     학생용 제목 "어휘 — 유의어·반의어"의 뒷부분
+ *         review?: { 출처, 원문변형, 정답근거, 오답설계 }   없으면 source·explanation으로 채움
+ *         student?: { 왜, 오답 }                             없으면 explanation으로 채움
+ *   문항 글의 <u>…</u> 는 밑줄, <b>…</b> 는 굵게.
+ */
+const fs = require('fs');
+const path = require('path');
+const {
+  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle,
+  AlignmentType, Footer, PageNumber, SectionType, ShadingType,
+} = require('docx');
+
+const FONT = '맑은 고딕';
+const WINE = '7A1020', RED = 'C00000', INK = '222222', GRAY = '555555', LGRAY = '888888';
+const PAGE = { size: { width: 11906, height: 16838 }, margin: { top: 850, right: 1000, bottom: 850, left: 1000 } };
+const FULLW = 11906 - 2000;            // 9906
+const COLW = Math.floor((FULLW - 400) / 2); // 2단 한 칸 폭(대략)
+const CIRC = '①②③④⑤';
+
+// ── 글 → TextRun (밑줄·굵게 태그 처리) ──
+function runs(text, o = {}) {
+  const out = [];
+  const re = /<(\/?)(u|b)>/gi;
+  let u = false, b = false, last = 0, m;
+  const push = (s) => { if (s) out.push(new TextRun({ text: s, font: FONT, size: o.size || 17, color: o.color || INK,
+    bold: o.bold || b, underline: u ? {} : undefined, italics: o.italics })); };
+  const s = String(text == null ? '' : text);
+  while ((m = re.exec(s))) {
+    push(s.slice(last, m.index));
+    const on = m[1] !== '/';
+    if (m[2].toLowerCase() === 'u') u = on; else b = on;
+    last = re.lastIndex;
+  }
+  push(s.slice(last));
+  return out.length ? out : [new TextRun({ text: '', font: FONT, size: o.size || 17 })];
+}
+const P = (text, o = {}) => new Paragraph({
+  children: Array.isArray(text) ? text : runs(text, o),
+  spacing: { before: o.before || 0, after: o.after == null ? 40 : o.after, line: o.line || 276 },
+  alignment: o.align, indent: o.indent, keepNext: o.keepNext, keepLines: o.keepLines,
+});
+const lines = (s) => String(s || '').split('\n');
+const border = (sz = 6, color = '333333') => ({ style: BorderStyle.SINGLE, size: sz, color });
+const allBorders = (sz, color) => ({ top: border(sz, color), bottom: border(sz, color), left: border(sz, color), right: border(sz, color) });
+const noBorders = { top: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }, bottom: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+  left: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }, right: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+  insideHorizontal: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }, insideVertical: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' } };
+
+function boxTable(paras, width, o = {}) {
+  return new Table({
+    width: { size: width, type: WidthType.DXA }, columnWidths: [width], borders: noBorders,
+    rows: [new TableRow({ cantSplit: o.cantSplit, children: [new TableCell({
+      width: { size: width, type: WidthType.DXA }, borders: allBorders(o.sz || 4, o.color || '666666'),
+      margins: { top: 60, bottom: 60, left: 120, right: 120 },
+      shading: o.fill ? { type: ShadingType.CLEAR, color: 'auto', fill: o.fill } : undefined,
+      children: paras,
+    })] })],
+  });
+}
+const spacer = (after = 60) => new Paragraph({ children: [], spacing: { after } });
+
+// ── 메타 → 표시 문구 ──
+function gradeNum(g) { const m = String(g || '').match(/(\d)/); return m ? m[1] : ''; }
+function examShort(e) { e = String(e || ''); if (/기말|2차/.test(e)) return '기말'; if (/중간|1차/.test(e)) return '중간'; return e.replace(/\s|\(.*?\)/g, ''); }
+function prefixOf(m) {
+  if (m.file_prefix) return m.file_prefix;
+  return `${m.school || ''}${gradeNum(m.grade)}_${m.semester || ''}${examShort(m.exam)}`;
+}
+function scopeLine(m) { return [m.publisher, m.scope].filter(Boolean).join(' '); }
+function subjectLine(m) { return `영어과  |  제 ${gradeNum(m.grade) || '-'} 학년  |  ${scopeLine(m)}`; }
+
+// 문항: 첫 줄 = 발문, 나머지 = 본문(상자)
+function splitQ(q) {
+  const ls = lines(q.question);
+  const stem = ls[0] || '';
+  const body = ls.slice(1).filter((x, i, a) => !(x.trim() === '' && (i === 0 || i === a.length - 1)));
+  return { stem, body };
+}
+function stemText(q) {
+  const { stem } = splitQ(q);
+  return /\[\d+(\.\d+)?점\]/.test(stem) ? stem : `${stem} [${q.score}점]`;
+}
+
+// ═══════════ 1. 시험지 (2단) ═══════════
+function buildExam(ex) {
+  const m = ex.meta || {}, qs = ex.questions || [];
+  const head = new Table({
+    width: { size: FULLW, type: WidthType.DXA }, columnWidths: [6200, FULLW - 6200], borders: noBorders,
+    rows: [new TableRow({ children: [
+      new TableCell({ width: { size: 6200, type: WidthType.DXA }, borders: allBorders(8, '333333'), margins: { top: 80, bottom: 80, left: 140, right: 140 },
+        children: [P(m.print_title || `( ${String(m.semester || '').replace('학기', '').trim() || '2'} 학기 ) ${m.exam || '기말고사'} — 예상문제`, { size: 30, bold: true, after: 20 }),
+                   P(subjectLine(m), { size: 18 })] }),
+      new TableCell({ width: { size: FULLW - 6200, type: WidthType.DXA }, borders: allBorders(8, '333333'), margins: { top: 80, bottom: 80, left: 140, right: 140 },
+        children: [P(`${m.school_full || m.school || ''} 대비`, { size: 18 }), P('반 ____  번호 ____', { size: 18 }), P('이름 ______________', { size: 18 })] }),
+    ] })],
+  });
+  const first = [head, spacer(80), P(`※ 총 ${qs.length}문항입니다. 문항별로 배점이 표시되어 있습니다.`, { size: 16, color: GRAY, after: 80 })];
+
+  const body = [];
+  qs.forEach((q) => {
+    if (q.set_header) body.push(P(q.set_header, { size: 17, bold: true, before: 80, after: 40, keepNext: true }));
+    if (q.group_passage) body.push(boxTable(lines(q.group_passage).map((x) => P(x, { size: 16, after: 20 })), COLW), spacer(40));
+    const { body: bl } = splitQ(q);
+    body.push(P(`${q.num}. ${stemText(q)}`, { size: 17, before: 100, after: 40, keepNext: true }));
+    if (bl.length) body.push(boxTable(bl.map((x) => P(x, { size: 16, after: 20 })), COLW), spacer(40));
+    if (q.box) body.push(boxTable(lines(q.box).map((x) => P(x, { size: 16, after: 20, align: AlignmentType.LEFT })), COLW, { sz: 8, color: '333333' }), spacer(40));
+    (q.choices || []).forEach((c) => body.push(P(c, { size: 16, after: 20, indent: { left: 0, hanging: 0 } })));
+  });
+  return new Document({
+    styles: { default: { document: { run: { font: FONT, size: 17 } } } },
+    sections: [
+      { properties: { page: PAGE }, children: first, footers: { default: footer('예상문제') } },
+      { properties: { page: PAGE, type: SectionType.CONTINUOUS, column: { count: 2, space: 400, separate: true } }, children: body, footers: { default: footer('예상문제') } },
+    ],
+  });
+}
+function footer(label) {
+  return new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [
+    new TextRun({ text: `대단한영어 GREATENG ${label} · `, font: FONT, size: 14, color: LGRAY }),
+    new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 14, color: LGRAY }),
+    new TextRun({ text: ' 면', font: FONT, size: 14, color: LGRAY })] })] });
+}
+
+// 정답표 (13칸씩)
+function answerTables(qs, width) {
+  const out = [];
+  for (let i = 0; i < qs.length; i += 13) {
+    const chunk = qs.slice(i, i + 13);
+    const lw = 700, cw = Math.floor((width - lw) / 13);
+    const cell = (t, o = {}) => new TableCell({ width: { size: o.w || cw, type: WidthType.DXA }, borders: allBorders(4, '999999'),
+      shading: o.fill ? { type: ShadingType.CLEAR, color: 'auto', fill: o.fill } : undefined,
+      children: [P(t, { size: 16, align: AlignmentType.CENTER, after: 0, bold: o.bold, color: o.color })] });
+    const pad = 13 - chunk.length;
+    out.push(new Table({ width: { size: lw + cw * 13, type: WidthType.DXA }, columnWidths: [lw, ...Array(13).fill(cw)],
+      rows: [
+        new TableRow({ children: [cell('번호', { w: lw, fill: 'EEEEEE', bold: true }), ...chunk.map((q) => cell(String(q.num), { fill: 'EEEEEE' })), ...Array(pad).fill(0).map(() => cell(''))] }),
+        new TableRow({ children: [cell('정답', { w: lw, bold: true }), ...chunk.map((q) => cell(q.answer || '', { color: WINE, bold: true })), ...Array(pad).fill(0).map(() => cell(''))] }),
+      ] }), spacer(80));
+  }
+  return out;
+}
+
+// ═══════════ 2. 해설지 (검수용) ═══════════
+function buildReview(ex) {
+  const m = ex.meta || {}, qs = ex.questions || [];
+  const kids = [
+    P(`${prefixOf(m).replace('_', ' ')} 예상문제 — 해설지 (검수용)`, { size: 32, bold: true, color: WINE, align: AlignmentType.CENTER, after: 40 }),
+    P(`${scopeLine(m)} | ${qs.length}문항 · ${m.total_score || 100}점${m.gate ? ' | 게이트 ' + m.gate : ''} | 내부용`, { size: 17, color: GRAY, align: AlignmentType.CENTER, after: 120 }),
+  ];
+  if (Array.isArray(m.review_priority) && m.review_priority.length) {
+    kids.push(P('검수 우선순위', { size: 22, bold: true, color: WINE, after: 40 }));
+    m.review_priority.forEach((x) => kids.push(P(x, { size: 17, after: 30 })));
+    kids.push(spacer(80));
+  }
+  kids.push(...answerTables(qs, FULLW));
+  const lw = 1300;
+  qs.forEach((q) => {
+    const r = q.review || {};
+    const rows = [['출처', r['출처'] || q.source || ''], ['원문 변형', r['원문변형'] || ''], ['정답 근거', r['정답근거'] || String(q.explanation || '').replace(/\s*\[출처:[^\]]*\]\s*$/, '')], ['오답 설계', r['오답설계'] || '']]
+      .filter(([, v]) => String(v).trim());
+    kids.push(P([new TextRun({ text: `${q.num}번 ${q.qtype || ''} · ${q.score}점   `, font: FONT, size: 24, bold: true, color: WINE }),
+                 new TextRun({ text: `정답 ${q.answer || ''}`, font: FONT, size: 24, bold: true, color: RED })], { before: 200, after: 40, keepNext: true }));
+    kids.push(P(stemText(q), { size: 17, color: GRAY, after: 60, keepNext: true }));
+    if (rows.length) kids.push(new Table({ width: { size: FULLW, type: WidthType.DXA }, columnWidths: [lw, FULLW - lw],
+      rows: rows.map(([k, v]) => new TableRow({ cantSplit: true, children: [
+        new TableCell({ width: { size: lw, type: WidthType.DXA }, borders: allBorders(4, 'BBBBBB'), shading: { type: ShadingType.CLEAR, color: 'auto', fill: 'F2F2F2' },
+          margins: { top: 50, bottom: 50, left: 100, right: 100 }, children: [P(k, { size: 17, bold: true, after: 0 })] }),
+        new TableCell({ width: { size: FULLW - lw, type: WidthType.DXA }, borders: allBorders(4, 'BBBBBB'),
+          margins: { top: 50, bottom: 50, left: 100, right: 100 }, children: lines(v).map((x) => P(x, { size: 17, after: 0 })) }),
+      ] })) }), spacer(40));
+    (q.choices || []).forEach((c) => {
+      const ok = q.answer && String(c).trim().startsWith(q.answer);
+      kids.push(P(c, { size: 16, color: ok ? RED : GRAY, bold: ok, after: 10, indent: { left: 200 } }));
+    });
+  });
+  return new Document({ styles: { default: { document: { run: { font: FONT, size: 17 } } } },
+    sections: [{ properties: { page: PAGE }, children: kids, footers: { default: footer('예상문제 · 검수용') } }] });
+}
+
+// ═══════════ 3. 해설지 (학생용, 2단) ═══════════
+function pickedChoice(q) {
+  const c = (q.choices || []).find((x) => q.answer && String(x).trim().startsWith(q.answer));
+  return c ? String(c).replace(/^[①-⑤]\s*/, '') : '';
+}
+function buildStudent(ex) {
+  const m = ex.meta || {}, qs = ex.questions || [];
+  const top = [
+    P(`${m.school || ''}${gradeNum(m.grade)} ${m.year || ''}-${m.semester || ''} ${m.exam || ''} 예상문제 — 해설지`, { size: 30, bold: true, color: WINE, align: AlignmentType.CENTER, after: 40 }),
+    P(`${scopeLine(m)} | ${qs.length}문항 · ${m.total_score || 100}점`, { size: 17, color: GRAY, align: AlignmentType.CENTER, after: 120 }),
+    ...answerTables(qs, FULLW),
+    P('※ 채점한 뒤 틀린 문항의 ‘왜 정답인가’를 먼저 읽고, 그다음 ‘오답 정리’로 나머지 선지를 지우는 연습을 하세요.', { size: 16, color: GRAY, after: 120 }),
+  ];
+  const body = [];
+  qs.forEach((q) => {
+    const s = q.student || {};
+    const why = s['왜'] || String(q.explanation || '').replace(/\s*\[출처:[^\]]*\]\s*$/, '');
+    const paras = [
+      P([new TextRun({ text: `${q.num}번 `, font: FONT, size: 18, bold: true, color: WINE }),
+         new TextRun({ text: `${q.qtype || ''}${q.subtype ? ' — ' + q.subtype : ''} · ${q.score}점   `, font: FONT, size: 15, color: GRAY }),
+         new TextRun({ text: `정답 ${q.answer || ''}`, font: FONT, size: 18, bold: true, color: RED })], { after: 30 }),
+    ];
+    const pc = pickedChoice(q);
+    if (pc) paras.push(P([new TextRun({ text: '고른 선지 ', font: FONT, size: 15, color: LGRAY }), ...runs(`${q.answer} ${pc}`, { size: 15, color: RED })], { after: 30 }));
+    paras.push(P([new TextRun({ text: '왜 정답인가 ', font: FONT, size: 15, bold: true }), ...runs(why, { size: 15 })], { after: 30 }));
+    if (s['오답']) paras.push(P([new TextRun({ text: '오답 정리 ', font: FONT, size: 15, bold: true }), ...runs(s['오답'], { size: 15 })], { after: 0 }));
+    body.push(boxTable(paras, COLW, { sz: 4, color: 'CCCCCC', cantSplit: true }), spacer(60));
+  });
+  return new Document({ styles: { default: { document: { run: { font: FONT, size: 16 } } } },
+    sections: [
+      { properties: { page: PAGE }, children: top, footers: { default: footer('학생용 해설') } },
+      { properties: { page: PAGE, type: SectionType.CONTINUOUS, column: { count: 2, space: 400, separate: true } }, children: body, footers: { default: footer('학생용 해설') } },
+    ] });
+}
+
+// ═══════════ 묶음 문항(group) 풀기 ═══════════
+// {type:'group', num_range:'12-14', passage, questions:[...]} → 첫 문항에 set_header + group_passage
+function normalize(ex) {
+  const out = [];
+  (ex.questions || []).forEach((q) => {
+    if (q && q.type === 'group' && Array.isArray(q.questions)) {
+      const nums = q.questions.map((s) => s.num);
+      const rng = q.num_range || (nums.length ? `${nums[0]}-${nums[nums.length - 1]}` : '');
+      q.questions.forEach((s, i) => out.push({ ...s,
+        set_header: i === 0 ? (q.set_header || `※ 다음 글을 읽고 물음에 답하시오. (${String(rng).replace('-', '~')})`) : (s.set_header || ''),
+        group_passage: i === 0 ? (q.passage || '') : '' }));
+    } else if (q) out.push(q);
+  });
+  out.forEach((q) => {
+    q.num = Number(q.num) || q.num; q.score = Number(q.score) || q.score;
+    // 예전 JSON의 _review(객체)를 검수표에 연결
+    const rv = q._review && typeof q._review === 'object' ? q._review : null;
+    if (rv && !q.review) q.review = { 오답설계: rv.trap || '', 원문변형: rv.change || '', 정답근거: '' };
+  });
+  return { ...ex, questions: out };
+}
+
+// ═══════════ 실행 ═══════════
+async function main() {
+  const [, , inPath, outDir = '.'] = process.argv;
+  if (!inPath) { console.log('사용: node exam_docx.js <exam.json> [출력폴더]'); process.exit(2); }
+  const ex = normalize(JSON.parse(fs.readFileSync(inPath, 'utf8')));
+  if (!ex.meta || !Array.isArray(ex.questions)) { console.error('meta·questions가 있는 표준 스키마가 아님'); process.exit(1); }
+  const bad = ex.questions.filter((q) => !q.answer || !q.question);
+  if (bad.length) { console.error('정답·발문 없는 문항:', bad.map((q) => q.num).join(',')); process.exit(1); }
+  fs.mkdirSync(outDir, { recursive: true });
+  const pre = prefixOf(ex.meta);
+  const jobs = [[buildExam, `${pre}_예상문제.docx`], [buildReview, `${pre}_예상문제_해설지(검수용).docx`], [buildStudent, `${pre}_예상문제_해설지(학생용).docx`]];
+  for (const [fn, name] of jobs) {
+    const buf = await Packer.toBuffer(fn(ex));
+    fs.writeFileSync(path.join(outDir, name), buf);
+    console.log('작성:', path.join(outDir, name));
+  }
+}
+main().catch((e) => { console.error(e); process.exit(1); });
