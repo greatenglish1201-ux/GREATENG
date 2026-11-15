@@ -343,6 +343,10 @@
   .fe-del{margin-left:6px;border:none;background:rgba(122,16,32,.1);color:var(--wine);
     width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;vertical-align:middle}
   .fe-del:hover{background:rgba(122,16,32,.2)}
+  .fe-mv{margin-left:6px;border:none;background:var(--fill,#f3eee5);color:var(--ink);
+    width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;vertical-align:middle}
+  .fe-mv:hover{background:#e6dfd1}
+  .fe-mv:disabled{opacity:.3;cursor:default}
   .fee-adminbar{display:none;flex-direction:column;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
   .fee-pwbox{display:flex;align-items:center;gap:10px}
   .fee-pwbox label{font-size:13px;font-weight:600;color:var(--ink-2,#515154);letter-spacing:-0.01em;white-space:nowrap}
@@ -995,7 +999,7 @@
         `<td data-l="대상"><input class="fe" data-i="${i}" data-k="name" value="${esc(r.name)}"></td>`+
         `<td data-l="요일"><input class="fe" data-i="${i}" data-k="days" value="${esc(r.days)}"></td>`+
         `<td data-l="시간"><input class="fe" data-i="${i}" data-k="time" value="${esc(r.time)}"></td>`+
-        `<td data-l="교육비"><input class="fe fe-num" data-i="${i}" data-k="fee" type="number" value="${Number(r.fee)}"> <button class="fe-del" data-i="${i}" title="이 반 삭제">✕</button></td>`+
+        `<td data-l="교육비"><input class="fe fe-num" data-i="${i}" data-k="fee" type="number" value="${Number(r.fee)}"> <button class="fe-mv" data-i="${i}" data-d="-1" title="위로" ${i===0?'disabled':''}>▲</button><button class="fe-mv" data-i="${i}" data-d="1" title="아래로" ${i===feeData.length-1?'disabled':''}>▼</button><button class="fe-del" data-i="${i}" title="이 반 삭제">✕</button></td>`+
         `</tr>`
       ).join('');
       // 입력 변경 반영
@@ -1003,6 +1007,14 @@
         inp.addEventListener('input',e=>{
           const i=+e.target.dataset.i, k=e.target.dataset.k;
           feeData[i][k] = (k==='fee') ? (parseInt(e.target.value,10)||0) : e.target.value;
+        });
+      });
+      feeBody.querySelectorAll('.fe-mv').forEach(btn=>{
+        btn.addEventListener('click',e=>{
+          const i=+e.currentTarget.dataset.i, j=i+(+e.currentTarget.dataset.d);
+          if(j<0||j>=feeData.length) return;
+          const t=feeData[i]; feeData[i]=feeData[j]; feeData[j]=t;
+          renderFee();
         });
       });
       feeBody.querySelectorAll('.fe-del').forEach(btn=>{
