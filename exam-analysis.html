@@ -1336,21 +1336,122 @@ function renderMiddlePassageList(list){
   if(!box){
     box = document.createElement('div');
     box.id = 'middlePassageList';
-    box.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:6px;';
+    box.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:6px;flex-basis:100%;width:100%;'; // [2026-11-15] 버튼 줄 아래 한 줄 전체 사용
     document.getElementById('middlePassageStatus').insertAdjacentElement('afterend', box);
   }
   box.innerHTML='';
   window._mpList = list;
+  // [2026-11-15] 학년·학교·교재 필터 바 (목록이 있을 때만) — 항목 번호 i는 전체 목록 기준 그대로 유지
+  if(list.length) box.appendChild(buildMpFilterBar(list));
+  const f = window._mpFilter || {};
+  let shown = 0;
   list.forEach((it,i)=>{
+    if(!mpMatchFilter(it, f)) return;
+    shown++;
     const label = [[it.school,it.grade].filter(Boolean).join(' '), it.lesson||'(과 미지정)', [it.publisher,it.author].filter(Boolean).join(' '), [it.year,it.semester].filter(Boolean).join(' ')].filter(Boolean).join(' | ');
     const has = [it.body_text?'본문':'', it.dialog_text?'대화문':'', it.grammar_points?'문법':''].filter(Boolean).join('·');
+    // [2026-11-15] 항목 버튼 + 🗑️ 삭제 버튼을 한 줄로
+    const row = document.createElement('div');
+    row.style.cssText='display:flex;gap:6px;align-items:stretch;';
     const btn = document.createElement('button');
     btn.className='btn btn-gray';
-    btn.style.cssText='text-align:left;font-size:.82rem;padding:7px 12px;';
+    btn.style.cssText='flex:1;text-align:left;font-size:.82rem;padding:7px 12px;';
     btn.textContent=`📖 ${label}  [${has||'내용없음'}]`;
     btn.onclick=()=>applyMiddlePassage(i);
-    box.appendChild(btn);
+    const del = document.createElement('button');
+    del.className='btn btn-gray';
+    del.title='이 지문을 시트에서 삭제';
+    del.style.cssText='font-size:.78rem;padding:4px 10px;';
+    del.textContent='🗑️';
+    del.onclick=(ev)=>{ ev.stopPropagation(); deleteMiddlePassage(i); };
+    row.appendChild(btn);
+    row.appendChild(del);
+    box.appendChild(row);
   });
+  if(list.length){
+    const cnt = document.createElement('div');
+    cnt.style.cssText='font-size:.78rem;color:var(--ink4);';
+    cnt.textContent = shown===list.length ? `전체 ${list.length}건` : `${shown}건 표시 / 전체 ${list.length}건`;
+    box.appendChild(cnt);
+  }
+}
+
+// ━━━ [2026-11-15] 교과서 지문 목록 필터(학년·학교·교재) ━━━
+function mpBook(it){ return [it.publisher, it.author?'('+it.author+')':''].filter(Boolean).join('') ; }
+function mpMatchFilter(it, f){
+  const t = v => String(v==null?'':v).trim();
+  if(f.grade  && t(it.grade)  !== f.grade)  return false;
+  if(f.school && t(it.school) !== f.school) return false;
+  if(f.book   && t(mpBook(it)) !== f.book)  return false;
+  return true;
+}
+function buildMpFilterBar(list){
+  const f = window._mpFilter || (window._mpFilter = {grade:'', school:'', book:''});
+  const t = v => String(v==null?'':v).trim();
+  const gradeOrder = ['중1','중2','중3','고1','고2','고3'];
+  const uniq = arr => [...new Set(arr.filter(Boolean))];
+  const grades  = uniq(list.map(it=>t(it.grade))).sort((a,b)=>{
+    const ia=gradeOrder.indexOf(a), ib=gradeOrder.indexOf(b);
+    return (ia<0?99:ia)-(ib<0?99:ib) || a.localeCompare(b,'ko');
+  });
+  const schools = uniq(list.map(it=>t(it.school))).sort((a,b)=>a.localeCompare(b,'ko'));
+  const books   = uniq(list.map(it=>t(mpBook(it)))).sort((a,b)=>a.localeCompare(b,'ko'));
+  // 목록에 더 이상 없는 값으로 필터가 걸려 있으면 해제(삭제 후 빈 화면 방지)
+  if(f.grade  && !grades.includes(f.grade))   f.grade='';
+  if(f.school && !schools.includes(f.school)) f.school='';
+  if(f.book   && !books.includes(f.book))     f.book='';
+  const bar = document.createElement('div');
+  bar.style.cssText='display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:6px 8px;border:1px dashed var(--border);border-radius:6px;';
+  const lab = document.createElement('span');
+  lab.style.cssText='font-size:.75rem;color:var(--ink4);';
+  lab.textContent='🔎 필터';
+  bar.appendChild(lab);
+  const mk = (key, title, opts)=>{
+    const sel = document.createElement('select');
+    sel.style.cssText='background:var(--paper);border:1.5px solid var(--border);border-radius:6px;padding:3px 6px;font-size:.78rem;color:var(--ink);';
+    sel.innerHTML = `<option value="">${title} 전체</option>` + opts.map(o=>`<option></option>`).join('');
+    opts.forEach((o,k)=>{ sel.options[k+1].value=o; sel.options[k+1].textContent=o; });
+    sel.value = f[key]||'';
+    sel.onchange = ()=>{ f[key]=sel.value; renderMiddlePassageList(window._mpList||[]); };
+    bar.appendChild(sel);
+  };
+  mk('grade','학년',grades);
+  mk('school','학교',schools);
+  mk('book','교재',books);
+  const reset = document.createElement('button');
+  reset.className='btn btn-gray';
+  reset.style.cssText='font-size:.72rem;padding:3px 8px;';
+  reset.textContent='필터 해제';
+  reset.onclick=()=>{ window._mpFilter={grade:'',school:'',book:''}; renderMiddlePassageList(window._mpList||[]); };
+  bar.appendChild(reset);
+  return bar;
+}
+
+// ━━━ [2026-11-15] 교과서 지문 삭제 — 시트 '중등지문'에서 같은 열쇠(학교+학년+출판사+저자+레슨) 행 삭제 ━━━
+async function deleteMiddlePassage(i){
+  const it = (window._mpList||[])[i];
+  if(!it) return;
+  const status = document.getElementById('middlePassageStatus');
+  const t = v => String(v==null?'':v).trim();
+  const key = { school:t(it.school), grade:t(it.grade), publisher:t(it.publisher), author:t(it.author), lesson:t(it.lesson) };
+  const target = `${key.school} ${key.grade} ${key.publisher}${key.author?'('+key.author+')':''} ${key.lesson||'(과 미지정)'}`;
+  if(!confirm(`다음 지문을 시트에서 삭제합니다. 되돌릴 수 없습니다.\n\n▶ ${target}\n\n삭제할까요?`)) return;
+  status.innerHTML='<span class="spinner"></span> 삭제 중...';
+  try{
+    await postToGAS({ action:'deleteMiddlePassage', ...key });
+    // 응답을 못 읽는 경우가 있어(iframe 크로스도메인) 목록을 다시 받아 실제로 지워졌는지 확인
+    const r = await getFromGAS({action:'getMiddlePassages'});
+    const list = (r && r.list) || [];
+    const still = list.some(x=> t(x.school)===key.school && t(x.grade)===key.grade &&
+      t(x.publisher)===key.publisher && t(x.author)===key.author && t(x.lesson)===key.lesson);
+    renderMiddlePassageList(list);
+    status.innerHTML = still
+      ? '<span class="error">⚠ 목록에 아직 남아 있습니다 — GAS에 삭제 기능(deleteMiddlePassage)이 새 버전으로 배포됐는지 확인하세요.</span>'
+      : `<span style="color:var(--green2)">🗑️ 삭제 완료 — ${target}</span>`;
+    updatePassageTargetInfo();
+  } catch(e){
+    status.innerHTML='<span class="error">삭제 실패: '+e.message+'</span>';
+  }
 }
 
 function applyMiddlePassage(i){
