@@ -304,12 +304,11 @@
 <section>
   <div class="sec">
     <div class="eyebrow">수업 시간</div>
-    <h2>예비고반 수업 시간</h2>
-    <table class="sched">
-      <thead id="schedHead"></thead>
-      <tbody id="schedBody"></tbody>
-    </table>
-    <p class="note" id="schedNote"></p>
+    <h2>수업 시간은 수업안내에서 확인하세요</h2>
+    <p class="lead">반별 요일과 수업 시간은 수업안내 페이지에 최신 시간표로 정리되어 있습니다. 정확한 시작일과 시간표는 상담 시에도 다시 안내드립니다.</p>
+    <div class="hero-cta" style="margin-top:26px">
+      <a class="hbtn primary" href="parent_guide.html">수업안내에서 시간표 보기</a>
+    </div>
   </div>
 </section>
 
@@ -353,17 +352,13 @@
   /* ════════════════════════════════════════════
      ▼▼▼  매년 여기만 수정하세요  ▼▼▼
      · 파일명(yebigo.html)은 매년 그대로 씁니다.
-     · 시간표는 아래 기본값을 쓰다가, 수업안내(parent_guide.html) 관리자 화면에 저장된
-       시간표에 '예비고'가 들어간 반이 있으면 그 값이 자동으로 우선 적용됩니다.
+     · 수업 시간은 이 페이지에서 관리하지 않습니다.
+       수업안내(parent_guide.html) 관리자 화면의 시간표 한 곳에서만 관리하고,
+       이 페이지는 그쪽으로 링크만 겁니다.
   ════════════════════════════════════════════ */
   const CONFIG = {
     badge: "중3 모집",                          // 히어로 상단 배지 (예: "2027학년도 중3 모집")
     heroText: "고1 모의고사 실전 풀이와 독해법으로, 고등 영어를 미리 준비하는 중3 예비고반을 모집합니다.",
-    // 시간표 기본값 (GAS 값이 없을 때만 사용)
-    schedule: [
-      { name:"예비고", days:"화 · 목", time:"오후 7:00 ~ 8:30" }
-    ],
-    scheduleNote: "※ 과정·정원은 변동될 수 있으며, 자세한 내용은 상담 시 안내드립니다.",
     // 모집 안내 항목 (한 줄에 하나)
     applyItems: [
       "상담 후 등록할 수 있습니다. 상담은 100% 사전 예약제로 진행합니다.",
@@ -373,44 +368,11 @@
   };
   /* ▲▲▲  여기까지  ▲▲▲ */
 
-  const SCHED_GAS_URL = 'https://script.google.com/macros/s/AKfycbwu_6vMigAhIXq8o-4mda7Gyd1dfiC5nSsT0Ei9Ckwlwuc_OGMAEb9FybGB6lOJcsbL/exec';
   const esc = s => String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
   document.getElementById('cfgBadge').textContent = CONFIG.badge;
   document.getElementById('cfgHeroText').textContent = CONFIG.heroText;
   document.getElementById('applyList').innerHTML = CONFIG.applyItems.map(t=>'<li>'+esc(t)+'</li>').join('');
-
-  function renderSched(rows, note){
-    const multi = rows.length > 1;   /* 반이 2개 이상일 때만 '대상' 열 표시 */
-    document.getElementById('schedHead').innerHTML = '<tr>'+(multi?'<th>대상</th>':'')+'<th>요일</th><th>수업 시간</th></tr>';
-    document.getElementById('schedBody').innerHTML = rows.map(r=>
-      '<tr>'+(multi?'<td data-l="대상">'+esc(r.name)+'</td>':'')+'<td data-l="요일">'+esc(r.days)+'</td>'+
-      '<td data-l="시간">'+esc(r.time)+'</td></tr>'
-    ).join('');
-    document.getElementById('schedNote').textContent = note;
-  }
-  renderSched(CONFIG.schedule, CONFIG.scheduleNote);
-
-  /* 수업안내 관리자 화면에 저장된 시간표에서 '예비고' 행만 읽어옴 (읽기 전용) */
-  (function(){
-    const cb = 'yebigoCb_' + Date.now();
-    const timer = setTimeout(cleanup, 12000);
-    let s;
-    function cleanup(){ clearTimeout(timer); try{ delete window[cb]; }catch(e){ window[cb]=undefined; } if(s&&s.parentNode) s.parentNode.removeChild(s); }
-    window[cb] = function(res){
-      cleanup();
-      try{
-        if(res && res.ok && res.data && Array.isArray(res.data.fee)){
-          const rows = res.data.fee.filter(r=> String(r.name).indexOf('예비고')>-1);
-          if(rows.length) renderSched(rows, CONFIG.scheduleNote);
-        }
-      }catch(e){}
-    };
-    s = document.createElement('script');
-    s.src = SCHED_GAS_URL + '?type=getSchedule&callback=' + cb;
-    s.onerror = cleanup;
-    document.head.appendChild(s);
-  })();
 </script>
 </body>
 </html>
