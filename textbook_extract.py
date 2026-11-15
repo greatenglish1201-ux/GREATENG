@@ -28,8 +28,8 @@ def dialog(path):
     L=open(path,encoding='utf-8').read().split('\n')
     # annotated Listen&Speak: first '◗ Listen & Speak' then 'A. Listen and Number' then numbered dialogs until first header noise (line '중2')
     i=next(k for k,l in enumerate(L) if l.strip()=='◗ Listen & Speak')
-    a=next(k for k in range(i,len(L)) if L[k].strip()=='A. Listen and Number')
-    e=next(k for k in range(a,len(L)) if L[k].strip()=='중2')
+    a=next(k for k in range(i,len(L)) if L[k].strip().startswith('A. Listen and'))
+    e=next(k for k in range(a,len(L)) if re.fullmatch(r'중[123]',L[k].strip()))
     ls=[l.rstrip() for l in L[a+1:e]]
     nums0=[int(m.group(1)) for l in ls for m in [re.match(r'^(\d+)\.\s*$',l.strip())] if m]
     nx=(max(nums0) if nums0 else 0)+1
@@ -44,7 +44,7 @@ def dialog(path):
         seg=L[k:k+40]
         if any('↳' in s for s in seg) and any(re.match(r'^[A-Z][a-z]*:',s) for s in seg[1:4]):
             c=k;break
-    ce=next(k for k in range(c,len(L)) if L[k].strip() in('Expressions','중2'))
+    ce=next(k for k in range(c,len(L)) if L[k].strip() in('Expressions','중1','중2','중3'))
     cv=clean_dialog_lines([l.rstrip() for l in L[c+1:ce]])
     # fix 'B: 6' remnant: lines like 'B: ' followed by text
     fixed=[]
@@ -58,14 +58,15 @@ def dialog(path):
     txt='\n'.join(ls).strip()
     txt=re.sub(r'^(\d+)\.\s*$',r'\1.',txt,flags=re.M)
     txt=re.sub(r'\n\s*\n+(?=\d+\.\n)','\n\n',txt)
+    txt=re.sub(r'\n+(?=\d+\.\n)','\n\n',txt)
     txt=re.sub(r'\n{3,}','\n\n',txt)
     conv=f'{n}.\n'+'\n'.join(fixed).strip()
     txt=txt.replace('\U000f00e5','');conv=conv.replace('\U000f00e5','')
-    return 'A. Listen and Number\n'+txt+'\n\nB. Conversation\n'+conv
+    return L[a].strip()+'\n'+txt+'\n\nB. Conversation\n'+conv
 def grammar(path):
     L=open(path,encoding='utf-8').read().split('\n')
     blocks=[];i=0
-    END=re.compile(r'^\s*(T/F|CHECK|READING.*|❙정답❙|Grammar\+|중2|Lesson\d|[◗✦].*)\s*$')
+    END=re.compile(r'^\s*(T/F|CHECK|READING.*|❙정답❙|Grammar\+|중[123]|Lesson\d|[◗✦].*)\s*$')
     while i<len(L):
         if L[i].strip()=='Grammar+':
             j=i+1
