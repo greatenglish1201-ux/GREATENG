@@ -171,6 +171,18 @@ const MOTIVATION_MSGS=[
   '오늘 풀지 않은 문제는 시험에서 틀릴 문제일 수 있어요. 지금 잡아요! 🛡️',
   '상위권의 비결은 특별한 게 아니라 “꾸준한 문제량”이에요. 따라가 봐요! 🚀',
   '딱 10분만 더 풀어볼까요? 그 10분이 모여 등급이 됩니다. ⌛',
+  '시작이 반이에요. 오늘 첫 문제만 풀면 나머지는 따라옵니다. 🏁',
+  '어제의 나보다 한 문제만 더! 그게 쌓여 실력이 됩니다. 🧗',
+  '지금 부족한 건 실력이 아니라 문제 수예요. 채우면 됩니다. 🧩',
+  '밀린 문제는 오늘부터 조금씩 갚으면 돼요. 아직 늦지 않았어요! 🌅',
+  '시험장에서 웃는 사람은 미리 많이 풀어 본 사람이에요. 😎',
+  '오늘 30문항이면 내일의 내가 고마워할 거예요. 🙌',
+  '틀려도 괜찮아요. 틀린 문제가 가장 좋은 선생님입니다. 📝',
+  '한 세트 끝낼 때마다 한 칸씩 올라갑니다. 계단처럼요! 🪜',
+  '이 화면을 본 김에, 바로 한 세트 가 볼까요? ▶️',
+  '꾸준히 푸는 친구들은 벌써 앞서가고 있어요. 따라잡아 봐요! 🏃',
+  '공부는 기분이 아니라 습관이에요. 오늘 한 세트로 습관을 만들어요. 🧱',
+  '지금 푸는 한 문제가 시험장의 한 문제입니다. 🎓',
 ];
 const pickMotivation=()=>MOTIVATION_MSGS[Math.floor(Math.random()*MOTIVATION_MSGS.length)];
 const PRAISE_MSGS=[
@@ -180,8 +192,223 @@ const PRAISE_MSGS=[
   '목표만큼 풀고 있는 멋진 학생이네요. 오늘도 화이팅! 💯',
   '좋은 습관이 자리잡았어요. 이 흐름 그대로 가요! 🔥',
   '잘 따라오고 있어요! 오늘도 가볍게 한 세트 풀어볼까요? ✨',
+  '목표 달성! 이 꾸준함이 진짜 실력입니다. 🏆',
+  '매일 쌓은 문제가 든든한 자신감이 되고 있어요. 💎',
+  '이 페이스라면 시험이 두렵지 않겠어요. 계속 가요! 🚀',
+  '약속한 만큼 해내는 사람, 바로 여러분입니다. 👏',
+  '오늘도 한 세트 더하면 목표를 넘어서는 거예요. 가 볼까요? ⛰️',
+  '노력은 배신하지 않아요. 지금처럼만 하면 됩니다. 🌈',
+  '성실함 최고! 이제 틀린 문제만 다시 잡으면 더 단단해져요. 🎯',
+  '쉬지 않고 달려온 것, 기록이 다 알고 있어요. 📊',
+  '오늘의 한 세트가 내일의 여유가 됩니다. 멋져요! 😄',
 ];
 const pickPraise=()=>PRAISE_MSGS[Math.floor(Math.random()*PRAISE_MSGS.length)];
+// 목표의 90% 이상 ~ 100% 미만: 남은 문항 수(n)를 넣어 보여주는 멘트 (매번 랜덤)
+const NEAR_MSGS=[
+  n=>`${n}문항만 더 풀면 목표 달성이에요. 조금만 더 힘내요! 💪`,
+  n=>`결승선이 코앞이에요. ${n}문항만 더! 🏁`,
+  n=>`목표까지 딱 ${n}문항. 오늘 채우고 가볍게 쉬어요! 🌙`,
+  n=>`${n}문항 남았어요. 한두 세트면 끝! 🔥`,
+  n=>`지금까지 잘 해왔어요. 마지막 ${n}문항만 채워 봐요! ✨`,
+  n=>`여기까지 온 게 대단해요. ${n}문항이면 목표 완성입니다! 🏅`,
+  n=>`${n}문항, 생각보다 금방이에요. 지금 바로 시작해요! ⏱️`,
+];
+const pickNear=n=>NEAR_MSGS[Math.floor(Math.random()*NEAR_MSGS.length)](n);
+// 팝업 상단 아이콘 (상황별, 매번 랜덤)
+const POPUP_ICONS={
+  praise:['🎉','🏆','🌟','👏','🥳','💯','🙌','🚀'],
+  near:['💪','🏁','🔥','⛳','🏃','✨'],
+  short:['⚠️','🚨','⏰','🔔','📣','🧗'],
+};
+const pickIcon=k=>{const a=POPUP_ICONS[k]||[];return a[Math.floor(Math.random()*a.length)]||'';};
+// ── 선 아이콘(이모지 대신 쓰는 단색 아이콘): 팝업 상단·'나의 기록' 배지용 ──
+const LINE_ICON_PATHS={
+  trophy:['M8 4h8v5a4 4 0 0 1-8 0z','M8 6H5a3 3 0 0 0 3 4','M16 6h3a3 3 0 0 1-3 4','M12 13v4','M8.5 20h7','M10 17h4'],
+  star:['M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z'],
+  medal:['M8.5 3l3.5 6 3.5-6','M12 20a5 5 0 1 0 0-10 5 5 0 0 0 0 10z','M12 13.2v3.6'],
+  rocket:['M12 3c3 2.2 5 5.2 5 9l-2 3H9l-2-3c0-3.8 2-6.8 5-9z','M12 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z','M9 15l-2 4.5 3.2-1.2','M15 15l2 4.5-3.2-1.2'],
+  check:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z','M8 12.2l2.8 2.8L16 9.5'],
+  flame:['M12.5 2.5c.3 3.2 5 5.2 5 10a5.5 5.5 0 0 1-11 0c0-2.2 1-3.8 2.2-4.8.2 1.5.9 2.4 1.9 2.8-.3-3 .4-5.9 1.9-8z'],
+  flag:['M6 21V4','M6 4.5h11l-2.2 3.8L17 12H6'],
+  target:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z','M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z','M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'],
+  zap:['M13 3L5 13.5h6L10 21l8-10.5h-6z'],
+  trend:['M3 17l6-6 4 4 8-8','M15 7h6v6'],
+  bell:['M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z','M10 20.5a2 2 0 0 0 4 0'],
+  clock:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z','M12 7.5V12l3 2'],
+  alert:['M12 4l9 16H3z','M12 10v4.2','M12 17v.4'],
+  mountain:['M3 20l6.5-11 3.5 5.5 2.5-3.5L21 20z','M9.5 9l1.6 2.6'],
+  sprout:['M12 21v-9','M12 12c0-3.2-2.2-5-6-5 0 3.2 2.2 5 6 5z','M12 10c0-3.2 2.2-5 6-5 0 3.2-2.2 5-6 5z'],
+};
+// ── 입체 동물 이모티콘: 동물마다 자연스러운 털색 + 크고 반짝이는 눈. 상황은 표정과 뒤의 은은한 빛으로 구분 ──
+//   shapes: [종류, path]  w=주 털색 입체, d=보조 털색 입체(갈기·늘어진 귀), l=밝은 부분(lc), e=귀 안쪽(ec), k=가는 무늬 선
+//   path: 'Ccx,cy,r'=원, 'Ecx,cy,rx,ry'=타원, 그 외는 SVG path.  face: default | beak | frog | bignose | pig
+//   col=주 털색 [밝은,기본,어두운], col2=보조 털색, lc=밝은 부분 색, ec=귀 안쪽 색, nc=코 색
+const CUTE_HEAD='C24,27,13.5';
+const CUTE_ICONS={
+  bear:{col:['#e3b48c','#b0703f','#74431f'],lc:'#f7e6d2',ec:'#e8b89c',shapes:[['w','C13.5,15.5,5'],['w','C34.5,15.5,5'],['e','C13.5,15.5,2.4'],['e','C34.5,15.5,2.4'],['w',CUTE_HEAD],['l','E24,31,5.4,4.3']]},
+  cat:{col:['#ffe0ae','#f4a94c','#c4711f'],nc:'#f08aa0',shapes:[['w','M10.5 22L12 8.5l10 7z'],['w','M37.5 22L36 8.5l-10 7z'],['e','M13.6 17.5l.6-5 4.4 3.200z'],['e','M34.4 17.5l-.6-5-4.4 3.200z'],['w',CUTE_HEAD],['l','E24,31.200,4.8,3.6']]},
+  rabbit:{col:['#ffffff','#f7f0e7','#d2c5b4'],nc:'#f08aa0',shapes:[['w','E17.5,11.5,3.8,9'],['w','E30.5,11.5,3.8,9'],['e','E17.5,11.5,1.6,6.200'],['e','E30.5,11.5,1.6,6.200'],['w',CUTE_HEAD]]},
+  dog:{col:['#ffe8b5','#ecb85f','#b27d2c'],col2:['#cf9558','#9a5c2b','#613616'],shapes:[['w',CUTE_HEAD],['d','E11,24.5,4.2,8.200'],['d','E37,24.5,4.2,8.200'],['l','E24,31,5.4,4.3']]},
+  chick:{face:'beak',col:['#fff6b4','#fdd544','#e0a218'],shapes:[['w','M24 8.5c-2.200 0-3.200 1.800-2 4.500h4c1.200-2.700.2-4.500-2-4.500z'],['w',CUTE_HEAD]]},
+  frog:{face:'frog',col:['#def4bc','#8ccc5f','#4d932e'],lc:'#ffffff',shapes:[['w','C15.5,15.5,6'],['w','C32.5,15.5,6'],['l','C15.5,15.5,3.9'],['l','C32.5,15.5,3.9'],['w',CUTE_HEAD]]},
+  fox:{col:['#ffcb98','#f18431','#ba531b'],ec:'#7a3a1c',lc:'#fffaf1',shapes:[['w','M9 23L10.5 6l12 9z'],['w','M39 23L37.5 6l-12 9z'],['e','M12.5 17l.7-6.500 5.300 4z'],['e','M35.5 17l-.7-6.500-5.300 4z'],['w',CUTE_HEAD],['l','M11.500 29.500q6.500-.5 12.500 6q6-6.500 12.500-6q-2 9-12.500 10.500q-10.500-1.500-12.500-10.500z']]},
+  koala:{face:'bignose',col:['#f1f3f6','#b3b9c4','#767d8b'],ec:'#f6cbd2',shapes:[['w','C10.5,20,7'],['w','C37.5,20,7'],['e','C10.5,20,3.6'],['e','C37.5,20,3.6'],['w',CUTE_HEAD]]},
+  pig:{face:'pig',col:['#ffe6ec','#f9adc1','#da6e8d'],lc:'#ffd3de',ec:'#f58fab',shapes:[['w','M12 19.500l1-8.500 8 5.500z'],['w','M36 19.500l-1-8.500-8 5.500z'],['w',CUTE_HEAD],['l','E24,31,5.6,3.9']]},
+  mouse:{col:['#f6f6f8','#cdcfd7','#8f929e'],nc:'#f08aa0',shapes:[['w','C12,14.5,7.5'],['w','C36,14.5,7.5'],['e','C12,14.5,4.3'],['e','C36,14.5,4.3'],['w',CUTE_HEAD]]},
+  lion:{col:['#fff3c0','#f7cc60','#cb9224'],col2:['#ffc888','#ee8d2e','#b65c13'],shapes:[['d','C37.2,27.0,4.6'],['d','C34.7,34.8,4.6'],['d','C28.1,39.6,4.6'],['d','C19.9,39.6,4.6'],['d','C13.3,34.8,4.6'],['d','C10.8,27.0,4.6'],['d','C13.3,19.2,4.6'],['d','C19.9,14.4,4.6'],['d','C28.1,14.4,4.6'],['d','C34.7,19.2,4.6'],['w','C24,27,12.2'],['l','E24,31,4.8,3.8']]},
+  penguin:{face:'beak',col:['#93a0be','#3f4a68','#1f2539'],lc:'#ffffff',shapes:[['w',CUTE_HEAD],['l','M24 20c-2.500-3.500-9.500-2-9.500 5 0 6.500 4.500 12 9.500 12s9.500-5.500 9.500-12c0-7-7-8.500-9.500-5z']]},
+  tiger:{col:['#ffd597','#f69d38','#c16615'],shapes:[['w','C14,15,4.8'],['w','C34,15,4.8'],['e','C14,15,2.200'],['e','C34,15,2.200'],['w',CUTE_HEAD],['l','E24,31,5,4'],['k','M24 14.500v4.200M19.800 15.500l.9 3.600M28.200 15.500l-.9 3.600M11 25.500h3.600M11.500 29.500h3M37 25.500h-3.600M36.500 29.500h-3']]},
+  monkey:{col:['#dcab86','#9e653a','#653a1c'],lc:'#f9e4cb',ec:'#f9e4cb',shapes:[['w','C9.5,27,4.6'],['w','C38.5,27,4.6'],['e','C9.5,27,2.200'],['e','C38.5,27,2.200'],['w',CUTE_HEAD],['l','M24 20c-2-3-8.500-2-8.500 3.500 0 2 .8 3.200 1.500 4-.5 5 3 9 7 9s7.500-4 7-9c.7-.8 1.500-2 1.500-4 0-5.500-6.500-6.500-8.500-3.500z']]},
+};
+const CUTE_NAMES=Object.keys(CUTE_ICONS);
+const ICON_TONES={
+  praise:{halo:'rgba(124,192,150,0.30)',spark:'#d9b25a'},
+  near:{halo:'rgba(240,164,85,0.30)',spark:'#d9b25a'},
+  short:{halo:'rgba(217,100,126,0.24)',spark:'#d9b25a'},
+  gold:{halo:'rgba(227,185,88,0.34)',spark:'#d9b25a'},
+};
+const ICON_CHIP_CSS='@keyframes gePop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.05);opacity:1}100%{transform:scale(1)}}@keyframes geFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@keyframes geShadow{0%,100%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(.8);opacity:.55}}@keyframes geTwinkle{0%,100%{transform:scale(.5);opacity:.25}50%{transform:scale(1.1);opacity:1}}';
+const _cutePath=d=>{
+  if(d[0]==='C'||d[0]==='E'){const v=d.slice(1).split(',').map(Number), cx=v[0], cy=v[1], rx=v[2], ry=d[0]==='E'?v[3]:v[2];
+    return `M${cx-rx} ${cy}a${rx} ${ry} 0 1 0 ${2*rx} 0a${rx} ${ry} 0 1 0 ${-2*rx} 0z`;}
+  return d; };
+let _iconChipSeq=0;
+// 입체 동물 이모티콘: 은은한 후광 위에 떠 있는 3D 동물 얼굴(그라데이션·광택·음영·바닥 그림자). 털색은 동물이, 표정·후광은 상황(tone)이 정한다
+function IconChip({name,tone,size}){
+  const t=ICON_TONES[tone]||ICON_TONES.gold, ic=CUTE_ICONS[name]||CUTE_ICONS.bear, sz=size||64;
+  const uid=React.useRef('gi'+(++_iconChipSeq)).current;
+  const c1=ic.col, c2=ic.col2||ic.col, ink='#2b1a10', face=ic.face||'default';
+  const sp=(st)=><svg viewBox="0 0 24 24" aria-hidden="true" style={{position:'absolute',fill:t.spark,animation:'geTwinkle 2.6s ease-in-out infinite',...st}}><path d="M12 1.5l2.4 7.1 7.1 2.4-7.1 2.4L12 20.5l-2.4-7.1L2.5 11l7.1-2.4z"/></svg>;
+  const body=(dd,g,i)=><g key={i}>
+    <path d={dd} fill={`url(#${uid}${g})`} stroke={`url(#${uid}${g})`} strokeWidth="2.6" strokeLinejoin="round"/>
+    <path d={dd} fill={`url(#${uid}sh)`} stroke={`url(#${uid}sh)`} strokeWidth="2.6" strokeLinejoin="round"/>
+    <path d={dd} fill={`url(#${uid}gl)`}/>
+  </g>;
+  const shape=([k,d],i)=>{const dd=_cutePath(d);
+    if(k==='w')return body(dd,'a',i);
+    if(k==='d')return body(dd,'b',i);
+    if(k==='l')return <path key={i} d={dd} fill={ic.lc||'#fffaf1'}/>;
+    if(k==='e')return <path key={i} d={dd} fill={ic.ec||'#ffb9c4'}/>;
+    return <path key={i} d={dd} fill="none" stroke={ink} strokeOpacity="0.62" strokeWidth="1.4" strokeLinecap="round"/>;};
+  // 표정은 상황이 정한다: 달성=밝은 웃음(smile), 거의=응원(cheer: 윙크+활짝 벌린 입), 부족=아쉬움(sad: 처진 눈썹+눈물), 결과 배지=기쁨(joy)
+  const mood={praise:'smile',near:'cheer',short:'sad',gold:'joy'}[tone]||'joy';
+  const [ex1,ex2,ey]=face==='frog'?[15.5,32.5,15.5]:face==='bignose'?[18.6,29.4,25.5]:face==='pig'?[19.2,28.8,25]:[19.2,28.8,25.5];
+  const mouthAt=face==='beak'?null:face==='frog'?[24,29.6,1.7]:face==='bignose'?[24,34.3,0.8]:face==='pig'?[24,36,0.75]:[24,31.3,1];
+  // dir: -1=왼쪽 눈, 1=오른쪽 눈 (눈썹 기울기 방향)
+  const bigEye=(x,y,k)=><g key={k}><ellipse cx={x} cy={y} rx="1.95" ry="2.35" fill={ink} stroke="none"/><circle cx={x-0.65} cy={y-0.85} r="0.75" fill="#fff" stroke="none"/><circle cx={x+0.7} cy={y+0.9} r="0.35" fill="#fff" fillOpacity="0.85" stroke="none"/></g>;
+  const eyeOf=(x,y,dir)=>mood==='smile'?<path key={dir} d={`M${x-2} ${y+0.7}q2 -2.800 4 0`} strokeWidth="1.5"/>
+    :mood==='joy'?<path key={dir} d={`M${x-2.2} ${y+0.9}q2.200 -3.400 4.400 0`} strokeWidth="1.6"/>
+    :mood==='cheer'?(dir<0?bigEye(x,y,dir):<path key={dir} d={`M${x-2} ${y+0.7}q2 -2.800 4 0`} strokeWidth="1.5"/>)
+    :<g key={dir}>{bigEye(x,y+0.4,dir)}<path d={`M${x+dir*2.3} ${y-2.9}l${-dir*3.8} -1.300`} strokeWidth="1.2"/></g>;
+  return <span style={{position:'relative',display:'inline-block',width:sz,height:sz,flexShrink:0,animation:'gePop .5s ease-out both'}}>
+    <style>{ICON_CHIP_CSS}</style>
+    <span style={{position:'absolute',inset:'-10%',borderRadius:'50%',background:`radial-gradient(circle, ${t.halo} 0%, rgba(255,255,255,0) 68%)`}}/>
+    <span style={{position:'absolute',left:'22%',right:'22%',bottom:'1%',height:'9%',borderRadius:'50%',background:'rgba(60,40,20,0.20)',filter:'blur(3.5px)',animation:'geShadow 4s ease-in-out .6s infinite'}}/>
+    <svg width={sz} height={sz} viewBox="0 0 48 48" aria-hidden="true" style={{position:'absolute',inset:0,overflow:'visible',filter:'drop-shadow(0 3px 4px rgba(60,40,20,0.22))',animation:'geFloat 4s ease-in-out .6s infinite',transformOrigin:'50% 60%'}}>
+      <defs>
+        <radialGradient id={uid+'a'} cx="34%" cy="26%" r="85%"><stop offset="0%" stopColor={c1[0]}/><stop offset="48%" stopColor={c1[1]}/><stop offset="100%" stopColor={c1[2]}/></radialGradient>
+        <radialGradient id={uid+'b'} cx="34%" cy="26%" r="85%"><stop offset="0%" stopColor={c2[0]}/><stop offset="48%" stopColor={c2[1]}/><stop offset="100%" stopColor={c2[2]}/></radialGradient>
+        <linearGradient id={uid+'gl'} x1="0" y1="0" x2="0.35" y2="1"><stop offset="0%" stopColor="#fff" stopOpacity="0.6"/><stop offset="50%" stopColor="#fff" stopOpacity="0"/></linearGradient>
+        <linearGradient id={uid+'sh'} x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="55%" stopColor="#000" stopOpacity="0"/><stop offset="100%" stopColor="#000" stopOpacity="0.2"/></linearGradient>
+      </defs>
+      <g transform="translate(24 24) scale(0.9) translate(-24 -25)">
+        {ic.shapes.map(shape)}
+        <g fill="none" stroke={ink} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+          {(mood==='smile'||mood==='joy')&&<><circle cx="15.2" cy="29.4" r="2" fill="#ff7b9c" fillOpacity={mood==='joy'?0.6:0.42} stroke="none"/><circle cx="32.8" cy="29.4" r="2" fill="#ff7b9c" fillOpacity={mood==='joy'?0.6:0.42} stroke="none"/></>}
+          {eyeOf(ex1,ey,-1)}{eyeOf(ex2,ey,1)}
+          {mood==='sad'&&<path d={`M${ex1-0.3} ${ey+3.4}q1.3 2 0 2.9q-1.3 -.9 0 -2.9z`} fill="#7cc4f0" stroke="#5aaee0" strokeWidth="0.4"/>}
+          {face==='beak'&&<path d={mood==='sad'?'M21.6 28.6h4.8L24 31z':'M21.600 28.200h4.800L24 31.600z'} fill="#e8962e" stroke="#e8962e" strokeWidth="1"/>}
+          {face==='bignose'&&<ellipse cx="24" cy="29.8" rx="2.5" ry="3.3" fill={ink} stroke="none"/>}
+          {face==='pig'&&<><ellipse cx="22.3" cy="31" rx="0.8" ry="1.15" fill={ink} stroke="none"/><ellipse cx="25.7" cy="31" rx="0.8" ry="1.15" fill={ink} stroke="none"/></>}
+          {face==='default'&&<path d="M22.500 28.700h3L24 30.500z" fill={ic.nc||ink} stroke={ic.nc||ink} strokeWidth="0.9"/>}
+          {mouthAt&&<g transform={`translate(${mouthAt[0]} ${mouthAt[1]}) scale(${mouthAt[2]})`}>
+            {mood==='smile'?<path d="M-2.4 -0.5q2.4 3 4.8 0z" fill={ink} strokeWidth="0.9"/>
+             :mood==='cheer'?<path d="M-2.700 -0.6q2.700 3.800 5.400 0z" fill={ink} strokeWidth="0.9"/>
+             :mood==='sad'?<path d="M-2 1.3q2 -1.900 4 0"/>
+             :<path d="M-3.1 -0.7q3.1 4.600 6.200 0z" fill={ink} strokeWidth="0.9"/>}
+          </g>}
+        </g>
+      </g>
+    </svg>
+    {sp({width:sz*0.2,height:sz*0.2,top:sz*0.02,right:-sz*0.04})}
+  </span>;
+}
+// 팝업 상단 선 아이콘 (상황별, 매번 랜덤)
+const POPUP_LINE_ICONS={ praise:CUTE_NAMES, near:CUTE_NAMES, short:CUTE_NAMES }; // 어느 상황이든 동물 전체 중 랜덤(색은 상황별)
+const pickLineIcon=k=>{const a=POPUP_LINE_ICONS[k]||[];return a[Math.floor(Math.random()*a.length)]||'bear';};
+// ── 나의 기록(등수 대신 자기 기록 비교): 연속 기록·주간 기록·유형 향상·누적 돌파 ──
+//   입력: getStats(student)의 sessionStats [{date,detail:'pid|type|O||...'}]
+//   '연속'은 하루 30문항 이상 푼 날 기준(성실도와 동일)
+const SELF_DAILY_GOAL=30;
+const SELF_MILESTONES=[100,300,500,1000,1500,2000,3000,5000];
+const computeSelfRecords=(sessionStats,now)=>{
+  now=now||new Date();
+  const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+  const monday=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x;};
+  const daily={}, weekly={}, typeLog=[]; let total=0, firstDate=null;
+  (sessionStats||[]).forEach(s=>{
+    const dt=new Date(String(s.date||'').replace(' ','T'));
+    if(isNaN(dt)) return;
+    let n=0;
+    String(s.detail||'').split('||').filter(Boolean).forEach(line=>{
+      const p=line.split('|'); if(p.length<3) return;
+      n++; typeLog.push({t:dt.getTime(),type:String(p[1]).trim(),ok:String(p[2]).trim()==='O'});
+    });
+    if(!n) return;
+    total+=n;
+    const dk=dkey(dt); daily[dk]=(daily[dk]||0)+n;
+    const wk=dkey(monday(dt)); weekly[wk]=(weekly[wk]||0)+n;
+    if(!firstDate||dt<firstDate) firstDate=dt;
+  });
+  const today=new Date(now); today.setHours(0,0,0,0);
+  const cnt=d=>daily[dkey(d)]||0;
+  const runEndingAt=d=>{let k=0,x=new Date(d);while(cnt(x)>=SELF_DAILY_GOAL){k++;x=addDays(x,-1);}return k;};
+  const todayCount=cnt(today), todayDone=todayCount>=SELF_DAILY_GOAL;
+  const streak=todayDone?runEndingAt(today):0;                 // 오늘 포함 연속 일수
+  const streakPending=todayDone?0:runEndingAt(addDays(today,-1)); // 어제까지 이어진 연속(오늘 채우면 +1)
+  const brokenStreak=(!todayDone&&streakPending===0)?runEndingAt(addDays(today,-2)):0; // 어제 끊긴 연속
+  const thisWk=dkey(monday(today)), lastWk=dkey(addDays(monday(today),-7));
+  const thisWeek=weekly[thisWk]||0, lastWeek=weekly[lastWk]||0;
+  let bestPrevWeek=0; Object.keys(weekly).forEach(k=>{if(k!==thisWk&&weekly[k]>bestPrevWeek)bestPrevWeek=weekly[k];});
+  const lastWeekFull=!!firstDate&&firstDate<addDays(monday(today),-7+1); // 지난주 월요일 이전(또는 당일)부터 기록이 있을 때만
+  const lastWeekGap=lastWeekFull?Math.max(0,SELF_DAILY_GOAL*7-lastWeek):0;
+  const passed=SELF_MILESTONES.filter(m=>total>=m).pop()||0;
+  const nextMs=SELF_MILESTONES.find(m=>total<m)||0;
+  // 유형 향상: 최근 14일 vs 그 이전, 양쪽 10문항 이상, 10%p 이상 오른 유형 중 가장 많이 오른 것
+  const cut=addDays(today,-13).getTime(); const tm={};
+  typeLog.forEach(r=>{const o=tm[r.type]||(tm[r.type]={a:[0,0],b:[0,0]});const g=r.t>=cut?o.b:o.a;g[1]++;if(r.ok)g[0]++;});
+  let improved=null;
+  Object.keys(tm).forEach(k=>{const o=tm[k];if(o.a[1]<10||o.b[1]<10)return;
+    const ra=Math.round(o.a[0]/o.a[1]*100), rb=Math.round(o.b[0]/o.b[1]*100);
+    if(rb-ra>=10&&(!improved||rb-ra>improved.to-improved.from))improved={type:k,from:ra,to:rb};});
+  const daysLeftThisWeek=7-((today.getDay()+6)%7); // 오늘 포함 이번 주 남은 일수(월~일)
+  return {daysLeftThisWeek,total,todayCount,todayDone,streak,streakPending,brokenStreak,thisWeek,lastWeek,bestPrevWeek,lastWeekGap,passed,nextMs,nextGap:nextMs?nextMs-total:0,improved};
+};
+// 결과 화면 메달 자리(탑3가 아닐 때): 이미 이룬 것만 보여주는 긍정 배지 1개
+const pickSelfBadge=r=>{
+  if(!r||!r.total) return null;
+  if(r.streak>=3) return {ico:'🔥',icon:'tiger',text:`${r.streak}일 연속 30문항 달성 중!`,sub:'매일의 꾸준함이 쌓이고 있어요'};
+  if(r.bestPrevWeek>0&&r.thisWeek>r.bestPrevWeek) return {ico:'🚀',icon:'rabbit',text:`이번 주 ${r.thisWeek}문항, 내 최고 기록 경신!`,sub:`지금까지의 주간 최고 ${r.bestPrevWeek}문항을 넘었어요`};
+  if(r.improved) return {ico:'📈',icon:'monkey',text:`${r.improved.type} ${r.improved.from}% → ${r.improved.to}%`,sub:'최근 2주, 약점이 줄고 있어요'};
+  if(r.streak===2) return {ico:'✨',icon:'cat',text:'이틀 연속 30문항 달성!',sub:'내일도 풀면 3일 연속이에요'};
+  if(r.todayDone) return {ico:'✅',icon:'bear',text:`오늘 ${r.todayCount}문항, 하루 목표 달성!`,sub:'오늘 할 일을 해냈어요'};
+  if(r.passed) return {ico:'🏅',icon:'lion',text:`누적 ${r.passed}문항 돌파!`,sub:`지금까지 ${r.total}문항을 풀었어요`};
+  return {ico:'🌱',icon:'chick',text:`지금까지 ${r.total}문항, 차곡차곡 쌓이는 중`,sub:'한 세트씩 쌓인 만큼 내 것이 됩니다'};
+};
+// 나의 기록 계산이 실패해도 기존 화면(팝업·결과)은 그대로 뜨도록 감싸는 안전장치
+const safeSelf=fn=>{try{return fn();}catch(e){return null;}};
+// 로그인 팝업 '오늘의 한 줄': 오늘 행동을 끌어내는 자극·응원 1개(없으면 null)
+const pickSelfNudge=r=>{
+  if(!r||!r.total) return null;
+  if(r.streakPending>=2) return `⏰ ${r.streakPending}일 연속 기록이 걸려 있어요. 오늘 ${Math.max(1,SELF_DAILY_GOAL-r.todayCount)}문항만 풀면 ${r.streakPending+1}일째!`;
+  if(r.brokenStreak>=2) return `🔁 ${r.brokenStreak}일 연속 기록이 어제 멈췄어요. 오늘 다시 1일째 시작해요!`;
+  if(r.thisWeek>0&&r.bestPrevWeek>0&&r.thisWeek<=r.bestPrevWeek&&r.bestPrevWeek-r.thisWeek<SELF_DAILY_GOAL) return `🎯 이번 주 ${r.thisWeek}문항, 내 최고 기록(${r.bestPrevWeek}문항)까지 ${r.bestPrevWeek-r.thisWeek+1}문항이면 경신이에요!`;
+  if(r.lastWeekGap>0) return `💪 지난주에 못 채운 ${r.lastWeekGap}문항, 이번 주에 채워 봐요. 하루 ${Math.ceil(r.lastWeekGap/r.daysLeftThisWeek)}문항씩만 더 풀면 돼요. 할 수 있어요!`;
+  if(r.nextMs&&r.nextGap<=SELF_DAILY_GOAL*2) return `🏁 ${r.nextGap}문항만 더 풀면 누적 ${r.nextMs}문항 돌파!`;
+  if(r.streakPending===1) return `✨ 어제 30문항을 채웠어요. 오늘도 풀면 이틀 연속!`;
+  return null;
+};
 
 /* ── 유틸 ── */
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
@@ -1008,7 +1235,7 @@ function App(){
         if(!plan) return;
         const isShort=done<plan.target*0.9;
         const nearGap=(!isShort&&done<plan.target)?(plan.target-done):0; // 90% 이상 100% 미만: 칭찬 대신 남은 문항 안내
-        setShortfallWarn({...plan, mode:isShort?'short':'praise', nearGap, msg:isShort?pickMotivation():(nearGap>0?`${nearGap}문항만 더 풀면 목표 달성이에요. 조금만 더 힘내요!`:pickPraise())});
+        setShortfallWarn({...plan, mode:isShort?'short':'praise', nearGap, nudge:safeSelf(()=>pickSelfNudge(computeSelfRecords(sess))), icon:pickIcon(isShort?'short':(nearGap>0?'near':'praise')), tone:isShort?'short':(nearGap>0?'near':'praise'), lineIcon:pickLineIcon(isShort?'short':(nearGap>0?'near':'praise')), msg:isShort?pickMotivation():(nearGap>0?pickNear(nearGap):pickPraise())});
         warnResolveRef.current=(choice)=>{
           if(isShort && choice===true && plan.recommendCapped>0) setQCount(plan.recommendCapped);
           setShortfallWarn(null); warnResolveRef.current=null;
@@ -3249,7 +3476,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
       {shortfallWarn&&<div style={{position:'fixed',inset:0,zIndex:9999,background:'rgba(20,10,8,0.62)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
         <div style={{width:'100%',maxWidth:380,background:'#fff',borderRadius:20,padding:'26px 24px 22px',boxShadow:'0 20px 60px rgba(0,0,0,0.35)',textAlign:'center'}}>
           {shortfallWarn.mode==='praise'?<>
-          <div style={{fontSize:44,lineHeight:1,marginBottom:10}}>{shortfallWarn.nearGap>0?'💪':'🎉'}</div>
+          <div style={{fontSize:44,lineHeight:1,marginBottom:12}}>{shortfallWarn.lineIcon?<IconChip name={shortfallWarn.lineIcon} tone={shortfallWarn.tone} size={88}/>:(shortfallWarn.icon||(shortfallWarn.nearGap>0?'💪':'🎉'))}</div>
           <div style={{fontSize:18,fontWeight:800,color:'#16a34a',marginBottom:12}}>{shortfallWarn.nearGap>0?'거의 다 왔어요!':'잘하고 있어요!'}</div>
           <div style={{fontSize:13.5,color:'#3a2a20',lineHeight:1.7,background:'#f0fdf4',border:'1px solid #86efac',borderRadius:12,padding:'13px 14px',textAlign:'left'}}>
             학습 시작 후 <b>{shortfallWarn.days}일</b> 동안<br/>
@@ -3260,8 +3487,9 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           <div style={{fontSize:13.5,color:'#15803d',fontWeight:700,marginTop:14,padding:'12px 14px',background:'linear-gradient(135deg,#f0fdf4,#fff8f0)',border:'1px solid #C9A84C',borderRadius:12,lineHeight:1.6}}>
             {shortfallWarn.msg}
           </div>
+          {shortfallWarn.nudge&&<div style={{fontSize:13,color:'#5a3d0a',fontWeight:700,marginTop:10,padding:'11px 14px',background:'#fffbeb',border:'1px dashed #d9b45a',borderRadius:12,lineHeight:1.6,textAlign:'left'}}>{shortfallWarn.nudge}</div>}
           </>:<>
-          <div style={{fontSize:44,lineHeight:1,marginBottom:10}}>⚠️</div>
+          <div style={{fontSize:44,lineHeight:1,marginBottom:12}}>{shortfallWarn.lineIcon?<IconChip name={shortfallWarn.lineIcon} tone={shortfallWarn.tone} size={88}/>:(shortfallWarn.icon||'⚠️')}</div>
           <div style={{fontSize:18,fontWeight:800,color:'#b91c1c',marginBottom:12}}>학습량이 많이 부족해요!</div>
           <div style={{fontSize:13.5,color:'#3a2a20',lineHeight:1.7,background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:12,padding:'13px 14px',textAlign:'left'}}>
             학습 시작 후 <b>{shortfallWarn.days}일</b> 동안<br/>
@@ -3276,6 +3504,7 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           <div style={{fontSize:13.5,color:'#7a1020',fontWeight:700,marginTop:14,padding:'12px 14px',background:'linear-gradient(135deg,#fff8f0,#fff5f5)',border:'1px solid #C9A84C',borderRadius:12,lineHeight:1.6}}>
             {shortfallWarn.msg}
           </div>
+          {shortfallWarn.nudge&&<div style={{fontSize:13,color:'#5a3d0a',fontWeight:700,marginTop:10,padding:'11px 14px',background:'#fffbeb',border:'1px dashed #d9b45a',borderRadius:12,lineHeight:1.6,textAlign:'left'}}>{shortfallWarn.nudge}</div>}
           </>}
           {shortfallWarn.mode==='praise'?
           <button onClick={()=>{const r=warnResolveRef.current; if(r)r(false); else setShortfallWarn(null);}} style={{width:'100%',marginTop:18,padding:'14px',borderRadius:13,border:'none',background:'linear-gradient(135deg,#15803d,#16a34a)',color:'#fff',fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:'0 4px 14px rgba(0,0,0,0.2)'}}>
@@ -5729,6 +5958,24 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
   const emoji=pct>=80?'🏆':pct>=50?'💪':'📖';
   const [saveStatus,setSaveStatus]=React.useState('idle'); // idle | saving | done | error
   const [rankInfo,setRankInfo]=React.useState(null); // {rank,total} — 탑3일 때만 서버가 내려줌
+  // 탑3가 아닌 학생용 '나의 기록' 배지 — 결과 저장이 끝난 뒤 내 풀이 기록으로 계산(GAS 변경 없음)
+  const [selfBadge,setSelfBadge]=React.useState(null);
+  const curSessRef=React.useRef(null); // 방금 푼 회차 {date,detail} — 저장 요청과 조회가 엇갈려도 배지에 반영하기 위함
+  React.useEffect(()=>{
+    if(saveStatus!=='done'||!scriptUrl||!studentName)return;
+    // 저장은 응답을 기다리지 않고 '완료' 처리되므로, 랭킹 조회처럼 잠시 기다린 뒤 조회하고 방금 회차가 빠져 있으면 직접 더한다
+    const t=setTimeout(()=>{
+      jsonpFetch(scriptUrl,{action:'getStats',student:studentName})
+        .then(d=>{
+          if(!d||!d.ok)return;
+          const list=(d.sessionStats||[]).slice(), cur=curSessRef.current;
+          if(cur&&!list.some(x=>String(x.detail)===cur.detail&&String(x.date).slice(0,10)===cur.date.slice(0,10))) list.push(cur);
+          setSelfBadge(safeSelf(()=>pickSelfBadge(computeSelfRecords(list))));
+        })
+        .catch(()=>{});
+    },1500);
+    return ()=>clearTimeout(t);
+  },[saveStatus]);
   React.useEffect(()=>{
     if(!scriptUrl||!studentName)return;
     // 결과 저장 반영 시간을 살짝 기다린 후 랭킹 조회
@@ -5775,6 +6022,7 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
       if(ans && ans.expired) chosen='expired';
       return `${q.passage.id}|${TYPES.find(t=>t.id===q.type)?.name||q.type}|${ans?.correct?'O':'X'}|${corr}|${chosen}`;
     }).join('||');
+    curSessRef.current={date:dateStr,detail:details};
     const payload={
       action: 'saveResult',
       name: studentName,
@@ -5834,6 +6082,17 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
             <span style={{fontSize:11,fontWeight:800,background:'rgba(255,255,255,0.92)',color:'#3a2a20',padding:'5px 12px',borderRadius:12,letterSpacing:0.6,boxShadow:'0 2px 6px rgba(0,0,0,0.25)',whiteSpace:'nowrap'}}>TOP 3</span>
           </div>;
         })()}
+        {/* 🌱 탑3가 아닐 때: 메달 자리에 '나의 기록' 배지(등수 대신 자기 기록, 긍정 문구만) */}
+        {!rankInfo&&selfBadge&&<div style={{position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#fffaf0 0%,#fdf3dc 100%)',
+          border:'2px solid #e6cf8f',borderRadius:16,padding:'15px 18px',marginBottom:16,boxShadow:'0 4px 16px rgba(201,168,76,0.22)',
+          display:'flex',alignItems:'center',gap:14}}>
+          {selfBadge.icon?<IconChip name={selfBadge.icon} tone="gold" size={60}/>:<span style={{fontSize:34,lineHeight:1}}>{selfBadge.ico}</span>}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:16,fontWeight:800,color:'#5a3d0a',letterSpacing:0.2,lineHeight:1.35}}>{selfBadge.text}</div>
+            <div style={{fontSize:11.5,color:'#9a7b3c',marginTop:3}}>{selfBadge.sub}</div>
+          </div>
+          <span style={{fontSize:11,fontWeight:800,background:'#fff',color:'#8a6010',padding:'5px 11px',borderRadius:12,border:'1px solid #e6cf8f',whiteSpace:'nowrap'}}>나의 기록</span>
+        </div>}
         {/* 이번 회차 유형별 요약 (누적 아님) */}
         {(()=>{
           const byType={};
