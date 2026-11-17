@@ -295,6 +295,26 @@
   .hs-more{text-align:center;margin-top:24px}
   .hs-more a{display:inline-block;font-size:13.5px;font-weight:700;color:var(--wine);text-decoration:none;border:1.5px solid var(--wine);border-radius:999px;padding:10px 22px}
   @media(max-width:560px){.hs-cards{grid-template-columns:1fr}}
+
+  /* 이전 안내 팝업 (2026-11-17 추가 · 종료일은 아래 script의 RELOC_UNTIL) */
+  .reloc-ov{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(14,22,38,.62)}
+  .reloc-ov.on{display:flex}
+  .reloc-box{position:relative;width:100%;max-width:440px;max-height:92vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(14,22,38,.45);border-top:5px solid var(--gold)}
+  .reloc-x{position:absolute;top:10px;right:12px;width:34px;height:34px;border:0;background:transparent;font-size:24px;line-height:1;color:var(--muted);cursor:pointer}
+  .reloc-hd{padding:26px 24px 14px;background:linear-gradient(165deg,var(--navy),var(--navy-2));color:#fff}
+  .reloc-tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--navy);background:var(--gold);border-radius:980px;padding:4px 11px;margin-bottom:10px}
+  .reloc-hd h2{margin:0;font-size:22px;letter-spacing:-.02em;line-height:1.3}
+  .reloc-hd p{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:#d6dbe6}
+  .reloc-bd{padding:18px 24px 6px}
+  .reloc-row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.55;color:var(--ink)}
+  .reloc-row:last-child{border-bottom:0}
+  .reloc-k{flex:0 0 64px;font-weight:700;color:var(--wine)}
+  .reloc-v b{font-weight:800}
+  .reloc-v small{display:block;margin-top:3px;font-size:12.5px;color:var(--muted)}
+  .reloc-ft{padding:12px 24px 22px}
+  .reloc-map{display:block;text-align:center;text-decoration:none;font-size:14.5px;font-weight:700;color:var(--gold-soft);background:var(--navy);border-radius:12px;padding:13px 16px}
+  .reloc-sub{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
+  .reloc-sub button{border:0;background:transparent;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px 2px}
 </style>
 </head>
 <body>
@@ -556,6 +576,51 @@
   }).join("");
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+})();
+</script>
+
+<!-- 이전 안내 팝업 (2026-11-17) -->
+<div class="reloc-ov" id="relocPop" role="dialog" aria-modal="true" aria-labelledby="relocTitle">
+  <div class="reloc-box">
+    <button type="button" class="reloc-x" id="relocX" aria-label="닫기">&times;</button>
+    <div class="reloc-hd">
+      <span class="reloc-tag">이전 안내</span>
+      <h2 id="relocTitle">대단한영어 확장 이전 안내</h2>
+      <p>지난 10년간 이 자리에서 수업해 올 수 있었던 것은 믿고 맡겨 주신 덕분입니다. 진심으로 감사드립니다.</p>
+    </div>
+    <div class="reloc-bd">
+      <div class="reloc-row"><div class="reloc-k">수업 시작</div><div class="reloc-v"><b>2026년 12월</b>부터 새 장소에서 수업합니다.</div></div>
+      <div class="reloc-row"><div class="reloc-k">새 주소</div><div class="reloc-v"><b>포항시 남구 대이로175번길 5-9<br>다현빌딩 3층</b> (현재 추헌국어)<small>현재 건물에는 '추헌국어학원' 상호로 되어 있으며, 12월부터 대단한영어 수업이 진행됩니다.</small></div></div>
+      <div class="reloc-row"><div class="reloc-k">이동 거리</div><div class="reloc-v">현재 학원에서 도보 약 10분 · 차량 약 3분</div></div>
+      <div class="reloc-row"><div class="reloc-k">주차</div><div class="reloc-v">건물 옆 주차장(약 3대)이 있으나 만차일 때가 많습니다. 양해 부탁드립니다.</div></div>
+    </div>
+    <div class="reloc-ft">
+      <a class="reloc-map" href="https://map.naver.com/p/search/%EB%8C%80%EC%9D%B4%EB%A1%9C175%EB%B2%88%EA%B8%B8%205-9" target="_blank" rel="noopener">네이버 지도로 새 위치 보기</a>
+      <div class="reloc-sub"><button type="button" id="relocHide">오늘 하루 보지 않기</button><button type="button" id="relocClose">닫기</button></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var RELOC_UNTIL = "2026-12-31"; /* 이 날짜(포함)까지만 표시. 이전 후 팝업을 내리려면 이 값을 과거 날짜로 */
+  var KEY = "relocHideDay";
+  var pop = document.getElementById("relocPop");
+  if (!pop) return;
+  function ymd(d){ return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+  var today = ymd(new Date());
+  if (today > RELOC_UNTIL) return;
+  try { if (localStorage.getItem(KEY) === today) return; } catch(e) {}
+  function close(){ pop.classList.remove("on"); document.removeEventListener("keydown", onKey); }
+  function onKey(e){ if (e.key === "Escape") close(); }
+  pop.classList.add("on");
+  document.addEventListener("keydown", onKey);
+  document.getElementById("relocX").addEventListener("click", close);
+  document.getElementById("relocClose").addEventListener("click", close);
+  document.getElementById("relocHide").addEventListener("click", function(){
+    try { localStorage.setItem(KEY, today); } catch(e) {}
+    close();
+  });
+  pop.addEventListener("click", function(e){ if (e.target === pop) close(); });
 })();
 </script>
 </body>
