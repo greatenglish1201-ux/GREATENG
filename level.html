@@ -230,7 +230,7 @@ var CONFIG = {
 var STORE_KEY = 'greateng_leveltest_session';
 var C = ['①', '②', '③', '④', '⑤'];
 var S = null;          // 진행 중 세션 {token, test, answers, times, startedAt, cur}
-var tickTimer = null, qShownAt = 0, submitting = false;
+var tickTimer = null, qShownAt = 0, submitting = false, autoTried = false;   // autoTried: 시간 종료 자동 제출은 한 번만 시도(실패하면 '다시 제출' 버튼으로)
 
 function $(id) { return document.getElementById(id); }
 function show(v) { ['vStart', 'vExam', 'vDone'].forEach(function (x) { $(x).classList.toggle('hidden', x !== v); }); window.scrollTo(0, 0); }
@@ -349,6 +349,7 @@ function startExam() {
   show('vExam');
   $('exLabel').textContent = S.test.label;
   renderQ();
+  autoTried = false;
   clearInterval(tickTimer); tickTimer = setInterval(tick, 500); tick();
 }
 function remainSec() { return Math.round((S.startedAt + S.test.minutes * 60000 - Date.now()) / 1000); }
@@ -357,7 +358,7 @@ function tick() {
   var m = Math.max(0, Math.floor(r / 60)), s = Math.max(0, r % 60);
   $('exTimer').textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
   $('exTimer').classList.toggle('low', r <= 300);
-  if (r <= 0 && !submitting) { closeAll(); doSubmit(true); }
+  if (r <= 0 && !submitting && !autoTried) { autoTried = true; closeAll(); doSubmit(true); }
 }
 function recordTime() {
   if (!qShownAt || !S) return;
