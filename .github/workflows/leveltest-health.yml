@@ -1,0 +1,30 @@
+# 레벨테스트·상담 신청서 서버(레벨테스트 GAS) 상태 점검
+# - 1시간마다 GAS에 '시험 목록(tests)'을 요청해 정상 응답인지 확인
+# - 응답이 없거나 ok가 아니면 이 작업이 '실패'로 끝나고, GitHub가 저장소 주인에게 실패 알림 메일을 보냄
+#   (GitHub 설정 > Notifications > Actions 에서 메일 알림이 켜져 있어야 함)
+# - GAS 주소가 바뀌면 아래 GAS_URL만 바꾸면 됨 (apply.html·level.html·level-admin.html의 GAS_URL과 같은 값)
+name: 레벨테스트 서버 점검
+on:
+  schedule:
+    - cron: '17 * * * *'   # 매시 17분 (UTC 기준, 한국 시간도 매시 17분)
+  workflow_dispatch: {}     # Actions 탭에서 수동 실행 가능
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GAS_URL: https://script.google.com/macros/s/AKfycbwebAfNsoQcpNdCqxfGGF1YA6rj3-EhnswC-QT1TgCYFSoPP0U5e7AWhNrnl_IKM6aBUQ/exec
+    steps:
+      - name: GAS 응답 확인
+        run: |
+          for i in 1 2 3; do
+            body=$(curl -sS -L -m 60 -H 'Content-Type: text/plain;charset=utf-8' -d '{"action":"tests"}' "$GAS_URL" || true)
+            n=$(printf '%s' "$body" | python3 -c 'import sys,json
+          try:
+              d=json.load(sys.stdin); print(len(d.get("tests",[])) if d.get("ok") else 0)
+          except Exception: print(0)')
+            if [ "$n" -gt 0 ]; then echo "정상: 시험지 ${n}종"; exit 0; fi
+            echo "시도 $i 실패: $(printf '%s' "$body" | head -c 300)"; sleep 30
+          done
+          echo "::error::레벨테스트 GAS가 응답하지 않습니다 — 상담 신청서·레벨테스트가 막혔을 수 있습니다. GAS 배포 상태를 확인하세요."
+          exit 1

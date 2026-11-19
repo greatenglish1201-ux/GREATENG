@@ -90,6 +90,9 @@
   .btn.primary:disabled{opacity:.5;cursor:default;transform:none}
   .btn.line{background:#fff;color:var(--ink);border:1px solid var(--line)}
   .btn.gold{background:var(--gold);color:var(--ink)}
+  .fallback{margin-top:14px;padding:16px;border-radius:14px;background:#fff8e6;border:1px solid #f0dca6;font-size:14px;line-height:1.6;text-align:center;word-break:keep-all}
+  .fallback .fb-btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .fallback .btn{margin:0;width:100%;padding:14px 20px;font-size:15px}
   .err{color:var(--warn);font-size:14px;font-weight:600;margin-top:12px;min-height:1em;text-align:center}
   .note{font-size:13px;color:var(--muted);margin:14px 0 0;line-height:1.6;text-align:center}
   .note a{color:var(--wine);font-weight:600}
@@ -198,6 +201,10 @@
     </div>
     <button class="btn primary" id="btnSend">상담 신청하기</button>
     <div class="err" id="sendErr"></div>
+    <div id="fallback" class="fallback hidden">
+      <b>지금 신청서 접수가 원활하지 않습니다.</b><br>작성하신 내용은 이 기기에 보관해 두었습니다. 아래 방법으로도 신청하실 수 있습니다.
+      <div class="fb-btns"><a class="btn primary" id="fbSms" href="#">문자로 신청 내용 보내기</a><a class="btn line" id="fbTel" href="#">학원으로 전화하기</a></div>
+    </div>
   </div>
 </div>
 
@@ -229,7 +236,10 @@
  * ============================================================ */
 var CONFIG = {
   GAS_URL: 'https://script.google.com/macros/s/AKfycbwebAfNsoQcpNdCqxfGGF1YA6rj3-EhnswC-QT1TgCYFSoPP0U5e7AWhNrnl_IKM6aBUQ/exec',   // ← level.html과 같은 레벨테스트 GAS
-  RETENTION: '1년'                            // 개인정보 보관 기간 (level.html과 같게)
+  RETENTION: '1년',                           // 개인정보 보관 기간 (level.html과 같게)
+  // 비상 경로: 서버(GAS)에 연결되지 않을 때만 보여 줌
+  SMS_TO: '',                                 // ← 신청 내용을 문자로 받을 원장님 휴대폰 번호 (예: '01012345678'). 비워 두면 문자 버튼은 숨김
+  TEL: '054-272-7870'                         // 학원 대표전화
 };
 function $(id) { return document.getElementById(id); }
 function fmtPhone(v) { var d = String(v || '').replace(/\D/g, ''); return d.length === 11 ? d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7) : d.length === 10 ? d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6) : d; }
@@ -259,16 +269,52 @@ $('btnSend').onclick = function () {
   $('sendErr').textContent = err;
   if (err) return;
   $('btnSend').disabled = true; $('btnSend').textContent = '보내는 중…';
-  fetch(CONFIG.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) })
+  saveDraft(b);
+  var ctl = window.AbortController ? new AbortController() : null, timer = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);   // 20초 안에 응답이 없으면 실패로 처리
+  fetch(CONFIG.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b), signal: ctl ? ctl.signal : undefined })
     .then(function (r) { return r.json(); })
     .then(function (r) {
-      if (!r.ok) throw new Error(r.error || '신청하지 못했습니다.');
+      clearTimeout(timer);
+      if (!r.ok) { var ve = new Error(r.error || '신청하지 못했습니다.'); ve.valid = true; throw ve; }   // 입력 확인 오류(서버는 정상)
+      clearDraft();
       $('vForm').classList.add('hidden'); $('vDone').classList.remove('hidden'); window.scrollTo(0, 0);
     }).catch(function (e) {
-      $('sendErr').textContent = e.message && e.message !== 'Failed to fetch' ? e.message : '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      clearTimeout(timer);
       $('btnSend').disabled = false; $('btnSend').textContent = '상담 신청하기';
+      if (e && e.valid) { $('sendErr').textContent = e.message; return; }
+      // 서버에 연결되지 않음 → 비상 경로(문자·전화) 표시
+      $('sendErr').textContent = '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도하시거나 아래 방법으로 신청해 주세요.';
+      showFallback(b);
     });
 };
+
+/* ---------- 비상 경로: 서버가 안 될 때 문자·전화로 ---------- */
+function smsBody(b) {
+  return ['[대단한영어 상담 신청]', '학생: ' + b.name + ' / ' + b.grade + ' / ' + b.school, '학부모: ' + b.parentPhone + (b.studentPhone ? ' / 학생: ' + b.studentPhone : ''),
+    '연락 가능: ' + b.when, '사는 곳: ' + b.addr, (b.naesin || b.mock) ? '성적: ' + [b.naesin, b.mock].filter(Boolean).join(' / ') : '',
+    '상담 내용: ' + b.message, '(개인정보 수집·이용 동의함)'].filter(Boolean).join('\n');
+}
+function showFallback(b) {
+  var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (CONFIG.SMS_TO) $('fbSms').href = 'sms:' + CONFIG.SMS_TO + (ios ? '&' : '?') + 'body=' + encodeURIComponent(smsBody(b));
+  $('fbSms').style.display = CONFIG.SMS_TO ? '' : 'none';
+  $('fbTel').href = 'tel:' + CONFIG.TEL.replace(/-/g, ''); $('fbTel').textContent = '학원으로 전화하기 (' + CONFIG.TEL + ')';
+  $('fallback').classList.remove('hidden');
+}
+// 작성 내용 보관: 접수 실패 후 새로고침해도 다시 쓰지 않도록 (이 기기 브라우저에만, 접수되면 지움)
+var DRAFT_KEY = 'greateng_apply_draft';
+function saveDraft(b) { try { var d = Object.assign({}, b); delete d.website; localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e) {} }
+function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+(function restoreDraft() {
+  var d; try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) {}
+  if (!d) return;
+  var set = function (id, v) { if (v) $(id).value = v; };
+  set('inName', d.name); set('inGrade', d.grade); set('inSchool', d.school); set('inNaesin', d.naesin); set('inMock', d.mock);
+  set('inPPhone', d.parentPhone); set('inSPhone', d.studentPhone); set('inWhen', d.when); set('inAddr', d.addr); set('inMsg', d.message);
+  set('inRoute', d.route); set('inRef', d.referrer);
+  [['gender', d.gender], ['level', d.level]].forEach(function (x) { var el = x[1] && document.querySelector('input[name="' + x[0] + '"][value="' + x[1] + '"]'); if (el) el.checked = true; });
+  $('sendErr').textContent = '지난번에 작성하신 내용을 불러왔습니다. 확인 후 다시 신청해 주세요.';
+})();
 </script>
 </body>
 </html>
