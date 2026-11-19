@@ -23,7 +23,7 @@ jobs:
           try:
               d=json.load(sys.stdin); print(len(d.get("tests",[])) if d.get("ok") else 0)
           except Exception: print(0)')
-            if [ "$n" -gt 0 ]; then echo "정상: 시험지 ${n}종"; exit 0; fi
+            if [ "$n" -gt 0 ]; then echo "정상: 시험지 ${n}종"; printf '%s' "$body" | python3 -c 'import sys,json; print(" · ".join(t["label"]+" "+str(t["minutes"])+"분/"+str(t["count"])+"문항" for t in json.load(sys.stdin)["tests"]))'; exit 0; fi
             echo "시도 $i 실패: $(printf '%s' "$body" | head -c 300)"; sleep 30
           done
           echo "::error::레벨테스트 GAS가 응답하지 않습니다 — 상담 신청서·레벨테스트가 막혔을 수 있습니다. GAS 배포 상태를 확인하세요."
