@@ -63,6 +63,40 @@ function getAllBooks(){
 function bookLabel(src){
   return getAllBooks().find(b=>b.id===src)?.label || src;
 }
+// 지문 id 목록 → 범위 문구. 예) ['sutk_3_1','sutk_3_2','sutk_3_3','sutk_5_2'] → '수특 3강 1~3번 · 5강 2번'
+//   교재별로 묶고, 강 안에서 연속 번호는 '1~3'으로 줄인다. 교재를 못 찾으면 id 그대로.
+function pidRangeLabel(pids){
+  const ids=getAllBooks().map(b=>b.id).sort((a,b)=>b.length-a.length);
+  const byBook={}, order=[];
+  [...new Set(pids)].forEach(pid=>{
+    let bk=ids.find(b=>pid.startsWith(b+'_'))||'';
+    if(!bk){ const m=String(pid).match(/^(.+)_([^_]+)_([^_]+)$/); if(m) bk=m[1]; } // 교재 목록에 없으면 '교재_강_번호' 형태로 추정
+    const rest=bk?pid.slice(bk.length+1).split('_'):[pid];
+    const ch=rest.length>=2?rest[0]:'', no=rest.length>=2?rest[1]:rest[0];
+    if(!byBook[bk]){byBook[bk]={};order.push(bk);}
+    (byBook[bk][ch]=byBook[bk][ch]||[]).push(no);
+  });
+  const nKey=v=>/^\d+$/.test(v)?parseInt(v):1e9;
+  const squash=nos=>{
+    const nums=[...new Set(nos)].sort((a,b)=>nKey(a)-nKey(b)||String(a).localeCompare(String(b)));
+    const out=[]; let i=0;
+    while(i<nums.length){
+      const isN=v=>/^\d+$/.test(v);
+      let j=i; while(j+1<nums.length&&isN(nums[j])&&isN(nums[j+1])&&parseInt(nums[j+1])===parseInt(nums[j])+1) j++;
+      const a=isN(nums[i])?parseInt(nums[i]):nums[i], b=isN(nums[j])?parseInt(nums[j]):nums[j];
+      out.push(j>i?`${a}~${b}`:`${a}`); i=j+1;
+    }
+    const num=out.filter(x=>/^\d/.test(x)&&/^[\d~]+$/.test(x)), etc=out.filter(x=>!num.includes(x)); // 숫자 번호만 '번'을 붙이고, '0기출' 같은 번호는 그대로
+    return [num.length?num.join(',')+'번':'',...etc].filter(Boolean).join(', ');
+  };
+  return order.map(bk=>{
+    const chs=Object.keys(byBook[bk]).sort((a,b)=>nKey(a)-nKey(b)||a.localeCompare(b));
+    const parts=chs.map(ch=>(ch?(/^\d+$/.test(ch)?parseInt(ch)+'강 ':ch+' '):'')+squash(byBook[bk][ch]));
+    const bl=bk?bookLabel(bk):'';
+    const name=bl===bk?bk.replace(/^BOOK_\d+_/,'').replace(/_/g,' '):bl; // 교재 이름을 못 찾으면 id를 읽기 쉽게
+    return (name?name+' ':'')+parts.join(' · ');
+  }).join(' / ');
+}
 
 // 보관(archive) 여부 판정: 시트 archived 컬럼이 TRUE이면 학생 화면에서 숨김.
 // is_public은 건드리지 않으므로 archived만 해제하면 즉시 원상 복원됨.
@@ -1507,6 +1541,21 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
 
   const [expandedSession,setExpandedSession]=useState(null);
   const [showOldSess,setShowOldSess]=useState(false); // 회차별 기록: 7일 이전 기록 펼침
+  // ── 최근 7일 학생별 풀이 기록(시험결과 탭) ── 펼칠 때 학생별 getStats를 불러와 7일치만 사용
+  const [recentOpen,setRecentOpen]=useState(false);
+  const [recentData,setRecentData]=useState(null);   // {이름: [{date,detail}...] (최근 7일)}
+  const [recentLoading,setRecentLoading]=useState(false);
+  const loadRecent=async(names)=>{
+    setRecentLoading(true);
+    const t0=new Date(); t0.setHours(0,0,0,0); const cut=new Date(t0.getTime()-6*86400000); // 오늘 포함 7일
+    const out={}; const queue=[...names];
+    const worker=async()=>{ while(queue.length){ const n=queue.shift();
+      try{ const d=await api({action:'getStats',student:n});
+        out[n]=((d&&d.sessionStats)||[]).filter(x=>{const dt=new Date(String(x.date||'').replace(' ','T'));return !isNaN(dt)&&dt>=cut;});
+      }catch(e){ out[n]=null; } } };
+    await Promise.all([worker(),worker(),worker(),worker()]); // 동시에 4명씩
+    setRecentData(out); setRecentLoading(false);
+  };
   // ── 시험 범위(커버리지 분석용) ── 교재/강 id 집합. localStorage에 저장
   const RANGE_KEY='greateng_exam_range';
   const [examRange,setExamRange]=useState(()=>{
@@ -1614,6 +1663,7 @@ function AdminPanel({scriptUrl,adminPw,goBack,goToSetup,openSetupNewTab}){
       const d=await api(body);
       if(d.ok!==false){
         setStats(d);
+        if(!student){setRecentData(null);setRecentOpen(false);} // 전체 새로고침 시 최근 7일 기록은 접고, 다시 펼칠 때 새로 불러옴
         // 전체 조회일 때만 응시 기록 있는 학생 목록 갱신 (개별 조회 응답은 그 학생만 담기므로 제외)
         if(!student&&Array.isArray(d.studentStats)) setResultNames(new Set(d.studentStats.map(x=>x.name)));
       }
@@ -2737,6 +2787,48 @@ ${ESC_}
                 <div style={{color:'#9a8570'}}>목록의 ‘매일 30문항 8일 / 22일’ = 지난 22일 중 30문항 이상 푼 날이 8일이라는 뜻입니다.</div>
               </div>}
             </div>}
+            {/* 최근 7일 학생별 풀이 기록: 날짜·회차·문항 수·범위 */}
+            {!selectedStudent&&(stats.studentStats||[]).length>0&&(()=>{
+              const names=(stats.studentStats||[]).filter(s=>s.name!=='관리자'&&(!clsFilter||(s.cls||'').trim()===clsFilter)).map(s=>s.name);
+              const open=()=>{ if(recentOpen){setRecentOpen(false);return;} setRecentOpen(true); if(!recentData) loadRecent((stats.studentStats||[]).filter(s=>s.name!=='관리자').map(s=>s.name)); };
+              const WD=['일','월','화','수','목','금','토'];
+              const rows=names.map(n=>{
+                const ss=(recentData&&recentData[n])||[];
+                const byDay={};
+                ss.forEach(x=>{const dt=new Date(String(x.date).replace(' ','T'));
+                  const k=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+                  const items=String(x.detail||'').split('||').filter(Boolean).map(l=>l.split('|'));
+                  const o=byDay[k]||(byDay[k]={dt,sess:0,q:0,ok:0,pids:[]});
+                  o.sess++; o.q+=items.length; o.ok+=items.filter(p=>p[2]==='O').length; items.forEach(p=>p[0]&&o.pids.push(p[0]));});
+                const days=Object.keys(byDay).sort().reverse().map(k=>byDay[k]);
+                return {n,days,q:days.reduce((a,d)=>a+d.q,0),err:recentData&&recentData[n]===null};
+              });
+              const active=rows.filter(r=>r.q>0).sort((a,b)=>b.q-a.q), idle=rows.filter(r=>r.q===0&&!r.err), errs=rows.filter(r=>r.err);
+              return <div style={{background:'#fff',borderRadius:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)',marginBottom:12,overflow:'hidden'}}>
+                <div onClick={open} style={{padding:'12px 16px',fontWeight:700,fontSize:13,color:'#3a2a20',display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',borderBottom:recentOpen?'1px solid #efe6d4':'none'}}>
+                  <span>📅 최근 7일 풀이 기록{clsFilter?<span style={{fontSize:11,color:'#9a8570',fontWeight:600,marginLeft:6}}>{clsFilter}</span>:null}</span>
+                  <span style={{fontSize:11,color:'#7a1020',fontWeight:700}}>{recentOpen?'접기 ▲':'펼치기 ▼'}</span>
+                </div>
+                {recentOpen&&<div style={{padding:'6px 16px 12px'}}>
+                  {recentLoading&&<div style={{fontSize:12,color:'#9a8570',padding:'8px 0'}}>학생별 기록을 불러오는 중…</div>}
+                  {!recentLoading&&recentData&&<>
+                    {active.length===0&&<div style={{fontSize:12,color:'#9a8570',padding:'8px 0'}}>최근 7일간 푼 기록이 없습니다.</div>}
+                    {active.map(r=><div key={r.n} style={{padding:'9px 0',borderBottom:'1px solid #f3ecdf'}}>
+                      <div style={{fontSize:13,fontWeight:800,color:'#7a1020',marginBottom:4}}>{r.n}
+                        <span style={{fontSize:11,color:'#9a8570',fontWeight:600,marginLeft:8}}>{r.days.length}일 · {r.q}문항</span></div>
+                      {r.days.map((d,i)=><div key={i} style={{display:'flex',gap:10,fontSize:12,color:'#3a2a20',lineHeight:1.55,padding:'1px 0'}}>
+                        <span style={{flex:'0 0 74px',color:'#6b5d4d',fontWeight:700}}>{d.dt.getMonth()+1}/{d.dt.getDate()}({WD[d.dt.getDay()]})</span>
+                        <span style={{flex:'0 0 92px',color:d.q>=30?'#16a34a':'#9a8570',fontWeight:700}}>{d.q}문항{d.sess>1?` · ${d.sess}회`:''}</span>
+                        <span style={{flex:1,minWidth:0,color:'#3a2a20'}}>{pidRangeLabel(d.pids)||'—'}</span>
+                      </div>)}
+                    </div>)}
+                    {idle.length>0&&<div style={{fontSize:12,color:'#b91c1c',marginTop:10}}><b>최근 7일 기록 없음</b> <span style={{color:'#6b5d4d'}}>{idle.map(r=>r.n).join(', ')}</span></div>}
+                    {errs.length>0&&<div style={{fontSize:11.5,color:'#9a8570',marginTop:6}}>불러오기 실패: {errs.map(r=>r.n).join(', ')} <button onClick={e=>{e.stopPropagation();setRecentData(null);loadRecent((stats.studentStats||[]).filter(s=>s.name!=='관리자').map(s=>s.name));}} style={{fontSize:11,marginLeft:6,border:'1px solid #e6cf8f',background:'#fffaf0',borderRadius:6,padding:'2px 8px',cursor:'pointer'}}>다시 불러오기</button></div>}
+                    <div style={{fontSize:10.5,color:'#b5a99a',marginTop:8}}>오늘 포함 7일 · 초록 숫자는 하루 30문항 이상 · 범위는 그날 푼 지문 전체</div>
+                  </>}
+                </div>}
+              </div>;
+            })()}
             {/* 학생 선택 시: 종합 요약 */}
             {selectedStudent&&(stats.typeStats||[]).length>0&&(()=>{
               const tc=(stats.typeStats||[]).reduce((s,t)=>s+(Number(t.correct)||0),0);
