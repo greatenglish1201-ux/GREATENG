@@ -1139,6 +1139,8 @@ function App(){
 
   const [printQs,setPrintQs]=useState([]);
   const [printMode,setPrintMode]=useState('q');
+  const [printFrom,setPrintFrom]=useState(''); // 인쇄 화면 진입 출처 ('results'면 뒤로가기 시 결과 화면으로)
+  const savedQsRef=useRef(null); // 결과 저장 완료된 회차(questions 배열) — 결과 화면 재진입 시 중복 저장 방지
 
   // 🏆 메인 화면 탑3 배지 — 서버가 탑3일 때만 내려줌
   const [mainRank,setMainRank]=useState(null);
@@ -1331,8 +1333,8 @@ function App(){
   }} />;
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
   if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,mainBadge,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{try{sessionStorage.removeItem('greateng_intro_seen_'+studentName);}catch(e){}sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
-  if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>setScreen(questions.length>0?'quiz':'setup')} />;
-  if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setScreen('print');}} />;
+  if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>{if(printFrom==='results'){setPrintFrom('');setScreen('results');}else setScreen(questions.length>0?'quiz':'setup');}} />;
+  if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} saveGuard={savedQsRef} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setPrintFrom('results');setScreen('print');}} />;
 
   const q=questions[curIdx];
   if(!q)return <div style={{padding:40,textAlign:'center'}}>문제 없음<br/><button onClick={()=>setScreen('setup')}>돌아가기</button></div>;
@@ -6006,7 +6008,7 @@ ${bodyRef.current.innerHTML}
 }
 
 /* ── 결과 ── */
-function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHome,doPrint}){
+function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHome,doPrint,saveGuard}){
   // 📖 틀린 지문 분석자료 바로 보기
   const [viewP,setViewP]=useState(null);
   const [studyMode,setStudyMode]=useState('teacher');
@@ -6079,6 +6081,11 @@ function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHo
       return `${q.passage.id}|${TYPES.find(t=>t.id===q.type)?.name||q.type}|${ans?.correct?'O':'X'}|${corr}|${chosen}`;
     }).join('||');
     curSessRef.current={date:dateStr,detail:details};
+    // 중복 저장 방지: 같은 회차(questions 배열)는 한 번만 저장
+    if(saveGuard){
+      if(saveGuard.current===questions){setSaveStatus('done');return;}
+      saveGuard.current=questions;
+    }
     const payload={
       action: 'saveResult',
       name: studentName,
