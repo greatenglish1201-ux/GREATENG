@@ -127,6 +127,48 @@
     #report.dense2{zoom:.76}
     #report,#report *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
+  /* 학부모 전송용 이미지 (42차 템플릿) — 화면 밖에 그려 html2canvas로 캡처, 인쇄에는 안 나옴 */
+  #pcard{position:fixed;left:-10000px;top:0;width:430px;background:#fbf8f1;color:#1d2433;font-family:"Pretendard Variable",Pretendard,sans-serif;letter-spacing:-.02em}
+  #pcard *{box-sizing:border-box}
+  #pcard .hd{background:linear-gradient(160deg,#2a3d63 0%,#0f1a2e 55%);color:#fff;padding:30px 26px 28px;border-bottom:3px solid #c9a84c}
+  #pcard .br{display:flex;justify-content:space-between;align-items:flex-end}
+  #pcard .br b{font-size:24px;font-weight:800;color:#e9d08e}#pcard .br small{display:block;font-size:10.5px;letter-spacing:.32em;color:#b9a679;margin-top:2px;font-weight:600}
+  #pcard .br span{font-size:10.5px;letter-spacing:.26em;color:#c9a84c;font-weight:600}
+  #pcard .nm{margin-top:26px;font-size:34px;font-weight:800}#pcard .nm em{font-style:normal;font-size:18px;font-weight:500;color:#c8cfdd;margin-left:8px}
+  #pcard .ch{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}#pcard .ch span{border:1px solid #8f7a40;color:#efe3c0;border-radius:999px;padding:6px 13px;font-size:14px;font-weight:500}
+  #pcard .sc{padding:30px 26px 26px;text-align:center;background:#fff;border-bottom:1px solid #ece6d8}
+  #pcard .k{font-size:11.5px;letter-spacing:.3em;color:#a8893a;font-weight:700}
+  #pcard .ring{width:196px;height:196px;margin:16px auto 6px;position:relative}
+  #pcard .ring canvas{width:196px;height:196px}
+  #pcard .ring .v{position:absolute;left:0;top:0;width:196px;height:196px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  #pcard .ring .v b{font-size:76px;font-weight:800;line-height:1;color:#b8943e}
+  #pcard .ring .v small{font-size:17px;color:#6b7280;font-weight:600;margin-top:4px}
+  #pcard .hl{margin-top:12px;font-size:17px;font-weight:600;color:#0f1a2e}#pcard .hl i{font-style:normal;color:#a8893a}
+  #pcard .sec{padding:24px 26px 8px}
+  #pcard h3{margin:0 0 14px;font-size:19px;font-weight:800;color:#0f1a2e;display:flex;align-items:center;border-left:4px solid #c9a84c;padding-left:9px;line-height:1.1}
+  #pcard h3 small{font-size:13px;color:#6b7280;font-weight:500;margin-left:auto}
+  #pcard .row{display:flex;align-items:center;margin:0 0 15px}
+  #pcard .row .l{width:116px;font-size:16.5px;font-weight:700;flex:none}#pcard .row .l small{display:block;font-size:12.5px;color:#6b7280;font-weight:500;margin-top:1px}
+  #pcard .tr{flex:1;height:13px;border-radius:99px;background:#ebe6da;overflow:hidden}#pcard .tr i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1c2b47,#0f1a2e)}
+  #pcard .gd .tr i{background:linear-gradient(90deg,#b8953f,#e9d08e)}#pcard .wn .tr i{background:linear-gradient(90deg,#7a1020,#a8344a)}
+  #pcard .row .n{width:62px;flex:none;text-align:right;font-size:19px;font-weight:800;color:#0f1a2e}#pcard .row .n small{font-size:13px;color:#6b7280;font-weight:600}
+  #pcard .best{margin:6px 26px 0;background:#0f1a2e;color:#fff;border-radius:16px;padding:18px 20px;display:flex;align-items:center}
+  #pcard .best .ic{width:42px;height:42px;border-radius:50%;border:1.5px solid #c9a84c;display:flex;align-items:center;justify-content:center;color:#e9d08e;font-size:20px;flex:none;margin-right:14px}
+  #pcard .best b{display:block;font-size:17px;color:#e9d08e}#pcard .best span{font-size:14.5px;color:#d5dbe7}
+  #pcard .wr{margin:0 26px;background:#fff;border:1px solid #ece6d8;border-radius:16px;overflow:hidden}
+  #pcard .wr>div{display:flex;align-items:center;padding:15px 18px;border-bottom:1px solid #ece6d8}#pcard .wr>div:last-child{border-bottom:none}
+  #pcard .wr .no{width:40px;height:40px;border-radius:12px;background:#fbf8f1;border:1px solid #e3d6b0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#8a6d22;flex:none;margin-right:14px}
+  #pcard .wr p{margin:0;font-size:16.5px;font-weight:700}#pcard .wr p small{display:block;font-size:13px;color:#6b7280;font-weight:500;margin-top:2px}
+  #pcard .wr .sn{width:96px;flex:none;font-size:16px;font-weight:800;color:#0f1a2e}#pcard .wr .ns{font-size:16.5px;font-weight:700;color:#8a6d22;line-height:1.5}
+  #pcard .ok{margin:0 26px;padding:18px;background:#fff;border:1px solid #ece6d8;border-radius:16px;text-align:center;font-size:16.5px;font-weight:700}
+  #pcard .ft{margin-top:26px;background:#0f1a2e;color:#c8cfdd;padding:18px 26px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  #pcard .ft b{color:#e9d08e;font-size:15px}
+  /* 종이 시험 결과 입력 */
+  #paperBox{display:none;margin-bottom:14px}
+  #paperBox .pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 12px}
+  #paperBox label{display:block;font-size:12.5px;font-weight:600;margin:8px 0 4px}
+  #paperBox input,#paperBox select{width:100%}
+  .pill.paper{background:#f3ead2;color:#7a5c12}
 </style>
 </head>
 <body>
@@ -156,8 +198,10 @@
       <select id="fTest"><option value="">전체 시험지</option></select>
       <input type="text" id="fName" placeholder="이름 검색">
       <span class="sp"></span>
+      <button class="btn line" id="btnPaper">+ 종이 시험 결과 입력</button>
       <button class="btn ghost" id="btnReload">새로고침</button>
     </div>
+    <div class="card" id="paperBox"></div>
     <div class="card" style="padding:6px 10px;overflow-x:auto">
       <table class="list"><thead><tr><th>응시일</th><th>이름</th><th>학교</th><th>학년</th><th>학부모 연락처</th><th>시험지</th><th>점수</th><th>상태</th><th>등록</th></tr></thead>
         <tbody id="listBody"><tr><td colspan="9" class="muted">불러오는 중…</td></tr></tbody></table>
@@ -179,7 +223,7 @@
     </div>
     <div class="teacher">
       <div class="card" id="consultCard"></div>
-      <div class="card">
+      <div class="card" id="mgrCard">
         <h2>관리</h2>
         <label style="display:flex;gap:8px;align-items:center;font-size:14.5px"><input type="checkbox" id="chkEnr" style="width:18px;height:18px;accent-color:var(--wine)"> 등록함</label>
         <textarea id="memo" rows="2" style="width:100%;margin-top:10px" placeholder="상담 메모 (이 화면에만 보이고 결과지에는 나오지 않음)"></textarea>
@@ -272,7 +316,7 @@ $('btnLogin').onclick = function () {
   }).catch(function (e) { $('loginErr').textContent = e.message === 'Failed to fetch' ? '서버에 연결하지 못했습니다.' : e.message; });
 };
 $('inPw').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnLogin').click(); });
-function enter(rows) { $('vLogin').classList.add('hidden'); $('tabs').classList.remove('hidden'); ALL = rows; tab('list'); }
+function enter(rows) { $('vLogin').classList.add('hidden'); $('tabs').classList.remove('hidden'); ALL = rows; tab('list'); loadPaper(); }
 
 /* ---------- 탭 ---------- */
 Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function (b) { b.onclick = function () { tab(b.getAttribute('data-v')); }; });
@@ -289,12 +333,13 @@ function tab(v) {
 /* ---------- 목록 ---------- */
 TEST_LIST.forEach(function (t) { $('fTest').insertAdjacentHTML('beforeend', '<option value="' + t[0] + '">' + t[1] + '</option>'); $('sTest').insertAdjacentHTML('beforeend', '<option value="' + t[0] + '">' + t[1] + '</option>'); });
 $('fTest').onchange = renderList; $('fName').oninput = renderList;
-$('btnReload').onclick = function () { api({ action: 'adminList' }).then(function (r) { ALL = r.rows; renderList(); toast('새로고침했습니다'); }); };
+$('btnReload').onclick = function () { api({ action: 'adminList' }).then(function (r) { ALL = r.rows; renderList(); toast('새로고침했습니다'); }); loadPaper(); };
 function renderList() {
   var ft = $('fTest').value, fn = $('fName').value.trim();
-  var rows = ALL.filter(function (r) { return (!ft || r.testId === ft) && (!fn || String(r.name).indexOf(fn) >= 0); });
+  var src = PAPER.length ? ALL.concat(PAPER).sort(function (x, y) { return (y.started || 0) - (x.started || 0); }) : ALL;
+  var rows = src.filter(function (r) { return (!ft || r.testId === ft) && (!fn || String(r.name).indexOf(fn) >= 0); });
   $('listBody').innerHTML = rows.length ? rows.map(function (r) {
-    var st = r.status === '응시중' ? '<span class="pill ing">응시중</span>' : r.status === '시간초과' ? '<span class="pill late">시간초과</span>' : '<span class="pill">' + esc(r.status) + '</span>';
+    var st = r.status === '응시중' ? '<span class="pill ing">응시중</span>' : r.status === '시간초과' ? '<span class="pill late">시간초과</span>' : r.paper ? '<span class="pill paper">종이</span>' : '<span class="pill">' + esc(r.status) + '</span>';
     return '<tr class="' + (r.status === '응시중' ? '' : 'click') + '" data-id="' + esc(r.id) + '"><td>' + fmtDate(r.started) + '</td><td><b>' + esc(r.name) + '</b></td><td>' + esc(r.school) + '</td><td>' + esc(r.grade) + '</td><td>' + esc(r.parentPhone || '') +
       '</td><td>' + esc(r.testLabel) + '</td><td><b>' + (r.score == null ? '-' : r.score) + '</b></td><td>' + st + '</td><td>' + (r.enrolled ? '<span class="pill enr">등록</span>' : '') + '</td></tr>';
   }).join('') : '<tr><td colspan="9" class="muted">응시 기록이 없습니다.</td></tr>';
@@ -306,6 +351,8 @@ $('btnBack').onclick = function () { tab('list'); };
 function openResult(id) {
   $('vList').classList.add('hidden'); $('vResult').classList.remove('hidden');
   $('report').innerHTML = '<p class="muted">불러오는 중…</p>'; $('detail').innerHTML = '';
+  $('mgrCard').style.display = '';
+  if (String(id).indexOf('paper:') === 0) { openPaper(id); return; }
   api({ action: 'adminGet', id: id }).then(function (r) {
     if (!r.ok) throw new Error(r.error);
     CUR = analyze(r); renderReport(CUR); renderDetail(CUR); renderConsult(r.record);
@@ -352,7 +399,7 @@ function renderReport(A) {
   var t = A.test, rec = A.rec, LV = ['Ⅰ', 'Ⅱ', 'Ⅲ'];
   var h = '<div class="r-band"><div class="r-head"><div class="r-brand">대단한영어<small>GREATENG</small></div><div class="r-title"><small>LEVEL TEST REPORT</small>레벨테스트 결과</div></div>';
   h += '<div class="r-info"><span>이름 <b>' + esc(rec.name) + '</b></span><span>학교 <b>' + esc(rec.school || '-') + '</b></span><span>학년 <b>' + esc(rec.grade || '-') +
-    '</b></span><span>시험지 <b>' + esc(t.label) + '</b></span><span>응시일 <b>' + fmtDay(rec.started) + '</b></span><span>소요 시간 <b>' + fmtSec(rec.elapsed) + ' / ' + t.minutes + '분</b></span></div></div><div class="r-body">';
+    '</b></span><span>시험지 <b>' + esc(t.label) + '</b></span><span>응시일 <b>' + fmtDay(rec.started) + '</b></span>' + (A.paper ? '<span>응시 방식 <b>종이 시험</b></span>' : '<span>소요 시간 <b>' + fmtSec(rec.elapsed) + ' / ' + t.minutes + '분</b></span>') + '</div></div><div class="r-body">';
   // 상담 카드: 결과지를 보고 연락하므로 인쇄 결과지에 표시 (카카오톡·문자로 보내는 이미지에서는 빠짐 — reportPng 참고)
   var cd = rec.card || {}, cv = function (v) { return esc(v || '-'); };
   h += '<div class="r-consult"><div><span>학부모 연락처</span><b>' + cv(cd.parentPhone) + '</b></div><div><span>학생 연락처</span><b>' + cv(cd.studentPhone) +
@@ -380,7 +427,7 @@ function renderReport(A) {
     var wt = function (list) { return '<table class="wrong"><thead><tr><th>번호</th><th>영역</th><th>단계</th><th>유형·내용</th><th>고른 답</th><th>정답</th></tr></thead><tbody>' +
       list.map(function (it) { var my = A.okMap[it.n].my;
         var topic = it.cover || it.type; if (many && it.cover) { var tp = it.cover.split(/\s+·\s+/); topic = tp[0] + (tp.length > 1 ? ' 등' : ''); }
-        return '<tr><td>' + it.n + '</td><td>' + esc(it.sec) + '</td><td>' + it.lv + '</td><td>' + esc(topic) + '</td><td>' + (my ? C[my - 1] : '미응답') + '</td><td>' + C[it.a - 1] + '</td></tr>'; }).join('') + '</tbody></table>'; };
+        return '<tr><td>' + it.n + '</td><td>' + esc(it.sec) + '</td><td>' + it.lv + '</td><td>' + esc(topic) + '</td><td>' + (my ? C[my - 1] : A.paper ? '—' : '미응답') + '</td><td>' + (it.a ? C[it.a - 1] : '—') + '</td></tr>'; }).join('') + '</tbody></table>'; };
     var half = Math.ceil(A.wrong.length / 2);
     h += '<p class="r-sub">틀린 문항 (' + A.wrong.length + '개)</p>' + (A.wrong.length > 8
       ? '<div class="wrong2">' + wt(A.wrong.slice(0, half)) + wt(A.wrong.slice(half)) + '</div>' : wt(A.wrong));
@@ -415,7 +462,7 @@ function loadCards() {
     if (mw.bad) $('mailWarn').innerHTML = '<b>⚠ 최근 7일 상담 신청 알림 메일 ' + mw.bad + '건이 가지 않았습니다.</b> 아래 \'상담 신청\' 카드를 직접 확인해 주세요.<br>' +
       '마지막 사유: ' + esc(mw.last || '') + ' — 시트의 \'알림기록\' 탭, 메뉴 [알림 메일 시험 발송]으로 점검';
     CARDS = (r.cards || []).sort(function (x, y) { return (y.updated || 0) - (x.updated || 0); }); renderCards();   // 최근 수정 순
-    if (OPEN_CARD_FOR_TEST) { var c = CARDS.filter(function (x) { return x.tests.indexOf(OPEN_CARD_FOR_TEST) >= 0; })[0]; OPEN_CARD_FOR_TEST = null; if (c) editCard(c); }
+    if (OPEN_CARD_FOR_TEST) { var c = CARDS.filter(function (x) { return x.tests.indexOf(OPEN_CARD_FOR_TEST) >= 0 || OPEN_CARD_FOR_TEST.indexOf('paper:' + x.cardId + ':') === 0; })[0]; OPEN_CARD_FOR_TEST = null; if (c) editCard(c); }
   });
 }
 function testInfo(id) { var r = ALL.filter(function (x) { return x.id === id; })[0]; return r ? r.testLabel + ' ' + (r.score == null ? '' : r.score + '점') : ''; }
@@ -503,7 +550,7 @@ function renderDetail(A) {
   $('detail').innerHTML = '<thead><tr><th>번호</th><th>단계</th><th>배점</th><th>유형·내용</th><th>답</th><th>정답</th><th>시간</th><th>해설</th></tr></thead><tbody>' +
     t.items.map(function (it) { var x = A.okMap[it.n];
       return '<tr><td>' + it.n + '</td><td>' + it.lv + '</td><td>' + it.pt + '</td><td>' + esc(it.cover || it.type) + '</td><td class="' + (x.ok ? 'ok' : 'no') + '">' + (x.my ? C[x.my - 1] : '—') +
-        '</td><td>' + C[it.a - 1] + '</td><td>' + (rec.times[it.n] ? Math.round(rec.times[it.n]) + '초' : '-') + '</td><td style="color:var(--muted)">' + esc(it.ex) + '</td></tr>'; }).join('') + '</tbody>';
+        '</td><td>' + (it.a ? C[it.a - 1] : (x.ok ? 'O' : 'X')) + '</td><td>' + ((rec.times || {})[it.n] ? Math.round(rec.times[it.n]) + '초' : '-') + '</td><td style="color:var(--muted)">' + esc(it.ex) + '</td></tr>'; }).join('') + '</tbody>';
 }
 
 /* ---------- 결과 전달 ---------- */
@@ -525,23 +572,26 @@ function copyText(s) {
   if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(s);
   var ta = document.createElement('textarea'); ta.value = s; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); return Promise.resolve();
 }
+// 보내는 이미지 = 학부모 전송용 템플릿(42차, 휴대폰 화면 폭 430px × 3배, JPG). 연락처·주소는 넣지 않음. 인쇄 결과지는 #report 그대로
 function reportPng() {
   if (!window.html2canvas) return Promise.reject(new Error('이미지 도구를 불러오지 못했습니다.'));
-  // 보내는 이미지에는 연락처·주소가 담긴 상담 카드 줄을 넣지 않음
-  return html2canvas($('report'), { scale: 2, backgroundColor: '#ffffff', ignoreElements: function (el) { return el.classList && el.classList.contains('r-consult'); },
-    onclone: function (d) { d.getElementById('report').classList.add('cap'); }   // 이미지에서는 금속 질감 글자를 단색 금색으로
+  renderParentCard(CUR);
+  var el = $('pcard');
+  return (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () {
+    return html2canvas(el, { scale: 3, backgroundColor: '#fbf8f1', width: 430, windowWidth: 430, scrollX: 0, scrollY: 0,
+      onclone: function (d) { var c = d.getElementById('pcard'); c.style.left = '0'; c.style.position = 'absolute'; } });
   }).then(function (cv) {
-    return new Promise(function (res) { cv.toBlob(function (b) { res(b); }, 'image/png'); });
+    return new Promise(function (res) { cv.toBlob(function (b) { res(b); }, 'image/jpeg', 0.92); });
   });
 }
-function fileName() { return '레벨테스트_' + CUR.rec.name + '_' + fmtDay(CUR.rec.started).replace(/\./g, '') + '.png'; }
+function fileName() { return '레벨테스트_' + CUR.rec.name + '_' + fmtDay(CUR.rec.started).replace(/\./g, '') + '.jpg'; }
 $('btnPrint').onclick = function () { window.print(); };
 $('btnCopy').onclick = function () { copyText(resultText(CUR)).then(function () { toast('결과 텍스트를 복사했습니다'); }); };
 $('btnShare').onclick = function () {
   var text = resultText(CUR);
   if (!navigator.share) { copyText(text).then(function () { toast('이 기기는 공유를 지원하지 않아 텍스트를 복사했습니다. 카카오톡·문자에 붙여넣어 주세요'); }); return; }
   reportPng().then(function (blob) {
-    var file = new File([blob], fileName(), { type: 'image/png' });
+    var file = new File([blob], fileName(), { type: 'image/jpeg' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], text: text, title: '레벨테스트 결과' });
     return navigator.share({ text: text, title: '레벨테스트 결과' });
   }).catch(function (e) {
@@ -557,6 +607,145 @@ $('btnImg').onclick = function () {
 $('chkEnr').onchange = function () { api({ action: 'adminMark', id: CUR.rec.id, enrolled: $('chkEnr').checked }).then(function () {
   ALL.forEach(function (r) { if (r.id === CUR.rec.id) r.enrolled = $('chkEnr').checked; }); toast('저장했습니다'); }); };
 $('btnSaveMemo').onclick = function () { api({ action: 'adminMark', id: CUR.rec.id, memo: $('memo').value }).then(function () { toast('메모를 저장했습니다'); }); };
+
+/* ---------- 학부모 전송용 이미지 (42차 템플릿) ---------- */
+function renderParentCard(A) {
+  var t = A.test, rec = A.rec, LV = ['Ⅰ', 'Ⅱ', 'Ⅲ'], n = t.items.length, ok = n - A.wrong.length;
+  var d = new Date(rec.started || Date.now()), day = d.getFullYear() + '. ' + (d.getMonth() + 1) + '. ' + d.getDate();
+  var row = function (l, sub, c, m) { return '<div class="row"><div class="l">' + l + (sub ? '<small>' + sub + '</small>' : '') + '</div><div class="tr"><i style="width:' + (m ? c / m * 100 : 0) + '%"></i></div><div class="n">' + c + '<small>/' + m + '</small></div></div>'; };
+  var h = '<div class="hd"><div class="br"><div><b>대단한영어</b><small>GREATENG</small></div><span>LEVEL TEST REPORT</span></div>' +
+    '<div class="nm">' + esc(rec.name) + '<em>' + esc([rec.school, rec.grade].filter(Boolean).join(' · ')) + '</em></div>' +
+    '<div class="ch"><span>' + esc(t.label) + ' 레벨테스트</span><span>' + n + '문항 · 객관식</span><span>' + day + '</span></div></div>';
+  h += '<div class="sc"><div class="k">TOTAL SCORE</div><div class="ring"><canvas id="pcRing" width="588" height="588"></canvas><div class="v"><b>' + A.g.score + '</b><small>/ 100점</small></div></div>' +
+    '<div class="hl">' + n + '문항 중 <i>' + ok + '문항</i> 정답</div></div>';
+  h += '<div class="sec"><h3>수준별 정답<small>문항 수 기준</small></h3>' + A.tierStat.map(function (x) { return x.n ? row(x.lv + '단계', esc(x.label) + ' 수준', x.c, x.n) : ''; }).join('') + '</div>';
+  h += '<div class="sec gd" style="padding-top:8px"><h3>영역별 정답</h3>' + A.secStat.map(function (s) { return row(esc(s.name), '', s.c, s.n); }).join('') + '</div>';
+  if (A.kindStat.length) h += '<div class="sec wn" style="padding-top:8px"><h3>내신형 · 수능형 정답</h3>' + A.kindStat.map(function (k) { return row(esc(k.name), k.pt + '/' + k.max + '점', k.c, k.n); }).join('') + '</div>';
+  // 강조 상자: 사실만 (모든 문항 정답 / 가장 높은 단계 전부 정답 / 한 영역 전부 정답)
+  var best = null, top = A.tierStat.filter(function (x) { return x.n && x.c === x.n; }).pop();
+  if (!A.wrong.length) best = ['전 문항 정답', n + '문항을 모두 맞혔습니다'];
+  else if (top) best = [top.lv + '단계(' + top.label + ' 수준) 전 문항 정답', (top.lv === LV[2] ? '가장 어려운 단계 ' : '이 단계 ') + top.n + '문항을 모두 맞혔습니다'];
+  else { var sp = A.secStat.filter(function (s) { return s.c === s.n; })[0]; if (sp) best = [sp.name + ' 전 문항 정답', sp.name + ' ' + sp.n + '문항을 모두 맞혔습니다']; }
+  if (best) h += '<div class="best"><div class="ic">★</div><div><b>' + esc(best[0]) + '</b><span>' + esc(best[1]) + '</span></div></div>';
+  h += '<div class="sec" style="padding-bottom:0"><h3>틀린 문항<small>' + A.wrong.length + '문항</small></h3></div>';
+  if (!A.wrong.length) h += '<div class="ok">틀린 문항이 없습니다</div>';
+  else if (A.wrong.length <= 8) h += '<div class="wr">' + A.wrong.map(function (it) {
+    var topic = it.ptopic || String(it.cover || it.type || '').split(/\s+·\s+/)[0];
+    return '<div><span class="no">' + it.n + '</span><p>' + esc(it.sec) + (topic && topic !== it.sec ? ' · ' + esc(topic) : '') + '<small>' + it.lv + '단계(' + esc(t.tiers[LV.indexOf(it.lv)] || '') + ' 수준)</small></p></div>'; }).join('') + '</div>';
+  else h += '<div class="wr">' + A.secStat.map(function (s) {
+    var w = A.wrong.filter(function (it) { return it.sec === s.name; }).map(function (it) { return it.n; });
+    return w.length ? '<div><span class="sn">' + esc(s.name) + '</span><span class="ns">' + w.join(' · ') + '번</span></div>' : ''; }).join('') + '</div>';
+  h += '<div class="ft"><b>대단한영어</b><span>포항시 남구 대이로 105 · 054-272-7870</span></div>';
+  $('pcard').innerHTML = h;
+  // 점수 원 (html2canvas가 캔버스 픽셀을 그대로 옮김)
+  var cv = $('pcRing'), x = cv.getContext('2d'), R = 258, cx = 294, lw = 21;
+  x.lineCap = 'round'; x.lineWidth = lw;
+  x.strokeStyle = '#efe9db'; x.beginPath(); x.arc(cx, cx, R, 0, Math.PI * 2); x.stroke();
+  if (A.g.score > 0) { var g = x.createLinearGradient(0, 0, 588, 588); g.addColorStop(0, '#e9d08e'); g.addColorStop(1, '#a8822f');
+    x.strokeStyle = g; x.beginPath(); x.arc(cx, cx, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(A.g.score, 100) / 100); x.stroke(); }
+}
+
+/* ---------- 종이 시험 결과 (42차) ----------
+ * 서버(GAS) 수정 없이 상담 카드 메모에 한 줄로 저장: [종이 레벨테스트] m1-v6 2026-11-26 오답 2,14,19
+ * 문항 정보는 영역·단계·배점·유형만 (정답·문제 원문은 공개 저장소에 넣지 않음). 다른 시험지는 PAPER_META에 추가 */
+var PAPER = [];
+var PAPER_META = {
+  'm1-v6': { id: 'm1', label: '중1', name: '중1 (종이 v6)', minutes: 30, tiers: ['초6', '중1', '중2'], plus: [24, 25], items: [
+    ['어휘', 'Ⅰ', '상위어 (포함하는 단어)'], ['어휘', 'Ⅰ', '빈칸에 알맞은 단어'], ['어휘', 'Ⅰ', '영영풀이'], ['어휘', 'Ⅱ', '두 문장 공통 단어'], ['어휘', 'Ⅱ', '뜻이 비슷한 단어'],
+    ['어휘', 'Ⅱ', '문맥상 어색한 단어'], ['어휘', 'Ⅲ', '빈칸에 알맞은 단어'], ['어휘', 'Ⅲ', '영영풀이'],
+    ['문법', 'Ⅰ', 'be동사'], ['문법', 'Ⅰ', '3인칭 단수 현재'], ['문법', 'Ⅰ', '현재진행형'], ['문법', 'Ⅱ', '조동사 should'], ['문법', 'Ⅱ', '비교급·최상급'],
+    ['문법', 'Ⅱ', '감각동사 + 형용사'], ['문법', 'Ⅲ', 'to부정사·동명사'], ['문법', 'Ⅲ', '수동태'],
+    ['독해', 'Ⅰ', '내용 일치'], ['독해', 'Ⅰ', '세부 내용 파악'], ['독해', 'Ⅰ', '빈칸에 알맞은 연결어'], ['독해', 'Ⅱ', '글의 순서'], ['독해', 'Ⅱ', '흐름과 관계없는 문장'],
+    ['독해', 'Ⅱ', '빈칸 추론'], ['독해', 'Ⅲ', '글의 요지'], ['독해', 'Ⅲ', '문장 삽입'], ['독해', 'Ⅲ', '요약문 완성']] }
+};
+var PAPER_RE = /\[종이 레벨테스트\]\s*([a-z0-9]+-v\d+)\s+(\d{4})-(\d{1,2})-(\d{1,2})\s+오답\s*(없음|[\d,\s]+)/g;
+function paperBuild(key, wrong, rec) {
+  var M = PAPER_META[key], BASE = { 'Ⅰ': 3, 'Ⅱ': 4, 'Ⅲ': 5 };
+  var items = M.items.map(function (x, i) { var n = i + 1; return { n: n, sec: x[0], lv: x[1], type: x[2], ptopic: x[2], pt: BASE[x[1]] + (M.plus.indexOf(n) >= 0 ? 1 : 0), a: 0, ex: '' }; });
+  var rows = items.map(function (it) { return { n: it.n, ok: wrong.indexOf(it.n) < 0, my: null }; });
+  var tiers = {}; ['Ⅰ', 'Ⅱ', 'Ⅲ'].forEach(function (l) { var x = items.filter(function (it) { return it.lv === l; }), c = x.filter(function (it) { return wrong.indexOf(it.n) < 0; });
+    tiers[l] = { c: c.length, n: x.length, pt: c.reduce(function (a, it) { return a + it.pt; }, 0), max: x.reduce(function (a, it) { return a + it.pt; }, 0) }; });
+  var score = items.filter(function (it) { return wrong.indexOf(it.n) < 0; }).reduce(function (a, it) { return a + it.pt; }, 0);
+  return { test: { label: M.label, minutes: M.minutes, tiers: M.tiers, items: items }, grade: { score: score, rows: rows, tiers: tiers }, record: rec };
+}
+function paperWrong(s) { var M = {}; return String(s || '').split(/[^\d]+/).filter(Boolean).map(Number).filter(function (n) { if (M[n]) return false; M[n] = 1; return true; }).sort(function (a, b) { return a - b; }); }
+function paperParse(cards) {
+  var out = [];
+  cards.forEach(function (c) {
+    var m, k = 0; PAPER_RE.lastIndex = 0;
+    while ((m = PAPER_RE.exec(c.memo || ''))) {
+      var key = m[1]; if (!PAPER_META[key]) continue;
+      var wrong = m[5] === '없음' ? [] : paperWrong(m[5]), started = new Date(+m[2], +m[3] - 1, +m[4], 12).getTime(), id = 'paper:' + c.cardId + ':' + (k++);
+      var rec = { id: id, name: c.name, school: c.school, grade: c.grade, started: started, elapsed: null, times: {}, enrolled: c.status === '등록', memo: '',
+        card: { parentPhone: c.parentPhone, studentPhone: c.studentPhone, addr: c.addr, naesin: c.naesin, mock: c.mock } };
+      var r = paperBuild(key, wrong, rec);
+      out.push({ id: id, started: started, name: c.name, school: c.school, grade: c.grade, parentPhone: c.parentPhone, testId: PAPER_META[key].id, testLabel: PAPER_META[key].name,
+        score: r.grade.score, status: '종이', enrolled: c.status === '등록', paper: true, r: r });
+    }
+  });
+  return out;
+}
+function loadPaper() {
+  return api({ action: 'adminCards' }).then(function (r) {
+    if (!r.ok && r.ok !== undefined) return;
+    CARDS = (r.cards || []).sort(function (x, y) { return (y.updated || 0) - (x.updated || 0); });
+    PAPER = paperParse(CARDS);
+    if (!$('vList').classList.contains('hidden')) renderList();
+  }).catch(function () {});
+}
+function openPaper(id) {
+  var p = PAPER.filter(function (x) { return x.id === id; })[0];
+  if (!p) { $('report').innerHTML = '<p class="err">종이 시험 기록을 찾지 못했습니다. 새로고침해 주세요.</p>'; return; }
+  CUR = analyze(p.r); CUR.paper = true; renderReport(CUR); renderDetail(CUR); renderConsult(p.r.record);
+  $('mgrCard').style.display = 'none';   // 등록·메모는 상담 카드 탭에서
+  window.scrollTo(0, 0);
+}
+$('btnPaper').onclick = function () {
+  var box = $('paperBox');
+  if (box.style.display === 'block') { box.style.display = 'none'; return; }
+  box.style.display = 'block'; box.innerHTML = '<p class="muted">상담 카드 불러오는 중…</p>';
+  loadPaper().then(function () {
+    var today = new Date(), td = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+    box.innerHTML = '<h2>종이 시험 결과 입력</h2><p class="muted" style="font-size:13.5px;margin-top:0">틀린 번호만 넣으면 채점됩니다. 결과는 학생의 상담 카드 메모에 한 줄로 저장되고 이 목록에 \'종이\'로 보입니다. (지우려면 상담 카드 메모에서 그 줄을 지우면 됩니다)</p>' +
+      '<div class="pg"><div><label>학생 (상담 카드)</label><select id="ppCard">' + (CARDS.length ? CARDS.map(function (c) {
+        return '<option value="' + esc(c.cardId) + '">' + esc(c.name) + ' · ' + esc(c.school || '-') + ' · ' + esc(c.grade || '-') + '</option>'; }).join('') : '<option value="">상담 카드가 없습니다 — 먼저 카드를 만드세요</option>') + '</select></div>' +
+      '<div><label>시험지</label><select id="ppTest">' + Object.keys(PAPER_META).map(function (k) { return '<option value="' + k + '">' + esc(PAPER_META[k].name) + '</option>'; }).join('') + '</select></div>' +
+      '<div><label>응시일</label><input type="date" id="ppDate" value="' + td + '"></div>' +
+      '<div><label>틀린 번호 (쉼표로)</label><input type="text" id="ppWrong" placeholder="예: 2, 14, 19 · 다 맞으면 없음"></div></div>' +
+      '<p id="ppPrev" style="font-size:15px;font-weight:700;margin:12px 0 0">-</p>' +
+      '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn primary" id="ppSave">저장하고 결과 보기</button><button class="btn ghost" id="ppClose">닫기</button></div><div class="err" id="ppErr"></div>';
+    var prev = function () {
+      var key = $('ppTest').value, M = PAPER_META[key], raw = $('ppWrong').value.trim(), w = paperWrong(raw), bad = w.filter(function (n) { return n < 1 || n > M.items.length; });
+      if (!raw) return $('ppPrev').textContent = '틀린 번호를 넣어 주세요 (다 맞으면 없음)', null;
+      if (bad.length) return $('ppPrev').textContent = '번호는 1~' + M.items.length + '번입니다: ' + bad.join(', '), null;
+      var r = paperBuild(key, raw === '없음' ? [] : w, {});
+      $('ppPrev').textContent = r.grade.score + '점 · 오답 ' + (raw === '없음' ? 0 : w.length) + '개' + (w.length ? ' (' + w.join('·') + ')' : '');
+      return raw === '없음' ? [] : w;
+    };
+    $('ppWrong').oninput = prev; $('ppTest').onchange = prev;
+    $('ppClose').onclick = function () { box.style.display = 'none'; };
+    $('ppSave').onclick = function () {
+      var w = prev(), c = CARDS.filter(function (x) { return x.cardId === $('ppCard').value; })[0], dt = $('ppDate').value;
+      $('ppErr').textContent = '';
+      if (!c) return $('ppErr').textContent = '학생을 골라 주세요';
+      if (!w) return $('ppErr').textContent = '틀린 번호를 확인해 주세요';
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dt)) return $('ppErr').textContent = '응시일을 넣어 주세요';
+      var line = '[종이 레벨테스트] ' + $('ppTest').value + ' ' + dt + ' 오답 ' + (w.length ? w.join(',') : '없음');
+      if (String(c.memo || '').indexOf(line) >= 0) return $('ppErr').textContent = '같은 기록이 이미 있습니다';
+      var memo = (c.memo ? String(c.memo).replace(/\s+$/, '') + '\n' : '') + line;
+      var card = { cardId: c.cardId, name: c.name, school: c.school, grade: c.grade, parentPhone: c.parentPhone, studentPhone: c.studentPhone, addr: c.addr, naesin: c.naesin, mock: c.mock, status: c.status, memo: memo };
+      $('ppSave').disabled = true;
+      api({ action: 'adminCardSave', card: card }).then(function (r) {
+        if (!r.ok) throw new Error(r.error);
+        return loadPaper();
+      }).then(function () {
+        box.style.display = 'none'; toast('저장했습니다');
+        var p = PAPER.filter(function (x) { return x.id.indexOf('paper:' + c.cardId + ':') === 0 && x.started === new Date(+dt.slice(0, 4), +dt.slice(5, 7) - 1, +dt.slice(8, 10), 12).getTime(); }).pop();
+        if (p) openResult(p.id);
+      }).catch(function (e) { $('ppSave').disabled = false; $('ppErr').textContent = '저장하지 못했습니다: ' + (e.message || e); });
+    };
+  });
+};
 
 /* ---------- 통계 ---------- */
 $('sTest').onchange = loadStats;
@@ -585,5 +774,6 @@ $('btnCode').onclick = function () {
   api({ action: 'adminList' }).then(function (r) { if (r.ok) enter(r.rows); else showLogin(r.error); }).catch(function () {});
 })();
 </script>
+<div id="pcard"></div>
 </body>
 </html>
