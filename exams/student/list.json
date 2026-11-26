@@ -1,0 +1,12 @@
+{
+ "_설명": "index.html '학교 예상문제' 목록. 공개/비공개는 index 관리자 패널 '📝 예상문제' 탭에서 바꿈(서버 값이 우선). open은 서버 값이 없을 때만 쓰는 기본값. students에 이름을 넣으면 그 학생에게만 보임(비우면 전체).",
+ "exams": [
+  {
+   "key": "jechulgo1_2026_2f_mock1",
+   "file": "jechulgo1_2026_2f_mock1.json",
+   "title": "포항제철고 1학년 2학기 기말 예상문제 1회",
+   "open": false,
+   "students": []
+  }
+ ]
+}

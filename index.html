@@ -866,6 +866,7 @@ function App(){
   const [showAns,setShowAns]=useState(false);
   const [timerKey,setTimerKey]=useState(0);
   const [expandedLessons,setExpandedLessons]=useState(new Set());
+  const [mockEntry,setMockEntry]=useState(null); // [41차] 학교 예상문제 풀기
   const [gasPassages,setGasPassages]=useState(()=>{
     try{
       const cached=JSON.parse(localStorage.getItem('greateng_public_cache')||'null');
@@ -1331,8 +1332,9 @@ function App(){
     }catch(e){}
     window.open(window.location.pathname+window.location.search,'_blank');
   }} />;
+  if(screen==='mock'&&mockEntry) return <MockExam entry={mockEntry} session={session} studentName={studentName} scriptUrl={scriptUrl} goBack={()=>{setMockEntry(null);setScreen('setup');}} />; // [41차] 학교 예상문제 풀기
   if(screen==='study') return <StudyView scriptUrl={scriptUrl} studentName={studentName} goBack={()=>setScreen('setup')} />;
-  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,mainBadge,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),onLogout:()=>{try{sessionStorage.removeItem('greateng_intro_seen_'+studentName);}catch(e){}sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
+  if(screen==='setup') return <Setup {...{selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,mainBadge,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy:()=>setScreen('study'),openMock:(e)=>{setMockEntry(e);setScreen('mock');window.scrollTo(0,0);},onLogout:()=>{try{sessionStorage.removeItem('greateng_intro_seen_'+studentName);}catch(e){}sessionStorage.removeItem(SESSION_KEY);setSession(null);setStudentName('');setScreen('login');}}} />;
   if(screen==='print') return <PrintView questions={printQs} mode={printMode} goBack={()=>{if(printFrom==='results'){setPrintFrom('');setScreen('results');}else setScreen(questions.length>0?'quiz':'setup');}} />;
   if(screen==='results') return <Results questions={questions} userAns={userAns} score={score} studentName={studentName} scriptUrl={scriptUrl} gasPassages={gasPassages} saveGuard={savedQsRef} goHome={()=>setScreen('setup')} doPrint={(mode)=>{setPrintQs(questions);setPrintMode(mode);setPrintFrom('results');setScreen('print');}} />;
 
@@ -2499,6 +2501,7 @@ ${ESC_}
           {btn(tab==='results','📊 시험 결과',()=>{setTab('results');setSelectedStudent('');loadStats('');})}
           {btn(tab==='books','📚 교재 관리',()=>{setTab('books');loadBooks();})}
           {btn(tab==='settings','⚙️ 설정',()=>setTab('settings'))}
+          {btn(tab==='mock','📝 예상문제',()=>setTab('mock'))}{/* [41차] */}
         </div>
 
         {/* 학생 관리 탭 */}
@@ -3386,6 +3389,7 @@ ${ESC_}
 
         {/* 설정 탭 */}
 
+        {tab==='mock'&&<MockAdminTab scriptUrl={scriptUrl}/>}{/* [41차] 학교 예상문제 공개 */}
         {tab==='settings'&&<div>
           <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
             <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 6px',color:'#3a2a20'}}>📊 Google Sheets URL</h3>
@@ -3471,7 +3475,7 @@ function StatStrip({items,note,bg,bd}){
     {note&&<div style={{fontSize:11,color:'#9a8a78',marginTop:8}}>{note}</div>}
   </div>;
 }
-function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,mainBadge,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout}){
+function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPassages,setSelPassages,toggleP,stuPresets,myPerPid,myStatsReady,activeBook,setActiveBook,selectAllInBook,deselectAllInBook,bookSelCount,bookTotalCount,qCount,setQCount,ansMode,setAnsMode,diffFilter,setDiffFilter,hotOnly,setHotOnly,searchText,setSearchText,start,starting,shortfallWarn,setShortfallWarn,warnResolveRef,printDirect,startReview,reviewLoading,mainRank,mainBadge,books,allPassages,studentName,setStudentName,scriptUrl,setScriptUrl,session,expandedLessons,setExpandedLessons,goToAdmin,goToStudy,onLogout,openMock}){
   const allSelInBook=bookSelCount(activeBook)===bookTotalCount(activeBook);
   const [showAdminModal,setShowAdminModal]=useState(false);
   const [adminPwInput,setAdminPwInput]=useState('');
@@ -3641,6 +3645,8 @@ function Setup({selectedTypes,setSelectedTypes,toggleType,toggleAll,filtP,selPas
           </div>
         )}
         </div>
+
+        {openMock&&<MockExamCard session={session} studentName={studentName} scriptUrl={scriptUrl} openMock={openMock}/>}{/* [41차] 학교 예상문제 풀기 — 보일 시험이 없으면 아무것도 안 그림 */}
 
         <div style={S.card}>
           <h3 style={{fontSize:13,fontWeight:700,color:'#7a1020',margin:'0 0 10px'}}>문제 유형</h3>
@@ -6008,6 +6014,282 @@ ${bodyRef.current.innerHTML}
 }
 
 /* ── 결과 ── */
+/* ━━━ [41차] 학교 예상문제 풀기 (추가 기능) ━━━
+   exams/student/list.json 에 있는 시험을 시험지 그대로(번호·발문·선지 고정) 푼다.
+   - list.json 항목 {key,file,title,open,students}: 목록. students에 이름이 있으면 그 학생만
+   - 공개 여부는 관리자 패널 '📝 예상문제' 탭에서 켜고 끔 → 기존 GAS saveExam/getExamList('exams' 시트)에
+     key 'MOCKOPEN|{시험key}', exam 'open'|'closed' 한 행으로 보관(GAS 수정 없음). 서버 값이 없거나 못 읽으면 list.json의 open
+   - 결과는 서버에 저장하지 않음(채점·정답·해설만 보여 줌). 푸는 중인 답은 이 기기 localStorage에만
+   - 기존 문제풀기·결과 화면은 건드리지 않음 */
+const MOCK_DIR='exams/student/';
+const MOCK_CIRC='①②③④⑤';
+const MOCK_TYPE_NAME={'제목':'주제 찾기','주제':'주제 찾기','빈칸추론':'빈칸 추론','문장삽입':'문장 삽입','글의순서':'순서 배열','요약문완성':'요약문','함축의미':'함축적 의미','어법':'어법','어휘':'어휘','흐름무관':'무관한 문장','내용일치':'내용 일치'};
+const MOCK_OPEN_PREFIX='MOCKOPEN|';
+function mockIsOpen(e,srv){return (srv&&Object.prototype.hasOwnProperty.call(srv,e.key))?srv[e.key]:e.open===true;}
+function mockFetchOpen(scriptUrl){ // 서버 공개 상태 {key:true|false}, 못 읽으면 null
+  if(!scriptUrl)return Promise.resolve(null);
+  return jsonpFetch(scriptUrl,{action:'getExamList'}).then(r=>{
+    if(!r||!r.ok||!Array.isArray(r.list))return null;
+    const m={};
+    r.list.forEach(x=>{const k=String(x.key||'');if(k.indexOf(MOCK_OPEN_PREFIX)===0)m[k.slice(MOCK_OPEN_PREFIX.length)]=String(x.exam||'')==='open';});
+    return m;
+  }).catch(()=>null);
+}
+function mockSetOpen(scriptUrl,key,open){
+  return jsonpFetch(scriptUrl,{action:'saveExam',data:JSON.stringify({key:MOCK_OPEN_PREFIX+key,meta:{school:'예상문제 공개설정',exam:open?'open':'closed'},savedAt:new Date().toISOString()})});
+}
+function mockLoadList(){
+  return fetch(MOCK_DIR+'list.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null)
+    .then(d=>(d&&Array.isArray(d.exams))?d.exams.filter(e=>e&&e.key&&e.file):[]).catch(()=>[]);
+}
+function mockVisible(e,session,name,srv){
+  if(!e||!e.key||!e.file)return false;
+  if(session?.role==='admin')return true;
+  if(!mockIsOpen(e,srv))return false;
+  if(Array.isArray(e.students)&&e.students.length)return e.students.map(s=>String(s).trim()).includes(String(name||'').trim());
+  return true;
+}
+function mockDraftKey(key,name){return 'greateng_mock_'+key+'_'+String(name||'');}
+function mockLoadDraft(key,name){try{return JSON.parse(localStorage.getItem(mockDraftKey(key,name))||'null');}catch(e){return null;}}
+function mockSaveDraft(key,name,d){try{localStorage.setItem(mockDraftKey(key,name),JSON.stringify(d));}catch(e){}}
+function mockHtml(t){
+  const esc=String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc.replace(/&lt;u&gt;/g,'<u>').replace(/&lt;\/u&gt;/g,'</u>')
+    .replace(/__\(([A-E])\)__/g,'<b>($1)</b> <span style="display:inline-block;min-width:64px;border-bottom:1.5px solid #3a2a20"></span>')
+    .replace(/_{4,}/g,'<span style="display:inline-block;min-width:90px;border-bottom:1.5px solid #3a2a20"></span>');
+}
+function mockFlat(exam){return (exam?.questions||[]).flatMap(q=>q.type==='group'?q.questions:[q]);}
+function mockAnsIdx(q){return MOCK_CIRC.indexOf(String(q.answer||'').trim());}
+
+const MK={
+  wine:'#7a1020',navy:'#16223A',gold:'#C9A84C',ink:'#1C2433',sub:'#5C6678',paper:'#F4F6F9',line:'#DDE2EC',
+  ok:'#1E6B30',okBg:'#EAF5EC',ng:'#B3261E',ngBg:'#FBECEA'
+};
+
+function MockBody({text,qtype}){
+  const paras=String(text||'').split(/\n+/).map(s=>s.trim()).filter(Boolean);
+  return <div>{paras.map((p,i)=>{
+    const m=p.match(/^\[(주어진 문장|요약문)\]\s*(.*)$/);
+    const boxed=m||(qtype==='글의순서'&&i===0);
+    const t=m?m[2]:p;
+    if(boxed)return <div key={i} style={{borderLeft:'4px solid '+MK.gold,background:MK.paper,padding:'10px 12px',margin:'4px 0 10px',borderRadius:'0 8px 8px 0'}}>
+      {m&&<div style={{fontSize:11,fontWeight:800,color:MK.navy,marginBottom:4}}>{m[1]}</div>}
+      <div style={{fontSize:15,lineHeight:1.75,color:MK.ink}} dangerouslySetInnerHTML={{__html:mockHtml(t)}}/>
+    </div>;
+    return <p key={i} style={{fontSize:15,lineHeight:1.8,color:MK.ink,margin:'0 0 8px'}} dangerouslySetInnerHTML={{__html:mockHtml(t)}}/>;
+  })}</div>;
+}
+
+function MockQuestion({q,sel,onPick,done}){
+  const ci=mockAnsIdx(q);
+  const lines=String(q.question||'').split('\n');
+  const stem=lines[0]; const body=lines.slice(1).join('\n');
+  const hasChoices=Array.isArray(q.choices)&&q.choices.length===5;
+  const right=done&&sel===ci;
+  const optStyle=(k)=>{
+    const picked=sel===k;
+    let bd='1px solid '+MK.line, bg='#fff', col=MK.ink;
+    if(!done&&picked){bd='2px solid '+MK.wine;bg='#fbf1f2';col=MK.wine;}
+    if(done&&k===ci){bd='2px solid '+MK.ok;bg=MK.okBg;col=MK.ok;}
+    if(done&&picked&&k!==ci){bd='2px solid '+MK.ng;bg=MK.ngBg;col=MK.ng;}
+    return {border:bd,background:bg,color:col};
+  };
+  return <div id={'mockq'+q.num} style={{background:'#fff',borderRadius:14,padding:'18px 18px 16px',marginBottom:12,boxShadow:'0 2px 10px rgba(22,34,58,0.06)',border:'1px solid '+(done?(right?'#b9dcc0':'#efc4bf'):MK.line)}}>
+    <div style={{display:'flex',alignItems:'baseline',gap:8,marginBottom:10}}>
+      <span style={{fontSize:20,fontWeight:800,color:MK.wine,minWidth:26}}>{q.num}</span>
+      <span style={{flex:1,fontSize:15,fontWeight:700,color:MK.ink,lineHeight:1.5}}>{stem} <span style={{fontSize:12,fontWeight:500,color:MK.sub,whiteSpace:'nowrap'}}>[{q.score}점]</span></span>
+      {done&&<span style={{fontSize:12,fontWeight:800,padding:'3px 9px',borderRadius:10,background:right?MK.okBg:MK.ngBg,color:right?MK.ok:MK.ng,whiteSpace:'nowrap'}}>{right?'정답':(sel==null?'미응답':'오답')}</span>}
+    </div>
+    {body&&<MockBody text={body} qtype={q.qtype}/>}
+    {hasChoices?<div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6}}>
+      {q.choices.map((c,k)=><button key={k} disabled={done} onClick={()=>onPick(k)}
+        style={{...optStyle(k),textAlign:'left',padding:'10px 12px',borderRadius:10,fontSize:14.5,lineHeight:1.55,cursor:done?'default':'pointer',fontFamily:'inherit'}}
+        dangerouslySetInnerHTML={{__html:mockHtml(c)}}/>)}
+    </div>:<div style={{marginTop:8}}>
+      <div style={{fontSize:12,color:MK.sub,marginBottom:6}}>지문 속 번호를 고르세요</div>
+      <div style={{display:'flex',gap:8}}>
+        {[0,1,2,3,4].map(k=><button key={k} disabled={done} onClick={()=>onPick(k)}
+          style={{...optStyle(k),width:46,height:46,borderRadius:23,fontSize:20,fontWeight:700,cursor:done?'default':'pointer',fontFamily:'inherit'}}>{MOCK_CIRC[k]}</button>)}
+      </div>
+    </div>}
+    {done&&<div style={{marginTop:12,padding:'12px 14px',borderRadius:10,background:MK.paper}}>
+      <div style={{fontSize:13,fontWeight:800,color:MK.navy,marginBottom:4}}>정답 {q.answer}{sel!=null&&sel!==ci?<span style={{color:MK.ng,fontWeight:700}}> · 내 답 {MOCK_CIRC[sel]}</span>:null}</div>
+      {q.why&&<div style={{fontSize:13.5,lineHeight:1.7,color:MK.ink,marginBottom:6}}><b style={{color:MK.wine}}>왜 정답인가</b> {q.why}</div>}
+      {q.wrong&&<div style={{fontSize:13.5,lineHeight:1.7,color:MK.ink}}><b style={{color:MK.wine}}>오답 정리</b> {q.wrong}</div>}
+    </div>}
+  </div>;
+}
+
+function MockExam({entry,session,studentName,scriptUrl,goBack}){
+  const isAdmin=session?.role==='admin';
+  const [exam,setExam]=useState(null);
+  const [err,setErr]=useState('');
+  const init=mockLoadDraft(entry.key,studentName);
+  const [ans,setAns]=useState(()=>(init&&init.ans)||{});
+  const [start,setStart]=useState(()=>(init&&init.start)||Date.now());
+  const [done,setDone]=useState(()=>!!(init&&init.done));
+  const [askSubmit,setAskSubmit]=useState(false);
+  const [onlyWrong,setOnlyWrong]=useState(false);
+  const [now,setNow]=useState(Date.now());
+
+  useEffect(()=>{
+    fetch(MOCK_DIR+entry.file+'?v='+Date.now(),{cache:'no-store'})
+      .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+      .then(d=>{if(!d||!Array.isArray(d.questions))throw new Error('형식 오류');setExam(d);})
+      .catch(e=>setErr('시험지를 불러오지 못했어요 ('+e.message+')'));
+  },[entry.file]);
+  useEffect(()=>{if(done)return;const t=setInterval(()=>setNow(Date.now()),1000);return ()=>clearInterval(t);},[done]);
+  useEffect(()=>{mockSaveDraft(entry.key,studentName,{ans,start,done});},[ans,start,done]);
+
+  const flat=useMemo(()=>mockFlat(exam),[exam]);
+  const answered=flat.filter(q=>ans[q.num]!=null).length;
+  const res=useMemo(()=>{
+    let c=0,pts=0;
+    flat.forEach(q=>{if(ans[q.num]===mockAnsIdx(q)){c++;pts+=Number(q.score)||0;}});
+    return {c,pts:Math.round(pts*10)/10};
+  },[flat,ans]);
+
+  const submit=()=>{setAskSubmit(false);setDone(true);window.scrollTo(0,0);}; // 결과는 서버에 저장하지 않음
+  const retry=()=>{setAns({});setStart(Date.now());setNow(Date.now());setDone(false);setOnlyWrong(false);window.scrollTo(0,0);};
+
+  const m=exam?.meta||{};
+  const limit=(Number(m.minutes)||50)*60;
+  const left=limit-Math.floor((now-start)/1000);
+  const mmss=s=>{const a=Math.abs(s);return `${s<0?'-':''}${Math.floor(a/60)}:${String(a%60).padStart(2,'0')}`;};
+  const pick=(num,k)=>{if(done)return;setAns(a=>({...a,[num]:k}));};
+  const show=q=>!onlyWrong||ans[q.num]!==mockAnsIdx(q);
+
+  return <div style={{...S.page,background:'#eef1f6'}}>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
+    <div style={{...S.box,paddingBottom:96}}>
+      <button onClick={goBack} style={{fontSize:13,color:MK.sub,background:'none',border:'none',cursor:'pointer',padding:'0 0 10px'}}>← 돌아가기</button>
+      <div style={{display:'flex',borderRadius:14,overflow:'hidden',marginBottom:14,boxShadow:'0 2px 12px rgba(22,34,58,0.10)'}}>
+        <div style={{background:MK.navy,color:'#fff',padding:'16px 14px',minWidth:96,display:'flex',flexDirection:'column',justifyContent:'center'}}>
+          <div style={{fontSize:10,fontWeight:800,letterSpacing:1.5,color:MK.gold}}>GREATENG</div>
+          <div style={{fontSize:15,fontWeight:800}}>대단한영어</div>
+        </div>
+        <div style={{flex:1,background:'#fff',padding:'14px 16px',borderBottom:'3px solid '+MK.gold}}>
+          <div style={{fontSize:12,color:MK.sub,fontWeight:600}}>{[m.school_full||m.school,m.grade,m.subject].filter(Boolean).join(' · ')}</div>
+          <div style={{fontSize:18,fontWeight:800,color:MK.ink,margin:'2px 0'}}>{entry.title||m.title}</div>
+          <div style={{fontSize:12.5,color:MK.sub}}>{flat.length||m.total||''}문항 · {m.total_score||100}점 · {m.minutes||50}분</div>
+          {isAdmin&&<div style={{marginTop:6,fontSize:11.5,fontWeight:700,color:'#92400e'}}>관리자 미리보기{entry._open?' · 학생에게 공개 중':' · 학생에게 미공개'}</div>}
+        </div>
+      </div>
+
+      {err&&<div style={{...S.card,color:MK.ng}}>{err}</div>}
+      {!exam&&!err&&<div style={{...S.card,textAlign:'center',color:MK.sub}}>시험지 불러오는 중…</div>}
+
+      {exam&&done&&<div style={{...S.card,borderColor:MK.line}}>
+        <div style={{display:'flex',alignItems:'flex-end',gap:14,flexWrap:'wrap'}}>
+          <div><div style={{fontSize:12,color:MK.sub,fontWeight:700}}>점수</div>
+            <div style={{fontSize:34,fontWeight:800,color:MK.wine,lineHeight:1.1}}>{res.pts}<span style={{fontSize:15,color:MK.sub,fontWeight:600}}> / {m.total_score||100}</span></div></div>
+          <div style={{fontSize:14,color:MK.ink,fontWeight:700,paddingBottom:4}}>맞은 문항 {res.c} / {flat.length}</div>
+          
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(44px,1fr))',gap:5,marginTop:12}}>
+          {flat.map(q=>{const ok=ans[q.num]===mockAnsIdx(q);return <button key={q.num} onClick={()=>{setOnlyWrong(false);setTimeout(()=>{const el=document.getElementById('mockq'+q.num);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},30);}}
+            style={{padding:'6px 0',borderRadius:8,border:'none',background:ok?MK.okBg:MK.ngBg,color:ok?MK.ok:MK.ng,fontSize:12.5,fontWeight:800,cursor:'pointer'}}>{q.num} {ok?'O':'X'}</button>;})}
+        </div>
+        <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap'}}>
+          <button onClick={()=>setOnlyWrong(v=>!v)} style={{padding:'9px 14px',borderRadius:10,border:'1px solid '+MK.line,background:onlyWrong?MK.navy:'#fff',color:onlyWrong?'#fff':MK.ink,fontSize:13,fontWeight:700,cursor:'pointer'}}>{onlyWrong?'전체 문항 보기':'틀린 문항만 보기'}</button>
+          <button onClick={retry} style={{padding:'9px 14px',borderRadius:10,border:'1px solid '+MK.line,background:'#fff',color:MK.ink,fontSize:13,fontWeight:700,cursor:'pointer'}}>다시 풀기</button>
+        </div>
+      </div>}
+
+      {exam&&(exam.questions||[]).map((q,i)=>{
+        if(q.type==='group'){
+          const sub=q.questions.filter(show);
+          if(!sub.length)return null;
+          return <div key={'g'+i}>
+            <div style={{fontSize:14.5,fontWeight:800,color:MK.navy,margin:'16px 2px 8px'}}>[{String(q.num_range).replace('-','~')}] 다음 글을 읽고 물음에 답하시오.</div>
+            <div style={{background:'#fff',borderRadius:14,padding:'16px 18px',marginBottom:12,border:'1px solid '+MK.line}}><MockBody text={q.passage}/></div>
+            {sub.map(x=><MockQuestion key={x.num} q={x} sel={ans[x.num]} onPick={k=>pick(x.num,k)} done={done}/>)}
+          </div>;
+        }
+        return show(q)?<MockQuestion key={q.num} q={q} sel={ans[q.num]} onPick={k=>pick(q.num,k)} done={done}/>:null;
+      })}
+    </div>
+
+    {exam&&!done&&<div style={{position:'fixed',left:0,right:0,bottom:0,background:'rgba(255,255,255,0.97)',borderTop:'1px solid '+MK.line,zIndex:120}}>
+      <div style={{maxWidth:740,margin:'0 auto',padding:'10px 16px',display:'flex',alignItems:'center',gap:12}}>
+        <span style={{fontSize:14,fontWeight:800,color:left<0?MK.ng:MK.navy,minWidth:64}}>{left<0?'시간 초과 ':'⏱ '}{mmss(left)}</span>
+        <span style={{fontSize:13,color:MK.sub}}>푼 문항 <b style={{color:MK.ink}}>{answered}</b> / {flat.length}</span>
+        <button onClick={()=>answered<flat.length?setAskSubmit(true):submit()} style={{marginLeft:'auto',padding:'11px 22px',borderRadius:11,border:'none',background:'linear-gradient(135deg,#7a1020,#9a3040)',color:'#fff',fontSize:14.5,fontWeight:800,cursor:'pointer'}}>제출하고 채점</button>
+      </div>
+    </div>}
+
+    {askSubmit&&<div onClick={()=>setAskSubmit(false)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:'#fff',borderRadius:16,padding:'22px 20px',width:300}}>
+        <div style={{fontSize:15,fontWeight:800,color:MK.ink,marginBottom:6}}>아직 안 푼 문항이 {flat.length-answered}개 있어요</div>
+        <div style={{fontSize:12.5,color:MK.sub,marginBottom:14}}>안 푼 문항은 오답으로 채점돼요. 제출할까요?</div>
+        <div style={{display:'flex',gap:8}}>
+          <button onClick={()=>setAskSubmit(false)} style={{flex:1,padding:10,borderRadius:10,border:'1px solid '+MK.line,background:'#fff',fontSize:13,cursor:'pointer'}}>계속 풀기</button>
+          <button onClick={submit} style={{flex:1,padding:10,borderRadius:10,border:'none',background:MK.wine,color:'#fff',fontSize:13,fontWeight:700,cursor:'pointer'}}>제출</button>
+        </div>
+      </div>
+    </div>}
+  </div>;
+}
+
+function MockExamCard({session,studentName,scriptUrl,openMock}){
+  const [list,setList]=useState([]);
+  useEffect(()=>{
+    Promise.all([mockLoadList(),mockFetchOpen(scriptUrl)]).then(([ex,srv])=>{
+      setList(ex.filter(e=>mockVisible(e,session,studentName,srv)).map(e=>({...e,_open:mockIsOpen(e,srv)})));
+    });
+  },[]);
+  if(!list.length)return null;
+  return <div style={{marginBottom:14,padding:'14px 14px 12px',borderRadius:14,background:'#fff',border:'1.5px solid #C9A84C',boxShadow:'0 2px 10px rgba(139,80,30,0.08)'}}>
+    <div style={{fontSize:13,fontWeight:800,color:'#7a1020',marginBottom:8}}>📝 학교 예상문제 <span style={{fontSize:11,fontWeight:600,color:'#9a8570'}}>시험지 그대로 풀고 정답·해설 보기</span></div>
+    <div style={{display:'flex',flexDirection:'column',gap:7}}>
+      {list.map(e=>{const d=mockLoadDraft(e.key,studentName);return <button key={e.key} onClick={()=>openMock(e)}
+        style={{display:'flex',alignItems:'center',gap:8,textAlign:'left',padding:'11px 13px',borderRadius:11,border:'1px solid #e6dcc6',background:'#fffaf2',cursor:'pointer',fontFamily:'inherit'}}>
+        <span style={{flex:1,fontSize:14,fontWeight:700,color:'#3a2a20'}}>{e.title||e.key}</span>
+        {session?.role==='admin'&&<span style={{fontSize:10.5,fontWeight:700,padding:'2px 7px',borderRadius:8,background:e._open?'#EAF5EC':'#fef3c7',color:e._open?'#1E6B30':'#92400e'}}>{e._open?'공개':'미공개'}</span>}
+        <span style={{fontSize:12,color:'#9a8570',whiteSpace:'nowrap'}}>{d&&d.done?'채점 완료 · 다시 보기':d&&d.ans&&Object.keys(d.ans).length?'이어 풀기':'풀기 →'}</span>
+      </button>;})}
+    </div>
+  </div>;
+}
+function MockAdminTab({scriptUrl}){ // [41차] 관리자: 학교 예상문제 공개 켜고 끄기
+  const [list,setList]=useState(null);
+  const [srv,setSrv]=useState(null);
+  const [busy,setBusy]=useState('');
+  const [msg,setMsg]=useState('');
+  const load=()=>{setMsg('');Promise.all([mockLoadList(),mockFetchOpen(scriptUrl)]).then(([ex,s])=>{setList(ex);setSrv(s);if(s===null)setMsg('서버 공개 상태를 읽지 못했어요 — 지금은 list.json 값으로 표시합니다.');});};
+  useEffect(load,[]);
+  const toggle=(e)=>{
+    const next=!mockIsOpen(e,srv);
+    setBusy(e.key);setMsg('');
+    mockSetOpen(scriptUrl,e.key,next)
+      .then(r=>{if(!r||!r.ok)throw new Error((r&&r.error)||'저장 실패');return mockFetchOpen(scriptUrl);})
+      .then(s=>{setSrv(s);if(!s||s[e.key]!==next)setMsg('저장 후 확인이 안 됐어요. 새로고침해서 상태를 확인하세요.');else setMsg((e.title||e.key)+(next?' — 학생에게 공개했어요.':' — 비공개로 바꿨어요.'));})
+      .catch(err=>setMsg('바꾸지 못했어요: '+err.message))
+      .finally(()=>setBusy(''));
+  };
+  return <div>
+    <div style={{background:'#fff',borderRadius:14,padding:'18px 20px',marginBottom:14,boxShadow:'0 1px 5px rgba(0,0,0,0.06)'}}>
+      <h3 style={{fontSize:14,fontWeight:700,margin:'0 0 4px',color:'#3a2a20'}}>📝 학교 예상문제 공개</h3>
+      <p style={{fontSize:11.5,color:'#9a8570',margin:'0 0 12px'}}>공개하면 학생 문제풀기 화면 맨 위에 시험이 보여요. 학생이 풀면 정답·해설만 보여 주고 결과는 저장하지 않아요. 미리 풀어 보려면 '문제풀기'로 가면 미공개 시험도 보여요.</p>
+      {list===null&&<div style={{fontSize:12.5,color:'#9a8570'}}>불러오는 중…</div>}
+      {list&&!list.length&&<div style={{fontSize:12.5,color:'#9a8570'}}>등록된 예상문제가 없어요 (exams/student/list.json).</div>}
+      {list&&list.map(e=>{const on=mockIsOpen(e,srv);return <div key={e.key} style={{display:'flex',alignItems:'center',gap:10,padding:'11px 0',borderTop:'1px solid #f0e7d4'}}>
+        <div style={{flex:1}}>
+          <div style={{fontSize:13.5,fontWeight:700,color:'#3a2a20'}}>{e.title||e.key}</div>
+          <div style={{fontSize:11,color:'#9a8570',marginTop:2}}>{e.key}{Array.isArray(e.students)&&e.students.length?' · 대상 '+e.students.length+'명':' · 대상 전체'}</div>
+        </div>
+        <span style={{fontSize:11,fontWeight:700,padding:'3px 9px',borderRadius:9,background:on?'#EAF5EC':'#fef3c7',color:on?'#1E6B30':'#92400e'}}>{on?'공개 중':'미공개'}</span>
+        <button onClick={()=>toggle(e)} disabled={!!busy||!scriptUrl}
+          style={{padding:'8px 14px',borderRadius:10,border:'none',background:on?'#f1f5f9':'linear-gradient(135deg,#7a1020,#9a3040)',color:on?'#475569':'#fff',fontSize:12.5,fontWeight:700,cursor:busy?'default':'pointer',minWidth:92}}>
+          {busy===e.key?'저장 중…':on?'비공개로':'공개하기'}</button>
+      </div>;})}
+      {msg&&<div style={{fontSize:12,color:'#7a1020',marginTop:10}}>{msg}</div>}
+      <button onClick={load} style={{marginTop:10,fontSize:12,color:'#9a8570',background:'none',border:'1px solid #e6dcc6',borderRadius:8,padding:'5px 12px',cursor:'pointer'}}>새로고침</button>
+    </div>
+  </div>;
+}
+/* ━━━ [41차] 끝 ━━━ */
+
 function Results({questions,userAns,score,studentName,scriptUrl,gasPassages,goHome,doPrint,saveGuard}){
   // 📖 틀린 지문 분석자료 바로 보기
   const [viewP,setViewP]=useState(null);
