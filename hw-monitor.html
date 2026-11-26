@@ -199,6 +199,25 @@ function toggleHubMenu(){
     <p>탁월함이 습관이 되도록</p>
   </header>
 
+  <!-- [추가 2026-11-26] 성적 확인: 학생이 멤버스 '내 성적'에서 낸 영어 성적 → 반영/반려 (숙제점검 GAS '성적신청') -->
+  <div class="card" id="grade-req-card">
+    <h2>성적 확인 <span id="grq-count" class="muted" style="font-weight:600;"></span>
+      <span style="flex:1"></span><button class="btn" onclick="grqLoad()" style="font-size:12.5px;">새로고침</button></h2>
+    <div id="grq-box"><div class="loading">불러오는 중...</div></div>
+    <details style="margin-top:10px;"><summary style="cursor:pointer; font-size:13px; color:var(--ink-3); font-weight:600;">최근 처리 내역</summary><div id="grq-recent" style="margin-top:8px;"></div></details>
+  </div>
+  <style>
+    .grq{ border:1px solid var(--line-2); border-radius:14px; padding:14px; margin-bottom:10px; background:#fff; }
+    .grq-h{ display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; font-size:14px; margin-bottom:10px; }
+    .grq-h b{ font-size:15px; }
+    .grq-f{ display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
+    .grq-f label{ display:flex; flex-direction:column; font-size:11.5px; color:var(--ink-3); font-weight:600; gap:3px; }
+    .grq-f input,.grq-f select{ padding:7px 8px; border:1px solid var(--line-2); border-radius:8px; font-size:13.5px; width:86px; font-family:inherit; }
+    .grq-tag{ font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:20px; background:var(--fill); color:var(--ink-2); }
+    .grq-act{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+    .grq-msg{ font-size:12.5px; }
+  </style>
+
   <!-- 오늘 미제출자 -->
   <div class="card">
     <h2>오늘 미제출</h2>
@@ -1352,8 +1371,62 @@ function toggleHubMenu(){
     document.getElementById('lightbox').style.display = 'flex';
   }
 
+  /* ===== [추가 2026-11-26] 성적 확인 (gradeRequests / gradeDecide) ===== */
+  let GRQ = [];
+  function grqPw(){ return (typeof AUTH_PW !== 'undefined' && AUTH_PW) ? AUTH_PW : 'vlfl2125'; }   // 기존 면제·휴일 설정과 같은 방식
+  function grqWhat(r){ return r.kind === '내신' ? (r.year + ' ' + r.gradeYear + ' ' + r.term + ' ' + r.exam) : (r.year + ' ' + r.gradeYear + ' ' + r.month + ' 모의고사'); }
+  async function grqLoad(){
+    const box = document.getElementById('grq-box');
+    box.innerHTML = '<div class="loading">불러오는 중...</div>';
+    const d = await jsonp('type=gradeRequests&pw=' + encodeURIComponent(grqPw()));
+    const card = document.getElementById('grade-req-card');
+    if(!d || d.ok === undefined){ card.style.display = 'none'; return; }   // 성적 기능이 아직 배포되지 않은 GAS
+    card.style.display = '';
+    if(!d.ok){ box.innerHTML = '<span class="muted">' + esc((d && d.msg) || '불러오기 실패 — 숙제점검 GAS에 성적 입력 기능이 배포됐는지 확인') + '</span>'; document.getElementById('grq-count').textContent = ''; return; }
+    GRQ = d.pending || [];
+    document.getElementById('grq-count').textContent = GRQ.length ? ('· 확인 대기 ' + GRQ.length + '건') : '· 확인 대기 없음';
+    box.innerHTML = GRQ.length ? GRQ.map(grqCard).join('') : '<span class="muted">확인할 성적이 없습니다.</span>';
+    const rec = d.recent || [];
+    document.getElementById('grq-recent').innerHTML = rec.length ? rec.map(r=>
+      '<div style="font-size:13px; padding:6px 0; border-bottom:1px solid var(--line);"><b>' + esc(r.name) + '</b> · ' + esc(grqWhat(r)) + ' · ' + esc(r.score) + '점 — ' +
+      (r.status === '반영' ? '<span style="color:var(--ok); font-weight:700;">반영</span> <span class="muted">' + esc(r.where) + '</span>' : '<span style="color:var(--miss); font-weight:700;">반려</span> <span class="muted">' + esc(r.reason) + '</span>') +
+      ' <span class="muted">(' + esc(r.done) + ')</span></div>').join('') : '<span class="muted">처리 내역이 없습니다.</span>';
+  }
+  function grqCard(r){
+    const mid = r.kind === '내신' && r.level === '중등';
+    const f = (k, label, v, w)=> '<label>' + label + '<input data-k="' + k + '" value="' + esc(v == null ? '' : v) + '"' + (w ? ' style="width:' + w + 'px"' : '') + '></label>';
+    let fields = f('year','년도',r.year,64) + f('gradeYear','학년',String(r.gradeYear).replace('학년',''),44);
+    if(r.kind === '내신') fields += f('term','학기',String(r.term).replace('학기',''),44) + '<label>시험<select data-k="exam"><option' + (r.exam==='중간'?' selected':'') + '>중간</option><option' + (r.exam==='기말'?' selected':'') + '>기말</option></select></label>' +
+      f('score','점수',r.score,70) + f('rank','석차',r.rank,80) + f('grade', mid ? '성취도' : '등급', r.grade, 54);
+    else fields += f('month','월',String(r.month).replace('월',''),44) + f('score','원점수',r.score,70) + f('grade','등급',r.grade,54) + f('pct','백분위',r.pct,60) + f('date','날짜(시행일)',r.date,104);
+    const photo = r.photo ? (function(){ const m = r.photo.match(/id=([\w-]+)/); const u = m ? 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1400' : r.photo;
+      return '<a href="#" onclick="zoom(\'' + u + '\'); return false;" style="font-size:12.5px; color:var(--navy); font-weight:700;">📷 성적표 보기</a> <a href="' + esc(r.photo) + '" target="_blank" rel="noopener" class="muted" style="font-size:12px;">원본</a>'; })() : '<span class="muted" style="font-size:12px;">사진 없음</span>';
+    return '<div class="grq" id="grq-' + esc(r.id) + '"><div class="grq-h"><b>' + esc(r.name) + '</b><span class="grq-tag">' + esc(r.kind) + (r.kind === '내신' ? ' · ' + esc(r.level) : '') + '</span>' +
+      '<span>' + esc(grqWhat(r)) + ' · <b>' + esc(r.score) + '점</b></span><span class="muted" style="font-size:12px;">' + esc(r.school || '') + ' · 접수 ' + esc(r.ts) + '</span>' + photo + '</div>' +
+      '<div class="grq-f">' + fields + '</div>' +
+      '<div class="grq-act"><button class="btn btn-primary" onclick="grqDecide(\'' + esc(r.id) + '\',\'approve\')">반영</button>' +
+      '<input data-reason placeholder="반려 사유 (학생에게 보임)" style="padding:8px 10px; border:1px solid var(--line-2); border-radius:8px; font-size:13px; min-width:200px; flex:1; font-family:inherit;">' +
+      '<button class="btn" onclick="grqDecide(\'' + esc(r.id) + '\',\'reject\')" style="color:var(--miss); border:1px solid #f0c4ca; background:#fff;">반려</button><span class="grq-msg"></span></div></div>';
+  }
+  async function grqDecide(id, decision){
+    const el = document.getElementById('grq-' + id); if(!el) return;
+    const msg = el.querySelector('.grq-msg');
+    const data = {}; el.querySelectorAll('[data-k]').forEach(i=>{ data[i.getAttribute('data-k')] = i.value.trim(); });
+    const reason = el.querySelector('[data-reason]').value.trim();
+    if(decision === 'reject' && !reason){ msg.style.color = 'var(--miss)'; msg.textContent = '반려 사유를 적어 주세요'; return; }
+    if(decision === 'approve' && !confirm('이 성적을 ' + (data.month ? '모의고사DB' : '내신DB') + '에 반영할까요?\n(같은 시험이 이미 있으면 그 행 점수를 고쳐 씁니다)')) return;
+    el.querySelectorAll('button').forEach(b=> b.disabled = true);
+    msg.style.color = 'var(--ink-3)'; msg.textContent = '처리 중...';
+    const r = await jsonp('type=gradeDecide&pw=' + encodeURIComponent(grqPw()) + '&id=' + encodeURIComponent(id) + '&decision=' + decision +
+      '&reason=' + encodeURIComponent(reason) + '&data=' + encodeURIComponent(JSON.stringify(data)));
+    if(!r || !r.ok){ msg.style.color = 'var(--miss)'; msg.textContent = '실패: ' + ((r && r.msg) || '응답 없음'); el.querySelectorAll('button').forEach(b=> b.disabled = false); return; }
+    msg.style.color = 'var(--ok)'; msg.textContent = r.status === '반영' ? ('반영됨 → ' + r.where) : '반려했습니다';
+    setTimeout(grqLoad, 1200);
+  }
+
   // 시작
   setPeriod(14);
+  grqLoad();
 </script>
 </body>
 </html>
