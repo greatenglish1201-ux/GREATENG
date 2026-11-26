@@ -126,6 +126,20 @@
     #report.dense{zoom:.84}
     #report.dense2{zoom:.76}
     #report,#report *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    /* 45차: 인쇄는 검정(남색) 바탕 없이 — 흰 바탕 + 남색 글자 + 금색 선 (화면 표시는 그대로) */
+    .r-band{background:#fff;color:var(--nv);border:1px solid var(--ln);border-bottom:none;padding-bottom:16px}
+    .r-band::after{height:2px;background:var(--gd)}
+    .r-brand{background:none;-webkit-text-fill-color:var(--gdd);color:var(--gdd)}
+    .r-brand small{-webkit-text-fill-color:var(--mt)}
+    .r-title{color:var(--nv)}.r-title small{color:var(--gdd)}
+    .r-info{color:var(--mt);border-top:1px solid var(--ln)}
+    .r-info b{color:var(--nv)}
+    .r-score{background:#fff;color:var(--nv);box-shadow:none;border:1.5px solid var(--gd)}
+    .r-score .k{color:var(--gdd)}
+    .r-score .s{background:none;-webkit-text-fill-color:var(--nv);color:var(--nv)}
+    .r-score .s small{-webkit-text-fill-color:var(--mt)}
+    .r-score .l{color:var(--mt)}
+    table.grid thead th{background:#f3eee0;color:var(--nv);border-bottom:1.5px solid var(--gd)}
   }
   /* 학부모 전송용 이미지 (42차 템플릿) — 화면 밖에 그려 html2canvas로 캡처, 인쇄에는 안 나옴 */
   #pcard{position:fixed;left:-10000px;top:0;width:430px;background:#fbf8f1;color:#1d2433;font-family:"Pretendard Variable",Pretendard,sans-serif;letter-spacing:-.02em}

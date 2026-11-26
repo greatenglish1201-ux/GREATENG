@@ -55,6 +55,24 @@
         .home-card .hc-ic { color:var(--wine); line-height:0; margin-bottom:9px; }
         .home-card .hc-tt { font-size:15px; font-weight:600; color:var(--ink); letter-spacing:-0.02em; }
         .home-card .hc-ds { font-size:11px; color:var(--ink-soft); margin-top:2px; }
+        /* [추가 2026-11-26] 내 성적 — 홈의 기존 두 카드는 그대로 두고, 아랫줄에 가로형 카드로 */
+        #gr-home-card{ flex:1 1 100%; flex-direction:row; justify-content:center; gap:12px; padding:14px 12px; }
+        #gr-home-card .hc-ic{ margin-bottom:0; }
+        #gr-home-card .hc-ds{ margin-top:0; }
+        #grade-panel .gr-tabs{ display:flex; gap:6px; margin-bottom:12px; }
+        #grade-panel .gr-tab{ flex:1; padding:10px; border:1.5px solid var(--cream-deep); border-radius:10px; background:#fff; color:var(--ink-soft); font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+        #grade-panel .gr-tab.on{ background:var(--wine); border-color:var(--wine); color:#fff; }
+        #grade-panel .gr-row{ display:flex; gap:8px; }
+        #grade-panel .gr-row > div{ flex:1; min-width:0; }
+        #grade-panel label.gr-l{ display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin:2px 0 4px; text-align:left; }
+        #grade-panel select, #grade-panel input[type="text"], #grade-panel input[type="number"]{ width:100%; padding:11px 8px; font-size:15px; border-radius:10px; border:1.5px solid var(--cream-deep); margin-bottom:10px; text-align:center; box-sizing:border-box; font-family:inherit; background:#fff; }
+        #grade-panel .gr-sec{ font-weight:800; font-size:14px; color:var(--wine); margin:18px 0 8px; }
+        #grade-panel .gr-item{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 12px; border:1px solid #eee5d6; border-radius:10px; margin-bottom:6px; font-size:13.5px; background:#fffdf9; }
+        #grade-panel .gr-badge{ flex:none; font-size:11.5px; font-weight:800; padding:3px 8px; border-radius:20px; }
+        #grade-panel .gr-badge.wait{ background:#fbf2dd; color:#9a6a13; } #grade-panel .gr-badge.ok{ background:#e9f4ea; color:#2f7d3b; } #grade-panel .gr-badge.no{ background:#fcebed; color:#c8102e; }
+        #grade-panel table.gr-t{ width:100%; border-collapse:collapse; font-size:13px; margin-bottom:6px; }
+        #grade-panel table.gr-t th, #grade-panel table.gr-t td{ border-bottom:1px solid #eee5d6; padding:6px 4px; text-align:center; }
+        #grade-panel table.gr-t th{ color:var(--ink-soft); font-weight:700; font-size:12px; }
         input[type="text"], input[type="password"], select { width: 100%; padding: 17px; border-radius: 14px; border: 1.5px solid var(--cream-deep); font-size: 16px; box-sizing: border-box; margin-bottom: 12px; text-align: center; outline: none; font-family: inherit; transition: border-color 0.15s; }
         input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--wine); }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; cursor: pointer; accent-color: var(--wine); }
@@ -328,6 +346,11 @@
                     <span class="hc-tt">숙제 제출</span>
                     <span class="hc-ds">매일 제출</span>
                 </button>
+                <button class="home-card" id="gr-home-card" onclick="gr_open()" style="display:none;">
+                    <span class="hc-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
+                    <span class="hc-tt">내 성적</span>
+                    <span class="hc-ds">내신 · 모의고사</span>
+                </button>
             </div>
         </div>
 
@@ -498,6 +521,45 @@
                     <button class="btn" style="background:var(--wine); color:#fff; padding:13px; flex:2;" onclick="hw_gcSave()">저장</button>
                 </div>
             </div>
+        </div>
+
+        <!-- [추가 2026-11-26] 내 성적: 학생이 영어 내신·모의고사 점수를 입력 → 선생님 확인 후 반영 (숙제점검 GAS '성적신청') -->
+        <div id="grade-panel" style="display:none; margin-top:16px; background:#fff; border:2px solid var(--wine,#7a1020); border-radius:15px; padding:18px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0; color:var(--wine,#7a1020); font-size:18px;">내 성적 <span style="font-size:12px; color:var(--ink-soft); font-weight:600;">영어</span></h3>
+                <button onclick="gr_close()" title="홈" style="background:none; border:1px solid #ddd; border-radius:8px; font-size:13px; cursor:pointer; color:#888; padding:5px 9px;">홈</button>
+            </div>
+            <div class="gr-tabs"><button class="gr-tab on" data-k="내신" onclick="gr_tab('내신')">내신</button><button class="gr-tab" data-k="모의고사" onclick="gr_tab('모의고사')">모의고사</button></div>
+            <div class="gr-row">
+                <div><label class="gr-l">년도</label><select id="gr-year"></select></div>
+                <div id="gr-level-box"><label class="gr-l">학교</label><select id="gr-level" onchange="gr_levelChange()"><option value="중등">중학교</option><option value="고등">고등학교</option></select></div>
+                <div><label class="gr-l">학년</label><select id="gr-gy"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></div>
+            </div>
+            <div class="gr-row" id="gr-naesin-box">
+                <div><label class="gr-l">학기</label><select id="gr-term"><option value="1">1학기</option><option value="2">2학기</option></select></div>
+                <div><label class="gr-l">시험</label><select id="gr-exam"><option value="중간">중간</option><option value="기말">기말</option></select></div>
+            </div>
+            <div class="gr-row" id="gr-mock-box" style="display:none;">
+                <div><label class="gr-l">시행 월</label><select id="gr-month"><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option></select></div>
+            </div>
+            <div class="gr-row">
+                <div><label class="gr-l" id="gr-score-l">점수 (100점 만점)</label><input type="number" id="gr-score" inputmode="decimal" min="0" max="100" step="0.1" placeholder="예) 87.5"></div>
+                <div><label class="gr-l" id="gr-grade-l">등급 (선택)</label><select id="gr-grade"></select></div>
+            </div>
+            <div class="gr-row">
+                <div id="gr-rank-box"><label class="gr-l">석차 (선택)</label><input type="text" id="gr-rank" placeholder="예) 12/230"></div>
+                <div id="gr-pct-box" style="display:none;"><label class="gr-l">백분위 (선택)</label><input type="number" id="gr-pct" inputmode="decimal" min="0" max="100" placeholder="예) 85"></div>
+            </div>
+            <label class="gr-l">성적표 사진 (선택)</label>
+            <input type="file" id="gr-photo" accept="image/*" onchange="gr_pickPhoto()" style="padding:6px 0; font-size:13px; width:100%; margin-bottom:4px;">
+            <div id="gr-photo-prev" style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;"></div>
+            <button class="btn" id="gr-submit-btn" style="background:var(--wine); color:#fff; padding:14px; width:100%;" onclick="gr_submit()">제출하기</button>
+            <div id="gr-msg" style="font-size:13px; margin-top:8px; min-height:18px;"></div>
+            <div style="font-size:12px; color:var(--ink-soft); line-height:1.6;">제출한 성적은 선생님이 확인한 뒤 반영됩니다. 같은 시험을 다시 내면 확인 전 내용이 새 값으로 바뀌어요.</div>
+            <div class="gr-sec">내가 낸 성적</div>
+            <div id="gr-reqs"><span style="color:#999; font-size:13px;">불러오는 중...</span></div>
+            <div class="gr-sec">반영된 성적</div>
+            <div id="gr-done"><span style="color:#999; font-size:13px;">불러오는 중...</span></div>
         </div>
 
         <!-- 숙제 제출용 숨김 iframe -->
@@ -2479,6 +2541,7 @@
         let metaParts = [gradeStr, courseStr, '대단한영어 멤버스'].filter(Boolean);
         if(meta) meta.innerText = metaParts.join(' · ');
         document.getElementById('student-home').style.display = 'block';
+        gr_probe();   // [추가 2026-11-26] 숙제점검 GAS에 성적 기능이 배포돼 있을 때만 '내 성적' 카드 표시
     }
 
     // 홈 카드: 단어 미션 → 미션 정보/시작 영역 펼침
@@ -2675,6 +2738,157 @@
             const lh = document.getElementById('login-header'); if(lh) lh.style.display = 'none';
             document.getElementById('student-home').style.display = 'block';
         }
+    }
+
+    /* ===== [추가 2026-11-26] 내 성적 — 영어 내신·모의고사 입력 (숙제점검 GAS: kind=gradeSubmit / type=gradeMine) ===== */
+    let grKind = '내신', grPhoto = '', grRoster = null;
+    function gr_jsonp(params){
+        return new Promise((resolve)=>{
+            const cb = 'grcb_' + Math.random().toString(36).slice(2);
+            let done = false;
+            const s = document.createElement('script');
+            const clean = ()=>{ try{ delete window[cb]; }catch(e){ window[cb] = undefined; } s.remove(); };
+            window[cb] = (d)=>{ done = true; clean(); resolve(d); };
+            s.onerror = ()=>{ if(!done){ clean(); resolve(null); } };
+            s.src = HW_URL + '?' + params + '&callback=' + cb + '&t=' + Date.now();
+            document.body.appendChild(s);
+            setTimeout(()=>{ if(!done){ clean(); resolve(null); } }, 15000);
+        });
+    }
+    let grProbed = false;
+    function gr_probe(){
+        if(grProbed) return; grProbed = true;
+        gr_jsonp('type=gradeMine&name=' + encodeURIComponent(stName || '')).then(d=>{
+            if(d && d.ok !== undefined){ const c = document.getElementById('gr-home-card'); if(c){ c.parentNode.style.flexWrap = 'wrap'; c.style.display = 'flex'; } }
+            else grProbed = false;
+        });
+    }
+    function gr_esc(v){ return String(v == null ? '' : v).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+    function gr_open(){
+        document.getElementById('student-home').style.display = 'none';
+        document.getElementById('grade-panel').style.display = 'block';
+        const now = new Date(), y = now.getFullYear(), m = now.getMonth() + 1;
+        const ys = document.getElementById('gr-year');
+        if(!ys.options.length){ [y, y-1, y-2].forEach(v=>{ ys.insertAdjacentHTML('beforeend', '<option value="'+v+'">'+v+'년</option>'); }); }
+        document.getElementById('gr-term').value = m >= 7 || m <= 1 ? '2' : '1';
+        document.getElementById('gr-exam').value = [4,5,9,10].indexOf(m) >= 0 ? '중간' : '기말';
+        const g = (typeof hwGrade !== 'undefined' && hwGrade) ? hwGrade : '';
+        const c = (typeof hwCourse !== 'undefined' && hwCourse) ? hwCourse : '';
+        if(g) document.getElementById('gr-gy').value = String(g).replace(/[^1-3]/g,'') || '1';
+        if(c) document.getElementById('gr-level').value = c.indexOf('중') >= 0 ? '중등' : '고등';
+        gr_tab(grKind);
+        gr_load();
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function gr_close(){
+        document.getElementById('grade-panel').style.display = 'none';
+        document.getElementById('student-home').style.display = 'block';
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function gr_tab(k){
+        grKind = k;
+        Array.prototype.forEach.call(document.querySelectorAll('#grade-panel .gr-tab'), b=> b.classList.toggle('on', b.getAttribute('data-k') === k));
+        const mock = k === '모의고사';
+        document.getElementById('gr-naesin-box').style.display = mock ? 'none' : 'flex';
+        document.getElementById('gr-mock-box').style.display = mock ? 'flex' : 'none';
+        document.getElementById('gr-level-box').style.display = mock ? 'none' : '';
+        document.getElementById('gr-rank-box').style.display = mock ? 'none' : '';
+        document.getElementById('gr-pct-box').style.display = mock ? '' : 'none';
+        document.getElementById('gr-score-l').textContent = mock ? '원점수 (100점 만점)' : '점수 (100점 만점)';
+        gr_levelChange();
+    }
+    function gr_levelChange(){
+        const mid = grKind === '내신' && document.getElementById('gr-level').value === '중등';
+        document.getElementById('gr-grade-l').textContent = mid ? '성취도 (선택)' : '등급 (선택)';
+        const opts = mid ? ['A','B','C','D','E'] : ['1','2','3','4','5','6','7','8','9'];
+        document.getElementById('gr-grade').innerHTML = '<option value="">모름</option>' + opts.map(o=>'<option value="'+o+'">'+o+(mid ? '' : '등급')+'</option>').join('');
+    }
+    function gr_pickPhoto(){
+        const f = (document.getElementById('gr-photo').files || [])[0];
+        grPhoto = '';
+        document.getElementById('gr-photo-prev').textContent = '';
+        if(!f) return;
+        const rd = new FileReader();
+        rd.onload = (ev)=>{
+            const img = new Image();
+            img.onload = ()=>{
+                const maxW = 1400; let w = img.width, h = img.height;
+                if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+                const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+                cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                grPhoto = cv.toDataURL('image/jpeg', 0.75);
+                document.getElementById('gr-photo-prev').textContent = '사진 1장 준비됨';
+            };
+            img.src = ev.target.result;
+        };
+        rd.readAsDataURL(f);
+    }
+    function gr_submit(){
+        const msg = document.getElementById('gr-msg'), btn = document.getElementById('gr-submit-btn');
+        const v = (id)=> (document.getElementById(id).value || '').trim();
+        const score = v('gr-score');
+        msg.style.color = '#c0392b';
+        if(score === '' || isNaN(Number(score)) || Number(score) < 0 || Number(score) > 100){ msg.textContent = '점수를 0~100 사이로 넣어 주세요.'; return; }
+        if(grKind === '모의고사' && v('gr-pct') !== '' && (Number(v('gr-pct')) < 0 || Number(v('gr-pct')) > 100)){ msg.textContent = '백분위는 0~100 사이로 넣어 주세요.'; return; }
+        const payload = { kind:'gradeSubmit', name: stName, gtype: grKind, year: v('gr-year'), gradeYear: v('gr-gy'), score: score, grade: v('gr-grade') };
+        if(grKind === '내신'){ payload.level = v('gr-level'); payload.term = v('gr-term'); payload.exam = v('gr-exam'); payload.rank = v('gr-rank'); }
+        else { payload.month = v('gr-month'); payload.pct = v('gr-pct'); }
+        if(grPhoto){ payload.image = grPhoto; payload.mime = 'image/jpeg'; }
+        const label = grKind === '내신'
+            ? payload.year + '년 ' + payload.gradeYear + '학년 ' + payload.term + '학기 ' + payload.exam + ' ' + score + '점'
+            : payload.year + '년 ' + payload.gradeYear + '학년 ' + payload.month + '월 모의고사 ' + score + '점';
+        if(!confirm(label + '\n\n이대로 제출할까요?')) return;
+        btn.disabled = true; msg.style.color = 'var(--ink-soft)'; msg.textContent = '제출 중...';
+        fetch(HW_URL, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+            .then(()=>{
+                msg.style.color = '#274e13'; msg.textContent = '제출했어요! 선생님 확인 후 반영됩니다.';
+                document.getElementById('gr-score').value = ''; document.getElementById('gr-rank').value = ''; document.getElementById('gr-pct').value = '';
+                document.getElementById('gr-photo').value = ''; grPhoto = ''; document.getElementById('gr-photo-prev').textContent = '';
+                setTimeout(gr_load, 2500);
+            })
+            .catch(()=>{ msg.style.color = '#c0392b'; msg.textContent = '전송 실패 — 인터넷 연결을 확인하고 다시 눌러 주세요.'; })
+            .finally(()=>{ btn.disabled = false; });
+    }
+    async function gr_load(){
+        const reqEl = document.getElementById('gr-reqs'), doneEl = document.getElementById('gr-done');
+        const d = await gr_jsonp('type=gradeMine&name=' + encodeURIComponent(stName));
+        if(!d || !d.ok){
+            const t = '<span style="color:#999; font-size:13px;">' + gr_esc((d && d.error) || '불러오지 못했어요') + '</span>';
+            reqEl.innerHTML = t; doneEl.innerHTML = t; return;
+        }
+        grRoster = d.roster || null;
+        const reqs = d.requests || [];
+        reqEl.innerHTML = reqs.length ? reqs.map(r=>{
+            const what = r.kind === '내신' ? (r.year + ' ' + r.gradeYear + ' ' + r.term + ' ' + r.exam) : (r.year + ' ' + r.gradeYear + ' ' + r.month + ' 모의고사');
+            const badge = r.status === '반영' ? '<span class="gr-badge ok">반영됨</span>' : r.status === '반려' ? '<span class="gr-badge no">반려</span>' : '<span class="gr-badge wait">확인 대기</span>';
+            const extra = [r.grade ? (r.grade + (/^\d$/.test(r.grade) ? '등급' : '')) : '', r.pct ? ('백분위 ' + r.pct) : ''].filter(Boolean).join(' · ');
+            return '<div class="gr-item"><div><b>' + gr_esc(what) + '</b> · ' + gr_esc(r.score) + '점' + (extra ? ' <span style="color:var(--ink-soft);">(' + gr_esc(extra) + ')</span>' : '') +
+                (r.status === '반려' && r.reason ? '<div style="font-size:12px; color:#c8102e; margin-top:3px;">사유: ' + gr_esc(r.reason) + '</div>' : '') + '</div>' + badge + '</div>';
+        }).join('') : '<span style="color:#999; font-size:13px;">아직 낸 성적이 없어요.</span>';
+        const g = d.grades || {}, ns = (g.naesin || []).filter(r=> !r.subject || r.subject === '영어'), ms = (g.mock || []).filter(r=> !r.subject || r.subject === '영어');
+        let h = '';
+        if(ns.length){
+            h += '<div style="font-size:13px; font-weight:700; margin:4px 0;">내신</div>' + gr_chart(ns.map(r=> ({ x: String(r.year).slice(2) + ' ' + String(r.grade_year).replace('학년','') + '-' + String(r.term).replace('학기','') + ' ' + String(r.exam).slice(0,2), y: r.score })));
+            h += '<table class="gr-t"><tr><th>시험</th><th>점수</th><th>등급</th></tr>' + ns.map(r=> '<tr><td>' + gr_esc(r.year + ' ' + r.grade_year + ' ' + r.term + ' ' + r.exam) + '</td><td><b>' + gr_esc(r.score == null ? '-' : r.score) + '</b></td><td>' + gr_esc(r.gradeRaw || '-') + '</td></tr>').join('') + '</table>';
+        }
+        if(ms.length){
+            h += '<div style="font-size:13px; font-weight:700; margin:14px 0 4px;">모의고사</div>' + gr_chart(ms.map(r=> ({ x: String(r.date).slice(2,4) + '.' + String(r.month).replace('월',''), y: r.raw })));
+            h += '<table class="gr-t"><tr><th>시행</th><th>원점수</th><th>등급</th><th>백분위</th></tr>' + ms.map(r=> '<tr><td>' + gr_esc(String(r.date).slice(0,4) + ' ' + r.grade_year + ' ' + r.month) + '</td><td><b>' + gr_esc(r.raw == null ? '-' : r.raw) + '</b></td><td>' + gr_esc(r.grade == null ? '-' : r.grade) + '</td><td>' + gr_esc(r.percentile == null ? '-' : r.percentile) + '</td></tr>').join('') + '</table>';
+        }
+        doneEl.innerHTML = h || '<span style="color:#999; font-size:13px;">아직 반영된 성적이 없어요.</span>';
+    }
+    // 점수 꺾은선 (0~100)
+    function gr_chart(pts){
+        pts = pts.filter(p=> p.y != null && !isNaN(p.y));
+        if(pts.length < 2) return '';
+        const W = 320, H = 130, L = 26, R = 10, T = 12, B = 26, n = pts.length;
+        const X = (i)=> L + (W - L - R) * (n === 1 ? 0.5 : i / (n - 1)), Y = (v)=> T + (H - T - B) * (1 - v / 100);
+        let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%; height:auto; display:block; margin:4px 0 8px;">';
+        [0, 50, 100].forEach(v=>{ svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="#eee5d6"/><text x="' + (L - 4) + '" y="' + (Y(v) + 3) + '" font-size="9" text-anchor="end" fill="#9a8f84">' + v + '</text>'; });
+        svg += '<polyline fill="none" stroke="#7a1020" stroke-width="2.2" points="' + pts.map((p,i)=> X(i) + ',' + Y(p.y)).join(' ') + '"/>';
+        pts.forEach((p,i)=>{ svg += '<circle cx="' + X(i) + '" cy="' + Y(p.y) + '" r="3.5" fill="#fff" stroke="#7a1020" stroke-width="2"/><text x="' + X(i) + '" y="' + (Y(p.y) - 7) + '" font-size="10" font-weight="700" text-anchor="middle" fill="#3a2a20">' + p.y + '</text>' +
+            '<text x="' + X(i) + '" y="' + (H - 8) + '" font-size="8.5" text-anchor="' + (i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle') + '" fill="#9a8f84">' + gr_esc(p.x) + '</text>'; });
+        return svg + '</svg>';
     }
 
     function hw_goHome(){
