@@ -55,7 +55,10 @@
         .home-card .hc-ic { color:var(--wine); line-height:0; margin-bottom:9px; }
         .home-card .hc-tt { font-size:15px; font-weight:600; color:var(--ink); letter-spacing:-0.02em; }
         .home-card .hc-ds { font-size:11px; color:var(--ink-soft); margin-top:2px; }
-        /* [추가 2026-11-26] 내 성적 */
+        /* [추가 2026-11-26] 내 성적 — 홈의 기존 두 카드는 그대로 두고, 아랫줄에 가로형 카드로 */
+        #gr-home-card{ flex:1 1 100%; flex-direction:row; justify-content:center; gap:12px; padding:14px 12px; }
+        #gr-home-card .hc-ic{ margin-bottom:0; }
+        #gr-home-card .hc-ds{ margin-top:0; }
         #grade-panel .gr-tabs{ display:flex; gap:6px; margin-bottom:12px; }
         #grade-panel .gr-tab{ flex:1; padding:10px; border:1.5px solid var(--cream-deep); border-radius:10px; background:#fff; color:var(--ink-soft); font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
         #grade-panel .gr-tab.on{ background:var(--wine); border-color:var(--wine); color:#fff; }
@@ -2756,7 +2759,7 @@
     function gr_probe(){
         if(grProbed) return; grProbed = true;
         gr_jsonp('type=gradeMine&name=' + encodeURIComponent(stName || '')).then(d=>{
-            if(d && d.ok !== undefined){ const c = document.getElementById('gr-home-card'); if(c) c.style.display = ''; }
+            if(d && d.ok !== undefined){ const c = document.getElementById('gr-home-card'); if(c){ c.parentNode.style.flexWrap = 'wrap'; c.style.display = 'flex'; } }
             else grProbed = false;
         });
     }
