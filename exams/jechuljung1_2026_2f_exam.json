@@ -1,0 +1,775 @@
+{
+ "key": "제철중_1학년_2026_2학기_기말",
+ "meta": {
+  "school": "제철중",
+  "school_full": "포항제철중학교",
+  "grade": "1학년",
+  "year": "2026",
+  "semester": "2학기",
+  "exam": "기말고사",
+  "subject": "영어",
+  "publisher": "YBM(박준언)",
+  "scope": "Lesson 7 · Lesson 8",
+  "build": "claude-authored-v1",
+  "file_prefix": "제철중1_2학기기말",
+  "print_title": "( 2 학기 ) 기말고사 — 예상문제",
+  "total": 26,
+  "total_score": 100,
+  "objective": 26,
+  "written": 0,
+  "difficulty": "2026 2학기 1차고사 대비 상향(원장 확정)",
+  "review_priority": [
+   "① 정답 유일성: #5(ⓐⓒⓔⓖ) · #9(조합) · #17(2조건) · #21(가나라사) · #26(옳은 4개) — 조합·개수 판정이 해설과 같은지",
+   "② 교과서 변형 확인: #8~10 추가 문장 1개 · #13 대본 화자 표시 제거 · #14 수건함 문장 추가 · #19 오류 4곳 · #24 화자·문장 3곳 · #25 Wrap Up 2·3 변형 · #15 창작 일기",
+   "③ 배점: 3점 #1·2·7·10·13·15·22·25 / 5점 #5 영영 · #9·17·26 어법 / 나머지 4점 — 2025·2026 1차고사와 같은 분포(기말 기출 없음, 가정)",
+   "④ 교차 힌트 기준 (a): 어법 전담 #4 재귀 · #16 that · #17 to부정사 · #23 감탄문. 지문 속 교과서 원문(even·Trust yourself·avoid 등)은 남김(정답 판정을 대신하지 않음)",
+   "◎ 원장 블록별 검토 완료(2026-11-19~23): B-1 #1 교체(다의어 오답) · B-2 #4 ② 교체(강조 용법) · B-3 #22 ② 교체(#25 보호)"
+  ],
+  "gate": "exam_gate_middle.py PASS(치명 0) · 지문 포함 교차 힌트 점검 — 정답 누출 0(조립 때 #10 ②·#12 요약문·#21 (다)(사) 교체)",
+  "answer_dist": {
+   "①": 5,
+   "②": 5,
+   "③": 6,
+   "④": 5,
+   "⑤": 5
+  }
+ },
+ "questions": [
+  {
+   "num": 1,
+   "qtype": "어휘",
+   "subtype": "우리말 뜻 — 다의어",
+   "score": 3,
+   "question": "밑줄 친 단어의 우리말 뜻으로 가장 적절한 것은?",
+   "choices": [
+    "① You can get this toothbrush for <u>free</u>. (자유롭게)",
+    "② The new song became a big <u>hit</u>. (타격)",
+    "③ <u>Even</u> my little brother can solve this puzzle. (심지어)",
+    "④ Vashti <u>returned</u> to her seat and sat down. (돌려주었다)",
+    "⑤ Many people don't <u>care about</u> the shape of vegetables. (~을 돌보다)"
+   ],
+   "answer": "③",
+   "explanation": "even = 심지어. 오답은 모두 그 단어의 다른 뜻이라 문맥으로만 지울 수 있음.  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘",
+    "원문변형": "예문 창작(free: L7 Listen and Check 4 / care about: L7 본문 / hit: L8 Conversation / return·even: L8 본문)",
+    "정답근거": "even = 심지어. 오답은 모두 그 단어의 다른 뜻이라 문맥으로만 지울 수 있음.",
+    "오답설계": "① free 무료의(자유롭게 ×) · ② hit 히트, 성공(타격 ×) · ④ returned 돌아왔다(돌려주었다 ×, 본문의 「돌려주다」 뜻으로 혼동 유도) · ⑤ care about 신경 쓰다(돌보다 = care for)"
+   },
+   "student": {
+    "왜": "even = 심지어. 오답은 모두 그 단어의 다른 뜻이라 문맥으로만 지울 수 있음.",
+    "오답": "① free 무료의(자유롭게 ×) · ② hit 히트, 성공(타격 ×) · ④ returned 돌아왔다(돌려주었다 ×, 본문의 「돌려주다」 뜻으로 혼동 유도) · ⑤ care about 신경 쓰다(돌보다 = care for)"
+   }
+  },
+  {
+   "num": 2,
+   "qtype": "대화",
+   "subtype": "대화 흐름 어색",
+   "score": 3,
+   "question": "대화의 흐름상 가장 어색한 것은?",
+   "choices": [
+    "① A: What are you going to drink? / B: I'm going to bring my own cup.",
+    "② A: I'd like to buy some almonds. / B: Sure. Did you bring a bag?",
+    "③ A: Why don't we join the bag-making class? / B: That's a good idea. We can use an old T-shirt.",
+    "④ A: What would you like to read? / B: I'd like to borrow this book. I'm interested in plants.",
+    "⑤ A: Let's put a cup in our bathroom. We can save water. What do you think? / B: That's a good idea."
+   ],
+   "answer": "①",
+   "explanation": "마실 것을 물었는데 컵을 가져오겠다고 답함 — 동문서답.  [출처: YBM(박준언) L7 Listen and Check 2·3 · Conversation 5 · Wrap Up 1·3]",
+   "source": "YBM(박준언) L7 Listen and Check 2·3 · Conversation 5 · Wrap Up 1·3",
+   "review": {
+    "출처": "YBM(박준언) L7 Listen and Check 2·3 · Conversation 5 · Wrap Up 1·3",
+    "원문변형": "L7 Conversation 5의 두 문장(What are you going to drink? / I brought my own cup)을 엇갈려 붙임. 나머지는 교과서 문답",
+    "정답근거": "마실 것을 물었는데 컵을 가져오겠다고 답함 — 동문서답.",
+    "오답설계": "소재가 같은 문장끼리 붙여 자연스러워 보이게 함. Listen and Check 1(form)·4(free gift)는 #3·#1 보호로 뺌"
+   },
+   "student": {
+    "왜": "마실 것을 물었는데 컵을 가져오겠다고 답함 — 동문서답.",
+    "오답": "소재가 같은 문장끼리 붙여 자연스러워 보이게 함. Listen and Check 1(form)·4(free gift)는 #3·#1 보호로 뺌"
+   }
+  },
+  {
+   "num": 3,
+   "qtype": "어휘",
+   "subtype": "다의어 공통 빈칸",
+   "score": 4,
+   "question": "빈칸 ⓐ~ⓓ에 들어가기에 가장 적절하지 않은 단어는? (단, 짝지어진 문장의 빈칸에는 같은 단어가 들어가고, 순서는 상관없음)\n• Please __ⓐ__ your name at the bottom of the paper. / The __ⓐ__ on the door says \"No Entry.\"\n• What __ⓑ__ of art do you like? / Please fill out this __ⓑ__ to join the club.\n• Just make a __ⓒ__ with your pen. / I got a good __ⓒ__ on the math test.\n• Don't __ⓓ__ food on your plate. / The bus will __ⓓ__ at seven.",
+   "choices": [
+    "① sign",
+    "② form",
+    "③ leave",
+    "④ line",
+    "⑤ mark"
+   ],
+   "answer": "④",
+   "explanation": "ⓐ sign(서명하다/표지판) ⓑ form(종류/양식) ⓒ mark(자국/점수) ⓓ leave(남기다/떠나다). line은 ⓒ 첫 문장에만 맞고 둘째 문장에는 안 맞음.  [출처: YBM(박준언) L7·YBM(박준언) L8 다의어]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 다의어",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 다의어",
+    "원문변형": "예문 창작",
+    "정답근거": "ⓐ sign(서명하다/표지판) ⓑ form(종류/양식) ⓒ mark(자국/점수) ⓓ leave(남기다/떠나다). line은 ⓒ 첫 문장에만 맞고 둘째 문장에는 안 맞음.",
+    "오답설계": "line을 ⓒ 첫 문장(make a line)에 맞게 해, 짝 두 문장을 다 확인해야 지워지게 함(2026 정답 mean은 어느 문장에도 안 맞았음)"
+   },
+   "student": {
+    "왜": "ⓐ sign(서명하다/표지판) ⓑ form(종류/양식) ⓒ mark(자국/점수) ⓓ leave(남기다/떠나다). line은 ⓒ 첫 문장에만 맞고 둘째 문장에는 안 맞음.",
+    "오답": "line을 ⓒ 첫 문장(make a line)에 맞게 해, 짝 두 문장을 다 확인해야 지워지게 함(2026 정답 mean은 어느 문장에도 안 맞았음)"
+   }
+  },
+  {
+   "num": 4,
+   "qtype": "어법",
+   "subtype": "재귀대명사 — 옳은 것",
+   "score": 4,
+   "question": "주어진 문장 중 어법상 옳은 것은?",
+   "choices": [
+    "① Dad burned himself while he was cooking.",
+    "② Herself made this birthday cake for me.",
+    "③ I looked at me in the mirror for a long time.",
+    "④ Ben and Amy, help yourself to the pizza.",
+    "⑤ Minsu, you should be proud of yourselves."
+   ],
+   "answer": "①",
+   "explanation": "주어 Dad = 목적어 → himself(재귀 용법).  [출처: YBM(박준언) L8 문법포인트 재귀대명사]",
+   "source": "YBM(박준언) L8 문법포인트 재귀대명사",
+   "review": {
+    "출처": "YBM(박준언) L8 문법포인트 재귀대명사",
+    "원문변형": "",
+    "정답근거": "주어 Dad = 목적어 → himself(재귀 용법).",
+    "오답설계": "② 재귀대명사는 주어 자리 불가(She made ~ herself) · ③ 재귀 자리에 목적격 me → myself · ④ 두 사람 → yourselves · ⑤ 한 사람 → yourself"
+   },
+   "student": {
+    "왜": "주어 Dad = 목적어 → himself(재귀 용법).",
+    "오답": "② 재귀대명사는 주어 자리 불가(She made ~ herself) · ③ 재귀 자리에 목적격 me → myself · ④ 두 사람 → yourselves · ⑤ 한 사람 → yourself"
+   }
+  },
+  {
+   "num": 5,
+   "qtype": "영영풀이",
+   "subtype": "영영풀이 있는 대로(2단계)",
+   "score": 5,
+   "question": "각 문장의 빈칸에 문맥상 들어갈 수 있는 단어의 올바른 영영풀이를 <보기>에서 있는 대로 고른 것은?\n• My lunch box was ________, so I was very hungry.\n• You can ________ him. He always tells the truth.\n• Her hair color is ________. I've never seen it before.\n• I took a different road to ________ the heavy traffic.",
+   "choices": [
+    "① ⓐ, ⓑ, ⓔ, ⓖ",
+    "② ⓐ, ⓒ, ⓔ, ⓖ",
+    "③ ⓑ, ⓒ, ⓓ, ⓖ",
+    "④ ⓐ, ⓒ, ⓓ, ⓕ",
+    "⑤ ⓒ, ⓔ, ⓕ, ⓖ"
+   ],
+   "answer": "②",
+   "explanation": "빈칸 = empty(ⓐ) · trust(ⓒ) · unusual(ⓔ) · avoid(ⓖ).  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+    "원문변형": "빈칸 문장 창작, 풀이는 드라이브 단어DB 그대로",
+    "정답근거": "빈칸 = empty(ⓐ) · trust(ⓒ) · unusual(ⓔ) · avoid(ⓖ).",
+    "오답설계": "오답 풀이 ⓑ bent · ⓓ tasteless · ⓕ create = 범위 안 다른 단어의 실제 풀이. tasteless는 도시락 문장에 끌리게 함"
+   },
+   "student": {
+    "왜": "빈칸 = empty(ⓐ) · trust(ⓒ) · unusual(ⓔ) · avoid(ⓖ).",
+    "오답": "오답 풀이 ⓑ bent · ⓓ tasteless · ⓕ create = 범위 안 다른 단어의 실제 풀이. tasteless는 도시락 문장에 끌리게 함"
+   },
+   "box": "< 보 기 >\nⓐ having nothing inside\nⓑ curved or not straight\nⓒ to believe that someone is honest or reliable\nⓓ having no flavor\nⓔ not normal or usual\nⓕ to make something new\nⓖ to keep away from something or someone"
+  },
+  {
+   "num": 6,
+   "qtype": "영영풀이",
+   "subtype": "영영풀이에 필요 없는 단어",
+   "score": 4,
+   "question": "두 문장의 밑줄 친 ⓐ와 ⓑ의 영영풀이에 필요하지 않은 단어는? (단, 빈칸에는 같은 단어가 중복으로 쓰일 수 있으며, 순서는 상관없음)\n• This tree has very long ⓐ<u>roots</u>.\n  ⓐroot : the ________ of a plant that ________ under the ________\n• I put my favorite photo in a wooden ⓑ<u>frame</u>.\n  ⓑframe : a structure that ________ or surrounds a picture",
+   "choices": [
+    "① part",
+    "② holds",
+    "③ ground",
+    "④ grows",
+    "⑤ leaf"
+   ],
+   "answer": "⑤",
+   "explanation": "root: the part of a plant that grows under the ground / frame: a structure that holds or surrounds a picture → leaf 불필요.  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘",
+    "원문변형": "예문 창작(L8 본문 gold frame과 겹치지 않게 wooden frame)",
+    "정답근거": "root: the part of a plant that grows under the ground / frame: a structure that holds or surrounds a picture → leaf 불필요.",
+    "오답설계": "leaf는 「the ___ of a plant」 자리에 문법상 들어가 root의 뜻(땅속에서 자라는 부분)을 알아야 지워짐"
+   },
+   "student": {
+    "왜": "root: the part of a plant that grows under the ground / frame: a structure that holds or surrounds a picture → leaf 불필요.",
+    "오답": "leaf는 「the ___ of a plant」 자리에 문법상 들어가 root의 뜻(땅속에서 자라는 부분)을 알아야 지워짐"
+   }
+  },
+  {
+   "num": 7,
+   "qtype": "대화",
+   "subtype": "감정 빈칸 짝(-ing/-ed)",
+   "score": 3,
+   "question": "대화의 흐름상 빈칸에 알맞은 단어를 순서대로 짝지은 것은?\nA: How was the musical last night?\nB: It was really ________. The story about friendship made me cry.\nA: Wow, I'm so ________ about it. I want to see it, too.",
+   "choices": [
+    "① boring – excited",
+    "② touching – excited",
+    "③ touched – exciting",
+    "④ touching – exciting",
+    "⑤ bored – excited"
+   ],
+   "answer": "②",
+   "explanation": "감동을 주는 것(뮤지컬) → touching / 신이 난 사람(나) → excited.  [출처: YBM(박준언) L8 Listen and Number 4 변형]",
+   "source": "YBM(박준언) L8 Listen and Number 4 변형",
+   "review": {
+    "출처": "YBM(박준언) L8 Listen and Number 4 변형",
+    "원문변형": "The show … was really touching / the power of friendship를 뮤지컬 대화로 바꿈",
+    "정답근거": "감동을 주는 것(뮤지컬) → touching / 신이 난 사람(나) → excited.",
+    "오답설계": "감정 어휘 + -ing/-ed 판정을 겹침. ③④ 형태 반대, ①⑤ 감정 반대"
+   },
+   "student": {
+    "왜": "감동을 주는 것(뮤지컬) → touching / 신이 난 사람(나) → excited.",
+    "오답": "감정 어휘 + -ing/-ed 판정을 겹침. ③④ 형태 반대, ①⑤ 감정 반대"
+   }
+  },
+  {
+   "type": "group",
+   "num_range": "8-10",
+   "passage": "This is a special market for funny-looking fruits and vegetables. It opens every Saturday morning. ⓐ<u>They</u> greet each other and start to talk.\nApple: What a nice day! ⓑ<u>I</u>'m here because I have many spots on my skin. People think that I'm tasteless. ⓒ<u>They</u> are wrong! My spots are not (A)[ harmful / harmfully ]. I taste great.\nKiwi: I'm round but very small. Farmers don't want to sell ⓓ<u>me</u> (B)[ because / because of ] my size. Who cares about size? ⓔ<u>I</u>'m sweet and delicious.\nCarrot: Do you see that ⓕ<u>I</u> have three legs? I look funny because my roots are like a fork. I just tried to avoid stones in the ground and grew three legs. I'm fresh and (C)[ make / makes ] healthy juice.\nApple: I'm glad to see you all! I want to meet more fruits and vegetables like us. Do you know any?\nKiwi: How about eggplants? Some eggplants are bent too much. Supermarkets don't sell ⓖ<u>them</u> because people like straight eggplants.",
+   "questions": [
+    {
+     "num": 8,
+     "qtype": "지칭",
+     "subtype": "같은 것끼리",
+     "score": 4,
+     "question": "윗글의 밑줄 친 ⓐ~ⓖ 중 같은 것끼리 짝지어진 것은?",
+     "choices": [
+      "① ⓐ, ⓒ",
+      "② ⓑ, ⓕ",
+      "③ ⓓ, ⓔ",
+      "④ ⓒ, ⓖ",
+      "⑤ ⓔ, ⓕ"
+     ],
+     "answer": "③",
+     "explanation": "ⓓ me · ⓔ I 모두 Kiwi.  [출처: YBM(박준언) L7 본문 1~2부분]",
+     "source": "YBM(박준언) L7 본문 1~2부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 1~2부분",
+      "원문변형": "원문 + 학교식 추가 문장(It opens every Saturday morning.)",
+      "정답근거": "ⓓ me · ⓔ I 모두 Kiwi.",
+      "오답설계": "I 3개(ⓑ Apple · ⓔ Kiwi · ⓕ Carrot), They 2개(ⓐ 과일·채소 · ⓒ 사람들), ⓖ them = 가지"
+     },
+     "student": {
+      "왜": "ⓓ me · ⓔ I 모두 Kiwi.",
+      "오답": "I 3개(ⓑ Apple · ⓔ Kiwi · ⓕ Carrot), They 2개(ⓐ 과일·채소 · ⓒ 사람들), ⓖ them = 가지"
+     }
+    },
+    {
+     "num": 9,
+     "qtype": "어법",
+     "subtype": "[ ] 어법 짝",
+     "score": 5,
+     "question": "윗글의 (A)~(C)에 들어갈 단어가 알맞게 짝지어진 것은?",
+     "choices": [
+      "① harmful – because of – make",
+      "② harmful – because – makes",
+      "③ harmfully – because of – make",
+      "④ harmfully – because – make",
+      "⑤ harmful – because of – makes"
+     ],
+     "answer": "①",
+     "explanation": "(A) be동사 보어 → 형용사 harmful / (B) 명사(my size) 앞 → because of / (C) 주어 I, and 병렬 → make.  [출처: YBM(박준언) L7 본문]",
+     "source": "YBM(박준언) L7 본문",
+     "review": {
+      "출처": "YBM(박준언) L7 본문",
+      "원문변형": "원문 harmful·because of·make 자리에 [ ]",
+      "정답근거": "(A) be동사 보어 → 형용사 harmful / (B) 명사(my size) 앞 → because of / (C) 주어 I, and 병렬 → make.",
+      "오답설계": "(C) 바로 앞 fresh에 끌려 makes(병렬 수일치 함정, 2026 #26 and looking과 같은 원리) / (B) 지문의 because I have ~와 혼동"
+     },
+     "student": {
+      "왜": "(A) be동사 보어 → 형용사 harmful / (B) 명사(my size) 앞 → because of / (C) 주어 I, and 병렬 → make.",
+      "오답": "(C) 바로 앞 fresh에 끌려 makes(병렬 수일치 함정, 2026 #26 and looking과 같은 원리) / (B) 지문의 because I have ~와 혼동"
+     }
+    },
+    {
+     "num": 10,
+     "qtype": "내용일치",
+     "subtype": "일치",
+     "score": 3,
+     "question": "윗글의 내용과 일치하는 것은?",
+     "choices": [
+      "① The market is open only on Sundays.",
+      "② Apple's spots make it taste bad.",
+      "③ Farmers like to sell small kiwis.",
+      "④ Kiwi thinks that size is not important.",
+      "⑤ Carrot has three legs because it was born with them."
+     ],
+     "answer": "④",
+     "explanation": "Who cares about size? → 크기는 중요하지 않다고 생각함(재진술).  [출처: YBM(박준언) L7 본문]",
+     "source": "YBM(박준언) L7 본문",
+     "review": {
+      "출처": "YBM(박준언) L7 본문",
+      "원문변형": "",
+      "정답근거": "Who cares about size? → 크기는 중요하지 않다고 생각함(재진술).",
+      "오답설계": "① 추가 문장(Saturday) 이용 · ② 반대(I taste great) — 처음 「are harmful」은 #9 (A) 정답형 노출이라 교체 · ③ 주체·태도 바꿈 · ⑤ 이유 바꿈(돌을 피하다 다리가 자람)"
+     },
+     "student": {
+      "왜": "Who cares about size? → 크기는 중요하지 않다고 생각함(재진술).",
+      "오답": "① 추가 문장(Saturday) 이용 · ② 반대(I taste great) — 처음 「are harmful」은 #9 (A) 정답형 노출이라 교체 · ③ 주체·태도 바꿈 · ⑤ 이유 바꿈(돌을 피하다 다리가 자람)"
+     }
+    }
+   ]
+  },
+  {
+   "type": "group",
+   "num_range": "11-12",
+   "passage": "Carrot: There are funny-looking potatoes, too. Their shapes are unusual, and their sizes are all different. People believe that they are useless.\nKiwi: I know, but I heard that funny-looking potatoes make fantastic chips.\nCarrot: Is it true? How wonderful! I hope that people learn more about us.\nApple: I hope so, too. Look, friends! People are coming. Let's welcome them.",
+   "questions": [
+    {
+     "num": 11,
+     "qtype": "내용일치",
+     "subtype": "불일치 — 주체 바꾸기",
+     "score": 4,
+     "question": "윗글의 내용과 일치하지 않는 것은?",
+     "choices": [
+      "① Carrot talks about funny-looking potatoes.",
+      "② Funny-looking potatoes are all different in size.",
+      "③ Apple hopes that people learn more about them, too.",
+      "④ The fruits and vegetables see people coming.",
+      "⑤ Carrot heard that funny-looking potatoes make fantastic chips."
+     ],
+     "answer": "⑤",
+     "explanation": "감자칩 이야기를 들은 것은 Kiwi.  [출처: YBM(박준언) L7 본문 3부분]",
+     "source": "YBM(박준언) L7 본문 3부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 3부분",
+      "원문변형": "원문 그대로",
+      "정답근거": "감자칩 이야기를 들은 것은 Kiwi.",
+      "오답설계": "앞 문장 화자 Carrot에 끌리게 함(2026 #20 주체 바꾸기)"
+     },
+     "student": {
+      "왜": "감자칩 이야기를 들은 것은 Kiwi.",
+      "오답": "앞 문장 화자 Carrot에 끌리게 함(2026 #20 주체 바꾸기)"
+     }
+    },
+    {
+     "num": 12,
+     "qtype": "요약문",
+     "subtype": "요약문",
+     "score": 4,
+     "question": "윗글을 읽고 한 문장으로 요약문을 적을 때, 빈칸 ⓐ, ⓑ에 들어갈 단어로 알맞게 짝지어진 것은?",
+     "choices": [
+      "① strange / useful",
+      "② normal / useful",
+      "③ strange / useless",
+      "④ perfect / dangerous",
+      "⑤ similar / tasteless"
+     ],
+     "answer": "①",
+     "explanation": "unusual → strange, 쓸모없다고 여기지만 감자칩이 됨 → useful(재진술).  [출처: YBM(박준언) L7 본문]",
+     "source": "YBM(박준언) L7 본문",
+     "review": {
+      "출처": "YBM(박준언) L7 본문",
+      "원문변형": "",
+      "정답근거": "unusual → strange, 쓸모없다고 여기지만 감자칩이 됨 → useful(재진술).",
+      "오답설계": "③ 지문 단어 useless를 그대로 넣어 but과 모순 · ② ⓐ 반대. 요약문에 because of를 쓰지 않음(#9 (B) 보호)"
+     },
+     "student": {
+      "왜": "unusual → strange, 쓸모없다고 여기지만 감자칩이 됨 → useful(재진술).",
+      "오답": "③ 지문 단어 useless를 그대로 넣어 but과 모순 · ② ⓐ 반대. 요약문에 because of를 쓰지 않음(#9 (B) 보호)"
+     },
+     "box": "< 요약문 >\nFunny-looking potatoes have ____ⓐ____ shapes and sizes, so people think they are useless, but they can be ____ⓑ____ for making fantastic chips."
+    }
+   ]
+  },
+  {
+   "num": 13,
+   "qtype": "문장삽입",
+   "subtype": "문장 위치",
+   "score": 3,
+   "question": "ⓐ~ⓔ 중 <보기>의 문장이 들어가기에 가장 알맞은 곳은?\nTwenty percent of all fruits and vegetables look funny. ( ⓐ ) Too big, too small, not pretty, or just the wrong shape. ( ⓑ ) So where do they go? ( ⓒ ) Right into the trash. But one company is trying to save funny-looking fruits and vegetables. ( ⓓ ) These are fresh, delicious carrots. ( ⓔ ) There's nothing wrong with them. They look funny, but they taste yummy.",
+   "choices": [
+    "① ⓐ",
+    "② ⓑ",
+    "③ ⓒ",
+    "④ ⓓ",
+    "⑤ ⓔ"
+   ],
+   "answer": "②",
+   "explanation": "생김새 문제 나열 뒤, 「그럼 어디로 가나?」 질문 앞 — 시장에 팔지 않는다는 원인이 와야 함.  [출처: YBM(박준언) L7 Watch and Check 대본]",
+   "source": "YBM(박준언) L7 Watch and Check 대본",
+   "review": {
+    "출처": "YBM(박준언) L7 Watch and Check 대본",
+    "원문변형": "화자 표시(M·W) 빼고 한 글로 이음. 쓰레기통 문장 뒤에는 자리를 두지 않음(답이 둘로 보일 수 있어서)",
+    "정답근거": "생김새 문제 나열 뒤, 「그럼 어디로 가나?」 질문 앞 — 시장에 팔지 않는다는 원인이 와야 함.",
+    "오답설계": "ⓐ 뒤 Too big… 은 앞 문장을 바로 풀어 씀 · ⓒ 질문과 답 사이"
+   },
+   "student": {
+    "왜": "생김새 문제 나열 뒤, 「그럼 어디로 가나?」 질문 앞 — 시장에 팔지 않는다는 원인이 와야 함.",
+    "오답": "ⓐ 뒤 Too big… 은 앞 문장을 바로 풀어 씀 · ⓒ 질문과 답 사이"
+   },
+   "box": "< 보 기 >\nSadly, farmers don't sell these to markets."
+  },
+  {
+   "num": 14,
+   "qtype": "실용문",
+   "subtype": "답할 수 없는 질문",
+   "score": 4,
+   "question": "안내문을 읽고 답할 수 없는 질문은?\nHello, students. We should change for a greener school. In our school restrooms, we use too many paper towels. Waste is a serious problem, and our Earth is becoming sick. I think that we should carry our own hand towels. From next Monday, the student council will put a towel box in front of each restroom. Let's try to reduce waste at our school.",
+   "choices": [
+    "① What problem does the speaker talk about?",
+    "② Where do students use too many paper towels?",
+    "③ What does the speaker think students should carry?",
+    "④ On what date will the towel boxes be put in front of the restrooms?",
+    "⑤ Who will put the towel boxes in front of the restrooms?"
+   ],
+   "answer": "④",
+   "explanation": "next Monday뿐 — 날짜는 알 수 없음.  [출처: YBM(박준언) L7 Think & Write]",
+   "source": "YBM(박준언) L7 Think & Write",
+   "review": {
+    "출처": "YBM(박준언) L7 Think & Write",
+    "원문변형": "「Students,」 → 「Hello, students.」, 학생회 수건함 문장 추가",
+    "정답근거": "next Monday뿐 — 날짜는 알 수 없음.",
+    "오답설계": "2026 #14 「three days from today」와 같은 날짜 함정. ⑤는 추가 문장에서 답이 나옴"
+   },
+   "student": {
+    "왜": "next Monday뿐 — 날짜는 알 수 없음.",
+    "오답": "2026 #14 「three days from today」와 같은 날짜 함정. ⑤는 추가 문장에서 답이 나옴"
+   }
+  },
+  {
+   "num": 15,
+   "qtype": "흐름",
+   "subtype": "일기 흐름 어색",
+   "score": 3,
+   "question": "밑줄 친 ①~⑤ 중 내용의 흐름상 어색한 것은?\nApril 22, 2026\nToday was Earth Day. I rode my bike to school instead of taking the bus. ①<u>My friend Frank said that it was a great idea.</u> After school, our class went to the park. ②<u>We planted trees together in the park.</u> ③<u>It was hard work, but we felt proud.</u> On the way home, I stopped by the library. ④<u>I borrowed a book about plants because I'm interested in them.</u> ⑤<u>I want to take the bus to school every day from now on.</u> Our Earth needs our help!",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "⑤",
+   "explanation": "자전거 등교·지구의 날 내용과 「앞으로 매일 버스」가 모순.  [출처: YBM(박준언) L7 Wrap Up 1·2 · Review 8 소재 창작 일기]",
+   "source": "YBM(박준언) L7 Wrap Up 1·2 · Review 8 소재 창작 일기",
+   "review": {
+    "출처": "YBM(박준언) L7 Wrap Up 1·2 · Review 8 소재 창작 일기",
+    "원문변형": "창작(교과서 활동 소재)",
+    "정답근거": "자전거 등교·지구의 날 내용과 「앞으로 매일 버스」가 모순.",
+    "오답설계": "①~④는 이어지는 하루 일과"
+   },
+   "student": {
+    "왜": "자전거 등교·지구의 날 내용과 「앞으로 매일 버스」가 모순.",
+    "오답": "①~④는 이어지는 하루 일과"
+   }
+  },
+  {
+   "num": 16,
+   "qtype": "어법",
+   "subtype": "that 성격 구별",
+   "score": 4,
+   "question": "밑줄 친 부분의 성격이 나머지와 다른 것은?",
+   "choices": [
+    "① <u>That</u> he won the race surprised everyone.",
+    "② The problem is <u>that</u> we don't have enough time.",
+    "③ I heard <u>that</u> Jina moved to Busan.",
+    "④ We hope <u>that</u> our team wins the game.",
+    "⑤ I think <u>that</u> bag on the desk is yours."
+   ],
+   "answer": "⑤",
+   "explanation": "⑤ that bag = 지시형용사. ①~④ 명사절 접속사(주어·보어·목적어).  [출처: YBM(박준언) L7 문법포인트 명사절 that]",
+   "source": "YBM(박준언) L7 문법포인트 명사절 that",
+   "review": {
+    "출처": "YBM(박준언) L7 문법포인트 명사절 that",
+    "원문변형": "",
+    "정답근거": "⑤ that bag = 지시형용사. ①~④ 명사절 접속사(주어·보어·목적어).",
+    "오답설계": "⑤ think 뒤라 접속사처럼 보이게 함(2026 #17 practicing 뒤 singing과 같은 흔들기)"
+   },
+   "student": {
+    "왜": "⑤ that bag = 지시형용사. ①~④ 명사절 접속사(주어·보어·목적어).",
+    "오답": "⑤ think 뒤라 접속사처럼 보이게 함(2026 #17 practicing 뒤 singing과 같은 흔들기)"
+   }
+  },
+  {
+   "num": 17,
+   "qtype": "어법",
+   "subtype": "<보기> 상황 일치",
+   "score": 5,
+   "question": "주어진 <보기>의 상황과 일치하는 설명은?",
+   "choices": [
+    "① The girl went to her grandma's house to trick the wolf.",
+    "② The wolf ran to her grandma's house to bring her some food.",
+    "③ The girl ran next door to ask for help, and people ran to the house to catch the wolf.",
+    "④ The girl ran next door to catch the wolf, and people came to help her.",
+    "⑤ The wolf didn't run to her grandma's house to trick the girl."
+   ],
+   "answer": "③",
+   "explanation": "두 조건(소녀 — 도움 청하러 / 사람들 — 늑대 잡으러) 모두 <보기>와 같음.  [출처: YBM(박준언) L8 Think & Write(빨간 모자) · 문법포인트 to부정사 목적]",
+   "source": "YBM(박준언) L8 Think & Write(빨간 모자) · 문법포인트 to부정사 목적",
+   "review": {
+    "출처": "YBM(박준언) L8 Think & Write(빨간 모자) · 문법포인트 to부정사 목적",
+    "원문변형": "교과서 Think & Write 이야기·예시 결말을 우리말 <보기>로",
+    "정답근거": "두 조건(소녀 — 도움 청하러 / 사람들 — 늑대 잡으러) 모두 <보기>와 같음.",
+    "오답설계": "①② 목적 바꿈 · ④ 앞 조건만 틀림 · ⑤ not으로 사실 뒤집음(2026 #16의 and·not 2조건 방식)"
+   },
+   "student": {
+    "왜": "두 조건(소녀 — 도움 청하러 / 사람들 — 늑대 잡으러) 모두 <보기>와 같음.",
+    "오답": "①② 목적 바꿈 · ④ 앞 조건만 틀림 · ⑤ not으로 사실 뒤집음(2026 #16의 and·not 2조건 방식)"
+   },
+   "box": "< 보 기 >\n· 소녀는 할머니께 음식을 갖다 드리려고 할머니 댁에 갔다.\n· 늑대는 소녀를 속이려고 할머니 댁으로 먼저 달려갔다.\n· 소녀는 도움을 청하려고 옆집으로 달려갔다.\n· 사람들은 늑대를 잡으려고 할머니 댁으로 달려갔다."
+  },
+  {
+   "type": "group",
+   "num_range": "18-19",
+   "passage": "Art class was over. Vashti ①<u>did not left</u> the classroom. Her paper was empty.\nVashti's teacher looked at the empty paper.\n\"Ah! It's a polar bear in a snowstorm,\" she said.\n\"Very funny!\" said Vashti. \"I just can't draw.\" (A)\nHer teacher smiled and shook her head.\n\"Just make a mark. It will take you somewhere.\"\nVashti picked up a pen and poked the paper.\n\"There!\"\nHer teacher picked up the paper and looked at it carefully. She returned the paper to Vashti and said, \"Now sign it.\"\nVashti thought for a moment.\n\"Well, maybe I can't draw, but I can sign my name.\"\nNext week, Vashti walked into art class. She was surprised. There was a picture above the teacher's desk. It was her dot in a gold frame!\n\"Hmm! I can ②<u>make a good dot than that</u>!\"\nShe opened her set of watercolors and started to work. (B)\nVashti painted and painted more ③<u>to create dots</u>. A red dot. A yellow dot. A blue dot. She mixed the blue with the yellow. She could make a green dot! She was very happy with ④<u>itself</u>. (C)\n\"I made lots of little dots. I guess I can make big ones, too.\" Vashti used a bigger brush and bigger paper ⑤<u>for make bigger dots</u>.",
+   "questions": [
+    {
+     "num": 18,
+     "qtype": "심경",
+     "subtype": "장면별 감정",
+     "score": 4,
+     "question": "윗글의 (A)~(C) 장면에서 Vashti의 감정으로 각각 알맞은 것은?",
+     "choices": [
+      "① upset – confident – proud",
+      "② upset – surprised – proud",
+      "③ excited – confident – bored",
+      "④ bored – surprised – nervous",
+      "⑤ excited – nervous – proud"
+     ],
+     "answer": "①",
+     "explanation": "(A) I just can't draw → upset / (B) 액자 속 점을 보고 더 잘 만들겠다며 시작 → confident / (C) very happy with herself → proud.  [출처: YBM(박준언) L8 본문 1~2부분]",
+     "source": "YBM(박준언) L8 본문 1~2부분",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 1~2부분",
+      "원문변형": "white dot 문단은 뺌(#1 정답어 even 노출 방지). (A)~(C) 장면 표시 추가",
+      "정답근거": "(A) I just can't draw → upset / (B) 액자 속 점을 보고 더 잘 만들겠다며 시작 → confident / (C) very happy with herself → proud.",
+      "오답설계": "(B) 바로 앞 She was surprised에 끌리게 함(②④). 2025 #22(3명 감정 짝)를 한 인물 3장면으로"
+     },
+     "student": {
+      "왜": "(A) I just can't draw → upset / (B) 액자 속 점을 보고 더 잘 만들겠다며 시작 → confident / (C) very happy with herself → proud.",
+      "오답": "(B) 바로 앞 She was surprised에 끌리게 함(②④). 2025 #22(3명 감정 짝)를 한 인물 3장면으로"
+     }
+    },
+    {
+     "num": 19,
+     "qtype": "어법",
+     "subtype": "본문 밑줄 어법(4곳 오류)",
+     "score": 4,
+     "question": "밑줄 친 ①~⑤ 중 어법상 옳은 것은?",
+     "choices": [
+      "①",
+      "②",
+      "③",
+      "④",
+      "⑤"
+     ],
+     "answer": "③",
+     "explanation": "③ to create dots = 목적의 to부정사(옳음).  [출처: YBM(박준언) L8 본문 · 문법포인트(to부정사 목적·재귀대명사)]",
+     "source": "YBM(박준언) L8 본문 · 문법포인트(to부정사 목적·재귀대명사)",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 · 문법포인트(to부정사 목적·재귀대명사)",
+      "원문변형": "원문 5곳에 밑줄, 4곳에 오류 심음: did not leave → left · a better dot → a good dot · herself → itself · to make → for make",
+      "정답근거": "③ to create dots = 목적의 to부정사(옳음).",
+      "오답설계": "① did + 과거형 · ② good ~ than(비교급 better) · ④ 주어 She → herself · ⑤ 목적은 to + 동사원형. 처음 잡았던 careful 오류는 #20 지문 carefully가 정답형을 보여 줘서 교체"
+     },
+     "student": {
+      "왜": "③ to create dots = 목적의 to부정사(옳음).",
+      "오답": "① did + 과거형 · ② good ~ than(비교급 better) · ④ 주어 She → herself · ⑤ 목적은 to + 동사원형. 처음 잡았던 careful 오류는 #20 지문 carefully가 정답형을 보여 줘서 교체"
+     }
+    }
+   ]
+  },
+  {
+   "type": "group",
+   "num_range": "20-21",
+   "passage": "A few weeks later, the school art show took place. Vashti's many dots were a big success!\nVashti saw a little boy. He was standing beside her.\n\"You're a great artist. I want to paint like you,\" he said.\n\"I'm sure you can. Trust yourself,\" said Vashti.\n\"No, I can't even draw a straight line.\"\nVashti smiled. She handed the boy a piece of paper.\n\"Show me.\"\nThe boy's pencil shook while he drew a line. The line was not straight.\nVashti looked at it carefully and said,\n\"Please ... sign it.\"",
+   "questions": [
+    {
+     "num": 20,
+     "qtype": "내용일치",
+     "subtype": "불일치",
+     "score": 4,
+     "question": "윗글의 내용과 일치하지 않는 것은?",
+     "choices": [
+      "① Vashti's dots were popular at the school art show.",
+      "② The boy was able to draw a straight line.",
+      "③ The little boy wanted to paint like Vashti.",
+      "④ Vashti gave the boy a piece of paper.",
+      "⑤ Vashti asked the boy to sign his drawing."
+     ],
+     "answer": "②",
+     "explanation": "The line was not straight.  [출처: YBM(박준언) L8 본문 3부분]",
+     "source": "YBM(박준언) L8 본문 3부분",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 3부분",
+      "원문변형": "원문 그대로",
+      "정답근거": "The line was not straight.",
+      "오답설계": "나머지는 재진술(big success → popular, handed → gave)"
+     },
+     "student": {
+      "왜": "The line was not straight.",
+      "오답": "나머지는 재진술(big success → popular, handed → gave)"
+     }
+    },
+    {
+     "num": 21,
+     "qtype": "조언",
+     "subtype": "해 줄 말 있는 대로",
+     "score": 4,
+     "question": "그림에 자신이 없는 소년에게 Vashti가 해 줄 말로 알맞은 것을 있는 대로 고른 것은?",
+     "choices": [
+      "① 가, 라, 바",
+      "② 나, 다, 사, 아",
+      "③ 가, 나, 라, 사",
+      "④ 가, 마, 사",
+      "⑤ 라, 바, 아"
+     ],
+     "answer": "③",
+     "explanation": "가·라 교과서 Vashti 말 / 나 교과서 선생님 말(Vashti가 받은 격려) / 사 창작 격려.  [출처: YBM(박준언) L8 본문]",
+     "source": "YBM(박준언) L8 본문",
+     "review": {
+      "출처": "YBM(박준언) L8 본문",
+      "원문변형": "교과서 말 3 + 창작 1 / 오답: 반대로 바꾼 교과서 말(바) · 다른 장면 선생님 농담(아) · 부적절 창작(다·마). (다)·(사)는 처음 「straight line」 표현이 #20 정답 근거를 노출해 교체",
+      "정답근거": "가·라 교과서 Vashti 말 / 나 교과서 선생님 말(Vashti가 받은 격려) / 사 창작 격려.",
+      "오답설계": "2026 #21처럼 다른 인물의 교과서 말을 오답으로 재사용(아)"
+     },
+     "student": {
+      "왜": "가·라 교과서 Vashti 말 / 나 교과서 선생님 말(Vashti가 받은 격려) / 사 창작 격려.",
+      "오답": "2026 #21처럼 다른 인물의 교과서 말을 오답으로 재사용(아)"
+     },
+     "box": "(가) I'm sure you can. Trust yourself.\n(나) Just make a mark. It will take you somewhere.\n(다) Drawing is too hard for you, so give up.\n(라) Show me. Then sign it.\n(마) Only great artists can paint like me.\n(바) Don't trust yourself. Ask your teacher to draw for you.\n(사) Don't worry about making mistakes. Just start.\n(아) It's a polar bear in a snowstorm. Very funny!"
+    }
+   ]
+  },
+  {
+   "num": 22,
+   "qtype": "대화",
+   "subtype": "대화 흐름 어색",
+   "score": 3,
+   "question": "짝지어진 대화 중 가장 어색한 것은?",
+   "choices": [
+    "① A: Did you listen to Ashley's new album? / B: Yeah, I did. I think it's better than the first one.",
+    "② A: The cover of this book is very nice. / B: Yeah, all the pictures in the book are beautiful, too.",
+    "③ A: What do you see in this painting? / B: I see many boats on the sea.",
+    "④ A: Is the book about the Internet interesting? / B: Yeah. I think you'll like it.",
+    "⑤ A: Why did you think the play was great? / B: I watched it with my sister."
+   ],
+   "answer": "⑤",
+   "explanation": "이유를 물었는데 누구와 봤는지로 답함 — 동문서답.  [출처: YBM(박준언) L8 Listen and Number 1~3 · Wrap Up 1]",
+   "source": "YBM(박준언) L8 Listen and Number 1~3 · Wrap Up 1",
+   "review": {
+    "출처": "YBM(박준언) L8 Listen and Number 1~3 · Wrap Up 1",
+    "원문변형": "교과서 문답 + ⑤ 창작",
+    "정답근거": "이유를 물었는데 누구와 봤는지로 답함 — 동문서답.",
+    "오답설계": "touching(#7 정답)·hit(#1 선지)·「Why do you like ~?」(#25 정답형) 문장은 넣지 않음"
+   },
+   "student": {
+    "왜": "이유를 물었는데 누구와 봤는지로 답함 — 동문서답.",
+    "오답": "touching(#7 정답)·hit(#1 선지)·「Why do you like ~?」(#25 정답형) 문장은 넣지 않음"
+   }
+  },
+  {
+   "num": 23,
+   "qtype": "어법",
+   "subtype": "감탄문 전환",
+   "score": 4,
+   "question": "의미가 같은 문장으로 바꿔 쓴 것 중 옳지 않은 것은?",
+   "choices": [
+    "① It is a very old tree. → What an old tree it is!",
+    "② They are very cute puppies. → What a cute puppies they are!",
+    "③ She is very kind. → How kind she is!",
+    "④ He runs very fast. → How fast he runs!",
+    "⑤ You have a very warm heart. → What a warm heart you have!"
+   ],
+   "answer": "②",
+   "explanation": "복수명사 앞에 a 불가 → What cute puppies they are!  [출처: YBM(박준언) L7 문법포인트 감탄문]",
+   "source": "YBM(박준언) L7 문법포인트 감탄문",
+   "review": {
+    "출처": "YBM(박준언) L7 문법포인트 감탄문",
+    "원문변형": "",
+    "정답근거": "복수명사 앞에 a 불가 → What cute puppies they are!",
+    "오답설계": "a/an(①)·형용사(③)·부사(④)·목적어 명사(⑤)까지 넓힘"
+   },
+   "student": {
+    "왜": "복수명사 앞에 a 불가 → What cute puppies they are!",
+    "오답": "a/an(①)·형용사(③)·부사(④)·목적어 명사(⑤)까지 넓힘"
+   }
+  },
+  {
+   "num": 24,
+   "qtype": "대화",
+   "subtype": "답할 수 없는 질문",
+   "score": 4,
+   "question": "대화를 읽고 답할 수 없는 질문은?\nJun: Wow, Steve looks so cool!\nSora: Yes. I think this movie is going to be a big success.\nJun: Why do you think so, Sora?\nSora: Because Steve is playing a brave hero for the first time.\nJun: You're right. I can't wait to see his acting.\nSora: When does the movie start?\nJun: It starts at 3:30.\nSora: Let's buy some drinks, Jun!",
+   "choices": [
+    "① What does Sora think about the movie?",
+    "② Why does Sora think the movie will be popular?",
+    "③ What is the title of the movie?",
+    "④ Is this the first time for Steve to play a hero?",
+    "⑤ What will Sora and Jun buy?"
+   ],
+   "answer": "③",
+   "explanation": "영화 제목은 대화에 없음.  [출처: YBM(박준언) L8 Conversation 5]",
+   "source": "YBM(박준언) L8 Conversation 5",
+   "review": {
+    "출처": "YBM(박준언) L8 Conversation 5",
+    "원문변형": "화자 Alex·Ella → Jun·Sora(학교 방식), big hit → big success(#1 보호), I'm so excited about his acting → I can't wait to see his acting(#7 보호)",
+    "정답근거": "영화 제목은 대화에 없음.",
+    "오답설계": "④ 답할 수 없어 보이지만 for the first time으로 답 나옴"
+   },
+   "student": {
+    "왜": "영화 제목은 대화에 없음.",
+    "오답": "④ 답할 수 없어 보이지만 for the first time으로 답 나옴"
+   }
+  },
+  {
+   "num": 25,
+   "qtype": "대화",
+   "subtype": "공통 빈칸 — 이유 묻기",
+   "score": 3,
+   "question": "위의 ⓐ와 ⓑ에 공통으로 들어갈 말로 가장 알맞은 것은?\n[A] B: That key ring is pretty.\nG: Thanks. It's my favorite thing. It has a photo of my favorite actor.\nB: ( ⓐ )\nG: Because I love his voice. He sings really well.\n[B] G: The Dream of a Dog is my favorite movie.\nB: ( ⓑ )\nG: Because I'm interested in pets.",
+   "choices": [
+    "① How do you like it?",
+    "② Why don't you like it?",
+    "③ When did you get it?",
+    "④ Why do you like it so much?",
+    "⑤ What do you think of it?"
+   ],
+   "answer": "④",
+   "explanation": "뒤 Because와 이어지려면 이유를 묻는 말.  [출처: YBM(박준언) L8 Wrap Up 2·3]",
+   "source": "YBM(박준언) L8 Wrap Up 2·3",
+   "review": {
+    "출처": "YBM(박준언) L8 Wrap Up 2·3",
+    "원문변형": "Wrap Up 2(열쇠고리 배우)·3(영화 제안)을 둘 다 「좋아하는 이유 묻기」 대화로 맞춤",
+    "정답근거": "뒤 Because와 이어지려면 이유를 묻는 말.",
+    "오답설계": "① like가 있지만 소감 · ② 반대 · ③⑤ 시점·의견"
+   },
+   "student": {
+    "왜": "뒤 Because와 이어지려면 이유를 묻는 말.",
+    "오답": "① like가 있지만 소감 · ② 반대 · ③⑤ 시점·의견"
+   }
+  },
+  {
+   "num": 26,
+   "qtype": "어법",
+   "subtype": "옳은 문장 개수(7문장)",
+   "score": 5,
+   "question": "어법상 옳은 문장은 모두 몇 개인가?",
+   "choices": [
+    "① 1개",
+    "② 2개",
+    "③ 3개",
+    "④ 4개",
+    "⑤ 5개"
+   ],
+   "answer": "④",
+   "explanation": "옳은 것 4개: What great news it is!(news 불가산 — a 없음) · I think he is a good artist.(that 생략) · I was surprised to see him there.(감정 원인) · The robot can clean itself. / 틀린 것 3개: ourself → ourselves · tastes → taste · themselfs → themselves.  [출처: YBM(박준언) L7·YBM(박준언) L8 문법포인트 종합]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 문법포인트 종합",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 문법포인트 종합",
+    "원문변형": "",
+    "정답근거": "옳은 것 4개: What great news it is!(news 불가산 — a 없음) · I think he is a good artist.(that 생략) · I was surprised to see him there.(감정 원인) · The robot can clean itself. / 틀린 것 3개: ourself → ourselves · tastes → taste · themselfs → themselves.",
+    "오답설계": "옳은 문장 3개를 틀려 보이게(a 없는 감탄문·that 생략·목적 아닌 to부정사) + 범위 밖 수일치 함정. 감탄문·that·to부정사·재귀 문장은 #23·#16·#17·#4와 소재를 다르게"
+   },
+   "student": {
+    "왜": "옳은 것 4개: What great news it is!(news 불가산 — a 없음) · I think he is a good artist.(that 생략) · I was surprised to see him there.(감정 원인) · The robot can clean itself. / 틀린 것 3개: ourself → ourselves · tastes → taste · themselfs → themselves.",
+    "오답": "옳은 문장 3개를 틀려 보이게(a 없는 감탄문·that 생략·목적 아닌 to부정사) + 범위 밖 수일치 함정. 감탄문·that·to부정사·재귀 문장은 #23·#16·#17·#4와 소재를 다르게"
+   },
+   "box": "• What great news it is!\n• I think he is a good artist.\n• I was surprised to see him there.\n• The robot can clean itself.\n• We enjoyed ourself at the camp.\n• Funny-looking fruits tastes great.\n• The boys introduced themselfs to the class."
+  }
+ ]
+}
