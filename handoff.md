@@ -461,7 +461,7 @@
 - 11.27 정밀 검증(필립 지시): 4번 주어진 문장 'What makes this possible…' → 'Such a low price is possible because…'(this가 ④ 앞 '해결책'도 가리킬 수 있어 복수정답 소지 → 가격 지시로 고정, student.py 4번 해설 수정) / student.py 13번 ④ avoiding 설명 추가. 문항별 정답 유일성·오답 근거·밑줄 5개·선지 5개·삽입/무관 번호 5개 재확인, docx 본문·선지가 JSON과 일치(요약 선지는 (A)…(B) 표기), 해설지 2종 정답표 = JSON 정답열, 1회와 지문 중복 0(교과서는 단락 다름: 1회 L3❷❹·L4❷❹❺ / 2회 L3❸❺·L4❶❸).
 - 11.27 재검증: 17번(◆ 밀밭) 주어진 글 'no two stalks carry exactly the same genes'는 현대 밀 품종이 유전적으로 균일하다는 사실과 어긋남 → 'A field sown with an old local variety of wheat … yet its stalks differ slightly from one another in their genes', (A) 'single, uniform modern variety'로 수정(일치도 0.20, 정답 ② 그대로). 그 밖에 바꿔 쓴 지문의 사실 진술(코끼리·사자 수면, Foldscope 종이 접기, 이탈리아 통신사 사례 등)은 원문 범위 안임을 확인. 학생용 해설지는 4쪽(마지막 쪽 28번만) — 내용 문제 아님.
 - 산출물(채팅 전달, 드라이브 미업로드): `jechulgo1_2026_2f_exam2.json`, `제철고1_2학기기말_2회_예상문제.docx`(13쪽)·`_해설지(검수용).docx`(9쪽)·`_해설지(학생용).docx`(4쪽). 생성: /home/claude/exam2/{items.py, student.py, build.py} → gen_modern.py·gen_answers.py(1회와 같은 생성기, 저장소 미반영).
-- index '학교 예상문제'용: `exams/student/jechulgo1_2026_2f_mock2.json`(make_student_exam.py) + `list.json`에 2회 항목 추가(open:false) — 로컬 준비만, 저장소 반영은 필립 검수 후.
+- index '학교 예상문제'용: `exams/student/jechulgo1_2026_2f_mock2.json`(make_student_exam.py) + `list.json`에 2회 항목 추가(open:false) — 11.27 필립 지시로 커밋(2d2cdb5). 공개는 관리자 패널 '📝 예상문제'에서.
 
 ## 진행 중
 - **제철고1 2학기 기말 2회 검수(48차)**: 필립 검수 → 수정 반영 시 items.py·student.py 고친 뒤 build.py → 게이트 → gen_modern/gen_answers 재생성 → make_student_exam.py로 exams/student/jechulgo1_2026_2f_mock2.json 재생성 후 커밋.
@@ -475,7 +475,7 @@
 - **exam_docx.js 쪼개짐 방지 반영 여부(40차, 필립 결정)**: `buildExam()` 125행 지문 상자를 테두리 문단으로 바꾸고 문항 단위 keepNext를 넣으면 후처리 없이 해결. 기존 출력 형태가 바뀌므로 승인 후 수정.
 - **exam_gate.py 7차 예외(40차, 필립 결정)**: 제철고1처럼 학교가 지문을 바꿔 내는 경우 `THRESHOLD`(16행)·7차(194행~)를 문항별 `_intended_change` 표시로 건너뛰게 할지.
 - **수능 33·34·37·39 지문DB 등록(40차)**: 학생 앱 변형문제 연습용으로 등록할지 필립 결정.
-- **학교 예상문제 풀기 배포(41차)**: index.html·exams/student/ 2개 파일 저장소 반영 대기. 반영 후 관리자 패널 '📝 예상문제'에서 공개하기 1번 눌러 '공개 중'이 되는지 확인(라이브 GAS에 saveExam·getExamList가 있는지 확인 겸). 2회 학생용 JSON·list 항목은 48차에 준비됨(필립 검수 후 커밋).
+- **학교 예상문제 풀기 배포(41차)**: index.html·exams/student/ 2개 파일 저장소 반영 대기. 반영 후 관리자 패널 '📝 예상문제'에서 공개하기 1번 눌러 '공개 중'이 되는지 확인(라이브 GAS에 saveExam·getExamList가 있는지 확인 겸). 2회 학생용 JSON·list 항목 48차 커밋 완료(미공개).
 - **docs/제철고1.md 갱신(40차)**: 2부에 2학기 중간 실제 결과·2학기 기말 예상문제 기록, 1-3 '외부지문 구간 예상문제 안 만듦'에 이번 예외(부교재로 대체) 메모.
 - **apply.html SMS_TO(34차)**: 원장님 휴대폰 번호를 받아 넣어야 문자 비상 버튼이 보임.
 - **GitHub 알림 확인(34차)**: GitHub Settings > Notifications > Actions에서 실패 알림 메일이 켜져 있는지, Actions 탭에서 '레벨테스트 서버 점검' 수동 실행이 초록(성공)인지 확인.
