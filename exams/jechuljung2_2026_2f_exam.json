@@ -1,0 +1,774 @@
+{
+ "key": "제철중_2학년_2026_2학기_기말",
+ "meta": {
+  "school": "제철중",
+  "school_full": "포항제철중학교",
+  "grade": "2학년",
+  "year": "2026",
+  "semester": "2학기",
+  "exam": "기말고사",
+  "subject": "영어",
+  "publisher": "YBM(박준언)",
+  "scope": "Lesson 7 · Lesson 8",
+  "build": "claude-authored-v1",
+  "file_prefix": "제철중2_2학기기말",
+  "print_title": "( 2 학기 ) 기말고사 — 예상문제",
+  "total": 26,
+  "total_score": 100,
+  "objective": 26,
+  "written": 0,
+  "difficulty": "2026 2학기 1차고사 대비 상향(원장 확정)",
+  "review_priority": [
+   "① 정답 유일성: #1(run/own 위치 무관) · #10(옳은 6) · #23(옳은 4) · #24(couldn't 묶음) · #25(목적격 4) · #26(옳은 3) — 개수·묶음 판정이 해설과 같은지",
+   "② 교과서 변형: #6 at 6:30 추가 · #8 대화마다 한 곳 뒤집기 · #16 But 삭제 · #18 빈칸 오답 4(원문 한두 단어) · #5 perfect → perfectly",
+   "③ 배점: 3점 #4·6·7·9·11·12·15·22 / 5점 #10·23·24·26 / 나머지 4점 — 2026 2학기 1차고사와 같은 분포(기말 기출 없음, 가정)",
+   "④ 교차 힌트 기준 (a): 지문 → 문항 같은 표현 노출 차단(#10 7문장 교체 · #26 want·ask·make·keep·high 제외 · #24 popular 제외). #7 public things는 L7 지문과 같은 말이나 정답 근거를 대신하지 않음(원장 확인)",
+   "⑤ 신규 발문 #21(의미 같은 것) — 학교 기출에 없는 판정, 원장 확인 후 사용",
+   "◎ 원장 블록별 검토 완료(2026-11-26~27): 1블록 영영·어휘 · 2블록 대화 · 3블록 개수·문법 · 4블록 L7 · 5블록 L8"
+  ],
+  "gate": "exam_gate_middle.py PASS(치명 0) · tools_xhint 교차 힌트 2건 수정 · 오류검증 6건 수정(11-27) · 원장 블록별 검토 완료(2026-11-26~27)",
+  "answer_dist": {
+   "①": 5,
+   "②": 5,
+   "③": 5,
+   "④": 5,
+   "⑤": 6
+  }
+ },
+ "questions": [
+  {
+   "num": 1,
+   "qtype": "영영풀이",
+   "subtype": "빈칸 단어 영영풀이 아닌 것 — 다의어",
+   "score": 4,
+   "question": "각 문장의 빈칸에 들어갈 단어의 영영풀이가 아닌 것은? (순서 상관없음)\n• Mr. Kim ________s the hotel for his uncle.\n• The jumper tried to ________ the bar without touching it.\n• Who ________s this car? Is it yours?\n• What does this sign ________?",
+   "choices": [
+    "① to have a particular meaning or result",
+    "② to have something that belongs to you",
+    "③ to go over something without touching it",
+    "④ to remove things from a place",
+    "⑤ to control or manage a business or organization"
+   ],
+   "answer": "④",
+   "explanation": "빈칸 = run(운영하다) · clear(넘다) · own(소유하다) · mean(의미하다). ④는 clear의 다른 뜻(치우다) 풀이라 어느 빈칸에도 맞지 않음.  [출처: YBM(박준언) L7·YBM(박준언) L8 다의어(풀이: 단어DB)]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 다의어(풀이: 단어DB)",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 다의어(풀이: 단어DB)",
+    "원문변형": "빈칸 문장 창작(11-27 오류검증: run/own이 서로 바뀌어 들어가거나 clear a farm으로 읽히는 문장 교체 → 빈칸마다 단어 하나)",
+    "정답근거": "빈칸 = run(운영하다) · clear(넘다) · own(소유하다) · mean(의미하다). ④는 clear의 다른 뜻(치우다) 풀이라 어느 빈칸에도 맞지 않음.",
+    "오답설계": "①②③⑤ = 단어DB 풀이. 1번 run(own 불가: 삼촌 대신 운영) · 3번 own(run 불가) — 빈칸·풀이 일대일"
+   },
+   "student": {
+    "왜": "빈칸 = run(운영하다) · clear(넘다) · own(소유하다) · mean(의미하다). ④는 clear의 다른 뜻(치우다) 풀이라 어느 빈칸에도 맞지 않음.",
+    "오답": "run 달리다 · clear 치우다 · own 자신의 · mean 못된 — 다른 뜻을 떠올리면 헷갈림"
+   }
+  },
+  {
+   "num": 2,
+   "qtype": "영영풀이",
+   "subtype": "빈칸 단어 영영풀이 아닌 것 — 빈칸 5",
+   "score": 4,
+   "question": "각 문장의 빈칸에 들어갈 단어의 영영풀이가 아닌 것은? (순서 상관없음)\n• The computers are school ________, so you can't take them home.\n• He gets a good ________ from his job at the hospital.\n• Our team won first place in the singing ________.\n• She broke the school ________ in the 100-meter race.\n• The firefighter became a ________ after saving the child.",
+   "choices": [
+    "① something that belongs to a person",
+    "② money that people pay to the government",
+    "③ the best result that has ever been achieved in a sport or activity",
+    "④ money that a person earns from work",
+    "⑤ an event in which people try to win by being better than others"
+   ],
+   "answer": "②",
+   "explanation": "빈칸 = property · income · competition · record · hero. ②는 tax 풀이(빈칸에 tax가 들어갈 자리 없음). hero 풀이는 선지에 없음.  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+    "원문변형": "빈칸 문장 창작(단어DB 예문 변형)",
+    "정답근거": "빈칸 = property · income · competition · record · hero. ②는 tax 풀이(빈칸에 tax가 들어갈 자리 없음). hero 풀이는 선지에 없음.",
+    "오답설계": "income ↔ tax 둘 다 money 풀이. 2번 문장은 gets ~ from his job으로 tax가 못 들어가게 함"
+   },
+   "student": {
+    "왜": "빈칸 = property · income · competition · record · hero. ②는 tax 풀이(빈칸에 tax가 들어갈 자리 없음). hero 풀이는 선지에 없음.",
+    "오답": "income ↔ tax 둘 다 money 풀이. 2번 문장은 gets ~ from his job으로 tax가 못 들어가게 함"
+   }
+  },
+  {
+   "num": 3,
+   "qtype": "영영풀이",
+   "subtype": "영영풀이 → 단어 아닌 것",
+   "score": 4,
+   "question": "주어진 영영풀이에 해당하는 단어가 아닌 것은? (순서 상관없음)\n• toward the back\n• to become better than before\n• connected with all the people in a country or area\n• to use something carelessly or without a good purpose\n• to get money that people have to pay, such as taxes",
+   "choices": [
+    "① improve",
+    "② waste",
+    "③ public",
+    "④ collect",
+    "⑤ forward"
+   ],
+   "answer": "⑤",
+   "explanation": "toward the back = backward. forward(toward the front)는 반대말이라 풀이에 없음.  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+    "원문변형": "",
+    "정답근거": "toward the back = backward. forward(toward the front)는 반대말이라 풀이에 없음.",
+    "오답설계": "풀이 5 · 선지 5인데 일대일 아님(backward는 선지에 없음). 반대말 forward 함정"
+   },
+   "student": {
+    "왜": "toward the back = backward. forward(toward the front)는 반대말이라 풀이에 없음.",
+    "오답": "풀이 5 · 선지 5인데 일대일 아님(backward는 선지에 없음). 반대말 forward 함정"
+   }
+  },
+  {
+   "num": 4,
+   "qtype": "영영풀이",
+   "subtype": "영영풀이 올바른 것",
+   "score": 3,
+   "question": "주어진 단어의 영영풀이가 올바른 것은?",
+   "choices": [
+    "① lose: to be successful in a game or competition",
+    "② streetlight: a marked place where people can cross a road",
+    "③ national: relating to a whole country",
+    "④ rich: not having enough money to live well",
+    "⑤ toe: the front part of the body below the chest"
+   ],
+   "answer": "③",
+   "explanation": "national = relating to a whole country(단어DB 풀이 그대로).  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘(풀이: 단어DB)",
+    "원문변형": "",
+    "정답근거": "national = relating to a whole country(단어DB 풀이 그대로).",
+    "오답설계": "반의어 풀이 2(lose ← win · rich ← poor) + 다른 단어 풀이 2(streetlight ← crosswalk · toe ← stomach)"
+   },
+   "student": {
+    "왜": "national = relating to a whole country(단어DB 풀이 그대로).",
+    "오답": "반의어 풀이 2(lose ← win · rich ← poor) + 다른 단어 풀이 2(streetlight ← crosswalk · toe ← stomach)"
+   }
+  },
+  {
+   "num": 5,
+   "qtype": "어법",
+   "subtype": "대화 밑줄 어법",
+   "score": 4,
+   "question": "대화의 밑줄 친 부분이 어법상 어색한 것은?\nB: Look, Nicole! This is a magic pen! It can ①<u>read</u> colors.\nG: Wow! How does it ②<u>work</u>?\nB: Just ③<u>touch</u> the end to an object, and it changes to that color.\nG: How ④<u>amazing</u>! We can get the exact colors we want.\nB: Yes! We don't have to mix colors.\nG: I'm sure it'll be ⑤<u>perfectly</u> for our art projects.\nB: I agree. I'd like to try it on different things!",
+   "choices": [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤"
+   ],
+   "answer": "⑤",
+   "explanation": "be동사(will be) 뒤 보어 자리 → 형용사 perfect.  [출처: YBM(박준언) L8 Conversation 5]",
+   "source": "YBM(박준언) L8 Conversation 5",
+   "review": {
+    "출처": "YBM(박준언) L8 Conversation 5",
+    "원문변형": "원문 perfect → perfectly(⑤ 한 곳)",
+    "정답근거": "be동사(will be) 뒤 보어 자리 → 형용사 perfect.",
+    "오답설계": "① can + 원형 · ② does + 원형(works ×) · ③ 명령문 원형 · ④ How + 형용사 감탄문(What ×) — 모두 옳음"
+   },
+   "student": {
+    "왜": "be동사(will be) 뒤 보어 자리 → 형용사 perfect.",
+    "오답": "① can + 원형 · ② does + 원형(works ×) · ③ 명령문 원형 · ④ How + 형용사 감탄문(What ×) — 모두 옳음"
+   }
+  },
+  {
+   "num": 6,
+   "qtype": "대화",
+   "subtype": "대화 빈칸 아닌 것",
+   "score": 3,
+   "question": "대화의 내용상 빈칸 ①~⑤에 알맞은 말이 아닌 것은?\nG: I can't believe I'm going to Nicky's concert!\nB: The city gives us ①________. It's so cool.\nG: Yeah, but we need to ②________. We might be late.\nB: What time is it now?\nG: It's 6:20. We only have ③________ until the concert starts at 6:30.\nB: There's no crosswalk here. We have to ④________!\nG: We really need one here.\nB: I totally ⑤________.",
+   "choices": [
+    "① free concerts",
+    "② hurry",
+    "③ 20 minutes",
+    "④ go all the way around",
+    "⑤ agree with you"
+   ],
+   "answer": "③",
+   "explanation": "6:20 → 6:30은 10분(원문 We only have 10 minutes).  [출처: YBM(박준언) L7 Conversation 5]",
+   "source": "YBM(박준언) L7 Conversation 5",
+   "review": {
+    "출처": "YBM(박준언) L7 Conversation 5",
+    "원문변형": "③ 문장에 at 6:30 추가(시간 계산 근거). 나머지 원문",
+    "정답근거": "6:20 → 6:30은 10분(원문 We only have 10 minutes).",
+    "오답설계": "나머지 4개는 원문 그대로"
+   },
+   "student": {
+    "왜": "6:20 → 6:30은 10분(원문 We only have 10 minutes).",
+    "오답": "나머지 4개는 원문 그대로"
+   }
+  },
+  {
+   "num": 7,
+   "qtype": "대화",
+   "subtype": "빈칸 어색 — 인과",
+   "score": 3,
+   "question": "대화의 빈칸에 들어갈 말이 어색한 것은?\nA: We have to ________________.\nB: Why is that?\nA: Because they are public things, and everyone uses them.\nB: I agree with you.",
+   "choices": [
+    "① take good care of library books",
+    "② wash my new sneakers carefully",
+    "③ keep the benches in the park clean",
+    "④ use the computers in the school library carefully",
+    "⑤ turn off the lights in the public restroom"
+   ],
+   "answer": "②",
+   "explanation": "내 새 운동화는 개인 물건이라 public things가 아님.  [출처: YBM(박준언) L7 Listen and Number 1 틀]",
+   "source": "YBM(박준언) L7 Listen and Number 1 틀",
+   "review": {
+    "출처": "YBM(박준언) L7 Listen and Number 1 틀",
+    "원문변형": "대화 틀 창작(have to · I agree with you 원문 표현)",
+    "정답근거": "내 새 운동화는 개인 물건이라 public things가 아님.",
+    "오답설계": "선지 모두 복수 명사(them 지칭 가능) → 내용으로만 판정"
+   },
+   "student": {
+    "왜": "내 새 운동화는 개인 물건이라 public things가 아님.",
+    "오답": "선지 모두 복수 명사(them 지칭 가능) → 내용으로만 판정"
+   }
+  },
+  {
+   "num": 8,
+   "qtype": "대화",
+   "subtype": "가장 자연스러운 대화",
+   "score": 4,
+   "question": "두 사람의 대화가 가장 자연스러운 것은?",
+   "choices": [
+    "① A: What's special about this mug? / B: When I press a button, it mixes my drink. / A: How useful! I'll need a spoon to use it.",
+    "② A: I can't sleep these days. / B: How about changing your pillow? Mine keeps me cool, so I can sleep well all night. / A: Thanks. I'll keep my old pillow, then.",
+    "③ A: Have you seen this strange box? / B: No, what is it? Is it a cube? / A: It says it's a mini projector. You can't show videos with it.",
+    "④ A: Look at this! It has a USB port. What do you think it's for? / B: Maybe it charges something? / A: Let me check.... Oh, it heats water. What a smart idea!",
+    "⑤ A: It's a smart garden. It waters the plants itself. / B: How cool! Then I have to water them every day. / A: Yes, and it helps you grow plants in the house."
+   ],
+   "answer": "④",
+   "explanation": "L8 Listen and Number 3 원문 그대로.  [출처: YBM(박준언) L8 Listen and Number 1~4 · Review Lounge 1~3]",
+   "source": "YBM(박준언) L8 Listen and Number 1~4 · Review Lounge 1~3",
+   "review": {
+    "출처": "YBM(박준언) L8 Listen and Number 1~4 · Review Lounge 1~3",
+    "원문변형": "원문 대화마다 한 곳 뒤집기",
+    "정답근거": "L8 Listen and Number 3 원문 그대로.",
+    "오답설계": "① 섞어 주니 숟가락 필요 없음(원문 You won't need a spoon) · ② 조언에 고맙다며 옛 베개 유지 · ③ 프로젝터인데 영상을 못 보여 준다고 함(원문 You can show videos with it anywhere) · ⑤ 스스로 물 주는데 매일 물 줌"
+   },
+   "student": {
+    "왜": "L8 Listen and Number 3 원문 그대로.",
+    "오답": "① 섞어 주니 숟가락 필요 없음(원문 You won't need a spoon) · ② 조언에 고맙다며 옛 베개 유지 · ③ 프로젝터인데 영상을 못 보여 준다고 함(원문 You can show videos with it anywhere) · ⑤ 스스로 물 주는데 매일 물 줌"
+   }
+  },
+  {
+   "num": 9,
+   "qtype": "대화",
+   "subtype": "짝 대화 어색",
+   "score": 3,
+   "question": "짝지어진 대화가 어색한 것은?",
+   "choices": [
+    "① A: This smartphone course is free for seniors. / B: Oh, how much does it cost them?",
+    "② A: What's special about these scissors? / B: They shoot lasers to help you cut in a straight line.",
+    "③ A: Is this a camera? / B: I'm not sure. Let's ask the clerk.",
+    "④ A: We need more benches in this park. / B: I think so, too. Let's post about it on the city hall website.",
+    "⑤ A: It says the photos print in just a few seconds. / B: How cool! I'd love to try it."
+   ],
+   "answer": "①",
+   "explanation": "무료라는 말에 값을 물음(원문 L7: They don't have to pay for it).  [출처: YBM(박준언) L7·YBM(박준언) L8 Listen and Number]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 Listen and Number",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 Listen and Number",
+    "원문변형": "원문 대화 짝 변형",
+    "정답근거": "무료라는 말에 값을 물음(원문 L7: They don't have to pay for it).",
+    "오답설계": "나머지: 특징 묻기 · 불확실 · 공감 · 감탄 표현 그대로"
+   },
+   "student": {
+    "왜": "무료라는 말에 값을 물음(원문 L7: They don't have to pay for it).",
+    "오답": "나머지: 특징 묻기 · 불확실 · 공감 · 감탄 표현 그대로"
+   }
+  },
+  {
+   "num": 10,
+   "qtype": "어법",
+   "subtype": "밑줄 쓰임 올바른 개수(10문장)",
+   "score": 5,
+   "question": "밑줄 친 부분의 쓰임이 올바른 문장은 모두 몇 개인가?",
+   "choices": [
+    "① 3개",
+    "② 4개",
+    "③ 5개",
+    "④ 6개",
+    "⑤ 7개"
+   ],
+   "answer": "④",
+   "explanation": "옳음 6: are(scissors 복수) · has(each of + 복수명사 → 단수) · stopped working · There are + 복수 · hurt(과거형 같은 꼴) · forget to charge / 틀림 4: happily → happy · to cook → cooking · are → is · to → with  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘·어법]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘·어법",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘·어법",
+    "원문변형": "문장 창작(11-26·27 수정: 다른 문항 지문과 같은 표현 7문장 교체)",
+    "정답근거": "옳음 6: are(scissors 복수) · has(each of + 복수명사 → 단수) · stopped working · There are + 복수 · hurt(과거형 같은 꼴) · forget to charge / 틀림 4: happily → happy · to cook → cooking · are → is · to → with",
+    "오답설계": "scissors are · hurt(과거) · each of ~ has를 틀려 보이게 / feel + 형용사 · finish + -ing · One of ~ is · mix A with B"
+   },
+   "student": {
+    "왜": "옳음 6: are(scissors 복수) · has(each of + 복수명사 → 단수) · stopped working · There are + 복수 · hurt(과거형 같은 꼴) · forget to charge / 틀림 4: happily → happy · to cook → cooking · are → is · to → with",
+    "오답": "scissors are · hurt(과거) · each of ~ has를 틀려 보이게 / feel + 형용사 · finish + -ing · One of ~ is · mix A with B"
+   },
+   "box": "• These scissors <u>are</u> really sharp.\n• Each of the students <u>has</u> a locker.\n• I felt <u>happily</u> after the concert.\n• Mom finished <u>to cook</u> dinner.\n• One of the buttons on my coat <u>are</u> missing.\n• My computer suddenly stopped <u>working</u>.\n• There <u>are</u> people on every bench.\n• Mix the flour <u>to</u> the water.\n• My back <u>hurt</u> after I carried the heavy box.\n• Don't forget <u>to charge</u> your phone before you leave."
+  },
+  {
+   "num": 11,
+   "qtype": "어휘",
+   "subtype": "빈칸 알맞지 않은 말",
+   "score": 3,
+   "question": "주어진 문장의 빈칸에 알맞은 말이 아닌 것은? (순서 상관없음)\n• He put some coins into his ________.\n• Use ________ to cut the paper in a straight line.\n• We walked up the ________ to the second floor.\n• The teacher used a ________ to show us some videos.\n• My grandma can't walk well, so she uses a ________.",
+   "choices": [
+    "① senior",
+    "② scissors",
+    "③ stairs",
+    "④ wheelchair",
+    "⑤ piggy bank"
+   ],
+   "answer": "①",
+   "explanation": "빈칸 = piggy bank · scissors · stairs · projector(선지 없음) · wheelchair. senior(노인)는 uses a ___ 자리(물건)에 맞지 않음.  [출처: YBM(박준언) L7·YBM(박준언) L8 어휘]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 어휘",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 어휘",
+    "원문변형": "문장 창작",
+    "정답근거": "빈칸 = piggy bank · scissors · stairs · projector(선지 없음) · wheelchair. senior(노인)는 uses a ___ 자리(물건)에 맞지 않음.",
+    "오답설계": "마지막 문장 grandma에 senior를 붙이고 싶게. 26#11(품사 오답) → 같은 품사(명사) 오답으로 상향"
+   },
+   "student": {
+    "왜": "빈칸 = piggy bank · scissors · stairs · projector(선지 없음) · wheelchair. senior(노인)는 uses a ___ 자리(물건)에 맞지 않음.",
+    "오답": "마지막 문장 grandma에 senior를 붙이고 싶게. 26#11(품사 오답) → 같은 품사(명사) 오답으로 상향"
+   }
+  },
+  {
+   "type": "group",
+   "num_range": "12-14",
+   "passage": "Do you know about taxes? Building roads or running schools (A)[ needs / need ] a lot of money, and that money comes from taxes. You may think, 'I don't care about taxes. I don't pay them. I'm just a teen!' But here's a surprising secret: you pay taxes too! Let's learn more about taxes.\nYour family needs money to run your home. (가)________, countries need money, too. Taxes are like money in a piggy bank for a country. Everyone (B)[ puts / put ] a little money into it, and then that money is used for public things like roads and schools.\nTaxes have a long history. Even in the old days, countries collected them to keep their people safe and manage their land. In 1696, after a long war with France, England needed a lot of money. England wanted rich people (C)[ to pay / pay ] more taxes. (나)________, it made a window tax. Rich people usually lived in large houses with many windows. More windows meant more taxes.",
+   "questions": [
+    {
+     "num": 12,
+     "qtype": "연결어",
+     "subtype": "연결어 빈칸",
+     "score": 3,
+     "question": "빈칸 (가)와 (나)에 들어갈 말로 바르게 짝지어진 것은?",
+     "choices": [
+      "① However / So",
+      "② In just the same way / So",
+      "③ In just the same way / However",
+      "④ For example / Because",
+      "⑤ Although / Finally"
+     ],
+     "answer": "②",
+     "explanation": "(가) 가족처럼 나라도(같은 방식, too) · (나) 부자에게 세금 → 창문세(결과). 원문 그대로.  [출처: YBM(박준언) L7 본문 1~2부분]",
+     "source": "YBM(박준언) L7 본문 1~2부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 1~2부분",
+      "원문변형": "원문(소제목 생략). 발문 (A)(B) → (가)(나)",
+      "정답근거": "(가) 가족처럼 나라도(같은 방식, too) · (나) 부자에게 세금 → 창문세(결과). 원문 그대로.",
+      "오답설계": "역접·예시·양보 연결어"
+     },
+     "student": {
+      "왜": "(가) 가족처럼 나라도(같은 방식, too) · (나) 부자에게 세금 → 창문세(결과). 원문 그대로.",
+      "오답": "역접·예시·양보 연결어"
+     }
+    },
+    {
+     "num": 13,
+     "qtype": "어법",
+     "subtype": "[ ] 어법 짝",
+     "score": 4,
+     "question": "(A)~(C)에 알맞은 말이 바르게 짝지어진 것은?",
+     "choices": [
+      "① need / put / pay",
+      "② need / puts / to pay",
+      "③ needs / put / to pay",
+      "④ needs / puts / to pay",
+      "⑤ needs / puts / pay"
+     ],
+     "answer": "④",
+     "explanation": "(A) 동명사 주어 A or B → 단수 needs · (B) everyone 단수 · (C) want + 목적어 + to부정사.  [출처: YBM(박준언) L7 본문 1~2부분]",
+     "source": "YBM(박준언) L7 본문 1~2부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 1~2부분",
+      "원문변형": "원문이 정답",
+      "정답근거": "(A) 동명사 주어 A or B → 단수 needs · (B) everyone 단수 · (C) want + 목적어 + to부정사.",
+      "오답설계": "26#15(A and B → are)와 반대 방향 함정"
+     },
+     "student": {
+      "왜": "(A) 동명사 주어 A or B → 단수 needs · (B) everyone 단수 · (C) want + 목적어 + to부정사.",
+      "오답": "26#15(A and B → are)와 반대 방향 함정"
+     }
+    },
+    {
+     "num": 14,
+     "qtype": "내용일치",
+     "subtype": "내용 일치",
+     "score": 4,
+     "question": "윗글의 내용과 일치하는 것은?",
+     "choices": [
+      "① Teens don't have to pay any taxes.",
+      "② Countries collected taxes only to manage their land.",
+      "③ England needed money after a long war with Spain.",
+      "④ Poor people usually lived in large houses with many windows.",
+      "⑤ People with more windows had to pay more taxes."
+     ],
+     "answer": "⑤",
+     "explanation": "More windows meant more taxes 재진술.  [출처: YBM(박준언) L7 본문 1~2부분]",
+     "source": "YBM(박준언) L7 본문 1~2부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 1~2부분",
+      "원문변형": "",
+      "정답근거": "More windows meant more taxes 재진술.",
+      "오답설계": "① you pay taxes too 반대 · ② only(keep their people safe 빠짐) · ③ France → Spain · ④ Rich → Poor"
+     },
+     "student": {
+      "왜": "More windows meant more taxes 재진술.",
+      "오답": "① you pay taxes too 반대 · ② only(keep their people safe 빠짐) · ③ France → Spain · ④ Rich → Poor"
+     }
+    }
+   ]
+  },
+  {
+   "type": "group",
+   "num_range": "15-17",
+   "passage": "People pay different kinds of taxes. Here are the main ones.\n• Income tax: People who earn money from their jobs pay income tax.\n• Sales tax: All people pay sales tax on the things that they buy. For example, when you buy bread, you pay sales tax.\n• Property tax: People who own houses or land have to pay property tax.\nTaxes do a lot of good things for us! Thanks to taxes, we get free education at middle school. Taxes are used for our environment. They pay for the clean air and water which we need. Taxes also pay for our safety, like streetlights by roads. So, you can ask the country to put more streetlights in dark places.\nTaxes are all around us. They pay for things that we use every day. They can make our lives better. <u>세금이 낭비되면, 우리는 우리가 필요한 서비스를 받을 수 없다.</u> So, taxes must be used wisely. We need to see that taxes are used the right way.",
+   "questions": [
+    {
+     "num": 15,
+     "qtype": "내용이해",
+     "subtype": "바르게 이해 못한 사람",
+     "score": 3,
+     "question": "윗글을 바르게 이해하지 못한 사람은?",
+     "choices": [
+      "① 세금은 학교나 도로 같은 공공 물건에만 쓰이고, 환경에는 쓰이지 않는구나.",
+      "② 직장에서 돈을 버는 사람들은 소득세를 내는구나.",
+      "③ 빵을 살 때도 판매세를 내니까 십 대인 나도 세금을 내고 있네.",
+      "④ 중학교에서 무료로 교육을 받을 수 있는 건 세금 덕분이구나.",
+      "⑤ 우리 동네 어두운 곳에 가로등을 더 설치해 달라고 나라에 요청할 수 있겠어."
+     ],
+     "answer": "①",
+     "explanation": "원문 Taxes are used for our environment(깨끗한 공기·물).  [출처: YBM(박준언) L7 본문 3~4부분]",
+     "source": "YBM(박준언) L7 본문 3~4부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 3~4부분",
+      "원문변형": "원문(소제목 생략) · 밑줄 문장 앞 But 삭제",
+      "정답근거": "원문 Taxes are used for our environment(깨끗한 공기·물).",
+      "오답설계": "②~⑤ 원문 재진술"
+     },
+     "student": {
+      "왜": "원문 Taxes are used for our environment(깨끗한 공기·물).",
+      "오답": "②~⑤ 원문 재진술"
+     }
+    },
+    {
+     "num": 16,
+     "qtype": "영작",
+     "subtype": "배열 영작 — 목적격 관계대명사",
+     "score": 4,
+     "question": "윗글의 밑줄 친 우리말과 같은 뜻이 되도록 주어진 모든 단어를 알맞게 배열할 때, 열 번째로 오는 것은?\n[ we | services | can't | If | wasted | are | the | need | they | that | we | get ]",
+     "choices": [
+      "① get",
+      "② the",
+      "③ that",
+      "④ services",
+      "⑤ we"
+     ],
+     "answer": "③",
+     "explanation": "If they are wasted we can't get the services that we need — 열 번째 that.  [출처: YBM(박준언) L7 본문 4부분]",
+     "source": "YBM(박준언) L7 본문 4부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 4부분",
+      "원문변형": "원문 But 삭제(If 대문자로 첫 낱말 고정)",
+      "정답근거": "If they are wasted we can't get the services that we need — 열 번째 that.",
+      "오답설계": "수동태 are wasted + that 위치(「모든 단어」라 생략 불가)"
+     },
+     "student": {
+      "왜": "If they are wasted we can't get the services that we need — 열 번째 that.",
+      "오답": "수동태 are wasted + that 위치(「모든 단어」라 생략 불가)"
+     }
+    },
+    {
+     "num": 17,
+     "qtype": "내용일치",
+     "subtype": "답할 수 없는 것",
+     "score": 4,
+     "question": "윗글을 읽고 답할 수 없는 것은?",
+     "choices": [
+      "① Who pays income tax?",
+      "② Who has to pay property tax?",
+      "③ What do taxes pay for to keep us safe?",
+      "④ What do we get at middle school thanks to taxes?",
+      "⑤ How much sales tax do people pay on bread?"
+     ],
+     "answer": "⑤",
+     "explanation": "빵에 판매세를 낸다는 말만 있고 금액은 없음.  [출처: YBM(박준언) L7 본문 3~4부분]",
+     "source": "YBM(박준언) L7 본문 3~4부분",
+     "review": {
+      "출처": "YBM(박준언) L7 본문 3~4부분",
+      "원문변형": "",
+      "정답근거": "빵에 판매세를 낸다는 말만 있고 금액은 없음.",
+      "오답설계": "①~④는 지문에 답. 낭비·현명한 사용 질문은 #16 노출 때문에 제외"
+     },
+     "student": {
+      "왜": "빵에 판매세를 낸다는 말만 있고 금액은 없음.",
+      "오답": "①~④는 지문에 답. 낭비·현명한 사용 질문은 #16 노출 때문에 제외"
+     }
+    }
+   ]
+  },
+  {
+   "num": 18,
+   "qtype": "빈칸",
+   "subtype": "빈칸 내용 — 원문 정확도",
+   "score": 4,
+   "question": "글의 내용상 빈칸 ①~⑤에 알맞은 것은?\nIn 1963, as a high school student, Dick Fosbury took part in the national high school high jump competition. He jumped high but ①________, and the bar fell to the ground. He lost the competition.\nJust ②________, Fosbury was taking part in the Olympic high jump final. He ran toward the bar, then he flew ③________. And he easily cleared the bar.\n\"No way!\"\n\"What is that?\"\n④________ by his jumping style and laughed at it. Fosbury went over the bar on his back! He ⑤________ at the 1968 Mexico Olympics. How did he do that and win a gold medal in just five years?",
+   "choices": [
+    "① his body didn't touch the bar",
+    "② three years later",
+    "③ lower than the bar",
+    "④ Everyone was bored",
+    "⑤ set a new high jump record"
+   ],
+   "answer": "⑤",
+   "explanation": "원문 그대로(He set a new high jump record).  [출처: YBM(박준언) L8 본문 1~2부분]",
+   "source": "YBM(박준언) L8 본문 1~2부분",
+   "review": {
+    "출처": "YBM(박준언) L8 본문 1~2부분",
+    "원문변형": "원문(소제목 생략)",
+    "정답근거": "원문 그대로(He set a new high jump record).",
+    "오답설계": "① touched → didn't touch · ② five → three(1963→1968) · ③ as high as a bird → lower than the bar(easily cleared the bar와 모순) · ④ shocked → bored"
+   },
+   "student": {
+    "왜": "원문 그대로(He set a new high jump record).",
+    "오답": "① touched → didn't touch · ② five → three(1963→1968) · ③ as high as a bird → lower than the bar(easily cleared the bar와 모순) · ④ shocked → bored"
+   }
+  },
+  {
+   "type": "group",
+   "num_range": "19-20",
+   "passage": "After Fosbury failed in the national competition, he was sad. His records were not ①________ although he ②________ his best. However, he did not give up and began ③________ about his jumping style.\n'When I jump forward, my toes, stomach, or chest touches the bar. It's important for these parts ④________ the bar. How should I jump?' After much thought, he came up with an idea.\n'How about ⑤________ backward instead of jumping forward? My back doesn't have toes or a chest, so nothing will touch the bar!' Fosbury started jumping over the bar on his back. This great idea created a new jumping style.",
+   "questions": [
+    {
+     "num": 19,
+     "qtype": "어법",
+     "subtype": "빈칸 어법",
+     "score": 4,
+     "question": "어법상 윗글의 빈칸 ①~⑤에 알맞은 것은?",
+     "choices": [
+      "① improve",
+      "② does",
+      "③ think",
+      "④ not to touch",
+      "⑤ jump"
+     ],
+     "answer": "④",
+     "explanation": "가주어 It + for 의미상 주어 + not to부정사(부정어는 to 앞).  [출처: YBM(박준언) L8 본문 3부분]",
+     "source": "YBM(박준언) L8 본문 3부분",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 3부분",
+      "원문변형": "원문 5곳 빈칸",
+      "정답근거": "가주어 It + for 의미상 주어 + not to부정사(부정어는 to 앞).",
+      "오답설계": "① improving(과거진행) · ② did(과거) · ③ to think/thinking · ⑤ jumping(How about + -ing)"
+     },
+     "student": {
+      "왜": "가주어 It + for 의미상 주어 + not to부정사(부정어는 to 앞).",
+      "오답": "① improving(과거진행) · ② did(과거) · ③ to think/thinking · ⑤ jumping(How about + -ing)"
+     }
+    },
+    {
+     "num": 20,
+     "qtype": "내용일치",
+     "subtype": "NOT true",
+     "score": 4,
+     "question": "Which is NOT true about the passage above?",
+     "choices": [
+      "① When Fosbury jumped backward, his toes or chest touched the bar.",
+      "② Fosbury was sad after he failed in the national competition.",
+      "③ Fosbury thought about his jumping style instead of giving up.",
+      "④ Fosbury had an idea after thinking for a long time.",
+      "⑤ A new jumping style was created from Fosbury's idea."
+     ],
+     "answer": "①",
+     "explanation": "forward → backward 한 단어 바꾸기.  [출처: YBM(박준언) L8 본문 3부분]",
+     "source": "YBM(박준언) L8 본문 3부분",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 3부분",
+      "원문변형": "",
+      "정답근거": "forward → backward 한 단어 바꾸기.",
+      "오답설계": "26#20(sick ↔ healthy) 방식. #19 정답형은 선지에 쓰지 않음"
+     },
+     "student": {
+      "왜": "forward → backward 한 단어 바꾸기.",
+      "오답": "26#20(sick ↔ healthy) 방식. #19 정답형은 선지에 쓰지 않음"
+     }
+    }
+   ]
+  },
+  {
+   "type": "group",
+   "num_range": "21-22",
+   "passage": "Before Fosbury, high jumpers only tried to jump forward. But Fosbury showed a new style of clearing the bar on his back. This new jumping style was named the \"Fosbury Flop\" after him. <u>Other jumpers who jumped forward could not jump as high as Fosbury.</u> They started using the Fosbury Flop and could jump about 10 centimeters higher than before. Many people once laughed at Fosbury's jumping style. Now this style is so popular that most high jumpers use it. Fosbury's creative thinking made him a hero of the high jump.",
+   "questions": [
+    {
+     "num": 21,
+     "qtype": "어법",
+     "subtype": "의미 같은 것 — 원급 부정",
+     "score": 4,
+     "question": "윗글의 밑줄 친 문장과 의미가 같은 것은?",
+     "choices": [
+      "① Other jumpers who jumped forward jumped as high as Fosbury.",
+      "② Fosbury could not jump as high as other jumpers who jumped forward.",
+      "③ Fosbury jumped higher than other jumpers who jumped forward.",
+      "④ Other jumpers who jumped forward jumped higher than Fosbury.",
+      "⑤ Fosbury jumped twice as high as other jumpers who jumped forward."
+     ],
+     "answer": "③",
+     "explanation": "not as ~ as(…만큼 ~하지 못하다) = 상대가 더 ~하다(비교급).  [출처: YBM(박준언) L8 본문 4부분 · 문법포인트 원급 비교]",
+     "source": "YBM(박준언) L8 본문 4부분 · 문법포인트 원급 비교",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 4부분 · 문법포인트 원급 비교",
+      "원문변형": "원문(소제목 생략)",
+      "정답근거": "not as ~ as(…만큼 ~하지 못하다) = 상대가 더 ~하다(비교급).",
+      "오답설계": "① not 빠짐 · ② 주어 바꿈 · ④ 비교 방향 반대 · ⑤ 배수사(지문에 없음)"
+     },
+     "student": {
+      "왜": "not as ~ as(…만큼 ~하지 못하다) = 상대가 더 ~하다(비교급).",
+      "오답": "① not 빠짐 · ② 주어 바꿈 · ④ 비교 방향 반대 · ⑤ 배수사(지문에 없음)"
+     }
+    },
+    {
+     "num": 22,
+     "qtype": "제목",
+     "subtype": "제목",
+     "score": 3,
+     "question": "윗글의 제목으로 가장 알맞은 것은?",
+     "choices": [
+      "① Why People Laughed at Fosbury",
+      "② How a Creative Idea Changed the High Jump",
+      "③ The History of the Olympic Games",
+      "④ Different Ways to Jump Forward",
+      "⑤ How to Jump 10 Centimeters Higher"
+     ],
+     "answer": "②",
+     "explanation": "소제목 A Creative Idea Makes a Hero · 끝 문장 재진술.  [출처: YBM(박준언) L8 본문 4부분]",
+     "source": "YBM(박준언) L8 본문 4부분",
+     "review": {
+      "출처": "YBM(박준언) L8 본문 4부분",
+      "원문변형": "",
+      "정답근거": "소제목 A Creative Idea Makes a Hero · 끝 문장 재진술.",
+      "오답설계": "지문 일부 소재(laughed at · 10 centimeters) · 범위 밖(올림픽 역사) · 반대(forward)"
+     },
+     "student": {
+      "왜": "소제목 A Creative Idea Makes a Hero · 끝 문장 재진술.",
+      "오답": "지문 일부 소재(laughed at · 10 centimeters) · 범위 밖(올림픽 역사) · 반대(forward)"
+     }
+    }
+   ]
+  },
+  {
+   "num": 23,
+   "qtype": "어법",
+   "subtype": "옳은 문장 개수(10문장)",
+   "score": 5,
+   "question": "어법상 옳은 문장은 모두 몇 개인가?",
+   "choices": [
+    "① 3개",
+    "② 4개",
+    "③ 5개",
+    "④ 6개",
+    "⑤ 7개"
+   ],
+   "answer": "②",
+   "explanation": "옳음 4: which we watched · whom I called · The books … are · who I met(목적격 who) / 틀림 6: played it(목적어 중복) · man which · cake what · pictures … is · bike … are · key whom  [출처: YBM(박준언) L7 문법포인트 목적격 관계대명사]",
+   "source": "YBM(박준언) L7 문법포인트 목적격 관계대명사",
+   "review": {
+    "출처": "YBM(박준언) L7 문법포인트 목적격 관계대명사",
+    "원문변형": "Review Lounge 쓰기 7 변형 2 + 창작 8",
+    "정답근거": "옳음 4: which we watched · whom I called · The books … are · who I met(목적격 who) / 틀림 6: played it(목적어 중복) · man which · cake what · pictures … is · bike … are · key whom",
+    "오답설계": "관계절 뒤 본동사 수일치 3문장(관계절 안 명사에 끌리게)"
+   },
+   "student": {
+    "왜": "옳음 4: which we watched · whom I called · The books … are · who I met(목적격 who) / 틀림 6: played it(목적어 중복) · man which · cake what · pictures … is · bike … are · key whom",
+    "오답": "관계절 뒤 본동사 수일치 3문장(관계절 안 명사에 끌리게)"
+   },
+   "box": "• The movie which we watched two days ago was fun.\n• I met the friend whom I called yesterday.\n• He loves the song that his favorite band played it.\n• The man which I saw at the park was my teacher.\n• This is the cake what my mom made for me.\n• The books that I borrowed from the library are interesting.\n• The pictures which she took last summer is beautiful.\n• The girl who I met at the concert was very kind.\n• The bike I want to buy are too expensive.\n• I can't find the key whom I lost yesterday."
+  },
+  {
+   "num": 24,
+   "qtype": "어법",
+   "subtype": "같은 것끼리 — 의미 판정",
+   "score": 5,
+   "question": "빈칸에 들어갈 말이 같은 것끼리 묶인 것은?",
+   "choices": [
+    "① ⓐⓑⓒⓕⓘ",
+    "② ⓐⓒⓔⓖⓙ",
+    "③ ⓑⓓⓔⓗⓘ",
+    "④ ⓒⓓⓕⓖⓗ",
+    "⑤ ⓐⓒⓕⓖⓘ"
+   ],
+   "answer": "⑤",
+   "explanation": "couldn't 묶음 ⓐⓒⓕⓖⓘ(결과 불가능) / could 묶음 ⓑⓓⓔⓗⓙ(결과 가능).  [출처: YBM(박준언) L8 문법포인트 so … that]",
+   "source": "YBM(박준언) L8 문법포인트 so … that",
+   "review": {
+    "출처": "YBM(박준언) L8 문법포인트 so … that",
+    "원문변형": "Grammar+ 예문 변형 2(ⓑⓘ) + 창작 8",
+    "정답근거": "couldn't 묶음 ⓐⓒⓕⓖⓘ(결과 불가능) / could 묶음 ⓑⓓⓔⓗⓙ(결과 가능).",
+    "오답설계": "26#23(and/or)과 같은 틀 — 원인과 결과의 가능 여부를 의미로 판정"
+   },
+   "student": {
+    "왜": "couldn't 묶음 ⓐⓒⓕⓖⓘ(결과 불가능) / could 묶음 ⓑⓓⓔⓗⓙ(결과 가능).",
+    "오답": "26#23(and/or)과 같은 틀 — 원인과 결과의 가능 여부를 의미로 판정"
+   },
+   "box": "ⓐ The soup was so hot that I ________ eat it right away.\nⓑ The room was so large that we ________ play soccer there.\nⓒ He spoke so fast that I ________ understand him.\nⓓ The test was so easy that everyone ________ finish it in time.\nⓔ The water was so clear that we ________ see the fish.\nⓕ The music was so loud that I ________ hear my phone ring.\nⓖ She was so tired that she ________ keep her eyes open.\nⓗ The ice was so thick that we ________ walk on it safely.\nⓘ The box was so heavy that I ________ carry it by myself.\nⓙ The moon was so bright that we ________ find the way home."
+  },
+  {
+   "num": 25,
+   "qtype": "어법",
+   "subtype": "that 쓰임 묶음",
+   "score": 4,
+   "question": "밑줄 친 that의 쓰임이 <보기>와 같은 것으로만 묶인 것은?\n<보기> This is the book <u>that</u> I bought yesterday.\nⓐ I know a boy <u>that</u> plays the piano well.\nⓑ She said <u>that</u> she was busy.\nⓒ The bag <u>that</u> I lost yesterday was red.\nⓓ <u>That</u> is my favorite café.\nⓔ Is there anything <u>that</u> I can do for you?\nⓕ I think <u>that</u> he will win the race.\nⓖ The bus <u>that</u> goes to the station is late.\nⓗ Look at <u>that</u> tall tree over there.\nⓘ The cookies <u>that</u> my sister baked were delicious.\nⓙ The house <u>that</u> we lived in last year was small.",
+   "choices": [
+    "① ⓐⓒⓖⓙ",
+    "② ⓑⓔⓕⓘ",
+    "③ ⓒⓔⓘⓙ",
+    "④ ⓒⓖⓘⓙ",
+    "⑤ ⓔⓗⓘⓙ"
+   ],
+   "answer": "③",
+   "explanation": "<보기> 목적격 관계대명사 = ⓒ(lost) · ⓔ(do) · ⓘ(baked) · ⓙ(전치사 in)의 목적어.  [출처: YBM(박준언) L7 Grammar+ that 용법]",
+   "source": "YBM(박준언) L7 Grammar+ that 용법",
+   "review": {
+    "출처": "YBM(박준언) L7 Grammar+ that 용법",
+    "원문변형": "창작",
+    "정답근거": "<보기> 목적격 관계대명사 = ⓒ(lost) · ⓔ(do) · ⓘ(baked) · ⓙ(전치사 in)의 목적어.",
+    "오답설계": "주격 ⓐⓖ · 접속사 ⓑⓕ · 지시대명사 ⓓ · 지시형용사 ⓗ. ⓙ 전치사 목적어 · ④에 주격 ⓖ 섞음"
+   },
+   "student": {
+    "왜": "<보기> 목적격 관계대명사 = ⓒ(lost) · ⓔ(do) · ⓘ(baked) · ⓙ(전치사 in)의 목적어.",
+    "오답": "주격 ⓐⓖ · 접속사 ⓑⓕ · 지시대명사 ⓓ · 지시형용사 ⓗ. ⓙ 전치사 목적어 · ④에 주격 ⓖ 섞음"
+   }
+  },
+  {
+   "num": 26,
+   "qtype": "어법",
+   "subtype": "옳은 문장 개수(10문장)",
+   "score": 5,
+   "question": "어법상 옳은 문장은 모두 몇 개인가?",
+   "choices": [
+    "① 3개",
+    "② 4개",
+    "③ 5개",
+    "④ 6개",
+    "⑤ 7개"
+   ],
+   "answer": "①",
+   "explanation": "옳음 3: told me to drink · found … boring · encouraged us to try / 틀림 7: getting → to get · go → to go · advised to me → advised me · openly → open · heavier → heavy · good → well · than → as  [출처: YBM(박준언) L7·YBM(박준언) L8 문법포인트 종합]",
+   "source": "YBM(박준언) L7·YBM(박준언) L8 문법포인트 종합",
+   "review": {
+    "출처": "YBM(박준언) L7·YBM(박준언) L8 문법포인트 종합",
+    "원문변형": "창작(Grammar+ 동사 목록)",
+    "정답근거": "옳음 3: told me to drink · found … boring · encouraged us to try / 틀림 7: getting → to get · go → to go · advised to me → advised me · openly → open · heavier → heavy · good → well · than → as",
+    "오답설계": "as ~ as 안 부사(swim → well) · 배수사 뒤 원급 · 전치사 끼우기. want·ask·make·keep·high·popular 제외(지문 노출)"
+   },
+   "student": {
+    "왜": "옳음 3: told me to drink · found … boring · encouraged us to try / 틀림 7: getting → to get · go → to go · advised to me → advised me · openly → open · heavier → heavy · good → well · than → as",
+    "오답": "as ~ as 안 부사(swim → well) · 배수사 뒤 원급 · 전치사 끼우기. want·ask·make·keep·high·popular 제외(지문 노출)"
+   },
+   "box": "• The doctor told me to drink more water.\n• My parents expect me getting good grades.\n• Mom allowed me go to the concert alone.\n• Dad advised to me to get some rest.\n• Please leave the door openly.\n• I found the movie very boring.\n• My bag is twice as heavier as yours.\n• Tom can't swim as good as his sister.\n• This box is not as big than that one.\n• The coach encouraged us to try again."
+  }
+ ]
+}
