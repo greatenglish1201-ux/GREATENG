@@ -477,7 +477,18 @@
 - 자료실(exam-analysis) 영향: 드라이브 기출이 3건 늘어 제철고 고1에 '외부지문' 기출 카드 3장이 추가로 보임(기존 기출 숨김 없음 — examKey가 다름).
 - 확인: 가짜 GAS(getKichul) 브라우저 테스트 — 3세트 카드·불러오기·풀이·채점(9/9·8/8·8/8)·saveResult 0, 기존 예상문제 공개/비공개·풀이 회귀 통과, JS 오류 없음.
 
+### 2026-11-28 (50차) — 기출 외부지문 24지문 분석 + teacher.html '📥 분석 가져오기' 추가 (teacher.html 추가만, GAS 수정 없음)
+- 지시(필립): 외부지문도 teacher에서 분석한 것처럼 자료 보기에 추가. 방식 = Claude가 분석 + teacher에 가져오기 버튼(필립 선택).
+- 완성 원문(정답 반영: 빈칸 채움·순서 복원·삽입 문장 넣음·무관 문장 뺌·틀린 낱말 고침, 2학기 중간 13번 'but a narrow mirror' 관사 보완): `제철고1_기출외부지문_완성원문_teacher붙여넣기용.txt`(--- 구분, 강별 묶음).
+- 분석 JSON `제철고1_기출외부지문_분석.json`(format `greateng-passage-analysis-v1`, 24지문 — 1학기 중간 12·21~26·27~28(세트 1지문), 1학기 기말 21~28, 2학기 중간 4·10·13·14·15·19·20·25). teacher FLOW_SYS 형식 그대로: sentences{num,text,symbol,role,chunks[en,ko]}, flow{blocks,interBlockConnectors,keyword,topicSummary,structureType,difficultSentences}, blockSummaries{blockId,summary{키워드},keywords}. 검사: 끊어읽기 결합 = 원문 문장(24지문 전부), 블록이 모든 문장 포함, 기호·색·구조유형 목록 안, 블록요약 키워드가 본문에 있음.
+  - **기출 원문이 들어 있어 GitHub에 올리지 않음** — 채팅 첨부로만 전달. 생성: /home/claude/kext/{restore.py, split.py, ana_m1/f1/m2.txt, build_ana.py}.
+- 교재(지문 id): `JCG1_EXT_1M`(제철고1 기출외부 · 1학기 중간), `JCG1_EXT_1F`(… 1학기 기말), `JCG1_EXT_2M`(… 2학기 중간), 강 01, 번호 = 시험 원번호(27~28 세트는 027). 예: JCG1_EXT_1F_01_027.
+- **teacher.html(추가만, 기존 줄 변경 0)**: 2635~2677행 `importAnalysisFile` — JSON 검사 → 확인창(지문 수·교재·덮어쓸 지문 수) → 공개 여부 확인창 → `addCustomBook`(교재목록 시트 동기화 saveBooks) → 지문마다 기존 `savePassage`(formPostFetch, saveSlotToSheet의 passagePayload와 같은 열) → `sheetIdsRef`에 id 추가 → 결과 alert. **슬롯은 건드리지 않음**. 3587~3590행 상단 툴바 '설정' 앞에 '📥 분석 가져오기' 버튼 + 숨은 file input(진행 중엔 '가져오는 중 n/24').
+- 확인: 가짜 GAS(POST textarea 응답) 브라우저 테스트 — savePassage 24회(id 24개 고유)·saveBooks 3회, payload 열 = 기존과 같음. index 자료 보기: 교재 3개 라벨 표시 → 1강 → 지문 열기 → 문장 기호·블록 다이어그램·블록 요약 빈칸·끊어읽기·구문 분석 정상. JS 오류 없음.
+- 기존 화면 특성(이번 변경 아님): 자료 보기 상세의 '구조 유형' 선택칸은 3개 값만 있어 그 밖 유형(비교→대조 등)은 첫 값으로 보이고, 교재 선택칸도 BOOK_DEFS 밖 교재는 첫 값(ABSO)으로 보임 — teacher 분석 지문도 같음.
+
 ## 진행 중
+- **기출 외부지문 자료 보기(50차)**: 필립이 teacher.html → 📥 분석 가져오기 → `제철고1_기출외부지문_분석.json` 선택 → 공개 여부 선택. 저장 후 index 자료 보기에서 교재 3개 확인.
 - **기출 외부지문 세트(49차)**: ① GAS v15 배포 여부 확인(안 됐으면 v15 배포 — 35차 항목) ② 1학기 기말 27번 정답(④로 둠, 복원본 판독 ③) 필립 확인 ③ 관리자 패널에서 원할 때 공개.
 - **제철고1 2학기 기말 2회 검수(48차)**: 필립 검수 → 수정 반영 시 items.py·student.py 고친 뒤 build.py → 게이트 → gen_modern/gen_answers 재생성 → make_student_exam.py로 exams/student/jechulgo1_2026_2f_mock2.json 재생성 후 커밋.
 - **⚠ 숙제점검 GAS 교체(46차)**: `HW_GAS_성적입력.gs`로 통째 교체(백업 먼저) → 새 버전 배포. 배포 후 멤버스 홈에 '내 성적' 카드가 생기는지, hw-monitor 맨 위 '성적 확인' 카드가 보이는지, 학생 1명 시험 제출 → 반영 → 내신DB 행 확인. 반려 테스트 행은 '성적신청' 시트에서 지워도 됨.

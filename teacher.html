@@ -2632,6 +2632,49 @@ function App(){
       return next;
     });
   },[syncBooksToSheet]);
+  // ── [50차] 📥 분석 가져오기 — 미리 분석된 지문 JSON(format 'greateng-passage-analysis-v1')을 지문DB에 바로 저장 ──
+  //   슬롯은 건드리지 않음(작업 중인 슬롯 보호). 교재는 addCustomBook으로 추가, 저장은 기존 savePassage(지문DB)만 사용.
+  //   payload는 saveSlotToSheet의 passagePayload와 같은 열 구성 → 자료 보기(index)·슬롯 불러오기에서 기존 지문과 같게 보임.
+  const importFileRef=useRef(null);
+  const [importRun,setImportRun]=useState(null); // {done,total}
+  const importAnalysisFile=useCallback(async(file)=>{
+    if(!file)return;
+    if(!appsUrl){alert('설정에서 Apps Script URL을 먼저 입력해주세요.');return;}
+    let data;
+    try{data=JSON.parse(await file.text());}catch(e){alert('JSON 파일을 읽지 못했습니다: '+e.message);return;}
+    const list=(data&&data.format==='greateng-passage-analysis-v1'&&Array.isArray(data.passages))?data.passages:null;
+    if(!list||!list.length){alert('분석 가져오기 형식이 아닙니다.\n(format: greateng-passage-analysis-v1, passages 배열 필요)');return;}
+    const bad=list.filter(p=>!p.source||!p.number||!Array.isArray(p.sentences)||!p.sentences.length);
+    if(bad.length){alert('형식이 잘못된 지문이 '+bad.length+'개 있습니다. (source·number·sentences 필요)');return;}
+    const ids=list.map(p=>makePassageId(p.source,p.chapter||'01',p.number));
+    const books=[...new Map(list.map(p=>[p.source,p.source_label||p.source])).entries()];
+    const dup=ids.filter(id=>sheetIdsRef.current.has(id));
+    if(!confirm('📥 분석 가져오기\n\n지문 '+list.length+'개를 지문DB에 저장합니다.\n교재: '+books.map(([id,l])=>l+' ('+id+')').join(', ')+'\n\n'+(dup.length?'⚠ 이미 시트에 있는 지문 '+dup.length+'개는 덮어씁니다.\n\n':'')+'계속할까요?'))return;
+    const makePublic=confirm('학생 자료 보기에 바로 공개할까요?\n\n확인 = 공개 저장\n취소 = 비공개 저장(나중에 일괄 공개 가능)');
+    books.forEach(([id,label])=>addCustomBook({id,label,storage:'sheet'}));
+    setImportRun({done:0,total:list.length});
+    const fails=[];
+    for(let i=0;i<list.length;i++){
+      const p=list[i], id=ids[i];
+      const flow={...(p.flow||{})};
+      const payload={
+        id,source:p.source,chapter:String(p.chapter||'01'),chapter_org:p.chapter_org||'',number:String(p.number),
+        difficulty:p.difficulty||'중',title:p.title||'',abstract:p.abstract||'',
+        sentences_json:JSON.stringify(p.sentences),
+        flow_json:JSON.stringify(flow),
+        blockSummaries_json:Array.isArray(p.blockSummaries)&&p.blockSummaries.length?JSON.stringify(p.blockSummaries):'',
+        is_public:makePublic?'TRUE':'FALSE',is_hot:'FALSE',
+      };
+      try{
+        const r=await formPostFetch(appsUrl,{action:'savePassage',...payload});
+        if(!r.ok&&!r.warning)throw new Error(r.error||'unknown');
+        sheetIdsRef.current.add(id);
+      }catch(e){fails.push(id+': '+e.message);}
+      setImportRun({done:i+1,total:list.length});
+    }
+    setImportRun(null);
+    alert('📥 분석 가져오기 완료\n저장 '+(list.length-fails.length)+' / '+list.length+(makePublic?' (공개)':' (비공개)')+(fails.length?'\n\n실패:\n'+fails.join('\n'):''));
+  },[appsUrl,addCustomBook]);
   // ── 마운트 시 시트 교재목록을 localStorage에 병합 (다른 기기 동기화) ──
   const booksLoaded=useRef(false);
   useEffect(()=>{
@@ -3541,6 +3584,10 @@ function App(){
               style={{background:'#f0f0f2',color:'#515154',border:'none',
                 borderRadius:980,padding:'5px 12px',fontSize:11,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>출력</button>
           </div>
+          <button onClick={()=>importFileRef.current&&importFileRef.current.click()} disabled={!!importRun} title="미리 분석된 지문 JSON을 지문DB에 저장 (슬롯은 그대로)"
+            style={{background:'#eef6ee',color:'#2d7a3e',border:'none',
+              borderRadius:980,padding:'5px 11px',fontSize:11,fontWeight:600,cursor:importRun?'default':'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>{importRun?`가져오는 중 ${importRun.done}/${importRun.total}`:'📥 분석 가져오기'}</button>
+          <input ref={importFileRef} type="file" accept=".json,application/json" style={{display:'none'}} onChange={e=>{const f=e.target.files&&e.target.files[0];e.target.value='';importAnalysisFile(f);}}/>{/* [50차] */}
           <button onClick={()=>setShowSet(v=>!v)} title="설정"
             style={{background:'#f0f0f2',color:'#515154',border:'none',
               borderRadius:980,padding:'5px 11px',fontSize:11,fontWeight:600,cursor:'pointer',lineHeight:'1.4',whiteSpace:'nowrap'}}>설정</button>
