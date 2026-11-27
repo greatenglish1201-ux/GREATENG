@@ -6017,6 +6017,7 @@ ${bodyRef.current.innerHTML}
 /* ━━━ [41차] 학교 예상문제 풀기 (추가 기능) ━━━
    exams/student/list.json 에 있는 시험을 시험지 그대로(번호·발문·선지 고정) 푼다.
    - list.json 항목 {key,file,title,open,students}: 목록. students에 이름이 있으면 그 학생만
+   - [49차] file 대신 drive_id가 있으면 비공개 드라이브 기출DB 파일을 GAS getKichul(v15)로 받음 — 기출 원문은 GitHub에 두지 않음
    - 공개 여부는 관리자 패널 '📝 예상문제' 탭에서 켜고 끔 → 기존 GAS saveExam/getExamList('exams' 시트)에
      key 'MOCKOPEN|{시험key}', exam 'open'|'closed' 한 행으로 보관(GAS 수정 없음). 서버 값이 없거나 못 읽으면 list.json의 open
    - 결과는 서버에 저장하지 않음(채점·정답·해설만 보여 줌). 푸는 중인 답은 이 기기 localStorage에만
@@ -6040,10 +6041,10 @@ function mockSetOpen(scriptUrl,key,open){
 }
 function mockLoadList(){
   return fetch(MOCK_DIR+'list.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null)
-    .then(d=>(d&&Array.isArray(d.exams))?d.exams.filter(e=>e&&e.key&&e.file):[]).catch(()=>[]);
+    .then(d=>(d&&Array.isArray(d.exams))?d.exams.filter(e=>e&&e.key&&(e.file||e.drive_id)):[]).catch(()=>[]);
 }
 function mockVisible(e,session,name,srv){
-  if(!e||!e.key||!e.file)return false;
+  if(!e||!e.key||!(e.file||e.drive_id))return false;
   if(session?.role==='admin')return true;
   if(!mockIsOpen(e,srv))return false;
   if(Array.isArray(e.students)&&e.students.length)return e.students.map(s=>String(s).trim()).includes(String(name||'').trim());
@@ -6133,11 +6134,13 @@ function MockExam({entry,session,studentName,scriptUrl,goBack}){
   const [now,setNow]=useState(Date.now());
 
   useEffect(()=>{
-    fetch(MOCK_DIR+entry.file+'?v='+Date.now(),{cache:'no-store'})
-      .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-      .then(d=>{if(!d||!Array.isArray(d.questions))throw new Error('형식 오류');setExam(d);})
+    // [49차] drive_id 항목은 비공개 드라이브 '기출DB'에서 GAS getKichul로 받음(기출 외부지문 등), 나머지는 GitHub 파일
+    const load=entry.drive_id
+      ? jsonpFetch(scriptUrl,{action:'getKichul',id:entry.drive_id}).then(r=>{if(!r||r.ok===false)throw new Error((r&&r.error)||'GAS 오류');return r.data;})
+      : fetch(MOCK_DIR+entry.file+'?v='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});
+    load.then(d=>{if(!d||!Array.isArray(d.questions))throw new Error('형식 오류');setExam(d);})
       .catch(e=>setErr('시험지를 불러오지 못했어요 ('+e.message+')'));
-  },[entry.file]);
+  },[entry.file,entry.drive_id]);
   useEffect(()=>{if(done)return;const t=setInterval(()=>setNow(Date.now()),1000);return ()=>clearInterval(t);},[done]);
   useEffect(()=>{mockSaveDraft(entry.key,studentName,{ans,start,done});},[ans,start,done]);
 

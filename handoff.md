@@ -463,7 +463,22 @@
 - 산출물(채팅 전달, 드라이브 미업로드): `jechulgo1_2026_2f_exam2.json`, `제철고1_2학기기말_2회_예상문제.docx`(13쪽)·`_해설지(검수용).docx`(9쪽)·`_해설지(학생용).docx`(4쪽). 생성: /home/claude/exam2/{items.py, student.py, build.py} → gen_modern.py·gen_answers.py(1회와 같은 생성기, 저장소 미반영).
 - index '학교 예상문제'용: `exams/student/jechulgo1_2026_2f_mock2.json`(make_student_exam.py) + `list.json`에 2회 항목 추가(open:false) — 11.27 필립 지시로 커밋(2d2cdb5). 공개는 관리자 패널 '📝 예상문제'에서.
 
+### 2026-11-27 (49차) — 제철고1 기출 외부지문 25문항을 index '학교 예상문제'에 추가 (비공개 드라이브 기출DB + index.html 3곳, GAS 수정 없음)
+- 지시(필립): 제철고1 기출 외부지문을 예상문제처럼 index에서 풀게. 저장 위치는 **드라이브 기출DB(비공개)** — 기출 원문은 GitHub에 두지 않음(내부용 원칙). 묶음은 시험별 3세트.
+- 세트(드라이브 `★★기출문제 스캔/기출DB`, build `kichul-ext-student-v1`, meta.exam '…외부지문'이라 자료실에서 기존 기출과 구분됨):
+  - `jechulgo1_2026_1m_kichul_ext.json` id `1G_cfN-YRImKbaZGhMVfWP3OPcS2nmMYE` — 1학기 중간 12·21~28 **9문항**(33.9점, 22분). 원문: 제철고1/26년 1학기 중간고사/`26년 1학기 중간 외부지문문제 발췌.hwp`, 정답·해설 근거: 같은 폴더 `외부지문 풀이문서.hwp`.
+  - `jechulgo1_2026_1f_kichul_ext.json` id `11OvVKHp4qo_vWhkN4drUb-3zoKS9Im6R` — 1학기 기말 21~28 8문항(30.1점, 20분). 원문: `제철고1_2026_1기말_기출복원.docx`(외부지문 정리.docx는 21번 빈칸에 정답이 채워져 있어 안 씀). **27번 정답은 ④ (C)-(A)-(B)로 둠** — 복원본은 '판독 표시상 ③ 유력'이었으나 (A) But·(B) data bias 연결상 ④(학원 풀이 기준, 필립 확인 필요).
+  - `jechulgo1_2026_2m_kichul_ext.json` id `1P8L-hGpMI6heEaULZSz1dEaeSBBhFte2` — 2학기 중간 4·10·13·14·15·19·20·25 8문항(30.3점, 20분). 원문: 기출DB `jechulgo1_2026_2m_kichul.json`(14번 ⑤ 선지 끝에 섞인 'as: markdown' 찌꺼기 제거).
+  - 문항 = 번호(학교 원번호)·qtype·배점(원배점)·발문·본문(<u>, [주어진 문장], [요약문])·선지·정답·why/wrong(학생용 해설 새로 씀). 업로드본 sha256 일치 확인.
+  - 생성 스크립트 `build_ext.py`(저장소 미반영, /home/claude/kext).
+- **index.html(추가·확장, 41차 자기 코드만 수정)**: `mockLoadList`·`mockVisible`이 `file` 또는 `drive_id` 항목 허용 / `MockExam` 불러오기 — `drive_id`면 `jsonpFetch(scriptUrl,{action:'getKichul',id})`의 `r.data`, 아니면 기존 GitHub 파일. 머리 주석에 [49차] 1줄.
+- `exams/student/list.json`: 3세트 항목 추가(`drive_id`, open:false). 공개는 관리자 패널 '📝 예상문제'.
+- **전제: GAS v15(getKichul) 배포** — 아직이면 학생이 열 때 '시험지를 불러오지 못했어요 (Unknown action…)'. 자료실 상태줄 '기출 N건(드라이브)'가 보이면 v15 배포됨.
+- 자료실(exam-analysis) 영향: 드라이브 기출이 3건 늘어 제철고 고1에 '외부지문' 기출 카드 3장이 추가로 보임(기존 기출 숨김 없음 — examKey가 다름).
+- 확인: 가짜 GAS(getKichul) 브라우저 테스트 — 3세트 카드·불러오기·풀이·채점(9/9·8/8·8/8)·saveResult 0, 기존 예상문제 공개/비공개·풀이 회귀 통과, JS 오류 없음.
+
 ## 진행 중
+- **기출 외부지문 세트(49차)**: ① GAS v15 배포 여부 확인(안 됐으면 v15 배포 — 35차 항목) ② 1학기 기말 27번 정답(④로 둠, 복원본 판독 ③) 필립 확인 ③ 관리자 패널에서 원할 때 공개.
 - **제철고1 2학기 기말 2회 검수(48차)**: 필립 검수 → 수정 반영 시 items.py·student.py 고친 뒤 build.py → 게이트 → gen_modern/gen_answers 재생성 → make_student_exam.py로 exams/student/jechulgo1_2026_2f_mock2.json 재생성 후 커밋.
 - **⚠ 숙제점검 GAS 교체(46차)**: `HW_GAS_성적입력.gs`로 통째 교체(백업 먼저) → 새 버전 배포. 배포 후 멤버스 홈에 '내 성적' 카드가 생기는지, hw-monitor 맨 위 '성적 확인' 카드가 보이는지, 학생 1명 시험 제출 → 반영 → 내신DB 행 확인. 반려 테스트 행은 '성적신청' 시트에서 지워도 됨.
 - **⚠ 레벨테스트 응시 기록 삭제 버튼(44차)**: 필립이 현재 편집기 LevelTest_Code.gs 전체를 주면 `adminDelete`(응시기록 행 삭제 + 상담카드 M열에서 그 ID 제거) 추가한 통째 교체본 작성 → 새 버전 배포. level-admin 결과 화면에 확인창 있는 '기록 삭제' 버튼, 종이 기록은 카드 메모 줄 삭제(adminCardSave, GAS 불필요).
